@@ -16,8 +16,6 @@ package org.apache.pekko.stream.javadsl;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
@@ -59,7 +57,7 @@ public class SinkTest extends StreamTestJupiter {
   @Test
   public void mustBeAbleToUseFuture() throws Exception {
     final Sink<Integer, CompletionStage<Integer>> futSink = Sink.head();
-    final List<Integer> list = Collections.singletonList(1);
+    final List<Integer> list = List.of(1);
     final CompletionStage<Integer> future = Source.from(list).runWith(futSink, system);
     assertEquals(1, future.toCompletableFuture().get(1, TimeUnit.SECONDS).intValue());
   }
@@ -86,7 +84,7 @@ public class SinkTest extends StreamTestJupiter {
   public void mustBeAbleToUseActorRefSink() throws Exception {
     final TestKit probe = new TestKit(system);
     final Sink<Integer, ?> actorRefSink = Sink.actorRef(probe.getRef(), "done");
-    Source.from(Arrays.asList(1, 2, 3)).runWith(actorRefSink, system);
+    Source.from(List.of(1, 2, 3)).runWith(actorRefSink, system);
     probe.expectMsgEquals(1);
     probe.expectMsgEquals(2);
     probe.expectMsgEquals(3);
@@ -95,7 +93,7 @@ public class SinkTest extends StreamTestJupiter {
 
   @Test
   public void mustBeAbleToUseCollector() throws Exception {
-    final List<Integer> list = Arrays.asList(1, 2, 3);
+    final List<Integer> list = List.of(1, 2, 3);
     final Sink<Integer, CompletionStage<List<Integer>>> collectorSink =
         StreamConverters.javaCollector(Collectors::toList);
     CompletionStage<List<Integer>> result = Source.from(list).runWith(collectorSink, system);
@@ -105,7 +103,7 @@ public class SinkTest extends StreamTestJupiter {
   @Test
   public void mustBeAbleToUseCollectorOnSink() throws Exception {
     // #collect-to-list
-    final List<Integer> list = Arrays.asList(1, 2, 3);
+    final List<Integer> list = List.of(1, 2, 3);
     CompletionStage<List<Integer>> result =
         Source.from(list).runWith(Sink.collect(Collectors.toList()), system);
     // #collect-to-list
@@ -131,7 +129,7 @@ public class SinkTest extends StreamTestJupiter {
               }
             });
 
-    Source.from(Arrays.asList(0, 1)).runWith(sink, system);
+    Source.from(List.of(0, 1)).runWith(sink, system);
 
     probe1.expectMsgEquals(0);
     probe2.expectMsgEquals(0);
@@ -150,7 +148,7 @@ public class SinkTest extends StreamTestJupiter {
         Sink.combineMat(sink1, sink2, Broadcast::create, Keep.both());
 
     final Pair<TestSubscriber.Probe<Integer>, TestSubscriber.Probe<Integer>> subscribers =
-        Source.from(Arrays.asList(0, 1)).runWith(sink, system);
+        Source.from(List.of(0, 1)).runWith(sink, system);
     final TestSubscriber.Probe<Integer> subscriber1 = subscribers.first();
     final TestSubscriber.Probe<Integer> subscriber2 = subscribers.second();
     final Subscription sub1 = subscriber1.expectSubscription();
@@ -168,7 +166,7 @@ public class SinkTest extends StreamTestJupiter {
     final Sink<Long, CompletionStage<Long>> thirdSink = Sink.head();
 
     final Sink<Long, List<CompletionStage<Long>>> combineSink =
-        Sink.combine(Arrays.asList(firstSink, secondSink, thirdSink), Broadcast::create);
+        Sink.combine(List.of(firstSink, secondSink, thirdSink), Broadcast::create);
     final List<CompletionStage<Long>> results =
         Source.single(1L).toMat(combineSink, Keep.right()).run(system);
     for (CompletionStage<Long> result : results) {
@@ -186,7 +184,7 @@ public class SinkTest extends StreamTestJupiter {
             .toCompletableFuture()
             .get(3, TimeUnit.SECONDS);
 
-    assertEquals(Arrays.asList(1, 2, 3), out);
+    assertEquals(List.of(1, 2, 3), out);
   }
 
   @Test
@@ -226,7 +224,7 @@ public class SinkTest extends StreamTestJupiter {
       throws InterruptedException, ExecutionException, TimeoutException {
     // #foreach
     Sink<Integer, CompletionStage<Done>> printlnSink = Sink.foreach(System.out::println);
-    CompletionStage<Done> cs = Source.from(Arrays.asList(1, 2, 3, 4)).runWith(printlnSink, system);
+    CompletionStage<Done> cs = Source.from(List.of(1, 2, 3, 4)).runWith(printlnSink, system);
     Done done = cs.toCompletableFuture().get(100, TimeUnit.MILLISECONDS);
     // will print
     // 1
@@ -241,7 +239,7 @@ public class SinkTest extends StreamTestJupiter {
   public void sinkMustBeAbleToUseForall()
       throws InterruptedException, ExecutionException, TimeoutException {
     CompletionStage<Boolean> cs =
-        Source.from(Arrays.asList(1, 2, 3, 4)).runWith(Sink.forall(param -> param > 0), system);
+        Source.from(List.of(1, 2, 3, 4)).runWith(Sink.forall(param -> param > 0), system);
     boolean allMatch = cs.toCompletableFuture().get(100, TimeUnit.MILLISECONDS);
     assertTrue(allMatch);
   }
@@ -250,7 +248,7 @@ public class SinkTest extends StreamTestJupiter {
   public void sinkMustBeAbleToUseNoneMatch()
       throws InterruptedException, ExecutionException, TimeoutException {
     CompletionStage<Boolean> cs =
-        Source.from(Arrays.asList(1, 2, 3, 4)).runWith(Sink.none(param -> param < 0), system);
+        Source.from(List.of(1, 2, 3, 4)).runWith(Sink.none(param -> param < 0), system);
     boolean noneMatch = cs.toCompletableFuture().get(100, TimeUnit.MILLISECONDS);
     assertTrue(noneMatch);
   }
@@ -259,7 +257,7 @@ public class SinkTest extends StreamTestJupiter {
   public void sinkMustBeAbleToUseForExists()
       throws InterruptedException, ExecutionException, TimeoutException {
     CompletionStage<Boolean> cs =
-        Source.from(Arrays.asList(1, 2, 3, 4)).runWith(Sink.exists(param -> param > 3), system);
+        Source.from(List.of(1, 2, 3, 4)).runWith(Sink.exists(param -> param > 3), system);
     boolean anyMatch = cs.toCompletableFuture().get(100, TimeUnit.MILLISECONDS);
     assertTrue(anyMatch);
   }
@@ -278,6 +276,6 @@ public class SinkTest extends StreamTestJupiter {
             .runWith(Sink.seq(), system)
             .toCompletableFuture()
             .get(1, TimeUnit.SECONDS);
-    assertEquals(Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10), r);
+    assertEquals(List.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10), r);
   }
 }

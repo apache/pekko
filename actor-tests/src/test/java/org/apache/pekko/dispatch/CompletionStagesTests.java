@@ -123,7 +123,7 @@ public class CompletionStagesTests {
         //sequence empty list
         final List<CompletionStage<Integer>> empty = new ArrayList<>();
         final CompletionStage<List<Integer>> sequencedEmpty = CompletionStages.sequence(empty, executor);
-        assertEquals(Collections.emptyList(), sequencedEmpty.toCompletableFuture().get(3, TimeUnit.SECONDS));
+        assertEquals(List.of(), sequencedEmpty.toCompletableFuture().get(3, TimeUnit.SECONDS));
     }
 
     @Test
@@ -133,16 +133,16 @@ public class CompletionStagesTests {
     }
 
     private void testTraverse0(final Executor executor) throws Exception {
-        final List<Integer> values = Arrays.asList(1, 2, 3, 4, 5);
+        final List<Integer> values = List.of(1, 2, 3, 4, 5);
         final CompletionStage<List<Integer>> traversed = CompletionStages.traverse(values,
             CompletableFuture::completedFuture, executor);
         assertEquals(Lists.newArrayList(1, 2, 3, 4, 5),
             traversed.toCompletableFuture().get(3, TimeUnit.SECONDS));
         //traverse empty list
-        final List<Integer> empty = Collections.emptyList();
+        final List<Integer> empty = List.of();
         final CompletionStage<List<Integer>> traversedEmpty = CompletionStages.traverse(empty,
             CompletableFuture::completedFuture, executor);
-        assertEquals(Collections.emptyList(), traversedEmpty.toCompletableFuture().get(3, TimeUnit.SECONDS));
+        assertEquals(List.of(), traversedEmpty.toCompletableFuture().get(3, TimeUnit.SECONDS));
     }
 
 

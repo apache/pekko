@@ -14,7 +14,6 @@
 package org.apache.pekko.cluster.client;
 
 import com.typesafe.config.ConfigFactory;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import org.apache.pekko.actor.*;
@@ -37,10 +36,9 @@ public class ClusterClientTest {
 
   // #initialContacts
   Set<ActorPath> initialContacts() {
-    return new HashSet<ActorPath>(
-        Arrays.asList(
-            ActorPaths.fromString("pekko://OtherSys@host1:7355/system/receptionist"),
-            ActorPaths.fromString("pekko://OtherSys@host2:7355/system/receptionist")));
+    return Set.of(
+        ActorPaths.fromString("pekko://OtherSys@host1:7355/system/receptionist"),
+        ActorPaths.fromString("pekko://OtherSys@host2:7355/system/receptionist"));
   }
 
   // #initialContacts

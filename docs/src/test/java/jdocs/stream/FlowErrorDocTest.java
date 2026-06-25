@@ -15,7 +15,6 @@ package jdocs.stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutionException;
@@ -56,7 +55,7 @@ public class FlowErrorDocTest extends AbstractJavaTest {
         () -> {
           // #stop
           final Source<Integer, NotUsed> source =
-              Source.from(Arrays.asList(0, 1, 2, 3, 4, 5)).map(elem -> 100 / elem);
+              Source.from(List.of(0, 1, 2, 3, 4, 5)).map(elem -> 100 / elem);
           final Sink<Integer, CompletionStage<Integer>> fold =
               Sink.<Integer, Integer>fold(0, (acc, elem) -> acc + elem);
           final CompletionStage<Integer> result = source.runWith(fold, system);
@@ -77,7 +76,7 @@ public class FlowErrorDocTest extends AbstractJavaTest {
           else return Supervision.stop();
         };
     final Source<Integer, NotUsed> source =
-        Source.from(Arrays.asList(0, 1, 2, 3, 4, 5))
+        Source.from(List.of(0, 1, 2, 3, 4, 5))
             .map(elem -> 100 / elem)
             .withAttributes(ActorAttributes.withSupervisionStrategy(decider));
     final Sink<Integer, CompletionStage<Integer>> fold = Sink.fold(0, (acc, elem) -> acc + elem);
@@ -108,7 +107,7 @@ public class FlowErrorDocTest extends AbstractJavaTest {
             .filter(elem -> 100 / elem < 50)
             .map(elem -> 100 / (5 - elem))
             .withAttributes(ActorAttributes.withSupervisionStrategy(decider));
-    final Source<Integer, NotUsed> source = Source.from(Arrays.asList(0, 1, 2, 3, 4, 5)).via(flow);
+    final Source<Integer, NotUsed> source = Source.from(List.of(0, 1, 2, 3, 4, 5)).via(flow);
     final Sink<Integer, CompletionStage<Integer>> fold =
         Sink.<Integer, Integer>fold(0, (acc, elem) -> acc + elem);
     final CompletionStage<Integer> result = source.runWith(fold, system);
@@ -136,7 +135,7 @@ public class FlowErrorDocTest extends AbstractJavaTest {
                   else return acc + elem;
                 })
             .withAttributes(ActorAttributes.withSupervisionStrategy(decider));
-    final Source<Integer, NotUsed> source = Source.from(Arrays.asList(1, 3, -1, 5, 7)).via(flow);
+    final Source<Integer, NotUsed> source = Source.from(List.of(1, 3, -1, 5, 7)).via(flow);
     final CompletionStage<List<Integer>> result =
         source.grouped(1000).runWith(Sink.<List<Integer>>head(), system);
     // the negative element cause the scan stage to be restarted,
@@ -145,17 +144,17 @@ public class FlowErrorDocTest extends AbstractJavaTest {
     // #restart-section
 
     assertEquals(
-        Arrays.asList(0, 1, 4, 0, 5, 12), result.toCompletableFuture().get(3, TimeUnit.SECONDS));
+        List.of(0, 1, 4, 0, 5, 12), result.toCompletableFuture().get(3, TimeUnit.SECONDS));
   }
 
   @Test
   public void demonstrateRecover() {
     // #recover
-    Source.from(Arrays.asList(0, 1, 2, 3, 4, 5, 6))
+    Source.from(List.of(0, 1, 2, 3, 4, 5, 6))
         .map(
             n -> {
               // assuming `4` and `5` are unexpected values that could throw exception
-              if (Arrays.asList(4, 5).contains(n))
+              if (List.of(4, 5).contains(n))
                 throw new RuntimeException("Boom! Bad value found: %s".formatted(n));
               else return n.toString();
             })
@@ -181,9 +180,9 @@ public class FlowErrorDocTest extends AbstractJavaTest {
   @Test
   public void demonstrateRecoverWithRetries() {
     // #recoverWithRetries
-    Source<String, NotUsed> planB = Source.from(Arrays.asList("five", "six", "seven", "eight"));
+    Source<String, NotUsed> planB = Source.from(List.of("five", "six", "seven", "eight"));
 
-    Source.from(Arrays.asList(0, 1, 2, 3, 4, 5, 6))
+    Source.from(List.of(0, 1, 2, 3, 4, 5, 6))
         .map(
             n -> {
               if (n < 5) return n.toString();

@@ -20,8 +20,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -109,7 +107,7 @@ class AuctionEntity
   public static ReplicaId R1 = new ReplicaId("R1");
   public static ReplicaId R2 = new ReplicaId("R2");
 
-  public static Set<ReplicaId> ALL_REPLICAS = new HashSet<>(Arrays.asList(R1, R2));
+  public static Set<ReplicaId> ALL_REPLICAS = Set.of(R1, R2);
 
   private final ActorContext<Command> context;
   private final TimerScheduler<Command> timers;
@@ -257,7 +255,7 @@ class AuctionEntity
     }
 
     public AuctionState close() {
-      return new AuctionState(false, highestBid, highestCounterOffer, Collections.emptySet());
+      return new AuctionState(false, highestBid, highestCounterOffer, Set.of());
     }
 
     public boolean isClosed() {
@@ -309,7 +307,7 @@ class AuctionEntity
 
   @Override
   public AuctionState emptyState() {
-    return new AuctionState(true, initialBid, initialBid.offer, Collections.emptySet());
+    return new AuctionState(true, initialBid, initialBid.offer, Set.of());
   }
 
   @Override

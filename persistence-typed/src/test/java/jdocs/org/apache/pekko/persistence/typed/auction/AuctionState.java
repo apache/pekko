@@ -14,7 +14,6 @@
 package jdocs.org.apache.pekko.persistence.typed.auction;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,12 +36,12 @@ public final class AuctionState {
   }
 
   public static AuctionState notStarted() {
-    return new AuctionState(Optional.empty(), AuctionStatus.NOT_STARTED, Collections.emptyList());
+    return new AuctionState(Optional.empty(), AuctionStatus.NOT_STARTED, List.of());
   }
 
   public static AuctionState start(Auction auction) {
     return new AuctionState(
-        Optional.of(auction), AuctionStatus.UNDER_AUCTION, Collections.emptyList());
+        Optional.of(auction), AuctionStatus.UNDER_AUCTION, List.of());
   }
 
   public AuctionState withStatus(AuctionStatus status) {

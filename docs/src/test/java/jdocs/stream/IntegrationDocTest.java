@@ -21,7 +21,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import java.time.Duration;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -399,7 +398,7 @@ public class IntegrationDocTest extends AbstractJavaTest {
   @Test
   public void askStage() throws Exception {
     // #ask
-    Source<String, NotUsed> words = Source.from(Arrays.asList("hello", "hi"));
+    Source<String, NotUsed> words = Source.from(List.of("hello", "hi"));
     Timeout askTimeout = Timeout.apply(5, TimeUnit.SECONDS);
 
     words
@@ -413,7 +412,7 @@ public class IntegrationDocTest extends AbstractJavaTest {
   @Test
   public void actorRefWithBackpressure() throws Exception {
     // #actorRefWithBackpressure
-    Source<String, NotUsed> words = Source.from(Arrays.asList("hello", "hi"));
+    Source<String, NotUsed> words = Source.from(List.of("hello", "hi"));
 
     final TestKit probe = new TestKit(system);
 
@@ -677,7 +676,7 @@ public class IntegrationDocTest extends AbstractJavaTest {
         final Executor blockingEc = system.dispatchers().lookup("blocking-dispatcher");
         final SometimesSlowService service = new SometimesSlowService(blockingEc);
 
-        Source.from(Arrays.asList("a", "B", "C", "D", "e", "F", "g", "H", "i", "J"))
+        Source.from(List.of("a", "B", "C", "D", "e", "F", "g", "H", "i", "J"))
             .map(
                 elem -> {
                   System.out.println("before: " + elem);
@@ -725,7 +724,7 @@ public class IntegrationDocTest extends AbstractJavaTest {
         final Executor blockingEc = system.dispatchers().lookup("blocking-dispatcher");
         final SometimesSlowService service = new SometimesSlowService(blockingEc);
 
-        Source.from(Arrays.asList("a", "B", "C", "D", "e", "F", "g", "H", "i", "J"))
+        Source.from(List.of("a", "B", "C", "D", "e", "F", "g", "H", "i", "J"))
             .map(
                 elem -> {
                   System.out.println("before: " + elem);
@@ -769,7 +768,7 @@ public class IntegrationDocTest extends AbstractJavaTest {
                 .to(Sink.foreach(x -> System.out.println("got: " + x)))
                 .run(system);
 
-        Source<Integer, NotUsed> source = Source.from(Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
+        Source<Integer, NotUsed> source = Source.from(List.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
 
         source.map(x -> sourceQueue.offer(x)).runWith(Sink.ignore(), system);
 
@@ -793,7 +792,7 @@ public class IntegrationDocTest extends AbstractJavaTest {
                 .to(Sink.foreach(x -> System.out.println("got: " + x)))
                 .run(system);
 
-        List<Integer> fastElements = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+        List<Integer> fastElements = List.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
 
         fastElements.stream()
             .forEach(

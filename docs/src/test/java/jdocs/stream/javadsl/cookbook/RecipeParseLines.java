@@ -13,7 +13,7 @@
 
 package jdocs.stream.javadsl.cookbook;
 
-import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.actor.ActorSystem;
@@ -46,7 +46,7 @@ public class RecipeParseLines extends RecipeTest {
   public void parseLines() throws Exception {
     final Source<ByteString, NotUsed> rawData =
         Source.from(
-            Arrays.asList(
+            List.of(
                 ByteString.fromString("Hello World"),
                 ByteString.fromString("\r"),
                 ByteString.fromString("!\r"),

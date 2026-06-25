@@ -18,7 +18,6 @@ import org.apache.pekko.actor.typed.ActorSystem;
 import org.apache.pekko.actor.typed.Behavior;
 import org.apache.pekko.actor.typed.javadsl.ActorContext;
 import java.time.Duration;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.CompletionStage;
@@ -120,7 +119,7 @@ public class HelloWorldPersistentEntityExample {
 
     // State
     static final class KnownPeople implements CborSerializable {
-      private Set<String> names = Collections.emptySet();
+      private Set<String> names = Set.of();
 
       KnownPeople() {}
 

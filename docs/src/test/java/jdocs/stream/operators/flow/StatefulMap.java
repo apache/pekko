@@ -25,7 +25,7 @@ public class StatefulMap {
 
   public void indexed() {
     // #zipWithIndex
-    Source.from(Arrays.asList("A", "B", "C", "D"))
+    Source.from(List.of("A", "B", "C", "D"))
         .statefulMap(
             () -> 0L,
             (index, element) -> Pair.create(index + 1, Pair.create(element, index)),
@@ -41,7 +41,7 @@ public class StatefulMap {
 
   public void bufferUntilChanged() {
     // #bufferUntilChanged
-    Source.from(Arrays.asList("A", "B", "B", "C", "C", "C", "D"))
+    Source.from(List.of("A", "B", "B", "C", "C", "C", "D"))
         .statefulMap(
             () -> (List<String>) new LinkedList<String>(),
             (buffer, element) -> {
@@ -65,7 +65,7 @@ public class StatefulMap {
 
   public void distinctUntilChanged() {
     // #distinctUntilChanged
-    Source.from(Arrays.asList("A", "B", "B", "C", "C", "C", "D"))
+    Source.from(List.of("A", "B", "B", "C", "C", "C", "D"))
         .statefulMap(
             Optional::<String>empty,
             (lastElement, element) -> {

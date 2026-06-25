@@ -15,7 +15,6 @@ package org.apache.pekko.japi.pf;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.util.Arrays;
 import java.util.List;
 import org.apache.pekko.actor.AbstractActor.Receive;
 import org.junit.jupiter.api.BeforeEach;
@@ -237,7 +236,7 @@ public class ReceiveBuilderTest {
                   result("match List");
                 })
             .build();
-    List<String> list = Arrays.asList("foo");
+    List<String> list = List.of("foo");
     assertTrue(rcv.onMessage().isDefinedAt(list));
     rcv.onMessage().apply(list);
     assertEquals("match List", result());

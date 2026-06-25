@@ -258,7 +258,7 @@ public class ReplicatedShardingTest {
           List<MyReplicatedStringSet.Texts> responses = responseProbe.receiveSeveralMessages(3);
           Set<String> uniqueTexts =
               responses.stream().flatMap(res -> res.texts.stream()).collect(Collectors.toSet());
-          assertEquals(new HashSet<>(Arrays.asList("to-all", "to-random")), uniqueTexts);
+          assertEquals(Set.of("to-all", "to-random"), uniqueTexts);
           return null;
         });
   }

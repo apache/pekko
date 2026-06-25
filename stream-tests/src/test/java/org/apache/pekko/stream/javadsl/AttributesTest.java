@@ -15,8 +15,7 @@ package org.apache.pekko.stream.javadsl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.Arrays;
-import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import org.apache.pekko.stream.Attributes;
 import org.apache.pekko.stream.StreamTestJupiter;
@@ -41,10 +40,10 @@ public class AttributesTest extends StreamTestJupiter {
   @Test
   public void mustGetAttributesByClass() {
     assertEquals(
-        Arrays.asList(new Attributes.Name("b"), new Attributes.Name("a")),
+        List.of(new Attributes.Name("b"), new Attributes.Name("a")),
         attributes.getAttributeList(Attributes.Name.class));
     assertEquals(
-        Collections.singletonList(new Attributes.InputBuffer(1, 2)),
+        List.of(new Attributes.InputBuffer(1, 2)),
         attributes.getAttributeList(Attributes.InputBuffer.class));
   }
 

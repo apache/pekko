@@ -17,7 +17,6 @@ import static org.apache.pekko.util.ByteString.emptyByteString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutionException;
@@ -52,7 +51,7 @@ public class RecipeByteStrings extends RecipeTest {
 
   final Source<ByteString, NotUsed> rawBytes =
       Source.from(
-          Arrays.asList(
+          List.of(
               ByteString.fromArray(new byte[] {1, 2}),
               ByteString.fromArray(new byte[] {3}),
               ByteString.fromArray(new byte[] {4, 5, 6}),
@@ -231,7 +230,7 @@ public class RecipeByteStrings extends RecipeTest {
 
         final Source<ByteString, NotUsed> bytes1 =
             Source.from(
-                Arrays.asList(
+                List.of(
                     ByteString.fromArray(new byte[] {1, 2}),
                     ByteString.fromArray(new byte[] {3}),
                     ByteString.fromArray(new byte[] {4, 5, 6}),
@@ -239,7 +238,7 @@ public class RecipeByteStrings extends RecipeTest {
 
         final Source<ByteString, NotUsed> bytes2 =
             Source.from(
-                Arrays.asList(
+                List.of(
                     ByteString.fromArray(new byte[] {1, 2}),
                     ByteString.fromArray(new byte[] {3}),
                     ByteString.fromArray(new byte[] {4, 5, 6}),
@@ -281,7 +280,7 @@ public class RecipeByteStrings extends RecipeTest {
       {
         final Source<ByteString, NotUsed> rawBytes =
             Source.from(
-                Arrays.asList(
+                List.of(
                     ByteString.fromArray(new byte[] {1, 2}),
                     ByteString.fromArray(new byte[] {3}),
                     ByteString.fromArray(new byte[] {4, 5, 6}),

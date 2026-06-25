@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.time.Duration;
-import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.pekko.actor.*;
@@ -327,7 +327,7 @@ public class PatternsTest {
         Patterns.after(Duration.ofMillis(200), system.scheduler(), ec, failedCallable);
 
     CompletionStage<String> resultFuture =
-        CompletionStages.firstCompletedOf(Arrays.asList(delayedFuture));
+        CompletionStages.firstCompletedOf(List.of(delayedFuture));
 
     assertThrows(
         IllegalStateException.class,
@@ -352,7 +352,7 @@ public class PatternsTest {
             () -> Futures.failedCompletionStage(new IllegalStateException("Illegal!")));
 
     CompletionStage<String> resultFuture =
-        CompletionStages.firstCompletedOf(Arrays.asList(delayedFuture));
+        CompletionStages.firstCompletedOf(List.of(delayedFuture));
 
     assertThrows(
         IllegalStateException.class,
@@ -378,7 +378,7 @@ public class PatternsTest {
             () -> CompletableFuture.completedFuture(expected));
 
     CompletionStage<String> resultFuture =
-        CompletionStages.firstCompletedOf(Arrays.asList(delayedFuture));
+        CompletionStages.firstCompletedOf(List.of(delayedFuture));
     final String actual = resultFuture.toCompletableFuture().get(3, SECONDS);
 
     assertEquals(expected, actual);
@@ -397,7 +397,7 @@ public class PatternsTest {
             () -> CompletableFuture.completedFuture(expected));
 
     CompletionStage<String> resultFuture =
-        CompletionStages.firstCompletedOf(Arrays.asList(delayedFuture));
+        CompletionStages.firstCompletedOf(List.of(delayedFuture));
 
     final String actual = resultFuture.toCompletableFuture().get(3, SECONDS);
     assertEquals(expected, actual);
@@ -418,7 +418,7 @@ public class PatternsTest {
     CompletionStage<String> immediateFuture = CompletableFuture.completedFuture(expected);
 
     CompletionStage<String> resultFuture =
-        CompletionStages.firstCompletedOf(Arrays.asList(delayedFuture, immediateFuture));
+        CompletionStages.firstCompletedOf(List.of(delayedFuture, immediateFuture));
 
     final String actual = resultFuture.toCompletableFuture().get(3, SECONDS);
     assertEquals(expected, actual);

@@ -81,7 +81,7 @@ public class FlowTest extends StreamTestJupiter {
   public void mustBeAbleToUseSimpleOperators() {
     final TestKit probe = new TestKit(system);
     final String[] lookup = {"a", "b", "c", "d", "e", "f"};
-    final java.lang.Iterable<Integer> input = Arrays.asList(0, 1, 2, 3, 4, 5);
+    final java.lang.Iterable<Integer> input = List.of(0, 1, 2, 3, 4, 5);
     final Source<Integer, NotUsed> ints = Source.from(input);
     final Flow<Integer, String, NotUsed> flow1 =
         Flow.of(Integer.class)
@@ -170,7 +170,7 @@ public class FlowTest extends StreamTestJupiter {
 
   @Test
   public void mustBeAbleToUseGroupedAdjacentBy() {
-    Source.from(Arrays.asList("Hello", "Hi", "Greetings", "Hey"))
+    Source.from(List.of("Hello", "Hi", "Greetings", "Hey"))
         .groupedAdjacentBy(str -> str.charAt(0))
         .runWith(TestSink.create(system), system)
         .request(4)
@@ -182,7 +182,7 @@ public class FlowTest extends StreamTestJupiter {
 
   @Test
   public void mustBeAbleToUseGroupedAdjacentByWeighted() {
-    Source.from(Arrays.asList("Hello", "HiHi", "Hi", "Hi", "Greetings", "Hey"))
+    Source.from(List.of("Hello", "HiHi", "Hi", "Hi", "Greetings", "Hey"))
         .groupedAdjacentByWeighted(str -> str.charAt(0), 4, str -> (long) str.length())
         .runWith(TestSink.create(system), system)
         .request(6)
@@ -196,7 +196,7 @@ public class FlowTest extends StreamTestJupiter {
 
   @Test
   public void mustBeAbleToUseContraMap() {
-    final Source<String, NotUsed> source = Source.from(Arrays.asList("1", "2", "3"));
+    final Source<String, NotUsed> source = Source.from(List.of("1", "2", "3"));
     final Flow<Integer, String, NotUsed> flow = Flow.fromFunction(String::valueOf);
     source
         .via(flow.contramap(Integer::valueOf))
@@ -210,7 +210,7 @@ public class FlowTest extends StreamTestJupiter {
 
   @Test
   public void mustBeAbleToUseDiMap() {
-    final Source<String, NotUsed> source = Source.from(Arrays.asList("1", "2", "3"));
+    final Source<String, NotUsed> source = Source.from(List.of("1", "2", "3"));
     final Flow<Integer, Integer, NotUsed> flow = Flow.<Integer>create().map(elem -> elem * 2);
     source
         .via(flow.dimap(Integer::valueOf, String::valueOf))
@@ -225,7 +225,7 @@ public class FlowTest extends StreamTestJupiter {
   @Test
   public void mustBeAbleToUseDropWhile() throws Exception {
     final TestKit probe = new TestKit(system);
-    final Source<Integer, NotUsed> source = Source.from(Arrays.asList(0, 1, 2, 3));
+    final Source<Integer, NotUsed> source = Source.from(List.of(0, 1, 2, 3));
     final Flow<Integer, Integer, NotUsed> flow = Flow.of(Integer.class).dropWhile(elem -> elem < 2);
 
     final CompletionStage<Done> future =
@@ -241,7 +241,7 @@ public class FlowTest extends StreamTestJupiter {
   @Test
   public void mustBeAbleToUseStatefulMaponcat() throws Exception {
     final TestKit probe = new TestKit(system);
-    final java.lang.Iterable<Integer> input = Arrays.asList(1, 2, 3, 4, 5);
+    final java.lang.Iterable<Integer> input = List.of(1, 2, 3, 4, 5);
     final Source<Integer, NotUsed> ints = Source.from(input);
     final Flow<Integer, Integer, NotUsed> flow =
         Flow.of(Integer.class)
@@ -264,7 +264,7 @@ public class FlowTest extends StreamTestJupiter {
 
   @Test
   public void mustBeAbleToUseStatefulMap() throws Exception {
-    final java.lang.Iterable<Integer> input = Arrays.asList(1, 2, 3, 4, 5);
+    final java.lang.Iterable<Integer> input = List.of(1, 2, 3, 4, 5);
     final Source<Integer, NotUsed> source = Source.from(input);
     final Flow<Integer, String, NotUsed> flow =
         Flow.of(Integer.class)
@@ -278,7 +278,7 @@ public class FlowTest extends StreamTestJupiter {
                     return Pair.create(buffer, group);
                   } else {
                     buffer.add(elem);
-                    return Pair.create(buffer, Collections.emptyList());
+                    return Pair.create(buffer, List.of());
                   }
                 },
                 Optional::ofNullable)
@@ -294,7 +294,7 @@ public class FlowTest extends StreamTestJupiter {
   @Test
   public void mustBeAbleToUseMapWithResource() {
     final AtomicBoolean gate = new AtomicBoolean(true);
-    Source.from(Arrays.asList("1", "2", "3"))
+    Source.from(List.of("1", "2", "3"))
         .via(
             Flow.of(String.class)
                 .mapWithResource(
@@ -315,7 +315,7 @@ public class FlowTest extends StreamTestJupiter {
   public void mustBeAbleToUseMapWithAutoCloseableResource() throws Exception {
     final TestKit probe = new TestKit(system);
     final AtomicInteger closed = new AtomicInteger();
-    Source.from(Arrays.asList("1", "2", "3"))
+    Source.from(List.of("1", "2", "3"))
         .via(
             Flow.of(String.class)
                 .mapWithResource(
@@ -343,7 +343,7 @@ public class FlowTest extends StreamTestJupiter {
   @Test
   public void mustBeAbleToUseIntersperse() throws Exception {
     final TestKit probe = new TestKit(system);
-    final Source<String, NotUsed> source = Source.from(Arrays.asList("0", "1", "2", "3"));
+    final Source<String, NotUsed> source = Source.from(List.of("0", "1", "2", "3"));
     final Flow<String, String, NotUsed> flow = Flow.of(String.class).intersperse("[", ",", "]");
 
     final CompletionStage<Done> future =
@@ -366,7 +366,7 @@ public class FlowTest extends StreamTestJupiter {
   @Test
   public void mustBeAbleToUseIntersperseAndConcat() throws Exception {
     final TestKit probe = new TestKit(system);
-    final Source<String, NotUsed> source = Source.from(Arrays.asList("0", "1", "2", "3"));
+    final Source<String, NotUsed> source = Source.from(List.of("0", "1", "2", "3"));
     final Flow<String, String, NotUsed> flow = Flow.of(String.class).intersperse(",");
 
     final CompletionStage<Done> future =
@@ -388,7 +388,7 @@ public class FlowTest extends StreamTestJupiter {
   @Test
   public void mustBeAbleToUseTakeWhile() throws Exception {
     final TestKit probe = new TestKit(system);
-    final Source<Integer, NotUsed> source = Source.from(Arrays.asList(0, 1, 2, 3));
+    final Source<Integer, NotUsed> source = Source.from(List.of(0, 1, 2, 3));
     final Flow<Integer, Integer, NotUsed> flow =
         Flow.of(Integer.class)
             .takeWhile(
@@ -412,7 +412,7 @@ public class FlowTest extends StreamTestJupiter {
   @Test
   public void mustBeAbleToUseVia() {
     final TestKit probe = new TestKit(system);
-    final Iterable<Integer> input = Arrays.asList(0, 1, 2, 3, 4, 5, 6, 7);
+    final Iterable<Integer> input = List.of(0, 1, 2, 3, 4, 5, 6, 7);
     // duplicate each element, stop after 4 elements, and emit sum to the end
     final Flow<Integer, Integer, NotUsed> flow =
         Flow.of(Integer.class)
@@ -441,10 +441,10 @@ public class FlowTest extends StreamTestJupiter {
                                 if (count == 4) {
                                   emitMultiple(
                                       out,
-                                      Arrays.asList(element, element, sum).iterator(),
+                                      List.of(element, element, sum).iterator(),
                                       () -> completeStage());
                                 } else {
-                                  emitMultiple(out, Arrays.asList(element, element).iterator());
+                                  emitMultiple(out, List.of(element, element).iterator());
                                 }
                               }
                             });
@@ -483,7 +483,7 @@ public class FlowTest extends StreamTestJupiter {
 
   @Test
   public void mustBeAbleToUseGroupBy() throws Exception {
-    final Iterable<String> input = Arrays.asList("Aaa", "Abb", "Bcc", "Cdd", "Cee");
+    final Iterable<String> input = List.of("Aaa", "Abb", "Bcc", "Cdd", "Cee");
     final Flow<String, List<String>, NotUsed> flow =
         Flow.of(String.class)
             .groupBy(
@@ -504,14 +504,14 @@ public class FlowTest extends StreamTestJupiter {
             .toList();
 
     assertEquals(
-        Arrays.asList(
-            Arrays.asList("Aaa", "Abb"), Arrays.asList("Bcc"), Arrays.asList("Cdd", "Cee")),
+        List.of(
+            List.of("Aaa", "Abb"), List.of("Bcc"), List.of("Cdd", "Cee")),
         result);
   }
 
   @Test
   public void mustBeAbleToUseSplitWhen() throws Exception {
-    final Iterable<String> input = Arrays.asList("A", "B", "C", ".", "D", ".", "E", "F");
+    final Iterable<String> input = List.of("A", "B", "C", ".", "D", ".", "E", "F");
     final Flow<String, List<String>, NotUsed> flow =
         Flow.of(String.class)
             .splitWhen(
@@ -528,14 +528,14 @@ public class FlowTest extends StreamTestJupiter {
     final List<List<String>> result = future.toCompletableFuture().get(1, TimeUnit.SECONDS);
 
     assertEquals(
-        Arrays.asList(
-            Arrays.asList("A", "B", "C"), Arrays.asList(".", "D"), Arrays.asList(".", "E", "F")),
+        List.of(
+            List.of("A", "B", "C"), List.of(".", "D"), List.of(".", "E", "F")),
         result);
   }
 
   @Test
   public void mustBeAbleToUseSplitAfter() throws Exception {
-    final Iterable<String> input = Arrays.asList("A", "B", "C", ".", "D", ".", "E", "F");
+    final Iterable<String> input = List.of("A", "B", "C", ".", "D", ".", "E", "F");
     final Flow<String, List<String>, NotUsed> flow =
         Flow.of(String.class)
             .splitAfter(
@@ -552,8 +552,8 @@ public class FlowTest extends StreamTestJupiter {
     final List<List<String>> result = future.toCompletableFuture().get(1, TimeUnit.SECONDS);
 
     assertEquals(
-        Arrays.asList(
-            Arrays.asList("A", "B", "C", "."), Arrays.asList("D", "."), Arrays.asList("E", "F")),
+        List.of(
+            List.of("A", "B", "C", "."), List.of("D", "."), List.of("E", "F")),
         result);
   }
 
@@ -603,8 +603,8 @@ public class FlowTest extends StreamTestJupiter {
     final Flow<String, String, NotUsed> f3 =
         Flow.of(String.class).via(FlowTest.this.op()).named("f3");
 
-    final Source<String, NotUsed> in1 = Source.from(Arrays.asList("a", "b", "c"));
-    final Source<String, NotUsed> in2 = Source.from(Arrays.asList("d", "e", "f"));
+    final Source<String, NotUsed> in1 = Source.from(List.of("a", "b", "c"));
+    final Source<String, NotUsed> in2 = Source.from(List.of("d", "e", "f"));
 
     final Sink<String, Publisher<String>> publisher = Sink.asPublisher(AsPublisher.WITHOUT_FANOUT);
 
@@ -628,7 +628,7 @@ public class FlowTest extends StreamTestJupiter {
 
     final List<String> result = all.toCompletableFuture().get(3, TimeUnit.SECONDS);
     assertEquals(
-        new HashSet<Object>(Arrays.asList("a", "b", "c", "d", "e", "f")), new HashSet<>(result));
+        new HashSet<Object>(List.of("a", "b", "c", "d", "e", "f")), new HashSet<>(result));
   }
 
   @Test
@@ -643,8 +643,8 @@ public class FlowTest extends StreamTestJupiter {
     final Flow<String, String, NotUsed> f3 =
         Flow.of(String.class).via(FlowTest.this.op()).named("f3");
 
-    final Source<String, NotUsed> in1 = Source.from(Arrays.asList("a", "b", "c"));
-    final Source<String, NotUsed> in2 = Source.from(Arrays.asList("d", "e", "f"));
+    final Source<String, NotUsed> in1 = Source.from(List.of("a", "b", "c"));
+    final Source<String, NotUsed> in2 = Source.from(List.of("d", "e", "f"));
 
     final Sink<String, Publisher<String>> publisher = Sink.asPublisher(AsPublisher.WITHOUT_FANOUT);
 
@@ -681,14 +681,14 @@ public class FlowTest extends StreamTestJupiter {
 
     final List<String> result = all.toCompletableFuture().get(3, TimeUnit.SECONDS);
     assertEquals(
-        new HashSet<Object>(Arrays.asList("a", "b", "c", "d", "e", "f")), new HashSet<>(result));
+        new HashSet<Object>(List.of("a", "b", "c", "d", "e", "f")), new HashSet<>(result));
   }
 
   @Test
   public void mustBeAbleToUseZip() {
     final TestKit probe = new TestKit(system);
-    final Iterable<String> input1 = Arrays.asList("A", "B", "C");
-    final Iterable<Integer> input2 = Arrays.asList(1, 2, 3);
+    final Iterable<String> input1 = List.of("A", "B", "C");
+    final Iterable<Integer> input2 = List.of(1, 2, 3);
 
     RunnableGraph.fromGraph(
             GraphDSL.create(
@@ -718,15 +718,15 @@ public class FlowTest extends StreamTestJupiter {
 
     List<Object> output = probe.receiveN(3);
     List<Pair<String, Integer>> expected =
-        Arrays.asList(new Pair<>("A", 1), new Pair<>("B", 2), new Pair<>("C", 3));
+        List.of(new Pair<>("A", 1), new Pair<>("B", 2), new Pair<>("C", 3));
     assertEquals(expected, output);
   }
 
   @Test
   public void mustBeAbleToUseZipAll() {
     final TestKit probe = new TestKit(system);
-    final Iterable<String> input1 = Arrays.asList("A", "B", "C");
-    final Iterable<Integer> input2 = Arrays.asList(1, 2, 3, 4);
+    final Iterable<String> input1 = List.of("A", "B", "C");
+    final Iterable<Integer> input2 = List.of(1, 2, 3, 4);
 
     Source<String, NotUsed> src1 = Source.from(input1);
     Source<Integer, NotUsed> src2 = Source.from(input2);
@@ -744,7 +744,7 @@ public class FlowTest extends StreamTestJupiter {
 
     List<Object> output = probe.receiveN(4);
     List<Pair<String, Integer>> expected =
-        Arrays.asList(
+        List.of(
             new Pair<>("A", 1), new Pair<>("B", 2), new Pair<>("C", 3), new Pair<>("MISSING", 4));
     assertEquals(expected, output);
   }
@@ -752,8 +752,8 @@ public class FlowTest extends StreamTestJupiter {
   @Test
   public void mustBeAbleToUseConcat() {
     final TestKit probe = new TestKit(system);
-    final Iterable<String> input1 = Arrays.asList("A", "B", "C");
-    final Iterable<String> input2 = Arrays.asList("D", "E", "F");
+    final Iterable<String> input1 = List.of("A", "B", "C");
+    final Iterable<String> input2 = List.of("D", "E", "F");
 
     final Source<String, NotUsed> in1 = Source.from(input1);
     final Source<String, NotUsed> in2 = Source.from(input2);
@@ -768,14 +768,14 @@ public class FlowTest extends StreamTestJupiter {
             system);
 
     List<Object> output = probe.receiveN(6);
-    assertEquals(Arrays.asList("A", "B", "C", "D", "E", "F"), output);
+    assertEquals(List.of("A", "B", "C", "D", "E", "F"), output);
   }
 
   @Test
   public void mustBeAbleToUsePrepend() {
     final TestKit probe = new TestKit(system);
-    final Iterable<String> input1 = Arrays.asList("A", "B", "C");
-    final Iterable<String> input2 = Arrays.asList("D", "E", "F");
+    final Iterable<String> input1 = List.of("A", "B", "C");
+    final Iterable<String> input2 = List.of("D", "E", "F");
 
     final Source<String, NotUsed> in1 = Source.from(input1);
     final Source<String, NotUsed> in2 = Source.from(input2);
@@ -790,32 +790,32 @@ public class FlowTest extends StreamTestJupiter {
             system);
 
     List<Object> output = probe.receiveN(6);
-    assertEquals(Arrays.asList("A", "B", "C", "D", "E", "F"), output);
+    assertEquals(List.of("A", "B", "C", "D", "E", "F"), output);
   }
 
   @Test
   public void mustBeAbleToUsePrefixAndTail() throws Exception {
     final TestKit probe = new TestKit(system);
-    final Iterable<Integer> input = Arrays.asList(1, 2, 3, 4, 5, 6);
+    final Iterable<Integer> input = List.of(1, 2, 3, 4, 5, 6);
     final Flow<Integer, Pair<List<Integer>, Source<Integer, NotUsed>>, NotUsed> flow =
         Flow.of(Integer.class).prefixAndTail(3);
     CompletionStage<Pair<List<Integer>, Source<Integer, NotUsed>>> future =
         Source.from(input).via(flow).runWith(Sink.head(), system);
     Pair<List<Integer>, Source<Integer, NotUsed>> result =
         future.toCompletableFuture().get(3, TimeUnit.SECONDS);
-    assertEquals(Arrays.asList(1, 2, 3), result.first());
+    assertEquals(List.of(1, 2, 3), result.first());
 
     CompletionStage<List<Integer>> tailFuture =
         result.second().limit(4).runWith(Sink.seq(), system);
     List<Integer> tailResult = tailFuture.toCompletableFuture().get(3, TimeUnit.SECONDS);
-    assertEquals(Arrays.asList(4, 5, 6), tailResult);
+    assertEquals(List.of(4, 5, 6), tailResult);
   }
 
   @Test
   public void mustBeAbleToUseConcatAllWithSources() throws Exception {
     final TestKit probe = new TestKit(system);
-    final Iterable<Integer> input1 = Arrays.asList(1, 2, 3);
-    final Iterable<Integer> input2 = Arrays.asList(4, 5);
+    final Iterable<Integer> input1 = List.of(1, 2, 3);
+    final Iterable<Integer> input2 = List.of(4, 5);
 
     final List<Source<Integer, NotUsed>> mainInputs = new ArrayList<>();
     mainInputs.add(Source.from(input1));
@@ -828,16 +828,16 @@ public class FlowTest extends StreamTestJupiter {
 
     List<Integer> result = future.toCompletableFuture().get(3, TimeUnit.SECONDS);
 
-    assertEquals(Arrays.asList(1, 2, 3, 4, 5), result);
+    assertEquals(List.of(1, 2, 3, 4, 5), result);
   }
 
   @Test
   public void mustBeAbleToUseFlatMapMerge() throws Exception {
     final TestKit probe = new TestKit(system);
-    final Iterable<Integer> input1 = Arrays.asList(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
-    final Iterable<Integer> input2 = Arrays.asList(10, 11, 12, 13, 14, 15, 16, 17, 18, 19);
-    final Iterable<Integer> input3 = Arrays.asList(20, 21, 22, 23, 24, 25, 26, 27, 28, 29);
-    final Iterable<Integer> input4 = Arrays.asList(30, 31, 32, 33, 34, 35, 36, 37, 38, 39);
+    final Iterable<Integer> input1 = List.of(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
+    final Iterable<Integer> input2 = List.of(10, 11, 12, 13, 14, 15, 16, 17, 18, 19);
+    final Iterable<Integer> input3 = List.of(20, 21, 22, 23, 24, 25, 26, 27, 28, 29);
+    final Iterable<Integer> input4 = List.of(30, 31, 32, 33, 34, 35, 36, 37, 38, 39);
 
     final List<Source<Integer, NotUsed>> mainInputs = new ArrayList<>();
     mainInputs.add(Source.from(input1));
@@ -863,8 +863,8 @@ public class FlowTest extends StreamTestJupiter {
   @Test
   public void mustBeAbleToUseSwitchMap() throws Exception {
     final TestKit probe = new TestKit(system);
-    final Iterable<Integer> mainInputs = Arrays.asList(-1, 0, 1);
-    final Iterable<Integer> substreamInputs = Arrays.asList(10, 11, 12, 13, 14, 15, 16, 17, 18, 19);
+    final Iterable<Integer> mainInputs = List.of(-1, 0, 1);
+    final Iterable<Integer> substreamInputs = List.of(10, 11, 12, 13, 14, 15, 16, 17, 18, 19);
 
     final Flow<Integer, Integer, NotUsed> flow =
         Flow.<Integer>create()
@@ -889,7 +889,7 @@ public class FlowTest extends StreamTestJupiter {
   @Test
   public void mustBeAbleToUseBuffer() throws Exception {
     final TestKit probe = new TestKit(system);
-    final List<String> input = Arrays.asList("A", "B", "C");
+    final List<String> input = List.of("A", "B", "C");
     final Flow<String, List<String>, NotUsed> flow =
         Flow.of(String.class).buffer(2, OverflowStrategy.backpressure()).grouped(4);
     final CompletionStage<List<String>> future =
@@ -901,7 +901,7 @@ public class FlowTest extends StreamTestJupiter {
 
   @Test
   public void mustBeAbleToUseWatchTermination() throws Exception {
-    final List<String> input = Arrays.asList("A", "B", "C");
+    final List<String> input = List.of("A", "B", "C");
     CompletionStage<Done> future =
         Source.from(input).watchTermination(Keep.right()).to(Sink.ignore()).run(system);
 
@@ -911,7 +911,7 @@ public class FlowTest extends StreamTestJupiter {
   @Test
   public void mustBeAbleToUseConflate() throws Exception {
     final TestKit probe = new TestKit(system);
-    final List<String> input = Arrays.asList("A", "B", "C");
+    final List<String> input = List.of("A", "B", "C");
     final Flow<String, String, NotUsed> flow =
         Flow.of(String.class)
             .conflateWithSeed(
@@ -943,7 +943,7 @@ public class FlowTest extends StreamTestJupiter {
   @Test
   public void mustBeAbleToUseBatch() throws Exception {
     final TestKit probe = new TestKit(system);
-    final List<String> input = Arrays.asList("A", "B", "C");
+    final List<String> input = List.of("A", "B", "C");
     final Flow<String, String, NotUsed> flow =
         Flow.of(String.class)
             .batch(
@@ -969,7 +969,7 @@ public class FlowTest extends StreamTestJupiter {
   @Test
   public void mustBeAbleToUseBatchWeighted() throws Exception {
     final TestKit probe = new TestKit(system);
-    final List<String> input = Arrays.asList("A", "B", "C");
+    final List<String> input = List.of("A", "B", "C");
     final Flow<String, String, NotUsed> flow =
         Flow.of(String.class)
             .batchWeighted(
@@ -1001,7 +1001,7 @@ public class FlowTest extends StreamTestJupiter {
   @Test
   public void mustBeAbleToUseExpand() throws Exception {
     final TestKit probe = new TestKit(system);
-    final List<String> input = Arrays.asList("A", "B", "C");
+    final List<String> input = List.of("A", "B", "C");
     final Flow<String, String, NotUsed> flow =
         Flow.of(String.class).expand(in -> Stream.iterate(in, i -> i).iterator());
     final Sink<String, CompletionStage<String>> sink = Sink.head();
@@ -1013,7 +1013,7 @@ public class FlowTest extends StreamTestJupiter {
   @Test
   public void mustBeAbleToUseMapAsync() throws Exception {
     final TestKit probe = new TestKit(system);
-    final Iterable<String> input = Arrays.asList("a", "b", "c");
+    final Iterable<String> input = List.of("a", "b", "c");
     final Flow<String, String, NotUsed> flow =
         Flow.of(String.class)
             .mapAsync(4, elem -> CompletableFuture.completedFuture(elem.toUpperCase()));
@@ -1033,7 +1033,7 @@ public class FlowTest extends StreamTestJupiter {
 
   @Test
   public void mustBeAbleToUseMapAsyncForFutureWithNullResult() throws Exception {
-    final Iterable<Integer> input = Arrays.asList(1, 2, 3);
+    final Iterable<Integer> input = List.of(1, 2, 3);
     Flow<Integer, Void, NotUsed> flow =
         Flow.of(Integer.class).mapAsync(1, x -> CompletableFuture.completedFuture(null));
     List<Void> result =
@@ -1049,7 +1049,7 @@ public class FlowTest extends StreamTestJupiter {
   @Test
   public void mustBeAbleToUseMapAsyncPartitioned() throws Exception {
     final TestKit probe = new TestKit(system);
-    final Iterable<String> input = Arrays.asList("2c", "1a", "1b");
+    final Iterable<String> input = List.of("2c", "1a", "1b");
     final Flow<String, String, NotUsed> flow =
         Flow.of(String.class)
             .mapAsyncPartitioned(
@@ -1073,7 +1073,7 @@ public class FlowTest extends StreamTestJupiter {
   @Test
   public void mustBeAbleToUseMapAsyncPartitionedUnordered() throws Exception {
     final TestKit probe = new TestKit(system);
-    final Iterable<String> input = Arrays.asList("1a", "1b", "2c");
+    final Iterable<String> input = List.of("1a", "1b", "2c");
     final Flow<String, String, NotUsed> flow =
         Flow.of(String.class)
             .mapAsyncPartitionedUnordered(
@@ -1096,7 +1096,7 @@ public class FlowTest extends StreamTestJupiter {
 
   @Test
   public void mustBeAbleToUseCollect() {
-    Source.from(Arrays.asList(1, 2, 3, 4, 5))
+    Source.from(List.of(1, 2, 3, 4, 5))
         .collect(
             PFBuilder.<Integer, Integer>create()
                 .match(Integer.class, elem -> elem % 2 != 0, elem -> elem)
@@ -1110,7 +1110,7 @@ public class FlowTest extends StreamTestJupiter {
 
   @Test
   public void mustBeAbleToUseCollectWhile() {
-    Source.from(Arrays.asList(1, 3, 5, 6, 7, 8, 9))
+    Source.from(List.of(1, 3, 5, 6, 7, 8, 9))
         .collectWhile(
             PFBuilder.<Integer, Integer>create()
                 .match(Integer.class, elem -> elem % 2 != 0, elem -> elem)
@@ -1118,14 +1118,14 @@ public class FlowTest extends StreamTestJupiter {
         .runWith(TestSink.create(system), system)
         .ensureSubscription()
         .request(5)
-        .expectNextN(Arrays.asList(1, 3, 5))
+        .expectNextN(List.of(1, 3, 5))
         .expectComplete();
   }
 
   @Test
   public void mustBeAbleToUseCollectFirst() {
     Source.from(
-            Arrays.asList(
+            List.of(
                 Optional.of(1), Optional.<Integer>empty(), Optional.of(2), Optional.of(3)))
         .collectFirst(
             PFBuilder.<Optional<Integer>, Integer>create()
@@ -1145,7 +1145,7 @@ public class FlowTest extends StreamTestJupiter {
   public void mustBeAbleToUseCollectType() throws Exception {
     final TestKit probe = new TestKit(system);
     final Iterable<FlowSpec.Fruit> input =
-        Arrays.asList(new FlowSpec.Apple(), new FlowSpec.Orange());
+        List.of(new FlowSpec.Apple(), new FlowSpec.Orange());
 
     Source.from(input)
         .via(Flow.of(FlowSpec.Fruit.class).collectType(FlowSpec.Apple.class))
@@ -1230,7 +1230,7 @@ public class FlowTest extends StreamTestJupiter {
     final TestPublisher.ManualProbe<Integer> publisherProbe =
         TestPublisher.manualProbe(true, system);
     final TestKit probe = new TestKit(system);
-    final Iterable<Integer> recover = Arrays.asList(55, 0);
+    final Iterable<Integer> recover = List.of(55, 0);
 
     final Source<Integer, NotUsed> source = Source.fromPublisher(publisherProbe);
     final Flow<Integer, Integer, NotUsed> flow =
@@ -1270,7 +1270,7 @@ public class FlowTest extends StreamTestJupiter {
     final TestPublisher.ManualProbe<Integer> publisherProbe =
         TestPublisher.manualProbe(true, system);
     final TestKit probe = new TestKit(system);
-    final Iterable<Integer> recover = Arrays.asList(55, 0);
+    final Iterable<Integer> recover = List.of(55, 0);
     final int maxRetries = 10;
 
     final Source<Integer, NotUsed> source = Source.fromPublisher(publisherProbe);
@@ -1305,7 +1305,7 @@ public class FlowTest extends StreamTestJupiter {
     final TestPublisher.ManualProbe<Integer> publisherProbe =
         TestPublisher.manualProbe(true, system);
     final TestKit probe = new TestKit(system);
-    final Iterable<Integer> recover = Arrays.asList(55, 0);
+    final Iterable<Integer> recover = List.of(55, 0);
 
     final Source<Integer, NotUsed> source = Source.fromPublisher(publisherProbe);
     final Flow<Integer, Integer, NotUsed> flow =
@@ -1343,7 +1343,7 @@ public class FlowTest extends StreamTestJupiter {
     final TestPublisher.ManualProbe<Integer> publisherProbe =
         TestPublisher.manualProbe(true, system);
     final TestKit probe = new TestKit(system);
-    final Iterable<Integer> recover = Arrays.asList(55, 0);
+    final Iterable<Integer> recover = List.of(55, 0);
 
     final Source<Integer, NotUsed> source = Source.fromPublisher(publisherProbe);
     final Flow<Integer, Integer, NotUsed> flow =
@@ -1374,7 +1374,7 @@ public class FlowTest extends StreamTestJupiter {
 
   @Test
   public void mustBeAbleToOnErrorComplete() {
-    Source.from(Arrays.asList(1, 2))
+    Source.from(List.of(1, 2))
         .map(
             elem -> {
               if (elem == 2) {
@@ -1392,7 +1392,7 @@ public class FlowTest extends StreamTestJupiter {
 
   @Test
   public void mustBeAbleToOnErrorContinue() {
-    Source.from(Arrays.asList(1, 2))
+    Source.from(List.of(1, 2))
         .via(
             Flow.of(Integer.class)
                 .map(
@@ -1412,7 +1412,7 @@ public class FlowTest extends StreamTestJupiter {
 
   @Test
   public void mustBeAbleToOnErrorResume() {
-    Source.from(Arrays.asList(1, 2))
+    Source.from(List.of(1, 2))
         .map(
             elem -> {
               if (elem == 2) {
@@ -1431,7 +1431,7 @@ public class FlowTest extends StreamTestJupiter {
 
   @Test
   public void mustBeAbleToOnErrorCompleteWithDedicatedException() {
-    Source.from(Arrays.asList(1, 2))
+    Source.from(List.of(1, 2))
         .map(
             elem -> {
               if (elem == 2) {
@@ -1449,7 +1449,7 @@ public class FlowTest extends StreamTestJupiter {
 
   @Test
   public void mustBeAbleToOnErrorContinueWithDedicatedException() {
-    Source.from(Arrays.asList(1, 2))
+    Source.from(List.of(1, 2))
         .via(
             Flow.of(Integer.class)
                 .map(
@@ -1471,7 +1471,7 @@ public class FlowTest extends StreamTestJupiter {
 
   @Test
   public void mustBeAbleToOnErrorResumeWithDedicatedException() {
-    Source.from(Arrays.asList(1, 2))
+    Source.from(List.of(1, 2))
         .map(
             elem -> {
               if (elem == 2) {
@@ -1493,7 +1493,7 @@ public class FlowTest extends StreamTestJupiter {
   @Test
   public void mustBeAbleToFailWhenExceptionTypeNotMatch() {
     final IllegalArgumentException ex = new IllegalArgumentException("ex");
-    Source.from(Arrays.asList(1, 2))
+    Source.from(List.of(1, 2))
         .map(
             elem -> {
               if (elem == 2) {
@@ -1512,7 +1512,7 @@ public class FlowTest extends StreamTestJupiter {
   @Test
   public void mustBeAbleToFailWhenOnErrorContinueExceptionTypeNotMatch() {
     final IllegalArgumentException ex = new IllegalArgumentException("ex");
-    Source.from(Arrays.asList(1, 2))
+    Source.from(List.of(1, 2))
         .map(
             elem -> {
               if (elem == 2) {
@@ -1534,7 +1534,7 @@ public class FlowTest extends StreamTestJupiter {
   @Test
   public void onErrorResumeMustBeAbleToFailWhenExceptionTypeNotMatch() {
     final IllegalArgumentException ex = new IllegalArgumentException("ex");
-    Source.from(Arrays.asList(1, 2))
+    Source.from(List.of(1, 2))
         .map(
             elem -> {
               if (elem == 2) {
@@ -1552,7 +1552,7 @@ public class FlowTest extends StreamTestJupiter {
 
   @Test
   public void mustBeAbleToOnErrorCompleteWithPredicate() {
-    Source.from(Arrays.asList(1, 2))
+    Source.from(List.of(1, 2))
         .map(
             elem -> {
               if (elem == 2) {
@@ -1570,7 +1570,7 @@ public class FlowTest extends StreamTestJupiter {
 
   @Test
   public void mustBeAbleToOnErrorContinueWithPredicate() {
-    Source.from(Arrays.asList(1, 2))
+    Source.from(List.of(1, 2))
         .via(
             Flow.of(Integer.class)
                 .map(
@@ -1592,7 +1592,7 @@ public class FlowTest extends StreamTestJupiter {
 
   @Test
   public void mustBeAbleToOnErrorResumeWithPredicate() {
-    Source.from(Arrays.asList(1, 2))
+    Source.from(List.of(1, 2))
         .map(
             elem -> {
               if (elem == 2) {
@@ -1615,7 +1615,7 @@ public class FlowTest extends StreamTestJupiter {
   public void mustBeAbleToMapErrorClass() {
     final String head = "foo";
     final Source<Optional<String>, NotUsed> source =
-        Source.from(Arrays.asList(Optional.of(head), Optional.empty()));
+        Source.from(List.of(Optional.of(head), Optional.empty()));
     final IllegalArgumentException boom = new IllegalArgumentException("boom");
     final Flow<Optional<String>, String, NotUsed> flow =
         Flow.<Optional<String>, String>fromFunction(Optional::get)
@@ -1645,7 +1645,7 @@ public class FlowTest extends StreamTestJupiter {
   public void mustBeAbleToMapErrorSuperClass() {
     final String head = "foo";
     final Source<Optional<String>, NotUsed> source =
-        Source.from(Arrays.asList(Optional.of(head), Optional.empty()));
+        Source.from(List.of(Optional.of(head), Optional.empty()));
     final IllegalArgumentException boom = new IllegalArgumentException("boom");
     final Flow<Optional<String>, String, NotUsed> flow =
         Flow.<Optional<String>, String>fromFunction(Optional::get)
@@ -1662,7 +1662,7 @@ public class FlowTest extends StreamTestJupiter {
   @Test
   public void mustBeAbleToMaterializeIdentityWithJavaFlow() throws Exception {
     final TestKit probe = new TestKit(system);
-    final List<String> input = Arrays.asList("A", "B", "C");
+    final List<String> input = List.of("A", "B", "C");
 
     Flow<String, String, NotUsed> otherFlow = Flow.of(String.class);
 
@@ -1684,7 +1684,7 @@ public class FlowTest extends StreamTestJupiter {
   @Test
   public void mustBeAbleToMaterializeIdentityToJavaSink() throws Exception {
     final TestKit probe = new TestKit(system);
-    final List<String> input = Arrays.asList("A", "B", "C");
+    final List<String> input = List.of("A", "B", "C");
     Flow<String, String, NotUsed> otherFlow = Flow.of(String.class);
 
     Sink<String, NotUsed> sink =
@@ -1733,8 +1733,8 @@ public class FlowTest extends StreamTestJupiter {
   @Test
   public void mustBeAbleToUseZipWith() throws Exception {
     final TestKit probe = new TestKit(system);
-    final Iterable<String> input1 = Arrays.asList("A", "B", "C");
-    final Iterable<String> input2 = Arrays.asList("D", "E", "F");
+    final Iterable<String> input1 = List.of("A", "B", "C");
+    final Iterable<String> input2 = List.of("D", "E", "F");
 
     Source.from(input1)
         .via(
@@ -1762,8 +1762,8 @@ public class FlowTest extends StreamTestJupiter {
   @Test
   public void mustBeAbleToUseZip2() throws Exception {
     final TestKit probe = new TestKit(system);
-    final Iterable<String> input1 = Arrays.asList("A", "B", "C");
-    final Iterable<String> input2 = Arrays.asList("D", "E", "F");
+    final Iterable<String> input1 = List.of("A", "B", "C");
+    final Iterable<String> input2 = List.of("D", "E", "F");
 
     Source.from(input1)
         .via(Flow.of(String.class).zip(Source.from(input2)))
@@ -1783,8 +1783,8 @@ public class FlowTest extends StreamTestJupiter {
   @Test
   public void mustBeAbleToUseMerge2() {
     final TestKit probe = new TestKit(system);
-    final Iterable<String> input1 = Arrays.asList("A", "B", "C");
-    final Iterable<String> input2 = Arrays.asList("D", "E", "F");
+    final Iterable<String> input1 = List.of("A", "B", "C");
+    final Iterable<String> input2 = List.of("D", "E", "F");
 
     Source.from(input1)
         .via(Flow.of(String.class).merge(Source.from(input2)))
@@ -1870,7 +1870,7 @@ public class FlowTest extends StreamTestJupiter {
             .toCompletableFuture()
             .get(3, TimeUnit.SECONDS);
 
-    assertEquals(Arrays.asList(1, 2, 3), out);
+    assertEquals(List.of(1, 2, 3), out);
   }
 
   @Test
@@ -1909,11 +1909,11 @@ public class FlowTest extends StreamTestJupiter {
     final Flow<Integer, Integer, NotUsed> flow = Flow.create();
 
     final Source<List<Integer>, CompletionStage<NotUsed>> source =
-        flow.map(i -> i * 2).materializeIntoSource(Source.from(Arrays.asList(1, 2, 3)), Sink.seq());
+        flow.map(i -> i * 2).materializeIntoSource(Source.from(List.of(1, 2, 3)), Sink.seq());
 
     final CompletionStage<List<Integer>> resultList = source.runWith(Sink.head(), system);
 
-    assertEquals(Arrays.asList(2, 4, 6), resultList.toCompletableFuture().get(1, TimeUnit.SECONDS));
+    assertEquals(List.of(2, 4, 6), resultList.toCompletableFuture().get(1, TimeUnit.SECONDS));
   }
 
   @Test
@@ -1948,7 +1948,7 @@ public class FlowTest extends StreamTestJupiter {
             .runWith(Sink.seq(), system)
             .toCompletableFuture()
             .join();
-    Assertions.assertEquals(Arrays.asList(1, 2), resultList);
+    Assertions.assertEquals(List.of(1, 2), resultList);
   }
 
   @Test
@@ -1968,9 +1968,9 @@ public class FlowTest extends StreamTestJupiter {
 
   @Test
   public void zipWithIndex() {
-    final List<Integer> input = Arrays.asList(1, 2, 3);
+    final List<Integer> input = List.of(1, 2, 3);
     final List<Pair<Integer, Long>> expected =
-        Arrays.asList(new Pair<>(1, 0L), new Pair<>(2, 1L), new Pair<>(3, 2L));
+        List.of(new Pair<>(1, 0L), new Pair<>(2, 1L), new Pair<>(3, 2L));
 
     final List<Pair<Integer, Long>> result =
         Source.from(input)
@@ -1994,7 +1994,7 @@ public class FlowTest extends StreamTestJupiter {
 
     Assertions.assertEquals(
         new HashSet<>(
-            Arrays.asList(
+            List.of(
                 Pair.create(1, 0L),
                 Pair.create(3, 1L),
                 Pair.create(5, 2L),

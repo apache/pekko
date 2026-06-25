@@ -769,7 +769,7 @@ public class InteractionPatternsTest {
     buncher.tell(msgOne);
     buncher.tell(msgTwo);
     probe.expectNoMessage();
-    probe.expectMessage(Duration.ofSeconds(2), new Buncher.Batch(Arrays.asList(msgOne, msgTwo)));
+    probe.expectMessage(Duration.ofSeconds(2), new Buncher.Batch(List.of(msgOne, msgTwo)));
   }
 
   @Test

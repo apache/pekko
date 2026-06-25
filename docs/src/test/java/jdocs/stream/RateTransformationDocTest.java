@@ -67,9 +67,9 @@ public class RateTransformationDocTest extends AbstractJavaTest {
     final Flow<Double, Tuple3<Double, Double, Integer>, NotUsed> statsFlow =
         Flow.of(Double.class)
             .conflateWithSeed(
-                elem -> Collections.singletonList(elem),
+                elem -> List.of(elem),
                 (acc, elem) -> {
-                  return Stream.concat(acc.stream(), Collections.singletonList(elem).stream())
+                  return Stream.concat(acc.stream(), List.of(elem).stream())
                       .toList();
                 })
             .map(
@@ -98,10 +98,10 @@ public class RateTransformationDocTest extends AbstractJavaTest {
     final Flow<Double, Double, NotUsed> sampleFlow =
         Flow.of(Double.class)
             .conflateWithSeed(
-                elem -> Collections.singletonList(elem),
+                elem -> List.of(elem),
                 (acc, elem) -> {
                   if (r.nextDouble() < p) {
-                    return Stream.concat(acc.stream(), Collections.singletonList(elem).stream())
+                    return Stream.concat(acc.stream(), List.of(elem).stream())
                         .toList();
                   }
                   return acc;

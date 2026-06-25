@@ -14,7 +14,6 @@
 package org.apache.pekko.cluster.sharding.typed.javadsl;
 
 import java.time.Duration;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import org.apache.pekko.actor.typed.ActorRef;
@@ -48,7 +47,7 @@ public class ShardedDaemonProcessCompileOnlyTest {
             Optional.of(Stop.INSTANCE));
 
     // #tag-processing
-    List<String> tags = Arrays.asList("tag-1", "tag-2", "tag-3");
+    List<String> tags = List.of("tag-1", "tag-2", "tag-3");
     ShardedDaemonProcess.get(system)
         .init(
             TagProcessor.Command.class,

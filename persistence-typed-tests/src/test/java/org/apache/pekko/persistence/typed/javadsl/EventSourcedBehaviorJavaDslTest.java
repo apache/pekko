@@ -13,7 +13,6 @@
 
 package org.apache.pekko.persistence.typed.javadsl;
 
-import static java.util.Collections.singletonList;
 import static org.apache.pekko.Done.done;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -160,7 +159,7 @@ public class EventSourcedBehaviorJavaDslTest {
     final int value;
     final List<Integer> history;
 
-    static final State EMPTY = new State(0, Collections.emptyList());
+    static final State EMPTY = new State(0, List.of());
 
     public State(int value, List<Integer> history) {
       this.value = value;
@@ -269,7 +268,7 @@ public class EventSourcedBehaviorJavaDslTest {
 
     private Effect<Event, State> emptyEventsListAndThenLog(
         State state, EmptyEventsListAndThenLog command) {
-      return Effect().persist(Collections.emptyList()).thenRun(s -> log());
+      return Effect().persist(List.of()).thenRun(s -> log());
     }
 
     private Effect<Event, State> stopThenLog(State state, StopThenLog command) {
@@ -278,7 +277,7 @@ public class EventSourcedBehaviorJavaDslTest {
 
     private Effect<Event, State> incrementTwiceAndLog(State state, IncrementTwiceAndLog command) {
       return Effect()
-          .persist(Arrays.asList(new Incremented(1), new Incremented(1)))
+          .persist(List.of(new Incremented(1), new Incremented(1)))
           .thenRun(s -> log());
     }
 
@@ -311,7 +310,7 @@ public class EventSourcedBehaviorJavaDslTest {
     TestProbe<State> probe = testKit.createTestProbe();
     c.tell(Increment.INSTANCE);
     c.tell(new GetValue(probe.ref()));
-    probe.expectMessage(new State(1, singletonList(0)));
+    probe.expectMessage(new State(1, List.of(0)));
   }
 
   @Test
@@ -322,14 +321,14 @@ public class EventSourcedBehaviorJavaDslTest {
     c.tell(Increment.INSTANCE);
     c.tell(Increment.INSTANCE);
     c.tell(new GetValue(probe.ref()));
-    probe.expectMessage(new State(3, Arrays.asList(0, 1, 2)));
+    probe.expectMessage(new State(3, List.of(0, 1, 2)));
 
     ActorRef<Command> c2 = testKit.spawn(counter(PersistenceId.ofUniqueId("c2")));
     c2.tell(new GetValue(probe.ref()));
-    probe.expectMessage(new State(3, Arrays.asList(0, 1, 2)));
+    probe.expectMessage(new State(3, List.of(0, 1, 2)));
     c2.tell(Increment.INSTANCE);
     c2.tell(new GetValue(probe.ref()));
-    probe.expectMessage(new State(4, Arrays.asList(0, 1, 2, 3)));
+    probe.expectMessage(new State(4, List.of(0, 1, 2, 3)));
   }
 
   @Test
@@ -358,7 +357,7 @@ public class EventSourcedBehaviorJavaDslTest {
     c.tell(IncrementLater.INSTANCE);
     eventHandlerProbe.expectMessage(Pair.create(State.EMPTY, new Incremented(1)));
     eventHandlerProbe.expectMessage(
-        Pair.create(new State(1, Collections.singletonList(0)), new Incremented(10)));
+        Pair.create(new State(1, List.of(0)), new Incremented(10)));
   }
 
   @Test
@@ -408,7 +407,7 @@ public class EventSourcedBehaviorJavaDslTest {
     TestProbe<State> probe = testKit.createTestProbe();
     c.tell(Increment.INSTANCE);
     c.tell(new GetValue(probe.ref()));
-    probe.expectMessage(new State(1, singletonList(0)));
+    probe.expectMessage(new State(1, List.of(0)));
   }
 
   @Test
@@ -448,7 +447,7 @@ public class EventSourcedBehaviorJavaDslTest {
 
     TestProbe<State> stateProbe = testKit.createTestProbe();
     c.tell(new GetValue(stateProbe.ref()));
-    stateProbe.expectMessage(new State(3, Arrays.asList(0, 1, 2)));
+    stateProbe.expectMessage(new State(3, List.of(0, 1, 2)));
 
     TestProbe<Pair<State, Incremented>> eventHandlerProbe = testKit.createTestProbe();
     Behavior<Command> recovered =
@@ -464,9 +463,9 @@ public class EventSourcedBehaviorJavaDslTest {
     ActorRef<Command> c2 = testKit.spawn(recovered);
     // First 2 are snapshot
     eventHandlerProbe.expectMessage(
-        Pair.create(new State(2, Arrays.asList(0, 1)), new Incremented(1)));
+        Pair.create(new State(2, List.of(0, 1)), new Incremented(1)));
     c2.tell(new GetValue(stateProbe.ref()));
-    stateProbe.expectMessage(new State(3, Arrays.asList(0, 1, 2)));
+    stateProbe.expectMessage(new State(3, List.of(0, 1, 2)));
   }
 
   @Test
@@ -546,7 +545,7 @@ public class EventSourcedBehaviorJavaDslTest {
 
     TestProbe<State> stateProbe = testKit.createTestProbe();
     c.tell(new GetValue(stateProbe.ref()));
-    stateProbe.expectMessage(new State(1, Collections.singletonList(0)));
+    stateProbe.expectMessage(new State(1, List.of(0)));
 
     List<EventEnvelope> events =
         queries
@@ -579,7 +578,7 @@ public class EventSourcedBehaviorJavaDslTest {
 
     TestProbe<State> stateProbe = testKit.createTestProbe();
     c.tell(new GetValue(stateProbe.ref()));
-    stateProbe.expectMessage(new State(1, Collections.singletonList(0)));
+    stateProbe.expectMessage(new State(1, List.of(0)));
 
     List<EventEnvelope> events =
         queries
@@ -595,7 +594,7 @@ public class EventSourcedBehaviorJavaDslTest {
 
     ActorRef<Command> c2 = testKit.spawn(transformer);
     c2.tell(new GetValue(stateProbe.ref()));
-    stateProbe.expectMessage(new State(1, Collections.singletonList(0)));
+    stateProbe.expectMessage(new State(1, List.of(0)));
   }
 
   // event-wrapper

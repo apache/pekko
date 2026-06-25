@@ -324,7 +324,7 @@ public class PersistentActorCompileOnlyTest {
 
       @Override
       public EventsInFlight emptyState() {
-        return new EventsInFlight(0, Collections.emptyMap());
+        return new EventsInFlight(0, Map.of());
       }
 
       @Override

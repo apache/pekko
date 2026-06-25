@@ -14,7 +14,7 @@
 package jdocs.stream.javadsl.cookbook;
 
 import com.typesafe.config.ConfigFactory;
-import java.util.Arrays;
+import java.util.List;
 import jdocs.stream.SilenceSystemOut;
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.actor.ActorSystem;
@@ -55,7 +55,7 @@ public class RecipeLoggingElements extends RecipeTest {
       final SilenceSystemOut.System System = SilenceSystemOut.get(getTestActor());
 
       {
-        final Source<String, NotUsed> mySource = Source.from(Arrays.asList("1", "2", "3"));
+        final Source<String, NotUsed> mySource = Source.from(List.of("1", "2", "3"));
 
         // #println-debug
         mySource.map(
@@ -76,7 +76,7 @@ public class RecipeLoggingElements extends RecipeTest {
       }
 
       {
-        final Source<String, NotUsed> mySource = Source.from(Arrays.asList("1", "2", "3"));
+        final Source<String, NotUsed> mySource = Source.from(List.of("1", "2", "3"));
 
         // #log-custom
         // customise log levels
@@ -113,7 +113,7 @@ public class RecipeLoggingElements extends RecipeTest {
     new TestKit(system) {
       {
         // #log-error
-        Source.from(Arrays.asList(-1, 0, 1))
+        Source.from(List.of(-1, 0, 1))
             .map(x -> 1 / x) // throwing ArithmeticException: / by zero
             .log("error logging")
             .runWith(Sink.ignore(), system);

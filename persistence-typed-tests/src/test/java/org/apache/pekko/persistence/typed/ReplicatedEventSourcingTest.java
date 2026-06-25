@@ -109,7 +109,7 @@ public class ReplicatedEventSourcingTest {
 
     @Override
     public Set<String> emptyState() {
-      return Collections.emptySet();
+      return Set.of();
     }
 
     @Override

@@ -16,7 +16,6 @@ package org.apache.pekko.actor.testkit.typed.javadsl;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.Duration;
-import java.util.Arrays;
 import java.util.List;
 import org.apache.pekko.actor.testkit.typed.annotations.JUnitJupiterTestKit;
 import org.apache.pekko.actor.testkit.typed.scaladsl.TestProbeSpec;
@@ -132,7 +131,7 @@ public class TestProbeTest {
               else if (message.equals("two")) return FishingOutcomes.complete();
               else return FishingOutcomes.fail("error");
             });
-    assertEquals(Arrays.asList("two"), results);
+    assertEquals(List.of("two"), results);
   }
 
   @Test

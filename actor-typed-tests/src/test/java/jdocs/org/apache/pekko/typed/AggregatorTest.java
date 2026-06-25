@@ -21,7 +21,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -65,7 +64,7 @@ public class AggregatorTest {
             aggregateReplies,
             Duration.ofSeconds(3)));
 
-    aggregateProbe.expectMessage(Arrays.asList("a", "b", "c"));
+    aggregateProbe.expectMessage(List.of("a", "b", "c"));
   }
 
   @Test
@@ -88,7 +87,7 @@ public class AggregatorTest {
             Duration.ofSeconds(1)));
 
     aggregateProbe.expectNoMessage(Duration.ofMillis(100));
-    aggregateProbe.expectMessage(Arrays.asList("a", "c"));
+    aggregateProbe.expectMessage(List.of("a", "c"));
   }
 
   interface IllustrateUsage {

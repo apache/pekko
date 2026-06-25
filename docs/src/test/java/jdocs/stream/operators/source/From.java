@@ -13,7 +13,7 @@
 
 package jdocs.stream.operators.source;
 
-import java.util.Arrays;
+import java.util.List;
 import java.util.stream.IntStream;
 import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.stream.javadsl.Source;
@@ -24,7 +24,7 @@ public class From {
 
   void fromIteratorSample() {
     // #from-iterator
-    Source.fromIterator(() -> Arrays.asList(1, 2, 3).iterator())
+    Source.fromIterator(() -> List.of(1, 2, 3).iterator())
         .runForeach(System.out::println, system);
     // could print
     // 1
