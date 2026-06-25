@@ -589,6 +589,12 @@ object Source {
 
   /**
    * Combine the elements of multiple streams into a stream of lists using a combiner function.
+   *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
+   *
+   * If the combiner function throws and the supervision decision is [[pekko.stream.Supervision#stop]]
+   * the stream fails. If the supervision decision is [[pekko.stream.Supervision#resume]] or
+   * [[pekko.stream.Supervision#restart]] the zipped element is dropped and the stream continues.
    */
   def zipWithN[T, O](
       zipper: function.Function[java.util.List[T], O],
@@ -1935,6 +1941,12 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
   /**
    * Put together the elements of current [[Source]] and the given one
    * into a stream of combined elements using a combiner function.
+   *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
+   *
+   * If the combiner function throws and the supervision decision is [[pekko.stream.Supervision#stop]]
+   * the stream fails. If the supervision decision is [[pekko.stream.Supervision#resume]] or
+   * [[pekko.stream.Supervision#restart]] the zipped element is dropped and the stream continues.
    *
    * '''Emits when''' all of the inputs has an element available
    *

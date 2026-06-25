@@ -2554,6 +2554,12 @@ final class SubFlow[In, Out, Mat](
    * Put together the elements of current [[Flow]] and the given [[Source]]
    * into a stream of combined elements using a combiner function.
    *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
+   *
+   * If the combiner function throws and the supervision decision is [[pekko.stream.Supervision#stop]]
+   * the stream fails. If the supervision decision is [[pekko.stream.Supervision#resume]] or
+   * [[pekko.stream.Supervision#restart]] the zipped element is dropped and the stream continues.
+   *
    * '''Emits when''' all of the inputs has an element available
    *
    * '''Backpressures when''' downstream backpressures
