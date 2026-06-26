@@ -74,7 +74,7 @@ public class GraphDslTest extends StreamTestJupiter {
                 }));
     // #simple-graph-dsl
     final List<String> list = result.run(system).toCompletableFuture().get(3, TimeUnit.SECONDS);
-    final String[] res = list.toArray(new String[] {});
+    final String[] res = list.toArray(String[]::new);
     Arrays.sort(res, null);
     assertArrayEquals(
         new String[] {"31", "32", "33", "34", "35", "41", "42", "43", "44", "45"}, res);

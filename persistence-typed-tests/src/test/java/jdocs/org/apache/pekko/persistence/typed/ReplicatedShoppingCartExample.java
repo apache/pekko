@@ -114,10 +114,11 @@ interface ReplicatedShoppingCartExample {
 
     private Map<String, Integer> filterEmptyAndNegative(Map<String, Counter> cart) {
       Map<String, Integer> result = new HashMap<>();
-      for (Map.Entry<String, Counter> entry : cart.entrySet()) {
-        int count = entry.getValue().value().intValue();
-        if (count > 0) result.put(entry.getKey(), count);
-      }
+      cart.forEach(
+          (key, counter) -> {
+            int count = counter.value().intValue();
+            if (count > 0) result.put(key, count);
+          });
       return Collections.unmodifiableMap(result);
     }
 

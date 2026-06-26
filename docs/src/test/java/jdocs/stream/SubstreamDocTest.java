@@ -81,7 +81,11 @@ public class SubstreamDocTest extends AbstractJavaTest {
 
     // #wordCount
     String text =
-        "This is the first line.\n" + "The second line.\n" + "There is also the 3rd line\n";
+        """
+        This is the first line.
+        The second line.
+        There is also the 3rd line
+        """;
 
     Source.from(Arrays.asList(text.split("")))
         .map(x -> x.charAt(0))

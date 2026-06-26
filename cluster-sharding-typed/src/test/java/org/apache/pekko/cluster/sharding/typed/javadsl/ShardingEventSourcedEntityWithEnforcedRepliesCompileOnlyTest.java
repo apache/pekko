@@ -79,7 +79,7 @@ public class ShardingEventSourcedEntityWithEnforcedRepliesCompileOnlyTest {
     }
 
     private String applyEvent(String state, String evt) {
-      if (state.trim().isEmpty()) return evt;
+      if (state.isBlank()) return evt;
       else return state + "|" + evt;
     }
   }
