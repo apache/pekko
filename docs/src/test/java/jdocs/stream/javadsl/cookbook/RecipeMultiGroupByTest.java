@@ -137,10 +137,7 @@ public class RecipeMultiGroupByTest extends RecipeTest {
                       Topic topic = pair.get(0).second();
                       return topic.name
                           + mkString(
-                              pair.stream().map(p -> p.first().msg).toList(),
-                              "[",
-                              ", ",
-                              "]");
+                              pair.stream().map(p -> p.first().msg).toList(), "[", ", ", "]");
                     })
                 .grouped(10)
                 .runWith(Sink.head(), system);
