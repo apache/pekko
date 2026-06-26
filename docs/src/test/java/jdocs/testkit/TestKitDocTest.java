@@ -215,7 +215,7 @@ public class TestKitDocTest extends AbstractJavaTest {
                   }
                 });
 
-        assertArrayEquals(new String[] {"42", "43"}, out.toArray());
+        assertArrayEquals(new String[] {"42", "43"}, out.toArray(String[]::new));
         expectMsgEquals("hello");
       }
     };
@@ -295,7 +295,7 @@ public class TestKitDocTest extends AbstractJavaTest {
         assertEquals("hello", any);
         assertEquals(42, i);
         assertEquals(42, j);
-        assertArrayEquals(new String[] {"hello", "world"}, all.toArray());
+        assertArrayEquals(new String[] {"hello", "world"}, all.toArray(String[]::new));
       }
     };
   }

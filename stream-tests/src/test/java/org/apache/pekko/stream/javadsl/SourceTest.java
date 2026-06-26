@@ -1535,7 +1535,7 @@ public class SourceTest extends StreamTestJupiter {
 
     assertArrayEquals(
         new Boolean[] {false, true, false, true, false, true, false, true, false, true},
-        future.get(1, TimeUnit.SECONDS).toArray());
+        future.get(1, TimeUnit.SECONDS).toArray(Boolean[]::new));
   }
 
   @Test
