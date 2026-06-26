@@ -20,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import java.time.Duration;
+import java.util.Collections;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
@@ -278,7 +279,7 @@ public class FlowTest extends StreamTestJupiter {
                     return Pair.create(buffer, group);
                   } else {
                     buffer.add(elem);
-                    return Pair.create(buffer, List.of());
+                    return Pair.create(buffer, Collections.emptyList());
                   }
                 },
                 Optional::ofNullable)

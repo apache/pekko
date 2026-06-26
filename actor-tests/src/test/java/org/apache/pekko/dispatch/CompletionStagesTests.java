@@ -23,6 +23,7 @@ import scala.concurrent.Await;
 import scala.concurrent.Future;
 import scala.concurrent.duration.Duration;
 
+import java.util.Collections;
 import java.util.*;
 import java.util.concurrent.*;
 
@@ -123,7 +124,7 @@ public class CompletionStagesTests {
         //sequence empty list
         final List<CompletionStage<Integer>> empty = new ArrayList<>();
         final CompletionStage<List<Integer>> sequencedEmpty = CompletionStages.sequence(empty, executor);
-        assertEquals(List.of(), sequencedEmpty.toCompletableFuture().get(3, TimeUnit.SECONDS));
+        assertEquals(Collections.emptyList(), sequencedEmpty.toCompletableFuture().get(3, TimeUnit.SECONDS));
     }
 
     @Test
@@ -139,10 +140,10 @@ public class CompletionStagesTests {
         assertEquals(Lists.newArrayList(1, 2, 3, 4, 5),
             traversed.toCompletableFuture().get(3, TimeUnit.SECONDS));
         //traverse empty list
-        final List<Integer> empty = List.of();
+        final List<Integer> empty = Collections.emptyList();
         final CompletionStage<List<Integer>> traversedEmpty = CompletionStages.traverse(empty,
             CompletableFuture::completedFuture, executor);
-        assertEquals(List.of(), traversedEmpty.toCompletableFuture().get(3, TimeUnit.SECONDS));
+        assertEquals(Collections.emptyList(), traversedEmpty.toCompletableFuture().get(3, TimeUnit.SECONDS));
     }
 
 

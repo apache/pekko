@@ -17,6 +17,7 @@ import static org.apache.pekko.Done.done;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.typesafe.config.ConfigFactory;
+import java.util.Collections;
 import java.util.*;
 import org.apache.pekko.Done;
 import org.apache.pekko.actor.testkit.typed.annotations.JUnitJupiterTestKit;
@@ -109,7 +110,7 @@ public class ReplicatedEventSourcingTest {
 
     @Override
     public Set<String> emptyState() {
-      return Set.of();
+      return Collections.emptySet();
     }
 
     @Override

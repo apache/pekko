@@ -13,6 +13,7 @@
 
 package jdocs.typed.tutorial_5;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -184,7 +185,7 @@ public class DeviceManager extends AbstractBehavior<DeviceManager.Command> {
     if (ref != null) {
       ref.tell(request);
     } else {
-      request.replyTo.tell(new ReplyDeviceList(request.requestId, Set.of()));
+      request.replyTo.tell(new ReplyDeviceList(request.requestId, Collections.emptySet()));
     }
     return this;
   }
@@ -194,7 +195,7 @@ public class DeviceManager extends AbstractBehavior<DeviceManager.Command> {
     if (ref != null) {
       ref.tell(request);
     } else {
-      request.replyTo.tell(new RespondAllTemperatures(request.requestId, Map.of()));
+      request.replyTo.tell(new RespondAllTemperatures(request.requestId, Collections.emptyMap()));
     }
     return this;
   }

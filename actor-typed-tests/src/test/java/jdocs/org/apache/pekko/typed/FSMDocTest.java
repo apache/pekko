@@ -14,6 +14,7 @@
 package jdocs.org.apache.pekko.typed;
 
 import java.time.Duration;
+import java.util.Collections;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -145,7 +146,7 @@ interface FSMDocTest {
     private static Behavior<Event> uninitialized() {
       return Behaviors.receive(Event.class)
           .onMessage(
-              SetTarget.class, message -> idle(new Todo(message.ref, List.of())))
+              SetTarget.class, message -> idle(new Todo(message.ref, Collections.emptyList())))
           .build();
     }
 

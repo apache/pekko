@@ -16,6 +16,7 @@ package org.apache.pekko.actor.testkit.typed.javadsl;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 import org.apache.pekko.actor.testkit.typed.LoggingEvent;
@@ -39,7 +40,7 @@ public class LoggingTestKitTest {
         System.currentTimeMillis(),
         Optional.empty(),
         Optional.empty(),
-        Map.of());
+        Collections.emptyMap());
   }
 
   private LoggingEvent errorWithCause(Throwable cause) {
@@ -51,7 +52,7 @@ public class LoggingTestKitTest {
         System.currentTimeMillis(),
         Optional.empty(),
         Optional.of(cause),
-        Map.of());
+        Collections.emptyMap());
   }
 
   @Test

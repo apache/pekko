@@ -23,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
 import java.time.Duration;
+import java.util.Collections;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -862,7 +863,7 @@ public class SourceTest extends StreamTestJupiter {
                     return Pair.create(buffer, group);
                   } else {
                     buffer.add(elem);
-                    return Pair.create(buffer, List.of());
+                    return Pair.create(buffer, Collections.emptyList());
                   }
                 },
                 Optional::ofNullable)
@@ -1267,7 +1268,7 @@ public class SourceTest extends StreamTestJupiter {
   public void createEmptySource() throws Exception {
     List<Integer> actual =
         Source.empty(Integer.class).runWith(Sink.seq(), system).toCompletableFuture().get();
-    assertThat(actual, is(List.of()));
+    assertThat(actual, is(Collections.emptyList()));
   }
 
   @Test

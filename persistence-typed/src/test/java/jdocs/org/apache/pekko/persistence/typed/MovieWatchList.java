@@ -13,6 +13,7 @@
 
 package jdocs.org.apache.pekko.persistence.typed;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import org.apache.pekko.actor.typed.ActorRef;
@@ -70,7 +71,7 @@ public class MovieWatchList
 
   @Override
   public MovieList emptyState() {
-    return new MovieList(Set.of());
+    return new MovieList(Collections.emptySet());
   }
 
   @Override

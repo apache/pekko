@@ -20,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -255,7 +256,7 @@ class AuctionEntity
     }
 
     public AuctionState close() {
-      return new AuctionState(false, highestBid, highestCounterOffer, Set.of());
+      return new AuctionState(false, highestBid, highestCounterOffer, Collections.emptySet());
     }
 
     public boolean isClosed() {
@@ -307,7 +308,7 @@ class AuctionEntity
 
   @Override
   public AuctionState emptyState() {
-    return new AuctionState(true, initialBid, initialBid.offer, Set.of());
+    return new AuctionState(true, initialBid, initialBid.offer, Collections.emptySet());
   }
 
   @Override

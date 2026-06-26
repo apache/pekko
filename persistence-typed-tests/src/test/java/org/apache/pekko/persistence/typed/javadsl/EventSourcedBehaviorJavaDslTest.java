@@ -22,6 +22,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.google.common.collect.Sets;
 import com.typesafe.config.ConfigFactory;
 import java.time.Duration;
+import java.util.Collections;
 import java.util.*;
 import org.apache.pekko.Done;
 import org.apache.pekko.actor.testkit.typed.annotations.JUnitJupiterTestKit;
@@ -159,7 +160,7 @@ public class EventSourcedBehaviorJavaDslTest {
     final int value;
     final List<Integer> history;
 
-    static final State EMPTY = new State(0, List.of());
+    static final State EMPTY = new State(0, Collections.emptyList());
 
     public State(int value, List<Integer> history) {
       this.value = value;
@@ -268,7 +269,7 @@ public class EventSourcedBehaviorJavaDslTest {
 
     private Effect<Event, State> emptyEventsListAndThenLog(
         State state, EmptyEventsListAndThenLog command) {
-      return Effect().persist(List.of()).thenRun(s -> log());
+      return Effect().persist(Collections.emptyList()).thenRun(s -> log());
     }
 
     private Effect<Event, State> stopThenLog(State state, StopThenLog command) {

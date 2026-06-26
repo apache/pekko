@@ -13,6 +13,7 @@
 
 package org.apache.pekko.event;
 
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import org.apache.pekko.actor.AbstractActor;
@@ -29,7 +30,7 @@ public class ActorWithMDC extends AbstractActor {
   private void receiveLog(Log log) {
     Map<String, Object> mdc;
     if (log.message.startsWith("No MDC")) {
-      mdc = Map.of();
+      mdc = Collections.emptyMap();
     } else if (log.message.equals("Null MDC")) {
       mdc = null;
     } else {

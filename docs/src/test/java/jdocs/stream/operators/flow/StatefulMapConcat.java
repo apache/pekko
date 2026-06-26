@@ -13,6 +13,7 @@
 
 package jdocs.stream.operators.flow;
 
+import java.util.Collections;
 import java.util.*;
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.actor.typed.ActorSystem;
@@ -103,7 +104,7 @@ public class StatefulMapConcat {
                     if (element.startsWith("b")) {
                       // add to stash and emit no element
                       stashedBWords.add(element);
-                      return List.of();
+                      return Collections.emptyList();
                     } else if (element.equals("-end-")) {
                       // return in the stashed words in the order they got stashed
                       return stashedBWords;

@@ -14,6 +14,7 @@
 package jdocs.stream.operators.flow;
 
 import java.time.Duration;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
@@ -46,7 +47,7 @@ public class FromSinkAndSource {
                 "127.0.0.1", // interface
                 9999, // port
                 100, // backlog
-                List.of(), // socket options
+                Collections.emptyList(), // socket options
                 true, // Important: half close enabled
                 Optional.empty() // idle timeout
                 );
