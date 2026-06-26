@@ -192,27 +192,21 @@ public class ReplicatedEventSourcingTest {
         () -> {
           replicaA.tell(new TestBehavior.GetState(probe.ref().narrow()));
           TestBehavior.State reply = probe.expectMessageClass(TestBehavior.State.class);
-          assertEquals(
-              Set.of("stored-to-a", "stored-to-b", "stored-to-c"),
-              reply.texts);
+          assertEquals(Set.of("stored-to-a", "stored-to-b", "stored-to-c"), reply.texts);
           return null;
         });
     probe.awaitAssert(
         () -> {
           replicaB.tell(new TestBehavior.GetState(probe.ref().narrow()));
           TestBehavior.State reply = probe.expectMessageClass(TestBehavior.State.class);
-          assertEquals(
-              Set.of("stored-to-a", "stored-to-b", "stored-to-c"),
-              reply.texts);
+          assertEquals(Set.of("stored-to-a", "stored-to-b", "stored-to-c"), reply.texts);
           return null;
         });
     probe.awaitAssert(
         () -> {
           replicaC.tell(new TestBehavior.GetState(probe.ref().narrow()));
           TestBehavior.State reply = probe.expectMessageClass(TestBehavior.State.class);
-          assertEquals(
-              Set.of("stored-to-a", "stored-to-b", "stored-to-c"),
-              reply.texts);
+          assertEquals(Set.of("stored-to-a", "stored-to-b", "stored-to-c"), reply.texts);
           return null;
         });
   }

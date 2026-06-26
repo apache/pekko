@@ -17,7 +17,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Collections;
-import java.util.Map;
 import java.util.Optional;
 import org.apache.pekko.actor.testkit.typed.LoggingEvent;
 import org.apache.pekko.actor.testkit.typed.TestException;

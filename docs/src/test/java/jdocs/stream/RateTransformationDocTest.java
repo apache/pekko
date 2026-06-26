@@ -69,8 +69,7 @@ public class RateTransformationDocTest extends AbstractJavaTest {
             .conflateWithSeed(
                 elem -> List.of(elem),
                 (acc, elem) -> {
-                  return Stream.concat(acc.stream(), List.of(elem).stream())
-                      .toList();
+                  return Stream.concat(acc.stream(), List.of(elem).stream()).toList();
                 })
             .map(
                 s -> {
@@ -101,8 +100,7 @@ public class RateTransformationDocTest extends AbstractJavaTest {
                 elem -> List.of(elem),
                 (acc, elem) -> {
                   if (r.nextDouble() < p) {
-                    return Stream.concat(acc.stream(), List.of(elem).stream())
-                        .toList();
+                    return Stream.concat(acc.stream(), List.of(elem).stream()).toList();
                   }
                   return acc;
                 })

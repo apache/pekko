@@ -143,8 +143,7 @@ public class FlowErrorDocTest extends AbstractJavaTest {
     // result here will be a Future completed with List(0, 1, 4, 0, 5, 12)
     // #restart-section
 
-    assertEquals(
-        List.of(0, 1, 4, 0, 5, 12), result.toCompletableFuture().get(3, TimeUnit.SECONDS));
+    assertEquals(List.of(0, 1, 4, 0, 5, 12), result.toCompletableFuture().get(3, TimeUnit.SECONDS));
   }
 
   @Test

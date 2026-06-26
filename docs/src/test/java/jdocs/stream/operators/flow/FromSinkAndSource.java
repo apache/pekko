@@ -15,7 +15,6 @@ package jdocs.stream.operators.flow;
 
 import java.time.Duration;
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 import org.apache.pekko.NotUsed;

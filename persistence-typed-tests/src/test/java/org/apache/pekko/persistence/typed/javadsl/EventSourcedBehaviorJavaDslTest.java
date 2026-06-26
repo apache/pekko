@@ -277,9 +277,7 @@ public class EventSourcedBehaviorJavaDslTest {
     }
 
     private Effect<Event, State> incrementTwiceAndLog(State state, IncrementTwiceAndLog command) {
-      return Effect()
-          .persist(List.of(new Incremented(1), new Incremented(1)))
-          .thenRun(s -> log());
+      return Effect().persist(List.of(new Incremented(1), new Incremented(1))).thenRun(s -> log());
     }
 
     @Override
@@ -357,8 +355,7 @@ public class EventSourcedBehaviorJavaDslTest {
     c.tell(Increment.INSTANCE);
     c.tell(IncrementLater.INSTANCE);
     eventHandlerProbe.expectMessage(Pair.create(State.EMPTY, new Incremented(1)));
-    eventHandlerProbe.expectMessage(
-        Pair.create(new State(1, List.of(0)), new Incremented(10)));
+    eventHandlerProbe.expectMessage(Pair.create(new State(1, List.of(0)), new Incremented(10)));
   }
 
   @Test
@@ -463,8 +460,7 @@ public class EventSourcedBehaviorJavaDslTest {
                 });
     ActorRef<Command> c2 = testKit.spawn(recovered);
     // First 2 are snapshot
-    eventHandlerProbe.expectMessage(
-        Pair.create(new State(2, List.of(0, 1)), new Incremented(1)));
+    eventHandlerProbe.expectMessage(Pair.create(new State(2, List.of(0, 1)), new Incremented(1)));
     c2.tell(new GetValue(stateProbe.ref()));
     stateProbe.expectMessage(new State(3, List.of(0, 1, 2)));
   }

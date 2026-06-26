@@ -55,8 +55,7 @@ public class FlowDocTest extends AbstractJavaTest {
   @Test
   public void sourceIsImmutable() throws Exception {
     // #source-immutable
-    final Source<Integer, NotUsed> source =
-        Source.from(List.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
+    final Source<Integer, NotUsed> source = Source.from(List.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
     source.map(x -> 0); // has no effect on source, since it's immutable
     source.runWith(Sink.fold(0, Integer::sum), system); // 55
 
@@ -73,8 +72,7 @@ public class FlowDocTest extends AbstractJavaTest {
   @Test
   public void materializationInSteps() throws Exception {
     // #materialization-in-steps
-    final Source<Integer, NotUsed> source =
-        Source.from(List.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
+    final Source<Integer, NotUsed> source = Source.from(List.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
     // note that the Future is scala.concurrent.Future
     final Sink<Integer, CompletionStage<Integer>> sink = Sink.fold(0, Integer::sum);
 
@@ -92,8 +90,7 @@ public class FlowDocTest extends AbstractJavaTest {
   @Test
   public void materializationRunWith() throws Exception {
     // #materialization-runWith
-    final Source<Integer, NotUsed> source =
-        Source.from(List.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
+    final Source<Integer, NotUsed> source = Source.from(List.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
     final Sink<Integer, CompletionStage<Integer>> sink = Sink.fold(0, Integer::sum);
 
     // materialize the flow, getting the Sink's materialized value
@@ -189,8 +186,7 @@ public class FlowDocTest extends AbstractJavaTest {
         .to(Sink.foreach(System.out::println));
 
     // Starting from a Source
-    final Source<Integer, NotUsed> source =
-        Source.from(List.of(1, 2, 3, 4)).map(elem -> elem * 2);
+    final Source<Integer, NotUsed> source = Source.from(List.of(1, 2, 3, 4)).map(elem -> elem * 2);
     source.to(Sink.foreach(System.out::println));
 
     // Starting from a Sink

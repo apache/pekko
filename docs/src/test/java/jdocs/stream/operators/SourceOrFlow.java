@@ -219,9 +219,7 @@ class SourceOrFlow {
     Source<Integer, NotUsed> sourceA = Source.from(List.of(1, 2, 3));
     Source<Integer, NotUsed> sourceB = Source.from(List.of(4, 5, 6));
     Source<Integer, NotUsed> sourceC = Source.from(List.of(7, 8, 9, 10));
-    sourceA
-        .mergeAll(List.of(sourceB, sourceC), false)
-        .runForeach(System.out::println, system);
+    sourceA.mergeAll(List.of(sourceB, sourceC), false).runForeach(System.out::println, system);
     // merging is not deterministic, can for example print 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
     // #merge-all
   }
@@ -437,9 +435,7 @@ class SourceOrFlow {
 
   void groupedExample() {
     // #grouped
-    Source.from(List.of(1, 2, 3, 4, 5, 6, 7))
-        .grouped(3)
-        .runForeach(System.out::println, system);
+    Source.from(List.of(1, 2, 3, 4, 5, 6, 7)).grouped(3).runForeach(System.out::println, system);
     // [1, 2, 3]
     // [4, 5, 6]
     // [7]

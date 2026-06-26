@@ -45,7 +45,6 @@ public class StageTest extends StreamTestJupiter {
     final CompletionStage<List<Integer>> result =
         ints.via(identity).via(identity).grouped(1000).runWith(Sink.<List<Integer>>head(), system);
 
-    assertEquals(
-        List.of(0, 1, 2, 3, 4, 5), result.toCompletableFuture().get(3, TimeUnit.SECONDS));
+    assertEquals(List.of(0, 1, 2, 3, 4, 5), result.toCompletableFuture().get(3, TimeUnit.SECONDS));
   }
 }

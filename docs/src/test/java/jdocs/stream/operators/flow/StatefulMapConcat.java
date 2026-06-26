@@ -56,8 +56,7 @@ public class StatefulMapConcat {
   static void denylist() {
     // #denylist
     Source<String, NotUsed> fruitsAndDenyCommands =
-        Source.from(
-            List.of("banana", "pear", "orange", "deny:banana", "banana", "pear", "banana"));
+        Source.from(List.of("banana", "pear", "orange", "deny:banana", "banana", "pear", "banana"));
 
     Flow<String, String, NotUsed> denyFilterFlow =
         Flow.of(String.class)
@@ -68,11 +67,9 @@ public class StatefulMapConcat {
                   return (element) -> {
                     if (element.startsWith("deny:")) {
                       denyList.add(element.substring("deny:".length()));
-                      return List
-                          .of(); // no element downstream when adding a deny listed keyword
+                      return List.of(); // no element downstream when adding a deny listed keyword
                     } else if (denyList.contains(element)) {
-                      return List
-                          .of(); // no element downstream if element is deny listed
+                      return List.of(); // no element downstream if element is deny listed
                     } else {
                       return List.of(element);
                     }

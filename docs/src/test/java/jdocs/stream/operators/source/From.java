@@ -24,8 +24,7 @@ public class From {
 
   void fromIteratorSample() {
     // #from-iterator
-    Source.fromIterator(() -> List.of(1, 2, 3).iterator())
-        .runForeach(System.out::println, system);
+    Source.fromIterator(() -> List.of(1, 2, 3).iterator()).runForeach(System.out::println, system);
     // could print
     // 1
     // 2

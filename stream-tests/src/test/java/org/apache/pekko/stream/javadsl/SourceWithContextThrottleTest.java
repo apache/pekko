@@ -39,8 +39,7 @@ public class SourceWithContextThrottleTest extends StreamTestJupiter {
   @Test
   public void mustBeAbleToUseThrottle() throws Exception {
     List<Pair<Integer, String>> list =
-        List.of(
-            new Pair<>(0, "context-a"), new Pair<>(1, "context-b"), new Pair<>(2, "context-c"));
+        List.of(new Pair<>(0, "context-a"), new Pair<>(1, "context-b"), new Pair<>(2, "context-c"));
     Pair<Integer, String> result =
         SourceWithContext.fromPairs(Source.from(list))
             .throttle(10, Duration.ofSeconds(1), 10, ThrottleMode.shaping())

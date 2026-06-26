@@ -504,10 +504,7 @@ public class FlowTest extends StreamTestJupiter {
             .sorted(Comparator.comparingInt(list -> list.get(0).charAt(0)))
             .toList();
 
-    assertEquals(
-        List.of(
-            List.of("Aaa", "Abb"), List.of("Bcc"), List.of("Cdd", "Cee")),
-        result);
+    assertEquals(List.of(List.of("Aaa", "Abb"), List.of("Bcc"), List.of("Cdd", "Cee")), result);
   }
 
   @Test
@@ -529,9 +526,7 @@ public class FlowTest extends StreamTestJupiter {
     final List<List<String>> result = future.toCompletableFuture().get(1, TimeUnit.SECONDS);
 
     assertEquals(
-        List.of(
-            List.of("A", "B", "C"), List.of(".", "D"), List.of(".", "E", "F")),
-        result);
+        List.of(List.of("A", "B", "C"), List.of(".", "D"), List.of(".", "E", "F")), result);
   }
 
   @Test
@@ -553,9 +548,7 @@ public class FlowTest extends StreamTestJupiter {
     final List<List<String>> result = future.toCompletableFuture().get(1, TimeUnit.SECONDS);
 
     assertEquals(
-        List.of(
-            List.of("A", "B", "C", "."), List.of("D", "."), List.of("E", "F")),
-        result);
+        List.of(List.of("A", "B", "C", "."), List.of("D", "."), List.of("E", "F")), result);
   }
 
   public <T> GraphStage<FlowShape<T, T>> op() {
@@ -628,8 +621,7 @@ public class FlowTest extends StreamTestJupiter {
         Source.fromPublisher(pub).limit(100).runWith(Sink.seq(), system);
 
     final List<String> result = all.toCompletableFuture().get(3, TimeUnit.SECONDS);
-    assertEquals(
-        new HashSet<Object>(List.of("a", "b", "c", "d", "e", "f")), new HashSet<>(result));
+    assertEquals(new HashSet<Object>(List.of("a", "b", "c", "d", "e", "f")), new HashSet<>(result));
   }
 
   @Test
@@ -681,8 +673,7 @@ public class FlowTest extends StreamTestJupiter {
         Source.fromPublisher(pub).limit(100).runWith(Sink.seq(), system);
 
     final List<String> result = all.toCompletableFuture().get(3, TimeUnit.SECONDS);
-    assertEquals(
-        new HashSet<Object>(List.of("a", "b", "c", "d", "e", "f")), new HashSet<>(result));
+    assertEquals(new HashSet<Object>(List.of("a", "b", "c", "d", "e", "f")), new HashSet<>(result));
   }
 
   @Test
@@ -1125,9 +1116,7 @@ public class FlowTest extends StreamTestJupiter {
 
   @Test
   public void mustBeAbleToUseCollectFirst() {
-    Source.from(
-            List.of(
-                Optional.of(1), Optional.<Integer>empty(), Optional.of(2), Optional.of(3)))
+    Source.from(List.of(Optional.of(1), Optional.<Integer>empty(), Optional.of(2), Optional.of(3)))
         .collectFirst(
             PFBuilder.<Optional<Integer>, Integer>create()
                 .match(
@@ -1145,8 +1134,7 @@ public class FlowTest extends StreamTestJupiter {
   @Test
   public void mustBeAbleToUseCollectType() throws Exception {
     final TestKit probe = new TestKit(system);
-    final Iterable<FlowSpec.Fruit> input =
-        List.of(new FlowSpec.Apple(), new FlowSpec.Orange());
+    final Iterable<FlowSpec.Fruit> input = List.of(new FlowSpec.Apple(), new FlowSpec.Orange());
 
     Source.from(input)
         .via(Flow.of(FlowSpec.Fruit.class).collectType(FlowSpec.Apple.class))
