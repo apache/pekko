@@ -102,6 +102,25 @@ class FlowDoOnFirstSpec extends StreamSpec("""
       invocationCount.get() shouldBe 3
     }
 
+    "restart and continue with pass-through once f succeeds on retry" in {
+      // Element 1 triggers f which throws -> Restart drops element 1 and re-arms.
+      // Element 2 triggers f which succeeds -> handler switches to pass-through.
+      // Elements 3 and 4 pass through without invoking f.
+      val invocationCount = new AtomicInteger(0)
+      val ex = new RuntimeException("doOnFirst-restart-then-ok")
+
+      val result = Source(1 to 4)
+        .via(Flow[Int].doOnFirst { _ =>
+          if (invocationCount.incrementAndGet() == 1) throw ex
+        })
+        .withAttributes(ActorAttributes.supervisionStrategy(Supervision.restartingDecider))
+        .runWith(Sink.seq)
+        .futureValue
+
+      result shouldBe Seq(2, 3, 4)
+      invocationCount.get() shouldBe 2
+    }
+
   }
 
 }
