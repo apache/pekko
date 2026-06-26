@@ -26,7 +26,6 @@ import org.apache.pekko.actor.typed.javadsl.Receive;
 
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
@@ -87,7 +86,7 @@ interface ShardingDocExample {
       public final List<String> tasks;
 
       public State(List<String> tasks) {
-        this.tasks = Collections.unmodifiableList(tasks);
+        this.tasks = List.copyOf(tasks);
       }
 
       public State add(String task) {

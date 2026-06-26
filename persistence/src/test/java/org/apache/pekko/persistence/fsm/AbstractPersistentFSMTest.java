@@ -16,7 +16,6 @@ package org.apache.pekko.persistence.fsm;
 import java.io.Serializable;
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import org.apache.pekko.actor.*;
 
@@ -64,7 +63,7 @@ public class AbstractPersistentFSMTest {
       public ShoppingCart() {}
 
       public List<Item> getItems() {
-        return Collections.unmodifiableList(items);
+        return List.copyOf(items);
       }
 
       public ShoppingCart addItem(Item item) {

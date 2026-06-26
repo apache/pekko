@@ -34,8 +34,7 @@ public class MyReplicatedBehavior
   public static final ReplicaId DCA = new ReplicaId("DCA");
   public static final ReplicaId DCB = new ReplicaId("DCB");
 
-  public static final Set<ReplicaId> ALL_REPLICAS =
-      Collections.unmodifiableSet(new HashSet<>(Arrays.asList(DCA, DCB)));
+  public static final Set<ReplicaId> ALL_REPLICAS = Set.of(DCA, DCB);
 
   // #replicas
 

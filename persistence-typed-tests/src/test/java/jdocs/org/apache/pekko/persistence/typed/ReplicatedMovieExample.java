@@ -13,7 +13,6 @@
 
 package jdocs.org.apache.pekko.persistence.typed;
 
-import java.util.Collections;
 import java.util.Set;
 import org.apache.pekko.actor.typed.ActorRef;
 import org.apache.pekko.actor.typed.Behavior;
@@ -45,7 +44,7 @@ interface ReplicatedMovieExample {
       public final Set<String> movieIds;
 
       public MovieList(Set<String> movieIds) {
-        this.movieIds = Collections.unmodifiableSet(movieIds);
+        this.movieIds = Set.copyOf(movieIds);
       }
     }
 

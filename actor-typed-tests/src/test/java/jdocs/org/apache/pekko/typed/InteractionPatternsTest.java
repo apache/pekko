@@ -186,7 +186,7 @@ public class InteractionPatternsTest {
         private final List<Command> messages;
 
         public Batch(List<Command> messages) {
-          this.messages = Collections.unmodifiableList(messages);
+          this.messages = List.copyOf(messages);
         }
 
         public List<Command> getMessages() {

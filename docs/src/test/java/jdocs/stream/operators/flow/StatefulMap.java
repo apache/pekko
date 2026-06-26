@@ -47,8 +47,7 @@ public class StatefulMap {
             (buffer, element) -> {
               if (buffer.size() > 0 && (!buffer.get(0).equals(element))) {
                 return Pair.create(
-                    new LinkedList<>(Collections.singletonList(element)),
-                    Collections.unmodifiableList(buffer));
+                    new LinkedList<>(Collections.singletonList(element)), List.copyOf(buffer));
               } else {
                 buffer.add(element);
                 return Pair.create(buffer, Collections.<String>emptyList());
@@ -96,7 +95,7 @@ public class StatefulMap {
             (list, element) -> {
               list.add(element);
               if (list.size() == 3) {
-                return Pair.create(new ArrayList<Integer>(3), Collections.unmodifiableList(list));
+                return Pair.create(new ArrayList<Integer>(3), List.copyOf(list));
               } else {
                 return Pair.create(list, Collections.<Integer>emptyList());
               }

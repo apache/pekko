@@ -13,7 +13,6 @@
 
 package jdocs.org.apache.pekko.persistence.typed;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -119,7 +118,7 @@ interface ReplicatedShoppingCartExample {
             int count = counter.value().intValue();
             if (count > 0) result.put(key, count);
           });
-      return Collections.unmodifiableMap(result);
+      return Map.copyOf(result);
     }
 
     @Override
