@@ -130,9 +130,9 @@ public final class ActorContextPipeToSelfTest {
                   future,
                   (string, exception) -> {
                     final String response;
-                    if (string != null) response = String.format("ok: %s", string);
+                    if (string != null) response = "ok: %s".formatted(string);
                     else if (exception != null)
-                      response = String.format("ko: %s", exception.getMessage());
+                      response = "ko: %s".formatted(exception.getMessage());
                     else response = "???";
                     return new Msg(
                         response,

@@ -83,24 +83,16 @@ public interface AuctionCommand {
     }
 
     public static PlaceBidStatus from(BidResultStatus status) {
-      switch (status) {
-        case ACCEPTED:
-          return ACCEPTED;
-        case ACCEPTED_BELOW_RESERVE:
-          return ACCEPTED_BELOW_RESERVE;
-        case ACCEPTED_OUTBID:
-          return ACCEPTED_OUTBID;
-        case CANCELLED:
-          return CANCELLED;
-        case FINISHED:
-          return FINISHED;
-        case NOT_STARTED:
-          return NOT_STARTED;
-        case TOO_LOW:
-          return TOO_LOW;
-        default:
-          throw new IllegalStateException();
-      }
+      return switch (status) {
+        case ACCEPTED -> ACCEPTED;
+        case ACCEPTED_BELOW_RESERVE -> ACCEPTED_BELOW_RESERVE;
+        case ACCEPTED_OUTBID -> ACCEPTED_OUTBID;
+        case CANCELLED -> CANCELLED;
+        case FINISHED -> FINISHED;
+        case NOT_STARTED -> NOT_STARTED;
+        case TOO_LOW -> TOO_LOW;
+        default -> throw new IllegalStateException();
+      };
     }
   }
 

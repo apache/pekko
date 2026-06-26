@@ -111,14 +111,11 @@ public class BidiFlowDocTest extends AbstractJavaTest {
   public static Message fromBytes(ByteString bytes) {
     // #implementation-details-elided
     final ByteIterator it = bytes.iterator();
-    switch (it.getByte()) {
-      case 1:
-        return new Ping(it.getInt(ByteOrder.LITTLE_ENDIAN));
-      case 2:
-        return new Pong(it.getInt(ByteOrder.LITTLE_ENDIAN));
-      default:
-        throw new RuntimeException("message format error");
-    }
+    return switch (it.getByte()) {
+      case 1 -> new Ping(it.getInt(ByteOrder.LITTLE_ENDIAN));
+      case 2 -> new Pong(it.getInt(ByteOrder.LITTLE_ENDIAN));
+      default -> throw new RuntimeException("message format error");
+    };
     // #implementation-details-elided
   }
 

@@ -206,7 +206,7 @@ public class ActorCreationTest {
     IllegalArgumentException exception =
         Assertions.assertThrows(IllegalArgumentException.class, () -> Props.create(H.class, "a"));
     assertEquals(
-        String.format("Actor class [%s] must not be abstract", H.class.getName()),
+        "Actor class [%s] must not be abstract".formatted(H.class.getName()),
         exception.getMessage());
   }
 
