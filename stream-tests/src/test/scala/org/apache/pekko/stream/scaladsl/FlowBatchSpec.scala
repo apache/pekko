@@ -348,5 +348,52 @@ class FlowBatchSpec extends StreamSpec("""
       subscriber.expectComplete()
     }
 
+    "resume when seed throws in onPush and supervision is Resume" in {
+      // seed is only called in onPush when agg == null (i.e. no active batch).
+      // Under Resume the failing element must be dropped and the next element
+      // should start a fresh batch.
+      val future = Source(1 to 5)
+        .batchWeighted(
+          max = Long.MaxValue,
+          costFn = (i: Int) => i.toLong,
+          seed = (i: Int) => if (i == 1) throw new RuntimeException("boom") else i)(aggregate = _ + _)
+        .withAttributes(ActorAttributes.supervisionStrategy(Supervision.resumingDecider))
+        .runFold(0)(_ + _)
+      Await.result(future, 3.seconds) should be(2 + 3 + 4 + 5)
+    }
+
+    "resume when aggregate throws in onPush and supervision is Resume" in {
+      // aggregate is only called in onPush when downstream backpressures and a batch
+      // is accumulating. Use a manual subscriber to force batching. Under Resume
+      // the failing element must be dropped while the accumulated batch is preserved.
+      val publisher = TestPublisher.probe[Int]()
+      val subscriber = TestSubscriber.manualProbe[Int]()
+
+      Source
+        .fromPublisher(publisher)
+        .batchWeighted(
+          max = 10,
+          costFn = (_: Int) => 1L,
+          seed = (i: Int) => i)(aggregate =
+          (acc, i) => if (i == 3) throw new RuntimeException("boom") else acc + i)
+        .withAttributes(ActorAttributes.supervisionStrategy(Supervision.resumingDecider))
+        .to(Sink.fromSubscriber(subscriber))
+        .run()
+      val sub = subscriber.expectSubscription()
+
+      // Send elements without requesting; they accumulate in a single batch.
+      publisher.sendNext(1) // seed -> agg=1
+      publisher.sendNext(2) // aggregate(1,2) -> agg=3
+      publisher.sendNext(3) // aggregate(3,3) throws -> Resume, agg stays 3, element 3 dropped
+      publisher.sendNext(4) // aggregate(3,4) -> agg=7
+      publisher.sendNext(5) // aggregate(7,5) -> agg=12
+      publisher.sendComplete()
+
+      subscriber.expectNoMessage(300.millis)
+      sub.request(1)
+      subscriber.expectNext(1 + 2 + 4 + 5)
+      subscriber.expectComplete()
+    }
+
   }
 }

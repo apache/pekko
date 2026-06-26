@@ -1092,7 +1092,9 @@ private[stream] object Collect {
           } catch {
             case NonFatal(ex) =>
               decider(ex) match {
-                case Supervision.Stop    => failStage(ex)
+                case Supervision.Stop =>
+                  failStage(ex)
+                  return
                 case Supervision.Restart => restartState()
                 case Supervision.Resume  =>
                   pending = null.asInstanceOf[In]
@@ -1133,7 +1135,9 @@ private[stream] object Collect {
           } catch {
             case NonFatal(ex) =>
               decider(ex) match {
-                case Supervision.Stop    => failStage(ex)
+                case Supervision.Stop =>
+                  failStage(ex)
+                  return
                 case Supervision.Restart =>
                   restartState()
                 case Supervision.Resume =>
@@ -1148,7 +1152,9 @@ private[stream] object Collect {
           } catch {
             case NonFatal(ex) =>
               decider(ex) match {
-                case Supervision.Stop    => failStage(ex)
+                case Supervision.Stop =>
+                  failStage(ex)
+                  return
                 case Supervision.Restart =>
                   restartState()
                 case Supervision.Resume =>
