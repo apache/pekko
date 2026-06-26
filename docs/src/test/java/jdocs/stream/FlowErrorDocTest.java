@@ -156,7 +156,7 @@ public class FlowErrorDocTest extends AbstractJavaTest {
             n -> {
               // assuming `4` and `5` are unexpected values that could throw exception
               if (Arrays.asList(4, 5).contains(n))
-                throw new RuntimeException(String.format("Boom! Bad value found: %s", n));
+                throw new RuntimeException("Boom! Bad value found: %s".formatted(n));
               else return n.toString();
             })
         .recover(
