@@ -148,6 +148,24 @@ class AggregateWithBoundarySpec extends StreamSpec {
     Await.result(result, 30.seconds) shouldBe Seq(Seq(1, 2), Seq(5))
   }
 
+  "resume when harvest throws on upstream finish and complete" in {
+    val result = Source(1 to 3)
+      .aggregateWithBoundary(allocate = () => ListBuffer.empty[Int])(
+        aggregate = (buffer, i) => {
+          buffer += i
+          (buffer, buffer.size >= 2)
+        },
+        harvest = buffer => {
+          if (buffer.contains(3)) throw new RuntimeException("boom")
+          buffer.toSeq
+        },
+        emitOnTimer = None)
+      .withAttributes(ActorAttributes.supervisionStrategy(Supervision.resumingDecider))
+      .runWith(Sink.collection)
+
+    Await.result(result, 30.seconds) shouldBe Seq(Seq(1, 2))
+  }
+
 }
 
 // To run multiple tests in parallel using simulated timer,

@@ -72,7 +72,7 @@ private[pekko] final case class AggregateWithBoundary[In, Agg, Out](
                     }
                     false
                 }
-              if (maybeReadyToEmit) harvestAndEmitOnTimer()
+              if (maybeReadyToEmit) harvestAndEmit(pullOnRecover = false)
             }
         }
       }
@@ -116,7 +116,7 @@ private[pekko] final case class AggregateWithBoundary[In, Agg, Out](
               return
           }
 
-        if (shouldEmit) harvestAndEmitFromOnPush()
+        if (shouldEmit) harvestAndEmit(pullOnRecover = true)
         else {
           // the decision to pull entirely depend on isAvailable(out)=true
           // if isAvailable(out)=false, this means timer has caused emit, cannot pull or it could emit indefinitely bypassing back pressure
@@ -159,7 +159,7 @@ private[pekko] final case class AggregateWithBoundary[In, Agg, Out](
       private def pullIfPossible(): Unit =
         if (isAvailable(out) && !isClosed(in) && !hasBeenPulled(in)) pull(in)
 
-      private def harvestAndEmitFromOnPush(): Unit =
+      private def harvestAndEmit(pullOnRecover: Boolean): Unit =
         try {
           emit(out, harvest(aggregated))
           aggregated = null.asInstanceOf[Agg]
@@ -170,26 +170,10 @@ private[pekko] final case class AggregateWithBoundary[In, Agg, Out](
                 failStage(ex)
               case Supervision.Resume =>
                 aggregated = null.asInstanceOf[Agg]
-                pullIfPossible()
+                if (pullOnRecover) pullIfPossible()
               case Supervision.Restart =>
                 restartState()
-                pullIfPossible()
-            }
-        }
-
-      private def harvestAndEmitOnTimer(): Unit =
-        try {
-          emit(out, harvest(aggregated))
-          aggregated = null.asInstanceOf[Agg]
-        } catch {
-          case NonFatal(ex) =>
-            decider(ex) match {
-              case Supervision.Stop =>
-                failStage(ex)
-              case Supervision.Resume =>
-                aggregated = null.asInstanceOf[Agg]
-              case Supervision.Restart =>
-                restartState()
+                if (pullOnRecover) pullIfPossible()
             }
         }
 
