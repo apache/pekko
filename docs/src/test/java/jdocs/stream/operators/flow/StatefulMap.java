@@ -46,8 +46,7 @@ public class StatefulMap {
             () -> (List<String>) new LinkedList<String>(),
             (buffer, element) -> {
               if (buffer.size() > 0 && (!buffer.get(0).equals(element))) {
-                return Pair.create(
-                    new LinkedList<>(Collections.singletonList(element)), List.copyOf(buffer));
+                return Pair.create(new LinkedList<>(List.of(element)), List.copyOf(buffer));
               } else {
                 buffer.add(element);
                 return Pair.create(buffer, Collections.<String>emptyList());
