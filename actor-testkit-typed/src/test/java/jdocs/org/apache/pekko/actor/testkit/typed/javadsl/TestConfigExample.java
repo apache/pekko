@@ -28,12 +28,20 @@ public class TestConfigExample {
     ;
 
     // #parse-string
-    ConfigFactory.parseString("pekko.loglevel = DEBUG \n" + "pekko.log-config-on-start = on \n")
+    ConfigFactory.parseString(
+        """
+        pekko.loglevel = DEBUG
+        pekko.log-config-on-start = on
+        """)
     // #parse-string
     ;
 
     // #fallback-application-conf
-    ConfigFactory.parseString("pekko.loglevel = DEBUG \n" + "pekko.log-config-on-start = on \n")
+    ConfigFactory.parseString(
+            """
+            pekko.loglevel = DEBUG
+            pekko.log-config-on-start = on
+            """)
         .withFallback(ConfigFactory.load())
     // #fallback-application-conf
     ;

@@ -274,7 +274,7 @@ public class BidiFlowDocTest extends AbstractJavaTest {
             .runWith(Sink.<List<Message>>head(), system);
     assertArrayEquals(
         new Message[] {new Pong(0), new Pong(1), new Pong(2)},
-        result.toCompletableFuture().get(1, TimeUnit.SECONDS).toArray(new Message[0]));
+        result.toCompletableFuture().get(1, TimeUnit.SECONDS).toArray(Message[]::new));
     // #compose
   }
 }

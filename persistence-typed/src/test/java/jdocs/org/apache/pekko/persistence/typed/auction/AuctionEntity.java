@@ -149,15 +149,15 @@ public class AuctionEntity
     int currentBidPrice;
     int currentBidMaximum;
     if (currentBid.isPresent()) {
-      currentBidPrice = currentBid.get().getBidPrice();
-      currentBidMaximum = currentBid.get().getMaximumBid();
+      currentBidPrice = currentBid.get().bidPrice();
+      currentBidMaximum = currentBid.get().maximumBid();
     } else {
       currentBidPrice = 0;
       currentBidMaximum = 0;
     }
 
     boolean bidderIsCurrentBidder =
-        currentBid.filter(b -> b.getBidder().equals(bid.bidder)).isPresent();
+        currentBid.filter(b -> b.bidder().equals(bid.bidder)).isPresent();
 
     if (bidderIsCurrentBidder && bid.bidPrice >= currentBidPrice) {
       // Allow the current bidder to update their bid
@@ -220,12 +220,12 @@ public class AuctionEntity
                 new BidPlaced(entityUUID, new Bid(bid.bidder, now, adjustedBidPrice, bid.bidPrice)),
                 new BidPlaced(
                     entityUUID,
-                    new Bid(currentBid.get().getBidder(), now, newBidPrice, currentBidMaximum))))
+                    new Bid(currentBid.get().bidder(), now, newBidPrice, currentBidMaximum))))
         .thenReply(
             bid.replyTo,
             newState ->
                 new PlaceBidResult(
-                    PlaceBidStatus.ACCEPTED_OUTBID, newBidPrice, currentBid.get().getBidder()));
+                    PlaceBidStatus.ACCEPTED_OUTBID, newBidPrice, currentBid.get().bidder()));
   }
 
   /** Handle the situation where a bid will be accepted as the new winning bidder. */
@@ -290,7 +290,7 @@ public class AuctionEntity
     Optional<Bid> lastBid = state.lastBid();
     if (lastBid.isPresent()) {
       Bid bid = lastBid.get();
-      return new PlaceBidResult(status, bid.getBidPrice(), bid.getBidder());
+      return new PlaceBidResult(status, bid.bidPrice(), bid.bidder());
     } else {
       return new PlaceBidResult(status, 0, null);
     }
