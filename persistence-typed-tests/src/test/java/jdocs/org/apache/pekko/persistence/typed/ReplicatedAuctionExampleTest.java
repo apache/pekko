@@ -253,8 +253,7 @@ class AuctionEntity
     AuctionState addFinishedAtReplica(String replica) {
       Set<String> s = new HashSet<>(finishedAtDc);
       s.add(replica);
-      return new AuctionState(
-          false, highestBid, highestCounterOffer, Collections.unmodifiableSet(s));
+      return new AuctionState(false, highestBid, highestCounterOffer, Set.copyOf(s));
     }
 
     public AuctionState close() {

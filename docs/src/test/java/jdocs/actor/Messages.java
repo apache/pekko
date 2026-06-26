@@ -13,8 +13,6 @@
 
 package jdocs.actor;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class Messages {
@@ -22,7 +20,7 @@ public class Messages {
   // #immutable-message
   static record ImmutableMessage(int sequenceNumber, List<String> values) {
     public ImmutableMessage {
-      values = Collections.unmodifiableList(new ArrayList<>(values));
+      values = List.copyOf(values);
     }
   }
 

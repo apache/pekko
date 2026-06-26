@@ -15,7 +15,6 @@ package jdocs.org.apache.pekko.persistence.typed;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -33,7 +32,7 @@ public class WebStoreCustomerFSM {
     public ShoppingCart() {}
 
     public List<Item> getItems() {
-      return Collections.unmodifiableList(items);
+      return List.copyOf(items);
     }
 
     public ShoppingCart addItem(Item item) {

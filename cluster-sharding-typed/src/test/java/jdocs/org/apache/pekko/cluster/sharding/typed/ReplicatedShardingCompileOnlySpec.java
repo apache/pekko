@@ -33,9 +33,7 @@ public class ReplicatedShardingCompileOnlySpec {
   }
 
   public static final Set<ReplicaId> ALL_REPLICAS =
-      Collections.unmodifiableSet(
-          new HashSet<>(
-              Arrays.asList(new ReplicaId("DC-A"), new ReplicaId("DC-B"), new ReplicaId("DC-C"))));
+      Set.of(new ReplicaId("DC-A"), new ReplicaId("DC-B"), new ReplicaId("DC-C"));
 
   public static ReplicatedEntityProvider<Command> provider() {
     // #bootstrap

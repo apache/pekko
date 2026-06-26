@@ -45,7 +45,7 @@ public class MovieWatchList
     public final Set<String> movieIds;
 
     public MovieList(Set<String> movieIds) {
-      this.movieIds = Collections.unmodifiableSet(movieIds);
+      this.movieIds = Set.copyOf(movieIds);
     }
 
     public MovieList add(String movieId) {
