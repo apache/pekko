@@ -153,9 +153,9 @@ public class ActorDocTest extends AbstractJavaTest {
 
     @Override
     public void onReceive(Object msg) throws Exception {
-      if (msg instanceof Msg1) receiveMsg1((Msg1) msg);
-      else if (msg instanceof Msg2) receiveMsg2((Msg2) msg);
-      else if (msg instanceof Msg3) receiveMsg3((Msg3) msg);
+      if (msg instanceof Msg1 msg1) receiveMsg1(msg1);
+      else if (msg instanceof Msg2 msg2) receiveMsg2(msg2);
+      else if (msg instanceof Msg3 msg3) receiveMsg3(msg3);
       else unhandled(msg);
     }
 
