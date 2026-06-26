@@ -90,11 +90,7 @@ public class SourceTest extends StreamTestJupiter {
     final var result =
         Source.combine(
                 Source.from(List.<String>of()),
-<<<<<<< Updated upstream
-                Source.from(Collections.singleton("a")),
-=======
                 Source.from(Set.of("a")),
->>>>>>> Stashed changes
                 List.of(Source.from(List.of("b", "c"))),
                 x -> Concat.<String>create(x, false))
             .toMat(Sink.seq(), Keep.right())
@@ -273,10 +269,7 @@ public class SourceTest extends StreamTestJupiter {
             .sorted(Comparator.comparingInt(list -> list.get(0).charAt(0)))
             .toList();
 
-    assertEquals(
-        List.of(
-            List.of("Aaa", "Abb"), List.of("Bcc"), List.of("Cdd", "Cee")),
-        result);
+    assertEquals(List.of(List.of("Aaa", "Abb"), List.of("Bcc"), List.of("Cdd", "Cee")), result);
   }
 
   @Test
@@ -298,9 +291,7 @@ public class SourceTest extends StreamTestJupiter {
     final List<List<String>> result = future.toCompletableFuture().get(1, TimeUnit.SECONDS);
 
     assertEquals(
-        List.of(
-            List.of("A", "B", "C"), List.of(".", "D"), List.of(".", "E", "F")),
-        result);
+        List.of(List.of("A", "B", "C"), List.of(".", "D"), List.of(".", "E", "F")), result);
   }
 
   @Test
@@ -322,9 +313,7 @@ public class SourceTest extends StreamTestJupiter {
     final List<List<String>> result = future.toCompletableFuture().get(1, TimeUnit.SECONDS);
 
     assertEquals(
-        List.of(
-            List.of("A", "B", "C", "."), List.of("D", "."), List.of("E", "F")),
-        result);
+        List.of(List.of("A", "B", "C", "."), List.of("D", "."), List.of("E", "F")), result);
   }
 
   @Test
@@ -799,8 +788,7 @@ public class SourceTest extends StreamTestJupiter {
     source.offer("hello");
     source.offer("world");
     source.complete();
-    assertEquals(
-        List.of("hello", "world"), result.toCompletableFuture().get(3, TimeUnit.SECONDS));
+    assertEquals(List.of("hello", "world"), result.toCompletableFuture().get(3, TimeUnit.SECONDS));
   }
 
   @Test
@@ -904,12 +892,7 @@ public class SourceTest extends StreamTestJupiter {
         .runWith(TestSink.create(system), system)
         .ensureSubscription()
         .request(6)
-        .expectNext(
-            List.of(1, 1),
-            List.of(2, 3),
-            List.of(3, 4),
-            List.of(5, 5),
-            List.of(6))
+        .expectNext(List.of(1, 1), List.of(2, 3), List.of(3, 4), List.of(5, 5), List.of(6))
         .expectComplete();
   }
 
@@ -1172,7 +1155,7 @@ public class SourceTest extends StreamTestJupiter {
     final List<Source<Integer, NotUsed>> sources = List.of(source1, source2, source3);
     final CompletionStage<Integer> result =
         Source.combine(sources, Concat::create)
-            .runWith(Sink.toList(), system)
+            .runWith(Sink.collect(Collectors.toList()), system)
             .thenApply(list -> list.stream().mapToInt(l -> l).sum());
     assertEquals(6, result.toCompletableFuture().get(3, TimeUnit.SECONDS).intValue());
   }
@@ -1186,7 +1169,7 @@ public class SourceTest extends StreamTestJupiter {
     final List<Source<Integer, NotUsed>> sources = List.of(Source.single(1));
     final List<List<Integer>> result =
         Source.<Integer, List<Integer>, NotUsed>combine(sources, MergeLatest::create)
-            .runWith(Sink.toList(), system)
+            .runWith(Sink.collect(Collectors.toList()), system)
             .toCompletableFuture()
             .get(3, TimeUnit.SECONDS);
     assertEquals(List.of(List.of(1)), result);
@@ -1395,9 +1378,7 @@ public class SourceTest extends StreamTestJupiter {
     final Source<Integer, NotUsed> sourceB = Source.from(List.of(4, 5, 6));
     final Source<Integer, NotUsed> sourceC = Source.from(List.of(7, 8, 9));
     final TestSubscriber.Probe<Integer> sub =
-        sourceA
-            .mergeAll(List.of(sourceB, sourceC), false)
-            .runWith(TestSink.create(system), system);
+        sourceA.mergeAll(List.of(sourceB, sourceC), false).runWith(TestSink.create(system), system);
     sub.expectSubscription().request(9);
     sub.expectNextUnorderedN(List.of(1, 2, 3, 4, 5, 6, 7, 8, 9)).expectComplete();
   }
@@ -1679,8 +1660,7 @@ public class SourceTest extends StreamTestJupiter {
   public void zipWithIndex() {
     final List<Pair<Integer, Long>> resultList =
         Source.range(1, 3).zipWithIndex().runWith(Sink.seq(), system).toCompletableFuture().join();
-    assertEquals(
-        List.of(Pair.create(1, 0L), Pair.create(2, 1L), Pair.create(3, 2L)), resultList);
+    assertEquals(List.of(Pair.create(1, 0L), Pair.create(2, 1L), Pair.create(3, 2L)), resultList);
   }
 
   @Test

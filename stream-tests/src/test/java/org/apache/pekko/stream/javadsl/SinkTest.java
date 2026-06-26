@@ -104,7 +104,8 @@ public class SinkTest extends StreamTestJupiter {
   public void mustBeAbleToUseCollectorOnSink() throws Exception {
     // #collect-to-list
     final List<Integer> list = List.of(1, 2, 3);
-    CompletionStage<List<Integer>> result = Source.from(list).runWith(Sink.toList(), system);
+    CompletionStage<List<Integer>> result =
+        Source.from(list).runWith(Sink.collect(Collectors.toList()), system);
     // #collect-to-list
     assertEquals(list, result.toCompletableFuture().get(1, TimeUnit.SECONDS));
   }
