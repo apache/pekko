@@ -239,7 +239,8 @@ public class PersistentFsmToTypedMigrationCompileOnlyTest {
               case "Shopping" -> new Shopping(cart);
               case "Inactive" -> new Inactive(cart);
               case "Paid" -> new Paid(cart);
-              default -> throw new IllegalStateException("Unexpected state identifier " + stateIdentifier);
+              default ->
+                  throw new IllegalStateException("Unexpected state identifier " + stateIdentifier);
             };
           });
     }
