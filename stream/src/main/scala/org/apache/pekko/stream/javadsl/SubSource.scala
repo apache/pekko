@@ -733,6 +733,7 @@ final class SubSource[Out, Mat](
    * The `f` function must return a non-null value for all elements, otherwise the stage will fail.
    *
    * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute (applied to the key function).
+   * On `Supervision.Resume` the offending element is skipped; on `Supervision.Restart` the current group is dropped.
    *
    * '''Emits when''' the delimiter function returns a different value than the previous element's result
    *
