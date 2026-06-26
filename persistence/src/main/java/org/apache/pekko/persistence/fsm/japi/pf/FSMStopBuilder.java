@@ -25,11 +25,11 @@ import scala.runtime.BoxedUnit;
 /**
  * Builder used to create a partial function for {@link org.apache.pekko.actor.FSM#onTermination}.
  *
- * @deprecated use EventSourcedBehavior since Akka 2.6.0
  * @param <S> the state type
  * @param <D> the data type
+ * @deprecated use EventSourcedBehavior since Akka 2.6.0
  */
-@Deprecated
+@Deprecated(since = "Akka 2.6.0")
 public class FSMStopBuilder<S, D> {
 
   private UnitPFBuilder<org.apache.pekko.persistence.fsm.PersistentFSM.StopEvent<S, D>> builder =
