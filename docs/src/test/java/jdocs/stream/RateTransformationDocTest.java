@@ -20,7 +20,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
 import java.util.stream.Stream;
 import jdocs.AbstractJavaTest;
@@ -71,7 +70,7 @@ public class RateTransformationDocTest extends AbstractJavaTest {
                 elem -> Collections.singletonList(elem),
                 (acc, elem) -> {
                   return Stream.concat(acc.stream(), Collections.singletonList(elem).stream())
-                      .collect(Collectors.toList());
+                      .toList();
                 })
             .map(
                 s -> {
@@ -103,7 +102,7 @@ public class RateTransformationDocTest extends AbstractJavaTest {
                 (acc, elem) -> {
                   if (r.nextDouble() < p) {
                     return Stream.concat(acc.stream(), Collections.singletonList(elem).stream())
-                        .collect(Collectors.toList());
+                        .toList();
                   }
                   return acc;
                 })

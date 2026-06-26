@@ -13,7 +13,6 @@
 
 package jdocs.stream.javadsl.cookbook;
 
-import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
@@ -111,7 +110,7 @@ public class RecipeMultiGroupByTest extends RecipeTest {
                   // the message belongs to
                   return topicsForMessage.stream()
                       .map(topic -> new Pair<Message, Topic>(msg, topic))
-                      .collect(toList());
+                      .toList();
                 });
 
         SubSource<Pair<Message, Topic>, NotUsed> multiGroups =
@@ -138,10 +137,7 @@ public class RecipeMultiGroupByTest extends RecipeTest {
                       Topic topic = pair.get(0).second();
                       return topic.name
                           + mkString(
-                              pair.stream().map(p -> p.first().msg).collect(toList()),
-                              "[",
-                              ", ",
-                              "]");
+                              pair.stream().map(p -> p.first().msg).toList(), "[", ", ", "]");
                     })
                 .grouped(10)
                 .runWith(Sink.head(), system);
