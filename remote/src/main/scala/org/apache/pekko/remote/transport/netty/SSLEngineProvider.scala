@@ -79,7 +79,7 @@ class ConfigSSLEngineProvider(protected val log: MarkerLoggingAdapter, private v
       "TLS/SSL hostname verification is disabled. " +
       "Set pekko.remote.classic.netty.ssl.security.hostname-verification=on to enable.")
 
-  private lazy val sslContext: SSLContext = {
+  private val sslContext: SSLContext = {
     try {
       val rng = createSecureRandom()
       val ctx = SSLContext.getInstance(SSLProtocol)
