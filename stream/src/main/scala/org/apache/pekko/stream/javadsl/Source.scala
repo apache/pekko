@@ -4635,6 +4635,10 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    * The throttle `mode` is [[pekko.stream.ThrottleMode.Shaping]], which makes pauses before emitting messages to
    * meet throttle rate.
    *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute. On `Supervision.Resume` the
+   * offending element is dropped; `Supervision.Restart` behaves the same as `Supervision.Resume`
+   * because throttle keeps no accumulated per-element state.
+   *
    * '''Emits when''' upstream emits an element and configured time per each element elapsed
    *
    * '''Backpressures when''' downstream backpressures or the incoming rate is higher than the speed limit
@@ -4678,6 +4682,10 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    *  `maximumBurst` parameter to automatically calculate the `maximumBurst` based on the given rate (`cost/per`).
    *  In other words the throttler always enforces the rate limit when `maximumBurst` parameter is given, but in
    *  certain cases (mostly due to limited scheduler resolution) it enforces a tighter bound than what was prescribed.
+   *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute. On `Supervision.Resume` the
+   * offending element is dropped; `Supervision.Restart` behaves the same as `Supervision.Resume`
+   * because throttle keeps no accumulated per-element state.
    *
    * '''Emits when''' upstream emits an element and configured time per each element elapsed
    *
