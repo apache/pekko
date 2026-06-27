@@ -347,5 +347,133 @@ class FlowDelaySpec extends StreamSpec {
       probe.expectComplete()
 
     }
+
+    "fail with stop supervision when delay strategy throws" in {
+      val ex = new RuntimeException("boom-stop") with NoStackTrace
+      val failed = Source(1 to 3)
+        .delayWith(
+          () =>
+            new DelayStrategy[Int] {
+              override def nextDelay(elem: Int): FiniteDuration =
+                if (elem == 2) throw ex else Duration.Zero
+            },
+          OverflowStrategy.backpressure)
+        .withAttributes(ActorAttributes.supervisionStrategy(Supervision.stoppingDecider))
+        .runWith(Sink.seq)
+        .failed
+        .futureValue
+
+      failed should be(ex)
+    }
+
+    "default to stop supervision when delay strategy throws" in {
+      val ex = new RuntimeException("boom-default-stop") with NoStackTrace
+      val failed = Source(1 to 3)
+        .delayWith(
+          () =>
+            new DelayStrategy[Int] {
+              override def nextDelay(elem: Int): FiniteDuration =
+                if (elem == 2) throw ex else Duration.Zero
+            },
+          OverflowStrategy.backpressure)
+        .runWith(Sink.seq)
+        .failed
+        .futureValue
+
+      failed should be(ex)
+    }
+
+    "drop the offending element on resume supervision when delay strategy throws" in {
+      val ex = new RuntimeException("boom-resume") with NoStackTrace
+      val result = Source(1 to 3)
+        .delayWith(
+          () =>
+            new DelayStrategy[Int] {
+              override def nextDelay(elem: Int): FiniteDuration =
+                if (elem == 2) throw ex else Duration.Zero
+            },
+          OverflowStrategy.backpressure)
+        .withAttributes(ActorAttributes.supervisionStrategy(Supervision.resumingDecider))
+        .runWith(Sink.seq)
+        .futureValue
+
+      result should ===(Seq(1, 3))
+    }
+
+    "drop the offending element and recreate stateful strategy on restart supervision" in {
+      val ex = new RuntimeException("boom-restart") with NoStackTrace
+      val stateNotResetEx = new RuntimeException("strategy state was not reset") with NoStackTrace
+      val result = Source(1 to 3)
+        .delayWith(
+          () =>
+            new DelayStrategy[Int] {
+              private var invocationCount = 0
+
+              override def nextDelay(elem: Int): FiniteDuration = {
+                invocationCount += 1
+                if (elem == 2) throw ex
+                else if (invocationCount == 1) Duration.Zero
+                else throw stateNotResetEx
+              }
+            },
+          OverflowStrategy.backpressure)
+        .withAttributes(ActorAttributes.supervisionStrategy(Supervision.restartingDecider))
+        .runWith(Sink.seq)
+        .futureValue
+
+      result should ===(Seq(1, 3))
+    }
+
+    "keep the stateful strategy (no reset) on resume supervision" in {
+      val ex = new RuntimeException("boom-resume-stateful") with NoStackTrace
+      val stateWasResetEx = new RuntimeException("strategy state was reset") with NoStackTrace
+      val result = Source(1 to 3)
+        .delayWith(
+          () =>
+            new DelayStrategy[Int] {
+              private var invocationCount = 0
+              override def nextDelay(elem: Int): FiniteDuration = {
+                invocationCount += 1
+                elem match {
+                  case 2                         => throw ex
+                  case 3 if invocationCount != 3 => throw stateWasResetEx
+                  case _                         => Duration.Zero
+                }
+              }
+            },
+          OverflowStrategy.backpressure)
+        .withAttributes(ActorAttributes.supervisionStrategy(Supervision.resumingDecider))
+        .runWith(Sink.seq)
+        .futureValue
+      result should ===(Seq(1, 3))
+    }
+
+    "not crash in onTimer when an overflow handler empties the buffer and the strategy throws" taggedAs TimingTest in {
+      val ex = new RuntimeException("boom-overflow") with NoStackTrace
+      val upstream = TestPublisher.probe[Int]()
+      val downstream = TestSubscriber.probe[Int]()
+      Source
+        .fromPublisher(upstream)
+        .delayWith(
+          () =>
+            new DelayStrategy[Int] {
+              override def nextDelay(elem: Int): FiniteDuration =
+                if (elem == 2) throw ex else 200.millis
+            },
+          OverflowStrategy.dropBuffer)
+        .withAttributes(Attributes.inputBuffer(1, 1) and
+          ActorAttributes.supervisionStrategy(Supervision.resumingDecider))
+        .to(Sink.fromSubscriber(downstream))
+        .run()
+
+      downstream.request(10)
+      upstream.sendNext(1)
+      upstream.sendNext(2)
+      downstream.expectNoMessage(400.millis)
+      upstream.sendNext(3)
+      downstream.expectNext(500.millis, 3)
+      upstream.sendComplete()
+      downstream.expectComplete()
+    }
   }
 }

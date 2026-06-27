@@ -2041,7 +2041,8 @@ private[stream] object Collect {
 
       private val size = inheritedAttributes.mandatoryAttribute[InputBuffer].max
 
-      private val delayStrategy = delayStrategySupplier()
+      private var delayStrategy = delayStrategySupplier()
+      private lazy val decider = inheritedAttributes.mandatoryAttribute[SupervisionStrategy].decider
 
       // buffer has pairs of timestamp of expected push and element
       private val buffer = BufferImpl[(Long, T)](size, inheritedAttributes)
@@ -2092,7 +2093,9 @@ private[stream] object Collect {
           onPushWhenBufferFull()
         else {
           grabAndPull()
-          if (!isTimerActive(TimerName)) {
+          // Resume/Restart may drop the current element, leaving the buffer empty.
+          // Restart also recreates the stateful strategy for subsequent elements.
+          if (!buffer.isEmpty && !isTimerActive(TimerName)) {
             val waitTime = nextElementWaitTime()
             if (waitTime <= DelayPrecisionMS && isAvailable(out)) {
               push(out, buffer.dequeue()._2)
@@ -2110,7 +2113,26 @@ private[stream] object Collect {
 
       private def grabAndPull(): Unit = {
         val element = grab(in)
-        buffer.enqueue((System.nanoTime() + delayStrategy.nextDelay(element).toNanos, element))
+        val delay =
+          try delayStrategy.nextDelay(element)
+          catch {
+            case NonFatal(ex) =>
+              decider(ex) match {
+                case Supervision.Stop =>
+                  failStage(ex)
+                  return
+                case Supervision.Resume =>
+                  // Skip only the offending element, keep buffered elements and current strategy state.
+                  if (shouldPull) pull(in)
+                  return
+                case Supervision.Restart =>
+                  // Skip offending element and recreate the potentially stateful strategy.
+                  delayStrategy = delayStrategySupplier()
+                  if (shouldPull) pull(in)
+                  return
+              }
+          }
+        buffer.enqueue((System.nanoTime() + delay.toNanos, element))
         if (shouldPull) pull(in)
       }
 
@@ -2142,7 +2164,9 @@ private[stream] object Collect {
       }
 
       final override protected def onTimer(key: Any): Unit = {
-        if (isAvailable(out))
+        // A Resume/Restart skip (possibly via an overflow handler that already mutated the buffer) can
+        // leave the buffer empty while this timer is still armed; guard against dequeuing an empty buffer.
+        if (isAvailable(out) && !buffer.isEmpty)
           push(out, buffer.dequeue()._2)
 
         completeIfReady()

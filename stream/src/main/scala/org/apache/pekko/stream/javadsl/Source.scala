@@ -3678,6 +3678,10 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    *
    * Internal buffer has default capacity 16. You can set buffer size by calling `addAttributes(inputBuffer)`
    *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute. On `Supervision.Resume` the
+   * offending element is dropped; on `Supervision.Restart` the delay strategy is recreated from the
+   * supplier (already-buffered elements keep their delays).
+   *
    * '''Emits when''' there is a pending element in the buffer and configured time for this element elapsed
    *  * EmitEarly - strategy do not wait to emit element if buffer is full
    *
