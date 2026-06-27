@@ -234,5 +234,16 @@ class TlsGraphStageIsolatedSpec extends StreamSpec(TlsSpec.configOverrides) with
 
       outputs.foldLeft(ByteString.empty)(_ ++ _) shouldEqual expected
     }
+
+    "grow the on-demand transport buffers for multi-record payloads without losing bytes" in {
+      // Transport buffers start at a single packet and grow on demand (heap, to avoid the JDK
+      // SSLEngine's direct<->heap copy). A payload spanning many records forces transportOut to grow
+      // past its initial size and then be reused across records; the round trip must still deliver
+      // every byte in order.
+      val payloadSize = 200 * 1024
+      val payload = ByteString(Array.tabulate[Byte](payloadSize)(i => (i % 251).toByte))
+
+      roundTrip(initSslContext("TLSv1.2"), List(payload), timeout = 30.seconds) shouldEqual payload
+    }
   }
 }
