@@ -78,6 +78,99 @@ class SourceWithContextSpec extends StreamSpec {
         .expectComplete()
     }
 
+    "pass through contexts using additional filtering operators" in {
+      SourceWithContext
+        .fromTuples(Source(Vector((0, "zero"), (1, "one"), (2, "two"), (3, "three"))))
+        .mapOption {
+          case 0     => None
+          case value => Some(value * 10)
+        }
+        .runWith(TestSink[(Int, String)]())
+        .request(3)
+        .expectNext((10, "one"), (20, "two"), (30, "three"))
+        .expectComplete()
+
+      SourceWithContext
+        .fromTuples(Source(Vector((1, "one"), (2, "two"), (3, "three"))))
+        .collectFirst { case value if value > 1 => value * 10 }
+        .runWith(TestSink[(Int, String)]())
+        .request(1)
+        .expectNext((20, "two"))
+        .expectComplete()
+
+      SourceWithContext
+        .fromTuples(Source(Vector((1, "one"), (2, "two"), (3, "three"))))
+        .collectWhile { case value if value < 3 => value * 10 }
+        .runWith(TestSink[(Int, String)]())
+        .request(3)
+        .expectNext((10, "one"), (20, "two"))
+        .expectComplete()
+
+      SourceWithContext
+        .fromTuples(Source(Vector((1: Any, "one"), ("two": Any, "two"), (3: Any, "three"))))
+        .collectType[Int]
+        .runWith(TestSink[(Int, String)]())
+        .request(2)
+        .expectNext((1, "one"), (3, "three"))
+        .expectComplete()
+
+      val forComprehensionResult =
+        for {
+          value <- SourceWithContext.fromTuples(Source(Vector((1, "one"), (2, "two"), (3, "three"))))
+          if value % 2 == 1
+        } yield value * 10
+
+      forComprehensionResult
+        .runWith(TestSink[(Int, String)]())
+        .request(2)
+        .expectNext((10, "one"), (30, "three"))
+        .expectComplete()
+    }
+
+    "pass through contexts using truncating operators" in {
+      SourceWithContext
+        .fromTuples(Source(Vector((0, "zero"), (1, "one"), (1, "one-duplicate"), (2, "two"), (3, "three"),
+          (4, "four"))))
+        .drop(1)
+        .dropRepeated()
+        .dropWhile(_ < 2)
+        .takeUntil(_ == 3)
+        .takeWithin(1.day)
+        .take(2)
+        .limit(2)
+        .limitWeighted(2)(_ => 1)
+        .runWith(TestSink[(Int, String)]())
+        .request(2)
+        .expectNext((2, "two"), (3, "three"))
+        .expectComplete()
+
+      SourceWithContext
+        .fromTuples(Source(Vector((1, "one"), (2, "two"), (3, "three"))))
+        .takeWhile(_ < 2, inclusive = true)
+        .runWith(TestSink[(Int, String)]())
+        .request(2)
+        .expectNext((1, "one"), (2, "two"))
+        .expectComplete()
+
+      SourceWithContext
+        .fromTuples(Source(Vector((1, "one"), (3, "three"), (4, "four"))))
+        .dropRepeated((left, right) => left % 2 == right % 2)
+        .takeWhile(_ < 3)
+        .runWith(TestSink[(Int, String)]())
+        .request(2)
+        .expectNext((1, "one"))
+        .expectComplete()
+
+      SourceWithContext
+        .fromTuples(Source.single((1, "one")).initialDelay(50.millis))
+        .dropWithin(10.millis)
+        .takeWithin(1.day)
+        .runWith(TestSink[(Int, String)]())
+        .request(1)
+        .expectNext((1, "one"))
+        .expectComplete()
+    }
+
     "pass through all data when using alsoTo" in {
       // alsoTo feeds an asynchronous side Sink, which may still be draining when the
       // main stream completes. Poll until it has observed every element instead of

@@ -18,6 +18,7 @@ import scala.collection.immutable
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 import scala.concurrent.duration.FiniteDuration
+import scala.reflect.ClassTag
 
 import org.apache.pekko
 import pekko.NotUsed
@@ -127,6 +128,17 @@ trait FlowWithContextOps[+Out, +Ctx, +Mat] {
     via(flow.map { case (e, ctx) => (f(e), ctx) })
 
   /**
+   * Context-preserving variant of [[pekko.stream.scaladsl.FlowOps.mapOption]].
+   *
+   * Note, that the context of elements that are filtered out is skipped as well.
+   *
+   * @see [[pekko.stream.scaladsl.FlowOps.mapOption]]
+   * @since 2.0.0
+   */
+  def mapOption[Out2](f: Out => Option[Out2]): Repr[Out2, Ctx] =
+    via(flow.mapOption { case (e, ctx) => f(e).map(_ -> ctx) })
+
+  /**
    * Context-preserving variant of [[pekko.stream.scaladsl.FlowOps.mapError]].
    *
    * @see [[pekko.stream.scaladsl.FlowOps.mapError]]
@@ -205,6 +217,161 @@ trait FlowWithContextOps[+Out, +Ctx, +Mat] {
    */
   def filterNot(pred: Out => Boolean): Repr[Out, Ctx] =
     collect { case e if !pred(e) => e }
+
+  /**
+   * Alias for [[filter]], added to enable filtering in for comprehensions.
+   *
+   * @see [[pekko.stream.scaladsl.FlowOps.withFilter]]
+   * @since 2.0.0
+   */
+  @ApiMayChange
+  def withFilter(pred: Out => Boolean): Repr[Out, Ctx] =
+    filter(pred)
+
+  /**
+   * Context-preserving variant of [[pekko.stream.scaladsl.FlowOps.dropRepeated]].
+   *
+   * @see [[pekko.stream.scaladsl.FlowOps.dropRepeated]]
+   * @since 2.0.0
+   */
+  def dropRepeated(): Repr[Out, Ctx] =
+    dropRepeated(ConstantFun.scalaAnyTwoEquals)
+
+  /**
+   * Context-preserving variant of [[pekko.stream.scaladsl.FlowOps.dropRepeated]].
+   *
+   * @see [[pekko.stream.scaladsl.FlowOps.dropRepeated]]
+   * @since 2.0.0
+   */
+  def dropRepeated(pred: (Out, Out) => Boolean): Repr[Out, Ctx] =
+    via(flow.dropRepeated((left, right) => pred(left._1, right._1)))
+
+  /**
+   * Context-preserving variant of [[pekko.stream.scaladsl.FlowOps.takeWhile]].
+   *
+   * @see [[pekko.stream.scaladsl.FlowOps.takeWhile]]
+   * @since 2.0.0
+   */
+  def takeWhile(pred: Out => Boolean): Repr[Out, Ctx] =
+    takeWhile(pred, inclusive = false)
+
+  /**
+   * Context-preserving variant of [[pekko.stream.scaladsl.FlowOps.takeUntil]].
+   *
+   * @see [[pekko.stream.scaladsl.FlowOps.takeUntil]]
+   * @since 2.0.0
+   */
+  def takeUntil(pred: Out => Boolean): Repr[Out, Ctx] =
+    takeWhile(!pred(_), inclusive = true)
+
+  /**
+   * Context-preserving variant of [[pekko.stream.scaladsl.FlowOps.takeWhile]].
+   *
+   * @see [[pekko.stream.scaladsl.FlowOps.takeWhile]]
+   * @since 2.0.0
+   */
+  def takeWhile(pred: Out => Boolean, inclusive: Boolean): Repr[Out, Ctx] =
+    via(flow.takeWhile({ case (e, _) => pred(e) }, inclusive))
+
+  /**
+   * Context-preserving variant of [[pekko.stream.scaladsl.FlowOps.dropWhile]].
+   *
+   * @see [[pekko.stream.scaladsl.FlowOps.dropWhile]]
+   * @since 2.0.0
+   */
+  def dropWhile(pred: Out => Boolean): Repr[Out, Ctx] =
+    via(flow.dropWhile { case (e, _) => pred(e) })
+
+  /**
+   * Context-preserving variant of [[pekko.stream.scaladsl.FlowOps.collectFirst]].
+   *
+   * Note, that the context of elements that are filtered out is skipped as well.
+   *
+   * @see [[pekko.stream.scaladsl.FlowOps.collectFirst]]
+   * @since 2.0.0
+   */
+  def collectFirst[Out2](f: PartialFunction[Out, Out2]): Repr[Out2, Ctx] =
+    via(flow.collectFirst {
+      case (e, ctx) if f.isDefinedAt(e) => (f(e), ctx)
+    })
+
+  /**
+   * Context-preserving variant of [[pekko.stream.scaladsl.FlowOps.collectWhile]].
+   *
+   * Note, that the context of elements that are filtered out is skipped as well.
+   *
+   * @see [[pekko.stream.scaladsl.FlowOps.collectWhile]]
+   * @since 2.0.0
+   */
+  def collectWhile[Out2](f: PartialFunction[Out, Out2]): Repr[Out2, Ctx] =
+    via(flow.collectWhile {
+      case (e, ctx) if f.isDefinedAt(e) => (f(e), ctx)
+    })
+
+  /**
+   * Context-preserving variant of [[pekko.stream.scaladsl.FlowOps.collectType]].
+   *
+   * Note, that the context of elements that are filtered out is skipped as well.
+   *
+   * @see [[pekko.stream.scaladsl.FlowOps.collectType]]
+   * @since 2.0.0
+   */
+  def collectType[Out2](implicit tag: ClassTag[Out2]): Repr[Out2, Ctx] =
+    collect { case tag(e) => e }
+
+  /**
+   * Context-preserving variant of [[pekko.stream.scaladsl.FlowOps.drop]].
+   *
+   * @see [[pekko.stream.scaladsl.FlowOps.drop]]
+   * @since 2.0.0
+   */
+  def drop(n: Long): Repr[Out, Ctx] =
+    via(flow.drop(n))
+
+  /**
+   * Context-preserving variant of [[pekko.stream.scaladsl.FlowOps.dropWithin]].
+   *
+   * @see [[pekko.stream.scaladsl.FlowOps.dropWithin]]
+   * @since 2.0.0
+   */
+  def dropWithin(d: FiniteDuration): Repr[Out, Ctx] =
+    via(flow.dropWithin(d))
+
+  /**
+   * Context-preserving variant of [[pekko.stream.scaladsl.FlowOps.take]].
+   *
+   * @see [[pekko.stream.scaladsl.FlowOps.take]]
+   * @since 2.0.0
+   */
+  def take(n: Long): Repr[Out, Ctx] =
+    via(flow.take(n))
+
+  /**
+   * Context-preserving variant of [[pekko.stream.scaladsl.FlowOps.takeWithin]].
+   *
+   * @see [[pekko.stream.scaladsl.FlowOps.takeWithin]]
+   * @since 2.0.0
+   */
+  def takeWithin(d: FiniteDuration): Repr[Out, Ctx] =
+    via(flow.takeWithin(d))
+
+  /**
+   * Context-preserving variant of [[pekko.stream.scaladsl.FlowOps.limit]].
+   *
+   * @see [[pekko.stream.scaladsl.FlowOps.limit]]
+   * @since 2.0.0
+   */
+  def limit(max: Long): Repr[Out, Ctx] =
+    limitWeighted(max)(_ => 1)
+
+  /**
+   * Context-preserving variant of [[pekko.stream.scaladsl.FlowOps.limitWeighted]].
+   *
+   * @see [[pekko.stream.scaladsl.FlowOps.limitWeighted]]
+   * @since 2.0.0
+   */
+  def limitWeighted(max: Long)(costFn: Out => Long): Repr[Out, Ctx] =
+    via(flow.limitWeighted(max) { case (e, _) => costFn(e) })
 
   /**
    * Context-preserving variant of [[pekko.stream.scaladsl.FlowOps.grouped]].
