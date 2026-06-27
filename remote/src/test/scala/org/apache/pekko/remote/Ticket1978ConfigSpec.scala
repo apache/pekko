@@ -36,6 +36,16 @@ class Ticket1978ConfigSpec extends PekkoSpec("""
       settings.SSLEnabledAlgorithms should ===(
         Set("TLS_AES_128_GCM_SHA256", "TLS_AES_256_GCM_SHA384"))
       settings.SSLRandomNumberGenerator should ===("SecureRandom")
+      settings.SSLHostnameVerification should ===(false)
+    }
+
+    "support hostname-verification setting" in {
+      val settings = new SSLSettings(
+        com.typesafe.config.ConfigFactory
+          .parseString("hostname-verification = on")
+          .withFallback(system.settings.config.getConfig("pekko.remote.classic.netty.ssl.security")))
+
+      settings.SSLHostnameVerification should ===(true)
     }
   }
 }
