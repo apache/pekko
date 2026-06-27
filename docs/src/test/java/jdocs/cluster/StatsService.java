@@ -13,9 +13,7 @@
 
 package jdocs.cluster;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import jdocs.cluster.StatsMessages.StatsJob;
 import org.apache.pekko.actor.AbstractActor;
@@ -69,9 +67,9 @@ public class StatsService extends AbstractActor {
 abstract class StatsService2 extends AbstractActor {
   // #router-lookup-in-code
   int totalInstances = 100;
-  Iterable<String> routeesPaths = Collections.singletonList("/user/statsWorker");
+  Iterable<String> routeesPaths = List.of("/user/statsWorker");
   boolean allowLocalRoutees = true;
-  Set<String> useRoles = new HashSet<>(Arrays.asList("compute"));
+  Set<String> useRoles = Set.of("compute");
   ActorRef workerRouter =
       getContext()
           .actorOf(
@@ -90,7 +88,7 @@ abstract class StatsService3 extends AbstractActor {
   int totalInstances = 100;
   int maxInstancesPerNode = 3;
   boolean allowLocalRoutees = false;
-  Set<String> useRoles = new HashSet<>(Arrays.asList("compute"));
+  Set<String> useRoles = Set.of("compute");
   ActorRef workerRouter =
       getContext()
           .actorOf(

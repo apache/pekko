@@ -18,7 +18,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.InputStream;
 import java.time.Duration;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import org.apache.pekko.stream.StreamTestJupiter;
 import org.apache.pekko.stream.javadsl.Sink;
@@ -44,7 +43,7 @@ public class InputStreamSinkTest extends StreamTestJupiter {
     final Duration timeout = Duration.ofMillis(300);
 
     final Sink<ByteString, InputStream> sink = StreamConverters.asInputStream(timeout);
-    final List<ByteString> list = Collections.singletonList(ByteString.fromString("a"));
+    final List<ByteString> list = List.of(ByteString.fromString("a"));
     final InputStream stream = Source.from(list).runWith(sink, system);
 
     byte[] a = new byte[1];

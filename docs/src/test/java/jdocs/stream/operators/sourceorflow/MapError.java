@@ -13,7 +13,7 @@
 
 package jdocs.stream.operators.sourceorflow;
 
-import java.util.Arrays;
+import java.util.List;
 import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.stream.javadsl.Sink;
 import org.apache.pekko.stream.javadsl.Source;
@@ -25,7 +25,7 @@ public class MapError {
     // #map-error
 
     final ActorSystem system = ActorSystem.create("mapError-operator-example");
-    Source.from(Arrays.asList(-1, 0, 1))
+    Source.from(List.of(-1, 0, 1))
         .map(x -> 1 / x)
         .mapError(
             ArithmeticException.class,

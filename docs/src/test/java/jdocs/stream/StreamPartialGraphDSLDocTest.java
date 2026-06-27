@@ -16,7 +16,7 @@ package jdocs.stream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.List;
 import java.util.Iterator;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.TimeUnit;
@@ -63,7 +63,7 @@ public class StreamPartialGraphDSLDocTest extends AbstractJavaTest {
               builder.from(zip1.out()).toInlet(zip2.in0());
               // return the shape, which has three inputs and one output
               return UniformFanInShape.<Integer, Integer>create(
-                  zip2.out(), Arrays.asList(zip1.in0(), zip1.in1(), zip2.in1()));
+                  zip2.out(), List.of(zip1.in0(), zip1.in1(), zip2.in1()));
             });
 
     final Sink<Integer, CompletionStage<Integer>> resultSink = Sink.<Integer>head();
@@ -190,7 +190,7 @@ public class StreamPartialGraphDSLDocTest extends AbstractJavaTest {
     Sink<Integer, NotUsed> sinks =
         Sink.combine(sendRemotely, localProcessing, new ArrayList<>(), a -> Broadcast.create(a));
 
-    Source.<Integer>from(Arrays.asList(new Integer[] {0, 1, 2})).runWith(sinks, system);
+    Source.<Integer>from(List.of(0, 1, 2)).runWith(sinks, system);
     // #sink-combine
     probe.expectMsgEquals(0);
     probe.expectMsgEquals(1);

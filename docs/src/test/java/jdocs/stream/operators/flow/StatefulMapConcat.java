@@ -13,6 +13,7 @@
 
 package jdocs.stream.operators.flow;
 
+import java.util.Collections;
 import java.util.*;
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.actor.typed.ActorSystem;
@@ -27,7 +28,7 @@ public class StatefulMapConcat {
   static void zipWithIndex() {
     // #zip-with-index
     Source<Pair<String, Long>, NotUsed> letterAndIndex =
-        Source.from(Arrays.asList("a", "b", "c", "d"))
+        Source.from(List.of("a", "b", "c", "d"))
             .statefulMapConcat(
                 () -> {
                   // variables we close over with lambdas must be final, so we use a container,
@@ -39,7 +40,7 @@ public class StatefulMapConcat {
                     final Pair<String, Long> zipped = new Pair<>(element, index[0]);
                     index[0] += 1;
                     // we return an iterable with the single element
-                    return Collections.singletonList(zipped);
+                    return List.of(zipped);
                   };
                 });
 
@@ -55,8 +56,7 @@ public class StatefulMapConcat {
   static void denylist() {
     // #denylist
     Source<String, NotUsed> fruitsAndDenyCommands =
-        Source.from(
-            Arrays.asList("banana", "pear", "orange", "deny:banana", "banana", "pear", "banana"));
+        Source.from(List.of("banana", "pear", "orange", "deny:banana", "banana", "pear", "banana"));
 
     Flow<String, String, NotUsed> denyFilterFlow =
         Flow.of(String.class)
@@ -67,13 +67,11 @@ public class StatefulMapConcat {
                   return (element) -> {
                     if (element.startsWith("deny:")) {
                       denyList.add(element.substring("deny:".length()));
-                      return Collections
-                          .emptyList(); // no element downstream when adding a deny listed keyword
+                      return List.of(); // no element downstream when adding a deny listed keyword
                     } else if (denyList.contains(element)) {
-                      return Collections
-                          .emptyList(); // no element downstream if element is deny listed
+                      return List.of(); // no element downstream if element is deny listed
                     } else {
-                      return Collections.singletonList(element);
+                      return List.of(element);
                     }
                   };
                 });
@@ -90,7 +88,7 @@ public class StatefulMapConcat {
   static void reactOnEnd() {
     // #bs-last
     Source<String, NotUsed> words =
-        Source.from(Arrays.asList("baboon", "crocodile", "bat", "flamingo", "hedgehog", "beaver"));
+        Source.from(List.of("baboon", "crocodile", "bat", "flamingo", "hedgehog", "beaver"));
 
     Flow<String, String, NotUsed> bWordsLast =
         Flow.of(String.class)
@@ -109,7 +107,7 @@ public class StatefulMapConcat {
                       return stashedBWords;
                     } else {
                       // emit the element as is
-                      return Collections.singletonList(element);
+                      return List.of(element);
                     }
                   };
                 });

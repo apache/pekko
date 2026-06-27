@@ -16,8 +16,6 @@ package org.apache.pekko.actor.testkit.typed.javadsl;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.Duration;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.IntStream;
 import org.apache.pekko.Done;
@@ -246,7 +244,7 @@ public class BehaviorTestKitTest {
     test.run(new SpawnChildren(2));
     List<Effect> allEffects = test.getAllEffects();
     assertEquals(
-        Arrays.asList(
+        List.of(
             Effects.spawned(childInitial, "child0"),
             Effects.spawned(childInitial, "child1", Props.empty())),
         allEffects);
@@ -265,7 +263,7 @@ public class BehaviorTestKitTest {
     test.run(new SpawnChildrenAnonymous(2));
     List<Effect> allEffects = test.getAllEffects();
     assertEquals(
-        Arrays.asList(
+        List.of(
             Effects.spawnedAnonymous(childInitial),
             Effects.spawnedAnonymous(childInitial, Props.empty())),
         allEffects);
@@ -330,7 +328,7 @@ public class BehaviorTestKitTest {
 
     BehaviorTestKit<String> session = test.childTestKit(sessionRef);
     session.run("hello");
-    assertEquals(Collections.singletonList("hello"), h.getAllReceived());
+    assertEquals(List.of("hello"), h.getAllReceived());
 
     ReplyInbox<Done> doneReply = test.runAsk(replyTo -> new KillSession(sessionRef, replyTo));
     doneReply.expectReply(Done.getInstance());

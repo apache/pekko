@@ -18,7 +18,6 @@
 package jdocs.stream.operators.sourceorflow;
 
 import java.net.URL;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import org.apache.pekko.actor.ActorSystem;
@@ -63,7 +62,7 @@ public interface MapWithResource {
     // some database for JVM
     final Database db = null;
     Source.from(
-            Arrays.asList(
+            List.of(
                 "SELECT * FROM shop ORDER BY article-0000 order by gmtModified desc limit 100;",
                 "SELECT * FROM shop ORDER BY article-0001 order by gmtModified desc limit 100;"))
         .mapWithResource(

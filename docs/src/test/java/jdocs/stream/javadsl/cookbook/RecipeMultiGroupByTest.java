@@ -16,7 +16,6 @@ package jdocs.stream.javadsl.cookbook;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.TimeUnit;
@@ -95,7 +94,7 @@ public class RecipeMultiGroupByTest extends RecipeTest {
 
       {
         final Source<Message, NotUsed> elems =
-            Source.from(Arrays.asList("1: a", "1: b", "all: c", "all: d", "1: e"))
+            Source.from(List.of("1: a", "1: b", "all: c", "all: d", "1: e"))
                 .map(s -> new Message(s));
 
         // #multi-groupby

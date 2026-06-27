@@ -14,7 +14,7 @@
 package jdocs.stream.javadsl.cookbook;
 
 import java.time.Duration;
-import java.util.Arrays;
+import java.util.List;
 import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.japi.Pair;
 import org.apache.pekko.stream.ClosedShape;
@@ -68,7 +68,7 @@ public class RecipeManualTrigger extends RecipeTest {
                         (builder, source, sink) -> {
                           SourceShape<Message> elements =
                               builder.add(
-                                  Source.from(Arrays.asList("1", "2", "3", "4"))
+                                  Source.from(List.of("1", "2", "3", "4"))
                                       .map(t -> new Message(t)));
                           FlowShape<Pair<Message, Trigger>, Message> takeMessage =
                               builder.add(
@@ -126,7 +126,7 @@ public class RecipeManualTrigger extends RecipeTest {
                         (builder, source, sink) -> {
                           final SourceShape<Message> elements =
                               builder.add(
-                                  Source.from(Arrays.asList("1", "2", "3", "4"))
+                                  Source.from(List.of("1", "2", "3", "4"))
                                       .map(t -> new Message(t)));
                           final FanInShape2<Message, Trigger, Message> zipWith =
                               builder.add(ZipWith.create((msg, trigger) -> msg));

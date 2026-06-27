@@ -22,7 +22,7 @@ import org.apache.pekko.stream.javadsl.Source;
 // ...
 
 // #imports
-import java.util.Collections;
+import java.util.List;
 
 public class Combine {
 
@@ -35,7 +35,7 @@ public class Combine {
     Source<Integer, NotUsed> source3 = Source.range(12, 14);
 
     final Source<Integer, NotUsed> combined =
-        Source.combine(source1, source2, Collections.singletonList(source3), Merge::create);
+        Source.combine(source1, source2, List.of(source3), Merge::create);
 
     combined.runForeach(System.out::println, system);
     // could print (order between sources is not deterministic)
@@ -58,7 +58,7 @@ public class Combine {
     Source<Integer, NotUsed> source3 = Source.range(12, 14);
 
     final Source<Integer, NotUsed> sources =
-        Source.combine(source1, source2, Collections.singletonList(source3), Concat::create);
+        Source.combine(source1, source2, List.of(source3), Concat::create);
 
     sources.runForeach(System.out::println, system);
     // prints (order is deterministic)

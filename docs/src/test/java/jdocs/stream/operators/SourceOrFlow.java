@@ -97,7 +97,7 @@ class SourceOrFlow {
 
   void zipWithIndexExample() {
     // #zip-with-index
-    Source.from(Arrays.asList("apple", "orange", "banana"))
+    Source.from(List.of("apple", "orange", "banana"))
         .zipWithIndex()
         .runForeach(System.out::println, system);
     // this will print ('apple', 0), ('orange', 1), ('banana', 2)
@@ -106,8 +106,8 @@ class SourceOrFlow {
 
   void zipExample() {
     // #zip
-    Source<String, NotUsed> sourceFruits = Source.from(Arrays.asList("apple", "orange", "banana"));
-    Source<String, NotUsed> sourceFirstLetters = Source.from(Arrays.asList("A", "O", "B"));
+    Source<String, NotUsed> sourceFruits = Source.from(List.of("apple", "orange", "banana"));
+    Source<String, NotUsed> sourceFirstLetters = Source.from(List.of("A", "O", "B"));
     sourceFruits.zip(sourceFirstLetters).runForeach(System.out::println, system);
     // this will print ('apple', 'A'), ('orange', 'O'), ('banana', 'B')
 
@@ -116,8 +116,8 @@ class SourceOrFlow {
 
   void zipWithExample() {
     // #zip-with
-    Source<String, NotUsed> sourceCount = Source.from(Arrays.asList("one", "two", "three"));
-    Source<String, NotUsed> sourceFruits = Source.from(Arrays.asList("apple", "orange", "banana"));
+    Source<String, NotUsed> sourceCount = Source.from(List.of("one", "two", "three"));
+    Source<String, NotUsed> sourceFruits = Source.from(List.of("apple", "orange", "banana"));
     sourceCount
         .zipWith(
             sourceFruits,
@@ -130,8 +130,8 @@ class SourceOrFlow {
 
   void prependExample() {
     // #prepend
-    Source<String, NotUsed> ladies = Source.from(Arrays.asList("Emma", "Emily"));
-    Source<String, NotUsed> gentlemen = Source.from(Arrays.asList("Liam", "William"));
+    Source<String, NotUsed> ladies = Source.from(List.of("Emma", "Emily"));
+    Source<String, NotUsed> gentlemen = Source.from(List.of("Liam", "William"));
     gentlemen.prepend(ladies).runForeach(System.out::println, system);
     // this will print "Emma", "Emily", "Liam", "William"
 
@@ -140,8 +140,8 @@ class SourceOrFlow {
 
   void prependLazyExample() {
     // #prepend
-    Source<String, NotUsed> ladies = Source.from(Arrays.asList("Emma", "Emily"));
-    Source<String, NotUsed> gentlemen = Source.from(Arrays.asList("Liam", "William"));
+    Source<String, NotUsed> ladies = Source.from(List.of("Emma", "Emily"));
+    Source<String, NotUsed> gentlemen = Source.from(List.of("Liam", "William"));
     gentlemen.prependLazy(ladies).runForeach(System.out::println, system);
     // this will print "Emma", "Emily", "Liam", "William"
 
@@ -150,8 +150,8 @@ class SourceOrFlow {
 
   void concatExample() {
     // #concat
-    Source<Integer, NotUsed> sourceA = Source.from(Arrays.asList(1, 2, 3, 4));
-    Source<Integer, NotUsed> sourceB = Source.from(Arrays.asList(10, 20, 30, 40));
+    Source<Integer, NotUsed> sourceA = Source.from(List.of(1, 2, 3, 4));
+    Source<Integer, NotUsed> sourceB = Source.from(List.of(10, 20, 30, 40));
     sourceA.concat(sourceB).runForeach(System.out::println, system);
     // prints 1, 2, 3, 4, 10, 20, 30, 40
 
@@ -160,8 +160,8 @@ class SourceOrFlow {
 
   void concatLazyExample() {
     // #concatLazy
-    Source<Integer, NotUsed> sourceA = Source.from(Arrays.asList(1, 2, 3, 4));
-    Source<Integer, NotUsed> sourceB = Source.from(Arrays.asList(10, 20, 30, 40));
+    Source<Integer, NotUsed> sourceA = Source.from(List.of(1, 2, 3, 4));
+    Source<Integer, NotUsed> sourceB = Source.from(List.of(10, 20, 30, 40));
     sourceA.concatLazy(sourceB).runForeach(System.out::println, system);
     // prints 1, 2, 3, 4, 10, 20, 30, 40
 
@@ -170,9 +170,9 @@ class SourceOrFlow {
 
   void concatAllLazyExample() {
     // #concatAllLazy
-    Source<Integer, NotUsed> sourceA = Source.from(Arrays.asList(1, 2, 3));
-    Source<Integer, NotUsed> sourceB = Source.from(Arrays.asList(4, 5, 6));
-    Source<Integer, NotUsed> sourceC = Source.from(Arrays.asList(7, 8, 9));
+    Source<Integer, NotUsed> sourceA = Source.from(List.of(1, 2, 3));
+    Source<Integer, NotUsed> sourceB = Source.from(List.of(4, 5, 6));
+    Source<Integer, NotUsed> sourceC = Source.from(List.of(7, 8, 9));
     sourceA
         .concatAllLazy(sourceB, sourceC)
         .fold(new StringJoiner(","), (joiner, input) -> joiner.add(String.valueOf(input)))
@@ -183,8 +183,8 @@ class SourceOrFlow {
 
   void interleaveExample() {
     // #interleave
-    Source<Integer, NotUsed> sourceA = Source.from(Arrays.asList(1, 2, 3, 4));
-    Source<Integer, NotUsed> sourceB = Source.from(Arrays.asList(10, 20, 30, 40));
+    Source<Integer, NotUsed> sourceA = Source.from(List.of(1, 2, 3, 4));
+    Source<Integer, NotUsed> sourceB = Source.from(List.of(10, 20, 30, 40));
     sourceA.interleave(sourceB, 2).runForeach(System.out::println, system);
     // prints 1, 2, 10, 20, 3, 4, 30, 40
 
@@ -193,11 +193,11 @@ class SourceOrFlow {
 
   void interleaveAllExample() {
     // #interleaveAll
-    Source<Integer, NotUsed> sourceA = Source.from(Arrays.asList(1, 2, 7, 8));
-    Source<Integer, NotUsed> sourceB = Source.from(Arrays.asList(3, 4, 9));
-    Source<Integer, NotUsed> sourceC = Source.from(Arrays.asList(5, 6));
+    Source<Integer, NotUsed> sourceA = Source.from(List.of(1, 2, 7, 8));
+    Source<Integer, NotUsed> sourceB = Source.from(List.of(3, 4, 9));
+    Source<Integer, NotUsed> sourceC = Source.from(List.of(5, 6));
     sourceA
-        .interleaveAll(Arrays.asList(sourceB, sourceC), 2, false)
+        .interleaveAll(List.of(sourceB, sourceC), 2, false)
         .fold(new StringJoiner(","), (joiner, input) -> joiner.add(String.valueOf(input)))
         .runForeach(System.out::println, system);
     // prints 1,2,3,4,5,6,7,8,9
@@ -206,8 +206,8 @@ class SourceOrFlow {
 
   void mergeExample() {
     // #merge
-    Source<Integer, NotUsed> sourceA = Source.from(Arrays.asList(1, 2, 3, 4));
-    Source<Integer, NotUsed> sourceB = Source.from(Arrays.asList(10, 20, 30, 40));
+    Source<Integer, NotUsed> sourceA = Source.from(List.of(1, 2, 3, 4));
+    Source<Integer, NotUsed> sourceB = Source.from(List.of(10, 20, 30, 40));
     sourceA.merge(sourceB).runForeach(System.out::println, system);
     // merging is not deterministic, can for example print 1, 2, 3, 4, 10, 20, 30, 40
 
@@ -216,20 +216,18 @@ class SourceOrFlow {
 
   void mergeAllExample() {
     // #merge-all
-    Source<Integer, NotUsed> sourceA = Source.from(Arrays.asList(1, 2, 3));
-    Source<Integer, NotUsed> sourceB = Source.from(Arrays.asList(4, 5, 6));
-    Source<Integer, NotUsed> sourceC = Source.from(Arrays.asList(7, 8, 9, 10));
-    sourceA
-        .mergeAll(Arrays.asList(sourceB, sourceC), false)
-        .runForeach(System.out::println, system);
+    Source<Integer, NotUsed> sourceA = Source.from(List.of(1, 2, 3));
+    Source<Integer, NotUsed> sourceB = Source.from(List.of(4, 5, 6));
+    Source<Integer, NotUsed> sourceC = Source.from(List.of(7, 8, 9, 10));
+    sourceA.mergeAll(List.of(sourceB, sourceC), false).runForeach(System.out::println, system);
     // merging is not deterministic, can for example print 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
     // #merge-all
   }
 
   void mergePreferredExample() {
     // #mergePreferred
-    Source<Integer, NotUsed> sourceA = Source.from(Arrays.asList(1, 2, 3, 4));
-    Source<Integer, NotUsed> sourceB = Source.from(Arrays.asList(10, 20, 30, 40));
+    Source<Integer, NotUsed> sourceA = Source.from(List.of(1, 2, 3, 4));
+    Source<Integer, NotUsed> sourceB = Source.from(List.of(10, 20, 30, 40));
 
     sourceA.mergePreferred(sourceB, false, false).runForeach(System.out::println, system);
     // prints 1, 10, ... since both sources have their first element ready and the left source is
@@ -243,8 +241,8 @@ class SourceOrFlow {
 
   void mergePrioritizedExample() {
     // #mergePrioritized
-    Source<Integer, NotUsed> sourceA = Source.from(Arrays.asList(1, 2, 3, 4));
-    Source<Integer, NotUsed> sourceB = Source.from(Arrays.asList(10, 20, 30, 40));
+    Source<Integer, NotUsed> sourceA = Source.from(List.of(1, 2, 3, 4));
+    Source<Integer, NotUsed> sourceB = Source.from(List.of(10, 20, 30, 40));
 
     sourceA.mergePrioritized(sourceB, 99, 1, false).runForeach(System.out::println, system);
     // prints e.g. 1, 10, 2, 3, 4, 20, 30, 40 since both sources have their first element ready and
@@ -255,11 +253,11 @@ class SourceOrFlow {
 
   void mergePrioritizedNExample() {
     // #mergePrioritizedN
-    Source<Integer, NotUsed> sourceA = Source.from(Arrays.asList(1, 2, 3, 4));
-    Source<Integer, NotUsed> sourceB = Source.from(Arrays.asList(10, 20, 30, 40));
-    Source<Integer, NotUsed> sourceC = Source.from(Arrays.asList(100, 200, 300, 400));
+    Source<Integer, NotUsed> sourceA = Source.from(List.of(1, 2, 3, 4));
+    Source<Integer, NotUsed> sourceB = Source.from(List.of(10, 20, 30, 40));
+    Source<Integer, NotUsed> sourceC = Source.from(List.of(100, 200, 300, 400));
     List<Pair<Source<Integer, ?>, Integer>> sourcesAndPriorities =
-        Arrays.asList(new Pair<>(sourceA, 9900), new Pair<>(sourceB, 99), new Pair<>(sourceC, 1));
+        List.of(new Pair<>(sourceA, 9900), new Pair<>(sourceB, 99), new Pair<>(sourceC, 1));
     Source.mergePrioritizedN(sourcesAndPriorities, false).runForeach(System.out::println, system);
     // prints e.g. 1, 100, 2, 3, 4, 10, 20, 30, 40, 200, 300, 400  since both sources have their
     // first element ready and
@@ -271,14 +269,14 @@ class SourceOrFlow {
 
   void mergeSortedExample() {
     // #merge-sorted
-    Source<Integer, NotUsed> sourceA = Source.from(Arrays.asList(1, 3, 5, 7));
-    Source<Integer, NotUsed> sourceB = Source.from(Arrays.asList(2, 4, 6, 8));
+    Source<Integer, NotUsed> sourceA = Source.from(List.of(1, 3, 5, 7));
+    Source<Integer, NotUsed> sourceB = Source.from(List.of(2, 4, 6, 8));
     sourceA
         .mergeSorted(sourceB, Comparator.<Integer>naturalOrder())
         .runForeach(System.out::println, system);
     // prints 1, 2, 3, 4, 5, 6, 7, 8
 
-    Source<Integer, NotUsed> sourceC = Source.from(Arrays.asList(20, 1, 1, 1));
+    Source<Integer, NotUsed> sourceC = Source.from(List.of(20, 1, 1, 1));
     sourceA
         .mergeSorted(sourceC, Comparator.<Integer>naturalOrder())
         .runForeach(System.out::println, system);
@@ -288,8 +286,8 @@ class SourceOrFlow {
 
   void orElseExample() {
     // #or-else
-    Source<String, NotUsed> source1 = Source.from(Arrays.asList("First source"));
-    Source<String, NotUsed> source2 = Source.from(Arrays.asList("Second source"));
+    Source<String, NotUsed> source1 = Source.from(List.of("First source"));
+    Source<String, NotUsed> source2 = Source.from(List.of("Second source"));
     Source<String, NotUsed> emptySource = Source.empty();
 
     source1.orElse(source2).runForeach(System.out::println, system);
@@ -303,7 +301,7 @@ class SourceOrFlow {
 
   void conflateExample() {
     // #conflate
-    Source.cycle(() -> Arrays.asList(1, 10, 100).iterator())
+    Source.cycle(() -> List.of(1, 10, 100).iterator())
         .throttle(10, Duration.ofSeconds(1)) // fast upstream
         .conflate((Integer acc, Integer el) -> acc + el)
         .throttle(1, Duration.ofSeconds(1)); // slow downstream
@@ -362,7 +360,7 @@ class SourceOrFlow {
   void conflateWithSeedExample() {
     // #conflateWithSeed
 
-    Source.cycle(() -> Arrays.asList(1, 10, 100).iterator())
+    Source.cycle(() -> List.of(1, 10, 100).iterator())
         .throttle(10, Duration.ofSeconds(1)) // fast upstream
         .conflateWithSeed(Summed::new, (Summed acc, Integer el) -> acc.sum(new Summed(el)))
         .throttle(1, Duration.ofSeconds(1)); // slow downstream
@@ -414,7 +412,7 @@ class SourceOrFlow {
 
   void collectFirstExample() {
     // #collectFirst
-    Source.from(Arrays.asList(1, 3, 5, 7, 8, 9, 10))
+    Source.from(List.of(1, 3, 5, 7, 8, 9, 10))
         .collectFirst(
             PFBuilder.<Integer, Integer>create()
                 .match(Integer.class, i -> i % 2 == 0, i -> i)
@@ -437,14 +435,12 @@ class SourceOrFlow {
 
   void groupedExample() {
     // #grouped
-    Source.from(Arrays.asList(1, 2, 3, 4, 5, 6, 7))
-        .grouped(3)
-        .runForeach(System.out::println, system);
+    Source.from(List.of(1, 2, 3, 4, 5, 6, 7)).grouped(3).runForeach(System.out::println, system);
     // [1, 2, 3]
     // [4, 5, 6]
     // [7]
 
-    Source.from(Arrays.asList(1, 2, 3, 4, 5, 6, 7))
+    Source.from(List.of(1, 2, 3, 4, 5, 6, 7))
         .grouped(3)
         .map(g -> g.stream().reduce(0, Integer::sum))
         .runForeach(System.out::println, system);
@@ -456,13 +452,13 @@ class SourceOrFlow {
 
   void groupedWeightedExample() {
     // #groupedWeighted
-    Source.from(Arrays.asList(Arrays.asList(1, 2), Arrays.asList(3, 4), Arrays.asList(5, 6)))
+    Source.from(List.of(List.of(1, 2), List.of(3, 4), List.of(5, 6)))
         .groupedWeighted(4, x -> (long) x.size())
         .runForeach(System.out::println, system);
     // [[1, 2], [3, 4]]
     // [[5, 6]]
 
-    Source.from(Arrays.asList(Arrays.asList(1, 2), Arrays.asList(3, 4), Arrays.asList(5, 6)))
+    Source.from(List.of(List.of(1, 2), List.of(3, 4), List.of(5, 6)))
         .groupedWeighted(3, x -> (long) x.size())
         .runForeach(System.out::println, system);
     // [[1, 2], [3, 4]]
@@ -472,7 +468,7 @@ class SourceOrFlow {
 
   void groupedAdjacentByExample() {
     // #groupedAdjacentBy
-    Source.from(Arrays.asList("Hello", "Hi", "Greetings", "Hey"))
+    Source.from(List.of("Hello", "Hi", "Greetings", "Hey"))
         .groupedAdjacentBy(str -> str.charAt(0))
         .runForeach(System.out::println, system);
     // prints:
@@ -484,7 +480,7 @@ class SourceOrFlow {
 
   void groupedAdjacentByWeightedExample() {
     // #groupedAdjacentByWeighted
-    Source.from(Arrays.asList("Hello", "HiHi", "Hi", "Hi", "Greetings", "Hey"))
+    Source.from(List.of("Hello", "HiHi", "Hi", "Hi", "Greetings", "Hey"))
         .groupedAdjacentByWeighted(str -> str.charAt(0), 4, str -> (long) str.length())
         .runForeach(System.out::println, system);
     // prints:
@@ -566,7 +562,7 @@ class SourceOrFlow {
 
     Source<Optional<String>, NotUsed> source =
         Source.from(
-            Arrays.asList(Optional.of("1"), Optional.empty(), Optional.empty(), Optional.of("4")));
+            List.of(Optional.of("1"), Optional.empty(), Optional.empty(), Optional.of("4")));
 
     Source.optionalVia(source, flow, Keep.none()).runForeach(System.out::println, system);
     // Optional[1]
@@ -578,7 +574,7 @@ class SourceOrFlow {
 
   void takeExample() {
     // #take
-    Source.from(Arrays.asList(1, 2, 3, 4, 5)).take(3).runForeach(System.out::println, system);
+    Source.from(List.of(1, 2, 3, 4, 5)).take(3).runForeach(System.out::println, system);
     // this will print:
     // 1
     // 2
@@ -588,7 +584,7 @@ class SourceOrFlow {
 
   void takeWhileExample() {
     // #take-while
-    Source.from(Arrays.asList(1, 2, 3, 4, 5))
+    Source.from(List.of(1, 2, 3, 4, 5))
         .takeWhile(i -> i < 3)
         .runForeach(System.out::println, system);
     // this will print:
@@ -601,7 +597,7 @@ class SourceOrFlow {
     // #filter
     Source<String, NotUsed> words =
         Source.from(
-            Arrays.asList(
+            List.of(
                 ("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor"
                         + " incididunt ut labore et dolore magna aliqua")
                     .split(" ")));
@@ -620,7 +616,7 @@ class SourceOrFlow {
     // #filterNot
     Source<String, NotUsed> words =
         Source.from(
-            Arrays.asList(
+            List.of(
                 ("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor"
                         + " incididunt ut labore et dolore magna aliqua")
                     .split(" ")));
@@ -637,7 +633,7 @@ class SourceOrFlow {
 
   void dropRepeatedExample() {
     // #dropRepeated
-    Source.from(Arrays.asList(1, 2, 2, 3, 3, 1, 4))
+    Source.from(List.of(1, 2, 2, 3, 3, 1, 4))
         .dropRepeated()
         .runForeach(System.out::println, system);
     // prints:
@@ -652,7 +648,7 @@ class SourceOrFlow {
 
   void dropExample() {
     // #drop
-    Source<Integer, NotUsed> fiveIntegers = Source.from(Arrays.asList(1, 2, 3, 4, 5));
+    Source<Integer, NotUsed> fiveIntegers = Source.from(List.of(1, 2, 3, 4, 5));
     Source<Integer, NotUsed> droppedThreeInts = fiveIntegers.drop(3);
 
     droppedThreeInts.runForeach(System.out::println, system);
@@ -664,7 +660,7 @@ class SourceOrFlow {
   void dropWhileExample() {
     // #dropWhile
     Source<Integer, NotUsed> droppedWhileNegative =
-        Source.from(Arrays.asList(-3, -2, -1, 0, 1, 2, 3, -1)).dropWhile(integer -> integer < 0);
+        Source.from(List.of(-3, -2, -1, 0, 1, 2, 3, -1)).dropWhile(integer -> integer < 0);
 
     droppedWhileNegative.runForeach(System.out::println, system);
     // 1

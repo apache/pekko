@@ -13,7 +13,6 @@
 
 package jdocs.stream.javadsl.cookbook;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -53,7 +52,7 @@ public class RecipeReduceByKeyTest extends RecipeTest {
     new TestKit(system) {
       {
         final Source<String, NotUsed> words =
-            Source.from(Arrays.asList("hello", "world", "and", "hello", "pekko"));
+            Source.from(List.of("hello", "world", "and", "hello", "pekko"));
 
         // #word-count
         final int MAXIMUM_DISTINCT_WORDS = 1000;
@@ -106,7 +105,7 @@ public class RecipeReduceByKeyTest extends RecipeTest {
     new TestKit(system) {
       {
         final Source<String, NotUsed> words =
-            Source.from(Arrays.asList("hello", "world", "and", "hello", "pekko"));
+            Source.from(List.of("hello", "world", "and", "hello", "pekko"));
 
         // #reduce-by-key-general2
         final int MAXIMUM_DISTINCT_WORDS = 1000;

@@ -18,7 +18,7 @@
 package jdocs.stream.operators.flow;
 
 // #imports
-import java.util.Arrays;
+import java.util.List;
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.stream.javadsl.Flow;
@@ -31,7 +31,7 @@ public class DiMap {
 
   private void demoDiMapUsage() {
     // #dimap
-    final Source<String, NotUsed> source = Source.from(Arrays.asList("1", "2", "3"));
+    final Source<String, NotUsed> source = Source.from(List.of("1", "2", "3"));
     final Flow<Integer, Integer, NotUsed> flow = Flow.<Integer>create().map(elem -> elem * 2);
     source
         .via(flow.dimap(Integer::parseInt, String::valueOf))

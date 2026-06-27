@@ -13,7 +13,7 @@
 
 package jdocs.stream.operators.sourceorflow;
 
-import java.util.Arrays;
+import java.util.List;
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.stream.javadsl.Source;
@@ -24,14 +24,14 @@ public class FlatMapMerge {
   // #flatmap-merge
   // e.g. could be a query to a database
   private Source<String, NotUsed> lookupCustomerEvents(String customerId) {
-    return Source.from(Arrays.asList(customerId + "-evt-1", customerId + "-evt-2"));
+    return Source.from(List.of(customerId + "-evt-1", customerId + "-evt-2"));
   }
 
   // #flatmap-merge
 
   void example() {
     // #flatmap-merge
-    Source.from(Arrays.asList("customer-1", "customer-2"))
+    Source.from(List.of("customer-1", "customer-2"))
         .flatMapMerge(10, this::lookupCustomerEvents)
         .runForeach(System.out::println, system);
     // prints - events from different customers could interleave

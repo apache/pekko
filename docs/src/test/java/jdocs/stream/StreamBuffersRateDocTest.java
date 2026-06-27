@@ -14,7 +14,7 @@
 package jdocs.stream;
 
 import java.time.Duration;
-import java.util.Arrays;
+import java.util.List;
 import jdocs.AbstractJavaTest;
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.actor.ActorSystem;
@@ -48,7 +48,7 @@ public class StreamBuffersRateDocTest extends AbstractJavaTest {
   @Test
   public void demonstratePipelining() {
     // #pipelining
-    Source.from(Arrays.asList(1, 2, 3))
+    Source.from(List.of(1, 2, 3))
         .map(
             i -> {
               System.out.println("A: " + i);

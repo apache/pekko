@@ -15,7 +15,6 @@ package org.apache.pekko.stream.javadsl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
@@ -47,7 +46,7 @@ public class LazyAndFutureFlowTest extends StreamTestJupiter {
                     CompletableFuture.completedFuture(Flow.fromFunction(str -> str))))
             .runWith(Sink.seq(), system);
 
-    assertEquals(Arrays.asList("one"), result.toCompletableFuture().get(3, TimeUnit.SECONDS));
+    assertEquals(List.of("one"), result.toCompletableFuture().get(3, TimeUnit.SECONDS));
   }
 
   @Test
@@ -57,7 +56,7 @@ public class LazyAndFutureFlowTest extends StreamTestJupiter {
             .via(Flow.lazyFlow(() -> Flow.fromFunction(str -> str)))
             .runWith(Sink.seq(), system);
 
-    assertEquals(Arrays.asList("one"), result.toCompletableFuture().get(3, TimeUnit.SECONDS));
+    assertEquals(List.of("one"), result.toCompletableFuture().get(3, TimeUnit.SECONDS));
   }
 
   @Test
@@ -69,6 +68,6 @@ public class LazyAndFutureFlowTest extends StreamTestJupiter {
                     () -> CompletableFuture.completedFuture(Flow.fromFunction(str -> str))))
             .runWith(Sink.seq(), system);
 
-    assertEquals(Arrays.asList("one"), result.toCompletableFuture().get(3, TimeUnit.SECONDS));
+    assertEquals(List.of("one"), result.toCompletableFuture().get(3, TimeUnit.SECONDS));
   }
 }

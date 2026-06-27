@@ -13,7 +13,7 @@
 
 package jdocs.stream;
 
-import java.util.Arrays;
+import java.util.List;
 import jdocs.AbstractJavaTest;
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.actor.ActorSystem;
@@ -42,7 +42,7 @@ public class GraphCyclesDocTest extends AbstractJavaTest {
 
   static final SilenceSystemOut.System System = SilenceSystemOut.get();
 
-  final Source<Integer, NotUsed> source = Source.from(Arrays.asList(1, 2, 3, 4, 5));
+  final Source<Integer, NotUsed> source = Source.from(List.of(1, 2, 3, 4, 5));
 
   @Test
   public void demonstrateDeadlockedCycle() {

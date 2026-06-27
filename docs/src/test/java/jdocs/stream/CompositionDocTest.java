@@ -13,7 +13,7 @@
 
 package jdocs.stream;
 
-import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
@@ -199,7 +199,7 @@ public class CompositionDocTest extends AbstractJavaTest {
                 builder -> {
                   final UniformFanInShape<Integer, Integer> merge = builder.add(Merge.create(2));
                   builder.from(builder.add(Source.single(0))).toFanIn(merge);
-                  builder.from(builder.add(Source.from(Arrays.asList(2, 3, 4)))).toFanIn(merge);
+                  builder.from(builder.add(Source.from(List.of(2, 3, 4)))).toFanIn(merge);
                   // Exposing exactly one output port
                   return new SourceShape<Integer>(merge.out());
                 }));

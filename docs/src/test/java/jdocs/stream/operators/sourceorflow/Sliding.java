@@ -13,7 +13,7 @@
 
 package jdocs.stream.operators.sourceorflow;
 
-import java.util.Arrays;
+import java.util.List;
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.actor.typed.ActorSystem;
 import org.apache.pekko.stream.javadsl.Source;
@@ -46,7 +46,7 @@ public class Sliding {
 
   public void slidingExample3() {
     // #moving-average
-    Source<Integer, NotUsed> numbers = Source.from(Arrays.asList(1, 3, 10, 2, 3, 4, 2, 10, 11));
+    Source<Integer, NotUsed> numbers = Source.from(List.of(1, 3, 10, 2, 3, 4, 2, 10, 11));
     Source<Float, NotUsed> movingAverage =
         numbers
             .sliding(5, 1)

@@ -20,8 +20,6 @@ import com.typesafe.config.ConfigFactory;
 import docs.ddata.DistributedDataDocSpec;
 import java.math.BigInteger;
 import java.time.Duration;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import jdocs.AbstractJavaTest;
@@ -410,7 +408,7 @@ public class DistributedDataDocTest extends AbstractJavaTest {
     // #ormultimap
     final SelfUniqueAddress node = DistributedData.get(system).selfUniqueAddress();
     final ORMultiMap<String, Integer> m0 = ORMultiMap.create();
-    final ORMultiMap<String, Integer> m1 = m0.put(node, "a", new HashSet<>(Arrays.asList(1, 2, 3)));
+    final ORMultiMap<String, Integer> m1 = m0.put(node, "a", Set.of(1, 2, 3));
     final ORMultiMap<String, Integer> m2 = m1.addBinding(node, "a", 4);
     final ORMultiMap<String, Integer> m3 = m2.removeBinding(node, "a", 2);
     final ORMultiMap<String, Integer> m4 = m3.addBinding(node, "b", 1);

@@ -13,7 +13,6 @@
 
 package jdocs.stream.javadsl.cookbook;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.TimeUnit;
@@ -44,7 +43,7 @@ public class RecipeSeq extends RecipeTest {
   public void drainSourceToList() throws Exception {
     new TestKit(system) {
       {
-        final Source<String, NotUsed> mySource = Source.from(Arrays.asList("1", "2", "3"));
+        final Source<String, NotUsed> mySource = Source.from(List.of("1", "2", "3"));
         // #draining-to-list-unsafe
         // Dangerous: might produce a collection with 2 billion elements!
         final CompletionStage<List<String>> strings = mySource.runWith(Sink.seq(), system);
@@ -59,7 +58,7 @@ public class RecipeSeq extends RecipeTest {
   public void drainSourceToListWithLimit() throws Exception {
     new TestKit(system) {
       {
-        final Source<String, NotUsed> mySource = Source.from(Arrays.asList("1", "2", "3"));
+        final Source<String, NotUsed> mySource = Source.from(List.of("1", "2", "3"));
         // #draining-to-list-safe
         final int MAX_ALLOWED_SIZE = 100;
 
@@ -77,7 +76,7 @@ public class RecipeSeq extends RecipeTest {
   public void drainSourceToListWithTake() throws Exception {
     new TestKit(system) {
       {
-        final Source<String, NotUsed> mySource = Source.from(Arrays.asList("1", "2", "3"));
+        final Source<String, NotUsed> mySource = Source.from(List.of("1", "2", "3"));
         final int MAX_ALLOWED_SIZE = 100;
 
         // #draining-to-list-safe

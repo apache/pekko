@@ -17,7 +17,6 @@
 
 package jdocs.stream.operators;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletionStage;
 import java.util.stream.Collectors;
@@ -32,7 +31,7 @@ public class JavaCollectorDocExamples {
     ActorSystem system = null;
 
     // #javaCollector
-    Source<String, NotUsed> source = Source.from(Arrays.asList("Apache", "Pekko", "Streams"));
+    Source<String, NotUsed> source = Source.from(List.of("Apache", "Pekko", "Streams"));
 
     CompletionStage<List<String>> result =
         source.runWith(StreamConverters.javaCollector(Collectors::toList), system);

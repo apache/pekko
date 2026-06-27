@@ -13,7 +13,6 @@
 
 package jdocs.stream.javadsl.cookbook;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutionException;
@@ -33,11 +32,11 @@ public class RecipeSplitter {
   public void simpleSplit() throws ExecutionException, InterruptedException {
     // #Simple-Split
     // Sample Source
-    Source<String, NotUsed> source = Source.from(Arrays.asList("1-2-3", "2-3", "3-4"));
+    Source<String, NotUsed> source = Source.from(List.of("1-2-3", "2-3", "3-4"));
 
     CompletionStage<List<Integer>> ret =
         source
-            .map(s -> Arrays.asList(s.split("-")))
+            .map(s -> List.of(s.split("-")))
             .mapConcat(f -> f)
             // Sub-streams logic
             .map(s -> Integer.valueOf(s))
@@ -45,7 +44,7 @@ public class RecipeSplitter {
 
     // Verify results
     List<Integer> list = ret.toCompletableFuture().get();
-    assert list.equals(Arrays.asList(1, 2, 3, 2, 3, 3, 4));
+    assert list.equals(List.of(1, 2, 3, 2, 3, 3, 4));
     // #Simple-Split
   }
 
@@ -53,11 +52,11 @@ public class RecipeSplitter {
   public void splitAggregate() throws ExecutionException, InterruptedException {
     // #Aggregate-Split
     // Sample Source
-    Source<String, NotUsed> source = Source.from(Arrays.asList("1-2-3", "2-3", "3-4"));
+    Source<String, NotUsed> source = Source.from(List.of("1-2-3", "2-3", "3-4"));
 
     CompletionStage<List<Integer>> ret =
         source
-            .map(s -> Arrays.asList(s.split("-")))
+            .map(s -> List.of(s.split("-")))
             // split all messages into sub-streams
             .splitWhen(a -> true)
             // now split each collection
@@ -72,7 +71,7 @@ public class RecipeSplitter {
 
     // Verify results
     List<Integer> list = ret.toCompletableFuture().get();
-    assert list.equals(Arrays.asList(6, 5, 7));
+    assert list.equals(List.of(6, 5, 7));
     // #Aggregate-Split
   }
 

@@ -42,7 +42,7 @@ public class GraphDslTest extends StreamTestJupiter {
   @Test
   public void demonstrateBuildSimpleGraph() throws Exception {
     // #simple-graph-dsl
-    final Source<Integer, NotUsed> in = Source.from(Arrays.asList(1, 2, 3, 4, 5));
+    final Source<Integer, NotUsed> in = Source.from(List.of(1, 2, 3, 4, 5));
     final Sink<List<String>, CompletionStage<List<String>>> sink = Sink.head();
     final Flow<Integer, Integer, NotUsed> f1 = Flow.of(Integer.class).map(elem -> elem + 10);
     final Flow<Integer, Integer, NotUsed> f2 = Flow.of(Integer.class).map(elem -> elem + 20);
@@ -93,9 +93,9 @@ public class GraphDslTest extends StreamTestJupiter {
                       GraphDSL.create(
                           (b) -> {
                             final SourceShape<Integer> source1 =
-                                b.add(Source.from(Arrays.asList(1, 2, 3, 4, 5)));
+                                b.add(Source.from(List.of(1, 2, 3, 4, 5)));
                             final SourceShape<Integer> source2 =
-                                b.add(Source.from(Arrays.asList(1, 2, 3, 4, 5)));
+                                b.add(Source.from(List.of(1, 2, 3, 4, 5)));
                             final FanInShape2<Integer, Integer, Pair<Integer, Integer>> zip =
                                 b.add(Zip.create());
                             b.from(source1).toInlet(zip.in0());
@@ -186,8 +186,8 @@ public class GraphDslTest extends StreamTestJupiter {
 
   @Test
   public void beAbleToUseMergeSortedWithGraphDSL() throws Exception {
-    final Source<Integer, NotUsed> sourceA = Source.from(Arrays.asList(1, 3, 5, 7, 9));
-    final Source<Integer, NotUsed> sourceB = Source.from(Arrays.asList(2, 4, 6, 8, 10));
+    final Source<Integer, NotUsed> sourceA = Source.from(List.of(1, 3, 5, 7, 9));
+    final Source<Integer, NotUsed> sourceB = Source.from(List.of(2, 4, 6, 8, 10));
 
     final Source<Integer, NotUsed> source =
         Source.fromGraph(
@@ -204,13 +204,13 @@ public class GraphDslTest extends StreamTestJupiter {
                 }));
     final List<Integer> result =
         source.runWith(Sink.seq(), system).toCompletableFuture().get(3, TimeUnit.SECONDS);
-    assertEquals(Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10), result);
+    assertEquals(List.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10), result);
   }
 
   @Test
   public void beAbleToUseOrElseWithGraphDSL() throws Exception {
-    final Source<Integer, NotUsed> sourceA = Source.from(Arrays.asList(1, 3, 5, 7, 9));
-    final Source<Integer, NotUsed> sourceB = Source.from(Arrays.asList(2, 4, 6, 8, 10));
+    final Source<Integer, NotUsed> sourceA = Source.from(List.of(1, 3, 5, 7, 9));
+    final Source<Integer, NotUsed> sourceB = Source.from(List.of(2, 4, 6, 8, 10));
     final Source<Integer, NotUsed> source =
         Source.fromGraph(
             GraphDSL.create(
@@ -225,12 +225,12 @@ public class GraphDslTest extends StreamTestJupiter {
                 }));
     final List<Integer> result =
         source.runWith(Sink.seq(), system).toCompletableFuture().get(3, TimeUnit.SECONDS);
-    assertEquals(Arrays.asList(1, 3, 5, 7, 9), result);
+    assertEquals(List.of(1, 3, 5, 7, 9), result);
   }
 
   @Test
   public void beAbleToUseWireTapWithGraphDSL() throws Exception {
-    final Source<Integer, NotUsed> sourceA = Source.from(Arrays.asList(1, 2, 3, 4, 5));
+    final Source<Integer, NotUsed> sourceA = Source.from(List.of(1, 2, 3, 4, 5));
     final Sink<Integer, CompletionStage<Done>> sink = Sink.ignore();
     final Source<Integer, NotUsed> source =
         Source.fromGraph(
@@ -247,13 +247,13 @@ public class GraphDslTest extends StreamTestJupiter {
                 }));
     final List<Integer> result =
         source.runWith(Sink.seq(), system).toCompletableFuture().get(3, TimeUnit.SECONDS);
-    assertEquals(Arrays.asList(1, 2, 3, 4, 5), result);
+    assertEquals(List.of(1, 2, 3, 4, 5), result);
   }
 
   @Test
   public void beAbleToUseInterleaveWithGraphDSL() throws Exception {
-    final Source<Integer, NotUsed> sourceA = Source.from(Arrays.asList(1, 2, 3, 4));
-    final Source<Integer, NotUsed> sourceB = Source.from(Arrays.asList(10, 20, 30, 40));
+    final Source<Integer, NotUsed> sourceA = Source.from(List.of(1, 2, 3, 4));
+    final Source<Integer, NotUsed> sourceB = Source.from(List.of(10, 20, 30, 40));
     final Source<Integer, NotUsed> source =
         Source.fromGraph(
             GraphDSL.create(
@@ -269,16 +269,16 @@ public class GraphDslTest extends StreamTestJupiter {
                 }));
     final List<Integer> result =
         source.runWith(Sink.seq(), system).toCompletableFuture().get(3, TimeUnit.SECONDS);
-    assertEquals(Arrays.asList(1, 2, 10, 20, 3, 4, 30, 40), result);
+    assertEquals(List.of(1, 2, 10, 20, 3, 4, 30, 40), result);
   }
 
   @Test
   public void beAbleToConstructClosedGraphFromList() throws Exception {
     // #graph-from-list
     // create the source
-    final Source<String, NotUsed> in = Source.from(Arrays.asList("ax", "bx", "cx"));
+    final Source<String, NotUsed> in = Source.from(List.of("ax", "bx", "cx"));
     // generate the sinks from code
-    List<String> prefixes = Arrays.asList("a", "b", "c");
+    List<String> prefixes = List.of("a", "b", "c");
     final List<Sink<String, CompletionStage<String>>> list = new ArrayList<>();
     for (String prefix : prefixes) {
       final Sink<String, CompletionStage<String>> sink =

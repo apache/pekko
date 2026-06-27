@@ -24,7 +24,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
-import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
@@ -70,7 +70,7 @@ public class FutureDocTest extends AbstractJavaTest {
                     return "foo";
                   });
           CompletionStage<String> result =
-              CompletionStages.firstCompletedOf(Arrays.asList(future, delayed));
+              CompletionStages.firstCompletedOf(List.of(future, delayed));
           try {
             result.toCompletableFuture().get(2, SECONDS);
           } catch (Throwable ex) {

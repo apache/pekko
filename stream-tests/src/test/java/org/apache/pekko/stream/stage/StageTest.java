@@ -15,7 +15,6 @@ package org.apache.pekko.stream.stage;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.TimeUnit;
@@ -39,14 +38,13 @@ public class StageTest extends StreamTestJupiter {
 
   @Test
   public void javaStageUsage() throws Exception {
-    final java.lang.Iterable<Integer> input = Arrays.asList(0, 1, 2, 3, 4, 5);
+    final java.lang.Iterable<Integer> input = List.of(0, 1, 2, 3, 4, 5);
     final Source<Integer, NotUsed> ints = Source.from(input);
     final JavaIdentityStage<Integer> identity = new JavaIdentityStage<Integer>();
 
     final CompletionStage<List<Integer>> result =
         ints.via(identity).via(identity).grouped(1000).runWith(Sink.<List<Integer>>head(), system);
 
-    assertEquals(
-        Arrays.asList(0, 1, 2, 3, 4, 5), result.toCompletableFuture().get(3, TimeUnit.SECONDS));
+    assertEquals(List.of(0, 1, 2, 3, 4, 5), result.toCompletableFuture().get(3, TimeUnit.SECONDS));
   }
 }

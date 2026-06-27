@@ -15,7 +15,6 @@ package jdocs.stream.javadsl.cookbook;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.TimeUnit;
@@ -69,7 +68,7 @@ public class RecipeWorkerPool extends RecipeTest {
     new TestKit(system) {
       {
         Source<Message, NotUsed> data =
-            Source.from(Arrays.asList("1", "2", "3", "4", "5")).map(t -> new Message(t));
+            Source.from(List.of("1", "2", "3", "4", "5")).map(t -> new Message(t));
 
         Flow<Message, Message, NotUsed> worker =
             Flow.of(Message.class).map(m -> new Message(m.msg + " done"));

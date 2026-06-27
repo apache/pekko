@@ -163,7 +163,7 @@ public class GraphStageDocTest extends AbstractJavaTest {
 
     Sink<Integer, NotUsed> mySink = Sink.fromGraph(sinkGraph);
 
-    Source.from(Arrays.asList(1, 2, 3)).runWith(mySink, system);
+    Source.from(List.of(1, 2, 3)).runWith(mySink, system);
   }
 
   // #one-to-one
@@ -227,7 +227,7 @@ public class GraphStageDocTest extends AbstractJavaTest {
                 }));
 
     CompletionStage<Integer> result =
-        Source.from(Arrays.asList("one", "two", "three"))
+        Source.from(List.of("one", "two", "three"))
             .via(stringLength)
             .runFold(0, (sum, n) -> sum + n, system);
 
@@ -293,7 +293,7 @@ public class GraphStageDocTest extends AbstractJavaTest {
         Flow.fromGraph(new Filter<Integer>(n -> n % 2 == 0));
 
     CompletionStage<Integer> result =
-        Source.from(Arrays.asList(1, 2, 3, 4, 5, 6))
+        Source.from(List.of(1, 2, 3, 4, 5, 6))
             .via(evenFilter)
             .runFold(0, (elem, sum) -> sum + elem, system);
 
@@ -366,7 +366,7 @@ public class GraphStageDocTest extends AbstractJavaTest {
         Flow.fromGraph(new Duplicator<Integer>());
 
     CompletionStage<Integer> result =
-        Source.from(Arrays.asList(1, 2, 3)).via(duplicator).runFold(0, (n, sum) -> n + sum, system);
+        Source.from(List.of(1, 2, 3)).via(duplicator).runFold(0, (n, sum) -> n + sum, system);
 
     assertEquals(Integer.valueOf(12), result.toCompletableFuture().get(3, TimeUnit.SECONDS));
   }
@@ -397,7 +397,7 @@ public class GraphStageDocTest extends AbstractJavaTest {
                   A elem = grab(in);
                   // this will temporarily suspend this handler until the two elems
                   // are emitted and then reinstates it
-                  emitMultiple(out, Arrays.asList(elem, elem).iterator());
+                  emitMultiple(out, List.of(elem, elem).iterator());
                 }
               });
 
@@ -423,7 +423,7 @@ public class GraphStageDocTest extends AbstractJavaTest {
         Flow.fromGraph(new Duplicator2<Integer>());
 
     CompletionStage<Integer> result =
-        Source.from(Arrays.asList(1, 2, 3)).via(duplicator).runFold(0, (n, sum) -> n + sum, system);
+        Source.from(List.of(1, 2, 3)).via(duplicator).runFold(0, (n, sum) -> n + sum, system);
 
     assertEquals(Integer.valueOf(12), result.toCompletableFuture().get(3, TimeUnit.SECONDS));
   }
@@ -435,7 +435,7 @@ public class GraphStageDocTest extends AbstractJavaTest {
 
     // #graph-operator-chain
     CompletionStage<String> resultFuture =
-        Source.from(Arrays.asList(1, 2, 3, 4, 5))
+        Source.from(List.of(1, 2, 3, 4, 5))
             .via(new Filter<Integer>((n) -> n % 2 == 0))
             .via(new Duplicator<Integer>())
             .via(new Map<Integer, Integer>((n) -> n / 2))
@@ -598,7 +598,7 @@ public class GraphStageDocTest extends AbstractJavaTest {
   public void demonstrateAGraphStageWithATimer() throws Exception {
     // tests:
     CompletionStage<Integer> result =
-        Source.from(Arrays.asList(1, 2, 3))
+        Source.from(List.of(1, 2, 3))
             .via(new TimedGate<>(2))
             .takeWithin(java.time.Duration.ofMillis(250))
             .runFold(0, (n, sum) -> n + sum, system);
@@ -669,7 +669,7 @@ public class GraphStageDocTest extends AbstractJavaTest {
   public void demonstrateACustomMaterializedValue() throws Exception {
     // tests:
     RunnableGraph<CompletionStage<Integer>> flow =
-        Source.from(Arrays.asList(1, 2, 3))
+        Source.from(List.of(1, 2, 3))
             .viaMat(new FirstValue<Integer>(), Keep.right())
             .to(Sink.ignore());
 
@@ -764,7 +764,7 @@ public class GraphStageDocTest extends AbstractJavaTest {
   public void demonstrateADetachedGraphStage() throws Exception {
     // tests:
     CompletionStage<Integer> result1 =
-        Source.from(Arrays.asList(1, 2, 3))
+        Source.from(List.of(1, 2, 3))
             .via(new TwoBuffer<>())
             .runFold(0, (acc, n) -> acc + n, system);
 

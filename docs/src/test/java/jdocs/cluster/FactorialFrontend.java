@@ -14,9 +14,8 @@
 package jdocs.cluster;
 
 import java.time.Duration;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.apache.pekko.actor.AbstractActor;
 import org.apache.pekko.actor.ActorRef;
@@ -90,9 +89,9 @@ public class FactorialFrontend extends AbstractActor {
 abstract class FactorialFrontend2 extends AbstractActor {
   // #router-lookup-in-code
   int totalInstances = 100;
-  Iterable<String> routeesPaths = Arrays.asList("/user/factorialBackend", "");
+  Iterable<String> routeesPaths = List.of("/user/factorialBackend", "");
   boolean allowLocalRoutees = true;
-  Set<String> useRoles = new HashSet<>(Arrays.asList("backend"));
+  Set<String> useRoles = Set.of("backend");
   ActorRef backend =
       getContext()
           .actorOf(
@@ -113,7 +112,7 @@ abstract class FactorialFrontend3 extends AbstractActor {
   int totalInstances = 100;
   int maxInstancesPerNode = 3;
   boolean allowLocalRoutees = false;
-  Set<String> useRoles = new HashSet<>(Arrays.asList("backend"));
+  Set<String> useRoles = Set.of("backend");
   ActorRef backend =
       getContext()
           .actorOf(

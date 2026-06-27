@@ -23,6 +23,7 @@ import scala.concurrent.Await;
 import scala.concurrent.Future;
 import scala.concurrent.duration.Duration;
 
+import java.util.Collections;
 import java.util.*;
 import java.util.concurrent.*;
 
@@ -133,7 +134,7 @@ public class CompletionStagesTests {
     }
 
     private void testTraverse0(final Executor executor) throws Exception {
-        final List<Integer> values = Arrays.asList(1, 2, 3, 4, 5);
+        final List<Integer> values = List.of(1, 2, 3, 4, 5);
         final CompletionStage<List<Integer>> traversed = CompletionStages.traverse(values,
             CompletableFuture::completedFuture, executor);
         assertEquals(Lists.newArrayList(1, 2, 3, 4, 5),

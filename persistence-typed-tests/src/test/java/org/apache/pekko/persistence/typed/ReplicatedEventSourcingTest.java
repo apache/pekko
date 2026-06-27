@@ -17,6 +17,7 @@ import static org.apache.pekko.Done.done;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.typesafe.config.ConfigFactory;
+import java.util.Collections;
 import java.util.*;
 import org.apache.pekko.Done;
 import org.apache.pekko.actor.testkit.typed.annotations.JUnitJupiterTestKit;
@@ -169,7 +170,7 @@ public class ReplicatedEventSourcingTest {
     ReplicaId dcA = new ReplicaId("DC-A");
     ReplicaId dcB = new ReplicaId("DC-B");
     ReplicaId dcC = new ReplicaId("DC-C");
-    Set<ReplicaId> allReplicas = new HashSet<>(Arrays.asList(dcA, dcB, dcC));
+    Set<ReplicaId> allReplicas = Set.of(dcA, dcB, dcC);
 
     ActorRef<TestBehavior.Command> replicaA =
         testKit.spawn(TestBehavior.create("id1", dcA, allReplicas));
@@ -191,27 +192,21 @@ public class ReplicatedEventSourcingTest {
         () -> {
           replicaA.tell(new TestBehavior.GetState(probe.ref().narrow()));
           TestBehavior.State reply = probe.expectMessageClass(TestBehavior.State.class);
-          assertEquals(
-              new HashSet<>(Arrays.asList("stored-to-a", "stored-to-b", "stored-to-c")),
-              reply.texts);
+          assertEquals(Set.of("stored-to-a", "stored-to-b", "stored-to-c"), reply.texts);
           return null;
         });
     probe.awaitAssert(
         () -> {
           replicaB.tell(new TestBehavior.GetState(probe.ref().narrow()));
           TestBehavior.State reply = probe.expectMessageClass(TestBehavior.State.class);
-          assertEquals(
-              new HashSet<>(Arrays.asList("stored-to-a", "stored-to-b", "stored-to-c")),
-              reply.texts);
+          assertEquals(Set.of("stored-to-a", "stored-to-b", "stored-to-c"), reply.texts);
           return null;
         });
     probe.awaitAssert(
         () -> {
           replicaC.tell(new TestBehavior.GetState(probe.ref().narrow()));
           TestBehavior.State reply = probe.expectMessageClass(TestBehavior.State.class);
-          assertEquals(
-              new HashSet<>(Arrays.asList("stored-to-a", "stored-to-b", "stored-to-c")),
-              reply.texts);
+          assertEquals(Set.of("stored-to-a", "stored-to-b", "stored-to-c"), reply.texts);
           return null;
         });
   }

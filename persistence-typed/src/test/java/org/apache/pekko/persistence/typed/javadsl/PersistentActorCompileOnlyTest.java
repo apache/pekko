@@ -16,6 +16,7 @@ package org.apache.pekko.persistence.typed.javadsl;
 import static org.apache.pekko.actor.typed.javadsl.AskPattern.ask;
 
 import java.time.Duration;
+import java.util.Collections;
 import java.util.*;
 import java.util.concurrent.CompletionStage;
 import org.apache.pekko.actor.testkit.typed.javadsl.TestInbox;

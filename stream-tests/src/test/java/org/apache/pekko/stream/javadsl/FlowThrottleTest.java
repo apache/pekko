@@ -15,7 +15,6 @@ package org.apache.pekko.stream.javadsl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.TimeUnit;
@@ -47,14 +46,12 @@ public class FlowThrottleTest extends StreamTestJupiter {
 
     // If there is accidental shared state then we would not be able to pass through the single
     // element
-    assertEquals(
-        result1.toCompletableFuture().get(3, TimeUnit.SECONDS), Collections.singletonList(1));
+    assertEquals(result1.toCompletableFuture().get(3, TimeUnit.SECONDS), List.of(1));
 
     // It works with a new stream, too
     CompletionStage<List<Integer>> result2 =
         Source.single(1).via(sharedThrottle).via(sharedThrottle).runWith(Sink.seq(), system);
 
-    assertEquals(
-        result2.toCompletableFuture().get(3, TimeUnit.SECONDS), Collections.singletonList(1));
+    assertEquals(result2.toCompletableFuture().get(3, TimeUnit.SECONDS), List.of(1));
   }
 }
