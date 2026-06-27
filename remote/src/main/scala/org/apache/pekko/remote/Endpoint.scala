@@ -1212,7 +1212,7 @@ private[remote] class EndpointReader(
       if (log.isWarningEnabled)
         log.warning(
           "Discarding inbound message to [{}] in read-only association to [{}]. " +
-          "If this happens often you may consider using pekko.remote.use-passive-connections=off " +
+          "If this happens often you may consider using pekko.remote.classic.use-passive-connections=off " +
           "or use Artery TCP.",
           msgOption.map(_.recipient).getOrElse("unknown"),
           remoteAddress)
