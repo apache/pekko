@@ -48,7 +48,7 @@ object RestartNodeMultiJvmSpec extends MultiNodeConfig {
       pekko.cluster.downing-provider-class = org.apache.pekko.cluster.testkit.AutoDowning
       pekko.cluster.testkit.auto-down-unreachable-after = 5s
       pekko.cluster.allow-weakly-up-members = off
-      #pekko.remote.use-passive-connections = off
+      #pekko.remote.classic.use-passive-connections = off
       # test is using Java serialization and not priority to rewrite
       pekko.actor.allow-java-serialization = on
       pekko.actor.warn-about-java-serializer-usage = off
