@@ -729,7 +729,7 @@ import org.reactivestreams.Subscription
 /**
  * INTERNAL API
  */
-@InternalApi private[pekko] final class ActorGraphInterpreter(_initial: GraphInterpreterShell)
+@InternalApi private[pekko] final class ActorGraphInterpreter(private var _initial: GraphInterpreterShell)
     extends Actor
     with ActorLogging {
   import ActorGraphInterpreter._
@@ -742,7 +742,7 @@ import org.reactivestreams.Subscription
     try {
       currentLimit = shell.init(self, subFusingMaterializerImpl, enqueueToShortCircuit, currentLimit)
       if (GraphInterpreter.Debug)
-        println(s"registering new shell in ${_initial}\n  ${shell.toString.replace("\n", "\n  ")}")
+        println(s"registering new shell in ${shell}\n  ${shell.toString.replace("\n", "\n  ")}")
       if (shell.isTerminated) false
       else {
         activeInterpreters += shell
@@ -790,6 +790,9 @@ import org.reactivestreams.Subscription
 
   override def preStart(): Unit = {
     tryInit(_initial)
+    // Release reference to initial shell to avoid keeping it alive after it is shut down
+    // when the actor is still alive hosting other subfused interpreters
+    _initial = null
     if (activeInterpreters.isEmpty) context.stop(self)
     else if (shortCircuitBuffer ne null) shortCircuitBatch()
   }
