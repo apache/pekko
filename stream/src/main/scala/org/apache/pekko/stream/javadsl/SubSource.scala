@@ -543,6 +543,10 @@ final class SubSource[Out, Mat](
   /**
    * Run the given function when the first element is received.
    *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute. On `Supervision.Resume` the
+   * first element is dropped and the function is not retried; on `Supervision.Restart` the next
+   * element is treated as the first.
+   *
    * '''Emits when''' upstream emits an element
    *
    * '''Backpressures when''' downstream backpressures

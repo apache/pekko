@@ -17,10 +17,14 @@
 
 package org.apache.pekko.stream.impl.fusing
 
+import scala.util.control.NonFatal
+
 import org.apache.pekko
 import pekko.annotation.InternalApi
+import pekko.stream.ActorAttributes.SupervisionStrategy
 import pekko.stream.{ Attributes, FlowShape, Inlet, Outlet }
 import pekko.stream.Attributes.SourceLocation
+import pekko.stream.Supervision
 import pekko.stream.impl.Stages.DefaultAttributes
 import pekko.stream.stage.{ GraphStage, GraphStageLogic, InHandler, OutHandler }
 
@@ -34,20 +38,40 @@ import pekko.stream.stage.{ GraphStage, GraphStageLogic, InHandler, OutHandler }
 
   override def initialAttributes: Attributes = DefaultAttributes.doOnFirst and SourceLocation.forLambda(f)
 
-  override def createLogic(inheritedAttributes: org.apache.pekko.stream.Attributes) =
+  override def createLogic(inheritedAttributes: Attributes) =
     new GraphStageLogic(shape) with InHandler with OutHandler {
       self =>
+      private lazy val decider = inheritedAttributes.mandatoryAttribute[SupervisionStrategy].decider
+
       final override def onPush(): Unit = push(out, grab(in))
       final override def onPull(): Unit = pull(in)
       setHandler(out, this)
-      setHandler(in,
-        new InHandler {
-          override def onPush(): Unit = {
-            setHandler(in, self)
-            val elem = grab(in)
-            f(elem)
-            push(out, elem)
+
+      // Resume consumes the one-shot and switches to pass-through; Restart keeps this handler armed for retry.
+      val firstHandler: InHandler = new InHandler {
+        override def onPush(): Unit = {
+          val elem = grab(in)
+          try f(elem)
+          catch {
+            case NonFatal(ex) =>
+              decider(ex) match {
+                case Supervision.Stop =>
+                  failStage(ex)
+                  return
+                case Supervision.Resume =>
+                  setHandler(in, self)
+                  pull(in)
+                  return
+                case Supervision.Restart =>
+                  pull(in)
+                  return
+              }
           }
-        })
+          setHandler(in, self)
+          push(out, elem)
+        }
+      }
+
+      setHandler(in, firstHandler)
     }
 }
