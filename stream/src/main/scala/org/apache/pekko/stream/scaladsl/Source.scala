@@ -887,6 +887,12 @@ object Source {
 
   /**
    * Combine the elements of multiple streams into a stream of sequences using a combiner function.
+   *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
+   *
+   * If the combiner function throws and the supervision decision is [[pekko.stream.Supervision.Stop]]
+   * the stream fails. If the supervision decision is [[pekko.stream.Supervision.Resume]] or
+   * [[pekko.stream.Supervision.Restart]] the zipped element is dropped and the stream continues.
    */
   def zipWithN[T, O](zipper: immutable.Seq[T] => O)(sources: immutable.Seq[Source[T, ?]]): Source[O, NotUsed] = {
     val source = sources match {

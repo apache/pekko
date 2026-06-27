@@ -18,7 +18,6 @@ import scala.concurrent.duration._
 import org.apache.pekko
 import pekko.stream._
 import pekko.stream.testkit._
-import pekko.testkit.EventFilter
 
 class GraphZipWithSpec extends TwoStreamsSetup {
   import GraphDSL.Implicits._
@@ -85,9 +84,7 @@ class GraphZipWithSpec extends TwoStreamsSetup {
       probe.expectNext(1 / -2)
       probe.expectNext(2 / -1)
 
-      EventFilter[ArithmeticException](occurrences = 1).intercept {
-        subscription.request(2)
-      }
+      subscription.request(2)
       probe.expectError() match {
         case a: java.lang.ArithmeticException => a.getMessage should be("/ by zero")
         case unexpected                       => throw new RuntimeException(s"Unexpected: $unexpected")

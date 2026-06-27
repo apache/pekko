@@ -1096,6 +1096,12 @@ final class ZipLatest[A, B](eagerComplete: Boolean) extends ZipLatestWith2[A, B,
  * '''Completes when''' any upstream completes
  *
  * '''Cancels when''' downstream cancels
+ *
+ * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
+ *
+ * If the combiner function throws and the supervision decision is [[pekko.stream.Supervision.Stop]]
+ * the stream fails. If the supervision decision is [[pekko.stream.Supervision.Resume]] or
+ * [[pekko.stream.Supervision.Restart]] the zipped element is dropped and the stream continues.
  */
 object ZipWith extends ZipWithApply
 
@@ -1219,6 +1225,12 @@ object ZipWithN {
  * '''Completes when''' any upstream completes
  *
  * '''Cancels when''' downstream cancels
+ *
+ * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
+ *
+ * If the combiner function throws and the supervision decision is [[pekko.stream.Supervision.Stop]]
+ * the stream fails. If the supervision decision is [[pekko.stream.Supervision.Resume]] or
+ * [[pekko.stream.Supervision.Restart]] the zipped element is dropped and the stream continues.
  */
 class ZipWithN[A, O](zipper: immutable.Seq[A] => O)(n: Int) extends GraphStage[UniformFanInShape[A, O]] {
   override def initialAttributes = DefaultAttributes.zipWithN
@@ -1227,6 +1239,7 @@ class ZipWithN[A, O](zipper: immutable.Seq[A] => O)(n: Int) extends GraphStage[U
 
   override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =
     new GraphStageLogic(shape) with OutHandler {
+      private lazy val decider = inheritedAttributes.mandatoryAttribute[SupervisionStrategy].decider
       var pending = 0
       // Without this field the completion signalling would take one extra pull
       var willShutDown = false
@@ -1238,7 +1251,21 @@ class ZipWithN[A, O](zipper: immutable.Seq[A] => O)(n: Int) extends GraphStage[U
 
       private def pushAll(): Unit = {
         contextPropagation.resumeContext()
-        push(out, zipper(shape.inlets.map(grabInlet)))
+        try push(out, zipper(shape.inlets.map(grabInlet)))
+        catch {
+          case NonFatal(ex) =>
+            decider(ex) match {
+              case Supervision.Stop =>
+                failStage(ex)
+              case Supervision.Resume | Supervision.Restart =>
+                if (willShutDown) completeStage()
+                else {
+                  pending += n
+                  shape.inlets.foreach(pullInlet)
+                }
+            }
+            return
+        }
         if (willShutDown) completeStage()
         else shape.inlets.foreach(pullInlet)
       }

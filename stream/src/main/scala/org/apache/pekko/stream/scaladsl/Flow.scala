@@ -3420,6 +3420,12 @@ trait FlowOps[+Out, +Mat] {
    * Put together the elements of current flow and the given [[Source]]
    * into a stream of combined elements using a combiner function.
    *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
+   *
+   * If the combiner function throws and the supervision decision is [[pekko.stream.Supervision.Stop]]
+   * the stream fails. If the supervision decision is [[pekko.stream.Supervision.Resume]] or
+   * [[pekko.stream.Supervision.Restart]] the zipped element is dropped and the stream continues.
+   *
    * '''Emits when''' all of the inputs have an element available
    *
    * '''Backpressures when''' downstream backpressures
