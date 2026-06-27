@@ -285,6 +285,13 @@ import pekko.util.OptionVal
     builder.sizeHint(left)
 
     private var tailSource: SubSourceOutlet[T] = null
+    // Buffer for at most one element fetched by the speculative pre-pull issued in
+    // openSubstream(): it lets us discover an empty tail (upstream finishes before
+    // emitting any further element) without waiting for the substream subscription
+    // timeout when downstream intentionally discards the tail Source. See akka/akka#20008.
+    private var pendingElement: T = _
+    private var hasPendingElement = false
+    private var upstreamFinished = false
 
     private val SubscriptionTimer = "SubstreamSubscriptionTimer"
 
@@ -313,8 +320,19 @@ import pekko.util.OptionVal
       override def onPull(): Unit = {
         setKeepGoing(false)
         cancelTimer(SubscriptionTimer)
-        pull(in)
         tailSource.setHandler(() => pull(in))
+        if (hasPendingElement) {
+          val elem = pendingElement
+          pendingElement = null.asInstanceOf[T]
+          hasPendingElement = false
+          tailSource.push(elem)
+          if (upstreamFinished) {
+            tailSource.complete()
+            completeStage()
+          }
+        } else if (!hasBeenPulled(in) && !isClosed(in)) {
+          pull(in)
+        }
       }
     }
 
@@ -325,12 +343,27 @@ import pekko.util.OptionVal
       setKeepGoing(true)
       scheduleOnce(SubscriptionTimer, timeout)
       builder = null
+      // Speculative pre-pull: lets us observe an empty tail (upstream finish before any
+      // further element) immediately, instead of holding the substream open until the
+      // subscription timeout fires when downstream discards the tail Source.
+      // Deferred via getAsyncCallback to avoid synchronous cascade when called inside
+      // a push() handler (e.g. when PrefixAndTail is used inside a Split operator).
+      if (!hasBeenPulled(in) && !isClosed(in)) {
+        getAsyncCallback[Unit](_ => if (!hasBeenPulled(in) && !isClosed(in)) pull(in)).invoke(())
+      }
       Source.fromGraph(tailSource.source)
     }
 
     override def onPush(): Unit = {
       if (prefixComplete) {
-        tailSource.push(grab(in))
+        if (tailSource.isAvailable) {
+          tailSource.push(grab(in))
+        } else {
+          // Speculative pre-pull delivered an element before the SubSource was materialized;
+          // buffer it until the first subHandler.onPull arrives.
+          pendingElement = grab(in)
+          hasPendingElement = true
+        }
       } else {
         builder += grab(in)
         left -= 1
@@ -353,6 +386,12 @@ import pekko.util.OptionVal
         val prefix = builder.result();
         builder = null // free for GC
         emit(out, (prefix, Source.empty), () => completeStage())
+      } else if (hasPendingElement) {
+        // Wait for the SubSource to be materialized so we can deliver the buffered element
+        // and the completion together. If the SubSource never gets materialized the
+        // subscription timer will eventually close the stage.
+        upstreamFinished = true
+        if (tailSource.isClosed) completeStage()
       } else {
         if (!tailSource.isClosed) tailSource.complete()
         completeStage()
