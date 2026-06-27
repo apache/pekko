@@ -4544,6 +4544,13 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    * when custom condition is met which can be triggered by aggregate or timer.
    * It can be thought of a more general [[groupedWeightedWithin]].
    *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
+   *
+   * If `allocate`, `aggregate`, `harvest`, or timer predicate throws and the supervision decision is
+   * [[pekko.stream.Supervision#stop]] the stream fails. If the supervision decision is
+   * [[pekko.stream.Supervision#resume]] or [[pekko.stream.Supervision#restart]], the failing element or
+   * aggregate is dropped and the stream continues.
+   *
    * '''Emits when''' the aggregation function decides the aggregate is complete or the timer function returns true
    *
    * '''Backpressures when''' downstream backpressures and the aggregate is complete
