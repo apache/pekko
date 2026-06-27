@@ -21,6 +21,7 @@ import scala.jdk.CollectionConverters._
 import scala.jdk.DurationConverters._
 import scala.jdk.FutureConverters._
 import scala.jdk.OptionConverters._
+import scala.reflect.ClassTag
 
 import org.apache.pekko
 import pekko.actor.ClassicActorSystemProvider
@@ -166,6 +167,39 @@ final class SourceWithContext[+Out, +Ctx, +Mat](delegate: scaladsl.SourceWithCon
     viaScala(_.collect(pf))
 
   /**
+   * Context-preserving variant of [[pekko.stream.javadsl.Source.collectFirst]].
+   *
+   * Note, that the context of elements that are filtered out is skipped as well.
+   *
+   * @see [[pekko.stream.javadsl.Source.collectFirst]]
+   * @since 2.0.0
+   */
+  def collectFirst[Out2](pf: PartialFunction[Out, Out2]): SourceWithContext[Out2, Ctx, Mat] =
+    viaScala(_.collectFirst(pf))
+
+  /**
+   * Context-preserving variant of [[pekko.stream.javadsl.Source.collectWhile]].
+   *
+   * Note, that the context of elements that are filtered out is skipped as well.
+   *
+   * @see [[pekko.stream.javadsl.Source.collectWhile]]
+   * @since 2.0.0
+   */
+  def collectWhile[Out2](pf: PartialFunction[Out, Out2]): SourceWithContext[Out2, Ctx, Mat] =
+    viaScala(_.collectWhile(pf))
+
+  /**
+   * Context-preserving variant of [[pekko.stream.javadsl.Source.collectType]].
+   *
+   * Note, that the context of elements that are filtered out is skipped as well.
+   *
+   * @see [[pekko.stream.javadsl.Source.collectType]]
+   * @since 2.0.0
+   */
+  def collectType[Out2](clazz: Class[Out2]): SourceWithContext[Out2, Ctx, Mat] =
+    viaScala(_.collectType[Out2](ClassTag[Out2](clazz)))
+
+  /**
    * Context-preserving variant of [[pekko.stream.javadsl.Source.filter]].
    *
    * Note, that the context of elements that are filtered out is skipped as well.
@@ -186,6 +220,51 @@ final class SourceWithContext[+Out, +Ctx, +Mat](delegate: scaladsl.SourceWithCon
     viaScala(_.filterNot(p.test))
 
   /**
+   * Context-preserving variant of [[pekko.stream.javadsl.Source.dropRepeated]].
+   *
+   * @see [[pekko.stream.javadsl.Source.dropRepeated]]
+   * @since 2.0.0
+   */
+  def dropRepeated(): SourceWithContext[Out, Ctx, Mat] =
+    viaScala(_.dropRepeated())
+
+  /**
+   * Context-preserving variant of [[pekko.stream.javadsl.Source.dropRepeated]].
+   *
+   * @see [[pekko.stream.javadsl.Source.dropRepeated]]
+   * @since 2.0.0
+   */
+  def dropRepeated(p: function.Function2[Out, Out, Boolean]): SourceWithContext[Out, Ctx, Mat] =
+    viaScala(_.dropRepeated((left, right) => p.apply(left, right)))
+
+  /**
+   * Context-preserving variant of [[pekko.stream.javadsl.Source.dropWhile]].
+   *
+   * @see [[pekko.stream.javadsl.Source.dropWhile]]
+   * @since 2.0.0
+   */
+  def dropWhile(p: function.Predicate[Out]): SourceWithContext[Out, Ctx, Mat] =
+    viaScala(_.dropWhile(p.test))
+
+  /**
+   * Context-preserving variant of [[pekko.stream.javadsl.Source.drop]].
+   *
+   * @see [[pekko.stream.javadsl.Source.drop]]
+   * @since 2.0.0
+   */
+  def drop(n: Long): SourceWithContext[Out, Ctx, Mat] =
+    viaScala(_.drop(n))
+
+  /**
+   * Context-preserving variant of [[pekko.stream.javadsl.Source.dropWithin]].
+   *
+   * @see [[pekko.stream.javadsl.Source.dropWithin]]
+   * @since 2.0.0
+   */
+  def dropWithin(duration: java.time.Duration): SourceWithContext[Out, Ctx, Mat] =
+    viaScala(_.dropWithin(duration.toScala))
+
+  /**
    * Context-preserving variant of [[pekko.stream.javadsl.Source.grouped]].
    *
    * Each output group will be associated with a `Seq` of corresponding context elements.
@@ -203,6 +282,17 @@ final class SourceWithContext[+Out, +Ctx, +Mat](delegate: scaladsl.SourceWithCon
    */
   def map[Out2](f: function.Function[Out, Out2]): SourceWithContext[Out2, Ctx, Mat] =
     viaScala(_.map(f.apply))
+
+  /**
+   * Context-preserving variant of [[pekko.stream.javadsl.Source.mapOption]].
+   *
+   * Note, that the context of elements that are filtered out is skipped as well.
+   *
+   * @see [[pekko.stream.javadsl.Source.mapOption]]
+   * @since 2.0.0
+   */
+  def mapOption[Out2](f: function.Function[Out, Optional[Out2]]): SourceWithContext[Out2, Ctx, Mat] =
+    viaScala(_.mapOption(out => f.apply(out).toScala))
 
   /**
    * Context-preserving variant of [[pekko.stream.javadsl.Source.mapAsync]].
@@ -275,6 +365,24 @@ final class SourceWithContext[+Out, +Ctx, +Mat](delegate: scaladsl.SourceWithCon
    */
   def mapContext[Ctx2](extractContext: function.Function[Ctx, Ctx2]): SourceWithContext[Out, Ctx2, Mat] =
     viaScala(_.mapContext(extractContext.apply))
+
+  /**
+   * Context-preserving variant of [[pekko.stream.javadsl.Source.limit]].
+   *
+   * @see [[pekko.stream.javadsl.Source.limit]]
+   * @since 2.0.0
+   */
+  def limit(max: Int): SourceWithContext[Out, Ctx, Mat] =
+    viaScala(_.limit(max))
+
+  /**
+   * Context-preserving variant of [[pekko.stream.javadsl.Source.limitWeighted]].
+   *
+   * @see [[pekko.stream.javadsl.Source.limitWeighted]]
+   * @since 2.0.0
+   */
+  def limitWeighted(max: Long, costFn: function.Function[Out, java.lang.Long]): SourceWithContext[Out, Ctx, Mat] =
+    viaScala(_.limitWeighted(max)(costFn.apply))
 
   /**
    * Context-preserving variant of [[pekko.stream.javadsl.Source.sliding]].
@@ -361,6 +469,51 @@ final class SourceWithContext[+Out, +Ctx, +Mat](delegate: scaladsl.SourceWithCon
    */
   def logWithMarker(name: String, marker: function.Function2[Out, Ctx, LogMarker]): SourceWithContext[Out, Ctx, Mat] =
     this.logWithMarker(name, marker, ConstantFun.javaIdentityFunction[Out], null)
+
+  /**
+   * Context-preserving variant of [[pekko.stream.javadsl.Source.takeWhile]].
+   *
+   * @see [[pekko.stream.javadsl.Source.takeWhile]]
+   * @since 2.0.0
+   */
+  def takeWhile(p: function.Predicate[Out], inclusive: Boolean): SourceWithContext[Out, Ctx, Mat] =
+    viaScala(_.takeWhile(p.test, inclusive))
+
+  /**
+   * Context-preserving variant of [[pekko.stream.javadsl.Source.takeWhile]].
+   *
+   * @see [[pekko.stream.javadsl.Source.takeWhile]]
+   * @since 2.0.0
+   */
+  def takeWhile(p: function.Predicate[Out]): SourceWithContext[Out, Ctx, Mat] =
+    takeWhile(p, inclusive = false)
+
+  /**
+   * Context-preserving variant of [[pekko.stream.javadsl.Source.takeUntil]].
+   *
+   * @see [[pekko.stream.javadsl.Source.takeUntil]]
+   * @since 2.0.0
+   */
+  def takeUntil(p: function.Predicate[Out]): SourceWithContext[Out, Ctx, Mat] =
+    viaScala(_.takeUntil(p.test))
+
+  /**
+   * Context-preserving variant of [[pekko.stream.javadsl.Source.take]].
+   *
+   * @see [[pekko.stream.javadsl.Source.take]]
+   * @since 2.0.0
+   */
+  def take(n: Long): SourceWithContext[Out, Ctx, Mat] =
+    viaScala(_.take(n))
+
+  /**
+   * Context-preserving variant of [[pekko.stream.javadsl.Source.takeWithin]].
+   *
+   * @see [[pekko.stream.javadsl.Source.takeWithin]]
+   * @since 2.0.0
+   */
+  def takeWithin(duration: java.time.Duration): SourceWithContext[Out, Ctx, Mat] =
+    viaScala(_.takeWithin(duration.toScala))
 
   /**
    * Context-preserving variant of [[pekko.stream.javadsl.Source.throttle]].

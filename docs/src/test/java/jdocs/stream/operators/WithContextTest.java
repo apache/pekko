@@ -15,9 +15,11 @@ package jdocs.stream.operators;
 
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.TimeUnit;
 import jdocs.AbstractJavaTest;
@@ -118,5 +120,30 @@ public class WithContextTest extends AbstractJavaTest {
     assertThat(
         list, hasItems(Pair.create("yins", 1), Pair.create("zwyi", 2), Pair.create("dryi", 3)));
     // #asFlowWithContext
+  }
+
+  @Test
+  public void documentWithContextOperators() throws Exception {
+    // #withContextOperators
+    Collection<Pair<String, Integer>> values =
+        List.of(
+            Pair.create("eins", 1),
+            Pair.create("eins", 2),
+            Pair.create("zwei", 3),
+            Pair.create("drei", 4));
+
+    SourceWithContext<String, Integer, NotUsed> filtered =
+        Source.from(values)
+            .asSourceWithContext(Pair::second)
+            .map(Pair::first)
+            .dropRepeated()
+            .mapOption(
+                word -> word.startsWith("z") ? Optional.empty() : Optional.of(word.toUpperCase()))
+            .take(2);
+
+    CompletionStage<List<Pair<String, Integer>>> result = filtered.runWith(Sink.seq(), system);
+    List<Pair<String, Integer>> list = result.toCompletableFuture().get(1, TimeUnit.SECONDS);
+    assertEquals(List.of(Pair.create("EINS", 1), Pair.create("DREI", 4)), list);
+    // #withContextOperators
   }
 }

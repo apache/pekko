@@ -37,6 +37,17 @@ while grouping operations will keep all contexts from the elements in
 the group. Streaming one-to-many operations such as `mapConcat`
 associate the original context with each of the produced elements.
 
+The context-preserving filtering and truncating operators include
+`filter`, `filterNot`, `collect`, `collectFirst`, `collectWhile`, `collectType`,
+`mapOption`, `drop`, `dropWhile`, `dropWithin`, `dropRepeated`, `take`, `takeWhile`,
+`takeUntil`, `takeWithin`, `limit`, and `limitWeighted`.
+
+Scala
+:  @@snip [snip](/docs/src/test/scala/docs/stream/operators/WithContextSpec.scala) { #withContextOperators }
+
+Java
+:  @@snip [snip](/docs/src/test/java/jdocs/stream/operators/WithContextTest.java) { #withContextOperators }
+
 As an escape hatch, there is a `via` operator that allows you to
 insert an arbitrary @apidoc[Flow] that can process the
 @scala[tuples]@java[pairs] of elements and context in any way

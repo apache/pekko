@@ -81,6 +81,98 @@ class FlowWithContextSpec extends StreamSpec {
         .expectError(boom)
     }
 
+    "pass through contexts using additional filtering operators" in {
+      val flow = FlowWithContext[Any, String]
+        .collectType[Int]
+        .collectWhile { case value if value < 3 => value * 10 }
+
+      SourceWithContext
+        .fromTuples(Source(Vector((1: Any, "one"), (2: Any, "two"), ("three": Any, "three"), (3: Any, "three-int"))))
+        .via(flow)
+        .runWith(TestSink[(Int, String)]())
+        .request(3)
+        .expectNext((10, "one"), (20, "two"))
+        .expectComplete()
+
+      SourceWithContext
+        .fromTuples(Source(Vector((0, "zero"), (1, "one"), (2, "two"), (3, "three"))))
+        .via(FlowWithContext[Int, String].mapOption(value => if (value == 0) None else Some(value * 10)))
+        .runWith(TestSink[(Int, String)]())
+        .request(3)
+        .expectNext((10, "one"), (20, "two"), (30, "three"))
+        .expectComplete()
+
+      SourceWithContext
+        .fromTuples(Source(Vector((1: Any, "one"), (2: Any, "two"), (3: Any, "three"))))
+        .via(FlowWithContext[Any, String].collectFirst { case value: Int if value > 1 => value * 10 })
+        .runWith(TestSink[(Int, String)]())
+        .request(1)
+        .expectNext((20, "two"))
+        .expectComplete()
+
+      val forComprehensionFlow =
+        for {
+          value <- FlowWithContext[Int, String]
+          if value % 2 == 1
+        } yield value * 10
+
+      SourceWithContext
+        .fromTuples(Source(Vector((1, "one"), (2, "two"), (3, "three"))))
+        .via(forComprehensionFlow)
+        .runWith(TestSink[(Int, String)]())
+        .request(2)
+        .expectNext((10, "one"), (30, "three"))
+        .expectComplete()
+    }
+
+    "pass through contexts using truncating operators" in {
+      val flow = FlowWithContext[Int, String]
+        .drop(1)
+        .dropRepeated()
+        .dropWhile(_ < 2)
+        .takeUntil(_ == 3)
+        .takeWithin(1.day)
+        .take(2)
+        .limit(2)
+        .limitWeighted(2)(_ => 1)
+
+      SourceWithContext
+        .fromTuples(Source(Vector((0, "zero"), (1, "one"), (1, "one-duplicate"), (2, "two"), (3, "three"),
+          (4, "four"))))
+        .via(flow)
+        .runWith(TestSink[(Int, String)]())
+        .request(2)
+        .expectNext((2, "two"), (3, "three"))
+        .expectComplete()
+
+      SourceWithContext
+        .fromTuples(Source(Vector((1, "one"), (2, "two"), (3, "three"))))
+        .via(FlowWithContext[Int, String].takeWhile(_ < 2, inclusive = true))
+        .runWith(TestSink[(Int, String)]())
+        .request(2)
+        .expectNext((1, "one"), (2, "two"))
+        .expectComplete()
+
+      SourceWithContext
+        .fromTuples(Source(Vector((1, "one"), (3, "three"), (4, "four"))))
+        .via(
+          FlowWithContext[Int, String]
+            .dropRepeated((left, right) => left % 2 == right % 2)
+            .takeWhile(_ < 3))
+        .runWith(TestSink[(Int, String)]())
+        .request(2)
+        .expectNext((1, "one"))
+        .expectComplete()
+
+      SourceWithContext
+        .fromTuples(Source.single((1, "one")).initialDelay(50.millis))
+        .via(FlowWithContext[Int, String].dropWithin(10.millis).takeWithin(1.day))
+        .runWith(TestSink[(Int, String)]())
+        .request(1)
+        .expectNext((1, "one"))
+        .expectComplete()
+    }
+
     "pass through all data when using alsoTo" in {
       // alsoTo feeds an asynchronous side Sink, which may still be draining when the
       // main stream completes. Poll until it has observed every element instead of

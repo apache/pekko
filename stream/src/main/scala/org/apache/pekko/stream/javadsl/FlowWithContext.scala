@@ -21,6 +21,7 @@ import scala.jdk.CollectionConverters._
 import scala.jdk.DurationConverters._
 import scala.jdk.FutureConverters._
 import scala.jdk.OptionConverters._
+import scala.reflect.ClassTag
 
 import org.apache.pekko
 import pekko.annotation.ApiMayChange
@@ -169,6 +170,39 @@ final class FlowWithContext[In, CtxIn, Out, CtxOut, +Mat](
     viaScala(_.collect(pf))
 
   /**
+   * Context-preserving variant of [[pekko.stream.javadsl.Flow.collectFirst]].
+   *
+   * Note, that the context of elements that are filtered out is skipped as well.
+   *
+   * @see [[pekko.stream.javadsl.Flow.collectFirst]]
+   * @since 2.0.0
+   */
+  def collectFirst[Out2](pf: PartialFunction[Out, Out2]): FlowWithContext[In, CtxIn, Out2, CtxOut, Mat] =
+    viaScala(_.collectFirst(pf))
+
+  /**
+   * Context-preserving variant of [[pekko.stream.javadsl.Flow.collectWhile]].
+   *
+   * Note, that the context of elements that are filtered out is skipped as well.
+   *
+   * @see [[pekko.stream.javadsl.Flow.collectWhile]]
+   * @since 2.0.0
+   */
+  def collectWhile[Out2](pf: PartialFunction[Out, Out2]): FlowWithContext[In, CtxIn, Out2, CtxOut, Mat] =
+    viaScala(_.collectWhile(pf))
+
+  /**
+   * Context-preserving variant of [[pekko.stream.javadsl.Flow.collectType]].
+   *
+   * Note, that the context of elements that are filtered out is skipped as well.
+   *
+   * @see [[pekko.stream.javadsl.Flow.collectType]]
+   * @since 2.0.0
+   */
+  def collectType[Out2](clazz: Class[Out2]): FlowWithContext[In, CtxIn, Out2, CtxOut, Mat] =
+    viaScala(_.collectType[Out2](ClassTag[Out2](clazz)))
+
+  /**
    * Context-preserving variant of [[pekko.stream.javadsl.Flow.filter]].
    *
    * Note, that the context of elements that are filtered out is skipped as well.
@@ -187,6 +221,51 @@ final class FlowWithContext[In, CtxIn, Out, CtxOut, +Mat](
    */
   def filterNot(p: function.Predicate[Out]): FlowWithContext[In, CtxIn, Out, CtxOut, Mat] =
     viaScala(_.filterNot(p.test))
+
+  /**
+   * Context-preserving variant of [[pekko.stream.javadsl.Flow.dropRepeated]].
+   *
+   * @see [[pekko.stream.javadsl.Flow.dropRepeated]]
+   * @since 2.0.0
+   */
+  def dropRepeated(): FlowWithContext[In, CtxIn, Out, CtxOut, Mat] =
+    viaScala(_.dropRepeated())
+
+  /**
+   * Context-preserving variant of [[pekko.stream.javadsl.Flow.dropRepeated]].
+   *
+   * @see [[pekko.stream.javadsl.Flow.dropRepeated]]
+   * @since 2.0.0
+   */
+  def dropRepeated(p: function.Function2[Out, Out, Boolean]): FlowWithContext[In, CtxIn, Out, CtxOut, Mat] =
+    viaScala(_.dropRepeated((left, right) => p.apply(left, right)))
+
+  /**
+   * Context-preserving variant of [[pekko.stream.javadsl.Flow.dropWhile]].
+   *
+   * @see [[pekko.stream.javadsl.Flow.dropWhile]]
+   * @since 2.0.0
+   */
+  def dropWhile(p: function.Predicate[Out]): FlowWithContext[In, CtxIn, Out, CtxOut, Mat] =
+    viaScala(_.dropWhile(p.test))
+
+  /**
+   * Context-preserving variant of [[pekko.stream.javadsl.Flow.drop]].
+   *
+   * @see [[pekko.stream.javadsl.Flow.drop]]
+   * @since 2.0.0
+   */
+  def drop(n: Long): FlowWithContext[In, CtxIn, Out, CtxOut, Mat] =
+    viaScala(_.drop(n))
+
+  /**
+   * Context-preserving variant of [[pekko.stream.javadsl.Flow.dropWithin]].
+   *
+   * @see [[pekko.stream.javadsl.Flow.dropWithin]]
+   * @since 2.0.0
+   */
+  def dropWithin(duration: java.time.Duration): FlowWithContext[In, CtxIn, Out, CtxOut, Mat] =
+    viaScala(_.dropWithin(duration.toScala))
 
   /**
    * Context-preserving variant of [[pekko.stream.javadsl.Flow.grouped]].
@@ -208,6 +287,18 @@ final class FlowWithContext[In, CtxIn, Out, CtxOut, +Mat](
    */
   def map[Out2](f: function.Function[Out, Out2]): FlowWithContext[In, CtxIn, Out2, CtxOut, Mat] =
     viaScala(_.map(f.apply))
+
+  /**
+   * Context-preserving variant of [[pekko.stream.javadsl.Flow.mapOption]].
+   *
+   * Note, that the context of elements that are filtered out is skipped as well.
+   *
+   * @see [[pekko.stream.javadsl.Flow.mapOption]]
+   * @since 2.0.0
+   */
+  def mapOption[Out2](
+      f: function.Function[Out, Optional[Out2]]): FlowWithContext[In, CtxIn, Out2, CtxOut, Mat] =
+    viaScala(_.mapOption(out => f.apply(out).toScala))
 
   /**
    * Context-preserving variant of [[pekko.stream.javadsl.Flow.mapAsync]].
@@ -284,6 +375,25 @@ final class FlowWithContext[In, CtxIn, Out, CtxOut, +Mat](
       extractContext: function.Function[CtxOut, CtxOut2]): FlowWithContext[In, CtxIn, Out, CtxOut2, Mat] = {
     viaScala(_.mapContext(extractContext.apply))
   }
+
+  /**
+   * Context-preserving variant of [[pekko.stream.javadsl.Flow.limit]].
+   *
+   * @see [[pekko.stream.javadsl.Flow.limit]]
+   * @since 2.0.0
+   */
+  def limit(max: Long): FlowWithContext[In, CtxIn, Out, CtxOut, Mat] =
+    viaScala(_.limit(max))
+
+  /**
+   * Context-preserving variant of [[pekko.stream.javadsl.Flow.limitWeighted]].
+   *
+   * @see [[pekko.stream.javadsl.Flow.limitWeighted]]
+   * @since 2.0.0
+   */
+  def limitWeighted(max: Long, costFn: function.Function[Out, java.lang.Long])
+      : FlowWithContext[In, CtxIn, Out, CtxOut, Mat] =
+    viaScala(_.limitWeighted(max)(costFn.apply))
 
   /**
    * Context-preserving variant of [[pekko.stream.javadsl.Flow.sliding]].
@@ -376,6 +486,53 @@ final class FlowWithContext[In, CtxIn, Out, CtxOut, +Mat](
       name: String,
       marker: function.Function2[Out, CtxOut, LogMarker]): FlowWithContext[In, CtxIn, Out, CtxOut, Mat] =
     this.logWithMarker(name, marker, ConstantFun.javaIdentityFunction[Out], null)
+
+  /**
+   * Context-preserving variant of [[pekko.stream.javadsl.Flow.takeWhile]].
+   *
+   * @see [[pekko.stream.javadsl.Flow.takeWhile]]
+   * @since 2.0.0
+   */
+  def takeWhile(
+      p: function.Predicate[Out],
+      inclusive: Boolean): FlowWithContext[In, CtxIn, Out, CtxOut, Mat] =
+    viaScala(_.takeWhile(p.test, inclusive))
+
+  /**
+   * Context-preserving variant of [[pekko.stream.javadsl.Flow.takeWhile]].
+   *
+   * @see [[pekko.stream.javadsl.Flow.takeWhile]]
+   * @since 2.0.0
+   */
+  def takeWhile(p: function.Predicate[Out]): FlowWithContext[In, CtxIn, Out, CtxOut, Mat] =
+    takeWhile(p, inclusive = false)
+
+  /**
+   * Context-preserving variant of [[pekko.stream.javadsl.Flow.takeUntil]].
+   *
+   * @see [[pekko.stream.javadsl.Flow.takeUntil]]
+   * @since 2.0.0
+   */
+  def takeUntil(p: function.Predicate[Out]): FlowWithContext[In, CtxIn, Out, CtxOut, Mat] =
+    viaScala(_.takeUntil(p.test))
+
+  /**
+   * Context-preserving variant of [[pekko.stream.javadsl.Flow.take]].
+   *
+   * @see [[pekko.stream.javadsl.Flow.take]]
+   * @since 2.0.0
+   */
+  def take(n: Long): FlowWithContext[In, CtxIn, Out, CtxOut, Mat] =
+    viaScala(_.take(n))
+
+  /**
+   * Context-preserving variant of [[pekko.stream.javadsl.Flow.takeWithin]].
+   *
+   * @see [[pekko.stream.javadsl.Flow.takeWithin]]
+   * @since 2.0.0
+   */
+  def takeWithin(duration: java.time.Duration): FlowWithContext[In, CtxIn, Out, CtxOut, Mat] =
+    viaScala(_.takeWithin(duration.toScala))
 
   /**
    * Context-preserving variant of [[pekko.stream.javadsl.Flow.throttle]].

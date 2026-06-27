@@ -89,4 +89,29 @@ class WithContextSpec extends PekkoSpec {
     result.futureValue should contain theSameElementsInOrderAs immutable.Seq("snie" -> 1, "iewz" -> 2, "ierd" -> 3)
     // #asFlowWithContext
   }
+
+  "use filtering and truncating operators with context" in {
+    // #withContextOperators
+    import org.apache.pekko
+    import pekko.NotUsed
+    import pekko.stream.scaladsl.Sink
+    import pekko.stream.scaladsl.Source
+    import pekko.stream.scaladsl.SourceWithContext
+    import scala.collection.immutable
+
+    val values: immutable.Seq[(String, Int)] =
+      immutable.Seq("eins" -> 1, "eins" -> 2, "zwei" -> 3, "drei" -> 4)
+
+    val filtered: SourceWithContext[String, Int, NotUsed] =
+      Source(values)
+        .asSourceWithContext(_._2)
+        .map(_._1)
+        .dropRepeated()
+        .mapOption(word => if (word.startsWith("z")) None else Some(word.toUpperCase))
+        .take(2)
+
+    val result = filtered.runWith(Sink.seq)
+    result.futureValue should contain theSameElementsInOrderAs immutable.Seq("EINS" -> 1, "DREI" -> 4)
+    // #withContextOperators
+  }
 }
