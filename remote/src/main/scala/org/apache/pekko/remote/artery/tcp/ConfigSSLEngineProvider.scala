@@ -66,7 +66,7 @@ class ConfigSSLEngineProvider(protected val config: Config, protected val log: M
   val SSLRequireMutualAuthentication: Boolean = sslEngineConfig.SSLRequireMutualAuthentication
   val HostnameVerification: Boolean = sslEngineConfig.HostnameVerification
 
-  private lazy val sslContext: SSLContext = {
+  private val sslContext: SSLContext = {
     // log hostname verification warning once
     if (HostnameVerification)
       log.debug("TLS/SSL hostname verification is enabled.")
