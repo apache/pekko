@@ -2207,6 +2207,10 @@ trait FlowOps[+Out, +Mat] {
    * `maxWeight` must be positive, and `d` must be greater than 0 seconds, otherwise
    * IllegalArgumentException is thrown.
    *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute. On `Supervision.Resume` the
+   * offending element is skipped and the current group is kept; on `Supervision.Restart` the current
+   * group is dropped.
+   *
    * '''Emits when''' the configured time elapses since the last group has been emitted or weight limit reached
    *
    * '''Backpressures when''' downstream backpressures, and buffered group (+ pending element) weighs more than `maxWeight`
@@ -2227,6 +2231,10 @@ trait FlowOps[+Out, +Mat] {
    *
    * `maxWeight` must be positive, `maxNumber` must be positive, and `d` must be greater than 0 seconds,
    * otherwise IllegalArgumentException is thrown.
+   *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute. On `Supervision.Resume` the
+   * offending element is skipped and the current group is kept; on `Supervision.Restart` the current
+   * group is dropped.
    *
    * '''Emits when''' the configured time elapses since the last group has been emitted or weight limit reached
    *

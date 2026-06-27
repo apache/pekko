@@ -15,6 +15,7 @@ Chunk up this stream into groups of elements received within a time window, or l
 Chunk up this stream into groups of elements received within a time window, or limited by the weight and number of 
 the elements, whatever happens first. Empty groups will not be emitted if no elements are received from upstream.
 The last group before end-of-stream will contain the buffered elements since the previously emitted group.
+The `groupedWeightedWithin` operator adheres to the ActorAttributes.SupervisionStrategy attribute. On `Supervision.Resume` the offending element is skipped and the current group is kept; on `Supervision.Restart` the current group is dropped.
 
 See also:
 
