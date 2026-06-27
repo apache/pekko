@@ -18,6 +18,7 @@
 package org.apache.pekko.stream.scaladsl
 
 import org.apache.pekko
+import pekko.stream.{ ActorAttributes, Supervision }
 import pekko.stream.testkit.{ ScriptedTest, StreamSpec }
 import pekko.stream.testkit.scaladsl.TestSink
 
@@ -92,6 +93,92 @@ class FlowGroupedAdjacentByWeightedSpec extends StreamSpec("""
         .expectNext(Seq("Hi", "Hi"))
         .expectNext(Seq("Greetings"))
         .expectNext(Seq("Hey"))
+        .expectComplete()
+    }
+
+    "fail when costFn throws and supervision decides to stop" in {
+      val ex = new RuntimeException("cost boom")
+      Source(List(1, 2, 3))
+        .groupedAdjacentByWeighted(_ => "k", 2)(elem => if (elem == 2) throw ex else 1L)
+        .withAttributes(ActorAttributes.supervisionStrategy(Supervision.stoppingDecider))
+        .runWith(TestSink[Seq[Int]]())
+        .request(10)
+        .expectError(ex)
+    }
+
+    "fail when costFn throws with default supervision strategy" in {
+      val ex = new RuntimeException("cost boom")
+      Source(List(1, 2, 3))
+        .groupedAdjacentByWeighted(_ => "k", 2)(elem => if (elem == 2) throw ex else 1L)
+        .runWith(TestSink[Seq[Int]]())
+        .request(10)
+        .expectError(ex)
+    }
+
+    "resume when costFn throws and keep surrounding groups" in {
+      val ex = new RuntimeException("cost boom")
+      Source(List(1, 2, 3, 4, 5))
+        .groupedAdjacentByWeighted(_ => "k", 2)(elem => if (elem == 3) throw ex else 1L)
+        .withAttributes(ActorAttributes.supervisionStrategy(Supervision.resumingDecider))
+        .runWith(TestSink[Seq[Int]]())
+        .request(10)
+        .expectNext(Seq(1, 2))
+        .expectNext(Seq(4, 5))
+        .expectComplete()
+    }
+
+    "restart when costFn throws and drop current in-progress group" in {
+      val ex = new RuntimeException("cost boom")
+      Source(List(1, 2, 3, 4, 5))
+        .groupedAdjacentByWeighted(_ => "k", 2)(elem => if (elem == 3) throw ex else 1L)
+        .withAttributes(ActorAttributes.supervisionStrategy(Supervision.restartingDecider))
+        .runWith(TestSink[Seq[Int]]())
+        .request(10)
+        .expectNext(Seq(4, 5))
+        .expectComplete()
+    }
+
+    "fail when groupedAdjacentBy key function throws and supervision decides to stop" in {
+      val ex = new RuntimeException("key boom")
+      Source(List(1, 1, 2, 3))
+        .groupedAdjacentBy(elem => if (elem == 2) throw ex else elem)
+        .withAttributes(ActorAttributes.supervisionStrategy(Supervision.stoppingDecider))
+        .runWith(TestSink[Seq[Int]]())
+        .request(10)
+        .expectError(ex)
+    }
+
+    "resume when groupedAdjacentBy key function throws and skip offending elements" in {
+      val ex = new RuntimeException("key boom")
+      Source(List(1, 1, 2, 2, 3, 3))
+        .groupedAdjacentBy(elem => if (elem == 2) throw ex else elem)
+        .withAttributes(ActorAttributes.supervisionStrategy(Supervision.resumingDecider))
+        .runWith(TestSink[Seq[Int]]())
+        .request(10)
+        .expectNext(Seq(1, 1))
+        .expectNext(Seq(3, 3))
+        .expectComplete()
+    }
+
+    "resume when the key function throws on the last element and flush the kept group at completion" in {
+      val ex = new RuntimeException("key boom")
+      Source(List(1, 1, 2))
+        .groupedAdjacentBy(elem => if (elem == 2) throw ex else elem)
+        .withAttributes(ActorAttributes.supervisionStrategy(Supervision.resumingDecider))
+        .runWith(TestSink[Seq[Int]]())
+        .request(10)
+        .expectNext(Seq(1, 1))
+        .expectComplete()
+    }
+
+    "restart when groupedAdjacentBy key function throws and drop current group" in {
+      val ex = new RuntimeException("key boom")
+      Source(List(1, 1, 2, 2, 3, 3))
+        .groupedAdjacentBy(elem => if (elem == 2) throw ex else elem)
+        .withAttributes(ActorAttributes.supervisionStrategy(Supervision.restartingDecider))
+        .runWith(TestSink[Seq[Int]]())
+        .request(10)
+        .expectNext(Seq(3, 3))
         .expectComplete()
     }
 

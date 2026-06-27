@@ -18,10 +18,13 @@
 package org.apache.pekko.stream.impl.fusing
 
 import scala.collection.immutable
+import scala.util.control.NonFatal
 
 import org.apache.pekko
 import pekko.annotation.InternalApi
+import pekko.stream.ActorAttributes.SupervisionStrategy
 import pekko.stream.{ Attributes, FlowShape, Inlet, Outlet }
+import pekko.stream.Supervision
 import pekko.stream.impl.Stages.DefaultAttributes
 import pekko.stream.stage.{ GraphStage, GraphStageLogic, InHandler, OutHandler }
 import pekko.util.OptionVal
@@ -54,17 +57,30 @@ private[pekko] final case class GroupedAdjacentByWeighted[T, R](
       private var hasElements: Boolean = false
       private var currentKey: OptionVal[R] = OptionVal.none
       private var pendingGroup: OptionVal[immutable.Seq[T]] = OptionVal.none
+      private lazy val decider = inheritedAttributes.mandatoryAttribute[SupervisionStrategy].decider
 
       override def onPush(): Unit = {
         val elem = grab(in)
-        val cost = costFn(elem)
+        val cost =
+          try costFn(elem)
+          catch {
+            case NonFatal(ex) =>
+              superviseUserFn(ex)
+              return
+          }
 
         if (cost < 0L) {
           failStage(new IllegalArgumentException(s"Negative weight [$cost] for element [$elem] is not allowed"))
           return
         }
 
-        val elemKey = f(elem)
+        val elemKey =
+          try f(elem)
+          catch {
+            case NonFatal(ex) =>
+              superviseUserFn(ex)
+              return
+          }
         require(elemKey != null, "Element key must not be null")
 
         if (shouldPushDirectly(cost)) {
@@ -76,6 +92,12 @@ private[pekko] final case class GroupedAdjacentByWeighted[T, R](
           addToCurrentGroup(elem, cost, elemKey)
           tryPullIfNeeded()
         }
+      }
+
+      private def superviseUserFn(ex: Throwable): Unit = decider(ex) match {
+        case Supervision.Stop    => failStage(ex)
+        case Supervision.Resume  => tryPullIfNeeded()
+        case Supervision.Restart => resetGroup(); tryPullIfNeeded()
       }
 
       private def shouldPushDirectly(cost: Long): Boolean = {
