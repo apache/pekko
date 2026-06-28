@@ -2566,12 +2566,19 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    * element until new element comes from the upstream. For example an expand step might repeat the last element for
    * the subscriber until it receives an update from upstream.
    *
-   * This element will never "drop" upstream elements as all elements go through at least one extrapolation step.
-   * This means that if the upstream is actually faster than the upstream it will be backpressured by the downstream
-   * subscriber.
+   * Under normal operation all upstream elements go through at least one extrapolation step.
+   * If supervision drops a failed element, that element is not emitted.
+   * If the upstream is actually faster than the downstream it will be backpressured by the downstream subscriber.
    *
-   * Expand does not support [[pekko.stream.Supervision#restart]] and [[pekko.stream.Supervision#resume]].
-   * Exceptions from the `expander` function will complete the stream with failure.
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
+   *
+   * If the `expander` function or the iterator it produces throws during evaluation (`hasNext`/`next`) and the
+   * supervision decision is [[pekko.stream.Supervision#stop]] the stream fails. If the supervision decision is
+   * [[pekko.stream.Supervision#resume]] the failed element is dropped and the stream continues, keeping current
+   * extrapolation state when available. If the supervision decision is [[pekko.stream.Supervision#restart]] the
+   * failed element is dropped and the current extrapolation state is reset. Note that iterator-evaluation failures
+   * necessarily discard the current iterator under both `resume` and `restart`, because a corrupt iterator cannot
+   * be reused.
    *
    * See also [[#extrapolate]] for a version that always preserves the original element and allows for an initial "startup" element.
    *
@@ -2596,8 +2603,14 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    * This is achieved by introducing "extrapolated" elements - based on those from upstream - whenever downstream
    * signals demand.
    *
-   * Extrapolate does not support [[pekko.stream.Supervision#restart]] and [[pekko.stream.Supervision#resume]].
-   * Exceptions from the `extrapolate` function will complete the stream with failure.
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
+   *
+   * If the `extrapolator` function or the iterator it produces throws during evaluation (`hasNext`/`next`) and the
+   * supervision decision is [[pekko.stream.Supervision#stop]] the stream fails. If the supervision decision is
+   * [[pekko.stream.Supervision#resume]] the failed element is dropped and any previously active extrapolation is
+   * retained. If the supervision decision is [[pekko.stream.Supervision#restart]] the failed element is dropped and
+   * the current extrapolation state is reset. For iterator-evaluation failures, `resume` and `restart` both discard
+   * the corrupt iterator because it cannot be reused.
    *
    * See also [[#expand]] for a version that can overwrite the original element.
    *
@@ -2624,8 +2637,14 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    * This is achieved by introducing "extrapolated" elements - based on those from upstream - whenever downstream
    * signals demand.
    *
-   * Extrapolate does not support [[pekko.stream.Supervision#restart]] and [[pekko.stream.Supervision#resume]].
-   * Exceptions from the `extrapolate` function will complete the stream with failure.
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
+   *
+   * If the `extrapolator` function or the iterator it produces throws during evaluation (`hasNext`/`next`) and the
+   * supervision decision is [[pekko.stream.Supervision#stop]] the stream fails. If the supervision decision is
+   * [[pekko.stream.Supervision#resume]] the failed element is dropped and any previously active extrapolation is
+   * retained. If the supervision decision is [[pekko.stream.Supervision#restart]] the failed element is dropped and
+   * the current extrapolation state is reset. For iterator-evaluation failures, `resume` and `restart` both discard
+   * the corrupt iterator because it cannot be reused.
    *
    * See also [[#expand]] for a version that can overwrite the original element.
    *

@@ -19,6 +19,8 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import org.apache.pekko
+import pekko.stream.ActorAttributes
+import pekko.stream.Supervision
 import pekko.stream.testkit._
 import pekko.stream.testkit.scaladsl.TestSink
 import pekko.stream.testkit.scaladsl.TestSource
@@ -169,6 +171,112 @@ class FlowExtrapolateSpec extends StreamSpec("""
       sink.request(4).expectNext(1 -> 0, 1 -> 1, 1 -> 2).expectNoMessage(100.millis)
       source.sendNext(2).sendComplete()
       sink.expectNext(2 -> 0).expectComplete()
+    }
+
+    "stop when extrapolator throws during iterator evaluation" in {
+      val ex = new RuntimeException("boom")
+      val publisher = TestPublisher.probe[Int]()
+      val subscriber = TestSubscriber.probe[Int]()
+
+      Source
+        .fromPublisher(publisher)
+        .extrapolate(i =>
+          if (i == 3)
+            new Iterator[Int] {
+              override def hasNext: Boolean = throw ex
+              override def next(): Int = throw ex
+            }
+          else Iterator.empty)
+        .withAttributes(ActorAttributes.supervisionStrategy(Supervision.stoppingDecider))
+        .to(Sink.fromSubscriber(subscriber))
+        .run()
+
+      publisher.sendNext(3)
+      subscriber.requestNext(3)
+      subscriber.request(1)
+      subscriber.expectError(ex)
+    }
+
+    "resume when extrapolator throws during iterator evaluation" in {
+      val ex = new RuntimeException("boom")
+      val publisher = TestPublisher.probe[Int]()
+      val subscriber = TestSubscriber.probe[Int]()
+
+      Source
+        .fromPublisher(publisher)
+        .extrapolate(i =>
+          if (i == 3)
+            new Iterator[Int] {
+              override def hasNext: Boolean = throw ex
+              override def next(): Int = throw ex
+            }
+          else Iterator.empty)
+        .withAttributes(ActorAttributes.supervisionStrategy(Supervision.resumingDecider))
+        .to(Sink.fromSubscriber(subscriber))
+        .run()
+
+      publisher.sendNext(3)
+      subscriber.requestNext(3)
+      subscriber.request(1)
+      subscriber.expectNoMessage(300.millis)
+      publisher.sendNext(4)
+      subscriber.requestNext(4)
+      subscriber.cancel()
+    }
+
+    "restart when extrapolator throws during iterator evaluation" in {
+      val ex = new RuntimeException("boom")
+      val publisher = TestPublisher.probe[Int]()
+      val subscriber = TestSubscriber.probe[Int]()
+
+      Source
+        .fromPublisher(publisher)
+        .extrapolate(i =>
+          if (i == 3)
+            new Iterator[Int] {
+              override def hasNext: Boolean = throw ex
+              override def next(): Int = throw ex
+            }
+          else Iterator.empty)
+        .withAttributes(ActorAttributes.supervisionStrategy(Supervision.restartingDecider))
+        .to(Sink.fromSubscriber(subscriber))
+        .run()
+
+      publisher.sendNext(3)
+      subscriber.requestNext(3)
+      subscriber.request(1)
+      subscriber.expectNoMessage(300.millis)
+      publisher.sendNext(4)
+      subscriber.requestNext(4)
+      subscriber.cancel()
+    }
+
+    "fail stream when extrapolator iterator throws during upstream completion" in {
+      val ex = new RuntimeException("boom")
+      val publisher = TestPublisher.probe[Int]()
+      val subscriber = TestSubscriber.probe[Int]()
+
+      Source
+        .fromPublisher(publisher)
+        .extrapolate(_ =>
+          new Iterator[Int] {
+            private var calls = 0
+            override def hasNext: Boolean = {
+              calls += 1
+              if (calls >= 2) throw ex else true
+            }
+            override def next(): Int = 99
+          })
+        .withAttributes(ActorAttributes.supervisionStrategy(Supervision.stoppingDecider))
+        .to(Sink.fromSubscriber(subscriber))
+        .run()
+
+      subscriber.request(2) // demand for original element + one extrapolated
+      publisher.sendNext(1)
+      subscriber.expectNext(1) // original element (Iterator.single(1) ++ extrapolator(1))
+      subscriber.expectNext(99) // first extrapolated element -> hasNext #1 true, next returns 99
+      publisher.sendComplete() // onUpstreamFinish -> hasNext #2 throws -> failStage
+      subscriber.expectError(ex)
     }
   }
 

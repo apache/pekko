@@ -17,6 +17,13 @@ element, allowing for it to be rewritten and/or filtered.
 See @ref:[Understanding extrapolate and expand](../../stream-rate.md#understanding-extrapolate-and-expand) for more information
 and examples.
 
+This operator adheres to the `ActorAttributes.SupervisionStrategy` attribute for exceptions thrown by the `expander`
+function or during iterator evaluation (`hasNext`/`next`). On `Supervision.Stop` the stream fails; on
+`Supervision.Resume` the failed element is dropped and the current extrapolation state is kept when the failure
+occurred in the `expander` function (a previously active iterator is retained), but is necessarily discarded when
+the failure occurred during iterator evaluation; on `Supervision.Restart` the failed element is dropped and the
+current extrapolation state is reset.
+
 ## Example
 
 Imagine a streaming client decoding a video. It is possible the network bandwidth is a bit 
@@ -43,4 +50,3 @@ Java
 **completes** when upstream completes
 
 @@@
-

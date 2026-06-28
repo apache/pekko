@@ -20,6 +20,7 @@ import scala.concurrent.duration._
 
 import org.apache.pekko
 import pekko.stream.ActorAttributes
+import pekko.stream.Supervision
 import pekko.stream.testkit._
 import pekko.stream.testkit.scaladsl.TestSink
 import pekko.stream.testkit.scaladsl.TestSource
@@ -149,6 +150,202 @@ class FlowExpandSpec extends StreamSpec("""
       sink.request(4).expectNext(1 -> 0, 1 -> 1, 1 -> 2).expectNoMessage(100.millis)
       source.sendNext(2).sendComplete()
       sink.expectNext(2 -> 0).expectComplete()
+    }
+
+    "fail stream when expander throws and supervision is Stop" in {
+      val ex = new RuntimeException("boom")
+      val result = Source(1 to 5)
+        .expand(i => if (i == 3) throw ex else Iterator.single(i))
+        .withAttributes(ActorAttributes.supervisionStrategy(Supervision.stoppingDecider))
+        .runWith(Sink.ignore)
+      result.failed.futureValue shouldBe ex
+    }
+
+    "fail stream when expander throws and supervision defaults to Stop" in {
+      val ex = new RuntimeException("boom")
+      val result = Source(1 to 5)
+        .expand(i => if (i == 3) throw ex else Iterator.single(i))
+        .runWith(Sink.ignore)
+      result.failed.futureValue shouldBe ex
+    }
+
+    "resume and keep current extrapolation when expander throws" in {
+      val ex = new RuntimeException("boom")
+      val publisher = TestPublisher.probe[Int]()
+      val subscriber = TestSubscriber.probe[Int]()
+
+      Source
+        .fromPublisher(publisher)
+        .expand(i => if (i == 1) Iterator(1, 10, 11) else if (i == 2) throw ex else Iterator.single(i))
+        .withAttributes(ActorAttributes.supervisionStrategy(Supervision.resumingDecider))
+        .to(Sink.fromSubscriber(subscriber))
+        .run()
+
+      publisher.sendNext(1)
+      subscriber.requestNext(1)
+      publisher.sendNext(2) // throws in expander, element 2 is dropped under Resume
+      subscriber.requestNext(10) // continue from current extrapolation
+      subscriber.cancel()
+    }
+
+    "complete immediately on upstream finish if expanded is true" in {
+      val subscriber = TestSubscriber.probe[Int]()
+
+      Source.single(1)
+        .expand(_ => Iterator(1, 2, 3))
+        .to(Sink.fromSubscriber(subscriber))
+        .run()
+
+      subscriber.requestNext(1) // expanded becomes true
+      subscriber.expectComplete() // must complete immediately when expanded is true
+    }
+
+    "restart and reset current extrapolation when expander throws" in {
+      val ex = new RuntimeException("boom")
+      val publisher = TestPublisher.probe[Int]()
+      val subscriber = TestSubscriber.probe[Int]()
+
+      Source
+        .fromPublisher(publisher)
+        .expand(i => if (i == 1) Iterator(1, 10, 11) else if (i == 2) throw ex else Iterator.single(i))
+        .withAttributes(ActorAttributes.supervisionStrategy(Supervision.restartingDecider))
+        .to(Sink.fromSubscriber(subscriber))
+        .run()
+
+      publisher.sendNext(1)
+      subscriber.requestNext(1)
+      publisher.sendNext(2) // throws in expander, restart resets iterator state
+      subscriber.request(1)
+      subscriber.expectNoMessage(300.millis)
+      publisher.sendNext(3)
+      subscriber.requestNext(3)
+      subscriber.cancel()
+    }
+
+    "resume when iterator produced by expander throws during iteration" in {
+      val ex = new RuntimeException("boom")
+      val result = Source(1 to 4)
+        .expand(i =>
+          if (i == 3)
+            new Iterator[Int] {
+              override def hasNext: Boolean = true
+              override def next(): Int = throw ex
+            }
+          else Iterator.single(i))
+        .withAttributes(ActorAttributes.supervisionStrategy(Supervision.resumingDecider))
+        .runWith(Sink.seq)
+
+      Await.result(result, 3.seconds) shouldBe Seq(1, 2, 4)
+    }
+
+    "restart when iterator produced by expander throws during iteration" in {
+      val ex = new RuntimeException("boom")
+      val result = Source(1 to 4)
+        .expand(i =>
+          if (i == 3)
+            new Iterator[Int] {
+              override def hasNext: Boolean = true
+              override def next(): Int = throw ex
+            }
+          else Iterator.single(i))
+        .withAttributes(ActorAttributes.supervisionStrategy(Supervision.restartingDecider))
+        .runWith(Sink.seq)
+
+      Await.result(result, 3.seconds) shouldBe Seq(1, 2, 4)
+    }
+
+    "fail stream when iterator throws during upstream completion" in {
+      val ex = new RuntimeException("boom")
+      val publisher = TestPublisher.probe[Int]()
+      val subscriber = TestSubscriber.probe[Int]()
+
+      Source
+        .fromPublisher(publisher)
+        .expand(_ =>
+          new Iterator[Int] {
+            private var calls = 0
+            override def hasNext: Boolean = {
+              calls += 1
+              if (calls >= 2) throw ex else true
+            }
+            override def next(): Int = 1
+          })
+        .withAttributes(ActorAttributes.supervisionStrategy(Supervision.stoppingDecider))
+        .to(Sink.fromSubscriber(subscriber))
+        .run()
+
+      subscriber.request(1) // ensure isAvailable(out) during onPush so hasNext #1 fires there
+      publisher.sendNext(1) // onPush: hasNext #1 true, pull
+      subscriber.expectNext(1)
+      publisher.sendComplete() // onUpstreamFinish: hasNext #2 throws -> failStage
+      subscriber.expectError(ex)
+    }
+
+    "resume and complete when iterator throws during upstream completion with no pending pull" in {
+      val ex = new RuntimeException("boom")
+      val publisher = TestPublisher.probe[Int]()
+      val subscriber = TestSubscriber.probe[Int]()
+
+      Source
+        .fromPublisher(publisher)
+        .expand(_ =>
+          new Iterator[Int] {
+            private var calls = 0
+            override def hasNext: Boolean = {
+              calls += 1
+              if (calls >= 2) throw ex else true
+            }
+            override def next(): Int = 1
+          })
+        .withAttributes(ActorAttributes.supervisionStrategy(Supervision.resumingDecider))
+        .to(Sink.fromSubscriber(subscriber))
+        .run()
+
+      subscriber.request(1) // ensure isAvailable(out) during onPush so hasNext #1 fires there
+      publisher.sendNext(1) // onPush: hasNext #1 true, pull
+      subscriber.expectNext(1)
+      publisher.sendComplete() // onUpstreamFinish: hasNext #2 throws -> resume -> completeStage
+      subscriber.expectComplete()
+    }
+
+    "resume when iterator throws during onPull with expanded = true" in {
+      val ex = new RuntimeException("boom")
+      val (publisher, subscriber) = TestSource[Int]()
+        .expand(i =>
+          if (i == 2)
+            new Iterator[Int] {
+              private var calls = 0
+              override def hasNext: Boolean = {
+                calls += 1
+                // 1st hasNext (in onPush) succeeds -> element 2 pushed, expanded=true
+                // 2nd hasNext (in onPull during extrapolation) throws
+                if (calls >= 2) throw ex else true
+              }
+              override def next(): Int = 2
+            }
+          else Iterator.single(i))
+        .withAttributes(ActorAttributes.supervisionStrategy(Supervision.resumingDecider))
+        .toMat(TestSink[Int]())(Keep.both)
+        .run()
+
+      subscriber.request(1)
+      publisher.sendNext(1)
+      subscriber.expectNext(1)
+
+      // hasNext #1 succeeds in onPush, element 2 emitted, expanded=true
+      subscriber.request(1)
+      publisher.sendNext(2)
+      subscriber.expectNext(2)
+
+      // hasNext #2 throws in onPull; Resume resets state, pulls next
+      subscriber.request(1)
+
+      // Element 3 flows through normally
+      publisher.sendNext(3)
+      subscriber.expectNext(3)
+
+      publisher.sendComplete()
+      subscriber.expectComplete()
     }
   }
 

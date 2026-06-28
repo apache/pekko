@@ -22,6 +22,12 @@ Includes an optional `initial` argument to prevent blocking the entire stream wh
 See @ref:[Understanding extrapolate and expand](../../stream-rate.md#understanding-extrapolate-and-expand) for more information
 and examples.
 
+This operator adheres to the `ActorAttributes.SupervisionStrategy` attribute for exceptions thrown by the `extrapolator`
+function or during iterator evaluation (`hasNext`/`next`). On `Supervision.Stop` the stream fails; on
+`Supervision.Resume` the failed element is dropped and any previously active extrapolation is retained; on
+`Supervision.Restart` the failed element is dropped and the current extrapolation state is reset. For
+iterator-evaluation failures, `Resume` and `Restart` both discard the corrupt iterator because it cannot be reused.
+
 ## Example
 
 Imagine a videoconference client decoding a video feed from a colleague working remotely. It is possible 
