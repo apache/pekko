@@ -64,6 +64,8 @@ object BehaviorTestKitSpec {
     case class CancelScheduleCommand(key: Any) extends Command
     case class IsTimerActive(key: Any, replyTo: ActorRef[Boolean]) extends Command
     case class AskForCookiesFrom(distributor: ActorRef[CookieDistributor.Command]) extends Command
+    case class ScheduleOnceCommand(delay: FiniteDuration, target: ActorRef[String], message: String,
+        replyTo: ActorRef[pekko.actor.Cancellable]) extends Command
 
     val init: Behavior[Command] = Behaviors.withTimers { timers =>
       Behaviors
@@ -164,6 +166,10 @@ object BehaviorTestKitSpec {
                 case scala.util.Success(cfy) => Log(s"Got ${cfy.nrCookies} cookies from distributor")
                 case scala.util.Failure(ex)  => Log(s"Failed to get cookies: ${ex.getMessage}")
               }
+              Behaviors.same
+            case ScheduleOnceCommand(delay, target, message, replyTo) =>
+              val cancellable = context.scheduleOnce(delay, target, message)
+              replyTo ! cancellable
               Behaviors.same
             case unexpected =>
               throw new RuntimeException(s"Unexpected command: $unexpected")
@@ -526,6 +532,30 @@ class BehaviorTestKitSpec extends AnyWordSpec with Matchers with LogCapturing {
 
       testkit.run(CancelScheduleCommand("abc"))
       testkit.expectEffect(Effect.TimerCancelled("abc"))
+    }
+  }
+
+  "BehaviorTestKit's scheduleOnce" must {
+    "return a Cancellable that follows the Cancellable contract" in {
+      val testkit = BehaviorTestKit[Parent.Command](Parent.init)
+      val target = TestInbox[String]("target")
+      val replyTo = TestInbox[pekko.actor.Cancellable]("cancellable")
+      val delay = 42.seconds
+
+      testkit.run(ScheduleOnceCommand(delay, target.ref, "hello", replyTo.ref))
+
+      testkit.expectEffectPF {
+        case Effect.Scheduled(`delay`, _, "hello") =>
+      }
+
+      val cancellable = replyTo.receiveMessage()
+      cancellable.isCancelled shouldBe false
+
+      cancellable.cancel() shouldBe true
+      cancellable.isCancelled shouldBe true
+
+      cancellable.cancel() shouldBe false
+      cancellable.isCancelled shouldBe true
     }
   }
 
