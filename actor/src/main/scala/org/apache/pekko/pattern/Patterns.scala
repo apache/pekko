@@ -507,7 +507,7 @@ object Patterns {
    * The first attempt will be made immediately, each subsequent attempt will be made immediately
    * if the previous attempt failed.
    *
-   * If attempts are exhausted the returned completion operator is simply the result of invoking attempt.
+   * If all additional attempts are exhausted the returned completion operator is simply the result of the last invoke attempt.
    * Note that the attempt function will be invoked on the given execution context for subsequent tries
    * and therefore must be thread safe (i.e. not touch unsafe mutable state).
    */
@@ -524,13 +524,13 @@ object Patterns {
    * each subsequent attempt will be made after the 'delay' return by `delayFunction` (the input next attempt count start from 1).
    * Return an empty [[Optional]] instance for no delay.
    *
-   * If attempts are exhausted the returned completion operator is simply the result of invoking attempt.
+   * If all additional attempts are exhausted the returned completion operator is simply the result of the last invoke attempt.
    * Note that the attempt function will be invoked on the given execution context for subsequent tries
    * and therefore must be thread safe (i.e. not touch unsafe mutable state).
    *
    * @param attempt       the function to be attempted
    * @param shouldRetry   the predicate to determine if the attempt should be retried
-   * @param attempts      the maximum number of attempts
+   * @param attempts      the maximum number of retry attempts after the initial attempt
    * @param ec       the execution context
    * @return the result [[java.util.concurrent.CompletionStage]] which maybe retried
    *
@@ -550,7 +550,7 @@ object Patterns {
    * The first attempt will be made immediately, each subsequent attempt will be made with a backoff time,
    * if the previous attempt failed.
    *
-   * If attempts are exhausted the returned future is simply the result of invoking attempt.
+   * If all additional attempts are exhausted the returned future is simply the result of the last invoke attempt.
    * Note that the attempt function will be invoked on the given execution context for subsequent tries and
    * therefore must be thread safe (i.e. not touch unsafe mutable state).
    *
@@ -585,13 +585,13 @@ object Patterns {
    * each subsequent attempt will be made after the 'delay' return by `delayFunction` (the input next attempt count start from 1).
    * Return an empty [[Optional]] instance for no delay.
    *
-   * If attempts are exhausted the returned future is simply the result of invoking attempt.
+   * If all additional attempts are exhausted the returned future is simply the result of the last invoke attempt.
    * Note that the attempt function will be invoked on the given execution context for subsequent tries and
    * therefore must be thread safe (i.e. not touch unsafe mutable state).
    *
    * @param attempt       the function to be attempted
    * @param shouldRetry   the predicate to determine if the attempt should be retried
-   * @param attempts      the maximum number of attempts
+   * @param attempts      the maximum number of retry attempts after the initial attempt
    * @param minBackoff   minimum (initial) duration until the child actor will
    *                     started again, if it is terminated
    * @param maxBackoff   the exponential back-off is capped to this duration
@@ -626,7 +626,7 @@ object Patterns {
    * The first attempt will be made immediately, each subsequent attempt will be made with a backoff time,
    * if the previous attempt failed.
    *
-   * If attempts are exhausted the returned future is simply the result of invoking attempt.
+   * If all additional attempts are exhausted the returned future is simply the result of the last invoke attempt.
    * Note that the attempt function will be invoked on the given execution context for subsequent tries and
    * therefore must be thread safe (i.e. not touch unsafe mutable state).
    *
@@ -661,13 +661,13 @@ object Patterns {
    * each subsequent attempt will be made after the 'delay' return by `delayFunction` (the input next attempt count start from 1).
    * Return an empty [[Optional]] instance for no delay.
    *
-   * If attempts are exhausted the returned future is simply the result of invoking attempt.
+   * If all additional attempts are exhausted the returned future is simply the result of the last invoke attempt.
    * Note that the attempt function will be invoked on the given execution context for subsequent tries and
    * therefore must be thread safe (i.e. not touch unsafe mutable state).
    *
    * @param attempt       the function to be attempted
    * @param shouldRetry   the predicate to determine if the attempt should be retried
-   * @param attempts      the maximum number of attempts
+   * @param attempts      the maximum number of retry attempts after the initial attempt
    * @param minBackoff   minimum (initial) duration until the child actor will
    *                     started again, if it is terminated
    * @param maxBackoff   the exponential back-off is capped to this duration
@@ -705,7 +705,7 @@ object Patterns {
    * The first attempt will be made immediately, and each subsequent attempt will be made after 'delay'.
    * A scheduler (eg context.system.scheduler) must be provided to delay each retry
    *
-   * If attempts are exhausted the returned future is simply the result of invoking attempt.
+   * If all additional attempts are exhausted the returned future is simply the result of the last invoke attempt.
    * Note that the attempt function will be invoked on the given execution context for subsequent tries and
    * therefore must be thread safe (i.e. not touch unsafe mutable state).
    */
@@ -724,7 +724,7 @@ object Patterns {
    * The first attempt will be made immediately, and each subsequent attempt will be made after 'delay'.
    * A scheduler (eg context.system.scheduler) must be provided to delay each retry
    *
-   * If attempts are exhausted the returned completion operator is simply the result of invoking attempt.
+   * If all additional attempts are exhausted the returned completion operator is simply the result of the last invoke attempt.
    * Note that the attempt function will be invoked on the given execution context for subsequent tries
    * and therefore must be thread safe (i.e. not touch unsafe mutable state).
    */
@@ -743,13 +743,13 @@ object Patterns {
    * each subsequent attempt will be made after the 'delay' return by `delayFunction` (the input next attempt count start from 1).
    * Return an empty [[Optional]] instance for no delay.
    *
-   * If attempts are exhausted the returned completion operator is simply the result of invoking attempt.
+   * If all additional attempts are exhausted the returned completion operator is simply the result of the last invoke attempt.
    * Note that the attempt function will be invoked on the given execution context for subsequent tries
    * and therefore must be thread safe (i.e. not touch unsafe mutable state).
    *
    * @param attempt       the function to be attempted
    * @param shouldRetry   the predicate to determine if the attempt should be retried
-   * @param attempts      the maximum number of attempts
+   * @param attempts      the maximum number of retry attempts after the initial attempt
    * @param delay         the delay between each attempt
    * @param system        the actor system
    * @return the result [[java.util.concurrent.CompletionStage]] which maybe retried
@@ -769,7 +769,7 @@ object Patterns {
    * The first attempt will be made immediately, and each subsequent attempt will be made after 'delay'.
    * A scheduler (eg context.system.scheduler) must be provided to delay each retry
    *
-   * If attempts are exhausted the returned completion operator is simply the result of invoking attempt.
+   * If all additional attempts are exhausted the returned completion operator is simply the result of the last invoke attempt.
    * Note that the attempt function will be invoked on the given execution context for subsequent tries
    * and therefore must be thread safe (i.e. not touch unsafe mutable state).
    */
@@ -791,13 +791,13 @@ object Patterns {
    * each subsequent attempt will be made after the 'delay' return by `delayFunction` (the input next attempt count start from 1).
    * Return an empty [[Optional]] instance for no delay.
    *
-   * If attempts are exhausted the returned completion operator is simply the result of invoking attempt.
+   * If all additional attempts are exhausted the returned completion operator is simply the result of the last invoke attempt.
    * Note that the attempt function will be invoked on the given execution context for subsequent tries
    * and therefore must be thread safe (i.e. not touch unsafe mutable state).
    *
    * @param attempt       the function to be attempted
    * @param shouldRetry   the predicate to determine if the attempt should be retried
-   * @param attempts      the maximum number of attempts
+   * @param attempts      the maximum number of retry attempts after the initial attempt
    * @param delay         the delay between each attempt
    * @param scheduler     the scheduler for scheduling a delay
    * @param ec            the execution context
@@ -826,7 +826,7 @@ object Patterns {
    * You could provide a function to generate the next delay duration after first attempt,
    * this function should never return `null`, otherwise an [[java.lang.IllegalArgumentException]] will be through.
    *
-   * If attempts are exhausted the returned future is simply the result of invoking attempt.
+   * If all additional attempts are exhausted the returned future is simply the result of the last invoke attempt.
    * Note that the attempt function will be invoked on the given execution context for subsequent tries and
    * therefore must be thread safe (i.e. not touch unsafe mutable state).
    */
@@ -856,13 +856,13 @@ object Patterns {
    * You could provide a function to generate the next delay duration after first attempt,
    * this function should never return `null`, otherwise an [[java.lang.IllegalArgumentException]] will be through.
    *
-   * If attempts are exhausted the returned future is simply the result of invoking attempt.
+   * If all additional attempts are exhausted the returned future is simply the result of the last invoke attempt.
    * Note that the attempt function will be invoked on the given execution context for subsequent tries and
    * therefore must be thread safe (i.e. not touch unsafe mutable state).
    *
    * @param attempt       the function to be attempted
    * @param shouldRetry   the predicate to determine if the attempt should be retried
-   * @param attempts      the maximum number of attempts
+   * @param attempts      the maximum number of retry attempts after the initial attempt
    * @param delayFunction the function to generate the next delay duration, `None` for no delay
    * @param scheduler     the scheduler for scheduling a delay
    * @param context       the execution context

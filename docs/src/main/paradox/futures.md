@@ -25,7 +25,7 @@ Java
 
 ## Retry
 
-@scala[`org.apache.pekko.pattern.retry`]@java[@javadoc[org.apache.pekko.pattern.Patterns.retry](pekko.pattern.Patterns#retry)] will retry a @scala[@scaladoc[Future](scala.concurrent.Future)]@java[@javadoc[CompletionStage](java.util.concurrent.CompletionStage)] some number of times with a delay between each attempt.
+@scala[`org.apache.pekko.pattern.retry`]@java[@javadoc[org.apache.pekko.pattern.Patterns.retry](pekko.pattern.Patterns#retry)] will retry a @scala[@scaladoc[Future](scala.concurrent.Future)]@java[@javadoc[CompletionStage](java.util.concurrent.CompletionStage)] some number of times with a delay between each attempt. The `attempts` parameter is the maximum number of retry attempts after the initial attempt.
 
 Scala
 :   @@snip [FutureDocSpec.scala](/docs/src/test/scala/docs/future/FutureDocSpec.scala) { #retry }

@@ -264,6 +264,30 @@ public class PatternsTest extends JUnitSuite {
   }
 
   @Test
+  public void testRetryCompletionStageNoDelayUsesAttemptsAfterInitialAttempt() throws Exception {
+    final AtomicInteger counter = new AtomicInteger(0);
+
+    CompletionStage<String> retriedFuture =
+        Patterns.retry(
+            () -> {
+              final int attempt = counter.incrementAndGet();
+              final CompletableFuture<String> failed = new CompletableFuture<>();
+              failed.completeExceptionally(new RuntimeException(String.valueOf(attempt)));
+              return failed;
+            },
+            3,
+            ec);
+
+    try {
+      retriedFuture.toCompletableFuture().get(3, SECONDS);
+      Assert.fail("Expected ExecutionException");
+    } catch (ExecutionException e) {
+      assertEquals("4", e.getCause().getMessage());
+    }
+    assertEquals(4, counter.get());
+  }
+
+  @Test
   public void testRetryCompletionStageRandomDelay() throws Exception {
     final String expected = "hello";
     final AtomicInteger counter = new AtomicInteger(0);
