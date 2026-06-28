@@ -1226,50 +1226,94 @@ private[stream] object Collect {
 
   override val shape = FlowShape(in, out)
 
-  override def createLogic(attr: Attributes) = new GraphStageLogic(shape) with InHandler with OutHandler {
-    private var iterator: Iterator[Out] = Iterator.empty
-    private var expanded = false
-    private val contextPropagation = ContextPropagation()
+  override def createLogic(inheritedAttributes: Attributes) =
+    new GraphStageLogic(shape) with InHandler with OutHandler {
+      private lazy val decider = inheritedAttributes.mandatoryAttribute[SupervisionStrategy].decider
+      private var iterator: Iterator[Out] = Iterator.empty
+      private var expanded = false
+      private val contextPropagation = ContextPropagation()
 
-    override def preStart(): Unit = pull(in)
+      override def preStart(): Unit = pull(in)
 
-    def onPush(): Unit = {
-      iterator = extrapolate(grab(in))
-      if (iterator.hasNext) {
-        contextPropagation.suspendContext()
-        if (isAvailable(out)) {
-          expanded = true
-          pull(in)
-          push(out, iterator.next())
-        } else expanded = false
-      } else pull(in)
-    }
-
-    override def onUpstreamFinish(): Unit = {
-      if (iterator.hasNext && !expanded) () // need to wait
-      else completeStage()
-    }
-
-    def onPull(): Unit = {
-      if (iterator.hasNext) {
-        contextPropagation.resumeContext()
-        if (!expanded) {
-          expanded = true
-          if (isClosed(in)) {
-            push(out, iterator.next())
-            completeStage()
-          } else {
-            // expand needs to pull first to be “fair” when upstream is not actually slow
-            pull(in)
-            push(out, iterator.next())
-          }
-        } else push(out, iterator.next())
+      def onPush(): Unit = {
+        val elem = grab(in)
+        try iterator = extrapolate(elem)
+        catch {
+          case NonFatal(ex) =>
+            decider(ex) match {
+              case Supervision.Stop =>
+                failStage(ex)
+              case Supervision.Resume =>
+                if (!isClosed(in) && !hasBeenPulled(in)) pull(in)
+              case Supervision.Restart =>
+                restartState()
+                if (!isClosed(in) && !hasBeenPulled(in)) pull(in)
+            }
+            return
+        }
+        try {
+          if (iterator.hasNext) {
+            contextPropagation.suspendContext()
+            if (isAvailable(out)) {
+              expanded = true
+              pull(in)
+              push(out, iterator.next())
+            } else expanded = false
+          } else pull(in)
+        } catch {
+          case NonFatal(ex) => handleIteratorFailure(ex)
+        }
       }
-    }
 
-    setHandler(in, this)
-    setHandler(out, this)
-  }
+      override def onUpstreamFinish(): Unit = {
+        try {
+          if (iterator.hasNext && !expanded) () // need to wait
+          else completeStage()
+        } catch {
+          case NonFatal(ex) => handleIteratorFailure(ex)
+        }
+      }
+
+      def onPull(): Unit = {
+        try {
+          if (iterator.hasNext) {
+            contextPropagation.resumeContext()
+            if (!expanded) {
+              expanded = true
+              if (isClosed(in)) {
+                push(out, iterator.next())
+                completeStage()
+              } else {
+                // expand needs to pull first to be “fair” when upstream is not actually slow
+                pull(in)
+                push(out, iterator.next())
+              }
+            } else push(out, iterator.next())
+          }
+        } catch {
+          case NonFatal(ex) => handleIteratorFailure(ex)
+        }
+      }
+
+      private def restartState(): Unit = {
+        iterator = Iterator.empty
+        expanded = false
+      }
+
+      private def handleIteratorFailure(ex: Throwable): Unit =
+        decider(ex) match {
+          case Supervision.Stop =>
+            failStage(ex)
+          case Supervision.Resume | Supervision.Restart =>
+            // iterator is corrupt after any hasNext/next failure; must reset for both Resume and Restart
+            restartState()
+            if (isClosed(in)) completeStage()
+            else if (!hasBeenPulled(in)) pull(in)
+        }
+
+      setHandler(in, this)
+      setHandler(out, this)
+    }
 }
 
 /**

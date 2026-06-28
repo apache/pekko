@@ -2522,12 +2522,19 @@ trait FlowOps[+Out, +Mat] {
    * element until new element comes from the upstream. For example an expand step might repeat the last element for
    * the subscriber until it receives an update from upstream.
    *
-   * This element will never "drop" upstream elements as all elements go through at least one extrapolation step.
-   * This means that if the upstream is actually faster than the upstream it will be backpressured by the downstream
-   * subscriber.
+   * Under normal operation all upstream elements go through at least one extrapolation step.
+   * If supervision drops a failed element, that element is not emitted.
+   * If the upstream is actually faster than the downstream it will be backpressured by the downstream subscriber.
    *
-   * Expand does not support [[pekko.stream.Supervision.Restart]] and [[pekko.stream.Supervision.Resume]].
-   * Exceptions from the `seed` function will complete the stream with failure.
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
+   *
+   * If the `expander` function or the iterator it produces throws during evaluation (`hasNext`/`next`) and the
+   * supervision decision is [[pekko.stream.Supervision.Stop]] the stream fails. If the supervision decision is
+   * [[pekko.stream.Supervision.Resume]] the failed element is dropped and the stream continues, keeping current
+   * extrapolation state when available. If the supervision decision is [[pekko.stream.Supervision.Restart]] the
+   * failed element is dropped and the current extrapolation state is reset. Note that iterator-evaluation failures
+   * necessarily discard the current iterator under both `Resume` and `Restart`, because a corrupt iterator cannot
+   * be reused.
    *
    * '''Emits when''' downstream stops backpressuring
    *
@@ -2550,8 +2557,14 @@ trait FlowOps[+Out, +Mat] {
    * This is achieved by introducing "extrapolated" elements - based on those from upstream - whenever downstream
    * signals demand.
    *
-   * Extrapolate does not support [[pekko.stream.Supervision.Restart]] and [[pekko.stream.Supervision.Resume]].
-   * Exceptions from the `extrapolate` function will complete the stream with failure.
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
+   *
+   * If the `extrapolator` function or the iterator it produces throws during evaluation (`hasNext`/`next`) and the
+   * supervision decision is [[pekko.stream.Supervision.Stop]] the stream fails. If the supervision decision is
+   * [[pekko.stream.Supervision.Resume]] the failed element is dropped and any previously active extrapolation is
+   * retained. If the supervision decision is [[pekko.stream.Supervision.Restart]] the failed element is dropped and
+   * the current extrapolation state is reset. For iterator-evaluation failures, `Resume` and `Restart` both discard
+   * the corrupt iterator because it cannot be reused.
    *
    * '''Emits when''' downstream stops backpressuring, AND EITHER upstream emits OR initial element is present OR
    * `extrapolate` is non-empty and applicable
