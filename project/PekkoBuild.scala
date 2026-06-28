@@ -97,8 +97,8 @@ object PekkoBuild {
         "-feature",
         "-unchecked",
         // 'blessed' since 2.13.1
-        "-language:higherKinds",
-        "-Yfuture-lazy-vals")
+        "-language:higherKinds") ++
+      (if (CrossVersion.partialVersion(scalaVersion.value).exists(_._2 < 9)) Seq("-Yfuture-lazy-vals") else Seq.empty)
     } else {
       Seq(
         "-encoding",
