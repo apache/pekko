@@ -34,7 +34,10 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
-      - name: Check project is formatted
-        uses: jrouly/scalafmt-native-action@a9c8e1032a02004c425d53ef8ce420fe2179eba7 # v5
+      - name: Setup Coursier
+        uses: coursier/setup-action@fd1707a76b027efdfb66ca79318b4d29b72e5a02 # v3.0.0
         with:
-          arguments: '--list --mode diff-ref=origin/main'
+          apps: scalafmt
+
+      - name: Check project is formatted
+        run: scalafmt --list --mode diff-ref=origin/main
