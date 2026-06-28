@@ -263,6 +263,28 @@ public class PatternsTest {
   }
 
   @Test
+  public void testRetryCompletionStageNoDelayUsesAttemptsAfterInitialAttempt() {
+    final AtomicInteger counter = new AtomicInteger(0);
+
+    CompletionStage<String> retriedFuture =
+        Patterns.retry(
+            () -> {
+              final int attempt = counter.incrementAndGet();
+              final CompletableFuture<String> failed = new CompletableFuture<>();
+              failed.completeExceptionally(new RuntimeException(String.valueOf(attempt)));
+              return failed;
+            },
+            3,
+            ec);
+
+    ExecutionException exception =
+        assertThrows(
+            ExecutionException.class, () -> retriedFuture.toCompletableFuture().get(3, SECONDS));
+    assertEquals("4", exception.getCause().getMessage());
+    assertEquals(4, counter.get());
+  }
+
+  @Test
   public void testRetryCompletionStageRandomDelay() throws Exception {
     final String expected = "hello";
     final AtomicInteger counter = new AtomicInteger(0);
