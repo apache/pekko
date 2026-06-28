@@ -2000,10 +2000,13 @@ class MarkerLoggingAdapter(
     }
   }
 
-  // Copy of LoggingAdapter.format1 due to binary compatibility restrictions
+  // Copy of LoggingAdapter.format1 due to binary compatibility restrictions.
+  // The array branches must spread the elements as varargs (`: _*`) so that each element is
+  // expanded into its own template placeholder; without it the whole IndexedSeq would be passed
+  // as a single argument and rendered as e.g. "ArraySeq(a, b, c)" (issue #3257).
   private def format1(t: String, arg: Any): String = arg match {
-    case a: Array[?] if !a.getClass.getComponentType.isPrimitive => format(t, a.toIndexedSeq)
-    case a: Array[?]                                             => format(t, a.toIndexedSeq.asInstanceOf[IndexedSeq[AnyRef]])
+    case a: Array[?] if !a.getClass.getComponentType.isPrimitive => format(t, a.toIndexedSeq: _*)
+    case a: Array[?]                                             => format(t, a.toIndexedSeq.asInstanceOf[IndexedSeq[AnyRef]]: _*)
     case x                                                       => format(t, x)
   }
 }
