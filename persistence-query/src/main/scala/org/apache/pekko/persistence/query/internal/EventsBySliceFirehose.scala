@@ -18,7 +18,7 @@ import java.time.Instant
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 
-import scala.annotation.tailrec
+import scala.annotation.{ nowarn, tailrec }
 import scala.collection.mutable
 import scala.concurrent.duration._
 import scala.jdk.DurationConverters._
@@ -108,10 +108,10 @@ import pekko.util.OptionVal
       Settings(
         delegateQueryPluginId = delegateQueryPluginId(config),
         broadcastBufferSize = config.getInt("broadcast-buffer-size"),
-        firehoseLingerTimeout = config.getDuration("firehose-linger-timeout").asScala,
+        firehoseLingerTimeout = config.getDuration("firehose-linger-timeout").toScala,
         catchupOverlap = config.getDuration("catchup-overlap"),
         deduplicationCapacity = config.getInt("deduplication-capacity"),
-        slowConsumerReaperInterval = config.getDuration("slow-consumer-reaper-interval").asScala,
+        slowConsumerReaperInterval = config.getDuration("slow-consumer-reaper-interval").toScala,
         slowConsumerLagThreshold = config.getDuration("slow-consumer-lag-threshold"),
         abortSlowConsumerAfter = config.getDuration("abort-slow-consumer-after"),
         verboseLogging = config.getBoolean("verbose-debug-logging"))
@@ -164,7 +164,7 @@ import pekko.util.OptionVal
     private val sliceRangeStr = s"${firehoseKey.sliceRange.min}-${firehoseKey.sliceRange.max}"
 
     private def consumerTrackingValues(): Vector[ConsumerTracking] = {
-      import pekko.util.ccompat.JavaConverters._
+      import scala.jdk.CollectionConverters._
       consumerTracking.values.iterator.asScala.filter(h => h.history.nonEmpty && h.firehoseOnly).toVector
     }
 
@@ -544,7 +544,7 @@ import pekko.util.OptionVal
         env.asInstanceOf[EventEnvelope[Event]]
       }
       .via(consumerKillSwitch.flow)
-      .watchTermination()(Keep.right)
+      .watchTermination(Keep.right)
       .mapMaterializedValue { termination =>
         firehose.consumerStarted(consumerId, consumerKillSwitch)
         termination.onComplete { _ =>
@@ -561,7 +561,7 @@ import pekko.util.OptionVal
       minSlice: Int,
       maxSlice: Int,
       offset: Offset,
-      @unused firehose: Boolean): Source[EventEnvelope[Event], NotUsed] = {
+      @nowarn("msg=never used") firehose: Boolean): Source[EventEnvelope[Event], NotUsed] = {
     PersistenceQuery(system)
       .readJournalFor[EventsBySliceQuery](pluginId)
       .eventsBySlices(entityType, minSlice, maxSlice, offset)
