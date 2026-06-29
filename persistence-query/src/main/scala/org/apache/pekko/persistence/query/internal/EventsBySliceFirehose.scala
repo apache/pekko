@@ -229,7 +229,8 @@ import pekko.util.OptionVal
           val fastestConsumer = trackingValues.maxBy(_.offsetTimestamp)
           val behind = elementsBehind(fastestConsumer.history, slowestConsumer.history)
           if (behind > 0) {
-            val diffSlowestFastestsMillis = fastestConsumer.offsetTimestamp.toEpochMilli - slowestConsumer.offsetTimestamp.toEpochMilli
+            val diffSlowestFastestsMillis = fastestConsumer.offsetTimestamp.toEpochMilli -
+              slowestConsumer.offsetTimestamp.toEpochMilli
             val fastestLagMillis = now.toEpochMilli - fastestConsumer.offsetTimestamp.toEpochMilli
 
             val diffFastest = fastestConsumer.offsetTimestamp.toEpochMilli - tracking.offsetTimestamp.toEpochMilli
@@ -265,7 +266,8 @@ import pekko.util.OptionVal
         val behind = elementsBehind(fastestConsumer.history, slowestConsumer.history)
         val fastestLagMillis = now.toEpochMilli - fastestConsumer.offsetTimestamp.toEpochMilli
 
-        if (behind >= settings.broadcastBufferSize / 2 && fastestLagMillis > settings.slowConsumerLagThreshold.toMillis) {
+        if (behind >= settings.broadcastBufferSize / 2 &&
+          fastestLagMillis > settings.slowConsumerLagThreshold.toMillis) {
           logDetectSlowConsumers(trackingValues, slowestConsumer, fastestConsumer, behind, fastestLagMillis)
 
           val changedConsumerTrackingValues = trackingValues.flatMap { tracking =>
@@ -296,7 +298,8 @@ import pekko.util.OptionVal
 
           if (confirmedSlowConsumers.nonEmpty) {
             if (log.isInfoEnabled) {
-              val behindMillis = fastestConsumer.offsetTimestamp.toEpochMilli - confirmedSlowConsumers
+              val behindMillis = fastestConsumer.offsetTimestamp.toEpochMilli -
+                confirmedSlowConsumers
                   .maxBy(_.offsetTimestamp)
                   .offsetTimestamp
                   .toEpochMilli
@@ -354,7 +357,8 @@ import pekko.util.OptionVal
             else "same as slowest"
           val consumerBehind = elementsBehind(fastestConsumer.history, tracking.history)
 
-          val logMessage = s"Firehose entityType [$entityType] sliceRange [$sliceRangeStr] consumer [${tracking.consumerId}], " +
+          val logMessage =
+            s"Firehose entityType [$entityType] sliceRange [$sliceRangeStr] consumer [${tracking.consumerId}], " +
             s"behind [$consumerBehind] events from fastest, " +
             s"$diffFastestStr, $diffSlowestStr, firehoseOnly [${tracking.firehoseOnly}]"
 
@@ -393,7 +397,7 @@ import pekko.util.OptionVal
 
   def timestampOffset(env: EventEnvelope[Any]): TimestampOffset =
     env match {
-      case eventEnvelope: EventEnvelope[_] if eventEnvelope.offset.isInstanceOf[TimestampOffset] =>
+      case eventEnvelope: EventEnvelope[?] if eventEnvelope.offset.isInstanceOf[TimestampOffset] =>
         eventEnvelope.offset.asInstanceOf[TimestampOffset]
       case _ =>
         throw new IllegalArgumentException(s"Expected TimestampOffset, but was [${env.offset.getClass.getName}]")
@@ -627,14 +631,15 @@ import pekko.util.OptionVal
       private var deduplicationCache = mutable.LinkedHashSet.empty[DeduplicationCacheEntry]
       private val deduplicationCacheEvictThreshold = (settings.deduplicationCapacity * 1.1).toInt
 
-      override protected def logSource: Class[_] = classOf[CatchupOrFirehose]
+      override protected def logSource: Class[?] = classOf[CatchupOrFirehose]
 
-      setHandler(out, new OutHandler {
-        override def onPull(): Unit = {
-          tryPushOutput()
-          tryPullAllIfNeeded()
-        }
-      })
+      setHandler(out,
+        new OutHandler {
+          override def onPull(): Unit = {
+            tryPushOutput()
+            tryPullAllIfNeeded()
+          }
+        })
 
       setHandler(firehoseInlet, firehoseHandler)
       setHandler(catchupInlet, catchupHandler)
