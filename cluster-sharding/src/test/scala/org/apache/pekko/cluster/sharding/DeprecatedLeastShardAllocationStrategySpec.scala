@@ -23,7 +23,6 @@ import pekko.cluster.ClusterSettings
 import pekko.cluster.Member
 import pekko.cluster.MemberStatus
 import pekko.cluster.UniqueAddress
-import pekko.cluster.sharding.internal.AbstractLeastShardAllocationStrategy
 import pekko.cluster.sharding.internal.ClusterShardAllocationMixin.RegionEntry
 import pekko.cluster.sharding.internal.ClusterShardAllocationMixin.ShardSuitabilityOrdering
 import pekko.testkit.PekkoSpec
