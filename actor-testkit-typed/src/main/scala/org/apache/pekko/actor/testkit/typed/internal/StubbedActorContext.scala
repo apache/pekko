@@ -14,6 +14,7 @@
 package org.apache.pekko.actor.testkit.typed.internal
 
 import java.util.concurrent.ThreadLocalRandom.{ current => rnd }
+import java.util.concurrent.atomic.AtomicBoolean
 
 import scala.collection.immutable.TreeMap
 import scala.concurrent.ExecutionContextExecutor
@@ -160,9 +161,9 @@ private[pekko] final class FunctionRef[-T](override val path: ActorPath, send: (
   }
 
   override def scheduleOnce[U](delay: FiniteDuration, target: ActorRef[U], message: U): classic.Cancellable =
-    new classic.Cancellable {
-      override def cancel() = false
-      override def isCancelled = true
+    new AtomicBoolean(false) with classic.Cancellable {
+      override def cancel(): Boolean = compareAndSet(false, true)
+      override def isCancelled: Boolean = get()
     }
 
   // TODO allow overriding of this

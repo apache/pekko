@@ -61,6 +61,13 @@ public class BehaviorTestKitTest {
   public record AskForCookiesFrom(ActorRef<CookieDistributorCommand> distributor)
       implements Command {}
 
+  public record ScheduleOnceCommand(
+      Duration delay,
+      ActorRef<String> target,
+      String message,
+      ActorRef<org.apache.pekko.actor.Cancellable> replyTo)
+      implements Command {}
+
   public interface CookieDistributorCommand {}
 
   public record GiveMeCookies(int nrCookies, ActorRef<CookiesForYou> replyTo)
@@ -181,6 +188,15 @@ public class BehaviorTestKitTest {
                               return new Log("Failed to get cookies: " + throwable.getMessage());
                             }
                           });
+                      return Behaviors.same();
+                    })
+                .onMessage(
+                    ScheduleOnceCommand.class,
+                    message -> {
+                      org.apache.pekko.actor.Cancellable cancellable =
+                          context.scheduleOnce(
+                              message.delay(), message.target(), message.message());
+                      message.replyTo().tell(cancellable);
                       return Behaviors.same();
                     })
                 .build();
@@ -365,5 +381,27 @@ public class BehaviorTestKitTest {
     assertEquals(actualEffect, expectedEffect);
 
     // Other functionality is tested in the scaladsl
+  }
+
+  @Test
+  public void scheduleOnceReturnsNonCancelledCancellable() {
+    BehaviorTestKit<Command> test = BehaviorTestKit.create(behavior);
+    TestInbox<String> target = TestInbox.create("target");
+    TestInbox<org.apache.pekko.actor.Cancellable> replyTo = TestInbox.create("cancellable");
+
+    test.run(
+        new ScheduleOnceCommand(
+            Duration.ofSeconds(42), target.getRef(), "hello", replyTo.getRef()));
+
+    test.expectEffectClass(Effect.Scheduled.class);
+
+    org.apache.pekko.actor.Cancellable cancellable = replyTo.receiveMessage();
+    assertFalse(cancellable.isCancelled(), "Freshly scheduled Cancellable should not be cancelled");
+
+    assertTrue(cancellable.cancel(), "First cancel() should return true");
+    assertTrue(cancellable.isCancelled(), "isCancelled should be true after cancel()");
+
+    assertFalse(cancellable.cancel(), "Second cancel() should return false");
+    assertTrue(cancellable.isCancelled(), "isCancelled should remain true");
   }
 }
