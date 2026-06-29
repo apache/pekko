@@ -32,7 +32,8 @@ import pekko.cluster.UniqueAddress
 import pekko.cluster.sharding.ShardCoordinator.ShardAllocationStrategy
 import pekko.cluster.sharding.ShardRegion.ShardId
 import pekko.cluster.sharding.internal.AbstractLeastShardAllocationStrategy
-import pekko.cluster.sharding.internal.AbstractLeastShardAllocationStrategy.RegionEntry
+import pekko.cluster.sharding.internal.ClusterShardAllocationMixin.RegionEntry
+import pekko.cluster.sharding.internal.ClusterShardAllocationMixin.ShardSuitabilityOrdering
 import pekko.cluster.sharding.internal.LeastShardAllocationStrategy
 import pekko.testkit.PekkoSpec
 import pekko.util.Version
@@ -257,7 +258,7 @@ class LeastShardAllocationStrategySpec extends PekkoSpec {
           RegionEntry(fakeRegionC, newVersionMember2, Vector("ShardId1")))
 
       val sortedRegions =
-        shardsAndMembers.sorted(AbstractLeastShardAllocationStrategy.ShardSuitabilityOrdering).map(_.region)
+        shardsAndMembers.sorted(ShardSuitabilityOrdering).map(_.region)
 
       // only node b has the new version
       sortedRegions should ===(
@@ -274,11 +275,12 @@ class LeastShardAllocationStrategySpec extends PekkoSpec {
         new LeastShardAllocationStrategy(absoluteLimit = 1000, relativeLimit = 1.0) {
 
           val member1 = newUpMember("127.0.0.1", version = Version("1.0.0"))
-          val member2 = newUpMember("127.0.0.1", version = Version("1.0.1"))
+          val member2 = newUpMember("127.0.0.2", version = Version("1.0.1"))
+          val member3 = newUpMember("127.0.0.3", version = Version("1.0.0"))
 
           // multiple versions to simulate rolling update in progress
           override protected def clusterState: CurrentClusterState =
-            CurrentClusterState(SortedSet(member1, member2))
+            CurrentClusterState(SortedSet(member1, member2, member3))
 
           override protected def selfMember: Member = member1
         }
@@ -293,13 +295,9 @@ class LeastShardAllocationStrategySpec extends PekkoSpec {
       val allocationStrategy =
         new LeastShardAllocationStrategy(absoluteLimit = 1000, relativeLimit = 1.0) {
 
-          val member1 = newUpMember("127.0.0.1")
-          val member2 = newUpMember("127.0.0.2")
-
-          // multiple versions to simulate rolling update in progress
           override protected def clusterState: CurrentClusterState =
-            CurrentClusterState(SortedSet(member1, member2), unreachable = Set(member2))
-          override protected def selfMember: Member = member2
+            CurrentClusterState(SortedSet(memberA, memberB, memberC), unreachable = Set(memberB))
+          override protected def selfMember: Member = memberB
         }
       val allocations = createAllocations(aCount = 5, bCount = 5)
       allocationStrategy.rebalance(allocations, Set.empty).futureValue should ===(Set.empty[String])
@@ -317,10 +315,10 @@ class LeastShardAllocationStrategySpec extends PekkoSpec {
               UniqueAddress(Address("pekko", "myapp", "127.0.0.2", 252525), 1L),
               Set(ClusterSettings.DcRolePrefix + ClusterSettings.DefaultDataCenter),
               member1.appVersion)
+          val member3 = newUpMember("127.0.0.3")
 
-          // multiple versions to simulate rolling update in progress
           override protected def clusterState: CurrentClusterState =
-            CurrentClusterState(SortedSet(member1, member2), unreachable = Set(member2))
+            CurrentClusterState(SortedSet(member1, member2, member3), unreachable = Set.empty)
           override protected def selfMember: Member = member2
         }
       val allocations = createAllocations(aCount = 5, bCount = 5)
