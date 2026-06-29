@@ -78,7 +78,7 @@ import pekko.cluster.sharding.internal.ClusterShardAllocationMixin.RegionEntry
     // Avoid rebalance when rolling update is in progress
     // (This will ignore versions on members with no shard regions, because of sharding role or not yet completed joining)
     regionEntries.headOption match {
-      case None => false // empty list of regions, probably not a good time to rebalance...
+      case None              => false // empty list of regions, probably not a good time to rebalance...
       case Some(firstRegion) =>
         def allNodesSameVersion =
           regionEntries.forall(_.member.appVersion == firstRegion.member.appVersion)
