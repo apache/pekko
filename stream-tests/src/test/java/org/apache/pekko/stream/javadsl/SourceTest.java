@@ -1477,6 +1477,16 @@ public class SourceTest extends StreamTestJupiter {
   }
 
   @Test
+  public void mustBeAbleToUseAlsoToWithPropagateCancellation() {
+    final Source<Integer, NotUsed> f = Source.<Integer>empty().alsoTo(Sink.ignore(), false);
+    final Source<Integer, NotUsed> f2 = Source.<Integer>empty().alsoTo(Sink.ignore(), true);
+    final Source<Integer, String> f3 =
+        Source.<Integer>empty().alsoToMat(Sink.ignore(), false, (i, n) -> "foo");
+    final Source<Integer, String> f4 =
+        Source.<Integer>empty().alsoToMat(Sink.ignore(), true, (i, n) -> "foo");
+  }
+
+  @Test
   public void mustBeAbleToUseAlsoToAll() {
     final Source<Integer, NotUsed> f =
         Source.<Integer>empty().alsoToAll(Sink.ignore(), Sink.ignore());

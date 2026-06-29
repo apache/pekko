@@ -1880,6 +1880,16 @@ public class FlowTest extends StreamTestJupiter {
   }
 
   @Test
+  public void mustBeAbleToUseAlsoToWithPropagateCancellation() {
+    final Flow<Integer, Integer, NotUsed> f = Flow.of(Integer.class).alsoTo(Sink.ignore(), false);
+    final Flow<Integer, Integer, NotUsed> f2 = Flow.of(Integer.class).alsoTo(Sink.ignore(), true);
+    final Flow<Integer, Integer, String> f3 =
+        Flow.of(Integer.class).alsoToMat(Sink.ignore(), false, (i, n) -> "foo");
+    final Flow<Integer, Integer, String> f4 =
+        Flow.of(Integer.class).alsoToMat(Sink.ignore(), true, (i, n) -> "foo");
+  }
+
+  @Test
   public void mustBeAbleToUseAlsoToAll() {
     final Flow<Integer, Integer, NotUsed> f =
         Flow.of(Integer.class).alsoToAll(Sink.ignore(), Sink.ignore());

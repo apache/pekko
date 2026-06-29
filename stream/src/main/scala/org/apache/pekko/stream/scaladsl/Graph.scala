@@ -609,6 +609,25 @@ object Broadcast {
    */
   def apply[T](outputPorts: Int, eagerCancel: Boolean = false): Broadcast[T] =
     new Broadcast(outputPorts, eagerCancel)
+
+  /**
+   * Create a new `Broadcast` with the specified number of output ports and per-output
+   * cancellation behavior.
+   *
+   * @param outputPorts number of output ports
+   * @param eagerCancel if true, broadcast cancels upstream if any of its downstreams cancel
+   *                    (except those listed in `nonEagerCancelOutputs`).
+   * @param nonEagerCancelOutputs set of output port indices whose cancellation should not
+   *                              trigger upstream cancellation. These outputs are silently
+   *                              removed from the broadcast when they cancel, and elements
+   *                              continue flowing to the remaining outputs.
+   * @since 2.0.0
+   */
+  def apply[T](
+      outputPorts: Int,
+      eagerCancel: Boolean,
+      nonEagerCancelOutputs: Set[Int]): Broadcast[T] =
+    new Broadcast(outputPorts, eagerCancel, nonEagerCancelOutputs)
 }
 
 /**
@@ -627,8 +646,46 @@ object Broadcast {
 final class Broadcast[T](val outputPorts: Int, val eagerCancel: Boolean)
     extends GraphStage[UniformFanOutShape[T, T]]
     with pekko.stream.TypePreservingFanOut {
-  // one output might seem counter intuitive but saves us from special handling in other places
   require(outputPorts >= 1, "A Broadcast must have one or more output ports")
+
+  // Backing field for the 3-arg auxiliary constructor; default is empty (all outputs eager).
+  // The auxiliary constructor assigns this exactly once during construction, so the value is
+  // effectively immutable after init. Kept `var` because Scala auxiliary constructors cannot
+  // assign `val` fields.
+  private var _nonEagerCancelOutputs: Set[Int] = Set.empty
+
+  /**
+   * Set of output port indices whose cancellation should not trigger upstream cancellation.
+   * Only meaningful when `eagerCancel` is `true`; these outputs are silently removed from the
+   * broadcast when they cancel, and elements continue flowing to the remaining outputs.
+   *
+   * @since 2.0.0
+   */
+  def nonEagerCancelOutputs: Set[Int] = _nonEagerCancelOutputs
+
+  /**
+   * Create a new `Broadcast` with per-output cancellation behavior.
+   *
+   * @param nonEagerCancelOutputs set of output port indices whose cancellation should not
+   *                              trigger upstream cancellation when `eagerCancel` is `true`.
+   *                              These outputs are silently removed from the broadcast when
+   *                              they cancel, and elements continue flowing to the remaining
+   *                              outputs. Must be empty when `eagerCancel` is `false` (where
+   *                              the parameter would be meaningless).
+   * @since 2.0.0
+   */
+  def this(outputPorts: Int, eagerCancel: Boolean, nonEagerCancelOutputs: Set[Int]) = {
+    this(outputPorts, eagerCancel)
+    require(
+      eagerCancel || nonEagerCancelOutputs.isEmpty,
+      s"nonEagerCancelOutputs [$nonEagerCancelOutputs] requires eagerCancel=true; " +
+      s"with eagerCancel=false all outputs already behave non-eagerly")
+    require(
+      nonEagerCancelOutputs.subsetOf((0 until outputPorts).toSet),
+      s"nonEagerCancelOutputs [$nonEagerCancelOutputs] must be a subset of [${0 until outputPorts}]")
+    _nonEagerCancelOutputs = nonEagerCancelOutputs
+  }
+
   val in: Inlet[T] = Inlet[T]("Broadcast.in")
   val out: immutable.IndexedSeq[Outlet[T]] = Vector.tabulate(outputPorts)(i => Outlet[T]("Broadcast.out" + i))
   override def initialAttributes = DefaultAttributes.broadcast
@@ -677,7 +734,7 @@ final class Broadcast[T](val outputPorts: Int, val eagerCancel: Boolean)
               }
 
               override def onDownstreamFinish(cause: Throwable) = {
-                if (eagerCancel) cancelStage(cause)
+                if (eagerCancel && !nonEagerCancelOutputs.contains(i)) cancelStage(cause)
                 else {
                   downstreamsRunning -= 1
                   if (downstreamsRunning == 0) cancelStage(cause)

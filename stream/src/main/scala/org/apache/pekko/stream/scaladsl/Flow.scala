@@ -4068,6 +4068,44 @@ trait FlowOps[+Out, +Mat] {
     }
 
   /**
+   * Attaches the given [[Sink]] to this [[Flow]], meaning that elements that pass
+   * through will also be sent to the [[Sink]].
+   *
+   * When `propagateCancellation` is `false`, cancellation or failure of the side [[Sink]]
+   * will not cancel the main stream. Elements will continue to flow to the main downstream
+   * only. This is useful for fire-and-forget side sinks (e.g. logging) where the side sink's
+   * availability should not affect the main business stream.
+   *
+   * When `propagateCancellation` is `true` (the default), this behaves identically to [[#alsoTo]].
+   *
+   * It is similar to [[#wireTap]] but will backpressure instead of dropping elements when the given [[Sink]] is not ready.
+   *
+   * '''Emits when''' element is available and demand exists both from the Sink and the downstream.
+   *
+   * '''Backpressures when''' downstream or Sink backpressures
+   *
+   * '''Completes when''' upstream completes
+   *
+   * '''Cancels when''' downstream cancels (the side [[Sink]] is also cancelled).
+   *                        When `propagateCancellation` is `true`, cancellation or failure of
+   *                        the side [[Sink]] also cancels the downstream.
+   *
+   * @since 2.0.0
+   */
+  def alsoTo(that: Graph[SinkShape[Out], ?], propagateCancellation: Boolean): Repr[Out] =
+    if (propagateCancellation) alsoTo(that)
+    else via(resilientAlsoToGraph(that))
+
+  protected def resilientAlsoToGraph[M](
+      that: Graph[SinkShape[Out], M]): Graph[FlowShape[Out @uncheckedVariance, Out], M] =
+    GraphDSL.createGraph(that) { implicit b => r =>
+      import GraphDSL.Implicits._
+      val bcast = b.add(Broadcast[Out](2, eagerCancel = true, nonEagerCancelOutputs = Set(1)))
+      bcast.out(1) ~> r
+      FlowShape(bcast.in, bcast.out(0))
+    }
+
+  /**
    * Attaches the given [[Sink]]s to this [[Source]], meaning that elements that pass
    * through will also be sent to the [[Sink]].
    *
@@ -4590,6 +4628,22 @@ trait FlowOpsMat[+Out, +Mat] extends FlowOps[Out, Mat] {
    */
   def alsoToMat[Mat2, Mat3](that: Graph[SinkShape[Out], Mat2])(matF: (Mat, Mat2) => Mat3): ReprMat[Out, Mat3] =
     viaMat(alsoToGraph(that))(matF)
+
+  /**
+   * Attaches the given [[Sink]] to this [[Flow]], meaning that elements that pass
+   * through will also be sent to the [[Sink]].
+   *
+   * @see [[#alsoTo]]
+   *
+   * It is recommended to use the internally optimized `Keep.left` and `Keep.right` combiners
+   * where appropriate instead of manually writing functions that pass through one of the values.
+   *
+   * @since 2.0.0
+   */
+  def alsoToMat[Mat2, Mat3](that: Graph[SinkShape[Out], Mat2], propagateCancellation: Boolean)(
+      matF: (Mat, Mat2) => Mat3): ReprMat[Out, Mat3] =
+    if (propagateCancellation) viaMat(alsoToGraph(that))(matF)
+    else viaMat(resilientAlsoToGraph(that))(matF)
 
   /**
    * Attaches the given [[Sink]] to this [[Flow]], meaning that elements will be sent to the [[Sink]]

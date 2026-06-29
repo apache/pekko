@@ -81,6 +81,7 @@ object StreamOperatorsIndexGenerator extends AutoPlugin {
     "mergeGraph",
     "wireTapGraph",
     "alsoToGraph",
+    "resilientAlsoToGraph",
     "orElseGraph",
     "divertToGraph",
     "zipWithGraph",

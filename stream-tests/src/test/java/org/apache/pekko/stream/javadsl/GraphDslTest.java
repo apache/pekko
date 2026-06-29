@@ -17,6 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.TimeUnit;
@@ -78,6 +79,27 @@ public class GraphDslTest extends StreamTestJupiter {
     Arrays.sort(res, null);
     assertArrayEquals(
         new String[] {"31", "32", "33", "34", "35", "41", "42", "43", "44", "45"}, res);
+  }
+
+  @Test
+  public void mustKeepFlowingWhenNonEagerBroadcastOutputCancels() throws Exception {
+    final Source<Integer, NotUsed> source = Source.from(Arrays.asList(1, 2, 3));
+    final Sink<Integer, CompletionStage<List<Integer>>> sink = Sink.seq();
+
+    final RunnableGraph<CompletionStage<List<Integer>>> graph =
+        RunnableGraph.fromGraph(
+            GraphDSL.create(
+                sink,
+                (builder, out) -> {
+                  final UniformFanOutShape<Integer, Integer> broadcast =
+                      builder.add(Broadcast.create(2, true, Collections.singleton(1)));
+                  builder.from(builder.add(source)).viaFanOut(broadcast).to(out);
+                  builder.from(broadcast).to(builder.add(Sink.<Integer>cancelled()));
+                  return ClosedShape.getInstance();
+                }));
+
+    assertEquals(
+        Arrays.asList(1, 2, 3), graph.run(system).toCompletableFuture().get(3, TimeUnit.SECONDS));
   }
 
   @Test

@@ -149,6 +149,10 @@ final class FlowWithContext[-In, -CtxIn, +Out, +CtxOut, +Mat](delegate: Flow[(In
   override def alsoTo(that: Graph[SinkShape[Out], ?]): Repr[Out, CtxOut] =
     FlowWithContext.fromTuples(delegate.alsoTo(Sink.contramapImpl(that, (in: (Out, CtxOut)) => in._1)))
 
+  override def alsoTo(that: Graph[SinkShape[Out], ?], propagateCancellation: Boolean): Repr[Out, CtxOut] =
+    FlowWithContext.fromTuples(
+      delegate.alsoTo(Sink.contramapImpl(that, (in: (Out, CtxOut)) => in._1), propagateCancellation))
+
   override def alsoToContext(that: Graph[SinkShape[CtxOut], ?]): Repr[Out, CtxOut] =
     FlowWithContext.fromTuples(delegate.alsoTo(Sink.contramapImpl(that, (in: (Out, CtxOut)) => in._2)))
 
