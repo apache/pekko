@@ -95,7 +95,7 @@ final class EventsBySliceFirehoseQuery(system: ExtendedActorSystem, config: Conf
   override def timestampOf(persistenceId: String, sequenceNr: Long): Future[Option[Instant]] = {
     eventsBySliceQuery match {
       case q: EventTimestampQuery => q.timestampOf(persistenceId, sequenceNr)
-      case _ =>
+      case _                      =>
         throw new IllegalArgumentException(
           s"Underlying ReadJournal [${settings.delegateQueryPluginId}] doesn't implement EventTimestampQuery")
     }
@@ -104,7 +104,7 @@ final class EventsBySliceFirehoseQuery(system: ExtendedActorSystem, config: Conf
   override def loadEnvelope[Event](persistenceId: String, sequenceNr: Long): Future[EventEnvelope[Event]] =
     eventsBySliceQuery match {
       case q: LoadEventQuery => q.loadEnvelope(persistenceId, sequenceNr)
-      case _ =>
+      case _                 =>
         throw new IllegalArgumentException(
           s"Underlying ReadJournal [${settings.delegateQueryPluginId}] " +
           "doesn't implement LoadEventQuery")
