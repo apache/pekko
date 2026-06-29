@@ -168,7 +168,9 @@ If your usage does not require a live stream, you can use the @apidoc[currentEve
 Query events for given entity type and slices. A slice is deterministically defined based on the persistence id.
 The purpose is to evenly distribute all persistence ids over the slices.
 
-See @apidoc[persistence.query.typed.*.EventsBySliceQuery] and @apidoc[persistence.query.typed.*.CurrentEventsBySliceQuery]. 
+See @apidoc[pekko.persistence.query.typed.*.EventsBySliceQuery] and @apidoc[pekko.persistence.query.typed.*.CurrentEventsBySliceQuery]. 
+
+A variation of these are @apidoc[pekko.persistence.query.typed.*.EventsBySliceStartingFromSnapshotsQuery] and @apidoc[pekko.persistence.query.typed.*.CurrentEventsBySliceStartingFromSnapshotsQuery].
 
 ### Materialized values of queries
 
