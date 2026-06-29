@@ -89,7 +89,7 @@ class ConsistentHashingShardAllocationStrategy(rebalanceLimit: Int)
     val node = consistentHashing.nodeFor(shardId)
     currentShardAllocations.keysIterator.find(region => nodeForRegion(region) == node) match {
       case Some(region) => Future.successful(region)
-      case None =>
+      case None         =>
         throw new IllegalStateException(s"currentShardAllocations should include region for node [$node]")
     }
   }
@@ -114,28 +114,28 @@ class ConsistentHashingShardAllocationStrategy(rebalanceLimit: Int)
         rebalanceLimit <= 0 || result.size < rebalanceLimit
 
       currentShardAllocations
-      // deterministic order, at least easier to test
-      .toVector.sortBy { case (region, _) => nodeForRegion(region) }(Address.addressOrdering).foreach {
-        case (currentRegion, shardIds) =>
-          shardIds.foreach { shardId =>
-            if (lessThanLimit && !rebalanceInProgress.contains(shardId)) {
-              val node = consistentHashing.nodeFor(shardId)
-              regionByNode.get(node) match {
-                case Some(region) =>
-                  if (region != currentRegion) {
-                    log.debug(
-                      "Rebalance needed for shard [{}], from [{}] to [{}]",
-                      shardId,
-                      nodeForRegion(currentRegion),
-                      node)
-                    result += shardId
-                  }
-                case None =>
-                  throw new IllegalStateException(s"currentShardAllocations should include region for node [$node]")
+        // deterministic order, at least easier to test
+        .toVector.sortBy { case (region, _) => nodeForRegion(region) }(Address.addressOrdering).foreach {
+          case (currentRegion, shardIds) =>
+            shardIds.foreach { shardId =>
+              if (lessThanLimit && !rebalanceInProgress.contains(shardId)) {
+                val node = consistentHashing.nodeFor(shardId)
+                regionByNode.get(node) match {
+                  case Some(region) =>
+                    if (region != currentRegion) {
+                      log.debug(
+                        "Rebalance needed for shard [{}], from [{}] to [{}]",
+                        shardId,
+                        nodeForRegion(currentRegion),
+                        node)
+                      result += shardId
+                    }
+                  case None =>
+                    throw new IllegalStateException(s"currentShardAllocations should include region for node [$node]")
+                }
               }
             }
-          }
-      }
+        }
 
       Future.successful(result)
     }
