@@ -172,6 +172,11 @@ See @apidoc[pekko.persistence.query.typed.*.EventsBySliceQuery] and @apidoc[pekk
 
 A variation of these are @apidoc[pekko.persistence.query.typed.*.EventsBySliceStartingFromSnapshotsQuery] and @apidoc[pekko.persistence.query.typed.*.CurrentEventsBySliceStartingFromSnapshotsQuery].
 
+@apidoc[pekko.persistence.query.typed.*.EventsBySliceFirehoseQuery] can give better scalability when many
+consumers retrieve the same events, for example many Projections of the same entity type. The purpose is
+to share the stream of events from the database and fan out to connected consumer streams. Thereby fewer queries
+and loading of events from the database. It is typically used together with @ref:[Sharded Daemon Process with colocated processes](typed/cluster-sharded-daemon-process.md#colocate-processes).
+
 ### Materialized values of queries
 
 Journals are able to provide additional information related to a query by exposing @ref:[Materialized values](stream/stream-quickstart.md#materialized-values-quick),
