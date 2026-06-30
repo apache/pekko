@@ -64,6 +64,10 @@ class StatusReplySpec extends PekkoSpec with ScalaFutures {
       }
     }
 
+    "include exception type in toString for non text-error" in {
+      StatusReply.Error(TestException("boho!")).toString should include("TestException")
+    }
+
     "flatten a Future[StatusReply]" in {
       import system.dispatcher
       StatusReply.flattenStatusFuture(Future(StatusReply.Success("woho"))).futureValue should ===("woho")
