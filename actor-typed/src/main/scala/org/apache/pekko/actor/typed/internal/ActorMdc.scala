@@ -25,6 +25,9 @@ import org.slf4j.MDC
   val PekkoSourceKey = "pekkoSource"
   val PekkoTagsKey = "pekkoTags"
   val PekkoAddressKey = "pekkoAddress"
+  // Mirrors the classic Slf4jLogger MDC attribute (Slf4jLogger.mdcThreadAttributeName) so that
+  // typed and classic actor log entries can both be correlated with the dispatching thread.
+  val SourceThreadKey = "sourceThread"
 
   def setMdc(context: ActorContextImpl.LoggingContext): Unit = {
     // avoid access to MDC ThreadLocal if not needed, see details in LoggingContext
@@ -32,6 +35,9 @@ import org.slf4j.MDC
     MDC.put(PekkoSourceKey, context.pekkoSource)
     MDC.put(SourceActorSystemKey, context.sourceActorSystem)
     MDC.put(PekkoAddressKey, context.pekkoAddress)
+    // Typed actors log synchronously on the dispatcher thread that runs the actor, so the current
+    // thread is the source thread the user's log statements execute on.
+    MDC.put(SourceThreadKey, Thread.currentThread().getName)
     // empty string for no tags, a single tag or a comma separated list of tags
     if (context.tagsString.nonEmpty)
       MDC.put(PekkoTagsKey, context.tagsString)

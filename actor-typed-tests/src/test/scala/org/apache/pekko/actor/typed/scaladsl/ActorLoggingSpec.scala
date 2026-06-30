@@ -362,7 +362,8 @@ class ActorLoggingSpec extends ScalaTestWithActorTestKit("""
         // not counting for example "pekkoSource", but it shouldn't have any other entries
         .withCustom(logEvent =>
           logEvent.mdc.keysIterator.forall(entry =>
-            entry.startsWith("pekko") || entry == "sourceActorSystem" || entry == "static") &&
+            entry.startsWith("pekko") || entry == "sourceActorSystem" || entry == ActorMdc.SourceThreadKey ||
+            entry == "static") &&
           logEvent.mdc("static") == "1")
         .expect {
           spawn(behaviors)
@@ -380,6 +381,21 @@ class ActorLoggingSpec extends ScalaTestWithActorTestKit("""
         .withCustom(event => !event.mdc.contains("first"))
         .expect {
           ref ! Message(2, "second")
+        }
+    }
+
+    // Regression test for https://github.com/apache/pekko/issues/3239: typed actor MDC must include
+    // the "sourceThread" attribute (the dispatching thread), consistent with classic actors.
+    "include the sourceThread attribute in the MDC" in {
+      val behavior = Behaviors.setup[String] { context =>
+        context.log.info("with-source-thread")
+        Behaviors.empty
+      }
+      LoggingTestKit
+        .info("with-source-thread")
+        .withCustom(event => event.mdc.get(ActorMdc.SourceThreadKey).contains(event.threadName))
+        .expect {
+          spawn(behavior)
         }
     }
 
