@@ -24,6 +24,7 @@ import org.apache.pekko
 import pekko.Done
 import pekko.actor.InvalidMessageException
 import pekko.annotation.InternalApi
+import pekko.pattern.StatusReply.ErrorMessage
 
 /**
  * Generic top-level message type for replies that signal failure or success. Convenient to use together with the
