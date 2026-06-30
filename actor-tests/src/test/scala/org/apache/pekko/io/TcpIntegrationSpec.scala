@@ -187,8 +187,12 @@ class TcpIntegrationSpec extends PekkoSpec("""
     "reply with CommandFailed when a connect socket option fails before connect" in {
       val connectCommander = TestProbe()
       val failure = new UnsupportedOperationException("boom")
+      @volatile var socket: Socket = null
       val failingOption = new Inet.SocketOption {
-        override def beforeConnect(s: Socket): Unit = throw failure
+        override def beforeConnect(s: Socket): Unit = {
+          socket = s
+          throw failure
+        }
       }
       val endpoint = new InetSocketAddress("127.0.0.1", 1)
       val command = Connect(endpoint, options = List(failingOption))
@@ -198,6 +202,8 @@ class TcpIntegrationSpec extends PekkoSpec("""
       val commandFailed = connectCommander.expectMsgType[CommandFailed]
       commandFailed.cmd should ===(command)
       commandFailed.cause should ===(Some(failure))
+      socket should not be null
+      awaitCond(socket.isClosed)
     }
 
     "handle tcp connection actor death properly" in new TestSetup(shouldBindServer = false) {
