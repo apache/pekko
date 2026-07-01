@@ -29,7 +29,7 @@ import pekko.stream.javadsl.Source
  * [[LoadEventQuery]].
  *
  * See also [[EventsBySliceFirehoseQuery]].
- * 
+ *
  * API May Change
  */
 @ApiMayChange
