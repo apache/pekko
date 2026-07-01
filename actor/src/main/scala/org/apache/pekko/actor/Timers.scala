@@ -55,8 +55,12 @@ trait Timers extends Actor {
           case OptionVal.Some(m: AutoReceivedMessage) =>
             context.asInstanceOf[ActorCell].autoReceiveMessage(Envelope(m, self, context.system))
           case OptionVal.Some(m) =>
-            if (this.isInstanceOf[Stash]) {
-              // this is important for stash interaction, as stash will look directly at currentMessage #24557
+            if (this.isInstanceOf[StashSupport]) {
+              // This is important for stash interaction, as stash reads the message directly from
+              // currentMessage (StashSupport) #24557. We match StashSupport rather than Stash so that
+              // actors mixing in UnboundedStash or UnrestrictedStash directly - which are siblings of
+              // Stash, not subtypes - also rewrite the unwrapped timer message; otherwise stash()
+              // would re-stash the TimerMsg wrapper and the message would be lost on unstash (#3258).
               actorCell.currentMessage = actorCell.currentMessage.copy(message = m)
             }
             super.aroundReceive(receive, m)

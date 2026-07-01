@@ -341,11 +341,67 @@ class TimersAndStashSpec extends PekkoSpec {
     }
   }
 
+  // Same scenario as ActorWithTimerAndStash but mixing in UnboundedStash, which is a sibling of
+  // Stash (both extend UnrestrictedStash), to cover the timer/stash interaction for it too (#3258).
+  class ActorWithTimerAndUnboundedStash(probe: ActorRef) extends Actor with Timers with UnboundedStash {
+    timers.startSingleTimer("key", "scheduled", 50.millis)
+    def receive: Receive = stashing
+    def notStashing: Receive = {
+      case msg => probe ! msg
+    }
+
+    def stashing: Receive = {
+      case StopStashing =>
+        context.become(notStashing)
+        unstashAll()
+      case "scheduled" =>
+        probe ! "saw-scheduled"
+        stash()
+    }
+  }
+
+  // Same scenario mixing in UnrestrictedStash directly (needs an explicitly configured
+  // deque-based mailbox, as it does not declare a RequiresMessageQueue) (#3258).
+  class ActorWithTimerAndUnrestrictedStash(probe: ActorRef) extends Actor with Timers with UnrestrictedStash {
+    timers.startSingleTimer("key", "scheduled", 50.millis)
+    def receive: Receive = stashing
+    def notStashing: Receive = {
+      case msg => probe ! msg
+    }
+
+    def stashing: Receive = {
+      case StopStashing =>
+        context.become(notStashing)
+        unstashAll()
+      case "scheduled" =>
+        probe ! "saw-scheduled"
+        stash()
+    }
+  }
+
   "Timers combined with stashing" should {
 
     "work" in {
       val probe = TestProbe()
       val actor = system.actorOf(Props(new ActorWithTimerAndStash(probe.ref)))
+      probe.expectMsg("saw-scheduled")
+      actor ! StopStashing
+      probe.expectMsg("scheduled")
+    }
+
+    "work with UnboundedStash (#3258)" in {
+      val probe = TestProbe()
+      val actor = system.actorOf(Props(new ActorWithTimerAndUnboundedStash(probe.ref)))
+      probe.expectMsg("saw-scheduled")
+      actor ! StopStashing
+      probe.expectMsg("scheduled")
+    }
+
+    "work with UnrestrictedStash (#3258)" in {
+      val probe = TestProbe()
+      val actor = system.actorOf(
+        Props(new ActorWithTimerAndUnrestrictedStash(probe.ref))
+          .withMailbox("pekko.actor.mailbox.unbounded-deque-based"))
       probe.expectMsg("saw-scheduled")
       actor ! StopStashing
       probe.expectMsg("scheduled")
