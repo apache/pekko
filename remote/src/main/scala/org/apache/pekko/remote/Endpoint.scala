@@ -387,6 +387,9 @@ private[remote] class ReliableDeliverySupervisor(
     case s: EndpointWriter.StopReading =>
       writer.forward(s)
 
+    case EndpointWriter.ResumeReading =>
+      writer ! EndpointWriter.ResumeReading
+
     case Ungate => // ok, not gated
   }
 
@@ -418,10 +421,18 @@ private[remote] class ReliableDeliverySupervisor(
         // Resending will be triggered by the incoming GotUid message after the connection finished
         goToActive()
       } else goToIdle()
-    case AttemptSysMsgRedelivery                => // Ignore
-    case s @ Send(_: SystemMessage, _, _, _)    => tryBuffer(s.copy(seqOpt = Some(nextSeq())))
-    case s: Send                                => context.system.deadLetters ! s
-    case EndpointWriter.FlushAndStop            => context.stop(self)
+    case AttemptSysMsgRedelivery             => // Ignore
+    case s @ Send(_: SystemMessage, _, _, _) => tryBuffer(s.copy(seqOpt = Some(nextSeq())))
+    case s: Send                             => context.system.deadLetters ! s
+    case EndpointWriter.FlushAndStop         => context.stop(self)
+    case EndpointWriter.ResumeReading        =>
+      if (!writerTerminated) {
+        writer ! EndpointWriter.ResumeReading
+        context.become(gated(writerTerminated = false, earlyUngateRequested = true))
+      } else {
+        writer = createWriter()
+        goToActive()
+      }
     case EndpointWriter.StopReading(w, replyTo) =>
       replyTo ! EndpointWriter.StoppedReading(w)
       sender() ! EndpointWriter.StoppedReading(w)
@@ -448,7 +459,10 @@ private[remote] class ReliableDeliverySupervisor(
         new TimeoutException(
           "Remote system has been silent for too long. " +
           s"(more than ${settings.QuarantineSilentSystemTimeout.toCoarsest})"))
-    case EndpointWriter.FlushAndStop            => context.stop(self)
+    case EndpointWriter.FlushAndStop  => context.stop(self)
+    case EndpointWriter.ResumeReading =>
+      writer = createWriter()
+      goToActive()
     case EndpointWriter.StopReading(w, replyTo) =>
       replyTo ! EndpointWriter.StoppedReading(w)
     case Ungate => // ok, not gated
@@ -482,7 +496,8 @@ private[remote] class ReliableDeliverySupervisor(
       // and don't really know if they were properly delivered or not.
       resendBuffer = new AckedSendBuffer[Send](0)
       context.stop(self)
-    case _ => // Ignore
+    case EndpointWriter.ResumeReading => // Ignore while shutting down
+    case _                            => // Ignore
   }
 
   private def handleSend(send: Send): Unit =
@@ -625,6 +640,7 @@ private[remote] object EndpointWriter {
   private case object FlushAndStopTimeout
   case object AckIdleCheckTimer
   final case class StopReading(writer: ActorRef, replyTo: ActorRef)
+  case object ResumeReading
   final case class StoppedReading(writer: ActorRef)
 
   final case class Handle(handle: PekkoProtocolHandle) extends NoSerializationVerificationNeeded
@@ -751,8 +767,10 @@ private[remote] class EndpointWriter(
   }
 
   val buffering: Receive = {
-    case s: Send      => enqueueInBuffer(s)
-    case BackoffTimer => sendBufferedMessages()
+    case s: Send       => enqueueInBuffer(s)
+    case BackoffTimer  => sendBufferedMessages()
+    case ResumeReading =>
+      reader.foreach(_ ! ResumeReading)
     case FlushAndStop =>
       // Flushing is postponed after the pending writes
       buffer.offer(FlushAndStop)
@@ -803,6 +821,9 @@ private[remote] class EndpointWriter(
         false
       case s @ StopReading(_, replyTo) =>
         reader.foreach(_.tell(s, replyTo))
+        true
+      case ResumeReading =>
+        reader.foreach(_ ! ResumeReading)
         true
       case unexpected =>
         throw new IllegalArgumentException(s"Unexpected message type: ${unexpected.getClass}")
@@ -996,6 +1017,8 @@ private[remote] class EndpointWriter(
           // initializing, buffer and take care of it later when buffer is sent
           enqueueInBuffer(s)
       }
+    case ResumeReading =>
+      reader.foreach(_ ! ResumeReading)
     case TakeOver(newHandle, replyTo) =>
       // Shutdown old reader
       handle.foreach { _.disassociate("the association was replaced by a new one", log) }
@@ -1113,7 +1136,7 @@ private[remote] class EndpointReader(
     val receiveBuffers: ConcurrentHashMap[Link, ResendState])
     extends EndpointActor(localAddress, remoteAddress, transport, settings, codec) {
 
-  import EndpointWriter.{ OutboundAck, StopReading, StoppedReading }
+  import EndpointWriter.{ OutboundAck, ResumeReading, StopReading, StoppedReading }
 
   val provider = RARP(context.system).provider
   var ackedReceiveBuffer = new AckedReceiveBuffer[Message]
@@ -1186,6 +1209,8 @@ private[remote] class EndpointReader(
       context.become(notReading)
       replyTo ! StoppedReading(writer)
 
+    case ResumeReading => // already reading
+
   }
 
   private def logTransientSerializationError(msg: PekkoPduCodec.Message, error: Throwable): Unit = {
@@ -1203,6 +1228,9 @@ private[remote] class EndpointReader(
 
     case StopReading(writer, replyTo) =>
       replyTo ! StoppedReading(writer)
+
+    case ResumeReading =>
+      context.become(receive)
 
     case InboundPayload(p) if p.length <= transport.maximumPayloadBytes =>
       val (ackOption, msgOption) = tryDecodeMessageAndAck(p)

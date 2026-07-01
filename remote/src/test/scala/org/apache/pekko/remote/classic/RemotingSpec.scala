@@ -688,6 +688,117 @@ class RemotingSpec extends PekkoSpec(RemotingSpec.cfg) with ImplicitSender with 
 
     }
 
+    "should resume the outbound reader when passive read handoff fails" in {
+      val localAddress = Address("pekko.test", "resume-system1", "localhost", 101)
+      val rawLocalAddress = localAddress.copy(protocol = "test")
+      val remoteAddress = Address("pekko.test", "resume-system2", "localhost", 102)
+      val rawRemoteAddress = remoteAddress.copy(protocol = "test")
+      val remoteUID = 17
+      val receiverName = "handoff-receiver"
+
+      val config = ConfigFactory.parseString(s"""
+        pekko.remote.classic.enabled-transports = ["pekko.remote.classic.test"]
+        pekko.remote.classic.retry-gate-closed-for = 5s
+        pekko.remote.classic.log-remote-lifecycle-events = on
+
+        pekko.remote.classic.test {
+          registry-key = TwHFcESm
+          local-address = "test://${localAddress.system}@${localAddress.host.get}:${localAddress.port.get}"
+        }
+        """).withFallback(remoteSystem.settings.config)
+      val thisSystem = ActorSystem("this-system", config)
+      muteSystem(thisSystem)
+
+      try {
+        val receiverProbe = TestProbe()(thisSystem)
+        thisSystem.actorOf(Props(new Actor {
+            def receive = {
+              case message => receiverProbe.ref ! message
+            }
+          }).withDeploy(Deploy.local), receiverName)
+        val associationEventProbe = TestProbe()(thisSystem)
+        thisSystem.eventStream.subscribe(associationEventProbe.ref, classOf[AssociatedEvent])
+
+        val registry = AssociationRegistry.get("TwHFcESm")
+        val remoteTransport = new TestTransport(rawRemoteAddress, registry)
+        val remoteTransportProbe = TestProbe()
+
+        registry.registerTransport(
+          remoteTransport,
+          associationEventListenerFuture = Future.successful(new Transport.AssociationEventListener {
+            override def notify(ev: Transport.AssociationEvent): Unit =
+              remoteTransportProbe.ref ! ev
+          }))
+
+        awaitCond(registry.transportsReady(rawLocalAddress, rawRemoteAddress))
+
+        val dummySelection =
+          thisSystem.actorSelection(ActorPath.fromString(remoteAddress.toString + "/user/noonethere"))
+        dummySelection.tell("ping", system.deadLetters)
+
+        val outboundRemoteHandle = remoteTransportProbe.expectMsgType[Transport.InboundAssociation]
+        val outboundHandleProbe = TestProbe()
+        outboundRemoteHandle.association.readHandlerPromise.success(new HandleEventListener {
+          override def notify(ev: HandleEvent): Unit = outboundHandleProbe.ref ! ev
+        })
+
+        def handshakePacket(uid: Int): ByteString =
+          PekkoPduProtobufCodec.constructAssociate(HandshakeInfo(rawRemoteAddress, uid))
+        val originalHandshakePacket = handshakePacket(remoteUID)
+        outboundHandleProbe.fishForMessage(3.seconds, "outbound handshake") {
+          case AssociationHandle.InboundPayload(_) => true
+          case _                                   => false
+        }
+        outboundRemoteHandle.association.write(originalHandshakePacket)
+
+        def payload(message: String): ByteString = {
+          val serializedMessage =
+            MessageSerializer.serialize(thisSystem.asInstanceOf[ExtendedActorSystem], message)
+          val recipient = new EmptyLocalActorRef(
+            thisSystem.asInstanceOf[ExtendedActorSystem].provider,
+            RootActorPath(localAddress) / "user" / receiverName,
+            thisSystem.eventStream)
+
+          PekkoPduProtobufCodec.constructPayload(
+            PekkoPduProtobufCodec.constructMessage(
+              localAddress,
+              recipient,
+              serializedMessage,
+              pekko.util.OptionVal.None))
+        }
+
+        outboundRemoteHandle.association.write(payload("before-handoff"))
+        receiverProbe.expectMsg("before-handoff")
+
+        val inboundHandleProbe = TestProbe()
+        val inboundHandle = Await.result(remoteTransport.associate(rawLocalAddress), 3.seconds)
+        inboundHandle.readHandlerPromise.success(new AssociationHandle.HandleEventListener {
+          override def notify(ev: HandleEvent): Unit = inboundHandleProbe.ref ! ev
+        })
+
+        awaitAssert {
+          registry.getRemoteReadHandlerFor(inboundHandle.asInstanceOf[TestAssociationHandle]).get
+        }
+
+        inboundHandle.write(originalHandshakePacket)
+        associationEventProbe.fishForMessage(3.seconds, "passive association") {
+          case AssociatedEvent(`localAddress`, `remoteAddress`, true) => true
+          case _                                                      => false
+        }
+
+        val brokenPacket = PekkoPduProtobufCodec.constructPayload(ByteString(0, 1, 2, 3, 4, 5, 6))
+        inboundHandle.write(brokenPacket)
+        inboundHandleProbe.fishForMessage(3.seconds, "read-only endpoint disassociation") {
+          case _: AssociationHandle.Disassociated => true
+          case _                                  => false
+        }
+
+        outboundRemoteHandle.association.write(payload("after-handoff-failure"))
+        receiverProbe.expectMsg("after-handoff-failure")
+      } finally shutdown(thisSystem)
+
+    }
+
     "should properly quarantine stashed inbound connections" in {
       val localAddress = Address("pekko.test", "system1", "localhost", 1)
       val rawLocalAddress = localAddress.copy(protocol = "test")
