@@ -13,24 +13,23 @@
 
 package docs.persistence.state
 
-import org.apache.pekko.Done
-import org.apache.pekko.actor.{ ActorSystem, ExtendedActorSystem }
+import org.apache.pekko
+import pekko.Done
+import pekko.actor.{ ActorSystem, ExtendedActorSystem }
+//#plugin-imports
+import pekko.persistence.state.scaladsl.DurableStateUpdateStore
+import pekko.persistence.state.scaladsl.GetObjectResult
+//#plugin-imports
+import pekko.persistence.Persistence
+import pekko.persistence.state.DurableStateStoreRegistry
+import pekko.testkit.TestKit
 
-import org.apache.pekko.persistence.state.scaladsl.DurableStateStore
-import org.apache.pekko.persistence.state.{ DurableStateStoreProvider, DurableStateStoreRegistry }
-import org.apache.pekko.testkit.TestKit
 import com.typesafe.config._
 import docs.persistence
 import org.scalatest.wordspec.AnyWordSpec
 
 import scala.concurrent.Future
 import scala.concurrent.duration._
-
-//#plugin-imports
-import org.apache.pekko.persistence._
-import org.apache.pekko.persistence.state.scaladsl.DurableStateUpdateStore
-import org.apache.pekko.persistence.state.scaladsl.GetObjectResult
-//#plugin-imports
 
 class PersistenceStatePluginDocSpec extends AnyWordSpec {
 

@@ -13,12 +13,15 @@
 
 package docs.persistence.state
 
-import org.apache.pekko.Done
-import org.apache.pekko.actor.ExtendedActorSystem
-import org.apache.pekko.persistence.state.{ DurableStateStoreProvider, DurableStateStoreRegistry }
-import org.apache.pekko.persistence.state.scaladsl.{ DurableStateStore, DurableStateUpdateStore, GetObjectResult }
+import org.apache.pekko
+import pekko.Done
+import pekko.actor.ExtendedActorSystem
+import pekko.persistence.state.{ DurableStateStoreProvider, DurableStateStoreRegistry }
+import pekko.persistence.state.javadsl.{ DurableStateStore => JDurableStateStore }
+import pekko.persistence.state.scaladsl.{ DurableStateStore, DurableStateUpdateStore, GetObjectResult }
+
 import com.typesafe.config.Config
-import org.apache.pekko.persistence.state.javadsl.{ DurableStateStore => JDurableStateStore }
+
 import scala.concurrent.Future
 
 //#plugin-provider
