@@ -13,14 +13,14 @@
 
 package docs.persistence.state
 
+import com.typesafe.config.Config
+
 import org.apache.pekko
 import pekko.Done
 import pekko.actor.ExtendedActorSystem
 import pekko.persistence.state.{ DurableStateStoreProvider, DurableStateStoreRegistry }
 import pekko.persistence.state.javadsl.{ DurableStateStore => JDurableStateStore }
 import pekko.persistence.state.scaladsl.{ DurableStateStore, DurableStateUpdateStore, GetObjectResult }
-
-import com.typesafe.config.Config
 
 import scala.concurrent.Future
 
