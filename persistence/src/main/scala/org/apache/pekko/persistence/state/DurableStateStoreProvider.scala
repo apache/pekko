@@ -24,7 +24,7 @@ package org.apache.pekko.persistence.state
 trait DurableStateStoreProvider {
 
   /**
-   * The `ReadJournal` implementation for the Scala API.
+   * The `DurableStateStore` implementation for the Scala API.
    * This corresponds to the instance that is returned by [[org.apache.pekko.persistence.state.DurableStateStoreRegistry.durableStateStoreFor DurableStateStoreRegistry#durableStateStoreFor]].
    */
   def scaladslDurableStateStore(): scaladsl.DurableStateStore[Any]
