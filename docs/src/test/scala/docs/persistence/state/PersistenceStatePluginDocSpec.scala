@@ -13,6 +13,9 @@
 
 package docs.persistence.state
 
+import com.typesafe.config._
+import docs.persistence
+
 import org.apache.pekko
 import pekko.Done
 import pekko.actor.{ ActorSystem, ExtendedActorSystem }
@@ -23,9 +26,6 @@ import pekko.persistence.state.scaladsl.GetObjectResult
 import pekko.persistence.Persistence
 import pekko.persistence.state.DurableStateStoreRegistry
 import pekko.testkit.TestKit
-
-import com.typesafe.config._
-import docs.persistence
 import org.scalatest.wordspec.AnyWordSpec
 
 import scala.concurrent.Future
