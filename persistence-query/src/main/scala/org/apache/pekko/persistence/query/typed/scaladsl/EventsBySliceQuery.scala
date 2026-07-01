@@ -29,6 +29,8 @@ import pekko.stream.scaladsl.Source
  * `EventsBySliceQuery` that is using a timestamp based offset should also implement [[EventTimestampQuery]] and
  * [[LoadEventQuery]].
  *
+ * See also [[EventsBySliceFirehoseQuery]].
+ *
  * API May Change
  */
 @ApiMayChange
