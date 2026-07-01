@@ -39,7 +39,8 @@ import pekko.cluster.sharding.internal.{
   RememberEntitiesProvider
 }
 import pekko.cluster.sharding.internal.AbstractLeastShardAllocationStrategy
-import pekko.cluster.sharding.internal.AbstractLeastShardAllocationStrategy.RegionEntry
+import pekko.cluster.sharding.internal.ClusterShardAllocationMixin.RegionEntry
+import pekko.cluster.sharding.internal.ClusterShardAllocationMixin.ShardSuitabilityOrdering
 import pekko.cluster.sharding.internal.EventSourcedRememberEntitiesCoordinatorStore.MigrationMarker
 import pekko.event.{ BusLogging, Logging }
 import pekko.pattern.{ pipe, AskTimeoutException }
@@ -295,8 +296,6 @@ object ShardCoordinator {
   class LeastShardAllocationStrategy(rebalanceThreshold: Int, maxSimultaneousRebalance: Int)
       extends AbstractLeastShardAllocationStrategy
       with Serializable {
-
-    import AbstractLeastShardAllocationStrategy.ShardSuitabilityOrdering
 
     override def rebalance(
         currentShardAllocations: Map[ActorRef, immutable.IndexedSeq[ShardId]],
