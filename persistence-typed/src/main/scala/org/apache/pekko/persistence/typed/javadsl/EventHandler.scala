@@ -274,7 +274,7 @@ final class EventHandlerBuilderByState[S <: State, State, Event](
    * and no further lookup is done. Therefore you must make sure that their matching conditions don't overlap,
    * otherwise you risk to 'shadow' part of your event handlers.
    *
-   * Extra care should be taken when using [[onAnyEvent]] as it will match any event.
+   * Extra care should be taken when using `onAnyEvent` as it will match any event.
    * This method builds and returns the event handler since this will not let through any states to subsequent match statements.
    *
    * @return An EventHandler from the appended states.
@@ -294,7 +294,7 @@ final class EventHandlerBuilderByState[S <: State, State, Event](
    * and no further lookup is done. Therefore you must make sure that their matching conditions don't overlap,
    * otherwise you risk to 'shadow' part of your event handlers.
    *
-   * Extra care should be taken when using [[onAnyEvent]] as it will match any event.
+   * Extra care should be taken when using `onAnyEvent` as it will match any event.
    * This method builds and returns the event handler since this will not let through any states to subsequent match statements.
    *
    * @return An EventHandler from the appended states.

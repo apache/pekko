@@ -324,7 +324,7 @@ final class CommandHandlerWithReplyBuilderByState[Command, S <: State, State] @I
    * and no further lookup is done. Therefore you must make sure that their matching conditions don't overlap,
    * otherwise you risk to 'shadow' part of your command handlers.
    *
-   * Extra care should be taken when using [[onAnyCommand]] as it will match any command.
+   * Extra care should be taken when using `onAnyCommand` as it will match any command.
    * This method builds and returns the command handler since this will not let through any states to subsequent match statements.
    *
    * @return A CommandHandlerWithReply from the appended states.
@@ -346,7 +346,7 @@ final class CommandHandlerWithReplyBuilderByState[Command, S <: State, State] @I
    * and no further lookup is done. Therefore you must make sure that their matching conditions don't overlap,
    * otherwise you risk to 'shadow' part of your command handlers.
    *
-   * Extra care should be taken when using [[onAnyCommand]] as it will match any command.
+   * Extra care should be taken when using `onAnyCommand` as it will match any command.
    * This method builds and returns the command handler since this will not let through any states to subsequent match statements.
    *
    * @return A CommandHandlerWithReply from the appended states.
@@ -371,7 +371,7 @@ final class CommandHandlerWithReplyBuilderByState[Command, S <: State, State] @I
    * and no further lookup is done. Therefore you must make sure that their matching conditions don't overlap,
    * otherwise you risk to 'shadow' part of your command handlers.
    *
-   * Extra care should be taken when using [[onAnyCommand]] as it will match any command.
+   * Extra care should be taken when using `onAnyCommand` as it will match any command.
    * This method builds and returns the command handler since this will not let through any states to subsequent match statements.
    *
    * @return A CommandHandlerWithReply from the appended states.
