@@ -26,7 +26,7 @@ import com.typesafe.config.Config
 /**
  * JAVA API
  *
- * This spec aims to verify custom pekko-persistence [[pekko.persistence.state.DurableStateStore]]
+ * This spec aims to verify custom pekko-persistence `DurableStateStore`
  * implementations.
  * Plugin authors are highly encouraged to include it in their plugin's test suites.
  *

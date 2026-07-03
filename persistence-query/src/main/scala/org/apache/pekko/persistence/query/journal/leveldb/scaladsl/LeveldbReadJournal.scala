@@ -283,7 +283,7 @@ object LeveldbReadJournal {
 
   /**
    * The default identifier for [[LeveldbReadJournal]] to be used with
-   * [[pekko.persistence.query.PersistenceQuery#readJournalFor]].
+   * `PersistenceQuery#readJournalFor`.
    *
    * The value is `"pekko.persistence.query.journal.leveldb"` and corresponds
    * to the absolute path to the read journal configuration entry.
