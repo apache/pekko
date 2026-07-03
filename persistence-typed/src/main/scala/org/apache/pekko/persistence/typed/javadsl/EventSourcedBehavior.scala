@@ -156,7 +156,7 @@ abstract class EventSourcedBehavior[Command, Event, State] private[pekko] (
    * been persisted.
    *
    * Snapshots triggered by `snapshotWhen` will not trigger deletes of old snapshots and events if
-   * [[EventSourcedBehavior.retentionCriteria]] with [[RetentionCriteria.snapshotEvery]] is used together with
+   * [[EventSourcedBehavior.retentionCriteria]] with `RetentionCriteria.snapshotEvery` is used together with
    * `shouldSnapshot`. Such deletes are only triggered by snapshots matching the `numberOfEvents` in the
    * [[RetentionCriteria]].
    *
@@ -181,7 +181,7 @@ abstract class EventSourcedBehavior[Command, Event, State] private[pekko] (
   /**
    * Return tags to store for the given event, the tags can then be used in persistence query.
    *
-   * If [[tagsFor(Event, State)]] is overridden this method is ignored.
+   * If `tagsFor` is overridden this method is ignored.
    */
   def tagsFor(@nowarn("msg=never used") event: Event): java.util.Set[String] = Collections.emptySet()
 

@@ -187,7 +187,7 @@ object EventSourcedBehavior {
    * been persisted.
    *
    * Snapshots triggered by `snapshotWhen` will not trigger deletes of old snapshots and events if
-   * [[EventSourcedBehavior.withRetention]] with [[RetentionCriteria.snapshotEvery]] is used together with
+   * [[EventSourcedBehavior.withRetention]] with `RetentionCriteria.snapshotEvery` is used together with
    * `snapshotWhen`. Such deletes are only triggered by snapshots matching the `numberOfEvents` in the
    * [[RetentionCriteria]].
    */
