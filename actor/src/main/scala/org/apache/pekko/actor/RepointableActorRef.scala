@@ -151,14 +151,13 @@ private[pekko] class RepointableActorRef(
 
   def restart(cause: Throwable): Unit = underlying.restart(cause)
 
+  override private[pekko] def isTerminated: Boolean = underlying.isTerminated
+
   def isStarted: Boolean = underlying match {
     case _: UnstartedCell => false
     case null             => throw new IllegalStateException("isStarted called before initialized")
     case _                => true
   }
-
-  @deprecated("Use context.watch(actor) and receive Terminated(actor)", "Akka 2.2") def isTerminated: Boolean =
-    underlying.isTerminated
 
   def provider: ActorRefProvider = system.provider
 
