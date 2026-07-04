@@ -41,7 +41,7 @@ object DurableStateStoreSpec {
 }
 
 /**
- * This spec aims to verify custom pekko-persistence [[DurableStateStore]] implementations.
+ * This spec aims to verify custom pekko-persistence `DurableStateStore` implementations.
  * Plugin authors are highly encouraged to include it in their plugin's test suites.
  *
  * In case your durable state store plugin needs some kind of setup or teardown, override the `beforeAll`

@@ -153,8 +153,8 @@ trait PersistentFSMBase[S, D, E] extends Actor with Listeners with ActorLogging 
     register(stateName, stateFunction, Option(stateTimeout))
 
   /**
-   * Set initial state. Call this method from the constructor before the [[#initialize]] method.
-   * If different state is needed after a restart this method, followed by [[#initialize]], can
+   * Set initial state. Call this method from the constructor before the `initialize` method.
+   * If different state is needed after a restart this method, followed by `initialize`, can
    * be used in the actor life cycle hooks [[pekko.actor.Actor#preStart]] and [[pekko.actor.Actor#postRestart]].
    *
    * @param stateName initial state designator
@@ -821,8 +821,8 @@ abstract class AbstractPersistentFSMBase[S, D, E] extends PersistentFSMBase[S, D
     when(stateName, stateTimeout)(stateFunctionBuilder.build())
 
   /**
-   * Set initial state. Call this method from the constructor before the [[#initialize]] method.
-   * If different state is needed after a restart this method, followed by [[#initialize]], can
+   * Set initial state. Call this method from the constructor before the `initialize` method.
+   * If different state is needed after a restart this method, followed by `initialize`, can
    * be used in the actor life cycle hooks [[pekko.actor.Actor#preStart]] and [[pekko.actor.Actor#postRestart]].
    *
    * @param stateName initial state designator
@@ -832,8 +832,8 @@ abstract class AbstractPersistentFSMBase[S, D, E] extends PersistentFSMBase[S, D
     startWith(stateName, stateData, null: FiniteDuration)
 
   /**
-   * Set initial state. Call this method from the constructor before the [[#initialize]] method.
-   * If different state is needed after a restart this method, followed by [[#initialize]], can
+   * Set initial state. Call this method from the constructor before the `initialize` method.
+   * If different state is needed after a restart this method, followed by `initialize`, can
    * be used in the actor life cycle hooks [[pekko.actor.Actor#preStart]] and [[pekko.actor.Actor#postRestart]].
    *
    * @param stateName initial state designator

@@ -92,7 +92,7 @@ object AtLeastOnceDelivery {
 /**
  * Scala API: Mix-in this trait with your `PersistentActor` to send messages with at-least-once
  * delivery semantics to destinations. It takes care of re-sending messages when they
- * have not been confirmed within a configurable timeout. Use the [[AtLeastOnceDeliveryLike#deliver]] method to
+ * have not been confirmed within a configurable timeout. Use the `AtLeastOnceDeliveryLike#deliver` method to
  * send a message to a destination. Call the [[AtLeastOnceDeliveryLike#confirmDelivery]] method when the destination
  * has replied with a confirmation message.
  *
@@ -227,7 +227,7 @@ trait AtLeastOnceDeliveryLike extends Eventsourced {
 
   /**
    * Maximum number of unconfirmed messages that this actor is allowed to hold in memory.
-   * If this number is exceed [[#deliver]] will not accept more messages and it will throw
+   * If this number is exceed `deliver` will not accept more messages and it will throw
    * [[AtLeastOnceDelivery.MaxUnconfirmedMessagesExceededException]].
    *
    * The default value can be configured with the
@@ -303,7 +303,7 @@ trait AtLeastOnceDeliveryLike extends Eventsourced {
   /**
    * Call this method when a message has been confirmed by the destination,
    * or to abort re-sending.
-   * @see [[#deliver]]
+   * @see `deliver`
    * @return `true` the first time the `deliveryId` is confirmed, i.e. `false` for duplicate confirm
    */
   def confirmDelivery(deliveryId: Long): Boolean = {

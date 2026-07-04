@@ -522,7 +522,7 @@ private[persistence] trait Eventsourced
    * If the delete is successful a [[pekko.persistence.DeleteMessagesSuccess]] will be sent to the actor.
    * If the delete fails a [[pekko.persistence.DeleteMessagesFailure]] will be sent to the actor.
    *
-   * The given `toSequenceNr` must be less than or equal to [[Eventsourced#lastSequenceNr]], otherwise
+   * The given `toSequenceNr` must be less than or equal to `lastSequenceNr`, otherwise
    * [[pekko.persistence.DeleteMessagesFailure]] is sent to the actor without performing the delete. All persistent
    * messages may be deleted without specifying the actual sequence number by using `Long.MaxValue`
    * as the `toSequenceNr`.
@@ -544,7 +544,7 @@ private[persistence] trait Eventsourced
    * An [[Eventsourced]] actor can request cleanup by deleting either a range of, or all persistent events.
    * For example, on successful snapshot completion, delete messages within a configurable `snapshotAfter`
    * range that are less than or equal to the given [[SnapshotMetadata.sequenceNr]]
-   * (provided the [[SnapshotMetadata.sequenceNr]] is <= to [[Eventsourced#lastSequenceNr]]).
+   * (provided the [[SnapshotMetadata.sequenceNr]] is <= to `lastSequenceNr`).
    *
    * Or delete all by using `Long.MaxValue` as the `toSequenceNr`
    * {{{ m.copy(sequenceNr = Long.MaxValue) }}}

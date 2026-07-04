@@ -117,7 +117,7 @@ private[testkit] trait PolicyOpsTestKit[P] {
   }
 
   /**
-   * Returns default policy if it was changed by [[PolicyOpsTestKit.this.withPolicy()]].
+   * Returns default policy if it was changed by `withPolicy`.
    */
   def resetPolicy(): Unit = storage.resetPolicy()
 
@@ -272,7 +272,7 @@ private[testkit] trait ClearOps {
    *
    * NOTE! Also clears sequence numbers in storage!
    *
-   * @see [[ClearPreservingSeqNums.clearAllPreservingSeqNumbers()]]
+   * @see `ClearPreservingSeqNums.clearAllPreservingSeqNumbers`
    */
   def clearAll(): Unit = {
     storage.clearAll()
@@ -284,7 +284,7 @@ private[testkit] trait ClearOps {
    *
    * NOTE! Also clears sequence number in the storage!
    *
-   * @see [[ClearPreservingSeqNums.clearByIdPreservingSeqNumbers()]]
+   * @see `ClearPreservingSeqNums.clearByIdPreservingSeqNumbers`
    */
   def clearByPersistenceId(persistenceId: String): Unit = {
     storage.removeKey(persistenceId)
@@ -299,7 +299,7 @@ private[testkit] trait ClearPreservingSeqNums {
   /**
    * Clear all data in the storage preserving sequence numbers.
    *
-   * @see [[ClearOps.clearAll()]]
+   * @see `ClearOps.clearAll`
    */
   def clearAllPreservingSeqNumbers(): Unit = {
     storage.clearAllPreservingSeqNumbers()
@@ -309,7 +309,7 @@ private[testkit] trait ClearPreservingSeqNums {
   /**
    * Clear all data in the storage for particular persistence id preserving sequence numbers.
    *
-   * @see [[ClearOps.clearByPersistenceId()]]
+   * @see `ClearOps.clearByPersistenceId`
    */
   def clearByIdPreservingSeqNumbers(persistenceId: String): Unit = {
     storage.removePreservingSeqNumber(persistenceId)

@@ -40,7 +40,7 @@ import com.typesafe.config.Config
  * event before sending the message to the destination and one event for the confirmation
  * that the message has been delivered and processed.
  *
- * The [[DurableProducerQueue.LoadState]] request is used at startup to retrieve the unconfirmed messages.
+ * The `DurableProducerQueue.LoadState` request is used at startup to retrieve the unconfirmed messages.
  */
 @ApiMayChange
 object EventSourcedProducerQueue {
