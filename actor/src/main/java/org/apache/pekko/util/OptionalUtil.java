@@ -25,6 +25,7 @@ import scala.jdk.javaapi.OptionConverters;
 public final class OptionalUtil {
   private static final scala.Option<?> noneValue = None$.MODULE$;
 
+  @SuppressWarnings("unchecked")
   public static <T> scala.Option<T> scalaNone() {
     return (scala.Option<T>) noneValue;
   }

@@ -59,6 +59,7 @@ class MyJavaStateStore<A> implements DurableStateUpdateStore<A> {
   }
 
   /** Deprecated. Use the deleteObject overload with revision instead. */
+  @SuppressWarnings("deprecation")
   @Override
   public CompletionStage<Done> deleteObject(String persistenceId) {
     return deleteObject(persistenceId, 0);
