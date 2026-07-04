@@ -420,9 +420,9 @@ class GraphDSLCompileSpec extends StreamSpec {
         .addAttributes(none)
         .named("useless")
 
-      val name = ga.traversalBuilder.attributes.getFirst[Name]
+      val name = ga.traversalBuilder.attributes.get[Name]
       name shouldEqual Some(Name("useless"))
-      val boundary = ga.traversalBuilder.attributes.getFirst[AsyncBoundary.type]
+      val boundary = ga.traversalBuilder.attributes.get[AsyncBoundary.type]
       boundary shouldEqual (Some(AsyncBoundary))
     }
 

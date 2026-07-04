@@ -302,42 +302,6 @@ final class Attributes private[pekko] (
     attributeList.collect { case attr if c.isAssignableFrom(attr.getClass) => c.cast(attr) }
   }
 
-  /**
-   * Java API: Get the least specific attribute (added first) of a given `Class` or subclass thereof.
-   * If no such attribute exists the `default` value is returned.
-   */
-  @deprecated("Attributes should always be most specific, use getAttribute[T]", "Akka 2.5.7")
-  def getFirstAttribute[T <: Attribute](c: Class[T], default: T): T =
-    getFirstAttribute(c).orElse(default)
-
-  /**
-   * Java API: Get the least specific attribute (added first) of a given `Class` or subclass thereof.
-   */
-  @deprecated("Attributes should always be most specific, use get[T]", "Akka 2.5.7")
-  def getFirstAttribute[T <: Attribute](c: Class[T]): Optional[T] =
-    attributeList.reverseIterator.collectFirst { case attr if c.isInstance(attr) => c.cast(attr) }.toJava
-
-  /**
-   * Scala API: Get the least specific attribute (added first) of a given type parameter T `Class` or subclass thereof.
-   * If no such attribute exists the `default` value is returned.
-   */
-  @deprecated("Attributes should always be most specific, use get[T]", "Akka 2.5.7")
-  def getFirst[T <: Attribute: ClassTag](default: T): T = {
-    getFirst[T] match {
-      case Some(a) => a
-      case None    => default
-    }
-  }
-
-  /**
-   * Scala API: Get the least specific attribute (added first) of a given type parameter T `Class` or subclass thereof.
-   */
-  @deprecated("Attributes should always be most specific, use get[T]", "Akka 2.5.7")
-  def getFirst[T <: Attribute: ClassTag]: Option[T] = {
-    val c = classTag[T].runtimeClass.asInstanceOf[Class[T]]
-    attributeList.reverseIterator.collectFirst { case attr if c.isInstance(attr) => c.cast(attr) }
-  }
-
   // for binary compatibility (used to be a case class)
 
   @deprecated("Use explicit methods on Attributes to interact, not the ones provided by Product", "2.0.0")

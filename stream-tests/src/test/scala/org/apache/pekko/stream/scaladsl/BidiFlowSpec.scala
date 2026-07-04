@@ -127,9 +127,9 @@ class BidiFlowSpec extends StreamSpec {
       import Attributes._
       val b: BidiFlow[Int, Long, ByteString, String, NotUsed] = bidi.async.addAttributes(none).named("name")
 
-      val name = b.traversalBuilder.attributes.getFirst[Name]
+      val name = b.traversalBuilder.attributes.get[Name]
       name shouldEqual Some(Name("name"))
-      val boundary = b.traversalBuilder.attributes.getFirst[AsyncBoundary.type]
+      val boundary = b.traversalBuilder.attributes.get[AsyncBoundary.type]
       boundary shouldEqual Some(AsyncBoundary)
     }
 

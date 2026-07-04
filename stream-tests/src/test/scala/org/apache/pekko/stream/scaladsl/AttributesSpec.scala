@@ -152,11 +152,6 @@ class AttributesSpec
 
     val attributes = Attributes.name("a") and Attributes.name("b") and Attributes.inputBuffer(1, 2)
 
-    "give access to the least specific attribute" in {
-      val name = attributes.getFirst[Name]
-      name should ===(Some(Attributes.Name("a")))
-    }
-
     "give access to the most specific attribute value" in {
       val name = attributes.get[Name]
       name should ===(Some(Attributes.Name("b")))
@@ -217,7 +212,7 @@ class AttributesSpec
       name shouldBe Some(Name("new-name"))
     }
 
-    "keep the outermost attribute as the least specific" in {
+    "keep the stage attribute as the most specific" in {
       val attributes = Source
         .fromGraph(new AttributesSource(Attributes.name("original-name")))
         .map(identity)
@@ -227,9 +222,6 @@ class AttributesSpec
 
       val mostSpecificName = attributes.get[Name]
       mostSpecificName shouldBe Some(Name("original-name"))
-
-      val leastSpecificName = attributes.getFirst[Name]
-      leastSpecificName shouldBe Some(Name("whole-graph"))
     }
   }
 
@@ -245,9 +237,6 @@ class AttributesSpec
 
       val mostSpecificName = attributes.get[Name]
       mostSpecificName shouldBe Some(Name("new-name"))
-
-      val leastSpecificName = attributes.getFirst[Name]
-      leastSpecificName shouldBe Some(Name("new-name"))
     }
 
     "make the attributes on Source.fromGraph source behave the same as the stage itself" in {
@@ -263,11 +252,6 @@ class AttributesSpec
       mostSpecificName shouldBe Some(Name("replaced"))
       val mostSpecificWhatever = attributes.get[WhateverAttribute]
       mostSpecificWhatever shouldBe None
-
-      val leastSpecificName = attributes.getFirst[Name]
-      leastSpecificName shouldBe Some(Name("whole-graph"))
-      val leastSpecificWhatever = attributes.getFirst[WhateverAttribute]
-      leastSpecificWhatever shouldBe None
     }
 
     "not replace stage specific attributes with attributes on surrounding composite source" in {
@@ -281,9 +265,6 @@ class AttributesSpec
       // still the original as the attribute was added on the composite source
       val mostSpecificName = attributes.get[Name]
       mostSpecificName shouldBe Some(Name("original-name"))
-
-      val leastSpecificName = attributes.getFirst[Name]
-      leastSpecificName shouldBe Some(Name("composite-graph"))
     }
 
     "make the attributes on Sink.fromGraph source behave the same as the stage itself" in {
@@ -299,9 +280,6 @@ class AttributesSpec
 
       val mostSpecificName = attributes.get[Name]
       mostSpecificName shouldBe Some(Name("replaced"))
-
-      val leastSpecificName = attributes.getFirst[Name]
-      leastSpecificName shouldBe Some(Name("whole-graph"))
     }
 
     "use the initial attributes for dispatcher" in {
@@ -414,8 +392,6 @@ class AttributesSpec
 
       val name = attributes.get[Name]
       name shouldBe Some(Name("replaced"))
-      val firstName = attributes.getFirst[Name]
-      firstName shouldBe Some(Name("whole-graph"))
     }
 
     "handle attributes on a composed flow" in {
@@ -438,11 +414,6 @@ class AttributesSpec
       name shouldBe Some(Name("original-name"))
       val whatever = attributes.get[WhateverAttribute]
       whatever shouldBe Some(WhateverAttribute("replaced"))
-
-      val firstName = attributes.getFirst[Name]
-      firstName shouldBe Some(Name("replaced-again"))
-      val firstWhatever = attributes.getFirst[WhateverAttribute]
-      firstWhatever shouldBe Some(WhateverAttribute("replaced"))
     }
 
     "get input buffer size from surrounding .addAttributes (closest)" in {
@@ -572,9 +543,6 @@ class AttributesSpec
 
       val mostSpecificName = attributes.get[Name]
       mostSpecificName shouldBe Some(Name("replaced"))
-
-      val leastSpecificName = attributes.getFirst[Name]
-      leastSpecificName shouldBe Some(Name("whole-graph"))
     }
 
   }
@@ -621,9 +589,6 @@ class AttributesSpec
 
       val mostSpecificName = attributes.get[Name]
       mostSpecificName shouldBe Some(Name("replaced"))
-
-      val leastSpecificName = attributes.getFirst[Name]
-      leastSpecificName shouldBe Some(Name("whole-graph"))
     }
 
     "make the attributes on Flow.fromGraph source behave the same as the stage itself" in {
@@ -643,9 +608,6 @@ class AttributesSpec
 
       val mostSpecificName = attributes.get[Name]
       mostSpecificName should contain(Name("replaced"))
-
-      val leastSpecificName = attributes.getFirst[Name]
-      leastSpecificName should contain(Name("whole-graph"))
     }
 
     "make the attributes on Sink.fromGraph source behave the same as the stage itself" in {
@@ -664,10 +626,6 @@ class AttributesSpec
       // most specific
       val mostSpecificName = attributes.get[Name]
       mostSpecificName should contain(Name("replaced"))
-
-      // least specific
-      val leastSpecificName = attributes.getFirst[Name]
-      leastSpecificName should contain(Name("whole-graph"))
     }
 
   }
