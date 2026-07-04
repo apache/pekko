@@ -23,7 +23,7 @@ addSbtPlugin("com.github.sbt" % "sbt-boilerplate" % "0.8.0")
 
 addSbtPlugin("com.github.sbt" % "sbt-header" % "5.11.0")
 addSbtPlugin("com.github.sbt" % "sbt-pull-request-validator" % "2.0.0")
-addSbtPlugin("net.bzzt" % "sbt-reproducible-builds" % "0.32")
+addSbtPlugin("net.bzzt" % "sbt-reproducible-builds" % "0.33")
 
 addSbtPlugin("com.github.sbt" % "sbt-dynver" % "5.1.1")
 addSbtPlugin("com.github.pjfanning" % "sbt-source-dist" % "0.1.13")
