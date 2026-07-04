@@ -19,14 +19,19 @@ import duration._
 
 import org.apache.pekko
 import pekko.Done
+import pekko.stream.QueueOfferResult
 import pekko.stream.impl.UnfoldResourceSource
 import pekko.stream.impl.fusing.GraphInterpreter
 import pekko.stream.scaladsl._
 import pekko.stream.stage.GraphStage
+import pekko.stream.testkit.TestPublisher
 import pekko.stream.testkit.StreamSpec
 import pekko.stream.testkit.Utils.TE
+import pekko.stream.testkit.scaladsl.TestSink
 
 class FusingSpec extends StreamSpec {
+
+  val asyncBoundaryInputBuffer = Attributes.inputBuffer(16, 16)
 
   def actorRunningStage = {
     GraphInterpreter.currentInterpreter.context
@@ -45,6 +50,187 @@ class FusingSpec extends StreamSpec {
         .runWith(Sink.head)
         .futureValue
         .sorted should ===(0 to 198 by 2)
+    }
+
+    "preserve elements across repeated asynchronous boundary batches" in {
+      val elements = 1 to 5000
+
+      Source(elements)
+        .map(identity)
+        .async
+        .addAttributes(asyncBoundaryInputBuffer)
+        .runWith(Sink.seq)
+        .futureValue should ===(elements)
+    }
+
+    "preserve elements across chained asynchronous boundary batches" in {
+      val elements = 1 to 5000
+
+      Source(elements)
+        .map(identity)
+        .async
+        .addAttributes(asyncBoundaryInputBuffer)
+        .map(identity)
+        .async
+        .addAttributes(asyncBoundaryInputBuffer)
+        .runWith(Sink.seq)
+        .futureValue should ===(elements)
+    }
+
+    "flush asynchronous boundary batches when async input suspends the interpreter" in {
+      val elements = 1 to 64
+      val (queue, downstream) = Source
+        .fromGraph(Source.queue[Int](elements.size))
+        .async
+        .addAttributes(ActorAttributes.syncProcessingLimit(1) and asyncBoundaryInputBuffer)
+        .toMat(TestSink[Int]())(Keep.both)
+        .run()
+
+      downstream.request(elements.size)
+      elements.foreach { elem =>
+        queue.offer(elem) should ===(QueueOfferResult.Enqueued)
+      }
+      downstream.expectNextN(elements)
+
+      queue.complete()
+      downstream.expectComplete()
+    }
+
+    "drain asynchronous boundary batches before completing" in {
+      val elements = 1 to 64
+
+      Source(elements)
+        .async
+        .addAttributes(asyncBoundaryInputBuffer)
+        .runWith(TestSink[Int]())
+        .request(elements.size)
+        .expectNextN(elements)
+        .expectComplete()
+    }
+
+    "drain asynchronous boundary batches before failing" in {
+      val elements = 1 to 64
+      val ex = TE("boom")
+      val upstream = TestPublisher.probe[Int]()
+      val downstream = Source
+        .fromPublisher(upstream)
+        .async
+        .addAttributes(asyncBoundaryInputBuffer)
+        .runWith(TestSink[Int]())
+
+      downstream.request(elements.size + 1)
+
+      var sent = 0
+      while (sent < elements.size) {
+        val request = upstream.expectRequest()
+        val send = math.min(request, elements.size - sent).toInt
+        elements.slice(sent, sent + send).foreach(upstream.sendNext)
+        sent += send
+      }
+
+      upstream.sendError(ex)
+      downstream.expectNextN(elements)
+      downstream.expectError(ex)
+    }
+
+    "not emit elements after an asynchronous boundary failure" in {
+      val ex = TE("boom")
+      val probe = Source(1 to 64)
+        .concat(Source.failed(ex))
+        .async
+        .addAttributes(asyncBoundaryInputBuffer)
+        .runWith(TestSink[Int]())
+
+      probe.request(65)
+
+      var expected = 1
+      var errorSignalled = false
+      while (!errorSignalled && expected <= 64) {
+        probe.expectNextOrError(expected, ex) match {
+          case Right(_) =>
+            expected += 1
+          case Left(_) =>
+            errorSignalled = true
+        }
+      }
+      if (!errorSignalled) probe.expectError(ex)
+    }
+
+    "propagate cancellation with asynchronous boundary elements in flight" in {
+      val upstream = TestPublisher.probe[Int]()
+      val downstream = Source
+        .fromPublisher(upstream)
+        .async
+        .addAttributes(asyncBoundaryInputBuffer)
+        .runWith(TestSink[Int]())
+
+      downstream.request(16)
+      upstream.expectRequest() should be >= 16L
+      (1 to 16).foreach(upstream.sendNext)
+
+      downstream.expectNext(1)
+      downstream.cancel()
+
+      upstream.expectCancellation()
+    }
+
+    "not exceed downstream demand across asynchronous boundary batches" in {
+      val downstream = Source(1 to 1000)
+        .async
+        .addAttributes(asyncBoundaryInputBuffer)
+        .runWith(TestSink[Int]())
+
+      downstream.request(1)
+      downstream.expectNext(1)
+      downstream.expectNoMessage(100.millis)
+
+      downstream.request(2)
+      downstream.expectNext(2, 3)
+      downstream.expectNoMessage(100.millis)
+
+      downstream.cancel()
+    }
+
+    "preserve resuming supervision across asynchronous boundary batches" in {
+      Source(List(1, 2, -1, 3, 4))
+        .async
+        .addAttributes(asyncBoundaryInputBuffer)
+        .map { elem =>
+          require(elem > 0)
+          elem
+        }
+        .withAttributes(ActorAttributes.supervisionStrategy(Supervision.resumingDecider))
+        .runWith(Sink.seq)
+        .futureValue should ===(Seq(1, 2, 3, 4))
+    }
+
+    "preserve restarting supervision across asynchronous boundary batches" in {
+      Source(List(1, 3, -1, 5, 7))
+        .async
+        .addAttributes(asyncBoundaryInputBuffer)
+        .scan(0) { (old, current) =>
+          require(current > 0)
+          old + current
+        }
+        .withAttributes(ActorAttributes.supervisionStrategy(Supervision.restartingDecider))
+        .runWith(Sink.seq)
+        .futureValue should ===(Seq(0, 1, 4, 0, 5, 12))
+    }
+
+    "preserve stopping supervision across asynchronous boundary batches" in {
+      val ex = TE("boom")
+      Source(List(1, 2, -1, 3, 4))
+        .async
+        .addAttributes(asyncBoundaryInputBuffer)
+        .map {
+          case -1   => throw ex
+          case elem => elem
+        }
+        .withAttributes(ActorAttributes.supervisionStrategy(Supervision.stoppingDecider))
+        .runWith(TestSink[Int]())
+        .request(5)
+        .expectNext(1, 2)
+        .expectError(ex)
     }
 
     "use multiple actors when there are asynchronous boundaries in the subflows (manual)" in {

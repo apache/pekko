@@ -52,7 +52,7 @@ class AsyncBoundaryThroughputBenchmark {
 
   implicit val system: ActorSystem = ActorSystem("AsyncBoundaryThroughputBenchmark", config)
 
-  @Param(Array("1", "3", "10"))
+  @Param(Array("0", "1", "3", "10"))
   var asyncBoundaries = 0
 
   var source: Source[Int, NotUsed] = _
