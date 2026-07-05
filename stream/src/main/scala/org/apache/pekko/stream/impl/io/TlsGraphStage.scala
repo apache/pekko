@@ -838,8 +838,8 @@ import pekko.util.ByteString
                   }
                   continue = false
 
-                case other =>
-                  throw new IllegalArgumentException(s"Unexpected TLS input element: $other")
+                case null =>
+                  throw new IllegalArgumentException(s"Unexpected TLS input element: null")
               }
             }
 

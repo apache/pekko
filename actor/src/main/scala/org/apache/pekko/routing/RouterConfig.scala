@@ -47,7 +47,7 @@ import pekko.japi.Util.immutableSeq
  * someone tries sending a message to that reference before the constructor of
  * RoutedActorRef has returned, there will be a `NullPointerException`!
  */
-@nowarn("msg=@SerialVersionUID has no effect")
+@nowarn("msg=@SerialVersionUID (has no effect|does nothing)")
 @SerialVersionUID(1L)
 trait RouterConfig extends Serializable {
 
@@ -384,7 +384,7 @@ case object NoRouter extends NoRouter {
 /**
  * INTERNAL API
  */
-@nowarn("msg=@SerialVersionUID has no effect")
+@nowarn("msg=@SerialVersionUID (has no effect|does nothing)")
 @SerialVersionUID(1L)
 private[pekko] trait RouterManagementMesssage
 
@@ -393,7 +393,7 @@ private[pekko] trait RouterManagementMesssage
  * A [[Routees]] message is sent asynchronously to the "requester" containing information
  * about what routees the router is routing over.
  */
-@nowarn("msg=@SerialVersionUID has no effect")
+@nowarn("msg=@SerialVersionUID (has no effect|does nothing)")
 @SerialVersionUID(1L)
 abstract class GetRoutees extends RouterManagementMesssage
 

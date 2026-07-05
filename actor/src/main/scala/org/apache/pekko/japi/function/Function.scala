@@ -22,7 +22,7 @@ import org.apache.pekko.util.ConstantFun
  * `Serializable` is needed to be able to grab line number for Java 8 lambdas.
  * Supports throwing `Exception` in the apply, which the `java.util.function.Function` counterpart does not.
  */
-@nowarn("msg=@SerialVersionUID has no effect")
+@nowarn("msg=@SerialVersionUID (has no effect|does nothing)")
 @SerialVersionUID(1L)
 @FunctionalInterface
 trait Function[-T, +R] extends java.io.Serializable {
@@ -56,7 +56,7 @@ object Function {
  * `Serializable` is needed to be able to grab line number for Java 8 lambdas.
  * Supports throwing `Exception` in the apply, which the `java.util.function.BiFunction` counterpart does not.
  */
-@nowarn("msg=@SerialVersionUID has no effect")
+@nowarn("msg=@SerialVersionUID (has no effect|does nothing)")
 @SerialVersionUID(1L)
 @FunctionalInterface
 trait Function2[-T1, -T2, +R] extends java.io.Serializable {
@@ -79,7 +79,7 @@ trait Function2[-T1, -T2, +R] extends java.io.Serializable {
  * `Serializable` is needed to be able to grab line number for Java 8 lambdas.
  * Supports throwing `Exception` in the apply, which the `java.util.function.Consumer` counterpart does not.
  */
-@nowarn("msg=@SerialVersionUID has no effect")
+@nowarn("msg=@SerialVersionUID (has no effect|does nothing)")
 @SerialVersionUID(1L)
 @FunctionalInterface
 trait Procedure[-T] extends java.io.Serializable {
@@ -92,7 +92,7 @@ trait Procedure[-T] extends java.io.Serializable {
  * `Serializable` is needed to be able to grab line number for Java 8 lambdas.
  * Supports throwing `Exception` in the apply, which the `java.util.function.Effect` counterpart does not.
  */
-@nowarn("msg=@SerialVersionUID has no effect")
+@nowarn("msg=@SerialVersionUID (has no effect|does nothing)")
 @SerialVersionUID(1L)
 @FunctionalInterface
 trait Effect extends java.io.Serializable {
@@ -106,7 +106,7 @@ trait Effect extends java.io.Serializable {
  * `Serializable` is needed to be able to grab line number for Java 8 lambdas.
  * Supports throwing `Exception` in the apply, which the `java.util.function.Predicate` counterpart does not.
  */
-@nowarn("msg=@SerialVersionUID has no effect")
+@nowarn("msg=@SerialVersionUID (has no effect|does nothing)")
 @SerialVersionUID(1L)
 @FunctionalInterface
 trait Predicate[-T] extends java.io.Serializable {
@@ -124,7 +124,7 @@ trait Predicate[-T] extends java.io.Serializable {
  * `Serializable` is needed to be able to grab line number for Java 8 lambdas.
  * Supports throwing `Exception` in the apply, which the `java.util.function.BiPredicate` counterpart does not.
  */
-@nowarn("msg=@SerialVersionUID has no effect")
+@nowarn("msg=@SerialVersionUID (has no effect|does nothing)")
 @SerialVersionUID(1L)
 @FunctionalInterface
 trait Predicate2[-T1, -T2] extends java.io.Serializable {
@@ -141,7 +141,7 @@ trait Predicate2[-T1, -T2] extends java.io.Serializable {
  * A constructor/factory, takes no parameters but creates a new value of type T every call.
  * Supports throwing `Exception` in the create method, which the `java.util.function.Supplier` counterpart does not.
  */
-@nowarn("msg=@SerialVersionUID has no effect")
+@nowarn("msg=@SerialVersionUID (has no effect|does nothing)")
 @SerialVersionUID(1L)
 @FunctionalInterface
 trait Creator[+T] extends Serializable {

@@ -92,7 +92,7 @@ class JitSafeCompletionLatchInt extends GraphStageWithMaterializedValue[SinkShap
   val in = Inlet[Int]("JitSafeCompletionLatchInt.in")
   override val shape = SinkShape(in)
 
-  @nowarn("cat=unused-params")
+  @nowarn("msg=never used")
   override def createLogicAndMaterializedValue(inheritedAttributes: Attributes): (GraphStageLogic, CountDownLatch) = {
     val latch = new CountDownLatch(1)
     val logic = new GraphStageLogic(shape) with InHandler {
