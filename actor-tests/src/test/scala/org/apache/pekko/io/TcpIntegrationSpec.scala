@@ -15,6 +15,7 @@ package org.apache.pekko.io
 
 import java.io.IOException
 import java.net.{ InetSocketAddress, ServerSocket, Socket }
+import java.util.concurrent.atomic.AtomicReference
 
 import scala.concurrent.duration._
 
@@ -187,8 +188,12 @@ class TcpIntegrationSpec extends PekkoSpec("""
     "reply with CommandFailed when a connect socket option fails before connect" in {
       val connectCommander = TestProbe()
       val failure = new UnsupportedOperationException("boom")
+      val socket = new AtomicReference[Socket]
       val failingOption = new Inet.SocketOption {
-        override def beforeConnect(s: Socket): Unit = throw failure
+        override def beforeConnect(s: Socket): Unit = {
+          socket.set(s)
+          throw failure
+        }
       }
       val endpoint = new InetSocketAddress("127.0.0.1", 1)
       val command = Connect(endpoint, options = List(failingOption))
@@ -198,6 +203,8 @@ class TcpIntegrationSpec extends PekkoSpec("""
       val commandFailed = connectCommander.expectMsgType[CommandFailed]
       commandFailed.cmd should ===(command)
       commandFailed.cause should ===(Some(failure))
+      socket.get should not be null
+      awaitCond(socket.get.isClosed)
     }
 
     "handle tcp connection actor death properly" in new TestSetup(shouldBindServer = false) {
