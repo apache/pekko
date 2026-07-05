@@ -268,8 +268,8 @@ private[stream] object ConnectionSourceStage {
 
     @nowarn("msg=deprecated")
     private val writeBufferSize = inheritedAttributes
-      .get[TcpAttributes.TcpWriteBufferSize](
-        TcpAttributes.TcpWriteBufferSize(eagerMaterializer.settings.ioSettings.tcpWriteBufferSize))
+      .get[TcpAttributes.TcpWriteBufferSize](TcpAttributes.TcpWriteBufferSize(
+        eagerMaterializer.settings.tcpWriteBufferSize))
       .size
 
     private var writeBuffer = ByteString.empty
@@ -280,7 +280,7 @@ private[stream] object ConnectionSourceStage {
     private var connectionClosePending = false
 
     @nowarn("msg=deprecated")
-    private val coalesceWrites = eagerMaterializer.settings.ioSettings.coalesceWrites
+    private val coalesceWrites = eagerMaterializer.settings.coalesceWrites
     private def coalesceWritesDisabled = coalesceWrites == 0
     private var writeDelayCountDown = 0
     private var previousWriteBufferSize = 0

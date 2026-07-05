@@ -126,6 +126,9 @@ class AttributesSpec
     extends StreamSpec(
       ConfigFactory
         .parseString("""
+    pekko.stream.materializer.initial-input-buffer-size = 2
+    pekko.stream.materializer.max-input-buffer-size = 16
+
     my-dispatcher {
       type = Dispatcher
       executor = "thread-pool-executor"
@@ -141,7 +144,7 @@ class AttributesSpec
 
   import AttributesSpec._
 
-  val settings = ActorMaterializerSettings(system).withInputBuffer(initialSize = 2, maxSize = 16)
+  val settings = ActorMaterializerSettings(system)
 
   implicit val materializer: Materializer = ActorMaterializer(settings)
 
