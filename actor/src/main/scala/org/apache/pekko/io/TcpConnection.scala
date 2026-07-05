@@ -410,8 +410,15 @@ private[io] abstract class TcpConnection(val tcp: TcpExt, val channel: SocketCha
       (if (writePending) Set(pendingWrite.commander) else Set.empty) ++
       closedMessage.toList.flatMap(_.notificationsTo).toSet
 
-    if (channel.isOpen) // if channel is still open here, we didn't go through stopWith => unexpected actor termination
+    if (channel.isOpen) {
       prepareAbort()
+      // Without a ChannelRegistration there is no selector callback to close through.
+      if (registration.isEmpty)
+        try channel.close()
+        catch {
+          case NonFatal(e) => log.error(e, "Error closing SocketChannel")
+        }
+    }
 
     def isCommandFailed: Boolean = closedMessage.exists(_.closedEvent.isInstanceOf[CommandFailed])
     def notifyInterested(): Unit =
