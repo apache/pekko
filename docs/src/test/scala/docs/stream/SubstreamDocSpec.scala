@@ -14,7 +14,6 @@
 package docs.stream
 
 import org.apache.pekko.stream.scaladsl.{ Sink, Source }
-import org.apache.pekko.stream.SubstreamCancelStrategy
 import org.apache.pekko.testkit.PekkoSpec
 
 class SubstreamDocSpec extends PekkoSpec {
@@ -42,9 +41,9 @@ class SubstreamDocSpec extends PekkoSpec {
 
   "generate substreams by splitWhen and splitAfter" in {
     // #splitWhenAfter
-    Source(1 to 10).splitWhen(SubstreamCancelStrategy.drain)(_ == 3)
+    Source(1 to 10).splitWhen(_ == 3)
 
-    Source(1 to 10).splitAfter(SubstreamCancelStrategy.drain)(_ == 3)
+    Source(1 to 10).splitAfter(_ == 3)
     // #splitWhenAfter
 
     // #wordCount
