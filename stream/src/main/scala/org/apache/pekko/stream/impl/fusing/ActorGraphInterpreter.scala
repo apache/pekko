@@ -53,6 +53,11 @@ import org.reactivestreams.Subscription
   object Resume extends DeadLetterSuppression with NoSerializationVerificationNeeded
   object Snapshot extends NoSerializationVerificationNeeded
 
+  private[stream] trait BoundarySubscriber extends Subscriber[Any] {
+    def next(elem: AnyRef): Unit
+    def batch(elements: Array[AnyRef]): Unit
+  }
+
   sealed abstract class BoundaryEvent extends DeadLetterSuppression with NoSerializationVerificationNeeded {
     def shell: GraphInterpreterShell
 
@@ -83,7 +88,7 @@ import org.reactivestreams.Subscription
     override def execute(): Unit = {
       if (GraphInterpreter.Debug)
         println(s"${boundary.shell.interpreter.Name}  onError port=${boundary.internalPortName}")
-      boundary.onError(cause)
+      boundary.receiveError(cause)
     }
 
     override def shell: GraphInterpreterShell = boundary.shell
@@ -95,7 +100,7 @@ import org.reactivestreams.Subscription
     override def execute(): Unit = {
       if (GraphInterpreter.Debug)
         println(s"${boundary.shell.interpreter.Name}  onComplete port=${boundary.internalPortName}")
-      boundary.onComplete()
+      boundary.receiveComplete()
     }
 
     override def shell: GraphInterpreterShell = boundary.shell
@@ -107,7 +112,20 @@ import org.reactivestreams.Subscription
     override def execute(): Unit = {
       if (GraphInterpreter.Debug)
         println(s"${boundary.shell.interpreter.Name} onNext $e port=${boundary.internalPortName}")
-      boundary.onNext(e)
+      boundary.receiveNext(e)
+    }
+
+    override def shell: GraphInterpreterShell = boundary.shell
+    override def logic: GraphStageLogic = boundary
+    override def cancel(): Unit = ()
+  }
+
+  final class OnNextBatch(boundary: BatchingActorInputBoundary, elements: Array[AnyRef]) extends SimpleBoundaryEvent {
+    override def execute(): Unit = {
+      if (GraphInterpreter.Debug)
+        println(
+          s"${boundary.shell.interpreter.Name} onNextBatch size=${elements.length} port=${boundary.internalPortName}")
+      boundary.receiveNextBatch(elements)
     }
 
     override def shell: GraphInterpreterShell = boundary.shell
@@ -121,7 +139,7 @@ import org.reactivestreams.Subscription
       if (GraphInterpreter.Debug)
         println(s"${boundary.shell.interpreter.Name}  onSubscribe port=${boundary.internalPortName}")
       boundary.shell.subscribeArrived()
-      boundary.onSubscribe(subscription)
+      boundary.receiveSubscribe(subscription)
     }
 
     override def shell: GraphInterpreterShell = boundary.shell
@@ -136,7 +154,8 @@ import org.reactivestreams.Subscription
       publisher: Publisher[Any],
       val internalPortName: String)
       extends UpstreamBoundaryStageLogic[Any]
-      with OutHandler {
+      with OutHandler
+      with BoundarySubscriber {
 
     if (size <= 0) throw new IllegalArgumentException("buffer size cannot be zero")
     if ((size & (size - 1)) != 0) throw new IllegalArgumentException("buffer size must be a power of two")
@@ -158,28 +177,31 @@ import org.reactivestreams.Subscription
 
     def setActor(actor: ActorRef): Unit = this.actor = actor
 
-    override def preStart(): Unit = {
-      publisher.subscribe(new Subscriber[Any] {
-        override def onError(t: Throwable): Unit = {
-          ReactiveStreamsCompliance.requireNonNullException(t)
-          actor ! new OnError(BatchingActorInputBoundary.this, t)
-        }
+    override def preStart(): Unit = publisher.subscribe(this)
 
-        override def onSubscribe(s: Subscription): Unit = {
-          ReactiveStreamsCompliance.requireNonNullSubscription(s)
-          actor ! new OnSubscribe(BatchingActorInputBoundary.this, s)
-        }
-
-        override def onComplete(): Unit = {
-          actor ! new OnComplete(BatchingActorInputBoundary.this)
-        }
-
-        override def onNext(t: Any): Unit = {
-          ReactiveStreamsCompliance.requireNonNullElement(t)
-          actor ! new OnNext(BatchingActorInputBoundary.this, t)
-        }
-      })
+    final override def onError(t: Throwable): Unit = {
+      ReactiveStreamsCompliance.requireNonNullException(t)
+      actor ! new OnError(this, t)
     }
+
+    final override def onSubscribe(s: Subscription): Unit = {
+      ReactiveStreamsCompliance.requireNonNullSubscription(s)
+      actor ! new OnSubscribe(this, s)
+    }
+
+    final override def onComplete(): Unit =
+      actor ! new OnComplete(this)
+
+    final override def onNext(t: Any): Unit = {
+      ReactiveStreamsCompliance.requireNonNullElement(t)
+      next(t.asInstanceOf[AnyRef])
+    }
+
+    final override def next(elem: AnyRef): Unit =
+      actor ! new OnNext(this, elem)
+
+    final override def batch(elements: Array[AnyRef]): Unit =
+      actor ! new OnNextBatch(this, elements)
 
     @InternalStableApi
     private def dequeue(): Any = {
@@ -214,7 +236,7 @@ import org.reactivestreams.Subscription
     }
 
     @InternalStableApi
-    def onNext(elem: Any): Unit = {
+    def receiveNext(elem: Any): Unit = {
       if (!upstreamCompleted) {
         if (inputBufferElements == size) throw new IllegalStateException("Input buffer overrun")
         inputBuffer((nextInputElementCursor + inputBufferElements) & IndexMask) = elem.asInstanceOf[AnyRef]
@@ -223,7 +245,20 @@ import org.reactivestreams.Subscription
       }
     }
 
-    def onError(e: Throwable): Unit =
+    @InternalStableApi
+    def receiveNextBatch(elements: Array[AnyRef]): Unit = {
+      var i = 0
+      while (i < elements.length) {
+        receiveNext(elements(i))
+        i += 1
+      }
+    }
+
+    @InternalStableApi
+    def onNextBatch(elements: Array[AnyRef]): Unit =
+      receiveNextBatch(elements)
+
+    def receiveError(e: Throwable): Unit =
       if (!upstreamCompleted || downstreamCanceled.isEmpty) {
         upstreamCompleted = true
         clear()
@@ -236,16 +271,16 @@ import org.reactivestreams.Subscription
       if (!(upstreamCompleted || downstreamCanceled.isDefined) && (upstream ne null)) {
         upstream.cancel()
       }
-      if (!isClosed(out)) onError(e)
+      if (!isClosed(out)) receiveError(e)
     }
 
-    def onComplete(): Unit =
+    def receiveComplete(): Unit =
       if (!upstreamCompleted) {
         upstreamCompleted = true
         if (inputBufferElements == 0) complete(out)
       }
 
-    def onSubscribe(subscription: Subscription): Unit = {
+    def receiveSubscribe(subscription: Subscription): Unit = {
       ReactiveStreamsCompliance.requireNonNullSubscription(subscription)
       if (downstreamCanceled.isDefined) {
         upstreamCompleted = true
@@ -400,6 +435,7 @@ import org.reactivestreams.Subscription
     def getActor: ActorRef = this.actor
 
     private var subscriber: Subscriber[Any] = _
+    private var boundarySubscriber: BoundarySubscriber = _
     private var downstreamDemand: Long = 0L
     // This flag is only used if complete/fail is called externally since this op turns into a Finished one inside the
     // interpreter (i.e. inside this op this flag has no effects since if it is completed the op will not be invoked)
@@ -409,15 +445,78 @@ import org.reactivestreams.Subscription
     // when upstream failed before we got the exposed publisher
     private var upstreamCompleted: Boolean = false
 
+    private var firstBatchedElement: AnyRef = _
+    private var batchedElements: Array[AnyRef] = _
+    private var batchedElementIndex = 0
+
+    private final val InitialBatchSize = 16
+    private final val MaxBatchSize = 1024
+
     private def onNext(elem: Any): Unit = {
       downstreamDemand -= 1
-      tryOnNext(subscriber, elem)
+      if (boundarySubscriber eq null) tryOnNext(subscriber, elem)
+      else enqueueBatchElement(elem)
+    }
+
+    private def enqueueBatchElement(elem: Any): Unit = {
+      ReactiveStreamsCompliance.requireNonNullElement(elem)
+      val element = elem.asInstanceOf[AnyRef]
+      if (batchedElementIndex == MaxBatchSize) flushBatch()
+      val index = batchedElementIndex
+      if (index == 0) {
+        firstBatchedElement = element
+      } else {
+        var elements = batchedElements
+        if (elements eq null) {
+          elements = new Array[AnyRef](InitialBatchSize)
+          batchedElements = elements
+        } else if (index == elements.length) {
+          val newElements = new Array[AnyRef](index << 1)
+          System.arraycopy(elements, 0, newElements, 0, index)
+          elements = newElements
+          batchedElements = elements
+        }
+        if (index == 1) elements(0) = firstBatchedElement
+        elements(index) = element
+      }
+      batchedElementIndex = index + 1
+    }
+
+    def flushBatch(): Unit = {
+      val count = batchedElementIndex
+      if (count == 0) return
+
+      val boundary = boundarySubscriber
+      if (boundary eq null) {
+        clearBatch()
+        return
+      }
+
+      if (count == 1) boundary.next(firstBatchedElement)
+      else {
+        val elements = new Array[AnyRef](count)
+        System.arraycopy(batchedElements, 0, elements, 0, count)
+        boundary.batch(elements)
+      }
+
+      clearBatch()
+    }
+
+    private def clearBatch(): Unit = {
+      val count = batchedElementIndex
+      if (count != 0) {
+        firstBatchedElement = null
+        if (batchedElements ne null)
+          java.util.Arrays.fill(batchedElements, 0, count, null)
+        batchedElementIndex = 0
+      }
     }
 
     private def complete(): Unit = {
       // No need to complete if had already been cancelled, or we closed earlier
       if (!(upstreamCompleted || downstreamCompleted)) {
         upstreamCompleted = true
+        flushBatch()
         publisher.shutdown(None)
         if (subscriber ne null) tryOnComplete(subscriber)
       }
@@ -426,10 +525,11 @@ import org.reactivestreams.Subscription
     def fail(e: Throwable): Unit = {
       // No need to fail if had already been cancelled, or we closed earlier
       if (!(downstreamCompleted || upstreamCompleted)) {
+        flushBatch()
         upstreamCompleted = true
         publisher.shutdown(Some(e))
         if ((subscriber ne null) && !e.isInstanceOf[SpecViolation]) tryOnError(subscriber, e)
-      }
+      } else clearBatch()
     }
 
     setHandler(in, this)
@@ -460,6 +560,10 @@ import org.reactivestreams.Subscription
       publisher.takePendingSubscribers().foreach { sub =>
         if (subscriber eq null) {
           subscriber = sub
+          boundarySubscriber = sub match {
+            case boundary: BoundarySubscriber => boundary
+            case _                            => null
+          }
           val subscription = new Subscription with SubscriptionWithCancelException {
             override def request(elements: Long): Unit = actor ! new RequestMore(ActorOutputBoundary.this, elements)
             override def cancel(cause: Throwable): Unit = actor ! new Cancel(ActorOutputBoundary.this, cause)
@@ -487,8 +591,10 @@ import org.reactivestreams.Subscription
     }
 
     def cancel(cause: Throwable): Unit = {
+      clearBatch()
       downstreamCompletionCause = Some(cause)
       subscriber = null
+      boundarySubscriber = null
       publisher.shutdown(Some(new ActorPublisher.NormalShutdownException))
       cancel(in, cause)
     }
@@ -503,7 +609,10 @@ import org.reactivestreams.Subscription
  * INTERNAL API
  */
 @InternalApi private[pekko] object GraphInterpreterShell {
-  import ActorGraphInterpreter.BoundaryEvent
+  import ActorGraphInterpreter.{ ActorOutputBoundary, BatchingActorInputBoundary, BoundaryEvent }
+
+  private val EmptyOutputBoundaries = new Array[ActorOutputBoundary](0)
+  private val EmptyInputBoundaries = new Array[BatchingActorInputBoundary](0)
 
   /**
    * @param promise Will be completed upon processing the event, or failed if processing the event throws
@@ -522,6 +631,7 @@ import org.reactivestreams.Subscription
       if (!shell.waitingForShutdown) {
         shell.interpreter.runAsyncInput(logic, evt, promise, handler)
         if (eventLimit == 1 && shell.interpreter.isSuspended) {
+          shell.flushOutputs()
           shell.sendResume(true)
           0
         } else shell.runBatch(eventLimit - 1)
@@ -587,8 +697,8 @@ import org.reactivestreams.Subscription
   // TODO: really needed?
   private var subscribesPending = 0
 
-  private var inputs: List[BatchingActorInputBoundary] = Nil
-  private var outputs: List[ActorOutputBoundary] = Nil
+  private var inputs: Array[BatchingActorInputBoundary] = EmptyInputBoundaries
+  private var outputs: Array[ActorOutputBoundary] = EmptyOutputBoundaries
 
   /*
    * Limits the number of events processed by the interpreter before scheduling
@@ -618,21 +728,47 @@ import org.reactivestreams.Subscription
       eventLimit: Int): Int = {
     this.self = self
     this.enqueueToShortCircuit = enqueueToShortCircuit
+    val logicCount = logics.length
     var i = 0
-    while (i < logics.length) {
-      logics(i) match {
+    var inputBoundaryCount = 0
+    var outputBoundaryCount = 0
+    while (i < logicCount) {
+      val logic = logics(i)
+      logic match {
+        case _: BatchingActorInputBoundary => inputBoundaryCount += 1
+        case _: ActorOutputBoundary        => outputBoundaryCount += 1
+        case _                             =>
+      }
+      i += 1
+    }
+
+    val initializedInputs =
+      if (inputBoundaryCount == 0) EmptyInputBoundaries else new Array[BatchingActorInputBoundary](inputBoundaryCount)
+    val initializedOutputs =
+      if (outputBoundaryCount == 0) EmptyOutputBoundaries else new Array[ActorOutputBoundary](outputBoundaryCount)
+
+    i = 0
+    var inputIndex = 0
+    var outputIndex = 0
+    while (i < logicCount) {
+      val logic = logics(i)
+      logic match {
         case in: BatchingActorInputBoundary =>
           in.setActor(self)
           subscribesPending += 1
-          inputs ::= in
+          initializedInputs(inputIndex) = in
+          inputIndex += 1
         case out: ActorOutputBoundary =>
           out.setActor(self)
           out.subscribePending()
-          outputs ::= out
+          initializedOutputs(outputIndex) = out
+          outputIndex += 1
         case _ =>
       }
       i += 1
     }
+    inputs = initializedInputs
+    outputs = initializedOutputs
 
     interpreter.init(subMat)
     runBatch(eventLimit)
@@ -666,6 +802,7 @@ import org.reactivestreams.Subscription
     try {
       val usingShellLimit = shellEventLimit < actorEventLimit
       val remainingQuota = interpreter.execute(Math.min(actorEventLimit, shellEventLimit))
+      flushOutputs()
       if (interpreter.isCompleted) {
         // Cannot stop right away if not completely subscribed
         if (canShutDown) interpreterCompleted = true
@@ -681,6 +818,16 @@ import org.reactivestreams.Subscription
       case NonFatal(e) =>
         tryAbort(e)
         actorEventLimit - 1
+    }
+  }
+
+  private def flushOutputs(): Unit = {
+    val outputBoundaries = outputs
+    val count = outputBoundaries.length
+    var i = 0
+    while (i < count) {
+      outputBoundaries(i).flushBatch()
+      i += 1
     }
   }
 
@@ -700,7 +847,13 @@ import org.reactivestreams.Subscription
     // This should handle termination while interpreter is running. If the upstream have been closed already this
     // call has no effect and therefore does the right thing: nothing.
     try {
-      inputs.foreach(_.onInternalError(reason))
+      val inputBoundaries = inputs
+      val inputsCount = inputBoundaries.length
+      var inputIndex = 0
+      while (inputIndex < inputsCount) {
+        inputBoundaries(inputIndex).onInternalError(reason)
+        inputIndex += 1
+      }
       interpreter.execute(abortLimit)
       interpreter.finish()
     } catch {
@@ -711,8 +864,20 @@ import org.reactivestreams.Subscription
       interpreterCompleted = true
       // Will only have an effect if the above call to the interpreter failed to emit a proper failure to the downstream
       // otherwise this will have no effect
-      outputs.foreach(_.fail(reason))
-      inputs.foreach(_.cancel(reason))
+      val outputBoundaries = outputs
+      val count = outputBoundaries.length
+      var i = 0
+      while (i < count) {
+        outputBoundaries(i).fail(reason)
+        i += 1
+      }
+      val inputBoundaries = inputs
+      val inputsCount = inputBoundaries.length
+      var inputIndex = 0
+      while (inputIndex < inputsCount) {
+        inputBoundaries(inputIndex).cancel(reason)
+        inputIndex += 1
+      }
     }
   }
 

@@ -28,3 +28,9 @@ ProblemFilters.exclude[Problem]("org.apache.pekko.stream.impl.fusing.ActorGraphI
 ProblemFilters.exclude[Problem]("org.apache.pekko.stream.impl.fusing.GraphInterpreterShell*Abort*")
 ProblemFilters.exclude[Problem]("org.apache.pekko.stream.impl.fusing.GraphInterpreterShell*AsyncInput*")
 ProblemFilters.exclude[Problem]("org.apache.pekko.stream.impl.fusing.GraphInterpreterShell*ResumeShell*")
+
+# Optimize internal async boundary batching
+ProblemFilters.exclude[FinalMethodProblem]("org.apache.pekko.stream.impl.fusing.ActorGraphInterpreter#BatchingActorInputBoundary.onNext")
+ProblemFilters.exclude[FinalMethodProblem]("org.apache.pekko.stream.impl.fusing.ActorGraphInterpreter#BatchingActorInputBoundary.onError")
+ProblemFilters.exclude[FinalMethodProblem]("org.apache.pekko.stream.impl.fusing.ActorGraphInterpreter#BatchingActorInputBoundary.onComplete")
+ProblemFilters.exclude[FinalMethodProblem]("org.apache.pekko.stream.impl.fusing.ActorGraphInterpreter#BatchingActorInputBoundary.onSubscribe")
