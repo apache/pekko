@@ -2909,26 +2909,12 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *
    * '''Completes when''' upstream completes
    *
-   * '''Cancels when''' downstream cancels and substreams cancel on `SubstreamCancelStrategy.drain()`, downstream
-   * cancels or any substream cancels on `SubstreamCancelStrategy.propagate()`
+   * '''Cancels when''' downstream cancels and substreams cancel
    *
    * See also [[Flow.splitAfter]].
    */
   def splitWhen(p: function.Predicate[Out]): SubFlow[In, Out, Mat] =
     new SubFlow(delegate.splitWhen(p.test))
-
-  /**
-   * This operation applies the given predicate to all incoming elements and
-   * emits them to a stream of output streams, always beginning a new one with
-   * the current element if the given predicate returns true for it.
-   *
-   * @see [[#splitWhen]]
-   */
-  @deprecated(
-    "Use .withAttributes(ActorAttributes.supervisionStrategy(equivalentDecider)) rather than a SubstreamCancelStrategy",
-    since = "1.1.0")
-  def splitWhen(substreamCancelStrategy: SubstreamCancelStrategy, p: function.Predicate[Out]): SubFlow[In, Out, Mat] =
-    new SubFlow(delegate.splitWhen(substreamCancelStrategy)(p.test))
 
   /**
    * This operation applies the given predicate to all incoming elements and
@@ -2970,26 +2956,12 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *
    * '''Completes when''' upstream completes
    *
-   * '''Cancels when''' downstream cancels and substreams cancel on `SubstreamCancelStrategy.drain`, downstream
-   * cancels or any substream cancels on `SubstreamCancelStrategy.propagate`
+   * '''Cancels when''' downstream cancels and substreams cancel
    *
    * See also [[Flow.splitWhen]].
    */
   def splitAfter(p: function.Predicate[Out]): SubFlow[In, Out, Mat] =
     new SubFlow(delegate.splitAfter(p.test))
-
-  /**
-   * This operation applies the given predicate to all incoming elements and
-   * emits them to a stream of output streams. It *ends* the current substream when the
-   * predicate is true.
-   *
-   * @see [[#splitAfter]]
-   */
-  @deprecated(
-    "Use .withAttributes(ActorAttributes.supervisionStrategy(equivalentDecider)) rather than a SubstreamCancelStrategy",
-    since = "1.1.0")
-  def splitAfter(substreamCancelStrategy: SubstreamCancelStrategy, p: function.Predicate[Out]): SubFlow[In, Out, Mat] =
-    new SubFlow(delegate.splitAfter(substreamCancelStrategy)(p.test))
 
   /**
    * Transform each input element into a `Source` of output elements that is

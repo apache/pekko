@@ -4399,19 +4399,6 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
 
   /**
    * This operation applies the given predicate to all incoming elements and
-   * emits them to a stream of output streams, always beginning a new one with
-   * the current element if the given predicate returns true for it.
-   *
-   * @see [[#splitWhen]]
-   */
-  @deprecated(
-    "Use .withAttributes(ActorAttributes.supervisionStrategy(equivalentDecider)) rather than a SubstreamCancelStrategy",
-    since = "1.1.0")
-  def splitWhen(substreamCancelStrategy: SubstreamCancelStrategy, p: function.Predicate[Out]): SubSource[Out, Mat] =
-    new SubSource(delegate.splitWhen(substreamCancelStrategy)(p.test))
-
-  /**
-   * This operation applies the given predicate to all incoming elements and
    * emits them to a stream of output streams. It *ends* the current substream when the
    * predicate is true. This means that for the following series of predicate values,
    * three substreams will be produced with lengths 2, 2, and 3:
@@ -4456,19 +4443,6 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    */
   def splitAfter(p: function.Predicate[Out]): SubSource[Out, Mat] =
     new SubSource(delegate.splitAfter(p.test))
-
-  /**
-   * This operation applies the given predicate to all incoming elements and
-   * emits them to a stream of output streams. It *ends* the current substream when the
-   * predicate is true.
-   *
-   * @see [[#splitAfter]]
-   */
-  @deprecated(
-    "Use .withAttributes(ActorAttributes.supervisionStrategy(equivalentDecider)) rather than a SubstreamCancelStrategy",
-    since = "1.1.0")
-  def splitAfter(substreamCancelStrategy: SubstreamCancelStrategy, p: function.Predicate[Out]): SubSource[Out, Mat] =
-    new SubSource(delegate.splitAfter(substreamCancelStrategy)(p.test))
 
   /**
    * Transform each input element into a `Source` of output elements that is

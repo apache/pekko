@@ -16,7 +16,7 @@ package org.apache.pekko.stream.impl.fusing
 import java.util.Collections
 import java.util.concurrent.atomic.AtomicReference
 
-import scala.annotation.{ nowarn, tailrec }
+import scala.annotation.tailrec
 import scala.collection.immutable
 import scala.concurrent.Future
 import scala.concurrent.duration.FiniteDuration
@@ -31,7 +31,6 @@ import pekko.stream._
 import pekko.stream.ActorAttributes.StreamSubscriptionTimeout
 import pekko.stream.ActorAttributes.SupervisionStrategy
 import pekko.stream.Attributes.SourceLocation
-import pekko.stream.Supervision.Decider
 import pekko.stream.impl.{ Buffer => BufferImpl, FailedSource, JavaStreamSource }
 import pekko.stream.impl.ActorSubscriberMessage
 import pekko.stream.impl.ActorSubscriberMessage.OnError
@@ -585,13 +584,6 @@ import pekko.util.OptionVal
 
   /** Splits after the current element. The current element will be the last element in the current substream. */
   case object SplitAfter extends SplitDecision
-
-  @nowarn("msg=deprecated")
-  def cancelStrategyToDecider(substreamCancelStrategy: SubstreamCancelStrategy): Decider =
-    substreamCancelStrategy match {
-      case SubstreamCancelStrategies.Propagate => Supervision.stoppingDecider
-      case SubstreamCancelStrategies.Drain     => Supervision.resumingDecider
-    }
 
   def when[T](p: T => Boolean): Graph[FlowShape[T, Source[T, NotUsed]], NotUsed] = {
     new Split(Split.SplitBefore, p)
