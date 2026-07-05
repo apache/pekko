@@ -108,7 +108,7 @@ object Framing {
   }
 
   /**
-   * Returns a BidiFlow that implements a simple framing protocol. This is a convenience wrapper over [[Framing#lengthField]]
+   * Returns a BidiFlow that implements a simple framing protocol. This is a convenience wrapper over `Framing.lengthField`
    * and simply attaches a length field header of four bytes (using big endian encoding) to outgoing messages, and decodes
    * such messages in the inbound direction. The decoded messages do not contain the header.
    * {{{

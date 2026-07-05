@@ -20,7 +20,7 @@ import pekko.util.Helpers.ConfigOps
 import com.typesafe.config.Config
 
 /**
- * Default [[ClusterMetricsSupervisor]] strategy:
+ * Default `ClusterMetricsSupervisor` strategy:
  * A configurable [[pekko.actor.OneForOneStrategy]] with restart-on-throwable decider.
  */
 class ClusterMetricsStrategy(config: Config)

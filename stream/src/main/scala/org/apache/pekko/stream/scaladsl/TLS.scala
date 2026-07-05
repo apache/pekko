@@ -140,7 +140,7 @@ object TLS {
 /**
  * This object holds simple wrapping [[pekko.stream.scaladsl.BidiFlow]] implementations that can
  * be used instead of [[TLS]] when no encryption is desired. The flows will
- * just adapt the message protocol by wrapping into [[SessionBytes]] and
+ * just adapt the message protocol by wrapping into `SessionBytes` and
  * unwrapping [[SendBytes]].
  */
 object TLSPlacebo {

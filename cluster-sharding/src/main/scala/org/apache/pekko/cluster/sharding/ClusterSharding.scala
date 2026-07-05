@@ -81,7 +81,7 @@ import pekko.pattern.ask
  *
  * Typical usage of this extension:
  *   1. At system startup on each cluster node by registering the supported entity types with
- * the [[ClusterSharding#start]] method
+ * the `ClusterSharding.start` method
  *   1. Retrieve the `ShardRegion` actor for a named entity type with [[ClusterSharding#shardRegion]]
  * Settings can be configured as described in the `pekko.cluster.sharding` section of the `reference.conf`.
  *
@@ -638,7 +638,7 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
 
   /**
    * Retrieve the actor reference of the `ShardRegion` actor responsible for the named entity type.
-   * The entity type must be registered with the [[#start]] or [[#startProxy]] method before it
+   * The entity type must be registered with the `start` or `startProxy` method before it
    * can be used here. Messages to the entity is always sent via the `ShardRegion`.
    */
   def shardRegion(typeName: String): ActorRef = {
@@ -658,7 +658,7 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
    * Retrieve the actor reference of the `ShardRegion` actor that will act as a proxy to the
    * named entity type running in another data center. A proxy within the same data center can be accessed
    * with [[#shardRegion]] instead of this method. The entity type must be registered with the
-   * [[#startProxy]] method before it can be used here. Messages to the entity is always sent
+   * `startProxy` method before it can be used here. Messages to the entity is always sent
    * via the `ShardRegion`.
    */
   def shardRegionProxy(typeName: String, dataCenter: DataCenter): ActorRef = {

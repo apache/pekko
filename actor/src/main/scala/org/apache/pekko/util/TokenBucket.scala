@@ -91,7 +91,7 @@ private[pekko] abstract class TokenBucket(capacity: Long, nanosBetweenTokens: Lo
 }
 
 /**
- * Default implementation of [[TokenBucket]] that uses `System.nanoTime` as the time source.
+ * Default implementation of `TokenBucket` that uses `System.nanoTime` as the time source.
  */
 final class NanoTimeTokenBucket(_cap: Long, _period: Long) extends TokenBucket(_cap, _period) {
   override def currentTime: Long = System.nanoTime()

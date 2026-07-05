@@ -189,7 +189,7 @@ final class Flow[-In, +Out, +Mat](
    * via the provided [[Sink]] as a new [[Source]].
    *
    * @param source A source that connects to this flow
-   * @param sink A sink which needs to materialize into a [[Future]], typically one
+   * @param sink A sink which needs to materialize into a `Future`, typically one
    *             that collects values such as [[Sink.head]] or [[Sink.seq]]
    * @return A new [[Source]] that contains the results of the [[Flow]] with the provided
    *         [[Source]]'s elements run with the [[Sink]]
@@ -1120,7 +1120,7 @@ trait FlowOps[+Out, +Mat] {
    * Elements will be passed into this "side channel" function, and any of its results will be ignored.
    *
    * If the wire-tap operation is slow (it backpressures), elements that would've been sent to it will be dropped instead.
-   * It is similar to [[#alsoTo]] which does backpressure instead of dropping elements.
+   * It is similar to `alsoTo` which does backpressure instead of dropping elements.
    *
    * This operation is useful for inspecting the passed through element, usually by means of side-effecting
    * operations (such as `println`, or emitting metrics), for each element without having to modify it.
@@ -1203,7 +1203,7 @@ trait FlowOps[+Out, +Mat] {
    * The `close` function is called only once when the upstream or downstream finishes or fails. You can do some clean-up here,
    * and if the returned value is not empty, it will be emitted to the downstream if available, otherwise the value will be dropped.
    *
-   * Early completion can be done with combination of the [[takeWhile]] operator.
+   * Early completion can be done with combination of the `takeWhile` operator.
    *
    * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
    *
@@ -1234,15 +1234,15 @@ trait FlowOps[+Out, +Mat] {
     ).withAttributes(DefaultAttributes.mapWithResource)
 
   /**
-   * Transform each stream element with the help of an [[AutoCloseable]] resource and close it when the stream finishes or fails.
+   * Transform each stream element with the help of an `AutoCloseable` resource and close it when the stream finishes or fails.
    *
    * The resource creation function is invoked once when the stream is materialized and the returned resource is passed to
    * the mapping function for mapping the first element. The mapping function returns a mapped element to emit
    * downstream. The returned `T` MUST NOT be `null` as it is illegal as stream element - according to the Reactive Streams specification.
    *
-   * The [[AutoCloseable]] resource is closed only once when the upstream or downstream finishes or fails.
+   * The `AutoCloseable` resource is closed only once when the upstream or downstream finishes or fails.
    *
-   * Early completion can be done with combination of the [[takeWhile]] operator.
+   * Early completion can be done with combination of the `takeWhile` operator.
    *
    * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
    *
@@ -1378,7 +1378,7 @@ trait FlowOps[+Out, +Mat] {
    * The function `partitioner` is always invoked on the elements in the order they arrive.
    * The function `f` is always invoked on the elements which in the same partition in the order they arrive.
    *
-   * If the function `partitioner` or `f` throws an exception or if the [[Future]] is completed
+   * If the function `partitioner` or `f` throws an exception or if the `Future` is completed
    * with failure and the supervision decision is [[pekko.stream.Supervision.Stop]]
    * the stream will be completed with failure, otherwise the stream continues and the current element is dropped.
    *
@@ -1416,7 +1416,7 @@ trait FlowOps[+Out, +Mat] {
    * The function `partitioner` is always invoked on the elements in the order they arrive.
    * The function `f` is always invoked on the elements which in the same partition in the order they arrive.
    *
-   * If the function `partitioner` or `f` throws an exception or if the [[Future]] is completed
+   * If the function `partitioner` or `f` throws an exception or if the `Future` is completed
    * with failure and the supervision decision is [[pekko.stream.Supervision.Stop]]
    * the stream will be completed with failure, otherwise the stream continues and the current element is dropped.
    *
@@ -1703,7 +1703,7 @@ trait FlowOps[+Out, +Mat] {
    *
    * '''Cancels when''' after predicate returned true or downstream cancels
    *
-   * See also [[FlowOps.limit]], [[FlowOps.limitWeighted]], [[FlowOps.takeWhile]]
+   * See also [[FlowOps.limit]], [[FlowOps.limitWeighted]], `FlowOps.takeWhile`
    * @since 1.2.0
    */
   def takeUntil(p: Out => Boolean): Repr[Out] = takeWhile(!p(_), inclusive = true)
@@ -1923,7 +1923,7 @@ trait FlowOps[+Out, +Mat] {
    *
    * '''Cancels when''' downstream cancels
    *
-   * See also [[FlowOps.take]], [[FlowOps.takeWithin]], [[FlowOps.takeWhile]]
+   * See also [[FlowOps.take]], [[FlowOps.takeWithin]], `FlowOps.takeWhile`
    */
   def limit(max: Long): Repr[Out] = limitWeighted(max)(_ => 1)
 
@@ -1949,7 +1949,7 @@ trait FlowOps[+Out, +Mat] {
    *
    * '''Cancels when''' downstream cancels
    *
-   * See also [[FlowOps.take]], [[FlowOps.takeWithin]], [[FlowOps.takeWhile]]
+   * See also [[FlowOps.take]], [[FlowOps.takeWithin]], `FlowOps.takeWhile`
    */
   def limitWeighted[T](max: Long)(costFn: Out => Long): Repr[Out] = via(LimitWeighted(max, costFn))
 
@@ -2110,7 +2110,7 @@ trait FlowOps[+Out, +Mat] {
    * yielding the next current value.
    *
    * If the stream is empty (i.e. completes before signalling any elements),
-   * the reduce operator will fail its downstream with a [[NoSuchElementException]],
+   * the reduce operator will fail its downstream with a `NoSuchElementException`,
    * which is semantically in-line with that Scala's standard library collections
    * do in such situations.
    *
@@ -2129,7 +2129,7 @@ trait FlowOps[+Out, +Mat] {
   def reduce[T >: Out](f: (T, T) => T): Repr[T] = via(new Reduce[T](f))
 
   /**
-   * Intersperses stream with provided element, similar to how [[scala.collection.immutable.List.mkString]]
+   * Intersperses stream with provided element, similar to how `List.mkString`
    * injects a separator between a List's elements.
    *
    * Additionally can inject start and end marker elements to stream.
@@ -2163,7 +2163,7 @@ trait FlowOps[+Out, +Mat] {
     via(Intersperse(Some(start), inject, Some(end)))
 
   /**
-   * Intersperses stream with provided element, similar to how [[scala.collection.immutable.List.mkString]]
+   * Intersperses stream with provided element, similar to how `List.mkString`
    * injects a separator between a List's elements.
    *
    * Additionally can inject start and end marker elements to stream.
@@ -2747,7 +2747,7 @@ trait FlowOps[+Out, +Mat] {
    * If you expect an infinite number of keys this can cause memory issues. Elements belonging
    * to those keys are drained directly and not send to the substream.
    *
-   * @see [[#groupBy]]
+   * @see `groupBy`
    */
   def groupBy[K](maxSubstreams: Int, f: Out => K): SubFlow[Out, Mat, Repr, Closed] = groupBy(maxSubstreams, f, false)
 
@@ -2803,7 +2803,7 @@ trait FlowOps[+Out, +Mat] {
    * '''Cancels when''' downstream cancels and substreams cancel on `SubstreamCancelStrategy.drain`, downstream
    * cancels or any substream cancels on `SubstreamCancelStrategy.propagate`
    *
-   * See also [[FlowOps.splitAfter]].
+   * See also `FlowOps.splitAfter`.
    */
   @deprecated(
     "Use .withAttributes(ActorAttributes.supervisionStrategy(equivalentDecider)) rather than a SubstreamCancelStrategy",
@@ -2834,7 +2834,7 @@ trait FlowOps[+Out, +Mat] {
    * emits them to a stream of output streams, always beginning a new one with
    * the current element if the given predicate returns true for it.
    *
-   * @see [[#splitWhen]]
+   * @see `splitWhen`
    */
   def splitWhen(p: Out => Boolean): SubFlow[Out, Mat, Repr, Closed] = {
     val merge = new SubFlowImpl.MergeBack[Out, Repr] {
@@ -2891,7 +2891,7 @@ trait FlowOps[+Out, +Mat] {
    * '''Cancels when''' downstream cancels and substreams cancel on `SubstreamCancelStrategy.drain`, downstream
    * cancels or any substream cancels on `SubstreamCancelStrategy.propagate`
    *
-   * See also [[FlowOps.splitWhen]].
+   * See also `FlowOps.splitWhen`.
    */
   @deprecated(
     "Use .withAttributes(ActorAttributes.supervisionStrategy(equivalentDecider)) rather than a SubstreamCancelStrategy",
@@ -2920,7 +2920,7 @@ trait FlowOps[+Out, +Mat] {
    * emits them to a stream of output streams. It *ends* the current substream when the
    * predicate is true.
    *
-   * @see [[#splitAfter]]
+   * @see `splitAfter`
    */
   def splitAfter(p: Out => Boolean): SubFlow[Out, Mat, Repr, Closed] = {
     val merge = new SubFlowImpl.MergeBack[Out, Repr] {
@@ -2966,7 +2966,7 @@ trait FlowOps[+Out, +Mat] {
     map(f).via(new FlattenConcat[T, M](parallelism))
 
   /**
-   * Alias for [[flatMapConcat]], added to enable for comprehensions.
+   * Alias for `flatMapConcat`, added to enable for comprehensions.
    *
    * NOTE: Support for `for` comprehensions is still experimental and it's possible that we might need to change
    * the internal implementation.
@@ -3314,7 +3314,7 @@ trait FlowOps[+Out, +Mat] {
    * By default element and completion signals are logged on debug level, and errors are logged on Error level.
    * This can be adjusted according to your needs by providing a custom [[Attributes.LogLevels]] attribute on the given Flow:
    *
-   * Uses implicit [[LoggingAdapter]] if available, otherwise uses an internally created one,
+   * Uses implicit `LoggingAdapter` if available, otherwise uses an internally created one,
    * which uses `org.apache.pekko.event.Logging(materializer.system, materializer)` as its source (use this class to configure slf4j loggers).
    *
    * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
@@ -3337,7 +3337,7 @@ trait FlowOps[+Out, +Mat] {
    * By default element and completion signals are logged on debug level, and errors are logged on Error level.
    * This can be adjusted according to your needs by providing a custom [[Attributes.LogLevels]] attribute on the given Flow:
    *
-   * Uses implicit [[MarkerLoggingAdapter]] if available, otherwise uses an internally created one,
+   * Uses implicit `MarkerLoggingAdapter` if available, otherwise uses an internally created one,
    * which uses `org.apache.pekko.event.Logging.withMarker(materializer.system, materializer)` as its source (use this class to configure slf4j loggers).
    *
    * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
@@ -4051,7 +4051,7 @@ trait FlowOps[+Out, +Mat] {
    * Attaches the given [[Sink]] to this [[Source]], meaning that elements that pass
    * through will also be sent to the [[Sink]].
    *
-   * It is similar to [[#wireTap]] but will backpressure instead of dropping elements when the given [[Sink]] is not ready.
+   * It is similar to `wireTap` but will backpressure instead of dropping elements when the given [[Sink]] is not ready.
    *
    * '''Emits when''' element is available and demand exists both from the Sink and the downstream.
    *
@@ -4080,9 +4080,9 @@ trait FlowOps[+Out, +Mat] {
    * only. This is useful for fire-and-forget side sinks (e.g. logging) where the side sink's
    * availability should not affect the main business stream.
    *
-   * When `propagateCancellation` is `true` (the default), this behaves identically to [[#alsoTo]].
+   * When `propagateCancellation` is `true` (the default), this behaves identically to `alsoTo`.
    *
-   * It is similar to [[#wireTap]] but will backpressure instead of dropping elements when the given [[Sink]] is not ready.
+   * It is similar to `wireTap` but will backpressure instead of dropping elements when the given [[Sink]] is not ready.
    *
    * '''Emits when''' element is available and demand exists both from the Sink and the downstream.
    *
@@ -4113,7 +4113,7 @@ trait FlowOps[+Out, +Mat] {
    * Attaches the given [[Sink]]s to this [[Source]], meaning that elements that pass
    * through will also be sent to the [[Sink]].
    *
-   * It is similar to [[#wireTap]] but will backpressure instead of dropping elements when the given [[Sink]]s is not ready.
+   * It is similar to `wireTap` but will backpressure instead of dropping elements when the given [[Sink]]s is not ready.
    *
    * '''Emits when''' element is available and demand exists both from the Sinks and the downstream.
    *
@@ -4164,7 +4164,7 @@ trait FlowOps[+Out, +Mat] {
    * through will also be sent to the wire-tap Sink, without the latter affecting the mainline flow.
    * If the wire-tap Sink backpressures, elements that would've been sent to it will be dropped instead.
    *
-   * It is similar to [[#alsoTo]] which does backpressure instead of dropping elements.
+   * It is similar to `alsoTo` which does backpressure instead of dropping elements.
    *
    * '''Emits when''' element is available and demand exists from the downstream; the element will
    * also be sent to the wire-tap Sink if there is demand.
@@ -4204,7 +4204,7 @@ trait FlowOps[+Out, +Mat] {
   /**
    * Aggregate input elements into an arbitrary data structure that can be completed and emitted downstream
    * when custom condition is met which can be triggered by aggregate or timer.
-   * It can be thought of a more general [[groupedWeightedWithin]].
+   * It can be thought of a more general `groupedWeightedWithin`.
    *
    * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
    *
@@ -4625,7 +4625,7 @@ trait FlowOpsMat[+Out, +Mat] extends FlowOps[Out, Mat] {
    * Attaches the given [[Sink]] to this [[Flow]], meaning that elements that pass
    * through will also be sent to the [[Sink]].
    *
-   * @see [[#alsoTo]]
+   * @see `alsoTo`
    *
    * It is recommended to use the internally optimized `Keep.left` and `Keep.right` combiners
    * where appropriate instead of manually writing functions that pass through one of the values.
@@ -4637,7 +4637,7 @@ trait FlowOpsMat[+Out, +Mat] extends FlowOps[Out, Mat] {
    * Attaches the given [[Sink]] to this [[Flow]], meaning that elements that pass
    * through will also be sent to the [[Sink]].
    *
-   * @see [[#alsoTo]]
+   * @see `alsoTo`
    *
    * It is recommended to use the internally optimized `Keep.left` and `Keep.right` combiners
    * where appropriate instead of manually writing functions that pass through one of the values.
@@ -4667,9 +4667,9 @@ trait FlowOpsMat[+Out, +Mat] extends FlowOps[Out, Mat] {
    * through will also be sent to the wire-tap Sink, without the latter affecting the mainline flow.
    * If the wire-tap Sink backpressures, elements that would've been sent to it will be dropped instead.
    *
-   * It is similar to [[#alsoToMat]] which does backpressure instead of dropping elements.
+   * It is similar to `alsoToMat` which does backpressure instead of dropping elements.
    *
-   * @see [[#wireTap]]
+   * @see `wireTap`
    *
    * It is recommended to use the internally optimized `Keep.left` and `Keep.right` combiners
    * where appropriate instead of manually writing functions that pass through one of the values.

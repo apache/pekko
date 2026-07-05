@@ -2458,7 +2458,7 @@ sealed abstract class ByteString
 
   /**
    * Decodes this ByteString using a charset to produce a String.
-   * If you have a [[Charset]] instance available, use `decodeString(charset: java.nio.charset.Charset` instead.
+   * If you have a `Charset` instance available, use `decodeString(charset: java.nio.charset.Charset` instead.
    */
   def decodeString(charset: String): String
 
@@ -2494,7 +2494,7 @@ sealed abstract class ByteString
    *
    * @param offset the offset to read from
    * @return the short value
-   * @throws IndexOutOfBoundsException if the offset is negative or there are fewer than 2 bytes available from offset
+   * @throws java.lang.IndexOutOfBoundsException if the offset is negative or there are fewer than 2 bytes available from offset
    * @since 2.0.0
    */
   def readShortBE(offset: Int): Short = {
@@ -2507,7 +2507,7 @@ sealed abstract class ByteString
    *
    * @param offset the offset to read from
    * @return the short value
-   * @throws IndexOutOfBoundsException if the offset is negative or there are fewer than 2 bytes available from offset
+   * @throws java.lang.IndexOutOfBoundsException if the offset is negative or there are fewer than 2 bytes available from offset
    * @since 2.0.0
    */
   def readShortLE(offset: Int): Short = {
@@ -2520,7 +2520,7 @@ sealed abstract class ByteString
    *
    * @param offset the offset to read from
    * @return the int value
-   * @throws IndexOutOfBoundsException if the offset is negative or there are fewer than 4 bytes available from offset
+   * @throws java.lang.IndexOutOfBoundsException if the offset is negative or there are fewer than 4 bytes available from offset
    * @since 2.0.0
    */
   def readIntBE(offset: Int): Int = {
@@ -2533,7 +2533,7 @@ sealed abstract class ByteString
    *
    * @param offset the offset to read from
    * @return the int value
-   * @throws IndexOutOfBoundsException if the offset is negative or there are fewer than 4 bytes available from offset
+   * @throws java.lang.IndexOutOfBoundsException if the offset is negative or there are fewer than 4 bytes available from offset
    * @since 2.0.0
    */
   def readIntLE(offset: Int): Int = {
@@ -2546,7 +2546,7 @@ sealed abstract class ByteString
    *
    * @param offset the offset to read from
    * @return the long value
-   * @throws IndexOutOfBoundsException if the offset is negative or there are fewer than 8 bytes available from offset
+   * @throws java.lang.IndexOutOfBoundsException if the offset is negative or there are fewer than 8 bytes available from offset
    * @since 2.0.0
    */
   def readLongBE(offset: Int): Long = {
@@ -2559,7 +2559,7 @@ sealed abstract class ByteString
    *
    * @param offset the offset to read from
    * @return the long value
-   * @throws IndexOutOfBoundsException if the offset is negative or there are fewer than 8 bytes available from offset
+   * @throws java.lang.IndexOutOfBoundsException if the offset is negative or there are fewer than 8 bytes available from offset
    * @since 2.0.0
    */
   def readLongLE(offset: Int): Long = {

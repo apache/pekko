@@ -36,7 +36,7 @@ object SupervisorStrategy {
 
   /**
    * Restart immediately without any limit on number of restart retries. A limit can be
-   * added with [[RestartSupervisorStrategy.withLimit]].
+   * added with `RestartSupervisorStrategy.withLimit`.
    *
    * If the actor behavior is deferred and throws an exception on startup the actor is stopped
    * (restarting would be dangerous as it could lead to an infinite restart-loop)
@@ -358,7 +358,7 @@ sealed abstract class BackoffSupervisorStrategy extends SupervisorStrategy {
    * The initial errors are logged at the level defined with [[BackoffSupervisorStrategy.withLogLevel]].
    * For example, the first 3 errors can be logged at INFO level and thereafter at ERROR level.
    *
-   * The counter (and log level) is reset after the [[BackoffSupervisorStrategy.withResetBackoffAfter]]
+   * The counter (and log level) is reset after the `BackoffSupervisorStrategy.withResetBackoffAfter`
    * duration.
    */
   def withCriticalLogLevel(criticalLevel: Level, afterErrors: Int): BackoffSupervisorStrategy

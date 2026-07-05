@@ -760,7 +760,7 @@ object WireTap {
   private val singleton = new WireTap[Nothing]
 
   /**
-   * @see [[WireTap]]
+   * @see `WireTap`
    */
   def apply[T](): WireTap[T] = singleton.asInstanceOf[WireTap[T]]
 }
@@ -1461,7 +1461,7 @@ object OrElse {
   private val singleton = new OrElse[Nothing]
 
   /**
-   * @see [[OrElse]]
+   * @see `OrElse`
    */
   def apply[T](): OrElse[T] = singleton.asInstanceOf[OrElse[T]]
 }

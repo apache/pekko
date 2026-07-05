@@ -110,7 +110,7 @@ object Patterns {
 
   /**
    * Use for messages whose response is known to be a [[pekko.pattern.StatusReply]]. When a [[pekko.pattern.StatusReply#success]] response
-   * arrives the future is completed with the wrapped value, if a [[pekko.pattern.StatusReply#error]] arrives the future is instead
+   * arrives the future is completed with the wrapped value, if a `StatusReply.error` arrives the future is instead
    * failed.
    */
   def askWithStatus(actor: ActorRef, message: Any, timeout: java.time.Duration): CompletionStage[AnyRef] =
@@ -504,7 +504,7 @@ object Patterns {
    * When the future is completed, the `shouldRetry` predicate is always been invoked with the result (or `null` if none)
    * and the exception (or `null` if none). If the `shouldRetry` predicate returns true, then a new attempt is made,
    * each subsequent attempt will be made after the 'delay' return by `delayFunction` (the input next attempt count start from 1).
-   * Return an empty [[Optional]] instance for no delay.
+   * Return an empty `Optional` instance for no delay.
    *
    * If all additional attempts are exhausted the returned completion operator is simply the result of the last invoke attempt.
    * Note that the attempt function will be invoked on the given execution context for subsequent tries
@@ -565,7 +565,7 @@ object Patterns {
    * When the future is completed, the `shouldRetry` predicate is always been invoked with the result (or `null` if none)
    * and the exception (or `null` if none). If the `shouldRetry` predicate returns true, then a new attempt is made,
    * each subsequent attempt will be made after the 'delay' return by `delayFunction` (the input next attempt count start from 1).
-   * Return an empty [[Optional]] instance for no delay.
+   * Return an empty `Optional` instance for no delay.
    *
    * If all additional attempts are exhausted the returned future is simply the result of the last invoke attempt.
    * Note that the attempt function will be invoked on the given execution context for subsequent tries and
@@ -641,7 +641,7 @@ object Patterns {
    * When the future is completed, the `shouldRetry` predicate is always been invoked with the result (or `null` if none)
    * and the exception (or `null` if none). If the `shouldRetry` predicate returns true, then a new attempt is made,
    * each subsequent attempt will be made after the 'delay' return by `delayFunction` (the input next attempt count start from 1).
-   * Return an empty [[Optional]] instance for no delay.
+   * Return an empty `Optional` instance for no delay.
    *
    * If all additional attempts are exhausted the returned future is simply the result of the last invoke attempt.
    * Note that the attempt function will be invoked on the given execution context for subsequent tries and
@@ -723,7 +723,7 @@ object Patterns {
    * When the future is completed, the `shouldRetry` predicate is always been invoked with the result (or `null` if none)
    * and the exception (or `null` if none). If the `shouldRetry` predicate returns true, then a new attempt is made,
    * each subsequent attempt will be made after the 'delay' return by `delayFunction` (the input next attempt count start from 1).
-   * Return an empty [[Optional]] instance for no delay.
+   * Return an empty `Optional` instance for no delay.
    *
    * If all additional attempts are exhausted the returned completion operator is simply the result of the last invoke attempt.
    * Note that the attempt function will be invoked on the given execution context for subsequent tries
@@ -771,7 +771,7 @@ object Patterns {
    * When the future is completed, the `shouldRetry` predicate is always been invoked with the result (or `null` if none)
    * and the exception (or `null` if none). If the `shouldRetry` predicate returns true, then a new attempt is made,
    * each subsequent attempt will be made after the 'delay' return by `delayFunction` (the input next attempt count start from 1).
-   * Return an empty [[Optional]] instance for no delay.
+   * Return an empty `Optional` instance for no delay.
    *
    * If all additional attempts are exhausted the returned completion operator is simply the result of the last invoke attempt.
    * Note that the attempt function will be invoked on the given execution context for subsequent tries
@@ -803,7 +803,7 @@ object Patterns {
    * Returns an internally retrying [[java.util.concurrent.CompletionStage]].
    * The first attempt will be made immediately, each subsequent attempt will be made after
    * the 'delay' return by `delayFunction` (the input next attempt count start from 1).
-   * Return an empty [[Optional]] instance for no delay.
+   * Return an empty `Optional` instance for no delay.
    * A scheduler (eg context.system.scheduler) must be provided to delay each retry.
    * You could provide a function to generate the next delay duration after first attempt,
    * this function should never return `null`, otherwise a [[java.lang.IllegalArgumentException]] will be through.
@@ -832,7 +832,7 @@ object Patterns {
    * When the future is completed, the `shouldRetry` predicate is always been invoked with the result (or `null` if none)
    * and the exception (or `null` if none). If the `shouldRetry` predicate returns true, then a new attempt is made,
    * each subsequent attempt will be made after the 'delay' return by `delayFunction` (the input next attempt count start from 1).
-   * Return an empty [[Optional]] instance for no delay.
+   * Return an empty `Optional` instance for no delay.
    *
    * A scheduler (eg context.system.scheduler) must be provided to delay each retry.
    * You could provide a function to generate the next delay duration after first attempt,

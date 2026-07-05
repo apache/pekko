@@ -69,7 +69,7 @@ object Cluster extends ExtensionId[Cluster] with ExtensionIdProvider {
 
 /**
  * This module is responsible cluster membership information. Changes to the cluster
- * information is retrieved through [[#subscribe]]. Commands to operate the cluster is
+ * information is retrieved through `subscribe`. Commands to operate the cluster is
  * available through methods in this class, such as [[#join]], [[#down]] and [[#leave]].
  *
  * Each cluster [[Member]] is identified by its [[pekko.actor.Address]], and

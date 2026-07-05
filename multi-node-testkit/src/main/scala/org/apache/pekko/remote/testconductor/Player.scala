@@ -69,7 +69,7 @@ object Player {
 /**
  * The Player is the client component of the
  * [[pekko.remote.testconductor.TestConductorExt]] extension. It registers with
- * the [[pekko.remote.testconductor.Conductor]]’s [[pekko.remote.testconductor.Controller]]
+ * the [[pekko.remote.testconductor.Conductor]]’s `Controller`
  * in order to participate in barriers and enable network failure injection.
  */
 trait Player { this: TestConductorExt =>
@@ -162,7 +162,7 @@ private[pekko] object ClientFSM {
 /**
  * This is the controlling entity on the [[pekko.remote.testconductor.Player]]
  * side: in a first step it registers itself with a symbolic name and its remote
- * address at the [[pekko.remote.testconductor.Controller]], then waits for the
+ * address at the `Controller`, then waits for the
  * `Done` message which signals that all other expected test participants have
  * done the same. After that, it will pass barrier requests to and from the
  * coordinator and react to the [[pekko.remote.testconductor.Conductor]]’s

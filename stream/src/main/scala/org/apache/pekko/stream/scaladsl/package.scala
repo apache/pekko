@@ -54,7 +54,7 @@ import scala.jdk.FutureConverters._
  * often than for corresponding transformations on strict collections like
  * [[scala.collection.immutable.List]]. *An important consequence* is that elements that were produced
  * into a stream may be discarded by later processors, e.g. when using the
- * [[#take]] operator.
+ * `take` operator.
  *
  * By default every operation is executed within its own [[org.apache.pekko.actor.Actor]]
  * to enable full pipelining of the chained set of computations. This behavior

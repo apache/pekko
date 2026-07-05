@@ -69,8 +69,8 @@ object TestProbe {
 }
 
 /**
- * Java API: * Create instances through the `create` factories in the [[TestProbe]] companion
- * or via [[ActorTestKit#createTestProbe]].
+ * Java API: Create instances through the `create` factories in the `TestProbe` companion
+ * or via `ActorTestKit.createTestProbe`.
  *
  * A test probe is essentially a queryable mailbox which can be used in place of an actor and the received
  * messages can then be asserted etc.

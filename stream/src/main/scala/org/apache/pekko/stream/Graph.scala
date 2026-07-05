@@ -45,7 +45,7 @@ trait Graph[+S <: Shape, +M] {
   private[stream] def traversalBuilder: TraversalBuilder
 
   /**
-   * Replace the attributes of this [[Flow]] with the given ones. If this Flow is a composite
+   * Replace the attributes of this `Flow` with the given ones. If this Flow is a composite
    * of multiple graphs, new attributes on the composite will be less specific than attributes
    * set directly on the individual graphs of the composite.
    */

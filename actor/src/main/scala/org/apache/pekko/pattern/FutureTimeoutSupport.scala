@@ -90,7 +90,7 @@ trait FutureTimeoutSupport {
     }
 
   /**
-   * Returns a [[scala.concurrent.Future]] that will be completed with a [[TimeoutException]]
+   * Returns a [[scala.concurrent.Future]] that will be completed with a `TimeoutException`
    * if the provided value is not completed within the specified duration.
    * @since 1.2.0
    */
@@ -122,7 +122,7 @@ trait FutureTimeoutSupport {
   }
 
   /**
-   * Returns a [[java.util.concurrent.CompletionStage]] that will be completed with a [[TimeoutException]]
+   * Returns a [[java.util.concurrent.CompletionStage]] that will be completed with a `TimeoutException`
    * if the provided value is not completed within the specified duration.
    * @since 1.2.0
    */

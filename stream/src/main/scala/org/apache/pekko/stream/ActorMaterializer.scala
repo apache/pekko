@@ -227,7 +227,7 @@ private[pekko] object ActorMaterializerSettings {
 }
 
 /**
- * This class describes the configurable properties of the [[ActorMaterializer]].
+ * This class describes the configurable properties of the `ActorMaterializer`.
  * Please refer to the `withX` methods for descriptions of the individual settings.
  *
  * The constructor is not public API, use create or apply on the [[ActorMaterializerSettings]] companion instead.

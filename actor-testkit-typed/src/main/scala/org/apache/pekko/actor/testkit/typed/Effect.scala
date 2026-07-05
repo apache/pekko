@@ -49,8 +49,8 @@ object Effect {
    * The 'replyToRef' is exposed so that the target inbox can expect the actual message sent to
    * initiate the ask.
    *
-   * Note that this requires the ask to be initiated via the [[ActorContext]].  The [[Future]] returning
-   * ask is not testable in the [[BehaviorTestKit]].
+   * Note that this requires the ask to be initiated via the [[ActorContext]].  The `Future` returning
+   * ask is not testable in the `BehaviorTestKit`.
    */
   final case class AskInitiated[Req, Res, T](target: RecipientRef[Req],
       responseTimeout: FiniteDuration,

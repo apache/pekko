@@ -51,7 +51,7 @@ object ActorSource {
    * The actor will be stopped when the stream is completed, failed or canceled from downstream,
    * i.e. you can watch it to get notified when that happens.
    *
-   * See also [[pekko.stream.javadsl.Source.queue]].
+   * See also `Source.queue`.
    *
    * @param bufferSize The size of the buffer in element count
    * @param overflowStrategy Strategy that is used when incoming elements cannot fit inside the buffer

@@ -28,7 +28,7 @@ final class TestKitJUnit5Extension() extends AfterAllCallback with BeforeTestExe
   var testKit: Option[ActorTestKit] = None
 
   /**
-   * Get a reference to the field annotated with `@JUnit5Testkit` [[JUnit5TestKit]]
+   * Get a reference to the field annotated with `@JUnit5TestKit`
    */
   override def beforeTestExecution(context: ExtensionContext): Unit = {
     val testInstance: Option[AnyRef] =

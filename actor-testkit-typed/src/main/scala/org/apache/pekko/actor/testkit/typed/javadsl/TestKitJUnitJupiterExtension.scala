@@ -27,7 +27,7 @@ final class TestKitJUnitJupiterExtension() extends AfterAllCallback with BeforeT
   var testKit: Option[ActorTestKit] = None
 
   /**
-   * Get a reference to the field annotated with `@JUnitJupiterTestKit` [[JUnitJupiterTestKit]]
+   * Get a reference to the field annotated with `@JUnitJupiterTestKit` `JUnitJupiterTestKit`
    */
   override def beforeTestExecution(context: ExtensionContext): Unit = {
     val testInstance: Option[AnyRef] =

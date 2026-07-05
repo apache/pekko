@@ -35,7 +35,7 @@ import pekko.cluster.MemberStatus
 sealed abstract class CollectionControlMessage extends Serializable
 
 /**
- * Command for [[ClusterMetricsSupervisor]] to start metrics collection.
+ * Command for `ClusterMetricsSupervisor` to start metrics collection.
  */
 @SerialVersionUID(1L)
 case object CollectionStartMessage extends CollectionControlMessage {
@@ -45,7 +45,7 @@ case object CollectionStartMessage extends CollectionControlMessage {
 }
 
 /**
- * Command for [[ClusterMetricsSupervisor]] to stop metrics collection.
+ * Command for `ClusterMetricsSupervisor` to stop metrics collection.
  */
 @SerialVersionUID(1L)
 case object CollectionStopMessage extends CollectionControlMessage {
@@ -95,7 +95,7 @@ private[metrics] class ClusterMetricsSupervisor extends Actor with ActorLogging 
 /**
  * Local cluster metrics extension events.
  *
- * Published to local event bus subscribers by [[ClusterMetricsCollector]].
+ * Published to local event bus subscribers by `ClusterMetricsCollector`.
  */
 trait ClusterMetricsEvent
 
