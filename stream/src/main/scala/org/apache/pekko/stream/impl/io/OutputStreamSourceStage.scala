@@ -13,7 +13,7 @@
 
 package org.apache.pekko.stream.impl.io
 
-import java.io.{ IOException, OutputStream }
+import java.io.{ IOException, OutputStream => JavaOutputStream }
 import java.util.concurrent.{ Semaphore, TimeUnit }
 
 import scala.concurrent.Await
@@ -35,12 +35,12 @@ private[stream] object OutputStreamSourceStage {
 }
 
 final private[stream] class OutputStreamSourceStage(writeTimeout: FiniteDuration)
-    extends GraphStageWithMaterializedValue[SourceShape[ByteString], OutputStream] {
+    extends GraphStageWithMaterializedValue[SourceShape[ByteString], JavaOutputStream] {
   val out = Outlet[ByteString]("OutputStreamSource.out")
   override def initialAttributes = DefaultAttributes.outputStreamSource
   override val shape: SourceShape[ByteString] = SourceShape.of(out)
 
-  override def createLogicAndMaterializedValue(inheritedAttributes: Attributes): (GraphStageLogic, OutputStream) = {
+  override def createLogicAndMaterializedValue(inheritedAttributes: Attributes): (GraphStageLogic, JavaOutputStream) = {
     val maxBuffer = inheritedAttributes.get[InputBuffer](InputBuffer(16, 16)).max
 
     require(maxBuffer > 0, "Buffer size must be greater than 0")
@@ -78,7 +78,7 @@ private[pekko] class OutputStreamAdapter(
     unfulfilledDemand: Semaphore,
     sendToStage: AsyncCallback[AdapterToStageMessage],
     writeTimeout: FiniteDuration)
-    extends OutputStream {
+    extends JavaOutputStream {
 
   @scala.throws(classOf[IOException])
   private def sendData(data: ByteString): Unit = {

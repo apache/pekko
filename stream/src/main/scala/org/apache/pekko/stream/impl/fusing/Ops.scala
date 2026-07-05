@@ -1658,7 +1658,8 @@ private[stream] object Collect {
         log = logAdapter match {
           case Some(l) => l
           case _       =>
-            Logging(materializer.system, materializer)(fromMaterializer)
+            implicit val logSource: LogSource[Materializer] = Log.fromMaterializer
+            Logging(materializer.system, materializer)
         }
       }
 
@@ -1778,7 +1779,8 @@ private[stream] object Collect {
         log = logAdapter match {
           case Some(l) => l
           case _       =>
-            Logging.withMarker(materializer.system, materializer)(fromMaterializer)
+            implicit val logSource: LogSource[Materializer] = LogWithMarker.fromMaterializer
+            Logging.withMarker(materializer.system, materializer)
         }
       }
 

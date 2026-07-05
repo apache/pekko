@@ -44,7 +44,8 @@ object Dependencies {
 
   val scala213Version = "2.13.18"
   val scala3Version = "3.3.8"
-  val allScalaVersions = Seq(scala213Version, scala3Version)
+  val scala3NextVersion = "3.8.4"
+  val publishedScalaVersions = Seq(scala213Version, scala3Version)
 
   val reactiveStreamsVersion = "1.0.4"
 
@@ -52,7 +53,7 @@ object Dependencies {
   val scalaTestScalaCheckVersion = "1-19"
   val scalaCheckVersion = "1.19.0"
 
-  val Versions = Seq(crossScalaVersions := allScalaVersions, scalaVersion := allScalaVersions.head)
+  val Versions = Seq(crossScalaVersions := publishedScalaVersions, scalaVersion := publishedScalaVersions.head)
 
   object Compile {
     // Compile

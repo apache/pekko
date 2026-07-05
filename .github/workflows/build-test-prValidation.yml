@@ -59,7 +59,7 @@ jobs:
       DEVELOCITY_ACCESS_KEY: ${{ secrets.DEVELOCITY_ACCESS_KEY }}
     strategy:
       matrix:
-        scalaVersion: ["2.13.x", "3.3.x"]
+        scalaVersion: ["scala213", "scala3", "next"]
     steps:
       - name: Checkout
         uses: actions/checkout@v7.0.0
@@ -86,6 +86,7 @@ jobs:
 
       - name: sbt validateCompile
         run: |-
+          scala_version="$(bash .github/scripts/resolve-scala-version.sh "${{ matrix.scalaVersion }}")"
           sbt \
           -Dpekko.mima.enabled=false \
           -Dpekko.test.multi-in-test=false \
@@ -97,10 +98,11 @@ jobs:
           -Dpekko.test.multi-node=false \
           -Dsbt.log.noformat=false \
           -Dpekko.log.timestamps=true \
-          "++ ${{ matrix.scalaVersion }} validateCompile"
+          "++ ${scala_version}! validateCompile"
 
       - name: sbt validatePullRequest
         run: |-
+          scala_version="$(bash .github/scripts/resolve-scala-version.sh "${{ matrix.scalaVersion }}")"
           sbt \
           -Dpekko.mima.enabled=false \
           -Dpekko.test.multi-in-test=false \
@@ -113,7 +115,7 @@ jobs:
           -Dsbt.log.noformat=false \
           -Dpekko.log.timestamps=true \
           -Dio.netty.leakDetection.level=PARANOID \
-          "++ ${{ matrix.scalaVersion }} validatePullRequest"
+          "++ ${scala_version}! validatePullRequest"
 
   pekko-classic-remoting-tests:
     name: Pekko Classic Remoting Tests

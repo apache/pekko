@@ -19,6 +19,7 @@ import org.apache.pekko.testkit.TestProbe;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
+@SuppressWarnings("unchecked")
 public class AbstractFSMActorTest {
 
   // javac produces an `unchecked` warning about `akka$actor$FSM$$transitionEvent`

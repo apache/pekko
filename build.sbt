@@ -9,7 +9,7 @@
 
 import net.bzzt.reproduciblebuilds.ReproducibleBuildsPlugin.reproducibleBuildsCheckResolver
 
-scalaVersion := Dependencies.allScalaVersions.head
+scalaVersion := Dependencies.publishedScalaVersions.head
 
 ThisBuild / versionScheme := Some(VersionScheme.SemVerSpec)
 // Add  (Jupiter) test runtime to all modules for sbt-jupiter-interface discovery

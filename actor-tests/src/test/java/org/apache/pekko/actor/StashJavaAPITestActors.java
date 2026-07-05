@@ -15,6 +15,7 @@ package org.apache.pekko.actor;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@SuppressWarnings("unchecked")
 public class StashJavaAPITestActors {
 
   /*
