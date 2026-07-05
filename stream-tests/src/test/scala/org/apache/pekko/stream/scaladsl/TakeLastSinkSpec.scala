@@ -21,10 +21,16 @@ import org.apache.pekko
 import pekko.stream.{ AbruptTerminationException, ActorMaterializer, ActorMaterializerSettings, Materializer }
 import pekko.stream.testkit.{ StreamSpec, TestPublisher }
 
-@nowarn
-class TakeLastSinkSpec extends StreamSpec {
+import com.typesafe.config.ConfigFactory
 
-  val settings = ActorMaterializerSettings(system).withInputBuffer(initialSize = 2, maxSize = 16)
+@nowarn
+class TakeLastSinkSpec
+    extends StreamSpec(ConfigFactory.parseString("""
+    pekko.stream.materializer.initial-input-buffer-size = 2
+    pekko.stream.materializer.max-input-buffer-size = 16
+    """)) {
+
+  val settings = ActorMaterializerSettings(system)
 
   implicit val mat: Materializer = ActorMaterializer(settings)
 

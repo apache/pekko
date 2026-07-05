@@ -25,10 +25,16 @@ import pekko.stream.testkit.StreamSpec
 import pekko.stream.testkit.Utils._
 import pekko.stream.testkit.scaladsl.TestSink
 
-@nowarn // tests deprecated APIs
-class FlowRecoverWithSpec extends StreamSpec {
+import com.typesafe.config.ConfigFactory
 
-  val settings = ActorMaterializerSettings(system).withInputBuffer(initialSize = 1, maxSize = 1)
+@nowarn // tests deprecated APIs
+class FlowRecoverWithSpec
+    extends StreamSpec(ConfigFactory.parseString("""
+    pekko.stream.materializer.initial-input-buffer-size = 1
+    pekko.stream.materializer.max-input-buffer-size = 1
+    """)) {
+
+  val settings = ActorMaterializerSettings(system)
 
   implicit val materializer: Materializer = ActorMaterializer(settings)
 

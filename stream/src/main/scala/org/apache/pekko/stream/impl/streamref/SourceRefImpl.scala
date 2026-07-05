@@ -13,6 +13,8 @@
 
 package org.apache.pekko.stream.impl.streamref
 
+import java.util.concurrent.atomic.AtomicBoolean
+
 import scala.annotation.nowarn
 
 import org.apache.pekko
@@ -25,8 +27,6 @@ import pekko.stream.impl.FixedSizeBuffer
 import pekko.stream.scaladsl.Source
 import pekko.stream.stage._
 import pekko.util.{ OptionVal, PrettyDuration }
-
-import java.util.concurrent.atomic.AtomicBoolean
 
 /** INTERNAL API: Implementation class, not intended to be touched directly by end-users */
 @InternalApi
@@ -148,24 +148,20 @@ private[stream] final class SourceRefStageImpl[Out](
 
       // settings ---
       import StreamRefAttributes._
-      @nowarn("msg=deprecated") // can't remove this settings access without breaking compat
-      private val settings = eagerMaterializer.settings.streamRefSettings
+      @nowarn("cat=deprecation") // Materializer.settings is needed for stream-ref default settings.
+      private val settings = eagerMaterializer.settings.streamRefDefaultSettings
 
-      @nowarn("msg=deprecated") // can't remove this settings access without breaking compat
       private val subscriptionTimeout = inheritedAttributes.get[StreamRefAttributes.SubscriptionTimeout](
         SubscriptionTimeout(settings.subscriptionTimeout))
 
-      @nowarn("msg=deprecated") // can't remove this settings access without breaking compat
       private val bufferCapacity = inheritedAttributes
         .get[StreamRefAttributes.BufferCapacity](StreamRefAttributes.BufferCapacity(settings.bufferCapacity))
         .capacity
 
-      @nowarn("msg=deprecated") // can't remove this settings access without breaking compat
       private val demandRedeliveryInterval = inheritedAttributes
         .get[StreamRefAttributes.DemandRedeliveryInterval](DemandRedeliveryInterval(settings.demandRedeliveryInterval))
         .timeout
 
-      @nowarn("msg=deprecated") // can't remove this settings access without breaking compat
       private val finalTerminationSignalDeadline =
         inheritedAttributes
           .get[StreamRefAttributes.FinalTerminationSignalDeadline](

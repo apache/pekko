@@ -26,6 +26,7 @@ import pekko.actor.ActorSystem
 import pekko.actor.ExtendedActorSystem
 import pekko.annotation.InternalApi
 import pekko.stream.impl._
+import pekko.stream.impl.streamref.StreamRefDefaultSettings
 import pekko.stream.stage.GraphStageLogic
 import pekko.util.Helpers.toRootLowerCase
 
@@ -196,7 +197,10 @@ private[pekko] object ActorMaterializerSettings {
   @deprecated(
     "Use config or attributes to configure the materializer. See migration guide for details https://doc.akka.io/docs/akka/2.6/project/migration-guide-2.5.x-2.6.x.html",
     "Akka 2.6.0")
-  def apply(config: Config): ActorMaterializerSettings =
+  def apply(config: Config): ActorMaterializerSettings = {
+    val ioConfig = config.getConfig("io")
+    val streamRefConfig = config.getConfig("stream-ref")
+
     new ActorMaterializerSettings(
       initialInputBufferSize = config.getInt("initial-input-buffer-size"),
       maxInputBufferSize = config.getInt("max-input-buffer-size"),
@@ -209,9 +213,17 @@ private[pekko] object ActorMaterializerSettings {
       autoFusing = config.getBoolean("auto-fusing"),
       maxFixedBufferSize = config.getInt("max-fixed-buffer-size"),
       syncProcessingLimit = config.getInt("sync-processing-limit"),
-      ioSettings = IOSettings(config.getConfig("io")),
-      streamRefSettings = StreamRefSettings(config.getConfig("stream-ref")),
+      tcpWriteBufferSize = math.min(Int.MaxValue, ioConfig.getBytes("tcp.write-buffer-size")).toInt,
+      coalesceWrites = ioConfig.getInt("tcp.coalesce-writes"),
+      streamRefDefaultSettings = StreamRefDefaultSettings(
+        bufferCapacity = streamRefConfig.getInt("buffer-capacity"),
+        demandRedeliveryInterval =
+          streamRefConfig.getDuration("demand-redelivery-interval", TimeUnit.MILLISECONDS).millis,
+        subscriptionTimeout = streamRefConfig.getDuration("subscription-timeout", TimeUnit.MILLISECONDS).millis,
+        finalTerminationSignalDeadline =
+          streamRefConfig.getDuration("final-termination-signal-deadline", TimeUnit.MILLISECONDS).millis),
       blockingIoDispatcher = config.getString("blocking-io-dispatcher"))
+  }
 }
 
 /**
@@ -238,8 +250,9 @@ final class ActorMaterializerSettings @InternalApi private (
     private[stream] val autoFusing: Boolean,
     private[stream] val maxFixedBufferSize: Int,
     private[stream] val syncProcessingLimit: Int,
-    val ioSettings: IOSettings,
-    val streamRefSettings: StreamRefSettings,
+    private[stream] val tcpWriteBufferSize: Int,
+    private[stream] val coalesceWrites: Int,
+    private[stream] val streamRefDefaultSettings: StreamRefDefaultSettings,
     private[stream] val blockingIoDispatcher: String) {
 
   require(initialInputBufferSize > 0, "initialInputBufferSize must be > 0")
@@ -262,8 +275,9 @@ final class ActorMaterializerSettings @InternalApi private (
       autoFusing: Boolean = this.autoFusing,
       maxFixedBufferSize: Int = this.maxFixedBufferSize,
       syncProcessingLimit: Int = this.syncProcessingLimit,
-      ioSettings: IOSettings = this.ioSettings,
-      streamRefSettings: StreamRefSettings = this.streamRefSettings,
+      tcpWriteBufferSize: Int = this.tcpWriteBufferSize,
+      coalesceWrites: Int = this.coalesceWrites,
+      streamRefDefaultSettings: StreamRefDefaultSettings = this.streamRefDefaultSettings,
       blockingIoDispatcher: String = this.blockingIoDispatcher) = {
     new ActorMaterializerSettings(
       initialInputBufferSize,
@@ -277,37 +291,15 @@ final class ActorMaterializerSettings @InternalApi private (
       autoFusing,
       maxFixedBufferSize,
       syncProcessingLimit,
-      ioSettings,
-      streamRefSettings,
+      tcpWriteBufferSize,
+      coalesceWrites,
+      streamRefDefaultSettings,
       blockingIoDispatcher)
   }
 
-  /**
-   * Each asynchronous piece of a materialized stream topology is executed by one Actor
-   * that manages an input buffer for all inlets of its shape. This setting configures
-   * the default for initial and maximal input buffer in number of elements for each inlet.
-   * This can be overridden for individual parts of the
-   * stream topology by using [[pekko.stream.Attributes#inputBuffer]].
-   *
-   * FIXME: this is used for all kinds of buffers, not only the stream actor, some use initial some use max,
-   *        document and or fix if it should not be like that. Search for get[Attributes.InputBuffer] to see how it is used
-   */
-  @deprecated("Use attribute 'Attributes.InputBuffer' to change setting value", "Akka 2.6.0")
-  def withInputBuffer(initialSize: Int, maxSize: Int): ActorMaterializerSettings = {
-    if (initialSize == this.initialInputBufferSize && maxSize == this.maxInputBufferSize) this
-    else copy(initialInputBufferSize = initialSize, maxInputBufferSize = maxSize)
-  }
-
-  /**
-   * This setting configures the default dispatcher to be used by streams materialized
-   * with the [[ActorMaterializer]]. This can be overridden for individual parts of the
-   * stream topology by using [[pekko.stream.Attributes#dispatcher]].
-   */
-  @deprecated("Use attribute 'ActorAttributes.Dispatcher' to change setting value", "Akka 2.6.0")
-  def withDispatcher(dispatcher: String): ActorMaterializerSettings = {
+  private[pekko] def withDispatcher(dispatcher: String): ActorMaterializerSettings =
     if (this.dispatcher == dispatcher) this
     else copy(dispatcher = dispatcher)
-  }
 
   /**
    * Leaked publishers and subscribers are cleaned up when they are not used within a given
@@ -316,15 +308,6 @@ final class ActorMaterializerSettings @InternalApi private (
   def withSubscriptionTimeoutSettings(settings: StreamSubscriptionTimeoutSettings): ActorMaterializerSettings =
     if (settings == this.subscriptionTimeoutSettings) this
     else copy(subscriptionTimeoutSettings = settings)
-
-  def withIOSettings(ioSettings: IOSettings): ActorMaterializerSettings =
-    if (ioSettings == this.ioSettings) this
-    else copy(ioSettings = ioSettings)
-
-  /** Change settings specific to [[SourceRef]] and [[SinkRef]]. */
-  def withStreamRefSettings(streamRefSettings: StreamRefSettings): ActorMaterializerSettings =
-    if (streamRefSettings == this.streamRefSettings) this
-    else copy(streamRefSettings = streamRefSettings)
 
   private def requirePowerOfTwo(n: Integer, name: String): Unit = {
     require(n > 0, s"$name must be > 0")
@@ -343,7 +326,8 @@ final class ActorMaterializerSettings @InternalApi private (
       s.syncProcessingLimit == syncProcessingLimit &&
       s.fuzzingMode == fuzzingMode &&
       s.autoFusing == autoFusing &&
-      s.ioSettings == ioSettings &&
+      s.tcpWriteBufferSize == tcpWriteBufferSize &&
+      s.coalesceWrites == coalesceWrites &&
       s.blockingIoDispatcher == blockingIoDispatcher
     case _ => false
   }
@@ -373,45 +357,7 @@ final class ActorMaterializerSettings @InternalApi private (
   override def toString: String =
     s"ActorMaterializerSettings($initialInputBufferSize,$maxInputBufferSize," +
     s"$dispatcher,$supervisionDecider,$subscriptionTimeoutSettings,$debugLogging,$outputBurstLimit," +
-    s"$syncProcessingLimit,$fuzzingMode,$autoFusing,$ioSettings)"
-}
-
-@InternalApi
-private[pekko] object IOSettings {
-  @deprecated(
-    "Use setting 'pekko.stream.materializer.io.tcp.write-buffer-size' or attribute TcpAttributes.writeBufferSize instead",
-    "Akka 2.6.0")
-  def apply(config: Config): IOSettings =
-    new IOSettings(
-      tcpWriteBufferSize = math.min(Int.MaxValue, config.getBytes("tcp.write-buffer-size")).toInt,
-      coalesceWrites = config.getInt("tcp.coalesce-writes"))
-}
-
-final class IOSettings private (
-    private[stream] val tcpWriteBufferSize: Int,
-    val coalesceWrites: Int) {
-
-  // constructor for binary compatibility with version 2.6.15 and earlier
-  @deprecated("Use attribute 'TcpAttributes.TcpWriteBufferSize' to read the concrete setting value", "Akka 2.6.0")
-  def this(tcpWriteBufferSize: Int) = this(tcpWriteBufferSize, coalesceWrites = 10)
-
-  def withTcpWriteBufferSize(value: Int): IOSettings = copy(tcpWriteBufferSize = value)
-
-  def withCoalesceWrites(value: Int): IOSettings = copy(coalesceWrites = value)
-
-  private def copy(tcpWriteBufferSize: Int = tcpWriteBufferSize, coalesceWrites: Int = coalesceWrites): IOSettings =
-    new IOSettings(tcpWriteBufferSize, coalesceWrites)
-
-  override def equals(other: Any): Boolean = other match {
-    case s: IOSettings => s.tcpWriteBufferSize == tcpWriteBufferSize && s.coalesceWrites == coalesceWrites
-    case _             => false
-  }
-
-  override def hashCode(): Int =
-    31 * tcpWriteBufferSize + coalesceWrites
-
-  override def toString =
-    s"""IoSettings($tcpWriteBufferSize,$coalesceWrites)"""
+    s"$syncProcessingLimit,$fuzzingMode,$autoFusing,$tcpWriteBufferSize,$coalesceWrites)"
 }
 
 object StreamSubscriptionTimeoutSettings {
