@@ -416,7 +416,7 @@ private[io] abstract class TcpConnection(val tcp: TcpExt, val channel: SocketCha
       if (registration.isEmpty)
         try channel.close()
         catch {
-          case NonFatal(e) => log.debug("Error closing SocketChannel: {}", e)
+          case NonFatal(e) => log.error(e, "Error closing SocketChannel")
         }
     }
 
