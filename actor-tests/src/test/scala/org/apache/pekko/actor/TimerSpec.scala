@@ -321,6 +321,46 @@ object TimersAndStashSpec {
   case object StopStashing
 
 }
+
+object TimersAndSupervisionSpec {
+
+  case object StartTimer
+  case object Scheduled
+
+  class FailingTimerActor(probe: ActorRef) extends Actor with Timers {
+    override def preRestart(reason: Throwable, message: Option[Any]): Unit = {
+      probe ! message
+      super.preRestart(reason, message)
+    }
+
+    def receive: Receive = {
+      case StartTimer => timers.startSingleTimer("key", Scheduled, 10.millis)
+      case Scheduled  => throw new TimerSpec.Exc
+    }
+  }
+
+}
+
+class TimersAndSupervisionSpec extends PekkoSpec {
+  import TimersAndSupervisionSpec._
+
+  "Timers combined with supervision" should {
+
+    "pass the unwrapped timer message to preRestart for non-stash actors" taggedAs TimingTest in {
+      val probe = TestProbe()
+      val actor = system.actorOf(Props(new FailingTimerActor(probe.ref)))
+
+      actor ! StartTimer
+
+      probe.expectMsg(Some(Scheduled))
+      watch(actor)
+      system.stop(actor)
+      expectTerminated(actor)
+    }
+  }
+
+}
+
 class TimersAndStashSpec extends PekkoSpec {
   import TimersAndStashSpec._
 
