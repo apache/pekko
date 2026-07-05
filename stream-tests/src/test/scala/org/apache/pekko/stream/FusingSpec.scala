@@ -133,6 +133,22 @@ class FusingSpec extends StreamSpec {
       downstream.expectError(ex)
     }
 
+    "deliver transformed elements already produced before an asynchronous boundary failure" in {
+      val ex = TE("mapping failed after partial output")
+
+      Source(Vector("amber", "birch", "cobalt", "dune", "fault-line"))
+        .map {
+          case "fault-line" => throw ex
+          case element      => element.reverse
+        }
+        .async
+        .addAttributes(asyncBoundaryInputBuffer)
+        .runWith(TestSink[String]())
+        .request(8)
+        .expectNext("rebma", "hcrib", "tlaboc", "enud")
+        .expectError(ex)
+    }
+
     "not emit elements after an asynchronous boundary failure" in {
       val ex = TE("boom")
       val probe = Source(1 to 64)
