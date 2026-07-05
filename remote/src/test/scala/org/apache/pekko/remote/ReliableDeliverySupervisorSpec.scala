@@ -21,9 +21,10 @@ import java.util.concurrent.ConcurrentHashMap
 
 import scala.annotation.nowarn
 import scala.concurrent.Promise
+import scala.concurrent.duration._
 
 import org.apache.pekko
-import pekko.actor.{ ActorRef, Address, Nobody, RootActorPath }
+import pekko.actor.{ ActorRef, Address, Nobody, RootActorPath, Terminated }
 import pekko.remote.EndpointManager.{ Link, ResendState, Send }
 import pekko.remote.ReliableDeliverySupervisor.AckFromReader
 import pekko.remote.transport._
@@ -90,6 +91,61 @@ class ReliableDeliverySupervisorSpec extends PekkoSpec(ReliableDeliverySuperviso
       underlying.resendBuffer.nonAcked.map(_.seq) should ===(Vector(SeqNo(1)))
       underlying.resendBuffer = new AckedSendBuffer[Send](0)
     }
+
+    "recreate the writer when resuming reading while idle" in {
+      val parentProbe = TestProbe()
+      val supervisor = newSupervisor(initialUid = oldUid, parentProbe.ref)
+      val oldWriter = supervisor.underlyingActor.writer
+      val writerProbe = TestProbe()
+
+      writerProbe.watch(oldWriter)
+      supervisor.unwatch(oldWriter)
+      system.stop(oldWriter)
+      writerProbe.expectTerminated(oldWriter)
+
+      supervisor.receive(Terminated(oldWriter)(existenceConfirmed = true, addressTerminated = false))
+      parentProbe.expectMsg(EndpointWriter.StoppedReading(supervisor))
+      supervisor.underlyingActor.currentHandle = Some(newProtocolHandle(oldUid))
+
+      supervisor.receive(EndpointWriter.ResumeReading)
+
+      supervisor.underlyingActor.writer should not be oldWriter
+      expectActive(supervisor)
+    }
+
+    "recreate the writer when resuming reading while gated" in {
+      val parentProbe = TestProbe()
+      val supervisor = newSupervisor(initialUid = oldUid, parentProbe.ref)
+      val underlying = supervisor.underlyingActor
+      val oldWriter = supervisor.underlyingActor.writer
+      val writerProbe = TestProbe()
+
+      writerProbe.watch(oldWriter)
+      supervisor.unwatch(oldWriter)
+      system.stop(oldWriter)
+      writerProbe.expectTerminated(oldWriter)
+      underlying.currentHandle = Some(newProtocolHandle(oldUid))
+      underlying.context.become(underlying.gated(writerTerminated = true, earlyUngateRequested = false))
+
+      supervisor.receive(EndpointWriter.ResumeReading)
+
+      supervisor.underlyingActor.writer should not be oldWriter
+      expectActive(supervisor)
+    }
+
+    "forward resume reading while gated before the writer terminates" in {
+      val parentProbe = TestProbe()
+      val supervisor = newSupervisor(initialUid = oldUid, parentProbe.ref)
+      val underlying = supervisor.underlyingActor
+      val writerProbe = TestProbe()
+
+      underlying.writer = writerProbe.ref
+      underlying.context.become(underlying.gated(writerTerminated = false, earlyUngateRequested = false))
+
+      supervisor.receive(EndpointWriter.ResumeReading)
+
+      writerProbe.expectMsg(EndpointWriter.ResumeReading)
+    }
   }
 
   private def newSupervisor(initialUid: Int, parent: ActorRef): TestActorRef[ReliableDeliverySupervisor] = {
@@ -102,22 +158,10 @@ class ReliableDeliverySupervisorSpec extends PekkoSpec(ReliableDeliverySuperviso
       system,
       new PekkoProtocolSettings(system.settings.config),
       PekkoPduProtobufCodec)
-    val underlyingHandle =
-      TestAssociationHandle(localAddress.copy(protocol = "test"), remoteAddress.copy(protocol = "test"),
-        underlyingTransport, inbound = true)
-    val handle = new PekkoProtocolHandle(
-      localAddress,
-      remoteAddress,
-      Promise[AssociationHandle.HandleEventListener](),
-      underlyingHandle,
-      HandshakeInfo(remoteAddress, initialUid),
-      TestProbe().ref,
-      PekkoPduProtobufCodec,
-      RARP(system).provider.remoteSettings.ProtocolName)
 
     TestActorRef[ReliableDeliverySupervisor](
       ReliableDeliverySupervisor.props(
-        handleOrActive = Some(handle),
+        handleOrActive = Some(newProtocolHandle(initialUid, underlyingTransport)),
         localAddress,
         remoteAddress,
         refuseUid = None,
@@ -126,6 +170,35 @@ class ReliableDeliverySupervisorSpec extends PekkoSpec(ReliableDeliverySuperviso
         PekkoPduProtobufCodec,
         new ConcurrentHashMap[Link, ResendState]),
       parent)
+  }
+
+  private def expectActive(supervisor: ActorRef): Unit = {
+    val idleProbe = TestProbe()
+    supervisor.tell(ReliableDeliverySupervisor.IsIdle, idleProbe.ref)
+    idleProbe.expectNoMessage(100.millis)
+  }
+
+  private def newProtocolHandle(uid: Int): PekkoProtocolHandle =
+    newProtocolHandle(
+      uid,
+      new TestTransport(
+        localAddress.copy(protocol = "test"),
+        new TestTransport.AssociationRegistry,
+        schemeIdentifier = "test"))
+
+  private def newProtocolHandle(uid: Int, underlyingTransport: TestTransport): PekkoProtocolHandle = {
+    val underlyingHandle =
+      TestAssociationHandle(localAddress.copy(protocol = "test"), remoteAddress.copy(protocol = "test"),
+        underlyingTransport, inbound = true)
+    new PekkoProtocolHandle(
+      localAddress,
+      remoteAddress,
+      Promise[AssociationHandle.HandleEventListener](),
+      underlyingHandle,
+      HandshakeInfo(remoteAddress, uid),
+      TestProbe().ref,
+      PekkoPduProtobufCodec,
+      RARP(system).provider.remoteSettings.ProtocolName)
   }
 
   private def bufferWith(seqNumbers: Long*): AckedSendBuffer[Send] =
