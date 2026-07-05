@@ -32,7 +32,8 @@ public final class JavaFlowSupport {
   }
 
   /**
-   * {@link org.apache.pekko.stream.javadsl.Flow]] factories operating with {@code java.util.concurrent.Flow.*} interfaces.
+   * {@link org.apache.pekko.stream.javadsl.Flow} factories operating with {@code
+   * java.util.concurrent.Flow.*} interfaces.
    */
   public static final class Source {
     private Source() {
@@ -75,7 +76,8 @@ public final class JavaFlowSupport {
   }
 
   /**
-   * {@link org.apache.pekko.stream.javadsl.Flow]] factories operating with {@code java.util.concurrent.Flow.*} interfaces.
+   * {@link org.apache.pekko.stream.javadsl.Flow} factories operating with {@code
+   * java.util.concurrent.Flow.*} interfaces.
    */
   public static final class Flow {
     private Flow() {
@@ -89,7 +91,8 @@ public final class JavaFlowSupport {
     }
 
     /**
-     * Creates a Flow from a {@link java.util.concurrent.Flow.Processor>> and returns a materialized value.
+     * Creates a Flow from a {@link java.util.concurrent.Flow.Processor} and returns a materialized
+     * value.
      */
     public static <I, O, M> org.apache.pekko.stream.javadsl.Flow<I, O, M> fromProcessorMat(
         org.apache.pekko.japi.function.Creator<

@@ -18,8 +18,8 @@
 /**
  * Java API for Pekko Persistence Query.
  *
- * <p>This package contains the Java DSL for Pekko Persistence Query. For the Scala DSL see
- * [[org.apache.pekko.persistence.query.scaladsl]].
+ * <p>This package contains the Java DSL for Pekko Persistence Query. For the Scala DSL see {@code
+ * org.apache.pekko.persistence.query.scaladsl}.
  */
 @org.jspecify.annotations.NullMarked
 package org.apache.pekko.persistence.query.javadsl;

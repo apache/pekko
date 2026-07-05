@@ -18,8 +18,8 @@
 /**
  * Java API for Pekko Streams.
  *
- * <p>This package contains the Java DSL for Pekko Streams. For the Scala DSL see
- * [[org.apache.pekko.stream.scaladsl]].
+ * <p>This package contains the Java DSL for Pekko Streams. For the Scala DSL see {@code
+ * org.apache.pekko.stream.scaladsl}.
  */
 @org.jspecify.annotations.NullMarked
 package org.apache.pekko.stream.javadsl;

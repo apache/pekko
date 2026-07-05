@@ -16,7 +16,7 @@ package org.apache.pekko.japi.pf;
 import scala.PartialFunction;
 
 /**
- * A builder for {@link scala.PartialFunction}.
+ * A builder for {@code scala.PartialFunction}.
  *
  * @param <F> the input type, that this PartialFunction will be applied to
  * @param <T> the return type, that the results of the application will have
@@ -31,7 +31,7 @@ abstract class AbstractPFBuilder<F, T> {
   }
 
   /**
-   * Build a {@link scala.PartialFunction} from this builder. After this call the builder will be
+   * Build a {@code scala.PartialFunction} from this builder. After this call the builder will be
    * reset.
    *
    * @return a PartialFunction for this builder.

@@ -14,6 +14,7 @@
 package org.apache.pekko.remote.transport;
 
 // compile only; verify java interop
+@SuppressWarnings("deprecation")
 public class ThrottlerTransportAdapterTest {
 
   public void compileThrottlerTransportAdapterDirections() {

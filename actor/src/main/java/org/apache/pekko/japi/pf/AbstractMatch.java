@@ -16,7 +16,7 @@ package org.apache.pekko.japi.pf;
 import scala.PartialFunction;
 
 /**
- * Version of {@link scala.PartialFunction} that can be built during runtime from Java.
+ * Version of {@code scala.PartialFunction} that can be built during runtime from Java.
  *
  * @param <I> the input type, that this PartialFunction will be applied to
  * @param <R> the return type, that the results of the application will have
@@ -32,7 +32,7 @@ class AbstractMatch<I, R> {
   }
 
   /**
-   * Turn this {@link Match} into a {@link scala.PartialFunction}.
+   * Turn this {@link Match} into a {@code scala.PartialFunction}.
    *
    * @return a partial function representation ot his {@link Match}
    */

@@ -19,7 +19,7 @@
  * Java API for Pekko Persistence Durable State.
  *
  * <p>This package contains the Java DSL for Pekko Persistence Durable State. For the Scala DSL see
- * [[org.apache.pekko.persistence.state.scaladsl]].
+ * {@code org.apache.pekko.persistence.state.scaladsl}.
  */
 @org.jspecify.annotations.NullMarked
 package org.apache.pekko.persistence.state.javadsl;

@@ -18,8 +18,8 @@
 /**
  * Java API for Pekko Persistence TestKit.
  *
- * <p>This package contains the Java DSL for Pekko Persistence TestKit. For the Scala DSL see
- * [[org.apache.pekko.persistence.testkit.scaladsl]].
+ * <p>This package contains the Java DSL for Pekko Persistence TestKit. For the Scala DSL see {@code
+ * org.apache.pekko.persistence.testkit.scaladsl}.
  */
 @org.jspecify.annotations.NullMarked
 package org.apache.pekko.persistence.testkit.javadsl;

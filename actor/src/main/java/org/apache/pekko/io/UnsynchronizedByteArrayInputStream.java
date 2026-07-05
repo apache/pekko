@@ -92,7 +92,7 @@ public class UnsynchronizedByteArrayInputStream extends InputStream {
    * @param data the buffer
    * @param offset the offset into the buffer
    * @param length the length of the buffer
-   * @throws IllegalArgumentException if the offset or length less than zero
+   * @throws java.lang.IllegalArgumentException if the offset or length less than zero
    */
   public UnsynchronizedByteArrayInputStream(final byte[] data, final int offset, final int length) {
     requireNonNegative(offset, "offset");

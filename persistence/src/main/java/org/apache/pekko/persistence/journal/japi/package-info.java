@@ -18,8 +18,8 @@
 /**
  * Java API for Pekko Persistence Journal.
  *
- * <p>This package contains the Java DSL for Pekko Persistence Journal. For the Scala DSL see
- * [[org.apache.pekko.persistence.journal]].
+ * <p>This package contains the Java DSL for Pekko Persistence Journal. For the Scala DSL see {@code
+ * org.apache.pekko.persistence.journal}.
  */
 @org.jspecify.annotations.NullMarked
 package org.apache.pekko.persistence.journal.japi;
