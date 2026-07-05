@@ -124,7 +124,7 @@ final class Source[+Out, +Mat](
    * Materializes this [[Source]] using the [[Sink]], immediately returning the values via the
    * provided [[Sink]] as a new [[Source]].
    *
-   * @param sink A sink which needs to materialize into a [[Future]], typically one
+   * @param sink A sink which needs to materialize into a `Future`, typically one
    *             that collects values such as [[Sink.head]] or [[Sink.seq]]
    * @return A new [[Source]] that contains the results of the provided [[Source]]'s
    *         elements run with the [[Sink]]
@@ -191,7 +191,7 @@ final class Source[+Out, +Mat](
    * if there is a failure signaled in the stream.
    *
    * If the stream is empty (i.e. completes before signalling any elements),
-   * the reduce operator will fail its downstream with a [[NoSuchElementException]],
+   * the reduce operator will fail its downstream with a `NoSuchElementException`,
    * which is semantically in-line with that Scala's standard library collections
    * do in such situations.
    *

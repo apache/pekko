@@ -22,7 +22,7 @@ package org.apache.pekko.stream
  * their input element type (i.e., `T => T`).
  *
  * Built-in stages with this trait: [[scaladsl.Merge]], [[scaladsl.Concat]],
- * [[scaladsl.Interleave]], [[scaladsl.MergePrioritized]], [[scaladsl.OrElse]],
+ * [[scaladsl.Interleave]], [[scaladsl.MergePrioritized]], `OrElse`,
  * and [[scaladsl.MergeSequence]].
  *
  * Note: some of these stages (Concat, Interleave, MergeSequence) have factory methods
@@ -31,7 +31,7 @@ package org.apache.pekko.stream
  * correct, just slightly less optimal. The bypass optimization fires for stages whose
  * factory methods return the raw class (e.g., `Merge`, `MergePrioritized`).
  *
- * This trait is used by [[scaladsl.Source.combine]] (and its Java API counterpart)
+ * This trait is used by `Source.combine` (and its Java API counterpart)
  * to safely optimize the single-source case. When only one source is provided,
  * the fan-in strategy can be bypassed with a direct pass-through if and only if the
  * strategy is type-preserving (output type equals input type). Without this marker,

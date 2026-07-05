@@ -73,7 +73,7 @@ object Helpers {
   /**
    * Converts a "currentTimeMillis"-obtained timestamp accordingly:
    * {{{
-   *   "$hours%02d:$minutes%02d:$seconds%02d.$ms%03dUTC"
+   *   "%%02d:%%02d:%%02d.%%03dUTC" (hours, minutes, seconds, ms)
    * }}}
    *
    * @param timestamp a "currentTimeMillis"-obtained timestamp

@@ -736,7 +736,7 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
    * can be retrieved via this method. After [[grab]] has been called the port is considered to be empty, and further
    * calls to [[grab]] will fail until the port is pulled again and a new element is pushed as a response.
    *
-   * The method [[isAvailable]] can be used to query if the port has an element that can be grabbed or not.
+   * The method `isAvailable` can be used to query if the port has an element that can be grabbed or not.
    */
   final protected def grab[T](in: Inlet[T]): T = {
     val connection = conn(in)
@@ -768,7 +768,7 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
 
   /**
    * Indicates whether there is already a pending pull for the given input port. If this method returns true
-   * then [[isAvailable]] must return false for that same port.
+   * then `isAvailable` must return false for that same port.
    */
   final protected def hasBeenPulled[T](in: Inlet[T]): Boolean = (conn(in).portState & (InReady | InClosed)) == 0
 
@@ -808,7 +808,7 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
 
   /**
    * Emits an element through the given output port. Calling this method twice before a [[pull]] has been arrived
-   * will fail. There can be only one outstanding push request at any given time. The method [[isAvailable]] can be
+   * will fail. There can be only one outstanding push request at any given time. The method `isAvailable` can be
    * used to check if the port is ready to be pushed or not.
    */
   final protected def push[T](out: Outlet[T], elem: T): Unit = {
@@ -861,14 +861,14 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
   final protected def fail[T](out: Outlet[T], ex: Throwable): Unit = interpreter.fail(conn(out), ex)
 
   /**
-   * Automatically invokes [[cancel]] or [[complete]] on all the input or output ports that have been called,
+   * Automatically invokes `cancel` or `complete` on all the input or output ports that have been called,
    * then marks the operator as stopped.
    */
   final def completeStage(): Unit =
     internalCompleteStage(SubscriptionWithCancelException.StageWasCompleted, OptionVal.None)
 
   /**
-   * Automatically invokes [[cancel]] or [[complete]] on all the input or output ports that have been called,
+   * Automatically invokes `cancel` or `complete` on all the input or output ports that have been called,
    * then marks the stage as stopped.
    */
   final def cancelStage(cause: Throwable): Unit =
@@ -893,7 +893,7 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
   }
 
   /**
-   * Automatically invokes [[cancel]] or [[fail]] on all the input or output ports that have been called,
+   * Automatically invokes `cancel` or `fail` on all the input or output ports that have been called,
    * then marks the operator as stopped.
    */
   final def failStage(ex: Throwable): Unit = internalCompleteStage(ex, OptionVal.Some(ex))

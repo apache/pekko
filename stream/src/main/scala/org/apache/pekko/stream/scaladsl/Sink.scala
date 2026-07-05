@@ -187,7 +187,7 @@ object Sink {
 
   /**
    * A `Sink` that materializes into a `Future` of the first value received.
-   * If the stream completes before signaling at least a single element, the Future will be failed with a [[NoSuchElementException]].
+   * If the stream completes before signaling at least a single element, the Future will be failed with a `NoSuchElementException`.
    * If the stream signals an error errors before signaling at least a single element, the Future will be failed with the streams exception.
    *
    * See also [[headOption]].
@@ -211,7 +211,7 @@ object Sink {
 
   /**
    * A `Sink` that materializes into a `Future` of the last value received.
-   * If the stream completes before signaling at least a single element, the Future will be failed with a [[NoSuchElementException]].
+   * If the stream completes before signaling at least a single element, the Future will be failed with a `NoSuchElementException`.
    * If the stream signals an error, the Future will be failed with the stream's exception.
    *
    * See also [[lastOption]], [[takeLast]].
@@ -254,7 +254,7 @@ object Sink {
    * `Seq` is limited to `Int.MaxValue` elements, this Sink will cancel the stream
    * after having received that many elements.
    *
-   * See also [[Flow.limit]], [[Flow.limitWeighted]], [[Flow.take]], [[Flow.takeWithin]], [[Flow.takeWhile]]
+   * See also [[Flow.limit]], [[Flow.limitWeighted]], [[Flow.take]], [[Flow.takeWithin]], `Flow.takeWhile`
    */
   def seq[T]: Sink[T, Future[immutable.Seq[T]]] = Sink.fromGraph(new SeqStage[T, Vector[T]])
 
@@ -274,7 +274,7 @@ object Sink {
    * @return a `Sink` that materializes to a `Future[Long]` with the element count
    * @since 1.3.0
    *
-   * See also [[Flow.limit]], [[Flow.limitWeighted]], [[Flow.take]], [[Flow.takeWithin]], [[Flow.takeWhile]]
+   * See also [[Flow.limit]], [[Flow.limitWeighted]], [[Flow.take]], [[Flow.takeWithin]], `Flow.takeWhile`
    */
   def count[T]: Sink[T, Future[Long]] = Sink.fromGraph(CountSink)
 
@@ -287,7 +287,7 @@ object Sink {
    * `Int.MaxValue` elements. See [The Architecture of Scala 2.13's Collections](https://docs.scala-lang.org/overviews/core/architecture-of-scala-213-collections.html) for more info.
    * This Sink will cancel the stream after having received that many elements.
    *
-   * See also [[Flow.limit]], [[Flow.limitWeighted]], [[Flow.take]], [[Flow.takeWithin]], [[Flow.takeWhile]]
+   * See also [[Flow.limit]], [[Flow.limitWeighted]], [[Flow.take]], [[Flow.takeWithin]], `Flow.takeWhile`
    */
   def collection[T, That](
       implicit cbf: scala.collection.Factory[T, That with immutable.Iterable[?]]): Sink[T, Future[That]] =
@@ -543,7 +543,7 @@ object Sink {
    * if there is a failure signaled in the stream.
    *
    * If the stream is empty (i.e. completes before signalling any elements),
-   * the reduce operator will fail its downstream with a [[NoSuchElementException]],
+   * the reduce operator will fail its downstream with a `NoSuchElementException`,
    * which is semantically in-line with that Scala's standard library collections
    * do in such situations.
    *

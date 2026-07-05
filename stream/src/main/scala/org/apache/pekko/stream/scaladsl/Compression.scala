@@ -32,7 +32,7 @@ object Compression {
   def gzip: Flow[ByteString, ByteString, NotUsed] = gzip(Deflater.BEST_COMPRESSION)
 
   /**
-   * Same as [[gzip]] with a custom level.
+   * Same as `gzip` with a custom level.
    *
    * @param level Compression level (0-9)
    */
@@ -40,7 +40,7 @@ object Compression {
     CompressionUtils.compressorFlow(() => new GzipCompressor(level))
 
   /**
-   * Same as [[gzip]] with a custom level and configurable flush mode.
+   * Same as `gzip` with a custom level and configurable flush mode.
    *
    * @param level Compression level (0-9)
    * @param autoFlush If true will automatically flush after every single element in the stream.
@@ -68,7 +68,7 @@ object Compression {
   def deflate: Flow[ByteString, ByteString, NotUsed] = deflate(Deflater.BEST_COMPRESSION, nowrap = false)
 
   /**
-   * Same as [[deflate]] with configurable level and nowrap
+   * Same as `deflate` with configurable level and nowrap
    *
    * @param level Compression level (0-9)
    * @param nowrap if true then use GZIP compatible compression
@@ -77,7 +77,7 @@ object Compression {
     CompressionUtils.compressorFlow(() => new DeflateCompressor(level, nowrap))
 
   /**
-   * Same as [[deflate]] with configurable level, nowrap and autoFlush.
+   * Same as `deflate` with configurable level, nowrap and autoFlush.
    *
    * @param level Compression level (0-9)
    * @param nowrap if true then use GZIP compatible compression

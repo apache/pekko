@@ -325,7 +325,7 @@ private[pekko] object BalancingDispatcherConfigurator {
 }
 
 /**
- * Configurator for creating [[pekko.dispatch.BalancingDispatcher]].
+ * Configurator for creating `BalancingDispatcher`.
  * Returns the same dispatcher instance for each invocation
  * of the `dispatcher()` method.
  */

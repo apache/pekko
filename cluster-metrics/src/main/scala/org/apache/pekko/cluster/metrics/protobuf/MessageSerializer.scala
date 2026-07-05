@@ -31,7 +31,7 @@ import pekko.remote.ByteStringUtils
 import pekko.serialization.{ BaseSerializer, SerializationExtension, SerializerWithStringManifest, Serializers }
 
 /**
- * Protobuf serializer for [[pekko.cluster.metrics.ClusterMetricsMessage]] types.
+ * Protobuf serializer for `ClusterMetricsMessage` types.
  */
 class MessageSerializer(val system: ExtendedActorSystem) extends SerializerWithStringManifest with BaseSerializer {
 

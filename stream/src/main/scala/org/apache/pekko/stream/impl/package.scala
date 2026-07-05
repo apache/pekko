@@ -17,13 +17,13 @@ package org.apache.pekko.stream
  * The architecture of Apache Pekko Streams internally consists of several distinct layers:
  *
  *  * The DSLs like [[org.apache.pekko.stream.scaladsl.Flow]], [[org.apache.pekko.stream.scaladsl.Source]] etc. are the user facing API
- *    for composing streams. These DSLs are a thin wrappers around the internal [[org.apache.pekko.stream.impl.TraversalBuilder]]
+ *    for composing streams. These DSLs are a thin wrappers around the internal `TraversalBuilder`
  *    builder classes. There are Java alternatives of these DSLs in [[javadsl]] which basically wrap their scala
  *    counterpart, delegating method calls.
  *  * The [[org.apache.pekko.stream.stage.GraphStage]] API is the user facing API for creating new stream operators. These
- *    classes are used by the [[org.apache.pekko.stream.impl.fusing.GraphInterpreter]] which executes islands (subgraphs) of these
+ *    classes are used by the `GraphInterpreter` which executes islands (subgraphs) of these
  *    operators
- *  * The high level DSLs use the [[org.apache.pekko.stream.impl.TraversalBuilder]] classes to build instances of
+ *  * The high level DSLs use the `TraversalBuilder` classes to build instances of
  *    [[org.apache.pekko.stream.impl.Traversal]] which are the representation of a materializable stream description. These builders
  *    are immutable and safely shareable. Unlike the top-level DSLs, these are classic, i.e. elements are treated as
  *    Any.
@@ -33,10 +33,10 @@ package org.apache.pekko.stream
  *    interpreting a [[org.apache.pekko.stream.impl.Traversal]]. It delegates the actual task of creating executable entities
  *    and Publishers/Producers to [[org.apache.pekko.stream.impl.PhaseIsland]]s which are plugins that understand atomic operators
  *    in the graph and able to turn them into executable entities.
- *  * The [[org.apache.pekko.stream.impl.fusing.GraphInterpreter]] and its actor backed wrapper [[org.apache.pekko.stream.impl.fusing.ActorGraphInterpreter]]
+ *  * The `GraphInterpreter` and its actor backed wrapper [[org.apache.pekko.stream.impl.fusing.ActorGraphInterpreter]]
  *    are used to execute synchronous islands (subgraphs) of [[org.apache.pekko.stream.stage.GraphStage]]s.
  *
- * For the execution layer, refer to [[org.apache.pekko.stream.impl.fusing.GraphInterpreter]].
+ * For the execution layer, refer to `GraphInterpreter`.
  *
  * == Design goals ==
  *
@@ -193,7 +193,7 @@ package org.apache.pekko.stream
  *
  *  the port merge1.out must be different from merge2.out.
  *
- *  For efficiency reasons, the linear and graph DSLs use different [[org.apache.pekko.stream.impl.TraversalBuilder]] types to
+ *  For efficiency reasons, the linear and graph DSLs use different `TraversalBuilder` types to
  *  build the [[org.apache.pekko.stream.impl.Traversal]] (we will discuss these next). One of the differences between the two
  *  builders are their approach to port mapping.
  *
@@ -205,7 +205,7 @@ package org.apache.pekko.stream
  *  use any port mapping.
  *
  *  The generic graph builder class [[org.apache.pekko.stream.impl.CompositeTraversalBuilder]] needs port mapping as it allows
- *  adding any kind of builders in any order. When adding a module (encoded as another [[org.apache.pekko.stream.impl.TraversalBuilder]])
+ *  adding any kind of builders in any order. When adding a module (encoded as another `TraversalBuilder`)
  *  there are two entities in play:
  *
  *   * The module (builder) to be added. This builder has a few ports unwired which are usually packaged in a [[Shape]]
@@ -347,7 +347,7 @@ package org.apache.pekko.stream
  *  All what we have discussed so far referred to the "mental array", the global address space in which slots
  *  are assigned to ports. This model describes the wiring of the graph perfectly, but it does not map to the local
  *  data structures needed by materialization when there are islands present. One of the important goals of this
- *  layout data structure is to be able to produce the data structures used by the [[org.apache.pekko.stream.impl.fusing.GraphInterpreter]]
+ *  layout data structure is to be able to produce the data structures used by the `GraphInterpreter`
  *  directly, without much translation. Unfortunately if there is an island inside a traversal, it might leave gaps
  *  in the address space:
  *

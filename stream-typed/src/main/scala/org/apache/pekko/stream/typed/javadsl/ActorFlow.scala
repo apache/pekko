@@ -76,8 +76,8 @@ object ActorFlow {
       .asJava
 
   /**
-   * Use for messages whose response is known to be a [[pekko.pattern.StatusReply]]. When a [[pekko.pattern.StatusReply#success]] response
-   * arrives the future is completed with the wrapped value, if a [[pekko.pattern.StatusReply#error]] arrives the future is instead
+   * Use for messages whose response is known to be a [[pekko.pattern.StatusReply]]. When a `StatusReply.success` response
+   * arrives the future is completed with the wrapped value, if a `StatusReply.error` arrives the future is instead
    * failed.
    */
   def askWithStatus[I, Q, A](
@@ -132,8 +132,8 @@ object ActorFlow {
       .asJava
 
   /**
-   * Use for messages whose response is known to be a [[pekko.pattern.StatusReply]]. When a [[pekko.pattern.StatusReply#success]] response
-   * arrives the future is completed with the wrapped value, if a [[pekko.pattern.StatusReply#error]] arrives the future is instead
+   * Use for messages whose response is known to be a [[pekko.pattern.StatusReply]]. When a `StatusReply.success` response
+   * arrives the future is completed with the wrapped value, if a `StatusReply.error` arrives the future is instead
    * failed.
    */
   def askWithStatus[I, Q, A](
@@ -163,8 +163,8 @@ object ActorFlow {
       .asJava
 
   /**
-   * Use for messages whose response is known to be a [[pekko.pattern.StatusReply]]. When a [[pekko.pattern.StatusReply#success]] response
-   * arrives the future is completed with the wrapped value, if a [[pekko.pattern.StatusReply#error]] arrives the future is instead
+   * Use for messages whose response is known to be a [[pekko.pattern.StatusReply]]. When a `StatusReply.success` response
+   * arrives the future is completed with the wrapped value, if a `StatusReply.error` arrives the future is instead
    * failed.
    */
   def askWithStatusAndContext[I, Q, A, Ctx](

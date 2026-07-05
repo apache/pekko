@@ -300,7 +300,7 @@ object JacksonObjectMapperProvider extends ExtensionId[JacksonObjectMapperProvid
   }
 
   /**
-   * INTERNAL API: Use [[JacksonObjectMapperProvider#create]]
+   * INTERNAL API: Use `JacksonObjectMapperProvider.create`
    *
    * This is needed by one test in Lagom where the ObjectMapper is created without starting and ActorSystem.
    */
@@ -398,7 +398,7 @@ final class JacksonObjectMapperProvider(system: ExtendedActorSystem) extends Ext
    * @param bindingName name of this `ObjectMapper`
    * @param jsonFactory optional `JsonFactory` such as `CBORFactory`, for plain JSON `None` (defaults)
    *                    can be used
-   * @see [[JacksonObjectMapperProvider#getOrCreate]]
+   * @see `JacksonObjectMapperProvider.getOrCreate`
    */
   def create(bindingName: String, jsonFactory: Option[JsonFactory]): ObjectMapper = {
     val log = Logging.getLogger(system, JacksonObjectMapperProvider.getClass)
@@ -422,7 +422,7 @@ final class JacksonObjectMapperProvider(system: ExtendedActorSystem) extends Ext
    * @param bindingName name of this `ObjectMapper`
    * @param jsonFactory optional `JsonFactory` such as `CBORFactory`, for plain JSON `None` (defaults)
    *                    can be used
-   * @see [[JacksonObjectMapperProvider#getOrCreate]]
+   * @see `JacksonObjectMapperProvider.getOrCreate`
    */
   def create(bindingName: String, jsonFactory: Optional[JsonFactory]): ObjectMapper =
     create(bindingName, jsonFactory.toScala)
@@ -477,7 +477,7 @@ class JacksonObjectMapperFactory {
    * return the modules that are to be applied to the `ObjectMapper`.
    *
    * When implementing a `JacksonObjectMapperFactory` with Java the `immutable.Seq` can be
-   * created with [[pekko.japi.Util.immutableSeq]].
+   * created with `Util.immutableSeq`.
    *
    * @param bindingName bindingName name of this `ObjectMapper`
    * @param configuredModules the list of `Modules` that were configured in
@@ -494,7 +494,7 @@ class JacksonObjectMapperFactory {
    * return the features that are to be applied to the `ObjectMapper`.
    *
    * When implementing a `JacksonObjectMapperFactory` with Java the `immutable.Seq` can be
-   * created with [[pekko.japi.Util.immutableSeq]].
+   * created with `Util.immutableSeq`.
    *
    * @param bindingName bindingName name of this `ObjectMapper`
    * @param configuredFeatures the list of `SerializationFeature` that were configured in
@@ -512,7 +512,7 @@ class JacksonObjectMapperFactory {
    * return the features that are to be applied to the `ObjectMapper`.
    *
    * When implementing a `JacksonObjectMapperFactory` with Java the `immutable.Seq` can be
-   * created with [[pekko.japi.Util.immutableSeq]].
+   * created with `Util.immutableSeq`.
    *
    * @param bindingName bindingName name of this `ObjectMapper`
    * @param configuredFeatures the list of `DeserializationFeature` that were configured in
@@ -530,7 +530,7 @@ class JacksonObjectMapperFactory {
    * return the features that are to be applied to the `ObjectMapper`.
    *
    * When implementing a `JacksonObjectMapperFactory` with Java the `immutable.Seq` can be
-   * created with [[pekko.japi.Util.immutableSeq]].
+   * created with `Util.immutableSeq`.
    *
    * @param bindingName bindingName name of this `ObjectMapper`
    * @param configuredFeatures the list of `DateTimeFeature` that were configured in

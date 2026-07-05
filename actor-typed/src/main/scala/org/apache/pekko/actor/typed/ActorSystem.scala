@@ -34,7 +34,7 @@ import com.typesafe.config.{ Config, ConfigFactory }
 
 /**
  * An ActorSystem is home to a hierarchy of Actors. It is created using
- * [[ActorSystem#apply]] from a [[Behavior]] object that describes the root
+ * `ActorSystem.apply` from a [[Behavior]] object that describes the root
  * Actor of this hierarchy and which will create all other Actors beneath it.
  * A system also implements the [[ActorRef]] type, and sending a message to
  * the system directs that message to the root Actor.

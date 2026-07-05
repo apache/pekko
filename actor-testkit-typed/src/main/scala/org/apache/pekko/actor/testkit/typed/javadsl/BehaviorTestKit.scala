@@ -86,7 +86,7 @@ abstract class BehaviorTestKit[T] {
   def runAsk[Res](messageFactory: JFunction[ActorRef[Res], T]): ReplyInbox[Res]
 
   /**
-   * The same as [[runAsk]], but with the response class specified.  This improves type inference in Java
+   * The same as `runAsk`, but with the response class specified.  This improves type inference in Java
    * when asserting on the reply in the same statement as the `runAsk` as in:
    *
    * ```
@@ -102,14 +102,14 @@ abstract class BehaviorTestKit[T] {
     runAsk(messageFactory)
 
   /**
-   * The same as [[runAsk]] but only for requests that result in a response of type [[pekko.pattern.StatusReply]].
+   * The same as `runAsk` but only for requests that result in a response of type [[pekko.pattern.StatusReply]].
    *
    * @since 1.3.0
    */
   def runAskWithStatus[Res](messageFactory: JFunction[ActorRef[StatusReply[Res]], T]): StatusReplyInbox[Res]
 
   /**
-   * The same as [[runAskWithStatus]], but with the response class specified.  This improves type inference in
+   * The same as `runAskWithStatus`, but with the response class specified.  This improves type inference in
    * Java when asserting on the reply in the same statement as the `runAskWithStatus` as in:
    *
    * ```

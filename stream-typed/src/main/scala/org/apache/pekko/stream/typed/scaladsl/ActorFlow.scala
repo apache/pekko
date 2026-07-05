@@ -144,8 +144,8 @@ object ActorFlow {
       implicit timeout: Timeout): Flow[I, A, NotUsed] = askImpl(parallelism)(ref)(makeMessage, (_, o: Future[A]) => o)
 
   /**
-   * Use for messages whose response is known to be a [[pekko.pattern.StatusReply]]. When a [[pekko.pattern.StatusReply#success]] response
-   * arrives the future is completed with the wrapped value, if a [[pekko.pattern.StatusReply#error]] arrives the future is instead
+   * Use for messages whose response is known to be a [[pekko.pattern.StatusReply]]. When a `StatusReply.success` response
+   * arrives the future is completed with the wrapped value, if a `StatusReply.error` arrives the future is instead
    * failed.
    */
   def askWithStatus[I, Q, A](ref: ActorRef[Q])(makeMessage: (I, ActorRef[StatusReply[A]]) => Q)(
@@ -153,8 +153,8 @@ object ActorFlow {
     askWithStatus(2)(ref)(makeMessage)
 
   /**
-   * Use for messages whose response is known to be a [[pekko.pattern.StatusReply]]. When a [[pekko.pattern.StatusReply#success]] response
-   * arrives the future is completed with the wrapped value, if a [[pekko.pattern.StatusReply#error]] arrives the future is instead
+   * Use for messages whose response is known to be a [[pekko.pattern.StatusReply]]. When a `StatusReply.success` response
+   * arrives the future is completed with the wrapped value, if a `StatusReply.error` arrives the future is instead
    * failed.
    */
   def askWithStatus[I, Q, A](parallelism: Int)(ref: ActorRef[Q])(makeMessage: (I, ActorRef[StatusReply[A]]) => Q)(
@@ -186,8 +186,8 @@ object ActorFlow {
       (in, o: Future[A]) => o.map(a => a -> in._2)(ExecutionContext.parasitic))
 
   /**
-   * Use for messages whose response is known to be a [[pekko.pattern.StatusReply]]. When a [[pekko.pattern.StatusReply#success]] response
-   * arrives the future is completed with the wrapped value, if a [[pekko.pattern.StatusReply#error]] arrives the future is instead
+   * Use for messages whose response is known to be a [[pekko.pattern.StatusReply]]. When a `StatusReply.success` response
+   * arrives the future is completed with the wrapped value, if a `StatusReply.error` arrives the future is instead
    * failed.
    */
   def askWithStatusAndContext[I, Q, A, Ctx](ref: ActorRef[Q])(makeMessage: (I, ActorRef[StatusReply[A]]) => Q)(
@@ -195,8 +195,8 @@ object ActorFlow {
     askWithStatusAndContext(2)(ref)(makeMessage)
 
   /**
-   * Use for messages whose response is known to be a [[pekko.pattern.StatusReply]]. When a [[pekko.pattern.StatusReply#success]] response
-   * arrives the future is completed with the wrapped value, if a [[pekko.pattern.StatusReply#error]] arrives the future is instead
+   * Use for messages whose response is known to be a [[pekko.pattern.StatusReply]]. When a `StatusReply.success` response
+   * arrives the future is completed with the wrapped value, if a `StatusReply.error` arrives the future is instead
    * failed.
    */
   def askWithStatusAndContext[I, Q, A, Ctx](parallelism: Int)(ref: ActorRef[Q])(

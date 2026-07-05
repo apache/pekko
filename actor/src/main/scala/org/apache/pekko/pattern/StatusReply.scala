@@ -30,7 +30,7 @@ import pekko.pattern.StatusReply.ErrorMessage
  * Generic top-level message type for replies that signal failure or success. Convenient to use together with the
  * `askWithStatus` ask variants.
  *
- * Create using the factory methods [[StatusReply#success]] and [[StatusReply#error]].
+ * Create using the factory methods [[StatusReply#success]] and `StatusReply.error`.
  *
  * Pekko contains predefined serializers for the wrapper type and the textual error messages.
  *

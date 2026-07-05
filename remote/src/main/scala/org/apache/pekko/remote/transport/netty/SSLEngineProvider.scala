@@ -48,7 +48,7 @@ trait SSLEngineProvider {
 
   /**
    * Create a client SSLEngine with the target hostname and port for hostname verification.
-   * Default implementation delegates to [[createClientSSLEngine()]].
+   * Default implementation delegates to `createClientSSLEngine()`.
    */
   @nowarn("msg=never used")
   def createClientSSLEngine(hostname: String, port: Int): SSLEngine = createClientSSLEngine()

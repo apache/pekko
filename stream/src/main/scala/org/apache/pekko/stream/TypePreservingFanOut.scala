@@ -27,7 +27,7 @@ package org.apache.pekko.stream
  * `T => T` types, because its `partitioner` function provides user-specified routing
  * semantics that would be lost if the stage were bypassed.
  *
- * This trait is used by [[scaladsl.Sink.combine]] (and its Java API counterpart)
+ * This trait is used by `Sink.combine` (and its Java API counterpart)
  * to safely optimize the single-sink case. When only one sink is provided,
  * the fan-out strategy can be bypassed with a direct pass-through if and only if the
  * strategy is type-preserving (output type equals input type). Without this marker,

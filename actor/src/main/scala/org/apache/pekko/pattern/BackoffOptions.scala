@@ -56,7 +56,7 @@ object BackoffOpts {
    * This supervisor should not be used with `Pekko Persistence` child actors.
    * `Pekko Persistence` actors shutdown unconditionally on `persistFailure()`s rather
    * than throw an exception on a failure like normal actors.
-   * [[#onStop]] should be used instead for cases where the child actor
+   * `onStop` should be used instead for cases where the child actor
    * terminates itself as a failure signal instead of the normal behavior of throwing an exception.
    * ***'''
    * You can define another
@@ -110,7 +110,7 @@ object BackoffOpts {
    * This supervisor should not be used with `Pekko Persistence` child actors.
    * `Pekko Persistence` actors shutdown unconditionally on `persistFailure()`s rather
    * than throw an exception on a failure like normal actors.
-   * [[#onStop]] should be used instead for cases where the child actor
+   * `onStop` should be used instead for cases where the child actor
    * terminates itself as a failure signal instead of the normal behavior of throwing an exception.
    * ***'''
    * You can define another
@@ -284,7 +284,7 @@ private[pekko] sealed trait ExtendedBackoffOptions[T <: ExtendedBackoffOptions[T
    * @param supervisorStrategy the supervisorStrategy that the back-off supervisor will use.
    *                           The default supervisor strategy is used as fallback if the specified supervisorStrategy (its decider)
    *                           does not explicitly handle an exception. As the BackoffSupervisor creates a separate actor to handle the
-   *                           backoff process, only a [[OneForOneStrategy]] makes sense here.
+   *                           backoff process, only a `OneForOneStrategy` makes sense here.
    *                           Note that changing the strategy will replace the previously defined maxNrOfRetries.
    */
   def withSupervisorStrategy(supervisorStrategy: OneForOneStrategy): T

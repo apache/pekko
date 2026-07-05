@@ -64,7 +64,7 @@ object CircuitBreaker {
    * Create or find a CircuitBreaker in registry.
    *
    * @param id Circuit Breaker identifier
-   * @param system [[ExtendedActorSystem]] that is storing this [[CircuitBreaker]]
+   * @param system `ExtendedActorSystem` that is storing this [[CircuitBreaker]]
    */
   def apply(id: String)(implicit system: ExtendedActorSystem): CircuitBreaker =
     CircuitBreakersRegistry(system).get(id)
@@ -92,7 +92,7 @@ object CircuitBreaker {
    * Java API: Lookup a CircuitBreaker in registry.
    *
    * @param id Circuit Breaker identifier
-   * @param system [[ExtendedActorSystem]] that is storing this [[CircuitBreaker]]
+   * @param system `ExtendedActorSystem` that is storing this [[CircuitBreaker]]
    */
   def lookup(id: String, system: ExtendedActorSystem): CircuitBreaker =
     apply(id)(system)
@@ -330,7 +330,7 @@ class CircuitBreaker(
     currentState.invoke(body, failureFn)
 
   /**
-   * Java API for [[#withCircuitBreaker]].
+   * Java API for `withCircuitBreaker`.
    *
    * @param body Call needing protected
    * @return [[scala.concurrent.Future]] containing the call result or a
@@ -340,7 +340,7 @@ class CircuitBreaker(
     withCircuitBreaker(body.call)
 
   /**
-   * Java API for [[#withCircuitBreaker]].
+   * Java API for `withCircuitBreaker`.
    *
    * @param body Call needing protected
    * @param defineFailureFn function that define what should be consider failure and thus increase failure count
@@ -356,7 +356,7 @@ class CircuitBreaker(
   }
 
   /**
-   * Java API (8) for [[#withCircuitBreaker]].
+   * Java API (8) for `withCircuitBreaker`.
    *
    * @param body Call needing protected
    * @return [[java.util.concurrent.CompletionStage]] containing the call result or a
@@ -368,7 +368,7 @@ class CircuitBreaker(
     }).asJava
 
   /**
-   * Java API (8) for [[#withCircuitBreaker]].
+   * Java API (8) for `withCircuitBreaker`.
    *
    * @param body Call needing protected
    * @param defineFailureFn function that define what should be consider failure and thus increase failure count
@@ -419,7 +419,7 @@ class CircuitBreaker(
       callTimeout)
 
   /**
-   * Java API for [[#withSyncCircuitBreaker]]. Throws [[java.util.concurrent.TimeoutException]] if the call timed out.
+   * Java API for `withSyncCircuitBreaker`. Throws [[java.util.concurrent.TimeoutException]] if the call timed out.
    *
    * @param body Call needing protected
    * @return The result of the call
@@ -428,7 +428,7 @@ class CircuitBreaker(
     withSyncCircuitBreaker(body.call)
 
   /**
-   * Java API for [[#withSyncCircuitBreaker]]. Throws [[java.util.concurrent.TimeoutException]] if the call timed out.
+   * Java API for `withSyncCircuitBreaker`. Throws [[java.util.concurrent.TimeoutException]] if the call timed out.
    *
    * @param body Call needing protected
    * @param defineFailureFn function that define what should be consider failure and thus increase failure count
@@ -444,7 +444,7 @@ class CircuitBreaker(
   /**
    * Mark a successful call through CircuitBreaker. Sometimes the callee of CircuitBreaker sends back a message to the
    * caller Actor. In such a case, it is convenient to mark a successful call instead of using Future
-   * via [[withCircuitBreaker]]
+   * via `withCircuitBreaker`
    */
   def succeed(): Unit = {
     currentState.callSucceeds()
@@ -453,7 +453,7 @@ class CircuitBreaker(
   /**
    * Mark a failed call through CircuitBreaker. Sometimes the callee of CircuitBreaker sends back a message to the
    * caller Actor. In such a case, it is convenient to mark a failed call instead of using Future
-   * via [[withCircuitBreaker]]
+   * via `withCircuitBreaker`
    */
   def fail(): Unit = {
     currentState.callFails()
