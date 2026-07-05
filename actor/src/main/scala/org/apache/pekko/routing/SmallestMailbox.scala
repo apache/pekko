@@ -92,8 +92,6 @@ class SmallestMailboxRoutingLogic extends RoutingLogic {
     }
   }
 
-  // TODO should we rewrite this not to use isTerminated?
-  @nowarn("msg=deprecated")
   protected def isTerminated(a: Routee): Boolean = a match {
     case ActorRefRoutee(ref) => ref.isTerminated
     case _                   => false
