@@ -19,7 +19,7 @@
  * Java API for Pekko Persistence Snapshot Store.
  *
  * <p>This package contains the Java DSL for Pekko Persistence Snapshot Store. For the Scala DSL see
- * [[org.apache.pekko.persistence.snapshot]].
+ * {@code org.apache.pekko.persistence.snapshot}.
  */
 @org.jspecify.annotations.NullMarked
 package org.apache.pekko.persistence.snapshot.japi;

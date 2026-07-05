@@ -18,8 +18,8 @@
 /**
  * Java API for Pekko Streams TestKit.
  *
- * <p>This package contains the Java DSL for Pekko Streams TestKit. For the Scala DSL see
- * [[org.apache.pekko.stream.testkit.scaladsl]].
+ * <p>This package contains the Java DSL for Pekko Streams TestKit. For the Scala DSL see {@code
+ * org.apache.pekko.stream.testkit.scaladsl}.
  */
 @org.jspecify.annotations.NullMarked
 package org.apache.pekko.stream.testkit.javadsl;
