@@ -519,6 +519,31 @@ class TcpSpec extends StreamSpec("""
       binding.unbind()
     }
 
+    "not throw a NullPointerException when full-close is requested and upstream finishes before the connection is established (#3255)" in {
+      val binding =
+        Tcp()
+          .bind("127.0.0.1", 0)
+          .toMat(Sink.foreach { conn =>
+            conn.flow.join(Flow[ByteString]).run()
+          })(Keep.left)
+          .run()
+          .futureValue
+
+      // `Source.empty` completes synchronously during materialization, i.e. before the outbound
+      // connection is established (the connection ActorRef is still null at that point). With
+      // half-close disabled the upstream-finished handler used to dereference that null connection
+      // (`connection ! Close`) and fail the stage with a NullPointerException. The fix defers the
+      // close until the connection is established, so the stream must complete normally here.
+      val result = Source
+        .empty[ByteString]
+        .via(Tcp().outgoingConnection(binding.localAddress, halfClose = false))
+        .runWith(Sink.ignore)
+
+      result.futureValue should ===(Done)
+
+      binding.unbind()
+    }
+
     "Echo should work even if server is in full close mode" in {
       val serverAddress = temporaryServerAddress()
 
