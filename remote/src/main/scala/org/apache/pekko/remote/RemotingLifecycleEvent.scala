@@ -20,14 +20,14 @@ import pekko.actor.{ ActorSystem, Address }
 import pekko.event.{ Logging, LoggingAdapter }
 import pekko.event.Logging.LogLevel
 
-@nowarn("msg=@SerialVersionUID has no effect")
+@nowarn("msg=@SerialVersionUID (has no effect|does nothing)")
 @SerialVersionUID(1L)
 @deprecated("Classic remoting is deprecated, use Artery", "Akka 2.6.0")
 sealed trait RemotingLifecycleEvent extends Serializable {
   def logLevel: Logging.LogLevel
 }
 
-@nowarn("msg=@SerialVersionUID has no effect")
+@nowarn("msg=@SerialVersionUID (has no effect|does nothing)")
 @SerialVersionUID(1L)
 @deprecated("Classic remoting is deprecated, use Artery", "Akka 2.6.0")
 sealed trait AssociationEvent extends RemotingLifecycleEvent {

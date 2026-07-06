@@ -307,7 +307,7 @@ private[pekko] final case class ActorSelectionMessage(
 /**
  * INTERNAL API
  */
-@nowarn("msg=@SerialVersionUID has no effect on traits")
+@nowarn("msg=@SerialVersionUID (has no effect|does nothing)")
 @SerialVersionUID(1L)
 private[pekko] sealed trait SelectionPathElement
 
