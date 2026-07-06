@@ -177,7 +177,8 @@ class ConsistentHashingShardAllocationStrategySpec extends PekkoSpec {
       allocationStrategy.rebalance(allocations2, Set.empty).futureValue should ===(Set("0"))
 
       val allocations3 =
-        Map(regionA -> Vector("2", "3", "10", "14"), regionB -> Vector("1"), regionC -> Vector.empty, regionD -> Vector("0"))
+        Map(regionA -> Vector("2", "3", "10", "14"), regionB -> Vector("1"), regionC -> Vector.empty,
+          regionD -> Vector("0"))
       allocationStrategy.rebalance(allocations3, Set.empty).futureValue should ===(Set.empty[String])
     }
 
