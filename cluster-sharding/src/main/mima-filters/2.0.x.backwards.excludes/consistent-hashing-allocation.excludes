@@ -15,7 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-# Internal classes affected by refactor related to Collocating shards with consistent hashing
+# Internal classes affected by refactor related to Colocating shards with consistent hashing
 ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.cluster.sharding.internal.AbstractLeastShardAllocationStrategy$")
 ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.cluster.sharding.internal.AbstractLeastShardAllocationStrategy$RegionEntry")
 ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.cluster.sharding.internal.AbstractLeastShardAllocationStrategy$RegionEntry$")
