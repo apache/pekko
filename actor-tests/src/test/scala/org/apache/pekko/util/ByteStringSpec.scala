@@ -1204,7 +1204,7 @@ class ByteStringSpec extends AnyWordSpec with Matchers with Checkers {
       bsCompact.indexOf('a'.toByte, 2, 5) should ===(-1) // before fromIndex, not in [2,5)
 
       // ByteString1 with startIndex > 0: length=26, search range [0,5) has searchLength=5 < 8
-      val arrayLong = ("xyz" + "abcdefghijklmnopqrstuvwxyz").getBytes("UTF-8")
+      val arrayLong = ("xyz" + "abcdefghijklmnopqrstuvwxyz").getBytes(StandardCharsets.UTF_8)
       val bs1 = ByteString1(arrayLong, 3, 26)
       bs1.indexOf('a'.toByte, 0, 5) should ===(0) // found within range
       bs1.indexOf('e'.toByte, 0, 5) should ===(4) // found at last position in range

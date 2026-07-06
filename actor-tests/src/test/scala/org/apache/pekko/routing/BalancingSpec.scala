@@ -14,6 +14,7 @@
 package org.apache.pekko.routing
 
 import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 import java.util.concurrent.atomic.AtomicInteger
 
 import scala.concurrent.{ Await, Future, Promise }
@@ -171,7 +172,7 @@ class BalancingSpec extends PekkoSpec("""
     }
 
     "work with encoded actor names" in {
-      val encName = URLEncoder.encode("abcå6#$€xyz", "utf-8")
+      val encName = URLEncoder.encode("abcå6#$€xyz", StandardCharsets.UTF_8)
       // % is a valid config key character (e.g. %C3%A5)
       system.actorOf(Props[Parent](), encName) ! 1001
       expectMsgType[Int]
