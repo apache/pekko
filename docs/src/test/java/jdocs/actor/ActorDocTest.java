@@ -61,6 +61,7 @@ import org.apache.pekko.actor.Terminated;
 
 // #import-terminated
 
+@SuppressWarnings("unchecked")
 public class ActorDocTest extends AbstractJavaTest {
 
   public static Config config =

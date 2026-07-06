@@ -47,7 +47,7 @@ public final class OptionalUtil {
   // since an implicit cast from java.lang.Long to scala.Long is not available in Java source
   public static scala.Option<Object> convertOptionalToScala(OptionalLong o) {
     if (o.isPresent()) {
-      return new scala.Some(o.getAsLong());
+      return new scala.Some<Object>(o.getAsLong());
     } else {
       return scala.Option.empty();
     }
@@ -57,7 +57,7 @@ public final class OptionalUtil {
   // since an implicit cast from java.lang.Int to scala.Int is not available in Java source
   public static scala.Option<Object> convertOptionalToScala(OptionalInt o) {
     if (o.isPresent()) {
-      return new scala.Some(o.getAsInt());
+      return new scala.Some<Object>(o.getAsInt());
     } else {
       return scala.Option.empty();
     }

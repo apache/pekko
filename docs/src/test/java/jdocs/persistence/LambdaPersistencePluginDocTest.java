@@ -35,6 +35,7 @@ import org.apache.pekko.persistence.snapshot.japi.*;
 // #plugin-imports
 import org.iq80.leveldb.util.FileUtils;
 
+@SuppressWarnings({"deprecation", "unchecked"})
 public class LambdaPersistencePluginDocTest {
 
   static Object o1 =

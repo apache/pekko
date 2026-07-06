@@ -53,7 +53,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.reactivestreams.Publisher;
 
-@SuppressWarnings("serial")
+@SuppressWarnings({"serial", "unchecked"})
 public class FlowTest extends StreamTestJupiter {
   public FlowTest() {
     super(actorSystemResource);

@@ -24,6 +24,7 @@ import org.apache.pekko.actor.typed.javadsl.Behaviors;
 import org.apache.pekko.actor.typed.javadsl.Receive;
 import org.apache.pekko.actor.typed.javadsl.TimerScheduler;
 
+@SuppressWarnings("unchecked")
 public class TailChopping<Reply> extends AbstractBehavior<TailChopping.Command> {
 
   interface Command {}

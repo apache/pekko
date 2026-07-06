@@ -37,7 +37,10 @@ object JdkOptions extends AutoPlugin {
 
   def targetJdkScalacOptions(scalaVersion: String): Seq[String] =
     Seq("-release", JdkOptions.targetJavaVersion) ++ {
-      if (scalaVersion.startsWith("3.")) Seq(s"-Xtarget:${targetJavaVersion}") else Seq.empty
+      CrossVersion.partialVersion(scalaVersion) match {
+        case Some((3, minor)) if minor < 8 => Seq(s"-Xtarget:${targetJavaVersion}")
+        case _                             => Seq.empty
+      }
     }
 
   val targetJdkJavacOptions = Seq("--release", targetJavaVersion)

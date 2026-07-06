@@ -20,6 +20,7 @@ import java.util.List;
 import org.apache.pekko.actor.*;
 
 @Deprecated
+@SuppressWarnings("unchecked")
 public class AbstractPersistentFSMTest {
   // tests have been removed because of flaky test failures, see PR
   // https://github.com/akka/akka/pull/31128

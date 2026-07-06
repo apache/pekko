@@ -66,7 +66,12 @@ jobs:
 
       - name: Report MiMa Binary Issues
         run: |-
-          sbt +mimaReportBinaryIssues
+          # MiMa checks published binary compatibility. The next-Scala lane is
+          # compile/test only and can produce different synthetic signatures from
+          # the current published Scala 3 LTS artifacts.
+          scala_2_13="$(sed -n 's/.*val scala213Version = "\(.*\)".*/\1/p' project/Dependencies.scala)"
+          scala_3="$(sed -n 's/.*val scala3Version = "\(.*\)".*/\1/p' project/Dependencies.scala)"
+          sbt "++${scala_2_13}!" mimaReportBinaryIssues "++${scala_3}!" mimaReportBinaryIssues
 
       - name: Check correct MiMa filter directories
         run: |

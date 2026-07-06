@@ -26,6 +26,7 @@ import org.apache.pekko.actor.typed.javadsl.ActorContext;
 import org.apache.pekko.actor.typed.javadsl.Behaviors;
 import org.apache.pekko.actor.typed.javadsl.Receive;
 
+@SuppressWarnings("unchecked")
 public class Aggregator<Reply, Aggregate> extends AbstractBehavior<Aggregator.Command> {
 
   interface Command {}
