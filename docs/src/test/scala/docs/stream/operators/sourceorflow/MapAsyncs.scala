@@ -76,50 +76,56 @@ object CommonMapAsync {
 
 }
 
-object MapAsyncStrictOrder extends App {
-  import CommonMapAsync._
-  // #mapasync-strict-order
-
-  events
-    .mapAsync(1) { in =>
-      eventHandler(in)
-    }
-    .map { in =>
-      println(s"`mapAsync` emitted event number: $in")
-    }
+object MapAsyncStrictOrder {
+  def main(args: Array[String]): Unit = {
+    import CommonMapAsync._
     // #mapasync-strict-order
-    .runWith(Sink.ignore)
 
+    events
+      .mapAsync(1) { in =>
+        eventHandler(in)
+      }
+      .map { in =>
+        println(s"`mapAsync` emitted event number: $in")
+      }
+      // #mapasync-strict-order
+      .runWith(Sink.ignore)
+
+  }
 }
 
-object MapAsync extends App {
-  import CommonMapAsync._
-  // #mapasync-concurrent
-
-  events
-    .mapAsync(3) { in =>
-      eventHandler(in)
-    }
-    .map { in =>
-      println(s"`mapAsync` emitted event number: $in")
-    }
+object MapAsync {
+  def main(args: Array[String]): Unit = {
+    import CommonMapAsync._
     // #mapasync-concurrent
-    .runWith(Sink.ignore)
 
+    events
+      .mapAsync(3) { in =>
+        eventHandler(in)
+      }
+      .map { in =>
+        println(s"`mapAsync` emitted event number: $in")
+      }
+      // #mapasync-concurrent
+      .runWith(Sink.ignore)
+
+  }
 }
 
-object MapAsyncUnordered extends App {
-  import CommonMapAsync._
-  // #mapasyncunordered
-
-  events
-    .mapAsyncUnordered(3) { in =>
-      eventHandler(in)
-    }
-    .map { in =>
-      println(s"`mapAsyncUnordered` emitted event number: $in")
-    }
+object MapAsyncUnordered {
+  def main(args: Array[String]): Unit = {
+    import CommonMapAsync._
     // #mapasyncunordered
-    .runWith(Sink.ignore)
 
+    events
+      .mapAsyncUnordered(3) { in =>
+        eventHandler(in)
+      }
+      .map { in =>
+        println(s"`mapAsyncUnordered` emitted event number: $in")
+      }
+      // #mapasyncunordered
+      .runWith(Sink.ignore)
+
+  }
 }
