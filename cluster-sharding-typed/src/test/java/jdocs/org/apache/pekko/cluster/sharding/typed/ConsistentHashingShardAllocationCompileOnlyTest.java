@@ -51,7 +51,7 @@ public class ConsistentHashingShardAllocationCompileOnlyTest {
       }
     }
 
-    static EntityTypeKey<Building.Command> typeKey =
+    static final EntityTypeKey<Building.Command> typeKey =
         EntityTypeKey.create(Building.Command.class, "Building");
 
     public interface Command {}
@@ -96,7 +96,7 @@ public class ConsistentHashingShardAllocationCompileOnlyTest {
       }
     }
 
-    static EntityTypeKey<Device.Command> typeKey =
+    static final EntityTypeKey<Device.Command> typeKey =
         EntityTypeKey.create(Device.Command.class, "Device");
 
     public interface Command {}
