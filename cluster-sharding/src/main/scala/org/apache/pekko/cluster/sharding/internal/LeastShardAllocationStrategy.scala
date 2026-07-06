@@ -20,8 +20,8 @@ import org.apache.pekko
 import pekko.actor.ActorRef
 import pekko.annotation.InternalApi
 import pekko.cluster.sharding.ShardRegion.ShardId
-import pekko.cluster.sharding.internal.AbstractLeastShardAllocationStrategy.RegionEntry
-import pekko.cluster.sharding.internal.AbstractLeastShardAllocationStrategy.ShardSuitabilityOrdering
+import pekko.cluster.sharding.internal.ClusterShardAllocationMixin.RegionEntry
+import pekko.cluster.sharding.internal.ClusterShardAllocationMixin.ShardSuitabilityOrdering
 
 /**
  * INTERNAL API
