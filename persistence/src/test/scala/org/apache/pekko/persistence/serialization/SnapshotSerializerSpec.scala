@@ -18,6 +18,7 @@
 package org.apache.pekko.persistence.serialization
 
 import java.nio.ByteOrder
+import java.nio.charset.StandardCharsets
 import java.util.Base64
 
 import annotation.nowarn
@@ -93,7 +94,7 @@ class SnapshotSerializerSpec extends PekkoSpec {
       serializerId shouldEqual snapshotSerializer.identifier
       // header bytes[8..4+headerLength) = manifest as UTF-8 string
       val manifestBytes = bytes.slice(8, 4 + headerLength)
-      val manifest = new String(manifestBytes, "UTF-8")
+      val manifest = new String(manifestBytes, StandardCharsets.UTF_8)
       manifest shouldEqual Serializers.manifestFor(snapshotSerializer, fsmSnapshot)
     }
     "serialize and deserialize a simple string snapshot" in {

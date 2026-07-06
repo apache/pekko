@@ -22,6 +22,7 @@ import sbtwelcome.WelcomePlugin.autoImport._
 
 import java.io.FileInputStream
 import java.io.InputStreamReader
+import java.nio.charset.StandardCharsets
 import java.util.Properties
 
 object PekkoBuild {
@@ -322,7 +323,7 @@ object PekkoBuild {
     val file = new File(fileName)
     if (file.exists()) {
       println("Loading system properties from file `" + fileName + "`")
-      val in = new InputStreamReader(new FileInputStream(file), "UTF-8")
+      val in = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8)
       val props = new Properties
       props.load(in)
       in.close()
