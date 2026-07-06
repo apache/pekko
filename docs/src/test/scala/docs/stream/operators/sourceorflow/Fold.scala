@@ -19,25 +19,27 @@ import pekko.actor.ActorSystem
 import pekko.stream.scaladsl.Source
 
 //#imports
-object Fold extends App {
+object Fold {
+  def main(args: Array[String]): Unit = {
 
-  // #histogram
-  case class Histogram(low: Long = 0, high: Long = 0) {
-    def add(i: Int): Histogram = if (i < 100) copy(low = low + 1) else copy(high = high + 1)
+    // #histogram
+    case class Histogram(low: Long = 0, high: Long = 0) {
+      def add(i: Int): Histogram = if (i < 100) copy(low = low + 1) else copy(high = high + 1)
+    }
+    // #histogram
+
+    implicit val sys: ActorSystem = ActorSystem()
+
+    // #fold
+    Source(1 to 150).fold(Histogram())((acc, n) => acc.add(n)).runForeach(println)
+
+    // Prints: Histogram(99,51)
+    // #fold
+
+    // #foldWhile
+    Source(1 to 100)
+      .foldWhile(0)(elem => elem < 100)(_ + _)
+      .runForeach(println)
+    // #foldWhile
   }
-  // #histogram
-
-  implicit val sys: ActorSystem = ActorSystem()
-
-  // #fold
-  Source(1 to 150).fold(Histogram())((acc, n) => acc.add(n)).runForeach(println)
-
-  // Prints: Histogram(99,51)
-  // #fold
-
-  // #foldWhile
-  Source(1 to 100)
-    .foldWhile(0)(elem => elem < 100)(_ + _)
-    .runForeach(println)
-  // #foldWhile
 }

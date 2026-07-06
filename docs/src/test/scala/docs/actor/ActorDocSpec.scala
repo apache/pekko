@@ -278,15 +278,17 @@ class Swapper extends Actor {
   }
 }
 
-object SwapperApp extends App {
-  val system = ActorSystem("SwapperSystem")
-  val swap = system.actorOf(Props[Swapper](), name = "swapper")
-  swap ! Swap // logs Hi
-  swap ! Swap // logs Ho
-  swap ! Swap // logs Hi
-  swap ! Swap // logs Ho
-  swap ! Swap // logs Hi
-  swap ! Swap // logs Ho
+object SwapperApp {
+  def main(args: Array[String]): Unit = {
+    val system = ActorSystem("SwapperSystem")
+    val swap = system.actorOf(Props[Swapper](), name = "swapper")
+    swap ! Swap // logs Hi
+    swap ! Swap // logs Ho
+    swap ! Swap // logs Hi
+    swap ! Swap // logs Ho
+    swap ! Swap // logs Hi
+    swap ! Swap // logs Ho
+  }
 }
 //#swapper
 

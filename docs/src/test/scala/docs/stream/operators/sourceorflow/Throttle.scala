@@ -23,33 +23,35 @@ import scala.concurrent.duration._
 
 /**
  */
-object Throttle extends App {
+object Throttle {
+  def main(args: Array[String]): Unit = {
 
-  implicit val sys: ActorSystem = ActorSystem("25fps-stream")
+    implicit val sys: ActorSystem = ActorSystem("25fps-stream")
 
-  val frameSource: Source[Int, NotUsed] =
-    Source.fromIterator(() => Iterator.from(0))
+    val frameSource: Source[Int, NotUsed] =
+      Source.fromIterator(() => Iterator.from(0))
 
-  // #throttle
-  val framesPerSecond = 24
+    // #throttle
+    val framesPerSecond = 24
 
-  // val frameSource: Source[Frame,_]
-  val videoThrottling = frameSource.throttle(framesPerSecond, 1.second)
-  // serialize `Frame` and send over the network.
-  // #throttle
+    // val frameSource: Source[Frame,_]
+    val videoThrottling = frameSource.throttle(framesPerSecond, 1.second)
+    // serialize `Frame` and send over the network.
+    // #throttle
 
-  // #throttle-with-burst
-  // val frameSource: Source[Frame,_]
-  val videoThrottlingWithBurst = frameSource.throttle(
-    framesPerSecond,
-    1.second,
-    framesPerSecond * 30, // maximumBurst
-    ThrottleMode.Shaping)
-  // serialize `Frame` and send over the network.
-  // #throttle-with-burst
+    // #throttle-with-burst
+    // val frameSource: Source[Frame,_]
+    val videoThrottlingWithBurst = frameSource.throttle(
+      framesPerSecond,
+      1.second,
+      framesPerSecond * 30, // maximumBurst
+      ThrottleMode.Shaping)
+    // serialize `Frame` and send over the network.
+    // #throttle-with-burst
 
-  videoThrottling.take(1000).to(Sink.foreach(println)).run()
-  videoThrottlingWithBurst.take(1000).to(Sink.foreach(println)).run()
+    videoThrottling.take(1000).to(Sink.foreach(println)).run()
+    videoThrottlingWithBurst.take(1000).to(Sink.foreach(println)).run()
+  }
 }
 
 object ThrottleCommon {

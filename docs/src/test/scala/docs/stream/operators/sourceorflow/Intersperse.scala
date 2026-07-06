@@ -16,16 +16,18 @@ package docs.stream.operators.sourceorflow
 import org.apache.pekko.stream.scaladsl.Sink
 import org.apache.pekko.stream.scaladsl.Source
 
-object Intersperse extends App {
-  import org.apache.pekko.actor.ActorSystem
+object Intersperse {
+  def main(args: Array[String]): Unit = {
+    import org.apache.pekko.actor.ActorSystem
 
-  implicit val system: ActorSystem = ActorSystem()
+    implicit val system: ActorSystem = ActorSystem()
 
-  // #intersperse
-  Source(1 to 4).map(_.toString).intersperse("[", ", ", "]").runWith(Sink.foreach(print))
-  // prints
-  // [1, 2, 3, 4]
-  // #intersperse
+    // #intersperse
+    Source(1 to 4).map(_.toString).intersperse("[", ", ", "]").runWith(Sink.foreach(print))
+    // prints
+    // [1, 2, 3, 4]
+    // #intersperse
 
-  system.terminate()
+    system.terminate()
+  }
 }

@@ -23,15 +23,17 @@ import pekko.actor.ActorSystem
 import pekko.stream.scaladsl.Source
 
 //#imports
-object FoldWhile extends App {
+object FoldWhile {
+  def main(args: Array[String]): Unit = {
 
-  implicit val sys: ActorSystem = ActorSystem()
+    implicit val sys: ActorSystem = ActorSystem()
 
-  // #foldWhile
-  Source(1 to 10)
-    .foldWhile(0)(_ < 10)(_ + _)
-    .runForeach(println)
-  // Expect prints:
-  // 10
-  // #foldWhile
+    // #foldWhile
+    Source(1 to 10)
+      .foldWhile(0)(_ < 10)(_ + _)
+      .runForeach(println)
+    // Expect prints:
+    // 10
+    // #foldWhile
+  }
 }
