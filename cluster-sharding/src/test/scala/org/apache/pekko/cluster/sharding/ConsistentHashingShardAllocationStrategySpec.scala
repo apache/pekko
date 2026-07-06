@@ -81,7 +81,7 @@ class ConsistentHashingShardAllocationStrategySpec extends PekkoSpec {
       val allocations = emptyAllocationsABC
       allocationStrategy.allocateShard(regionA, "0", allocations).futureValue should ===(regionC)
       allocationStrategy.allocateShard(regionA, "1", allocations).futureValue should ===(regionB)
-      allocationStrategy.allocateShard(regionA, "2", allocations).futureValue should ===(regionB)
+      allocationStrategy.allocateShard(regionA, "2", allocations).futureValue should ===(regionA)
       allocationStrategy.allocateShard(regionA, "10", allocations).futureValue should ===(regionA)
     }
 
@@ -90,16 +90,16 @@ class ConsistentHashingShardAllocationStrategySpec extends PekkoSpec {
       val allocations = emptyAllocationsABC
       allocationStrategy.allocateShard(regionA, "0", allocations).futureValue should ===(regionC)
       allocationStrategy.allocateShard(regionA, "1", allocations).futureValue should ===(regionB)
-      allocationStrategy.allocateShard(regionA, "2", allocations).futureValue should ===(regionB)
-      allocationStrategy.allocateShard(regionA, "3", allocations).futureValue should ===(regionC)
+      allocationStrategy.allocateShard(regionA, "2", allocations).futureValue should ===(regionA)
+      allocationStrategy.allocateShard(regionA, "3", allocations).futureValue should ===(regionA)
       allocationStrategy.allocateShard(regionA, "10", allocations).futureValue should ===(regionA)
       allocationStrategy.allocateShard(regionA, "14", allocations).futureValue should ===(regionA)
 
       val allocations2 = allocations - regionC
       allocationStrategy.allocateShard(regionA, "0", allocations2).futureValue should ===(regionA)
       allocationStrategy.allocateShard(regionA, "1", allocations2).futureValue should ===(regionB)
-      allocationStrategy.allocateShard(regionA, "2", allocations2).futureValue should ===(regionB)
-      allocationStrategy.allocateShard(regionA, "3", allocations2).futureValue should ===(regionB)
+      allocationStrategy.allocateShard(regionA, "2", allocations2).futureValue should ===(regionA)
+      allocationStrategy.allocateShard(regionA, "3", allocations2).futureValue should ===(regionA)
       allocationStrategy.allocateShard(regionA, "10", allocations2).futureValue should ===(regionA)
       allocationStrategy.allocateShard(regionA, "14", allocations2).futureValue should ===(regionA)
     }
@@ -109,16 +109,16 @@ class ConsistentHashingShardAllocationStrategySpec extends PekkoSpec {
       val allocations = emptyAllocationsABC
       allocationStrategy.allocateShard(regionA, "0", allocations).futureValue should ===(regionC)
       allocationStrategy.allocateShard(regionA, "1", allocations).futureValue should ===(regionB)
-      allocationStrategy.allocateShard(regionA, "2", allocations).futureValue should ===(regionB)
-      allocationStrategy.allocateShard(regionA, "3", allocations).futureValue should ===(regionC)
+      allocationStrategy.allocateShard(regionA, "2", allocations).futureValue should ===(regionA)
+      allocationStrategy.allocateShard(regionA, "3", allocations).futureValue should ===(regionA)
       allocationStrategy.allocateShard(regionA, "10", allocations).futureValue should ===(regionA)
       allocationStrategy.allocateShard(regionA, "14", allocations).futureValue should ===(regionA)
 
       val allocations2 = allocations.updated(regionD, Vector.empty)
-      allocationStrategy.allocateShard(regionA, "0", allocations2).futureValue should ===(regionC)
+      allocationStrategy.allocateShard(regionA, "0", allocations2).futureValue should ===(regionD)
       allocationStrategy.allocateShard(regionA, "1", allocations2).futureValue should ===(regionB)
-      allocationStrategy.allocateShard(regionA, "2", allocations2).futureValue should ===(regionD)
-      allocationStrategy.allocateShard(regionA, "3", allocations2).futureValue should ===(regionC)
+      allocationStrategy.allocateShard(regionA, "2", allocations2).futureValue should ===(regionA)
+      allocationStrategy.allocateShard(regionA, "3", allocations2).futureValue should ===(regionA)
       allocationStrategy.allocateShard(regionA, "10", allocations2).futureValue should ===(regionA)
       allocationStrategy.allocateShard(regionA, "14", allocations2).futureValue should ===(regionA)
     }
@@ -128,10 +128,10 @@ class ConsistentHashingShardAllocationStrategySpec extends PekkoSpec {
       val allocations = emptyAllocationsABC
       allocationStrategy.allocateShard(regionA, "0", allocations).futureValue should ===(regionC)
       allocationStrategy.allocateShard(regionA, "1", allocations).futureValue should ===(regionB)
-      allocationStrategy.allocateShard(regionA, "2", allocations).futureValue should ===(regionB)
+      allocationStrategy.allocateShard(regionA, "2", allocations).futureValue should ===(regionA)
       allocationStrategy.allocateShard(regionA, "10", allocations).futureValue should ===(regionA)
 
-      val allocations2 = Map(regionA -> Vector("10"), regionB -> Vector("1", "2"), regionC -> Vector("0"))
+      val allocations2 = Map(regionA -> Vector("2", "10"), regionB -> Vector("1"), regionC -> Vector("0"))
       allocationStrategy.rebalance(allocations2, Set.empty).futureValue should ===(Set.empty[String])
     }
 
@@ -140,24 +140,24 @@ class ConsistentHashingShardAllocationStrategySpec extends PekkoSpec {
       val allocations = emptyAllocationsABC
       allocationStrategy.allocateShard(regionA, "0", allocations).futureValue should ===(regionC)
       allocationStrategy.allocateShard(regionA, "1", allocations).futureValue should ===(regionB)
-      allocationStrategy.allocateShard(regionA, "2", allocations).futureValue should ===(regionB)
-      allocationStrategy.allocateShard(regionA, "3", allocations).futureValue should ===(regionC)
+      allocationStrategy.allocateShard(regionA, "2", allocations).futureValue should ===(regionA)
+      allocationStrategy.allocateShard(regionA, "3", allocations).futureValue should ===(regionA)
       allocationStrategy.allocateShard(regionA, "10", allocations).futureValue should ===(regionA)
       allocationStrategy.allocateShard(regionA, "14", allocations).futureValue should ===(regionA)
 
       val allocations2 = Map(
-        regionA -> Vector("10", "14"),
-        regionB -> Vector("1", "2"),
-        regionC -> Vector("0", "3"),
+        regionA -> Vector("2", "3", "10", "14"),
+        regionB -> Vector("1"),
+        regionC -> Vector("0"),
         regionD -> Vector.empty)
-      allocationStrategy.rebalance(allocations2, Set.empty).futureValue should ===(Set("2"))
+      allocationStrategy.rebalance(allocations2, Set.empty).futureValue should ===(Set("0"))
 
       val allocations3 = Map(
-        regionB -> Vector("2", "1"),
-        regionA -> Vector("10", "14"),
+        regionB -> Vector("1"),
+        regionA -> Vector("2", "3", "10", "14"),
         regionD -> Vector.empty,
-        regionC -> Vector("3", "0"))
-      allocationStrategy.rebalance(allocations3, Set.empty).futureValue should ===(Set("2"))
+        regionC -> Vector("0"))
+      allocationStrategy.rebalance(allocations3, Set.empty).futureValue should ===(Set("0"))
     }
 
     "not rebalance more than limit" in {
@@ -174,10 +174,10 @@ class ConsistentHashingShardAllocationStrategySpec extends PekkoSpec {
         regionB -> Vector("1"),
         regionC -> Vector("0"),
         regionD -> Vector.empty)
-      allocationStrategy.rebalance(allocations2, Set.empty).futureValue should ===(Set("2", "3"))
+      allocationStrategy.rebalance(allocations2, Set.empty).futureValue should ===(Set("0"))
 
       val allocations3 =
-        Map(regionA -> Vector("10", "14"), regionB -> Vector("1"), regionC -> Vector("0", "3"), regionD -> Vector("2"))
+        Map(regionA -> Vector("2", "3", "10", "14"), regionB -> Vector("1"), regionC -> Vector.empty, regionD -> Vector("0"))
       allocationStrategy.rebalance(allocations3, Set.empty).futureValue should ===(Set.empty[String])
     }
 
@@ -189,8 +189,8 @@ class ConsistentHashingShardAllocationStrategySpec extends PekkoSpec {
         regionC -> Vector.empty,
         regionD -> Vector.empty)
       allocationStrategy.rebalance(allocations, Set.empty).futureValue should ===(Set("0", "1"))
-      allocationStrategy.rebalance(allocations, Set("0", "1")).futureValue should ===(Set("2", "3"))
-      // 10 and 14 are already at right place
+      allocationStrategy.rebalance(allocations, Set("0", "1")).futureValue should ===(Set.empty[String])
+      // 2, 3, 10 and 14 are already at right place
       allocationStrategy.rebalance(allocations, Set("0", "1", "2", "3")).futureValue should ===(Set.empty[String])
     }
 
