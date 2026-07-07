@@ -22,6 +22,7 @@ import scala.concurrent.duration._
 import org.apache.pekko
 import pekko.Done
 import pekko.stream._
+import pekko.stream.impl.{ PhasedFusingActorMaterializer, StreamSupervisor }
 import pekko.stream.impl.ReactiveStreamsCompliance.SpecViolation
 import pekko.stream.impl.fusing.GraphStages.SimpleLinearGraphStage
 import pekko.stream.scaladsl._
@@ -33,8 +34,7 @@ import pekko.stream.testkit.StreamSpec
 import pekko.stream.testkit.TestPublisher
 import pekko.stream.testkit.TestSubscriber
 import pekko.stream.testkit.Utils._
-import pekko.testkit.EventFilter
-import pekko.testkit.TestLatch
+import pekko.testkit.{ EventFilter, TestLatch }
 
 import org.reactivestreams.Publisher
 import org.reactivestreams.Subscriber
@@ -436,19 +436,59 @@ class ActorGraphInterpreterSpec extends StreamSpec {
       done.future.futureValue // would throw on failure
     }
 
+    "terminate actor graph interpreter when initial shell completes without subfused interpreters" in {
+      val mat = Materializer(system).asInstanceOf[PhasedFusingActorMaterializer]
+
+      Source.empty[Int].to(Sink.ignore).run()(mat)
+
+      // Wait briefly for the stream to complete and the actor to stop
+      mat.supervisor.tell(StreamSupervisor.GetChildren, testActor)
+      val children = expectMsgType[StreamSupervisor.Children]
+      // After Source.empty completes, the actor should have stopped already
+      // (preStart calls context.stop(self) when activeInterpreters is empty)
+      // If children is empty, actor already stopped; otherwise watch and expect termination
+      if (children.children.nonEmpty) {
+        val interpreterRef = children.children.head
+        watch(interpreterRef)
+        expectTerminated(interpreterRef, remainingOrDefault)
+      }
+    }
+
     "continue working with subfused interpreters after initial shell reference is released" in {
-      val mat = Materializer(system)
+      val mat = Materializer(system).asInstanceOf[PhasedFusingActorMaterializer]
 
       // flatMapConcat triggers subfusing: the inner Source is materialized via
       // SubFusingActorMaterializerImpl, which registers additional shells into
       // the same ActorGraphInterpreter actor via registerShell.
-      // The actor must continue processing subfused shells correctly after
-      // the initial shell reference is released in preStart().
-      val result = Source(1 to 3)
-        .flatMapConcat(i => Source(List(i, i * 10)))
-        .runWith(Sink.seq)(mat)
+      val upstream = TestPublisher.probe[Int]()
+      val downstream = TestSubscriber.probe[Int]()
 
-      result.futureValue should ===(Seq(1, 10, 2, 20, 3, 30))
+      Source
+        .fromPublisher(upstream)
+        .flatMapConcat(i => Source.single(i * 10))
+        .to(Sink.fromSubscriber(downstream))
+        .run()(mat)
+
+      mat.supervisor.tell(StreamSupervisor.GetChildren, testActor)
+      val children = expectMsgType[StreamSupervisor.Children]
+      val interpreterRef = children.children.head
+      watch(interpreterRef)
+
+      // Process elements through subfused inner sources
+      downstream.request(3)
+      upstream.sendNext(1)
+      downstream.expectNext(10)
+      upstream.sendNext(2)
+      downstream.expectNext(20)
+      upstream.sendNext(3)
+      downstream.expectNext(30)
+
+      // Complete the upstream: initial shell completes, subfused shells finish
+      upstream.sendComplete()
+      downstream.expectComplete()
+
+      // Actor should terminate: all shells (initial + subfused) have completed
+      expectTerminated(interpreterRef, remainingOrDefault)
     }
 
   }
