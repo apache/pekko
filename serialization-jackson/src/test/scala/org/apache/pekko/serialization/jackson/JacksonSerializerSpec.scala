@@ -1050,13 +1050,7 @@ abstract class JacksonSerializerSpec(serializerName: String)
     }
 
     "serialize message with Enumeration property (using Jackson legacy format)" in {
-      // jackson-module-scala issue #795: Scala 3.8+ blocks the legacy serializer's reflective owner lookup.
-      if (JacksonSerializerSpec.isScala38OrLater)
-        pendingUntilFixed {
-          checkSerialization(Alien("E.T.", Planet.Mars))
-        }
-      else
-        checkSerialization(Alien("E.T.", Planet.Mars))
+      checkSerialization(Alien("E.T.", Planet.Mars))
     }
 
     "serialize message with Enumeration property as a String" in {
