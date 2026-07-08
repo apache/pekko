@@ -4,6 +4,14 @@ Materialize a `BoundedSourceQueue` or `SourceQueue` onto which elements can be p
 
 @ref[Source operators](../index.md#source-operators)
 
+@@@ warning { title="Deprecation notice (since 2.0.0)" }
+
+The `Source.queue` overloads that accept an @apidoc[OverflowStrategy] and materialize a `SourceQueueWithComplete` are **deprecated**. Their asynchronous `offer` @scala[`Future`]@java[`CompletionStage`] can hang indefinitely under `OverflowStrategy.backpressure` when downstream stalls, which has caused real-world deadlocks.
+
+Prefer `Source.queue[T](bufferSize)` (this page), which materializes a @apidoc[BoundedSourceQueue] with synchronous feedback and drop-newest overflow. For backpressure towards the producer, use @ref:[`Source.actorRefWithBackpressure`](actorRefWithBackpressure.md) (single imperative producer) or `MergeHub.source` (multiple producers). See the [migration table](#migrating-from-the-deprecated-sourcequeueint-overflowstrategy-overloads) below for a per-strategy replacement.
+
+@@@
+
 ## Signature (`BoundedSourceQueue`)
 
 @apidoc[Source.queue](Source$) { scala="#queue[T](bufferSize:Int):org.apache.pekko.stream.scaladsl.Source[T,org.apache.pekko.stream.scaladsl.BoundedSourceQueue[T]]" java="#queue(int)" }
@@ -34,6 +42,12 @@ Java
 :   @@snip [IntegrationDocTest.java](/docs/src/test/java/jdocs/stream/IntegrationDocTest.java) { #source-queue-synchronous }
 
 ## Signature (`SourceQueue`)
+
+@@@ warning
+
+These two overloads are deprecated since 2.0.0. See the [migration table](#migrating-from-the-deprecated-sourcequeueint-overflowstrategy-overloads) below.
+
+@@@
 
 @apidoc[Source.queue](Source$) { scala="#queue[T](bufferSize:Int,overflowStrategy:org.apache.pekko.stream.OverflowStrategy):org.apache.pekko.stream.scaladsl.Source[T,org.apache.pekko.stream.scaladsl.SourceQueueWithComplete[T]]" java="#queue(int,org.apache.pekko.stream.OverflowStrategy)" }
 @apidoc[Source.queue](Source$) { scala="#queue[T](bufferSize:Int,overflowStrategy:org.apache.pekko.stream.OverflowStrategy,maxConcurrentOffers:Int):org.apache.pekko.stream.scaladsl.Source[T,org.apache.pekko.stream.scaladsl.SourceQueueWithComplete[T]]" java="#queue(int,org.apache.pekko.stream.OverflowStrategy,int)" }
@@ -69,3 +83,15 @@ Java
 
 @@@
 
+## Migrating from the deprecated `Source.queue(Int, OverflowStrategy)` overloads
+
+| Old call | Replacement |
+|----------|-------------|
+| `Source.queue(n, OverflowStrategy.dropNew)` | `Source.queue[T](n)` — `BoundedSourceQueue` already drops the newest element. |
+| `Source.queue(n, OverflowStrategy.dropHead)` | `Source.queue[T](n)` if drop-new is acceptable. Otherwise build a custom @apidoc[GraphStage] with a FIFO buffer that drops the head. |
+| `Source.queue(n, OverflowStrategy.dropTail)` | Same as above; `BoundedSourceQueue` always drops the newest offer (i.e. the tail). |
+| `Source.queue(n, OverflowStrategy.dropBuffer)` | `Source.queue[T](n)` combined with a @apidoc[GraphStage] that clears the buffer on overflow, or rework the producer to tolerate drops. |
+| `Source.queue(n, OverflowStrategy.fail)` | `Source.queue[T](n)` and, on `QueueOfferResult.Dropped`, call `BoundedSourceQueue.fail` with a `BufferOverflowException`. |
+| `Source.queue(n, OverflowStrategy.backpressure)` | @ref:[`Source.actorRefWithBackpressure`](actorRefWithBackpressure.md) (single imperative producer) or `MergeHub.source` (multiple producers). |
+
+`SourceQueueWithComplete.offer` returned a @scala[`Future[QueueOfferResult]`]@java[`CompletionStage<QueueOfferResult>`]; `BoundedSourceQueue.offer` returns `QueueOfferResult` synchronously. Call sites that previously chained `.map`/`.flatMap` on the offer future can usually be rewritten as a direct `match`/`switch` on the result.

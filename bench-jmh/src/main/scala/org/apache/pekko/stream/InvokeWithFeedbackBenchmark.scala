@@ -15,6 +15,7 @@ package org.apache.pekko.stream
 
 import java.util.concurrent.TimeUnit
 
+import scala.annotation.nowarn
 import scala.concurrent._
 import scala.concurrent.duration._
 
@@ -27,6 +28,7 @@ import pekko.stream.scaladsl._
 @State(Scope.Benchmark)
 @OutputTimeUnit(TimeUnit.SECONDS)
 @BenchmarkMode(Array(Mode.Throughput))
+@nowarn("msg=deprecated")
 class InvokeWithFeedbackBenchmark {
   implicit val system: ActorSystem = ActorSystem("InvokeWithFeedbackBenchmark")
 

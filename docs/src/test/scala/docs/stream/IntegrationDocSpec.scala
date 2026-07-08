@@ -478,7 +478,7 @@ class IntegrationDocSpec extends PekkoSpec(IntegrationDocSpec.config) {
     val bufferSize = 10
     val elementsToProcess = 5
 
-    val queue = Source
+    val queue: BoundedSourceQueue[Int] = Source
       .queue[Int](bufferSize)
       .throttle(elementsToProcess, 3.second)
       .map(x => x * x)
@@ -487,16 +487,15 @@ class IntegrationDocSpec extends PekkoSpec(IntegrationDocSpec.config) {
 
     val source = Source(1 to 10)
 
-    implicit val ec = system.dispatcher
     source
-      .map(x => {
-        queue.offer(x).map {
+      .map { x =>
+        queue.offer(x) match {
           case QueueOfferResult.Enqueued    => println(s"enqueued $x")
           case QueueOfferResult.Dropped     => println(s"dropped $x")
           case QueueOfferResult.Failure(ex) => println(s"Offer failed ${ex.getMessage}")
           case QueueOfferResult.QueueClosed => println("Source Queue closed")
         }
-      })
+      }
       .runWith(Sink.ignore)
     // #source-queue
   }
@@ -519,7 +518,6 @@ class IntegrationDocSpec extends PekkoSpec(IntegrationDocSpec.config) {
 
     val fastElements = 1 to 10
 
-    implicit val ec = system.dispatcher
     fastElements.foreach { x =>
       queue.offer(x) match {
         case QueueOfferResult.Enqueued    => println(s"enqueued $x")

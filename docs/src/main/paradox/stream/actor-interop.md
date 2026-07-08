@@ -128,6 +128,14 @@ use `Sink.actorRefWithBackpressure` or `ask` in `mapAsync`, though.
 
 ### Source.queue
 
+@@@ warning { title="Deprecation notice (since 2.0.0)" }
+
+The `Source.queue(Int, OverflowStrategy)` overloads that this section describes — including `OverflowStrategy.backpressure` — are **deprecated** because their asynchronous `offer` @scala[`Future`]@java[`CompletionStage`] can hang indefinitely when downstream stalls. Use `Source.queue[T](bufferSize)` (materializes a @apidoc[BoundedSourceQueue] with synchronous feedback), or for backpressure towards the producer use @ref:[`Source.actorRefWithBackpressure`](operators/Source/actorRefWithBackpressure.md) or `MergeHub.source`. See @ref:[the Source.queue operator page](operators/Source/queue.md) for a per-strategy migration table.
+
+The snippet below has been updated to the recommended non-deprecated API, so it uses a synchronous `match`/`switch` on `QueueOfferResult` rather than the `pipe`-the-`Future` pattern described in the surrounding prose.
+
+@@@
+
 `Source.queue` is an improvement over `Sink.actorRef`, since it can provide backpressure.
 The `offer` method returns a @scala[`Future`]@java[`CompletionStage`], which completes with the result of the enqueue operation.
 

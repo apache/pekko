@@ -32,6 +32,7 @@ import pekko.testkit.TestProbe
 
 import org.scalatest.time.Span
 
+@nowarn("msg=deprecated")
 class QueueSourceSpec extends StreamSpec {
   implicit val ec: ExecutionContextExecutor = system.dispatcher
   val pause = 300.millis
