@@ -13,13 +13,11 @@
 
 package org.apache.pekko.util
 import java.lang.StackWalker
-import java.lang.reflect.Constructor
-import java.lang.reflect.ParameterizedType
-import java.lang.reflect.Type
+import java.lang.invoke.{ MethodHandle, MethodHandles, MethodType }
+import java.lang.reflect.{ Constructor, InvocationTargetException, Modifier, ParameterizedType, Type }
 
 import scala.annotation.tailrec
 import scala.collection.immutable
-import scala.util.Try
 import scala.util.control.NonFatal
 
 import org.apache.pekko.annotation.InternalApi
@@ -32,6 +30,14 @@ import org.apache.pekko.annotation.InternalApi
  */
 @InternalApi
 private[pekko] object Reflect {
+  private val lookup = MethodHandles.lookup()
+  private val publicLookup = MethodHandles.publicLookup()
+  private val noArgsInvokerType = MethodType.methodType(classOf[AnyRef])
+  private val genericConstructorType = MethodType.methodType(classOf[AnyRef], classOf[Array[AnyRef]])
+  private val invocationTargetExceptionConstructor =
+    lookup.findConstructor(
+      classOf[InvocationTargetException],
+      MethodType.methodType(Void.TYPE, classOf[Throwable]))
 
   /**
    * This optionally holds a function which looks N levels above itself
@@ -59,13 +65,9 @@ private[pekko] object Reflect {
    * @return a new instance from the default constructor of the given class
    */
   private[pekko] def instantiate[T](clazz: Class[T]): T = {
-    val ctor = clazz.getDeclaredConstructor()
-    try ctor.newInstance()
-    catch {
-      case _: IllegalAccessException =>
-        ctor.setAccessible(true)
-        ctor.newInstance()
-    }
+    val constructor = findConstructor(clazz, Nil)
+    ensureInitialized(clazz)
+    instantiate(noArgsConstructorInvoker(constructor))
   }
 
   /**
@@ -73,57 +75,96 @@ private[pekko] object Reflect {
    * Calls findConstructor and invokes it with the given arguments.
    */
   private[pekko] def instantiate[T](clazz: Class[T], args: immutable.Seq[Any]): T = {
-    instantiate(findConstructor(clazz, args), args)
+    val constructor = findConstructor(clazz, args)
+    ensureInitialized(clazz)
+    instantiate(constructorInvoker(constructor), argumentArray(args))
   }
 
   /**
    * INTERNAL API
    * Invokes the constructor with the given arguments.
    */
-  private[pekko] def instantiate[T](constructor: Constructor[T], args: immutable.Seq[Any]): T = {
-    constructor.setAccessible(true)
-    try constructor.newInstance(args.asInstanceOf[Seq[AnyRef]]: _*)
-    catch {
-      case e: IllegalArgumentException =>
-        val argString = args.map(safeGetClass).mkString("[", ", ", "]")
-        throw new IllegalArgumentException(s"constructor $constructor is incompatible with arguments $argString", e)
-    }
+  private[pekko] def instantiate[T](constructor: MethodHandle, args: immutable.Seq[Any]): T = {
+    ensureInitialized(constructor.`type`().returnType())
+    instantiate(constructorInvoker(constructor), argumentArray(args))
   }
+
+  /** INTERNAL API */
+  private[pekko] def instantiate[T](constructorInvoker: MethodHandle, args: Array[AnyRef]): T = {
+    val instance: AnyRef = constructorInvoker.invokeExact(args)
+    instance.asInstanceOf[T]
+  }
+
+  /** INTERNAL API */
+  private[pekko] def instantiate[T](constructorInvoker: MethodHandle): T = {
+    val instance: AnyRef = constructorInvoker.invokeExact()
+    instance.asInstanceOf[T]
+  }
+
+  /** INTERNAL API */
+  private[pekko] def noArgsConstructorInvoker(constructor: MethodHandle): MethodHandle =
+    wrapTargetException(constructor).asFixedArity().asType(noArgsInvokerType)
+
+  /** INTERNAL API */
+  private[pekko] def invokeStaticNoArg[T](
+      clazz: Class[?],
+      method: MethodHandle,
+      callerLookup: MethodHandles.Lookup): T = {
+    ensureInitialized(clazz, callerLookup)
+    val invoker = wrapTargetException(method).asFixedArity().asType(noArgsInvokerType)
+    val result: AnyRef = invoker.invokeExact()
+    result.asInstanceOf[T]
+  }
+
+  /** INTERNAL API */
+  private[pekko] def constructorInvoker(constructor: MethodHandle): MethodHandle =
+    wrapTargetException(constructor)
+      .asFixedArity()
+      .asSpreader(classOf[Array[AnyRef]], constructor.`type`().parameterCount())
+      .asType(genericConstructorType)
+
+  /** INTERNAL API */
+  private[pekko] def argumentArray(args: immutable.Seq[Any]): Array[AnyRef] =
+    args.iterator.map(_.asInstanceOf[AnyRef]).toArray
 
   /**
    * INTERNAL API
    * Implements a primitive form of overload resolution a.k.a. finding the
    * right constructor.
    */
-  private[pekko] def findConstructor[T](clazz: Class[T], args: immutable.Seq[Any]): Constructor[T] = {
+  private[pekko] def findConstructor[T](clazz: Class[T], args: immutable.Seq[Any]): MethodHandle = {
     def error(msg: String): Nothing = {
       val argClasses = args.map(safeGetClass).mkString(", ")
       throw new IllegalArgumentException(s"$msg found on $clazz for arguments [$argClasses]")
     }
 
-    val constructor: Constructor[T] =
-      if (args.isEmpty) Try { clazz.getDeclaredConstructor() }.getOrElse(null)
-      else {
-        val length = args.length
-        val candidates =
-          clazz.getDeclaredConstructors.asInstanceOf[Array[Constructor[T]]].iterator.filter { c =>
-            val parameterTypes = c.getParameterTypes
-            parameterTypes.length == length &&
-            (parameterTypes.iterator.zip(args.iterator).forall {
-              case (found, required) =>
-                found.isInstance(required) || BoxedType(found).isInstance(required) ||
-                (required == null && !found.isPrimitive)
-            })
-          }
-        if (candidates.hasNext) {
-          val cstrtr = candidates.next()
-          if (candidates.hasNext) error("multiple matching constructors")
-          else cstrtr
-        } else null
+    val selectedConstructorType =
+      findConstructorMethodTypeFromClassMetadata(clazz, args).getOrElse(error("no matching constructor"))
+    findConstructorHandle(clazz, selectedConstructorType)
+  }
+
+  private def findConstructorMethodTypeFromClassMetadata[T](clazz: Class[T], args: immutable.Seq[Any])
+      : Option[MethodType] = {
+    def matches(parameterTypes: Array[Class[?]]): Boolean =
+      parameterTypes.length == args.length &&
+      parameterTypes.iterator.zip(args.iterator).forall {
+        case (found, required) =>
+          found.isInstance(required) || BoxedType(found).isInstance(required) ||
+          (required == null && !found.isPrimitive)
       }
 
-    if (constructor eq null) error("no matching constructor")
-    else constructor
+    val candidates = clazz.getDeclaredConstructors.iterator
+      .map(constructorMethodType)
+      .filter(methodType => matches(methodType.parameterArray()))
+      .toList
+    candidates match {
+      case single :: Nil => Some(single)
+      case Nil           => None
+      case _             =>
+        val argClasses = args.map(safeGetClass).mkString(", ")
+        throw new IllegalArgumentException(
+          s"multiple matching constructors found on $clazz for arguments [$argClasses]")
+    }
   }
 
   private def safeGetClass(a: Any): Class[?] =
@@ -134,7 +175,15 @@ private[pekko] object Reflect {
    * @param clazz the class which to instantiate an instance of
    * @return a function which when applied will create a new instance from the default constructor of the given class
    */
-  private[pekko] def instantiator[T](clazz: Class[T]): () => T = () => instantiate(clazz)
+  private[pekko] def instantiator[T](clazz: Class[T]): () => T = {
+    lazy val constructor = noArgsConstructorInvoker(findConstructor(clazz, Nil))
+    lazy val initialized: Unit = ensureInitialized(clazz)
+    () => {
+      val invoker = constructor
+      initialized
+      instantiate(invoker)
+    }
+  }
 
   def findMarker(root: Class[?], marker: Class[?]): Type = {
     @tailrec def rec(curr: Class[?]): Type = {
@@ -152,6 +201,69 @@ private[pekko] object Reflect {
     }
     rec(root)
   }
+
+  private def constructorMethodType(constructor: Constructor[?]): MethodType =
+    MethodType.methodType(Void.TYPE, constructor.getParameterTypes)
+
+  private def findConstructorHandle[T](clazz: Class[T], methodType: MethodType): MethodHandle = {
+    try lookup.findConstructor(clazz, methodType)
+    catch {
+      case _: IllegalAccessException =>
+        try publicLookup.findConstructor(clazz, methodType)
+        catch {
+          case _: IllegalAccessException =>
+            MethodHandles.privateLookupIn(clazz, lookup).findConstructor(clazz, methodType)
+        }
+    }
+  }
+
+  private def wrapTargetException(target: MethodHandle): MethodHandle = {
+    val exceptionThrower =
+      MethodHandles.throwException(target.`type`().returnType(), classOf[InvocationTargetException])
+    val handler = MethodHandles.filterArguments(exceptionThrower, 0, invocationTargetExceptionConstructor)
+    val handlerWithArguments = MethodHandles.dropArguments(handler, 1, target.`type`().parameterList())
+    MethodHandles.catchException(target, classOf[Throwable], handlerWithArguments)
+  }
+
+  private[pekko] def ensureInitialized(clazz: Class[?]): Unit =
+    ensureInitialized(clazz, lookup)
+
+  private def ensureInitialized(clazz: Class[?], callerLookup: MethodHandles.Lookup): Unit = {
+    try callerLookup.ensureInitialized(clazz)
+    catch {
+      case _: IllegalAccessException =>
+        try publicLookup.ensureInitialized(clazz)
+        catch {
+          case _: IllegalAccessException =>
+            MethodHandles.privateLookupIn(clazz, callerLookup).ensureInitialized(clazz)
+        }
+    }
+  }
+
+  private[pekko] def findStaticNoArgMethod(
+      clazz: Class[?],
+      methodName: String,
+      callerLookup: MethodHandles.Lookup): MethodHandle =
+    clazz.getDeclaredMethods.iterator
+      .filter(method =>
+        method.getName == methodName && Modifier.isStatic(method.getModifiers) && method.getParameterCount == 0)
+      .toList match {
+      case method :: Nil =>
+        val methodType = MethodType.methodType(method.getReturnType)
+        try callerLookup.findStatic(clazz, methodName, methodType)
+        catch {
+          case _: IllegalAccessException =>
+            try publicLookup.findStatic(clazz, methodName, methodType)
+            catch {
+              case _: IllegalAccessException =>
+                MethodHandles.privateLookupIn(clazz, callerLookup).findStatic(clazz, methodName, methodType)
+            }
+        }
+      case Nil =>
+        throw new NoSuchMethodException(s"${clazz.getName}.$methodName()")
+      case _ =>
+        throw new IllegalArgumentException(s"multiple static no-arg methods named [$methodName] found on $clazz")
+    }
 
   /**
    * INTERNAL API

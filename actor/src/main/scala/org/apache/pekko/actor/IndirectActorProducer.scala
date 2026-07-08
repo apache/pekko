@@ -105,16 +105,25 @@ private[pekko] class TypedCreatorFunctionConsumer(clz: Class[? <: Actor], creato
  */
 private[pekko] class ArgsReflectConstructor(clz: Class[? <: Actor], args: immutable.Seq[Any])
     extends IndirectActorProducer {
-  private val constructor = Reflect.findConstructor(clz, args)
+  private val constructor = Reflect.constructorInvoker(Reflect.findConstructor(clz, args))
+  private val arguments = Reflect.argumentArray(args)
+  private lazy val initialized: Unit = Reflect.ensureInitialized(clz)
   override def actorClass = clz
-  override def produce() = Reflect.instantiate(constructor, args)
+  override def produce() = {
+    initialized
+    Reflect.instantiate[Actor](constructor, arguments)
+  }
 }
 
 /**
  * INTERNAL API
  */
 private[pekko] class NoArgsReflectConstructor(clz: Class[? <: Actor]) extends IndirectActorProducer {
-  Reflect.findConstructor(clz, List.empty)
+  private val constructor = Reflect.noArgsConstructorInvoker(Reflect.findConstructor(clz, Nil))
+  private lazy val initialized: Unit = Reflect.ensureInitialized(clz)
   override def actorClass = clz
-  override def produce() = Reflect.instantiate(clz)
+  override def produce() = {
+    initialized
+    Reflect.instantiate[Actor](constructor)
+  }
 }

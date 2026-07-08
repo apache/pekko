@@ -17,8 +17,8 @@
 
 package org.apache.pekko.dispatch
 
-import java.lang.invoke.{ MethodHandles, MethodType }
-import java.util.concurrent.{ ExecutorService, ForkJoinPool, ForkJoinWorkerThread, ThreadFactory }
+import java.lang.invoke.{ MethodHandles, MethodType, VarHandle }
+import java.util.concurrent.{ Executor, ExecutorService, ForkJoinPool, ForkJoinWorkerThread, ThreadFactory }
 
 import scala.util.control.NonFatal
 
@@ -30,6 +30,50 @@ import pekko.util.JavaVersion
 private[dispatch] object VirtualThreadSupport {
   private val zero = java.lang.Long.valueOf(0L)
   private val lookup = MethodHandles.publicLookup()
+  private val privateLookup = MethodHandles.lookup()
+  private val newThreadPerTaskExecutorMethodType =
+    MethodType.methodType(classOf[ExecutorService], classOf[ThreadFactory])
+  private val threadFactoryMethodType = MethodType.methodType(classOf[ThreadFactory])
+  private val carrierThreadConstructorMethodType = MethodType.methodType(Void.TYPE, classOf[ForkJoinPool])
+
+  // Cached method/var handles to avoid repeated lookups on every invocation
+  private lazy val newThreadPerTaskExecutorHandle = {
+    val executorsClazz = ClassLoader.getSystemClassLoader.loadClass("java.util.concurrent.Executors")
+    lookup.findStatic(executorsClazz, "newThreadPerTaskExecutor", newThreadPerTaskExecutorMethodType)
+  }
+
+  private lazy val threadBuilderClass = ClassLoader.getSystemClassLoader.loadClass("java.lang.Thread$Builder")
+  private lazy val threadBuilderOfVirtualClass =
+    ClassLoader.getSystemClassLoader.loadClass("java.lang.Thread$Builder$OfVirtual")
+
+  private lazy val ofVirtualHandle =
+    lookup.findStatic(classOf[Thread], "ofVirtual", MethodType.methodType(threadBuilderOfVirtualClass))
+
+  private lazy val ofVirtualNameHandle =
+    lookup.findVirtual(threadBuilderOfVirtualClass, "name",
+      MethodType.methodType(threadBuilderOfVirtualClass, classOf[String]))
+
+  private lazy val ofVirtualNameWithStartHandle =
+    lookup.findVirtual(threadBuilderOfVirtualClass, "name",
+      MethodType.methodType(threadBuilderOfVirtualClass, classOf[String], java.lang.Long.TYPE))
+
+  private lazy val builderFactoryHandle =
+    lookup.findVirtual(threadBuilderClass, "factory", threadFactoryMethodType)
+
+  private lazy val virtualThreadClass =
+    ClassLoader.getSystemClassLoader.loadClass("java.lang.VirtualThread")
+
+  private lazy val defaultSchedulerHandle =
+    MethodHandles
+      .privateLookupIn(virtualThreadClass, privateLookup)
+      .findStaticVarHandle(virtualThreadClass, "DEFAULT_SCHEDULER", classOf[ForkJoinPool])
+
+  private val schedulerHandles = new ClassValue[VarHandle] {
+    override def computeValue(clazz: Class[?]): VarHandle =
+      MethodHandles
+        .privateLookupIn(clazz, privateLookup)
+        .findVarHandle(clazz, "scheduler", classOf[Executor])
+  }
 
   /**
    * Is virtual thread supported
@@ -42,12 +86,7 @@ private[dispatch] object VirtualThreadSupport {
   def newThreadPerTaskExecutor(threadFactory: ThreadFactory): ExecutorService = {
     require(threadFactory != null, "threadFactory should not be null.")
     try {
-      val executorsClazz = ClassLoader.getSystemClassLoader.loadClass("java.util.concurrent.Executors")
-      val newThreadPerTaskExecutorMethod = lookup.findStatic(
-        executorsClazz,
-        "newThreadPerTaskExecutor",
-        MethodType.methodType(classOf[ExecutorService], classOf[ThreadFactory]))
-      newThreadPerTaskExecutorMethod.invoke(threadFactory).asInstanceOf[ExecutorService]
+      newThreadPerTaskExecutorHandle.invoke(threadFactory).asInstanceOf[ExecutorService]
     } catch {
       case NonFatal(e) =>
         // --add-opens java.base/java.lang=ALL-UNNAMED
@@ -84,30 +123,18 @@ private[dispatch] object VirtualThreadSupport {
     require(isSupported, "Virtual thread is not supported.")
     require(prefix != null && prefix.nonEmpty, "prefix should not be null or empty.")
     try {
-      val builderClass = ClassLoader.getSystemClassLoader.loadClass("java.lang.Thread$Builder")
-      val ofVirtualClass = ClassLoader.getSystemClassLoader.loadClass("java.lang.Thread$Builder$OfVirtual")
-      val ofVirtualMethod = lookup.findStatic(classOf[Thread], "ofVirtual", MethodType.methodType(ofVirtualClass))
-      var builder = ofVirtualMethod.invoke()
+      var builder = ofVirtualHandle.invoke()
       // set the name
       if (start <= -1) {
-        val nameMethod = lookup.findVirtual(ofVirtualClass, "name",
-          MethodType.methodType(ofVirtualClass, classOf[String]))
-        builder = nameMethod.invoke(builder, prefix + "-virtual-thread")
+        builder = ofVirtualNameHandle.invoke(builder, prefix + "-virtual-thread")
       } else {
-        val nameMethod = lookup.findVirtual(ofVirtualClass, "name",
-          MethodType.methodType(ofVirtualClass, classOf[String], classOf[Long]))
-        builder = nameMethod.invoke(builder, prefix + "-virtual-thread-", zero)
+        builder = ofVirtualNameWithStartHandle.invoke(builder, prefix + "-virtual-thread-", zero)
       }
       // set the scheduler
       if (executor ne null) {
-        // Use reflection here, method handle is stricter on access control
-        val clazz = builder.getClass
-        val field = clazz.getDeclaredField("scheduler")
-        field.setAccessible(true)
-        field.set(builder, executor)
+        schedulerHandles.get(builder.getClass).set(builder, executor)
       }
-      val factoryMethod = lookup.findVirtual(builderClass, "factory", MethodType.methodType(classOf[ThreadFactory]))
-      factoryMethod.invoke(builder).asInstanceOf[ThreadFactory]
+      builderFactoryHandle.invoke(builder).asInstanceOf[ThreadFactory]
     } catch {
       case NonFatal(e) =>
         // --add-opens java.base/java.lang=ALL-UNNAMED
@@ -119,10 +146,12 @@ private[dispatch] object VirtualThreadSupport {
     // --add-opens java.base/java.lang=ALL-UNNAMED
     // --add-opens java.base/jdk.internal.misc=ALL-UNNAMED
     private val clazz = ClassLoader.getSystemClassLoader.loadClass("jdk.internal.misc.CarrierThread")
-    // TODO lookup.findClass is only available in Java 9
-    private val constructor = clazz.getDeclaredConstructor(classOf[ForkJoinPool])
+    private val constructorHandle =
+      MethodHandles
+        .privateLookupIn(clazz, privateLookup)
+        .findConstructor(clazz, carrierThreadConstructorMethodType)
     override def newThread(pool: ForkJoinPool): ForkJoinWorkerThread = {
-      constructor.newInstance(pool).asInstanceOf[ForkJoinWorkerThread]
+      constructorHandle.invoke(pool).asInstanceOf[ForkJoinWorkerThread]
     }
   }
 
@@ -132,11 +161,7 @@ private[dispatch] object VirtualThreadSupport {
   def getVirtualThreadDefaultScheduler: ForkJoinPool =
     try {
       require(isSupported, "Virtual thread is not supported.")
-      val clazz = ClassLoader.getSystemClassLoader.loadClass("java.lang.VirtualThread")
-      val fieldName = "DEFAULT_SCHEDULER"
-      val field = clazz.getDeclaredField(fieldName)
-      field.setAccessible(true)
-      field.get(null).asInstanceOf[ForkJoinPool]
+      defaultSchedulerHandle.get().asInstanceOf[ForkJoinPool]
     } catch {
       case NonFatal(e) =>
         // --add-opens java.base/java.lang=ALL-UNNAMED

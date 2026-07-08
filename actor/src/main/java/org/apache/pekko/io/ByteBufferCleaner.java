@@ -21,7 +21,7 @@ import static java.lang.invoke.MethodType.methodType;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
-import java.lang.reflect.Field;
+import java.lang.invoke.VarHandle;
 import java.nio.ByteBuffer;
 
 /**
@@ -50,11 +50,12 @@ final class ByteBufferCleaner {
     private final MethodHandle invokeCleaner;
 
     private Java9Cleaner() throws ReflectiveOperationException {
-      final Class<?> unsafeClass = Class.forName("sun.misc.Unsafe");
-      final Field field = unsafeClass.getDeclaredField("theUnsafe");
-      field.setAccessible(true);
-      final Object theUnsafe = field.get(null);
       MethodHandles.Lookup lookup = MethodHandles.lookup();
+      final Class<?> unsafeClass = lookup.findClass("sun.misc.Unsafe");
+      final VarHandle unsafeHandle =
+          MethodHandles.privateLookupIn(unsafeClass, lookup)
+              .findStaticVarHandle(unsafeClass, "theUnsafe", unsafeClass);
+      final Object theUnsafe = unsafeHandle.get();
       MethodHandle invokeCleaner =
           lookup.findVirtual(
               unsafeClass, "invokeCleaner", methodType(void.class, ByteBuffer.class));

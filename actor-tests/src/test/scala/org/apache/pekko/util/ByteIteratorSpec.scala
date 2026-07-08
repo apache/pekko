@@ -35,11 +35,13 @@ class ByteIteratorSpec extends AnyWordSpec with Matchers {
       freshIterator().indexOf(0x10, 3) should be(5)
 
       // There is also an indexOf with another signature, which is hard to invoke :D
+      val otherIndexOfHandle =
+        java.lang.invoke.MethodHandles.publicLookup().findVirtual(
+          classOf[ByteIterator],
+          "indexOf",
+          java.lang.invoke.MethodType.methodType(classOf[Int], classOf[Byte], classOf[Int]))
       def otherIndexOf(iterator: ByteIterator, byte: Byte, from: Int): Int =
-        classOf[ByteIterator]
-          .getMethod("indexOf", classOf[Byte], classOf[Int])
-          .invoke(iterator, byte.asInstanceOf[Object], from.asInstanceOf[Object])
-          .asInstanceOf[Int]
+        otherIndexOfHandle.invoke(iterator, byte, from).asInstanceOf[Int]
 
       otherIndexOf(freshIterator(), 0x20, 1) should be(1)
       otherIndexOf(freshIterator(), 0x10, 1) should be(2)

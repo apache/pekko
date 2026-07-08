@@ -13,6 +13,10 @@
 
 package org.apache.pekko.util
 
+import java.lang.invoke.MethodHandles
+import java.lang.reflect.InvocationTargetException
+import java.util.concurrent.TimeoutException
+
 import scala.annotation.nowarn
 import scala.collection.immutable
 
@@ -29,6 +33,15 @@ object ReflectSpec {
   class MultipleOne(a: A, b: B) {
     def this(a: A) = this(a, null)
     def this(b: B) = this(null, b)
+  }
+
+  final class StringOnly(val value: String)
+  final class PrivateConstructor private (val value: String)
+  object PrivateConstructor {
+    def direct(value: String): PrivateConstructor = new PrivateConstructor(value)
+  }
+  final class ThrowingConstructor(@nowarn("msg=never used") value: String) {
+    throw new IllegalArgumentException("user-bug")
   }
 }
 
@@ -50,7 +63,7 @@ class ReflectSpec extends AnyWordSpec with Matchers {
     }
     "deal with `null` in 1 matching case" in {
       val constructor = Reflect.findConstructor(classOf[One], immutable.Seq(null))
-      constructor.newInstance(null)
+      constructor.invoke(null.asInstanceOf[AnyRef])
     }
     "deal with multiple constructors" in {
       Reflect.findConstructor(classOf[MultipleOne], immutable.Seq(new A))
@@ -61,6 +74,60 @@ class ReflectSpec extends AnyWordSpec with Matchers {
       intercept[IllegalArgumentException] {
         Reflect.findConstructor(classOf[MultipleOne], immutable.Seq(null))
       }
+    }
+    "use public lookup for public JDK constructors in non-open modules" in {
+      val constructor = Reflect.findConstructor(classOf[TimeoutException], immutable.Seq("err"))
+      val instance = Reflect.instantiate[TimeoutException](constructor, immutable.Seq("err"))
+      instance.getMessage should ===("err")
+    }
+    "not confuse null with an Object argument across lookups" in {
+      Reflect.instantiate(classOf[StringOnly], immutable.Seq(null)).value shouldBe null
+      intercept[IllegalArgumentException] {
+        Reflect.findConstructor(classOf[StringOnly], immutable.Seq(new Object))
+      }.getMessage should include("no matching constructor")
+    }
+    "access private constructors when the package is open" in {
+      Reflect.instantiate(classOf[PrivateConstructor], immutable.Seq("private")).value should ===("private")
+    }
+    "preserve InvocationTargetException for constructor failures" in {
+      val exception = intercept[InvocationTargetException] {
+        Reflect.instantiate(classOf[ThrowingConstructor], immutable.Seq("ignored"))
+      }
+      exception.getCause shouldBe a[IllegalArgumentException]
+      exception.getCause.getMessage should ===("user-bug")
+    }
+    "not wrap constructor class-initialization failures" in {
+      val exception = intercept[ExceptionInInitializerError] {
+        Reflect.instantiate(classOf[FailingInitializerConstructor])
+      }
+      exception.getCause.getMessage should ===("constructor-initializer-bug")
+    }
+    "invoke varargs constructors as fixed arity" in {
+      val processBuilder =
+        Reflect.instantiate(classOf[ProcessBuilder], immutable.Seq(Array("echo", "fixed-arity")))
+      processBuilder.command().toArray should ===(Array[AnyRef]("echo", "fixed-arity"))
+    }
+  }
+
+  "Reflect#invokeStaticNoArg" must {
+    "preserve InvocationTargetException for target failures" in {
+      val clazz = classOf[StaticMethodExceptionFixture]
+      val callerLookup = MethodHandles.lookup()
+      val method = Reflect.findStaticNoArgMethod(clazz, "failInBody", callerLookup)
+      val exception = intercept[InvocationTargetException] {
+        Reflect.invokeStaticNoArg[AnyRef](clazz, method, callerLookup)
+      }
+      exception.getCause.getMessage should ===("static-method-user-bug")
+    }
+
+    "not wrap static method class-initialization failures" in {
+      val clazz = classOf[FailingInitializerStaticMethod]
+      val callerLookup = MethodHandles.lookup()
+      val method = Reflect.findStaticNoArgMethod(clazz, "getInstance", callerLookup)
+      val exception = intercept[ExceptionInInitializerError] {
+        Reflect.invokeStaticNoArg[AnyRef](clazz, method, callerLookup)
+      }
+      exception.getCause.getMessage should ===("static-method-initializer-bug")
     }
   }
 

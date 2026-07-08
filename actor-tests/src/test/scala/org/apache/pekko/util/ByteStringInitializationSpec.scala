@@ -46,10 +46,11 @@ class ByteStringInitializationSpec extends AnyWordSpec with Matchers {
         }
       }
 
-      cleanCl
-        .loadClass("org.apache.pekko.util.ByteStringInitTest")
-        .getDeclaredConstructor()
-        .newInstance()
+      val clazz = cleanCl.loadClass("org.apache.pekko.util.ByteStringInitTest")
+      java.lang.invoke.MethodHandles
+        .privateLookupIn(clazz, java.lang.invoke.MethodHandles.lookup())
+        .findConstructor(clazz, java.lang.invoke.MethodType.methodType(Void.TYPE))
+        .invokeWithArguments()
         .asInstanceOf[Runnable]
         .run()
     }
