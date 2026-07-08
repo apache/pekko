@@ -732,12 +732,6 @@ class JacksonJsonSerializerSpec extends JacksonSerializerSpec("jackson-json") {
 }
 
 object JacksonSerializerSpec {
-  private[jackson] def isScala38OrLater: Boolean =
-    scala.util.Properties.versionNumberString.split("[.-]").toList match {
-      case "3" :: minor :: _ => minor.toIntOption.exists(_ >= 8)
-      case _                 => false
-    }
-
   def baseConfig(serializerName: String): String = s"""
     pekko.actor {
       serialization-bindings {
