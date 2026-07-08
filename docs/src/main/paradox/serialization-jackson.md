@@ -77,8 +77,8 @@ and disallowed for deserialization.
 
 @@@ warning
 
-Don't use @javadoc[@JsonTypeInfo(use = Id.CLASS)](com.fasterxml.jackson.annotation.JsonTypeInfo) or @javadoc[ObjectMapper.enableDefaultTyping](com.fasterxml.jackson.databind.ObjectMapper#enableDefaultTyping--) since that is a security risk
-when using @ref:[polymorphic types](#polymorphic-types).
+Don't use @javadoc[@JsonTypeInfo(use = Id.CLASS)](com.fasterxml.jackson.annotation.JsonTypeInfo), @javadoc[@JsonTypeInfo(use = Id.MINIMAL_CLASS)](com.fasterxml.jackson.annotation.JsonTypeInfo)
+or @javadoc[ObjectMapper.enableDefaultTyping](com.fasterxml.jackson.databind.ObjectMapper#enableDefaultTyping--) since that is a security risk when using @ref:[polymorphic types](#polymorphic-types).
 
 @@@
 
@@ -156,8 +156,8 @@ when deserializing.
 
 @@@ warning
 
-Don't use @javadoc[@JsonTypeInfo(use = Id.CLASS)](com.fasterxml.jackson.annotation.JsonTypeInfo) or @javadoc[ObjectMapper.enableDefaultTyping](com.fasterxml.jackson.databind.ObjectMapper#enableDefaultTyping--) since that is a security risk
-when using polymorphic types.
+Don't use @javadoc[@JsonTypeInfo(use = Id.CLASS)](com.fasterxml.jackson.annotation.JsonTypeInfo), @javadoc[@JsonTypeInfo(use = Id.MINIMAL_CLASS)](com.fasterxml.jackson.annotation.JsonTypeInfo)
+or @javadoc[ObjectMapper.enableDefaultTyping](com.fasterxml.jackson.databind.ObjectMapper#enableDefaultTyping--) since that is a security risk when using @ref:[polymorphic types](#polymorphic-types).
 
 @@@
 
