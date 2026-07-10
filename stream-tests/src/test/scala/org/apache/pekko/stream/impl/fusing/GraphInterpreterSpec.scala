@@ -315,6 +315,119 @@ class GraphInterpreterSpec extends StreamSpec with GraphInterpreterSpecKit {
       interpreter.isSuspended should be(false)
     }
 
+    "release all stage references when finishing an active interpreter" in new TestSetup {
+      val source = new UpstreamProbe[Int]("source")
+      val sink = new DownstreamProbe[Int]("sink")
+      val identityStage = GraphStages.identity[Int]
+
+      builder(identityStage)
+        .connect(source, identityStage.in)
+        .connect(identityStage.out, sink)
+        .init()
+
+      lastEvents() should ===(Set.empty[TestEvent])
+
+      sink.requestOne()
+      lastEvents() should ===(Set(RequestOne(source)))
+
+      // Leave an element queued so finish() also has to release connection payloads
+      source.onNext(1, eventLimit = 0)
+      interpreter.isSuspended should be(true)
+      lastEvents() should ===(Set.empty[TestEvent])
+      interpreter.activeStage should not be null
+      interpreter.connections.filter(_ ne null).exists(_.slot != GraphInterpreter.Empty) should be(true)
+
+      val logics = interpreter.logics
+
+      // All logics should be non-null initially
+      logics.foreach(logic => logic should not be null)
+
+      // Abort the still-running interpreter and release all stage references
+      interpreter.finish()
+
+      // After finish(), all stage logics should have been released (set to null)
+      logics.foreach(logic => logic should be(null))
+      interpreter.activeStage should be(null)
+
+      // Connection-level references should also be nulled to fully break Connection -> GraphStageLogic chains
+      interpreter.connections.filter(_ ne null).foreach { conn =>
+        conn.inOwner should be(null)
+        conn.outOwner should be(null)
+        conn.inHandler should be(null)
+        conn.outHandler should be(null)
+        conn.slot should be(GraphInterpreter.Empty)
+      }
+
+      val snapshot = interpreter.toSnapshot
+      snapshot.logics.map(_.label).toSet should ===(Set("<completed>"))
+      snapshot.connections should have size interpreter.connections.count(_ ne null)
+      snapshot.connections.foreach { connection =>
+        connection.in.label should ===("<completed>")
+        connection.out.label should ===("<completed>")
+      }
+    }
+
+    "snapshot connections whose stage ids cannot be resolved" in new TestSetup {
+      val source = new UpstreamProbe[Int]("source")
+      val sink = new DownstreamProbe[Int]("sink")
+      val identityStage = GraphStages.identity[Int]
+
+      builder(identityStage)
+        .connect(source, identityStage.in)
+        .connect(identityStage.out, sink)
+        .init()
+
+      interpreter.connections.head.id = -1
+
+      val connectionSnapshot = interpreter.toSnapshot.connections.head
+      connectionSnapshot.in.label should ===("<completed>")
+      connectionSnapshot.out.label should ===("<completed>")
+    }
+
+    "release references after cascading stage completion" in new TestSetup {
+      val source = new UpstreamProbe[Int]("source")
+      val detachStage = detacher[Int]
+      val identityStage = GraphStages.identity[Int]
+      val sink = new DownstreamProbe[Int]("sink")
+
+      builder(detachStage, identityStage)
+        .connect(source, detachStage.shape.in)
+        .connect(detachStage.shape.out, identityStage.in)
+        .connect(identityStage.out, sink)
+        .init()
+
+      lastEvents() should ===(Set.empty[TestEvent])
+
+      sink.requestOne()
+      lastEvents() should ===(Set(RequestOne(source)))
+
+      val logics = interpreter.logics
+
+      // All logics should be non-null initially
+      logics.foreach(logic => logic should not be null)
+
+      source.onNext(1)
+      lastEvents() should ===(Set(OnNext(sink, 1), RequestOne(source)))
+
+      // Complete the source - this triggers completion of detacher and identity stages.
+      // afterStageHasRun releases logics during normal stage completion (not just in finish()).
+      source.onComplete()
+      lastEvents() should ===(Set(OnComplete(sink)))
+      interpreter.isCompleted should be(true)
+
+      // After normal stage completion via afterStageHasRun, all stage logics should be released
+      logics.foreach(logic => logic should be(null))
+
+      // Connection-level references should also be nulled when both sides are finalized
+      interpreter.connections.filter(_ ne null).foreach { conn =>
+        conn.inOwner should be(null)
+        conn.outOwner should be(null)
+        conn.inHandler should be(null)
+        conn.outHandler should be(null)
+        conn.slot should be(GraphInterpreter.Empty)
+      }
+    }
+
   }
 
 }

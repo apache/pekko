@@ -16,7 +16,7 @@ package org.apache.pekko.stream.impl.fusing
 import scala.concurrent.duration._
 
 import org.apache.pekko
-import pekko.stream.Attributes
+import pekko.stream.{ Attributes, ClosedShape }
 import pekko.stream.impl.fusing.GraphStages.SimpleLinearGraphStage
 import pekko.stream.stage._
 import pekko.stream.testkit.StreamSpec
@@ -88,6 +88,19 @@ class LifecycleInterpreterSpec extends StreamSpec with GraphInterpreterSpecKit {
       upstream.onComplete()
       expectMsg("stop-a")
       expectNoMessage(300.millis)
+    }
+
+    "call preStart before postStop for zero-port stages" in new TestSetup {
+      builder(
+        ZeroPortStage(onStart = () => testActor ! "start-a", onStop = () => testActor ! "stop-a"),
+        ZeroPortStage(onStart = () => testActor ! "start-b", onStop = () => testActor ! "stop-b")).init()
+
+      expectMsg("start-a")
+      expectMsg("stop-a")
+      expectMsg("start-b")
+      expectMsg("stop-b")
+      expectNoMessage(300.millis)
+      interpreter.isCompleted should be(true)
     }
 
     "onError when preStart fails" in new OneBoundedSetup[String](PreStartFailer(() => throw boom)) {
@@ -186,6 +199,16 @@ class LifecycleInterpreterSpec extends StreamSpec with GraphInterpreterSpecKit {
       }
 
     override def toString = "PreStartAndPostStopIdentity"
+  }
+
+  private[pekko] case class ZeroPortStage(onStart: () => Unit, onStop: () => Unit) extends GraphStage[ClosedShape] {
+    override val shape: ClosedShape = ClosedShape
+
+    override def createLogic(attributes: Attributes): GraphStageLogic =
+      new GraphStageLogic(shape) {
+        override def preStart(): Unit = onStart()
+        override def postStop(): Unit = onStop()
+      }
   }
 
   private[pekko] case class PreStartFailer[T](pleaseThrow: () => Unit) extends SimpleLinearGraphStage[T] {

@@ -244,6 +244,28 @@ import pekko.stream.stage._
   // Marks whether a stage has been finalized (finalizeStage been called) or not
   private val finalizedMark = Array.fill(logics.length)(false)
 
+  // Number of stages whose preStart has been invoked. Zero-port stages are completed from construction, so
+  // finalization scans during init must not include later stages that have not been started yet.
+  private var initializedStages = 0
+
+  // Connection owners are released when their stages complete, but snapshots still need stable endpoint identities.
+  private val connectionInStageIds = connectionStageIds(isInput = true)
+  private val connectionOutStageIds = connectionStageIds(isInput = false)
+
+  private def connectionStageIds(isInput: Boolean): Array[Int] = {
+    val stageIds = new Array[Int](connections.length)
+    var i = 0
+    while (i < connections.length) {
+      val connection = connections(i)
+      if (connection ne null) {
+        val owner = if (isInput) connection.inOwner else connection.outOwner
+        stageIds(i) = if (owner ne null) owner.stageId else -1
+      } else stageIds(i) = -1
+      i += 1
+    }
+    stageIds
+  }
+
   private var _subFusingMaterializer: Materializer = _
   private lazy val defaultErrorReportingLogLevel = LogLevels.defaultErrorLevel(materializer.system)
 
@@ -330,6 +352,7 @@ import pekko.stream.stage._
           log.error(e, "Error during preStart in [{}]: {}", logic.toString, e.getMessage)
           logic.failStage(e)
       }
+      initializedStages = i + 1
       afterStageHasRun(logic)
       i += 1
     }
@@ -342,25 +365,61 @@ import pekko.stream.stage._
     var i = 0
     while (i < logics.length) {
       val logic = logics(i)
-      if (!isStageCompleted(logic) && !isStageFinalized(logic)) {
-        markStageFinalized(logic)
-        finalizeStage(logic)
+      if (logic ne null) {
+        if (!isStageFinalized(logic)) {
+          markStageFinalized(logic)
+          finalizeStage(logic)
+        }
+        releaseStage(logic)
       }
       i += 1
+    }
+    activeStage = null
+    pendingFinalization = false
+
+    // Release connection references and any in-flight payloads retained by the stopped interpreter
+    var j = 0
+    while (j < connections.length) {
+      val conn = connections(j)
+      if (conn ne null) {
+        conn.inHandler = null
+        conn.outHandler = null
+        conn.inOwner = null
+        conn.outOwner = null
+        conn.slot = Empty
+      }
+      j += 1
     }
   }
 
   // Debug name for a connections input part
-  private def inOwnerName(connection: Connection): String = connection.inOwner.toString
+  private def inOwnerName(connection: Connection): String =
+    if (connection.inOwner ne null) connection.inOwner.toString else "<completed>"
 
   // Debug name for a connections output part
-  private def outOwnerName(connection: Connection): String = connection.outOwner.toString
+  private def outOwnerName(connection: Connection): String =
+    if (connection.outOwner ne null) connection.outOwner.toString else "<completed>"
+
+  private def stageIdFor(stageIds: Array[Int], connection: Connection): Int = {
+    val connectionId = connection.id
+    if (connectionId >= 0 && connectionId < stageIds.length) stageIds(connectionId) else -1
+  }
+
+  private def connectionInStageId(connection: Connection): Int = stageIdFor(connectionInStageIds, connection)
+
+  private def connectionOutStageId(connection: Connection): Int = stageIdFor(connectionOutStageIds, connection)
+
+  private def logicName(stageId: Int): String =
+    if (stageId >= 0 && stageId < logics.length) {
+      val logic = logics(stageId)
+      if (logic ne null) logic.toString else "<completed>"
+    } else "<completed>"
 
   // Debug name for a connections input part
-  private def inLogicName(connection: Connection): String = logics(connection.inOwner.stageId).toString
+  private def inLogicName(connection: Connection): String = logicName(connectionInStageId(connection))
 
   // Debug name for a connections output part
-  private def outLogicName(connection: Connection): String = logics(connection.outOwner.stageId).toString
+  private def outLogicName(connection: Connection): String = logicName(connectionOutStageId(connection))
 
   private def shutdownCounters: String =
     shutdownCounter.map(x => if (x >= KeepGoingFlag) s"${x & KeepGoingMask}(KeepGoing)" else x.toString).mkString(",")
@@ -435,7 +494,6 @@ import pekko.stream.stage._
           case NonFatal(e) => reportStageError(e)
         }
         if (pendingFinalization) {
-          pendingFinalization = false
           afterStageHasRun(activeStage)
         }
 
@@ -471,7 +529,6 @@ import pekko.stream.stage._
             case NonFatal(e) => reportStageError(e)
           }
           if (pendingFinalization) {
-            pendingFinalization = false
             afterStageHasRun(activeStage)
           }
         }
@@ -485,7 +542,6 @@ import pekko.stream.stage._
             case NonFatal(e) => reportStageError(e)
           }
           if (pendingFinalization) {
-            pendingFinalization = false
             afterStageHasRun(activeStage)
           }
         }
@@ -630,12 +686,67 @@ import pekko.stream.stage._
     queueTail += 1
   }
 
-  def afterStageHasRun(logic: GraphStageLogic): Unit =
-    if (isStageCompleted(logic) && !isStageFinalized(logic)) {
-      markStageFinalized(logic)
-      runningStages -= 1
-      finalizeStage(logic)
+  def afterStageHasRun(logic: GraphStageLogic): Unit = {
+    if ((logic ne null) && isStageCompleted(logic) && !isStageFinalized(logic))
+      pendingFinalization = true
+
+    while (pendingFinalization) {
+      pendingFinalization = false
+      var stageId = 0
+      while (stageId < initializedStages) {
+        val completedLogic = logics(stageId)
+        if ((completedLogic ne null) && isStageCompleted(completedLogic) && !isStageFinalized(completedLogic)) {
+          markStageFinalized(completedLogic)
+          runningStages -= 1
+          finalizeStage(completedLogic)
+          releaseStage(completedLogic)
+        }
+        stageId += 1
+      }
     }
+  }
+
+  private def hasAvailableElement(connection: Connection): Boolean = {
+    val state = connection.portState
+    val normalArrived = (state & (InReady | InFailed | InClosed)) == InReady
+
+    if (normalArrived) connection.slot.asInstanceOf[AnyRef] ne Empty
+    else if ((state & (InReady | InClosed | InFailed)) == (InReady | InClosed))
+      connection.slot match {
+        case Empty | _: Cancelled => false
+        case _                    => true
+      }
+    else if ((state & (InReady | InFailed)) == (InReady | InFailed))
+      connection.slot match {
+        case Failed(_, elem) => elem.asInstanceOf[AnyRef] ne Empty
+        case _               => false
+      }
+    else false
+  }
+
+  private def releaseStage(logic: GraphStageLogic): Unit = {
+    var i = 0
+    while (i < logic.portToConn.length) {
+      val connection = logic.portToConn(i)
+      if (connection ne null) {
+        if (connection.inOwner eq logic) {
+          connection.inOwner = null
+          connection.inHandler = null
+        }
+        if (connection.outOwner eq logic) {
+          connection.outOwner = null
+          connection.outHandler = null
+        }
+        // Completion and failure may follow an onPush before the element is grabbed. Keep that element available
+        // even after both stages have stopped, while still dropping payloads that can no longer be observed.
+        if ((connection.inOwner eq null) && (connection.outOwner eq null) && !hasAvailableElement(connection))
+          connection.slot = Empty
+      }
+      i += 1
+    }
+    if (activeStage eq logic) activeStage = null
+    logics(logic.stageId) = null
+  }
 
   // Returns true if the given stage is already completed
   def isStageCompleted(stage: GraphStageLogic): Boolean = (stage ne null) && shutdownCounter(stage.stageId) == 0
@@ -701,7 +812,8 @@ import pekko.stream.stage._
       enqueue(connection)
     } else if ((currentState & (InClosed | Pushing | Pulling | OutClosed)) == 0) enqueue(connection)
 
-    if ((currentState & OutClosed) == 0) completeConnection(connection.outOwner.stageId)
+    if ((currentState & OutClosed) == 0 && (connection.outOwner ne null))
+      completeConnection(connection.outOwner.stageId)
   }
 
   @InternalStableApi
@@ -720,7 +832,8 @@ import pekko.stream.stage._
         enqueue(connection)
       }
     }
-    if ((currentState & OutClosed) == 0) completeConnection(connection.outOwner.stageId)
+    if ((currentState & OutClosed) == 0 && (connection.outOwner ne null))
+      completeConnection(connection.outOwner.stageId)
   }
 
   @InternalStableApi
@@ -738,7 +851,7 @@ import pekko.stream.stage._
         enqueue(connection)
       }
     }
-    if ((currentState & InClosed) == 0) completeConnection(connection.inOwner.stageId)
+    if ((currentState & InClosed) == 0 && (connection.inOwner ne null)) completeConnection(connection.inOwner.stageId)
   }
 
   /**
@@ -751,15 +864,20 @@ import pekko.stream.stage._
   def toSnapshot: RunningInterpreter = {
 
     val logicSnapshots = logics.zipWithIndex.map {
-      case (logic, idx) =>
+      case (logic, idx) if logic ne null =>
         LogicSnapshotImpl(idx, logic.toString, logic.attributes)
+      case (_, idx) =>
+        LogicSnapshotImpl(idx, "<completed>", Attributes.none)
     }
-    val logicIndexes = logics.zipWithIndex.map { case (stage, idx) => stage -> idx }.toMap
+    def safeLogicSnapshot(stageId: Int): LogicSnapshotImpl =
+      if (stageId >= 0 && stageId < logicSnapshots.length) logicSnapshots(stageId)
+      else LogicSnapshotImpl(stageId, "<completed>", Attributes.none)
+
     val connectionSnapshots = connections.filter(_ ne null).map { connection =>
       ConnectionSnapshotImpl(
         connection.id,
-        logicSnapshots(logicIndexes(connection.inOwner)),
-        logicSnapshots(logicIndexes(connection.outOwner)),
+        safeLogicSnapshot(connectionInStageId(connection)),
+        safeLogicSnapshot(connectionOutStageId(connection)),
         connection.portState match {
           case InReady | Pushing                                           => ConnectionSnapshot.ShouldPull
           case OutReady | Pulling                                          => ConnectionSnapshot.ShouldPush
