@@ -395,15 +395,18 @@ class TcpConnectionSpec extends PekkoSpec("""
           val maxBufferSize = 1 * 1024
           val ts = "t" * maxBufferSize
           val us = "u" * (maxBufferSize / 2)
+          val tsAndUs = ts ++ us
 
           // send a batch that is bigger than the default buffer to make sure we don't recurse and
           // send more than one Received messages
-          serverSideChannel.write(ByteBuffer.wrap((ts ++ us).getBytes("ASCII")))
+          serverSideChannel.write(ByteBuffer.wrap(tsAndUs.getBytes("ASCII"))) should ===(tsAndUs.length)
+          clientSelectionKey should be(selectedAs(OP_READ, remainingOrDefault))
           connectionHandler.expectNoMessage(100.millis)
 
           connectionActor ! ResumeReading
           connectionHandler.expectMsgType[Received].data.decodeString("ASCII") should ===(ts)
 
+          clientSelectionKey should be(selectedAs(OP_READ, remainingOrDefault))
           connectionHandler.expectNoMessage(100.millis)
 
           connectionActor ! ResumeReading
@@ -412,7 +415,8 @@ class TcpConnectionSpec extends PekkoSpec("""
           connectionHandler.expectNoMessage(100.millis)
 
           val vs = "v" * (maxBufferSize / 2)
-          serverSideChannel.write(ByteBuffer.wrap(vs.getBytes("ASCII")))
+          serverSideChannel.write(ByteBuffer.wrap(vs.getBytes("ASCII"))) should ===(vs.length)
+          clientSelectionKey should be(selectedAs(OP_READ, remainingOrDefault))
 
           connectionActor ! ResumeReading
 
