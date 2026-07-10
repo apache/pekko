@@ -793,8 +793,12 @@ class RemotingSpec extends PekkoSpec(RemotingSpec.cfg) with ImplicitSender with 
           case _                                  => false
         }
 
-        outboundRemoteHandle.association.write(payload("after-handoff-failure"))
-        receiverProbe.expectMsg("after-handoff-failure")
+        // The read-only handle disassociation and resuming the outbound reader are handled by different actors.
+        // Retry until the outbound reader has processed ResumeReading.
+        awaitAssert {
+          outboundRemoteHandle.association.write(payload("after-handoff-failure"))
+          receiverProbe.expectMsg(500.millis, "after-handoff-failure")
+        }
       } finally shutdown(thisSystem)
 
     }
