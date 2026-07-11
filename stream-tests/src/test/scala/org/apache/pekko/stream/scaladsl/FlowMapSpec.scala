@@ -31,6 +31,32 @@ class FlowMapSpec extends StreamSpec("""
       TestConfig.RandomTestRange.foreach(_ => runScript(script)(_.map(_.toString)))
     }
 
+    "preserve an element across alternating interface-typed maps" in {
+      trait Left {
+        def toRight: Right
+      }
+      trait Right {
+        def toLeft: Left
+      }
+      final class Payload extends Left with Right {
+        override def toRight: Right = this
+        override def toLeft: Left = this
+      }
+
+      val payload = new Payload
+      val result =
+        Source
+          .single[Left](payload)
+          .map[Right](_.toRight)
+          .map[Left](_.toLeft)
+          .map[Right](_.toRight)
+          .map[Left](_.toLeft)
+          .runWith(Sink.head)
+          .futureValue
+
+      result shouldBe theSameInstanceAs(payload)
+    }
+
     "not blow up with high request counts" in {
       val probe = TestSubscriber.manualProbe[Int]()
       Source(List(1))
