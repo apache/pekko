@@ -212,7 +212,9 @@ final class PersistencePluginProxy(config: Config) extends Actor with Stash with
           }
         case ReplayMessages(_, _, _, _, persistentActor) =>
           persistentActor ! ReplayMessagesFailure(timeoutException())
-        case DeleteMessagesTo(_, toSequenceNr, persistentActor) =>
+        // The following ReplayMessages request has already failed, so control messages don't need a response.
+        case ReplayMessagesWithBatching(_) | ReplayMessagesCancel | ReplayBatchAck(_) | ReplayBatchCancel(_) => ()
+        case DeleteMessagesTo(_, toSequenceNr, persistentActor)                                              =>
           persistentActor ! DeleteMessagesFailure(timeoutException(), toSequenceNr)
       }
 

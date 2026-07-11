@@ -253,7 +253,12 @@ private[persistence] trait Eventsourced
 
   /** INTERNAL API. */
   override protected[pekko] def aroundReceive(receive: Receive, message: Any): Unit =
-    currentState.stateReceive(receive, message)
+    message match {
+      case ReplayBatchResponse(`instanceId`, response) if currentState.recoveryRunning =>
+        currentState.stateReceive(receive, response)
+      case _: ReplayBatchResponse => // stale or late replay response
+      case other                  => currentState.stateReceive(receive, other)
+    }
 
   /** INTERNAL API. */
   override protected[pekko] def aroundPreStart(): Unit = {
@@ -684,6 +689,7 @@ private[persistence] trait Eventsourced
             }
         }
         changeState(recovering(recoveryBehavior, timeout))
+        journal ! ReplayMessagesWithBatching(instanceId)
         journal ! ReplayMessages(lastSequenceNr + 1L, toSnr, replayMax, persistenceId, self)
       }
 
@@ -762,7 +768,7 @@ private[persistence] trait Eventsourced
 
       override def recoveryRunning: Boolean = _recoveryRunning
 
-      override def stateReceive(receive: Receive, message: Any) =
+      override def stateReceive(receive: Receive, message: Any): Unit =
         try message match {
             case ReplayedMessage(p) =>
               try {
@@ -776,6 +782,9 @@ private[persistence] trait Eventsourced
                   finally context.stop(self)
                   returnRecoveryPermit()
               }
+            case ReplayBatchReady(replayId) =>
+              eventSeenInInterval = true
+              journal ! ReplayBatchAck(replayId)
             case RecoverySuccess(highestJournalSeqNr) =>
               timeoutCancellable.cancel()
               onReplaySuccess() // callback for subclass implementation

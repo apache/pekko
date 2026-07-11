@@ -13,7 +13,9 @@
 
 package org.apache.pekko.persistence.journal
 
-import scala.collection.immutable
+import java.util.concurrent.atomic.AtomicLong
+
+import scala.collection.{ immutable, mutable }
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 import scala.concurrent.duration._
@@ -69,9 +71,137 @@ trait AsyncWriteJournal extends Actor with WriteJournalBase with AsyncRecovery {
     // cannot be a val in the trait due to binary compatibility
     val replayDebugEnabled: Boolean = config.getBoolean("replay-filter.debug")
     val enableGlobalWriteResponseOrder: Boolean = config.getBoolean("write-response-global-order")
+    val replayBatchSize: Long = config.getLong("replay-batch-size")
+    require(replayBatchSize > 0L, s"replay-batch-size must be greater than 0, but was [$replayBatchSize]")
 
     val eventStream = context.system.eventStream // used from Future callbacks
     implicit val ec: ExecutionContext = context.dispatcher
+
+    val batchingReplayRequesters = mutable.Map.empty[ActorRef, Int]
+    val replaySessions = mutable.Map.empty[Long, ReplaySession]
+
+    def replayTarget(persistentActor: ActorRef): ActorRef =
+      if (isReplayFilterEnabled)
+        context.actorOf(
+          ReplayFilter.props(
+            persistentActor,
+            replayFilterMode,
+            replayFilterWindowSize,
+            replayFilterMaxOldWriters,
+            replayDebugEnabled))
+      else persistentActor
+
+    def batchedReplayTarget(persistentActor: ActorRef, actorInstanceId: Int): (ActorRef, ActorRef) = {
+      val relay = context.actorOf(replayForwarderProps(persistentActor, actorInstanceId))
+      val replyTo =
+        if (isReplayFilterEnabled)
+          context.actorOf(
+            ReplayFilter.props(
+              relay,
+              replayFilterMode,
+              replayFilterWindowSize,
+              replayFilterMaxOldWriters,
+              replayDebugEnabled))
+        else relay
+      (replyTo, relay)
+    }
+
+    def hasReplaySession(persistentActor: ActorRef): Boolean =
+      replaySessions.valuesIterator.exists(_.request.persistentActor == persistentActor)
+
+    def unwatchIfUnused(persistentActor: ActorRef): Unit =
+      if (!batchingReplayRequesters.contains(persistentActor) && !hasReplaySession(persistentActor))
+        context.unwatch(persistentActor)
+
+    def removeReplaySession(replayId: Long): Option[ReplaySession] =
+      replaySessions.remove(replayId).map { session =>
+        val persistentActor = session.request.persistentActor
+        unwatchIfUnused(persistentActor)
+        session
+      }
+
+    def publishReplayRequest(session: ReplaySession): Unit =
+      if (publish) eventStream.publish(session.request)
+
+    def finishReplay(replayId: Long, response: JournalProtocol.Response): Unit =
+      removeReplaySession(replayId).foreach { session =>
+        session.replyTo.tell(response, self)
+        publishReplayRequest(session)
+      }
+
+    def cancelReplay(replayId: Long): Unit =
+      removeReplaySession(replayId).foreach { session =>
+        if (session.replyTo != session.relay)
+          context.stop(session.replyTo)
+        context.stop(session.relay)
+        publishReplayRequest(session)
+      }
+
+    def cancelReplaysFor(persistentActor: ActorRef): Unit =
+      replaySessions.valuesIterator
+        .filter(_.request.persistentActor == persistentActor)
+        .map(_.replayId)
+        .toVector
+        .foreach(cancelReplay)
+
+    def batchUpperBound(fromSequenceNr: Long, toSequenceNr: Long): Long = {
+      val increment = replayBatchSize - 1L
+      val upperBound =
+        if (fromSequenceNr > Long.MaxValue - increment) Long.MaxValue
+        else fromSequenceNr + increment
+      math.min(toSequenceNr, upperBound)
+    }
+
+    def startReplayBatch(session: ReplaySession): Unit = {
+      val batchToSequenceNr = batchUpperBound(session.nextSequenceNr, session.toSequenceNr)
+      val batchMax = math.min(replayBatchSize, session.remaining)
+      val replayed = new AtomicLong
+      val replayResult =
+        try
+          asyncReplayMessages(
+            session.request.persistenceId,
+            session.nextSequenceNr,
+            batchToSequenceNr,
+            batchMax) { p =>
+            replayed.incrementAndGet()
+            if (!p.deleted) // old records from Akka 2.3 may still have the deleted flag
+              adaptFromJournal(p).foreach { adaptedPersistentRepr =>
+                session.replyTo.tell(ReplayedMessage(adaptedPersistentRepr), self)
+              }
+          }
+        catch { case NonFatal(e) => Future.failed(e) }
+
+      replayResult
+        .map(_ => ReplayBatchCompleted(session.replayId, batchToSequenceNr, replayed.get()))
+        .recover { case e => ReplayFailed(session.replayId, e) }
+        .pipeTo(self)
+    }
+
+    def startBatchedReplay(request: ReplayMessages, actorInstanceId: Int): Unit = {
+      val replayId = nextReplayId()
+      val (replyTo, relay) = batchedReplayTarget(request.persistentActor, actorInstanceId)
+      val session = ReplaySession(
+        replayId,
+        request,
+        replyTo,
+        relay,
+        highestSequenceNr = 0L,
+        toSequenceNr = 0L,
+        nextSequenceNr = request.fromSequenceNr,
+        remaining = request.max,
+        awaitingAck = false)
+      replaySessions.put(replayId, session)
+      context.watch(request.persistentActor)
+
+      val readHighestSequenceNrFrom = math.max(0L, request.fromSequenceNr - 1L)
+      val readHighestResult =
+        try breaker.withCircuitBreaker(asyncReadHighestSequenceNr(request.persistenceId, readHighestSequenceNrFrom))
+        catch { case NonFatal(e) => Future.failed(e) }
+      readHighestResult
+        .map(ReplayHighestSequenceNr(replayId, _))
+        .recover { case e => ReplayFailed(replayId, e) }
+        .pipeTo(self)
+    }
 
     // should be a private method in the trait, but it needs the enableGlobalWriteResponseOrder field which can't be
     // moved to the trait level because adding any fields there breaks bincompat
@@ -159,52 +289,113 @@ trait AsyncWriteJournal extends Actor with WriteJournalBase with AsyncRecovery {
             }
         }
 
-      case r @ ReplayMessages(fromSequenceNr, toSequenceNr, max, persistenceId, persistentActor) =>
-        val replyTo =
-          if (isReplayFilterEnabled)
-            context.actorOf(
-              ReplayFilter.props(
-                persistentActor,
-                replayFilterMode,
-                replayFilterWindowSize,
-                replayFilterMaxOldWriters,
-                replayDebugEnabled))
-          else persistentActor
+      case ReplayMessagesWithBatching(actorInstanceId) =>
+        val requester = sender()
+        cancelReplaysFor(requester)
+        batchingReplayRequesters.put(requester, actorInstanceId)
+        context.watch(requester)
 
-        val readHighestSequenceNrFrom = math.max(0L, fromSequenceNr - 1)
-        /*
-         * The API docs for the [[AsyncRecovery]] say not to rely on asyncReadHighestSequenceNr
-         * being called before a call to asyncReplayMessages even tho it currently always is. The Cassandra
-         * plugin does rely on this so if you change this change the Cassandra plugin.
-         */
-        breaker
-          .withCircuitBreaker(asyncReadHighestSequenceNr(persistenceId, readHighestSequenceNrFrom))
-          .flatMap { highSeqNr =>
-            val toSeqNr = math.min(toSequenceNr, highSeqNr)
-            if (toSeqNr <= 0L || fromSequenceNr > toSeqNr)
-              Future.successful(highSeqNr)
-            else {
-              // Send replayed messages and replay result to persistentActor directly. No need
-              // to resequence replayed messages relative to written and looped messages.
-              // not possible to use circuit breaker here
-              asyncReplayMessages(persistenceId, fromSequenceNr, toSeqNr, max) { p =>
-                if (!p.deleted) // old records from Akka 2.3 may still have the deleted flag
-                  adaptFromJournal(p).foreach { adaptedPersistentRepr =>
-                    replyTo.tell(ReplayedMessage(adaptedPersistentRepr), Actor.noSender)
-                  }
-              }.map(_ => highSeqNr)
+      case ReplayMessagesCancel =>
+        val requester = sender()
+        batchingReplayRequesters.remove(requester)
+        cancelReplaysFor(requester)
+        unwatchIfUnused(requester)
+
+      case r @ ReplayMessages(fromSequenceNr, toSequenceNr, max, persistenceId, persistentActor) =>
+        val requester = sender()
+        if (requester == persistentActor)
+          cancelReplaysFor(persistentActor)
+        val requestedBatching = batchingReplayRequesters.remove(requester)
+        if (requestedBatching.isDefined && requester == persistentActor) {
+          startBatchedReplay(r, requestedBatching.get)
+        } else {
+          if (requestedBatching.isDefined)
+            unwatchIfUnused(requester)
+          val replyTo = replayTarget(persistentActor)
+
+          val readHighestSequenceNrFrom = math.max(0L, fromSequenceNr - 1)
+          /*
+           * The API docs for the [[AsyncRecovery]] say not to rely on asyncReadHighestSequenceNr
+           * being called before a call to asyncReplayMessages even tho it currently always is. The Cassandra
+           * plugin does rely on this so if you change this change the Cassandra plugin.
+           */
+          breaker
+            .withCircuitBreaker(asyncReadHighestSequenceNr(persistenceId, readHighestSequenceNrFrom))
+            .flatMap { highSeqNr =>
+              val toSeqNr = math.min(toSequenceNr, highSeqNr)
+              if (toSeqNr <= 0L || fromSequenceNr > toSeqNr)
+                Future.successful(highSeqNr)
+              else {
+                // Send replayed messages and replay result to persistentActor directly. No need
+                // to resequence replayed messages relative to written and looped messages.
+                // not possible to use circuit breaker here
+                asyncReplayMessages(persistenceId, fromSequenceNr, toSeqNr, max) { p =>
+                  if (!p.deleted) // old records from Akka 2.3 may still have the deleted flag
+                    adaptFromJournal(p).foreach { adaptedPersistentRepr =>
+                      replyTo.tell(ReplayedMessage(adaptedPersistentRepr), Actor.noSender)
+                    }
+                }.map(_ => highSeqNr)
+              }
             }
+            .map { highSeqNr =>
+              RecoverySuccess(highSeqNr)
+            }
+            .recover {
+              case e => ReplayMessagesFailure(e)
+            }
+            .pipeTo(replyTo)
+            .foreach { _ =>
+              if (publish) eventStream.publish(r)
+            }
+        }
+
+      case ReplayHighestSequenceNr(replayId, highSeqNr) =>
+        replaySessions.get(replayId).foreach { session =>
+          val toSeqNr = math.min(session.request.toSequenceNr, highSeqNr)
+          val initialized = session.copy(highestSequenceNr = highSeqNr, toSequenceNr = toSeqNr)
+          replaySessions.update(replayId, initialized)
+          if (toSeqNr <= 0L || session.nextSequenceNr > toSeqNr || session.remaining <= 0L)
+            finishReplay(replayId, RecoverySuccess(highSeqNr))
+          else
+            startReplayBatch(initialized)
+        }
+
+      case ReplayBatchCompleted(replayId, batchToSequenceNr, replayed) =>
+        replaySessions.get(replayId).foreach { session =>
+          val remaining = if (replayed >= session.remaining) 0L else session.remaining - replayed
+          if (remaining == 0L || batchToSequenceNr >= session.toSequenceNr) {
+            finishReplay(replayId, RecoverySuccess(session.highestSequenceNr))
+          } else {
+            val waiting = session.copy(
+              nextSequenceNr = batchToSequenceNr + 1L,
+              remaining = remaining,
+              awaitingAck = true)
+            replaySessions.update(replayId, waiting)
+            session.replyTo.tell(ReplayBatchReady(replayId), self)
           }
-          .map { highSeqNr =>
-            RecoverySuccess(highSeqNr)
-          }
-          .recover {
-            case e => ReplayMessagesFailure(e)
-          }
-          .pipeTo(replyTo)
-          .foreach { _ =>
-            if (publish) eventStream.publish(r)
-          }
+        }
+
+      case ReplayBatchAck(replayId) =>
+        replaySessions.get(replayId) match {
+          case Some(session) if session.awaitingAck && sender() == session.request.persistentActor =>
+            val replaying = session.copy(awaitingAck = false)
+            replaySessions.update(replayId, replaying)
+            startReplayBatch(replaying)
+          case _ => // stale or invalid acknowledgement
+        }
+
+      case ReplayBatchCancel(replayId) =>
+        replaySessions.get(replayId) match {
+          case Some(session) if sender() == session.replyTo => cancelReplay(replayId)
+          case _                                            => // stale or invalid cancellation
+        }
+
+      case ReplayFailed(replayId, cause) =>
+        finishReplay(replayId, ReplayMessagesFailure(cause))
+
+      case Terminated(persistentActor) =>
+        batchingReplayRequesters.remove(persistentActor)
+        cancelReplaysFor(persistentActor)
 
       case d @ DeleteMessagesTo(persistenceId, toSequenceNr, persistentActor) =>
         breaker
@@ -317,7 +508,44 @@ trait AsyncWriteJournal extends Actor with WriteJournalBase with AsyncRecovery {
  * INTERNAL API.
  */
 private[persistence] object AsyncWriteJournal {
+  import JournalProtocol._
+
   val successUnit: Success[Unit] = Success(())
+
+  private val replayIdCounter = new AtomicLong
+
+  private def nextReplayId(): Long = replayIdCounter.incrementAndGet()
+
+  private final case class ReplaySession(
+      replayId: Long,
+      request: ReplayMessages,
+      replyTo: ActorRef,
+      relay: ActorRef,
+      highestSequenceNr: Long,
+      toSequenceNr: Long,
+      nextSequenceNr: Long,
+      remaining: Long,
+      awaitingAck: Boolean)
+
+  private final case class ReplayHighestSequenceNr(replayId: Long, highestSequenceNr: Long)
+      extends NoSerializationVerificationNeeded
+  private final case class ReplayBatchCompleted(replayId: Long, toSequenceNr: Long, replayed: Long)
+      extends NoSerializationVerificationNeeded
+  private final case class ReplayFailed(replayId: Long, cause: Throwable) extends NoSerializationVerificationNeeded
+
+  private def replayForwarderProps(persistentActor: ActorRef, actorInstanceId: Int): Props =
+    Props(new ReplayForwarder(persistentActor, actorInstanceId))
+
+  private final class ReplayForwarder(persistentActor: ActorRef, actorInstanceId: Int) extends Actor {
+    def receive = {
+      case response: JournalProtocol.Response =>
+        persistentActor.tell(ReplayBatchResponse(actorInstanceId, response), Actor.noSender)
+        response match {
+          case _: RecoverySuccess | _: ReplayMessagesFailure => context.stop(self)
+          case _                                             =>
+        }
+    }
+  }
 
   final case class Desequenced(msg: Any, snr: Long, target: ActorRef, sender: ActorRef)
       extends NoSerializationVerificationNeeded

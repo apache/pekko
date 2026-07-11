@@ -136,6 +136,17 @@ until other recoveries have been completed. This is configured by:
 pekko.persistence.max-concurrent-recoveries = 50
 ```
 
+Journal plugins based on `AsyncWriteJournal` also bound each individual recovery. They replay at most
+`replay-batch-size` event sequence numbers and wait until the recovering actor has processed that batch before
+requesting the next one. The default is `1000`; it can be changed in the journal plugin configuration, for example:
+
+```
+pekko.persistence.journal.my-plugin.replay-batch-size = 500
+```
+
+This setting limits replay pressure on the persistent actor's mailbox without limiting the total number of events
+that are recovered.
+
 @@@ note
 
 Accessing the @scala[`sender()`]@java[sender with `getSender()`] for replayed messages will always result in a `deadLetters` reference,
