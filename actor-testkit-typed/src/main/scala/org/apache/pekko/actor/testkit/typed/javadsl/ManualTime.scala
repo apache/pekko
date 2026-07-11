@@ -72,10 +72,16 @@ final class ManualTime(delegate: pekko.testkit.ExplicitlyTriggeredScheduler) {
    */
   def timePasses(amount: Duration): Unit = delegate.timePasses(amount.toScala)
 
+  /**
+   * Advance the clock by the specified duration and assert that the probes receive no messages.
+   *
+   * After advancing the clock, each probe waits for the configured
+   * `pekko.actor.testkit.typed.expect-no-message-default` duration so that asynchronously dispatched messages can arrive.
+   */
   @varargs
   def expectNoMessageFor(duration: Duration, on: TestProbe[?]*): Unit = {
     delegate.timePasses(duration.toScala)
-    on.foreach(_.expectNoMessage(Duration.ZERO))
+    on.foreach(_.expectNoMessage())
   }
 
 }
