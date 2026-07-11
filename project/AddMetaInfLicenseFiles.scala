@@ -25,11 +25,40 @@ import org.mdedetrich.apache.sonatype.ApacheSonatypePlugin.autoImport._
  */
 object AddMetaInfLicenseFiles extends AutoPlugin {
 
+  object autoImport {
+    lazy val checkPackageBinMetaInfLegalFiles =
+      taskKey[Unit]("Checks that packaged jars contain META-INF/LICENSE and META-INF/NOTICE files.")
+  }
+
+  import autoImport._
+
   private lazy val baseDir = LocalRootProject / baseDirectory
+
+  private val requiredPackageBinEntries = Seq("META-INF/LICENSE", "META-INF/NOTICE")
 
   override lazy val projectSettings = Seq(
     apacheSonatypeLicenseFile := baseDir.value / "legal" / "StandardLicense.txt",
-    apacheSonatypeNoticeFile := baseDir.value / "legal" / "PekkoNotice.txt")
+    apacheSonatypeNoticeFile := baseDir.value / "legal" / "PekkoNotice.txt",
+    Compile / checkPackageBinMetaInfLegalFiles := Def.taskDyn {
+      if ((publish / skip).value) {
+        Def.task {
+          streams.value.log.debug("Skipping META-INF legal files check for non-published project.")
+        }
+      } else {
+        Def.task {
+          val packageBinJar = (Compile / packageBin).value
+          val publishedJar = (Compile / packageBin / packagedArtifact).value._2
+          val missingEntries = Seq(packageBinJar, publishedJar).distinct.flatMap { jar =>
+            missingPackageBinEntries(jar).map(entry => s"${jar.getAbsolutePath}: $entry")
+          }
+
+          if (missingEntries.nonEmpty) {
+            throw new MessageOnlyException(
+              "Packaged jars are missing required META-INF legal files:\n" + missingEntries.mkString("\n"))
+          }
+        }
+      }
+    }.value)
 
   /**
    * Settings specific for Pekko actor subproject which requires a different license file.
@@ -80,4 +109,10 @@ object AddMetaInfLicenseFiles extends AutoPlugin {
   override lazy val trigger = allRequirements
 
   override lazy val requires = ApacheSonatypePlugin
+
+  private def missingPackageBinEntries(jar: File): Seq[String] = {
+    val zip = new java.util.zip.ZipFile(jar)
+    try requiredPackageBinEntries.filter(entry => zip.getEntry(entry) == null)
+    finally zip.close()
+  }
 }

@@ -381,6 +381,11 @@ lazy val protobufV3 = pekkoModule("protobuf-v3")
         // https://github.com/sbt/sbt-assembly/issues/400
         .inLibrary(Dependencies.Compile.Provided.protobufRuntime)
         .inProject),
+    assembly / assemblyMergeStrategy := {
+      case "META-INF/LICENSE" | "META-INF/NOTICE" => sbtassembly.MergeStrategy.concat
+      case "META-INF/COPYING.protobuf"            => sbtassembly.MergeStrategy.first
+      case path                                   => (assembly / assemblyMergeStrategy).value(path)
+    },
     assembly / assemblyOption := (assembly / assemblyOption).value.withIncludeScala(false).withIncludeBin(true),
     autoScalaLibrary := false, // do not include scala dependency in pom
     exportJars := true, // in dependent projects, use assembled and shaded jar
