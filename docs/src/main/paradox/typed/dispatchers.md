@@ -24,6 +24,9 @@ page describes how to use dispatchers with `pekko-actor-typed`, which has depend
 A Pekko `MessageDispatcher` is what makes Pekko Actors "tick", it is the engine of the machine so to speak.
 All `MessageDispatcher` implementations are also an @scala[`ExecutionContext`]@java[`Executor`], which means that they can be used
 to execute arbitrary code, for instance @scala[`Future`s]@java[`CompletableFuture`s].
+On fork-join dispatchers, a worker waiting for fork/join subtasks can help execute other tasks submitted to the same dispatcher.
+This nested execution is supported, but work that blocks on external resources should still use a dedicated dispatcher as described
+in @ref:[Blocking Needs Careful Management](#blocking-needs-careful-management).
 
 ## Default dispatcher
 

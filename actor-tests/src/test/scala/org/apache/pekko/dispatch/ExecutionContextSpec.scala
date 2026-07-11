@@ -96,6 +96,38 @@ class ExecutionContextSpec extends PekkoSpec(ExecutionContextSpec.config) with D
       Await.result(p.future, timeout.duration) should ===(())
     }
 
+    "continue the outer batch after reentrant batch execution" in {
+      Seq(true, false).foreach { resubmit =>
+        val submitted = new java.util.ArrayDeque[Runnable]()
+        val executor = new BatchingExecutor {
+          override protected def unbatchedExecute(runnable: Runnable): Unit = submitted.add(runnable)
+          override protected def resubmitOnBlock: Boolean = resubmit
+          override def batchable(runnable: Runnable): Boolean = true
+        }
+        val completed = new AtomicInteger(0)
+        var innerBatch: Runnable = null
+
+        executor.execute(new Runnable {
+          override def run(): Unit = {
+            executor.execute(new Runnable {
+              override def run(): Unit = completed.incrementAndGet()
+            })
+            // Model a pool worker executing another submitted batch while helping a join.
+            innerBatch.run()
+            completed.incrementAndGet()
+          }
+        })
+        val outerBatch = submitted.remove()
+        executor.execute(new Runnable {
+          override def run(): Unit = completed.incrementAndGet()
+        })
+        innerBatch = submitted.remove()
+
+        outerBatch.run()
+        completed.get should ===(3)
+      }
+    }
+
     "be able to avoid starvation when Batching is used and Await/blocking is called" in {
       implicit val dispatcher: ExecutionContextExecutor = batchingDispatcher
 
