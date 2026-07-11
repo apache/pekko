@@ -34,6 +34,7 @@ import org.scalatest.time.Span.convertSpanToDuration
 
 class OutboundIdleShutdownSpec extends ArteryMultiNodeSpec("""
   pekko.loglevel=INFO
+  pekko.remote.artery.propagate-harmless-quarantine-events = on
   pekko.remote.artery.advanced {
     stop-idle-outbound-after = 1 s
     connection-timeout = 2 s
