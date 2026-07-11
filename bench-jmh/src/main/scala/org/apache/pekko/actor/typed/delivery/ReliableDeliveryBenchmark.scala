@@ -36,7 +36,7 @@ import pekko.actor.typed.scaladsl.Behaviors
 import com.typesafe.config.ConfigFactory
 
 object Producer {
-  trait Command
+  sealed trait Command
 
   case object Run extends Command
   private case class WrappedRequestNext(r: ProducerController.RequestNext[Consumer.Command]) extends Command
@@ -83,7 +83,7 @@ object Producer {
 }
 
 object Consumer {
-  trait Command
+  sealed trait Command
 
   case object TheMessage extends Command
 
@@ -111,7 +111,7 @@ object Consumer {
 }
 
 object WorkPullingProducer {
-  trait Command
+  sealed trait Command
 
   case object Run extends Command
   private case class WrappedRequestNext(r: WorkPullingProducerController.RequestNext[Consumer.Command]) extends Command
@@ -148,7 +148,7 @@ object WorkPullingProducer {
 
 object Guardian {
 
-  trait Command
+  sealed trait Command
   final case class RunPointToPoint(id: String, numberOfMessages: Int, useAsk: Boolean, replyTo: ActorRef[Done])
       extends Command
   final case class RunWorkPulling(id: String, numberOfMessages: Int, workers: Int, replyTo: ActorRef[Done])

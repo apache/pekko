@@ -13,6 +13,7 @@
 
 package typed.tutorial_5
 
+import scala.annotation.nowarn
 import scala.concurrent.duration._
 
 import org.apache.pekko
@@ -85,6 +86,7 @@ class DeviceGroupQuery(
 
   // #query-outline
   // #query-state
+  @nowarn("msg=match may not be exhaustive")
   override def onMessage(msg: Command): Behavior[Command] =
     msg match {
       case WrappedRespondTemperature(response) => onRespondTemperature(response)

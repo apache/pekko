@@ -58,6 +58,7 @@ class ShardRegionDataTypesSpec extends AnyWordSpec with Matchers {
       s match {
         case ShardRegionStats(stats) =>
           stats shouldBe Map("s1" -> 1)
+        case _ => fail("Should match ShardRegionStats")
       }
     }
 
@@ -103,6 +104,7 @@ class ShardRegionDataTypesSpec extends AnyWordSpec with Matchers {
       state match {
         case CurrentShardRegionState(shards) =>
           shards shouldBe Set(ShardState("s1", Set("e1")))
+        case _ => fail("Should match CurrentShardRegionState")
       }
     }
 

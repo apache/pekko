@@ -149,6 +149,7 @@ private[pekko] final case class GroupedAdjacentByWeighted[T, R](
           } else {
             pendingGroup = OptionVal.Some(group)
           }
+        case _ => // unreachable, OptionVal.Some and OptionVal.None cover all cases
       }
 
       private def tryPullIfNeeded(): Unit = pendingGroup match {
@@ -182,6 +183,7 @@ private[pekko] final case class GroupedAdjacentByWeighted[T, R](
             } else {
               completeStage()
             }
+          case _ => // unreachable
         }
       }
 
