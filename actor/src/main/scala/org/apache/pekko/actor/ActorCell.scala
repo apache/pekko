@@ -561,7 +561,7 @@ private[pekko] class ActorCell(
       }
     finally
       // Schedule or reschedule receive timeout
-      checkReceiveTimeoutIfNeeded(timeoutBeforeReceive)
+      checkReceiveTimeoutIfNeeded(msg, timeoutBeforeReceive)
   }
 
   def autoReceiveMessage(msg: Envelope): Unit = {
