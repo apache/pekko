@@ -52,8 +52,8 @@ import pekko.util.ByteString
  * INTERNAL API: Use [[pekko.stream.scaladsl.JsonFraming]] instead.
  *
  * **Mutable** framing implementation that given any number of [[pekko.util.ByteString]] chunks, can emit JSON objects contained within them.
- * Typically JSON objects are separated by new-lines or commas, however a top-level JSON Array can also be understood and chunked up
- * into valid JSON objects by this framing implementation.
+ * Typically JSON objects are separated by newlines or commas. A top-level JSON array is supported as a container
+ * of objects, but top-level non-object values are not supported.
  *
  * Leading whitespace between elements will be trimmed.
  */
@@ -90,7 +90,8 @@ import pekko.util.ByteString
 
   /**
    * Attempt to locate next complete JSON object in buffered ByteString and returns `Some(it)` if found.
-   * May throw a [[pekko.stream.scaladsl.Framing.FramingException]] if the contained JSON is invalid or max object size is exceeded.
+   * May throw a [[pekko.stream.scaladsl.Framing.FramingException]] if content outside an object is not an array
+   * delimiter, comma, or whitespace, or if the max object size is exceeded.
    */
   def poll(): Option[ByteString] =
     try {
@@ -112,7 +113,7 @@ import pekko.util.ByteString
         throw new FramingException(s"Invalid JSON encountered at position [$pos] of [${ByteString(buffer).utf8String}]")
     }
 
-  /** @return true if an entire valid JSON object was found, false otherwise */
+  /** @return true if an entire JSON object was found, false otherwise */
   private def seekObject(): Boolean = {
     completedObject = false
     val bufSize = buffer.length
