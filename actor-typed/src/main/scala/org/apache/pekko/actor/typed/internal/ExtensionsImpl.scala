@@ -13,6 +13,7 @@
 
 package org.apache.pekko.actor.typed.internal
 
+import java.lang.invoke.MethodHandles
 import java.util.concurrent.{ ConcurrentHashMap, CountDownLatch }
 
 import scala.annotation.tailrec
@@ -23,6 +24,7 @@ import org.apache.pekko
 import pekko.actor.typed.{ ActorSystem, Extension, ExtensionId, Extensions }
 import pekko.actor.typed.ExtensionSetup
 import pekko.annotation.InternalApi
+import pekko.util.Reflect
 
 /**
  * INTERNAL API
@@ -33,6 +35,7 @@ import pekko.annotation.InternalApi
 private[pekko] trait ExtensionsImpl extends Extensions { self: ActorSystem[?] with InternalRecipientRef[?] =>
 
   private val extensions = new ConcurrentHashMap[ExtensionId[?], AnyRef]
+  private val lookup = MethodHandles.lookup()
 
   /**
    * Hook for ActorSystem to load extensions on startup
@@ -70,8 +73,8 @@ private[pekko] trait ExtensionsImpl extends Extensions { self: ActorSystem[?] wi
     dynamicAccess.getClassFor[ExtensionId[Extension]](extensionIdFQCN).flatMap[ExtensionId[Extension]] {
       (clazz: Class[?]) =>
         Try {
-          val singletonAccessor = clazz.getDeclaredMethod("getInstance")
-          singletonAccessor.invoke(null).asInstanceOf[ExtensionId[Extension]]
+          val handle = Reflect.findStaticNoArgMethod(clazz, "getInstance", lookup)
+          Reflect.invokeStaticNoArg[ExtensionId[Extension]](clazz, handle, lookup)
         }
     }
 

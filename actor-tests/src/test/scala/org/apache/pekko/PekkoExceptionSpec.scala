@@ -13,6 +13,8 @@
 
 package org.apache.pekko
 
+import java.lang.invoke.{ MethodHandles, MethodType }
+
 import org.apache.pekko.actor._
 
 import org.scalatest.matchers.should.Matchers
@@ -37,6 +39,6 @@ class PekkoExceptionSpec extends AnyWordSpec with Matchers {
   }
 
   def verify(clazz: java.lang.Class[?]): Unit = {
-    clazz.getConstructor(Array(classOf[String]): _*)
+    MethodHandles.publicLookup().findConstructor(clazz, MethodType.methodType(Void.TYPE, classOf[String]))
   }
 }

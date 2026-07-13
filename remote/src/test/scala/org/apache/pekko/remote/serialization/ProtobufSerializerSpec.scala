@@ -13,6 +13,8 @@
 
 package org.apache.pekko.remote.serialization
 
+import java.lang.reflect.InvocationTargetException
+
 import scala.annotation.nowarn
 
 import org.apache.pekko
@@ -26,6 +28,16 @@ import pekko.testkit.PekkoSpec
 
 // those must be defined as top level classes, to have static parseFrom
 case class MaliciousMessage() {}
+
+object ThrowingParseMessage {
+  def parseFrom(@nowarn("msg=never used") bytes: Array[Byte]): ThrowingParseMessage =
+    throw new IllegalArgumentException("parse-user-bug")
+}
+case class ThrowingParseMessage() {}
+
+class ThrowingToByteArrayMessage {
+  def toByteArray(): Array[Byte] = throw new IllegalArgumentException("serialize-user-bug")
+}
 
 object ProtobufSerializerSpec {
   trait AnotherInterface
@@ -62,6 +74,8 @@ class ProtobufSerializerSpec extends PekkoSpec(s"""
       "scalapb.GeneratedMessageCompanion",
       "org.apache.pekko.protobufv3.internal.GeneratedMessage",
       "${classOf[AnotherMessage].getName}",
+      "${classOf[FailingInitializerMessage].getName}",
+      "${classOf[ThrowingParseMessage].getName}",
       "${classOf[ProtobufSerializerSpec.AnotherInterface].getName}",
       "${classOf[ProtobufSerializerSpec.AnotherBase].getName}"
     ]
@@ -89,12 +103,16 @@ class ProtobufSerializerSpec extends PekkoSpec(s"""
       deserialized.getMessage should ===(protobufMessage.getMessage) // same "hello"
     }
 
-    "work for a serialized protobuf v3 message" in {
+    "work for a serialized protobuf v3 message and reuse cached handles" in {
       val protobufV3Message: MyMessageV3 =
         MyMessageV3.newBuilder().setQuery("query1").setPageNumber(1).setResultPerPage(2).build()
       val bytes = ser.serialize(protobufV3Message).get
       val deserialized: MyMessageV3 = ser.deserialize(bytes, protobufV3Message.getClass).get
+      val cachedBytes = ser.serialize(protobufV3Message).get
+      val cachedDeserialized: MyMessageV3 = ser.deserialize(cachedBytes, protobufV3Message.getClass).get
       protobufV3Message should ===(deserialized)
+      cachedBytes should ===(bytes)
+      protobufV3Message should ===(cachedDeserialized)
     }
 
     "disallow deserialization of classes that are not in bindings and not in configured allowed classes" in {
@@ -127,6 +145,29 @@ class ProtobufSerializerSpec extends PekkoSpec(s"""
       val deserialized =
         ser.deserialize(Array[Byte](), originalSerializer.identifier, classOf[AnotherMessage3].getName).get
       deserialized.getClass should ===(classOf[AnotherMessage3])
+    }
+
+    "preserve reflection-compatible target exception wrapping" in {
+      val serializer = ser.serializerFor(classOf[MyMessage]).asInstanceOf[ProtobufSerializer]
+
+      val parseException = intercept[InvocationTargetException] {
+        serializer.fromBinary(Array.emptyByteArray, Some(classOf[ThrowingParseMessage]))
+      }
+      parseException.getCause.getMessage should ===("parse-user-bug")
+
+      val serializeException = intercept[InvocationTargetException] {
+        serializer.toBinary(new ThrowingToByteArrayMessage)
+      }
+      serializeException.getCause.getMessage should ===("serialize-user-bug")
+    }
+
+    "not wrap protobuf class-initialization failures" in {
+      val serializer = ser.serializerFor(classOf[MyMessage]).asInstanceOf[ProtobufSerializer]
+
+      val exception = intercept[ExceptionInInitializerError] {
+        serializer.fromBinary(Array.emptyByteArray, Some(classOf[FailingInitializerMessage]))
+      }
+      exception.getCause.getMessage should ===("protobuf-initializer-bug")
     }
 
   }

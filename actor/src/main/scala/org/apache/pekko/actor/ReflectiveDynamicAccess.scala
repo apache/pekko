@@ -13,7 +13,8 @@
 
 package org.apache.pekko.actor
 
-import java.lang.reflect.InvocationTargetException
+import java.lang.invoke.{ MethodHandle, MethodHandles, MethodType, VarHandle }
+import java.util.concurrent.ConcurrentHashMap
 
 import scala.collection.immutable
 import scala.reflect.ClassTag
@@ -26,13 +27,18 @@ import pekko.annotation.DoNotInherit
 /**
  * This is the default [[pekko.actor.DynamicAccess]] implementation used by [[pekko.actor.ExtendedActorSystem]]
  * unless overridden. It uses reflection to turn fully-qualified class names into `Class[_]` objects
- * and creates instances from there using `getDeclaredConstructor()` and invoking that. The class loader
+ * and creates instances from there using constructor method handles. The class loader
  * to be used for all this is determined by the actor system’s class loader by default.
  *
  * Not for user extension or construction
  */
 @DoNotInherit
 class ReflectiveDynamicAccess(val classLoader: ClassLoader) extends DynamicAccess {
+  private val lookup = MethodHandles.lookup()
+  private val publicLookup = MethodHandles.publicLookup()
+  private val genericConstructorType = MethodType.methodType(classOf[AnyRef], classOf[Array[AnyRef]])
+  private val constructorHandles = new ConcurrentHashMap[Class[?], ConcurrentHashMap[MethodType, MethodHandle]]
+  private val moduleHandles = new ConcurrentHashMap[Class[?], VarHandle]
 
   override def getClassFor[T: ClassTag](fqcn: String): Try[Class[? <: T]] =
     Try[Class[? <: T]] {
@@ -43,15 +49,23 @@ class ReflectiveDynamicAccess(val classLoader: ClassLoader) extends DynamicAcces
 
   override def createInstanceFor[T: ClassTag](clazz: Class[?], args: immutable.Seq[(Class[?], AnyRef)]): Try[T] =
     Try {
-      val types = args.map(_._1).toArray
-      val values = args.map(_._2).toArray
-      val constructor = clazz.getDeclaredConstructor(types: _*)
-      constructor.setAccessible(true)
-      val obj = constructor.newInstance(values: _*)
+      val types = new Array[Class[?]](args.size)
+      val values = new Array[AnyRef](args.size)
+      val iterator = args.iterator
+      var index = 0
+      while (iterator.hasNext) {
+        val argument: (Class[?], AnyRef) = iterator.next()
+        types(index) = argument._1
+        values(index) = argument._2
+        index += 1
+      }
+      val methodType = MethodType.methodType(Void.TYPE, types)
+      val handle = constructorHandle(clazz, methodType)
+      val obj: AnyRef = handle.invokeExact(values)
       val t = implicitly[ClassTag[T]].runtimeClass
       if (t.isInstance(obj)) obj.asInstanceOf[T]
       else throw new ClassCastException(clazz.getName + " is not a subtype of " + t)
-    }.recover { case i: InvocationTargetException if i.getTargetException ne null => throw i.getTargetException }
+    }
 
   override def createInstanceFor[T: ClassTag](fqcn: String, args: immutable.Seq[(Class[?], AnyRef)]): Try[T] =
     getClassFor(fqcn).flatMap { c =>
@@ -72,17 +86,66 @@ class ReflectiveDynamicAccess(val classLoader: ClassLoader) extends DynamicAcces
       else getClassFor(fqcn + "$").recoverWith { case _ => getClassFor(fqcn) }
     classTry.flatMap { c =>
       Try {
-        val module = c.getDeclaredField("MODULE$")
-        module.setAccessible(true)
+        val moduleHandle = moduleHandleFor(c)
         val t = implicitly[ClassTag[T]].runtimeClass
-        module.get(null) match {
+        moduleHandle.get() match {
           case null                  => throw new NullPointerException
           case x if !t.isInstance(x) => throw new ClassCastException(fqcn + " is not a subtype of " + t)
           case x: T                  => x
           case unexpected            =>
             throw new IllegalArgumentException(s"Unexpected module field: $unexpected") // will not happen, for exhaustiveness check
         }
-      }.recover { case i: InvocationTargetException if i.getTargetException ne null => throw i.getTargetException }
+      }
+    }
+  }
+
+  private def constructorHandle(clazz: Class[?], methodType: MethodType): MethodHandle = {
+    val existingByType = constructorHandles.get(clazz)
+    val byType =
+      if (existingByType ne null) existingByType
+      else {
+        val fresh = new ConcurrentHashMap[MethodType, MethodHandle]
+        val existing = constructorHandles.putIfAbsent(clazz, fresh)
+        if (existing eq null) fresh else existing
+      }
+    val cached = byType.get(methodType)
+    if (cached ne null) cached
+    else {
+      val rawHandle =
+        try lookup.findConstructor(clazz, methodType)
+        catch {
+          case _: IllegalAccessException =>
+            try publicLookup.findConstructor(clazz, methodType)
+            catch {
+              case _: IllegalAccessException =>
+                MethodHandles.privateLookupIn(clazz, lookup).findConstructor(clazz, methodType)
+            }
+        }
+      val handle = rawHandle
+        .asFixedArity()
+        .asSpreader(classOf[Array[AnyRef]], methodType.parameterCount())
+        .asType(genericConstructorType)
+      val existing = byType.putIfAbsent(methodType, handle)
+      if (existing eq null) handle else existing
+    }
+  }
+
+  private def moduleHandleFor(clazz: Class[?]): VarHandle = {
+    val cached = moduleHandles.get(clazz)
+    if (cached ne null) cached
+    else {
+      val handle =
+        try lookup.findStaticVarHandle(clazz, "MODULE$", clazz)
+        catch {
+          case _: IllegalAccessException =>
+            try publicLookup.findStaticVarHandle(clazz, "MODULE$", clazz)
+            catch {
+              case _: IllegalAccessException =>
+                MethodHandles.privateLookupIn(clazz, lookup).findStaticVarHandle(clazz, "MODULE$", clazz)
+            }
+        }
+      val existing = moduleHandles.putIfAbsent(clazz, handle)
+      if (existing eq null) handle else existing
     }
   }
 }

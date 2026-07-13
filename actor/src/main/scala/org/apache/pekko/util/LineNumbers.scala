@@ -14,7 +14,7 @@
 package org.apache.pekko.util
 
 import java.io.{ DataInputStream, InputStream }
-import java.lang.invoke.SerializedLambda
+import java.lang.invoke.{ MethodHandle, MethodHandles, MethodType, SerializedLambda }
 
 import scala.annotation.switch
 import scala.util.control.NonFatal
@@ -29,6 +29,15 @@ import scala.util.control.NonFatal
  * class).
  */
 object LineNumbers {
+
+  private val lookup = MethodHandles.lookup()
+  private val writeReplaceMethodType = MethodType.methodType(classOf[Object])
+  private val writeReplaceHandles = new ClassValue[MethodHandle] {
+    override def computeValue(clazz: Class[?]): MethodHandle =
+      MethodHandles
+        .privateLookupIn(clazz, lookup)
+        .findVirtual(clazz, "writeReplace", writeReplaceMethodType)
+  }
 
   sealed trait Result
   case object NoSourceInfo extends Result
@@ -207,9 +216,7 @@ object LineNumbers {
   private def getStreamForLambda(l: AnyRef): Option[(InputStream, Some[String])] =
     try {
       val c = l.getClass
-      val writeReplace = c.getDeclaredMethod("writeReplace")
-      writeReplace.setAccessible(true)
-      writeReplace.invoke(l) match {
+      writeReplaceHandles.get(c).invoke(l) match {
         case serialized: SerializedLambda =>
           if (debug)
             println(s"LNB:     found Lambda implemented in ${serialized.getImplClass}:${serialized.getImplMethodName}")

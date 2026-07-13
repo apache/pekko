@@ -39,8 +39,8 @@ class DurableStateExceptionsSpec extends AnyWordSpecLike
 
   "DurableStateException support" must {
     "allow creating DeleteRevisionException using MethodHandle" in {
-      val exceptionClassOpt: Option[Class[?]] = Try(Class.forName(
-        "org.apache.pekko.persistence.state.exception.DeleteRevisionException")).toOption
+      val exceptionClassOpt: Option[Class[?]] =
+        Try(Class.forName("org.apache.pekko.persistence.state.exception.DeleteRevisionException")).toOption
       exceptionClassOpt should not be empty
       val constructorOpt = exceptionClassOpt.map { clz =>
         val mt = MethodType.methodType(classOf[Unit], classOf[String])
