@@ -14,7 +14,7 @@
 package org.apache.pekko.actor.testkit.typed.scaladsl
 
 import scala.annotation.varargs
-import scala.concurrent.duration.{ Duration, FiniteDuration }
+import scala.concurrent.duration.FiniteDuration
 
 import org.apache.pekko
 import pekko.actor.typed.ActorSystem
@@ -72,10 +72,16 @@ final class ManualTime(delegate: pekko.testkit.ExplicitlyTriggeredScheduler) {
    */
   def timePasses(amount: FiniteDuration): Unit = delegate.timePasses(amount)
 
+  /**
+   * Advance the clock by the specified duration and assert that the probes receive no messages.
+   *
+   * After advancing the clock, each probe waits for the configured
+   * `pekko.actor.testkit.typed.expect-no-message-default` duration so that asynchronously dispatched messages can arrive.
+   */
   @varargs
   def expectNoMessageFor(duration: FiniteDuration, on: TestProbe[?]*): Unit = {
     delegate.timePasses(duration)
-    on.foreach(_.expectNoMessage(Duration.Zero))
+    on.foreach(_.expectNoMessage())
   }
 
 }
