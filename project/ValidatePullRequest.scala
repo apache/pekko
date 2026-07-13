@@ -124,3 +124,12 @@ object UnidocWithPrValidation extends AutoPlugin {
   override lazy val trigger = noTrigger
   override lazy val projectSettings = Seq(additionalTasks += Compile / unidoc)
 }
+
+object MetaInfLicenseFilesWithPrValidation extends AutoPlugin {
+  import AddMetaInfLicenseFiles.autoImport._
+  import PekkoValidatePullRequest._
+
+  override lazy val trigger = allRequirements
+  override lazy val requires = PekkoValidatePullRequest && AddMetaInfLicenseFiles
+  override lazy val projectSettings = Seq(additionalTasks += Compile / checkPackageBinMetaInfLegalFiles)
+}
