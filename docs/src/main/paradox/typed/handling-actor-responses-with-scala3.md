@@ -30,7 +30,6 @@ A more in-depth explanation of the concepts used in applying Scala 3's Union typ
 be found in the following blog posts:
 
 * [Using Dotty Union types with Akka Typed](https://blog.lunatech.com/posts/2020-02-12-using-dotty-union-types-with-akka-typed)
-* [Using Dotty Union types with Akka Typed - Part II](https://blog.lunatech.com/posts/2020-02-19-using-dotty-union-types-with-akka-typed-part-II)
 
 **Useful when:**
 
