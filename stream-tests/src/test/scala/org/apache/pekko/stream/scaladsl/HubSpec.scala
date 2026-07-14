@@ -19,7 +19,7 @@ import scala.concurrent.duration._
 
 import org.apache.pekko
 import pekko.Done
-import pekko.stream.KillSwitches
+import pekko.stream.{ KillSwitches, Materializer }
 import pekko.stream.ThrottleMode
 import pekko.stream.impl.ActorPublisher
 import pekko.stream.testkit.StreamSpec
@@ -557,6 +557,28 @@ class HubSpec extends StreamSpec {
       a[TE] shouldBe thrownBy {
         Await.result(source.runWith(Sink.seq), 3.seconds.dilated)
       }
+    }
+
+    "notify consumers when hub materializer is shut down" in {
+      val hubMat = Materializer(system)
+      val upstream = TestPublisher.probe[Int]()
+      val source = Source.fromPublisher(upstream).runWith(BroadcastHub.sink(8))(hubMat)
+
+      val downstream = TestSubscriber.probe[Int]()
+      source.runWith(Sink.fromSubscriber(downstream))
+
+      downstream.request(1)
+      Thread.sleep(100)
+
+      upstream.sendNext(1)
+      downstream.expectNext(1)
+
+      hubMat.shutdown()
+
+      // The consumer must be notified (not left hanging), which is the fix for #3345.
+      // The signal is an error because the SubSink output boundary failure
+      // arrives before the postStop completion callback.
+      downstream.expectError()
     }
 
     "handle cancelled Sink" in {
