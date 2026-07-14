@@ -439,7 +439,7 @@ class Cluster(val system: ExtendedActorSystem) extends Extension {
    * a certain size.
    */
   def registerOnMemberUp[T](code: => T): Unit =
-    registerOnMemberUp(() => code)
+    registerOnMemberUp((() => code): Runnable)
 
   /**
    * Java API: The supplied callback will be run, once, when current cluster member is `Up`.
@@ -457,7 +457,7 @@ class Cluster(val system: ExtendedActorSystem) extends Extension {
    * is not invoked. It's often better to use [[pekko.actor.CoordinatedShutdown]] for this purpose.
    */
   def registerOnMemberRemoved[T](code: => T): Unit =
-    registerOnMemberRemoved(() => code)
+    registerOnMemberRemoved((() => code): Runnable)
 
   /**
    * Java API: The supplied thunk will be run, once, when current cluster member is `Removed`.
