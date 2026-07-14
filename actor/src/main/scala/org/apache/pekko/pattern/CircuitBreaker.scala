@@ -497,7 +497,7 @@ class CircuitBreaker(
    * @param callback Handler to be invoked on state change
    * @return CircuitBreaker for fluent usage
    */
-  def onOpen(callback: => Unit): CircuitBreaker = addOnOpenListener(new Runnable { def run = callback })
+  def onOpen(callback: => Unit): CircuitBreaker = addOnOpenListener(() => callback)
 
   /**
    * Java API for onOpen
@@ -517,7 +517,7 @@ class CircuitBreaker(
    * @param callback Handler to be invoked on state change
    * @return CircuitBreaker for fluent usage
    */
-  def onHalfOpen(callback: => Unit): CircuitBreaker = addOnHalfOpenListener(new Runnable { def run = callback })
+  def onHalfOpen(callback: => Unit): CircuitBreaker = addOnHalfOpenListener(() => callback)
 
   /**
    * JavaAPI for onHalfOpen
@@ -538,7 +538,7 @@ class CircuitBreaker(
    * @param callback Handler to be invoked on state change
    * @return CircuitBreaker for fluent usage
    */
-  def onClose(callback: => Unit): CircuitBreaker = addOnCloseListener(new Runnable { def run = callback })
+  def onClose(callback: => Unit): CircuitBreaker = addOnCloseListener(() => callback)
 
   /**
    * JavaAPI for onClose
@@ -632,7 +632,7 @@ class CircuitBreaker(
    * @return CircuitBreaker for fluent usage
    */
   def onCallBreakerOpen(callback: => Unit): CircuitBreaker =
-    addOnCallBreakerOpenListener(new Runnable { def run = callback })
+    addOnCallBreakerOpenListener(() => callback)
 
   /**
    * JavaAPI for onCallBreakerOpen.
@@ -686,9 +686,7 @@ class CircuitBreaker(
     val iterator = successListeners.iterator()
     while (iterator.hasNext) {
       val listener = iterator.next()
-      executor.execute(new Runnable {
-        def run() = listener.accept(elapsed)
-      })
+      executor.execute(() => listener.accept(elapsed))
     }
   }
 
@@ -702,9 +700,7 @@ class CircuitBreaker(
     val iterator = callFailureListeners.iterator()
     while (iterator.hasNext) {
       val listener = iterator.next()
-      executor.execute(new Runnable {
-        def run() = listener.accept(elapsed)
-      })
+      executor.execute(() => listener.accept(elapsed))
     }
   }
 
@@ -718,9 +714,7 @@ class CircuitBreaker(
     val iterator = callTimeoutListeners.iterator()
     while (iterator.hasNext) {
       val listener = iterator.next()
-      executor.execute(new Runnable {
-        def run() = listener.accept(elapsed)
-      })
+      executor.execute(() => listener.accept(elapsed))
     }
   }
 

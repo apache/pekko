@@ -303,9 +303,7 @@ abstract class AbstractFlowConcatSpec extends BaseTwoStreamsSetup {
       val closed = new AtomicBoolean(false)
       val s1 = Source.single(1)
       val s2 = Source.fromJavaStream { () =>
-        Collections.singleton(2: Integer).stream().onClose(new Runnable {
-          override def run(): Unit = closed.set(true)
-        })
+        Collections.singleton(2: Integer).stream().onClose(() => closed.set(true))
       }
       val concat = if (eager) s1.concat(s2) else s1.concatLazy(s2)
       if (!eager) concat.traversalBuilder.pendingBuilder.toString should include("JavaStreamConcat")
@@ -320,9 +318,7 @@ abstract class AbstractFlowConcatSpec extends BaseTwoStreamsSetup {
       val s1 = Source.single(1)
       val s2 = Source.fromJavaStream { () =>
         java.util.stream.IntStream.rangeClosed(2, 1000).boxed().asInstanceOf[java.util.stream.Stream[Integer]]
-          .onClose(new Runnable {
-            override def run(): Unit = closed.set(true)
-          })
+          .onClose(() => closed.set(true))
       }
       val concat = if (eager) s1.concat(s2) else s1.concatLazy(s2)
       if (!eager) concat.traversalBuilder.pendingBuilder.toString should include("JavaStreamConcat")
@@ -344,9 +340,7 @@ abstract class AbstractFlowConcatSpec extends BaseTwoStreamsSetup {
         // Build a stream whose iterator.next() throws on the first call.
         java.util.stream.Stream.of[Integer](2: Integer).map[Integer](new java.util.function.Function[Integer, Integer] {
           override def apply(t: Integer): Integer = throw ex
-        }).onClose(new Runnable {
-          override def run(): Unit = closed.set(true)
-        })
+        }).onClose(() => closed.set(true))
       }
       val concat = if (eager) s1.concat(s2) else s1.concatLazy(s2)
       if (!eager) concat.traversalBuilder.pendingBuilder.toString should include("JavaStreamConcat")

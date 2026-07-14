@@ -100,21 +100,19 @@ final class VirtualizedExecutorService(
       } else if (underlyingShutdownScheduled.compareAndSet(false, true)) {
         VirtualThreadSupport.startVirtualThread(
           "pekko-virtualized-executor-shutdown",
-          new Runnable {
-            override def run(): Unit = {
-              var interrupted = false
-              try {
-                while (!executor.isTerminated) {
-                  try executor.awaitTermination(Long.MaxValue, TimeUnit.NANOSECONDS)
-                  catch {
-                    case _: InterruptedException => interrupted = true
-                  }
+          () => {
+            var interrupted = false
+            try {
+              while (!executor.isTerminated) {
+                try executor.awaitTermination(Long.MaxValue, TimeUnit.NANOSECONDS)
+                catch {
+                  case _: InterruptedException => interrupted = true
                 }
-              } finally {
-                shutdownUnderlying()
-                if (interrupted) {
-                  Thread.currentThread().interrupt()
-                }
+              }
+            } finally {
+              shutdownUnderlying()
+              if (interrupted) {
+                Thread.currentThread().interrupt()
               }
             }
           })

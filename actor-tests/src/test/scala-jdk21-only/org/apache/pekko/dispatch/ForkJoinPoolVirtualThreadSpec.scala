@@ -130,12 +130,10 @@ class ForkJoinPoolVirtualThreadSpec extends PekkoSpec(ForkJoinPoolVirtualThreadS
       val finished = new CountDownLatch(1)
 
       try {
-        executor.execute(new Runnable {
-          override def run(): Unit = {
-            started.countDown()
-            release.await()
-            finished.countDown()
-          }
+        executor.execute(() => {
+          started.countDown()
+          release.await()
+          finished.countDown()
         })
 
         started.await(5, TimeUnit.SECONDS) should ===(true)
@@ -168,15 +166,14 @@ class ForkJoinPoolVirtualThreadSpec extends PekkoSpec(ForkJoinPoolVirtualThreadS
       val interrupted = new CountDownLatch(1)
 
       try {
-        executor.execute(new Runnable {
-          override def run(): Unit = {
-            started.countDown()
-            try release.await()
-            catch {
-              case _: InterruptedException => interrupted.countDown()
-            }
+        executor.execute(() => {
+          started.countDown()
+          try release.await()
+          catch {
+            case _: InterruptedException => interrupted.countDown()
           }
-        })
+        }
+        )
 
         started.await(5, TimeUnit.SECONDS) should ===(true)
         executor.shutdownNow()
@@ -205,13 +202,11 @@ class ForkJoinPoolVirtualThreadSpec extends PekkoSpec(ForkJoinPoolVirtualThreadS
       val interrupted = new CountDownLatch(1)
 
       try {
-        executor.execute(new Runnable {
-          override def run(): Unit = {
-            started.countDown()
-            try release.await()
-            catch {
-              case _: InterruptedException => interrupted.countDown()
-            }
+        executor.execute(() => {
+          started.countDown()
+          try release.await()
+          catch {
+            case _: InterruptedException => interrupted.countDown()
           }
         })
 
