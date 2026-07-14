@@ -25,6 +25,7 @@ import scala.collection.immutable.Queue
 import scala.collection.mutable.LongMap
 import scala.concurrent.{ Future, Promise }
 import scala.util.{ Failure, Success, Try }
+import scala.util.control.NonFatal
 
 import org.apache.pekko
 import pekko.NotUsed
@@ -655,7 +656,8 @@ private[pekko] class BroadcastHub[T](startAfterNrOfConsumers: Int, bufferSize: I
       // Notify pending consumers and set tombstone.
       // Registered consumers in the consumerWheel are notified by postStop.
       state.getAndSet(Closed(Some(ex))).asInstanceOf[Open].registrations.foreach { consumer =>
-        consumer.callback.invoke(failMessage)
+        try consumer.callback.invoke(failMessage)
+        catch { case NonFatal(_) => }
       }
 
       failStage(ex)
@@ -761,7 +763,8 @@ private[pekko] class BroadcastHub[T](startAfterNrOfConsumers: Int, bufferSize: I
           if (state.compareAndSet(open, Closed(None))) {
             val completedMessage = HubCompleted(None)
             open.registrations.foreach { consumer =>
-              consumer.callback.invoke(completedMessage)
+              try consumer.callback.invoke(completedMessage)
+              catch { case NonFatal(_) => }
             }
             notifyRegisteredConsumers()
           } else tryClose()
@@ -777,7 +780,10 @@ private[pekko] class BroadcastHub[T](startAfterNrOfConsumers: Int, bufferSize: I
           val bucket = consumerWheel(idx)
           if (bucket ne null) {
             val itr = bucket.valuesIterator
-            while (itr.hasNext) itr.next().callback.invoke(message)
+            while (itr.hasNext) {
+              try itr.next().callback.invoke(message)
+              catch { case NonFatal(_) => }
+            }
           }
           idx += 1
         }
