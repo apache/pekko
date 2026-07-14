@@ -79,6 +79,7 @@ import pekko.util.OptionVal
               else removeCurrentSource(completeIfClosed = true)
             }
           case OptionVal.None =>
+          case _              => // unreachable
         }
       }
 
@@ -123,6 +124,7 @@ import pekko.util.OptionVal
           case OptionVal.Some(src) =>
             src.cancel()
           case OptionVal.None =>
+          case _              => // unreachable
         }
       }
 

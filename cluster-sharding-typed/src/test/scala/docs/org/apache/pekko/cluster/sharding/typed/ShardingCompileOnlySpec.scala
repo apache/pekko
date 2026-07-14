@@ -161,7 +161,7 @@ object ShardingCompileOnlySpec {
 
     // a sharded counter that sends responses to another sharded actor
     object Counter {
-      trait Command
+      sealed trait Command
       case object Increment extends Command
       final case class GetValue(replyToEntityId: String) extends Command
       val TypeKey: EntityTypeKey[Command] = EntityTypeKey[Command]("example-sharded-counter")

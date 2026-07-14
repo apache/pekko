@@ -39,6 +39,7 @@ private[pekko] object Collections {
         pf.applyOrElse(t, NotApplied) match {
           case _: NotApplied.type => // do nothing
           case r: R @unchecked    => builder += r
+          case _                  => // unreachable, NotApplied handled above, everything else is R
         }
       })
       builder.result()

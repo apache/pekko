@@ -117,6 +117,7 @@ import pekko.util.OptionVal
         // we got a pull but there is no open resource, we are either
         // currently creating/restarting then the read will be triggered when creating the
         // resource completes, or shutting down and then the pull does not matter anyway
+        case _ => // unreachable, OptionVal.Some and OptionVal.None cover all cases
       }
 
       override def postStop(): Unit = maybeResource match {

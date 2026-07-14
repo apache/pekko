@@ -28,7 +28,7 @@ class CoordinatedActorShutdownSpec {
   // #coordinated-shutdown-addTask
   object MyActor {
 
-    trait Messages
+    sealed trait Messages
     case class Stop(replyTo: ActorRef[Done]) extends Messages
 
     def behavior: Behavior[Messages] =

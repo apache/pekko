@@ -27,7 +27,7 @@ class SharedMutableStateDocSpec {
   def expensiveCalculation(): Future[String] = ???
 
   object MyActor {
-    trait Command
+    sealed trait Command
     case class Message(msg: String, replyTo: ActorRef[Any]) extends Command
     case class UpdateState(newState: String) extends Command
 

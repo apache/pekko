@@ -82,6 +82,9 @@ object EventStreamDocSpec {
                 case UnhandledMessage(message, sender, recipient) =>
                   context.log.info("UnhandledMessage received from sender ({}) to recipient ({}) with message: {}",
                     sender.path.name, recipient.path.name, message.toString)
+
+                case other =>
+                  context.log.warn("Unexpected AllDeadLetters: {}", other)
               }
               Behaviors.same
           }

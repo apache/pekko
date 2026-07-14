@@ -65,6 +65,7 @@ private[pekko] final class DropRepeated[T](predicate: (T, T) => Boolean) extends
           case OptionVal.None =>
             last = OptionVal.Some(elem)
             push(out, last.get)
+          case _ => // unreachable, OptionVal.Some and OptionVal.None cover all cases
         }
       }
 

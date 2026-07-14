@@ -34,7 +34,7 @@ object ReplicatedEventPublishingSpec {
   val EntityType = "EventPublishingSpec"
 
   object MyReplicatedBehavior {
-    trait Command
+    sealed trait Command
     case class Add(text: String, replyTo: ActorRef[Done]) extends Command
     case class Get(replyTo: ActorRef[Set[String]]) extends Command
     case object Stop extends Command
