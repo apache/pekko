@@ -17,6 +17,7 @@
 
 import sbt._
 import sbt.Keys._
+import sbt.complete.DefaultParsers.spaceDelimited
 import sbt.plugins.JvmPlugin
 
 object TestQuickUntilPassed extends AutoPlugin {
@@ -40,10 +41,13 @@ object TestQuickUntilPassed extends AutoPlugin {
   }
 
   override lazy val projectSettings = {
-    testQuickUntilPassed := {
-      // TODO Figure out a way to pass input from testQuickUntilPassed into testQuickRecursive
-      testQuickRecursive("").value
-    }
+    testQuickUntilPassed := Def.inputTaskDyn {
+      val args = spaceDelimited("<args>").parsed
+      val input =
+        if (args.nonEmpty) " " + args.mkString(" ")
+        else ""
+      testQuickRecursive(input)
+    }.evaluated
   }
 
 }
