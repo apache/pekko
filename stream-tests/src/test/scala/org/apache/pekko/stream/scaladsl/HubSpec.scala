@@ -568,7 +568,7 @@ class HubSpec extends StreamSpec {
       source.runWith(Sink.fromSubscriber(downstream))
 
       downstream.request(1)
-      Thread.sleep(100)
+      upstream.expectRequest()
 
       upstream.sendNext(1)
       downstream.expectNext(1)

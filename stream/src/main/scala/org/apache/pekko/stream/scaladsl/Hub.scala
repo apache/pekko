@@ -757,7 +757,7 @@ private[pekko] class BroadcastHub[T](startAfterNrOfConsumers: Int, bufferSize: I
       // so that materializer shutdown produces the correct signal.
 
       @tailrec def tryClose(): Unit = state.get() match {
-        case Closed(_) => // Already closed by onUpstreamFailure — fall through to notify wheel below
+        case Closed(_) => // Already closed by onUpstreamFailure — notify registered consumers directly
           notifyRegisteredConsumers()
         case open: Open =>
           if (state.compareAndSet(open, Closed(None))) {
