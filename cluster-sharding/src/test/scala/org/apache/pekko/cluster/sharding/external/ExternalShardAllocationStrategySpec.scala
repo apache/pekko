@@ -16,6 +16,7 @@ package org.apache.pekko.cluster.sharding.external
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
 import pekko.cluster.sharding.external.ExternalShardAllocationStrategy.GetShardLocation
 import pekko.cluster.sharding.external.ExternalShardAllocationStrategy.GetShardLocationResponse
 import pekko.cluster.sharding.external.ExternalShardAllocationStrategy.GetShardLocations

@@ -16,6 +16,13 @@ package org.apache.pekko.actor.testkit.typed.scaladsl
 import scala.concurrent.Promise
 
 import org.apache.pekko
+
+import org.scalatest.BeforeAndAfterAll
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.{ AnyWordSpec, AnyWordSpecLike }
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.Done
 import pekko.actor.Dropped
 import pekko.actor.UnhandledMessage
@@ -23,12 +30,6 @@ import pekko.actor.testkit.typed.internal.ActorTestKitGuardian
 import pekko.actor.typed.ActorSystem
 import pekko.actor.typed.eventstream.EventStream
 import pekko.actor.typed.scaladsl.Behaviors
-
-import org.scalatest.BeforeAndAfterAll
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.{ AnyWordSpec, AnyWordSpecLike }
-
-import com.typesafe.config.ConfigFactory
 
 class ActorTestKitSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike with LogCapturing {
 

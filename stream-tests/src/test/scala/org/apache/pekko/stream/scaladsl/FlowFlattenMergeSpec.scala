@@ -23,6 +23,9 @@ import scala.concurrent.duration._
 import scala.util.control.NoStackTrace
 
 import org.apache.pekko
+
+import org.scalatest.exceptions.TestFailedException
+
 import pekko.NotUsed
 import pekko.pattern.FutureTimeoutSupport
 import pekko.stream._
@@ -34,8 +37,6 @@ import pekko.stream.testkit.TestPublisher
 import pekko.stream.testkit.Utils.TE
 import pekko.stream.testkit.scaladsl.TestSink
 import pekko.testkit.TestLatch
-
-import org.scalatest.exceptions.TestFailedException
 
 class FlowFlattenMergeSpec extends StreamSpec with FutureTimeoutSupport {
   import system.dispatcher

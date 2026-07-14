@@ -16,13 +16,14 @@ package org.apache.pekko.discovery.config
 import scala.collection.immutable
 
 import org.apache.pekko
-import pekko.discovery.ServiceDiscovery.{ Resolved, ResolvedTarget }
-import pekko.discovery.config.ConfigServicesParserSpec._
 
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
 import com.typesafe.config.{ Config, ConfigFactory }
+
+import pekko.discovery.ServiceDiscovery.{ Resolved, ResolvedTarget }
+import pekko.discovery.config.ConfigServicesParserSpec._
 
 object ConfigServicesParserSpec {
   val exampleConfig: Config = ConfigFactory.parseString("""

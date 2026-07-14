@@ -17,6 +17,11 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import org.scalatest.wordspec.AnyWordSpecLike
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor.testkit.typed.TestKitSettings
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
 import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
@@ -25,10 +30,6 @@ import pekko.actor.typed.ActorRef
 import pekko.actor.typed.scaladsl.Behaviors
 import pekko.actor.typed.scaladsl.adapter._
 import pekko.serialization.jackson.CborSerializable
-
-import org.scalatest.wordspec.AnyWordSpecLike
-
-import com.typesafe.config.ConfigFactory
 
 object ClusterSingletonApiSpec {
 

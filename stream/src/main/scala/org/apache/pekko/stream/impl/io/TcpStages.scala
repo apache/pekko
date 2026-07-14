@@ -19,11 +19,12 @@ import java.util.concurrent.atomic.{ AtomicBoolean, AtomicLong }
 
 import scala.annotation.nowarn
 import scala.collection.immutable
-import scala.concurrent.{ Future, Promise }
 import scala.concurrent.ExecutionContext
 import scala.concurrent.duration.{ Duration, FiniteDuration }
+import scala.concurrent.{ Future, Promise }
 
 import org.apache.pekko
+
 import pekko.{ Done, NotUsed }
 import pekko.actor.{ ActorRef, Terminated }
 import pekko.annotation.InternalApi

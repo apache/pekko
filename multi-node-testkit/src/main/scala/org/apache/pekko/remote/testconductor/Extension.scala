@@ -14,13 +14,14 @@
 package org.apache.pekko.remote.testconductor
 
 import org.apache.pekko
+
+import com.typesafe.config.Config
+
 import pekko.actor.{ ActorContext, ActorSystem, ExtendedActorSystem, Extension, ExtensionId, ExtensionIdProvider }
 import pekko.actor.ClassicActorSystemProvider
 import pekko.dispatch.ThreadPoolConfig
 import pekko.remote.RemoteActorRefProvider
 import pekko.util.Timeout
-
-import com.typesafe.config.Config
 
 /**
  * Access to the [[pekko.remote.testconductor.TestConductorExt]] extension:

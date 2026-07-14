@@ -17,11 +17,12 @@ import scala.concurrent.duration._
 import scala.util.control.NoStackTrace
 
 import org.apache.pekko
-import pekko.actor._
-import pekko.testkit._
 
 import org.scalatest.concurrent.Eventually
 import org.scalatest.prop.TableDrivenPropertyChecks._
+
+import pekko.actor._
+import pekko.testkit._
 
 object BackoffSupervisorSpec {
 

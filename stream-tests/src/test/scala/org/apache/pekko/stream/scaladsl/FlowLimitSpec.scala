@@ -16,6 +16,7 @@ package org.apache.pekko.stream.scaladsl
 import scala.concurrent.Await
 
 import org.apache.pekko
+
 import pekko.stream.StreamLimitReachedException
 import pekko.stream.testkit.StreamSpec
 

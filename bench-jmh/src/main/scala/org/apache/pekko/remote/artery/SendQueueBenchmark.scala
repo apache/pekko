@@ -20,17 +20,18 @@ import java.util.concurrent.TimeUnit
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
+import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import org.agrona.concurrent.ManyToOneConcurrentArrayQueue
 import org.openjdk.jmh.annotations._
 
-import org.apache.pekko
 import pekko.actor.ActorSystem
 import pekko.stream.KillSwitches
 import pekko.stream.OverflowStrategy
 import pekko.stream.SystemMaterializer
 import pekko.stream.scaladsl._
-
-import com.typesafe.config.ConfigFactory
 
 @State(Scope.Benchmark)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)

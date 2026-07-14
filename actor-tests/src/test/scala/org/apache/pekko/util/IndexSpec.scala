@@ -21,10 +21,11 @@ import scala.concurrent.Future
 import scala.util.Random
 
 import org.apache.pekko
-import pekko.testkit.DefaultTimeout
-import pekko.testkit.PekkoSpec
 
 import org.scalatest.matchers.should.Matchers
+
+import pekko.testkit.DefaultTimeout
+import pekko.testkit.PekkoSpec
 
 class IndexSpec extends PekkoSpec with Matchers with DefaultTimeout {
   implicit val ec: ExecutionContextExecutor = system.dispatcher

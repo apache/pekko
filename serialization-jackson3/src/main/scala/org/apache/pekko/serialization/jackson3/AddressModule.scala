@@ -13,6 +13,8 @@
 
 package org.apache.pekko.serialization.jackson3
 
+import org.apache.pekko
+
 import tools.jackson.core.JsonGenerator
 import tools.jackson.core.JsonParser
 import tools.jackson.core.JsonTokenId
@@ -21,7 +23,6 @@ import tools.jackson.databind.SerializationContext
 import tools.jackson.databind.deser.std.StdScalarDeserializer
 import tools.jackson.databind.ser.std.StdScalarSerializer
 
-import org.apache.pekko
 import pekko.actor.Address
 import pekko.actor.AddressFromURIString
 import pekko.annotation.InternalApi

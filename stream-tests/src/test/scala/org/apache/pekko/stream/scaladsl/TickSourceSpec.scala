@@ -16,6 +16,7 @@ package org.apache.pekko.stream.scaladsl
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
 import pekko.stream.ClosedShape
 import pekko.stream.testkit._
 import pekko.testkit.TimingTest

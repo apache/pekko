@@ -18,11 +18,14 @@ import java.util.concurrent.TimeUnit
 import java.util.concurrent.locks.ReentrantLock
 
 import scala.annotation.tailrec
-import scala.concurrent.duration._
 import scala.concurrent.duration.Duration
+import scala.concurrent.duration._
 import scala.util.control.NonFatal
 
 import org.apache.pekko
+
+import com.typesafe.config.Config
+
 import pekko.actor.{
   ActorCell,
   ActorInitializationException,
@@ -45,8 +48,6 @@ import pekko.dispatch.{
 }
 import pekko.dispatch.sysmsg.{ Resume, Suspend, SystemMessage }
 import pekko.util.Switch
-
-import com.typesafe.config.Config
 
 /*
  * Locking rules:

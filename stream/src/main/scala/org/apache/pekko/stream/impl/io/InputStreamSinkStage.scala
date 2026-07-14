@@ -14,13 +14,14 @@
 package org.apache.pekko.stream.impl.io
 
 import java.io.{ IOException, InputStream }
-import java.util.concurrent.{ BlockingQueue, LinkedBlockingDeque, TimeUnit }
 import java.util.concurrent.atomic.AtomicBoolean
+import java.util.concurrent.{ BlockingQueue, LinkedBlockingDeque, TimeUnit }
 
 import scala.annotation.tailrec
 import scala.concurrent.duration.FiniteDuration
 
 import org.apache.pekko
+
 import pekko.annotation.InternalApi
 import pekko.stream.{ AbruptStageTerminationException, Attributes, Inlet, SinkShape }
 import pekko.stream.Attributes.InputBuffer

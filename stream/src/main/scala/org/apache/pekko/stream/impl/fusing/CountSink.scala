@@ -20,6 +20,7 @@ package org.apache.pekko.stream.impl.fusing
 import scala.concurrent.{ Future, Promise }
 
 import org.apache.pekko
+
 import pekko.annotation.InternalApi
 import pekko.stream.{ AbruptStageTerminationException, Attributes, Inlet, SinkShape }
 import pekko.stream.impl.Stages.DefaultAttributes

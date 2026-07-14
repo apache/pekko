@@ -23,6 +23,7 @@ import java.util.concurrent.{ Executor, ExecutorService, ForkJoinPool, ForkJoinW
 import scala.util.control.NonFatal
 
 import org.apache.pekko
+
 import pekko.annotation.InternalApi
 import pekko.util.JavaVersion
 

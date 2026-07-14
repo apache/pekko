@@ -18,9 +18,9 @@ import java.nio.ByteOrder
 import java.nio.charset.StandardCharsets
 import java.util.concurrent.TimeUnit
 
-import org.openjdk.jmh.annotations._
-
 import org.apache.pekko.util.Unsafe
+
+import org.openjdk.jmh.annotations._
 
 @State(Scope.Benchmark)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)

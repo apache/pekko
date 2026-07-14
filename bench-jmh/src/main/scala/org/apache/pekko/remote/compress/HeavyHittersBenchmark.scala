@@ -15,10 +15,10 @@ package org.apache.pekko.remote.compress
 
 import java.util.Random
 
+import org.apache.pekko.remote.artery.compress.TopHeavyHitters
+
 import org.openjdk.jmh.annotations._
 import org.openjdk.jmh.infra.Blackhole
-
-import org.apache.pekko.remote.artery.compress.TopHeavyHitters
 
 /**
  * On Macbook pro:

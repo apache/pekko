@@ -13,9 +13,10 @@
 
 package org.apache.pekko.osgi
 
+import org.apache.pekko
+
 import org.osgi.service.log.LogService
 
-import org.apache.pekko
 import pekko.event.Logging
 import pekko.event.Logging.{ DefaultLogger, LogEvent }
 import pekko.event.Logging.Error.NoCause

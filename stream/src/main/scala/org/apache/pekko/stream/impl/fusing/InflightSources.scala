@@ -18,10 +18,11 @@
 package org.apache.pekko.stream.impl.fusing
 
 import scala.collection.immutable
-import scala.util.{ Success, Try }
 import scala.util.control.NonFatal
+import scala.util.{ Success, Try }
 
 import org.apache.pekko
+
 import pekko.annotation.InternalApi
 
 /**

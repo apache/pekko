@@ -20,6 +20,7 @@ import scala.concurrent.Promise
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
 import pekko.pattern.ask
 import pekko.serialization.JavaSerializer
 import pekko.testkit._

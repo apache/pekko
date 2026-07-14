@@ -19,6 +19,7 @@ import scala.collection.immutable
 import scala.concurrent.Future
 
 import org.apache.pekko
+
 import pekko.actor.Address
 import pekko.actor.typed.{ ActorRef, ActorSystem, Extension, ExtensionId }
 import pekko.actor.typed.ExtensionSetup

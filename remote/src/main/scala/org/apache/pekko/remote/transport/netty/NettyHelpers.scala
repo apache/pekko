@@ -19,10 +19,11 @@ import scala.annotation.nowarn
 import scala.util.control.NonFatal
 
 import org.apache.pekko
-import pekko.PekkoException
 
 import io.netty.buffer.ByteBuf
 import io.netty.channel.{ ChannelHandlerContext, ChannelInboundHandlerAdapter }
+
+import pekko.PekkoException
 
 /**
  * INTERNAL API

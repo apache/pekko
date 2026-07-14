@@ -21,6 +21,12 @@ import scala.collection.immutable.Seq
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import org.scalatest.BeforeAndAfterEach
+import org.scalatest.wordspec.AnyWordSpecLike
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.Done
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
 import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
@@ -37,11 +43,6 @@ import pekko.persistence.typed.PersistenceId
 import pekko.persistence.typed.scaladsl.Effect
 import pekko.persistence.typed.scaladsl.EventSourcedBehavior
 import pekko.stream.testkit.scaladsl.TestSink
-
-import org.scalatest.BeforeAndAfterEach
-import org.scalatest.wordspec.AnyWordSpecLike
-
-import com.typesafe.config.ConfigFactory
 
 object EventsBySliceSpec {
   val config = PersistenceTestKitPlugin.config.withFallback(

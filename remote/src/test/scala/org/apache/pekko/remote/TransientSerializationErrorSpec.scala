@@ -18,11 +18,12 @@ import java.io.NotSerializableException
 import scala.annotation.nowarn
 
 import org.apache.pekko
+
+import com.typesafe.config.{ Config, ConfigFactory }
+
 import pekko.actor.{ ActorSystem, ExtendedActorSystem, RootActorPath }
 import pekko.serialization.SerializerWithStringManifest
 import pekko.testkit.{ PekkoSpec, TestActors, TestKit }
-
-import com.typesafe.config.{ Config, ConfigFactory }
 
 object TransientSerializationErrorSpec {
   object ManifestNotSerializable

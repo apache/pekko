@@ -14,6 +14,7 @@
 package org.apache.pekko.japi.pf
 
 import org.apache.pekko
+
 import pekko.japi.function.{ Function, Predicate, Procedure }
 
 private[pf] object CaseStatement {

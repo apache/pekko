@@ -14,6 +14,7 @@
 package org.apache.pekko.persistence
 
 import org.apache.pekko
+
 import pekko.actor.{ ActorLogging, ActorRef, Props }
 import pekko.event.Logging
 import pekko.testkit.{ EventFilter, ImplicitSender, TestEvent }

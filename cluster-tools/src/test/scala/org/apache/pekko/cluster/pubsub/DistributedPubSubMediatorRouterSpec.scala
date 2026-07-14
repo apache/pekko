@@ -14,13 +14,14 @@
 package org.apache.pekko.cluster.pubsub
 
 import org.apache.pekko
-import pekko.actor.ActorRef
-import pekko.routing.{ ConsistentHashingRoutingLogic, RouterEnvelope }
-import pekko.testkit._
 
 import org.scalatest.wordspec.AnyWordSpecLike
 
 import com.typesafe.config.ConfigFactory
+
+import pekko.actor.ActorRef
+import pekko.routing.{ ConsistentHashingRoutingLogic, RouterEnvelope }
+import pekko.testkit._
 
 case class WrappedMessage(msg: String) extends RouterEnvelope {
   override def message = msg

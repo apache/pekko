@@ -16,6 +16,7 @@ package org.apache.pekko.coordination.lease.javadsl
 import scala.annotation.nowarn
 
 import org.apache.pekko
+
 import pekko.actor.{ ActorSystem, ExtendedActorSystem, Extension, ExtensionId, ExtensionIdProvider }
 import pekko.actor.ClassicActorSystemProvider
 import pekko.coordination.lease.internal.LeaseAdapter

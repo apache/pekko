@@ -16,6 +16,7 @@ package org.apache.pekko.stream.impl.fusing
 import scala.annotation.nowarn
 
 import org.apache.pekko
+
 import pekko.stream._
 import pekko.stream.impl.fusing.GraphStages.SimpleLinearGraphStage
 import pekko.stream.stage._

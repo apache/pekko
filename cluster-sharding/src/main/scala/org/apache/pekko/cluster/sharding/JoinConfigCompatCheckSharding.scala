@@ -16,10 +16,11 @@ package org.apache.pekko.cluster.sharding
 import scala.collection.{ immutable => im }
 
 import org.apache.pekko
-import pekko.annotation.InternalApi
-import pekko.cluster.{ ConfigValidation, JoinConfigCompatChecker }
 
 import com.typesafe.config.Config
+
+import pekko.annotation.InternalApi
+import pekko.cluster.{ ConfigValidation, JoinConfigCompatChecker }
 
 /**
  * INTERNAL API

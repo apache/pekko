@@ -17,9 +17,10 @@ import java.util.Queue
 
 import scala.concurrent.duration._
 
+import org.apache.pekko
+
 import org.agrona.concurrent.ManyToOneConcurrentArrayQueue
 
-import org.apache.pekko
 import pekko.actor.Actor
 import pekko.actor.Props
 import pekko.stream.scaladsl.Keep

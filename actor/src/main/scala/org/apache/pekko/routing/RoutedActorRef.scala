@@ -16,6 +16,7 @@ package org.apache.pekko.routing
 import scala.annotation.nowarn
 
 import org.apache.pekko
+
 import pekko.ConfigurationException
 import pekko.actor.ActorPath
 import pekko.actor.ActorSystemImpl

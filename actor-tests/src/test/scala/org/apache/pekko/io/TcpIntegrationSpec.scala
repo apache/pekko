@@ -20,13 +20,14 @@ import java.util.concurrent.atomic.AtomicReference
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import org.scalatest.concurrent.TimeLimits
+
 import pekko.actor.{ ActorRef, PoisonPill }
 import pekko.io.Tcp._
 import pekko.testkit.{ PekkoSpec, TestProbe }
 import pekko.testkit.WithLogCapturing
 import pekko.util.ByteString
-
-import org.scalatest.concurrent.TimeLimits
 
 class TcpIntegrationSpec extends PekkoSpec("""
     pekko.loglevel = debug

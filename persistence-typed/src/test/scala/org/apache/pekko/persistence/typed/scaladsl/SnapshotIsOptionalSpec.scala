@@ -16,19 +16,20 @@ package org.apache.pekko.persistence.typed.scaladsl
 import java.util.UUID
 import java.util.concurrent.atomic.AtomicInteger
 
-import com.fasterxml.jackson.annotation.JsonCreator
-
 import org.apache.pekko
-import pekko.actor.testkit.typed.scaladsl.LogCapturing
-import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
-import pekko.actor.typed.ActorRef
-import pekko.persistence.typed.PersistenceId
-import pekko.serialization.jackson.CborSerializable
 
 import org.scalatest.wordspec.AnyWordSpecLike
 
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
+
+import com.fasterxml.jackson.annotation.JsonCreator
+
+import pekko.actor.testkit.typed.scaladsl.LogCapturing
+import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
+import pekko.actor.typed.ActorRef
+import pekko.persistence.typed.PersistenceId
+import pekko.serialization.jackson.CborSerializable
 
 object SnapshotIsOptionalSpec {
   private val conf: Config = ConfigFactory.parseString(s"""

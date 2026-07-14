@@ -18,6 +18,7 @@ import scala.concurrent.Future
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
 import pekko.stream.AbruptTerminationException
 import pekko.stream.Materializer
 import pekko.stream.testkit._

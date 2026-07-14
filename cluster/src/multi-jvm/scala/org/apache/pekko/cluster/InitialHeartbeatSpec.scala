@@ -16,12 +16,13 @@ package org.apache.pekko.cluster
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.cluster.ClusterEvent.CurrentClusterState
 import pekko.remote.testkit.MultiNodeConfig
 import pekko.remote.transport.ThrottlerTransportAdapter.Direction
 import pekko.testkit._
-
-import com.typesafe.config.ConfigFactory
 
 object InitialHeartbeatMultiJvmSpec extends MultiNodeConfig {
   val controller = role("controller")

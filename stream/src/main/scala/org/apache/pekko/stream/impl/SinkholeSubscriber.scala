@@ -16,10 +16,11 @@ package org.apache.pekko.stream.impl
 import scala.concurrent.Promise
 
 import org.apache.pekko
-import pekko.Done
-import pekko.annotation.InternalApi
 
 import org.reactivestreams.{ Subscriber, Subscription }
+
+import pekko.Done
+import pekko.annotation.InternalApi
 
 /**
  * INTERNAL API

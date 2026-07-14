@@ -18,6 +18,7 @@ import scala.concurrent.duration.FiniteDuration
 import scala.reflect.ClassTag
 
 import org.apache.pekko
+
 import pekko.persistence.testkit.{ ExpectedFailure, ExpectedRejection }
 import pekko.persistence.testkit.ProcessingPolicy.DefaultPolicies
 import pekko.persistence.testkit.internal.TestKitStorage

@@ -16,6 +16,7 @@ package org.apache.pekko.stream.scaladsl
 import scala.annotation.nowarn
 
 import org.apache.pekko
+
 import pekko.NotUsed
 import pekko.stream._
 import pekko.stream.impl.fusing.GraphStages

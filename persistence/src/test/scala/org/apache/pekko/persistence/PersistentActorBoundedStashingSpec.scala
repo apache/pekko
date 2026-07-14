@@ -16,16 +16,17 @@ package org.apache.pekko.persistence
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import org.scalatest.BeforeAndAfterEach
+
+import com.typesafe.config.Config
+
 import pekko.actor.DeadLetter
 import pekko.persistence.PersistentActorBoundedStashingSpec._
 import pekko.persistence.journal.SteppingInmemJournal
 import pekko.testkit.EventFilter
 import pekko.testkit.ImplicitSender
 import pekko.testkit.TestEvent.Mute
-
-import org.scalatest.BeforeAndAfterEach
-
-import com.typesafe.config.Config
 
 object PersistentActorBoundedStashingSpec {
   final case class Cmd(data: Any)

@@ -23,6 +23,11 @@ import scala.concurrent.duration._
 import scala.util.control.NoStackTrace
 
 import org.apache.pekko
+
+import org.reactivestreams.{ Publisher, Subscriber }
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.NotUsed
 import pekko.stream._
 import pekko.stream.impl._
@@ -30,10 +35,6 @@ import pekko.stream.stage.{ GraphStageLogic, GraphStageWithMaterializedValue, In
 import pekko.stream.testkit._
 import pekko.stream.testkit.scaladsl.{ TestSink, TestSource }
 import pekko.testkit.TestDuration
-
-import org.reactivestreams.{ Publisher, Subscriber }
-
-import com.typesafe.config.ConfigFactory
 
 object FlowSpec {
   class Fruit extends Serializable

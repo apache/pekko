@@ -16,11 +16,12 @@ package org.apache.pekko.actor
 import scala.concurrent.duration._
 
 import org.apache.pekko
-import pekko.routing._
-import pekko.testkit.PekkoSpec
 
 import com.typesafe.config.ConfigFactory
 import com.typesafe.config.ConfigParseOptions
+
+import pekko.routing._
+import pekko.testkit.PekkoSpec
 
 object DeployerSpec {
   val deployerConf = ConfigFactory.parseString(

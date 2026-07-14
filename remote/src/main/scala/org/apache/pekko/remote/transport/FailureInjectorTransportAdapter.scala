@@ -20,9 +20,9 @@ import scala.annotation.nowarn
 import scala.concurrent.{ Future, Promise }
 import scala.util.control.NoStackTrace
 
-import FailureInjectorTransportAdapter._
-
 import org.apache.pekko
+
+import FailureInjectorTransportAdapter._
 import pekko.PekkoException
 import pekko.actor.{ Address, ExtendedActorSystem }
 import pekko.event.{ Logging, LoggingAdapter }

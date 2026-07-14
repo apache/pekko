@@ -16,13 +16,13 @@ package org.apache.pekko.actor
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
 
-import scala.concurrent.{ Await, Promise }
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
-
-import org.openjdk.jmh.annotations._
+import scala.concurrent.{ Await, Promise }
 
 import org.apache.pekko.util.Timeout
+
+import org.openjdk.jmh.annotations._
 
 @State(Scope.Benchmark)
 @BenchmarkMode(Array(Mode.Throughput))

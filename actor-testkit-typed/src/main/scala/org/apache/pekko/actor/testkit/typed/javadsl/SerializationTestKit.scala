@@ -14,6 +14,7 @@
 package org.apache.pekko.actor.testkit.typed.javadsl
 
 import org.apache.pekko
+
 import pekko.actor.testkit.typed.scaladsl
 import pekko.actor.typed.ActorSystem
 

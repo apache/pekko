@@ -21,14 +21,15 @@ import scala.annotation.nowarn
 import scala.reflect.ClassTag
 
 import org.apache.pekko
+
+import com.typesafe.config.Config
+import com.typesafe.config.ConfigFactory
+
 import pekko.ConfigurationException
 import pekko.actor._
 import pekko.dispatch._
 import pekko.routing.FromConfig
 import pekko.testkit.{ ImplicitSender, PekkoSpec }
-
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
 
 object DispatchersSpec {
   val config = """

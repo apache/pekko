@@ -16,14 +16,15 @@ package org.apache.pekko.cluster
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor.Actor
 import pekko.actor.Deploy
 import pekko.actor.Props
 import pekko.cluster.MemberStatus._
 import pekko.remote.testkit.MultiNodeConfig
 import pekko.testkit._
-
-import com.typesafe.config.ConfigFactory
 
 object LeaderLeavingMultiJvmSpec extends MultiNodeConfig {
   val first = role("first")

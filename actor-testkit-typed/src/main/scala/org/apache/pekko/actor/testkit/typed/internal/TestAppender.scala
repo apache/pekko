@@ -15,15 +15,16 @@ package org.apache.pekko.actor.testkit.typed.internal
 
 import java.util.Collections
 
+import org.apache.pekko
+
+import org.slf4j.{ MDC, Marker }
+
 import ch.qos.logback.classic.spi.ILoggingEvent
 import ch.qos.logback.classic.spi.ThrowableProxy
 import ch.qos.logback.core.AppenderBase
 
-import org.apache.pekko
 import pekko.actor.testkit.typed.LoggingEvent
 import pekko.annotation.InternalApi
-
-import org.slf4j.{ MDC, Marker }
 
 /**
  * INTERNAL API

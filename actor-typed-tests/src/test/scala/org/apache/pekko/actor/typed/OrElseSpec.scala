@@ -16,11 +16,12 @@ package org.apache.pekko.actor.typed
 import scala.annotation.tailrec
 
 import org.apache.pekko
-import pekko.actor.testkit.typed.scaladsl._
-import pekko.actor.typed.scaladsl.Behaviors
 
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
+
+import pekko.actor.testkit.typed.scaladsl._
+import pekko.actor.typed.scaladsl.Behaviors
 
 /**
  * Background: Originally there was an `OrElseBehavior` that could compose two `Behavior`, but that

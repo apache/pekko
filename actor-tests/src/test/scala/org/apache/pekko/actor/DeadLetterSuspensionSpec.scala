@@ -14,6 +14,7 @@
 package org.apache.pekko.actor
 
 import org.apache.pekko
+
 import pekko.testkit.EventFilter
 import pekko.testkit.ImplicitSender
 import pekko.testkit.PekkoSpec

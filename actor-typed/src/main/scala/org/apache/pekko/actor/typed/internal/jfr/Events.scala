@@ -13,13 +13,13 @@
 
 package org.apache.pekko.actor.typed.internal.jfr
 
+import org.apache.pekko.annotation.InternalApi
+
 import jdk.jfr.Category
 import jdk.jfr.Enabled
 import jdk.jfr.Event
 import jdk.jfr.Label
 import jdk.jfr.StackTrace
-
-import org.apache.pekko.annotation.InternalApi
 
 // requires jdk.jfr (available since JDK 9, project baseline is Java 17)
 

@@ -18,6 +18,9 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor.ActorSystem
 import pekko.actor.ExtendedActorSystem
 import pekko.actor.Props
@@ -27,8 +30,6 @@ import pekko.remote.testconductor.RoleName
 import pekko.remote.testkit.MultiNodeConfig
 import pekko.remote.transport.ThrottlerTransportAdapter.Direction
 import pekko.testkit._
-
-import com.typesafe.config.ConfigFactory
 
 object UnreachableNodeJoinsAgainMultiNodeConfig extends MultiNodeConfig {
   val first = role("first")

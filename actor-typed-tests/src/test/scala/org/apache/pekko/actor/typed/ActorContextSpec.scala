@@ -18,6 +18,9 @@ import scala.concurrent.duration._
 import scala.reflect.ClassTag
 
 import org.apache.pekko
+
+import org.scalatest.wordspec.AnyWordSpecLike
+
 import pekko.actor.InvalidMessageException
 import pekko.actor.testkit.typed.TestException
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
@@ -25,8 +28,6 @@ import pekko.actor.testkit.typed.scaladsl.LoggingTestKit
 import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
 import pekko.actor.testkit.typed.scaladsl.TestProbe
 import pekko.actor.typed.scaladsl.Behaviors
-
-import org.scalatest.wordspec.AnyWordSpecLike
 
 object ActorSpecMessages {
 

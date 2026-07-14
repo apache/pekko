@@ -20,6 +20,16 @@ import scala.concurrent.Promise
 import scala.util.control.NonFatal
 
 import org.apache.pekko
+
+import org.scalatest._
+import org.scalatest.concurrent.Eventually
+import org.scalatest.concurrent.ScalaFutures
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.time.Span
+import org.scalatest.wordspec.AnyWordSpec
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.Done
 import pekko.actor.CoordinatedShutdown
 import pekko.actor.ExtendedActorSystem
@@ -35,15 +45,6 @@ import pekko.actor.typed.PostStop
 import pekko.actor.typed.scaladsl.Behaviors
 import pekko.actor.typed.scaladsl.adapter._
 import pekko.serialization.SerializerWithStringManifest
-
-import org.scalatest._
-import org.scalatest.concurrent.Eventually
-import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.time.Span
-import org.scalatest.wordspec.AnyWordSpec
-
-import com.typesafe.config.ConfigFactory
 
 object ActorSystemSpec {
 

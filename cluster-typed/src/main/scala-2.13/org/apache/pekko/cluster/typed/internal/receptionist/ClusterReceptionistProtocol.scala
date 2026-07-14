@@ -14,6 +14,7 @@
 package org.apache.pekko.cluster.typed.internal.receptionist
 
 import org.apache.pekko
+
 import pekko.actor.typed.ActorRef
 import pekko.actor.typed.internal.receptionist.{ AbstractServiceKey, ReceptionistMessages }
 import pekko.annotation.InternalApi

@@ -14,10 +14,10 @@
 package org.apache.pekko.actor.testkit.typed.internal
 
 import java.time.{ Duration => JDuration }
-import java.util.{ List => JList }
 import java.util.concurrent.BlockingDeque
 import java.util.concurrent.LinkedBlockingDeque
 import java.util.function.Supplier
+import java.util.{ List => JList }
 
 import scala.annotation.tailrec
 import scala.collection.immutable
@@ -28,6 +28,7 @@ import scala.reflect.ClassTag
 import scala.util.control.NonFatal
 
 import org.apache.pekko
+
 import pekko.actor.ActorRefProvider
 import pekko.actor.ExtendedActorSystem
 import pekko.actor.testkit.typed.FishingOutcome

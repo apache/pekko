@@ -14,13 +14,14 @@
 package org.apache.pekko.persistence.testkit.scaladsl
 
 import org.apache.pekko
+
+import org.scalatest.matchers.should.Matchers._
+
 import pekko.actor.Props
 import pekko.actor.typed.scaladsl.adapter._
 import pekko.persistence.{ DeleteMessagesFailure, DeleteMessagesSuccess }
 import pekko.persistence.testkit._
 import pekko.testkit.EventFilter
-
-import org.scalatest.matchers.should.Matchers._
 
 trait CommonTestKitTests extends ScalaDslUtils {
 

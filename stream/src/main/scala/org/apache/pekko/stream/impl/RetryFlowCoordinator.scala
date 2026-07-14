@@ -16,6 +16,7 @@ package org.apache.pekko.stream.impl
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
 import pekko.annotation.InternalApi
 import pekko.pattern.RetrySupport
 import pekko.stream.{ Attributes, BidiShape, Inlet, Outlet }

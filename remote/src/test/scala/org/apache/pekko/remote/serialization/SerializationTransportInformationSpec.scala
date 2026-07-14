@@ -17,6 +17,10 @@ import java.io.NotSerializableException
 import java.nio.charset.StandardCharsets
 
 import org.apache.pekko
+
+import com.typesafe.config.Config
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor.ActorIdentity
 import pekko.actor.ActorRef
 import pekko.actor.ActorSystem
@@ -30,9 +34,6 @@ import pekko.testkit.ImplicitSender
 import pekko.testkit.JavaSerializable
 import pekko.testkit.PekkoSpec
 import pekko.testkit.TestActors
-
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
 
 object SerializationTransportInformationSpec {
 

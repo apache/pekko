@@ -16,6 +16,7 @@ package org.apache.pekko.stream.scaladsl
 import java.nio.charset.StandardCharsets
 
 import org.apache.pekko
+
 import pekko.stream.impl.io.compression.DeflateCompressor
 import pekko.stream.impl.io.compression.GzipCompressor
 import pekko.stream.testkit.StreamSpec

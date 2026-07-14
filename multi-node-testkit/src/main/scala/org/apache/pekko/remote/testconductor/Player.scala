@@ -19,24 +19,25 @@ import java.util.concurrent.atomic.AtomicReference
 
 import scala.annotation.nowarn
 import scala.collection.immutable
-import scala.concurrent.{ Await, ExecutionContext, Future }
 import scala.concurrent.duration._
+import scala.concurrent.{ Await, ExecutionContext, Future }
 import scala.reflect.classTag
-import scala.util.{ Failure, Success, Try }
 import scala.util.control.NoStackTrace
 import scala.util.control.NonFatal
+import scala.util.{ Failure, Success, Try }
 
 import org.apache.pekko
+
+import io.netty.channel.ChannelHandler.Sharable
+import io.netty.channel.{ Channel, ChannelHandlerContext, ChannelInboundHandlerAdapter }
+
 import pekko.actor._
 import pekko.dispatch.{ RequiresMessageQueue, UnboundedMessageQueueSemantics }
 import pekko.event.{ Logging, LoggingAdapter }
-import pekko.pattern.{ ask, AskTimeoutException }
+import pekko.pattern.{ AskTimeoutException, ask }
 import pekko.remote.testconductor.RemoteConnection.getAddrString
 import pekko.remote.transport.ThrottlerTransportAdapter.{ Blackhole, SetThrottle, TokenBucket, Unthrottled }
 import pekko.util.Timeout
-
-import io.netty.channel.{ Channel, ChannelHandlerContext, ChannelInboundHandlerAdapter }
-import io.netty.channel.ChannelHandler.Sharable
 
 object Player {
 

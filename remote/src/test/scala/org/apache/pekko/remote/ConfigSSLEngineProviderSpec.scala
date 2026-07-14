@@ -12,10 +12,11 @@ package org.apache.pekko.remote
 import scala.annotation.nowarn
 
 import org.apache.pekko
-import pekko.remote.transport.netty.ConfigSSLEngineProvider
-import pekko.testkit.PekkoSpec
 
 import com.typesafe.config.ConfigFactory
+
+import pekko.remote.transport.netty.ConfigSSLEngineProvider
+import pekko.testkit.PekkoSpec
 
 @nowarn("msg=deprecated")
 class ConfigSSLEngineProviderSpec

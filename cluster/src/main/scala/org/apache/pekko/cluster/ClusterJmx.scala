@@ -20,6 +20,7 @@ import javax.management.ObjectName
 import javax.management.StandardMBean
 
 import org.apache.pekko
+
 import pekko.actor.AddressFromURIString
 import pekko.event.LoggingAdapter
 

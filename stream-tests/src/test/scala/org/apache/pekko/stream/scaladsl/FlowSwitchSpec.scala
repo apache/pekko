@@ -17,6 +17,9 @@ import scala.concurrent.Await
 import scala.concurrent.duration.DurationInt
 
 import org.apache.pekko
+
+import org.scalatest.exceptions.TestFailedException
+
 import pekko.NotUsed
 import pekko.stream.Attributes
 import pekko.stream.Outlet
@@ -29,8 +32,6 @@ import pekko.stream.testkit.TestPublisher
 import pekko.stream.testkit.Utils.TE
 import pekko.stream.testkit.scaladsl.TestSink
 import pekko.stream.testkit.scaladsl.TestSource
-
-import org.scalatest.exceptions.TestFailedException
 
 class FlowSwitchSpec extends StreamSpec {
 

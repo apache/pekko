@@ -14,6 +14,7 @@
 package org.apache.pekko.persistence.testkit
 
 import org.apache.pekko
+
 import pekko.actor.Extension
 import pekko.annotation.InternalApi
 import pekko.persistence.{ SelectedSnapshot, SnapshotMetadata, SnapshotSelectionCriteria }

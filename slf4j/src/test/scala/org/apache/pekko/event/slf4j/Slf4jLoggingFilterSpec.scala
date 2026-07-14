@@ -16,6 +16,9 @@ package org.apache.pekko.event.slf4j
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import org.scalatest.BeforeAndAfterEach
+
 import pekko.actor.{ Actor, ActorLogging, Props }
 import pekko.actor.ActorRef
 import pekko.event.Logging
@@ -27,8 +30,6 @@ import pekko.event.Logging.LoggerInitialized
 import pekko.event.Logging.Warning
 import pekko.testkit.PekkoSpec
 import pekko.testkit.TestProbe
-
-import org.scalatest.BeforeAndAfterEach
 
 object Slf4jLoggingFilterSpec {
 

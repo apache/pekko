@@ -16,11 +16,12 @@ package org.apache.pekko.remote.artery
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor._
 import pekko.testkit.ImplicitSender
 import pekko.testkit.TestActors
-
-import com.typesafe.config.ConfigFactory
 
 object HandshakeRetrySpec {
   val commonConfig = ConfigFactory.parseString(s"""

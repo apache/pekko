@@ -16,6 +16,7 @@ package org.apache.pekko.cluster.testkit
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
 import pekko.actor.ActorRef
 import pekko.actor.Address
 import pekko.actor.Props

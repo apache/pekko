@@ -14,6 +14,7 @@
 package org.apache.pekko.persistence.typed.state.javadsl
 
 import org.apache.pekko
+
 import pekko.actor.typed.ActorRef
 import pekko.annotation.ApiMayChange
 import pekko.annotation.DoNotInherit

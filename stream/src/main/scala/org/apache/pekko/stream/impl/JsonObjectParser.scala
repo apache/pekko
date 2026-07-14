@@ -16,6 +16,7 @@ package org.apache.pekko.stream.impl
 import scala.annotation.switch
 
 import org.apache.pekko
+
 import pekko.annotation.InternalApi
 import pekko.stream.scaladsl.Framing.FramingException
 import pekko.util.ByteString

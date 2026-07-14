@@ -14,6 +14,11 @@
 package org.apache.pekko.cluster
 
 import org.apache.pekko
+
+import org.scalatest.concurrent.ScalaFutures
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor.Actor
 import pekko.actor.ActorRef
 import pekko.actor.AddressFromURIString
@@ -27,10 +32,6 @@ import pekko.remote.RemoteWatcher.Heartbeat
 import pekko.remote.testkit.MultiNodeConfig
 import pekko.remote.testkit.MultiNodeSpec
 import pekko.testkit.ImplicitSender
-
-import org.scalatest.concurrent.ScalaFutures
-
-import com.typesafe.config.ConfigFactory
 
 class ClusterRemoteFeaturesConfig(artery: Boolean) extends MultiNodeConfig {
   val first = role("first")

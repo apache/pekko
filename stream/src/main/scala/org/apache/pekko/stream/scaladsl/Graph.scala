@@ -22,6 +22,7 @@ import scala.concurrent.Promise
 import scala.util.control.{ NoStackTrace, NonFatal }
 
 import org.apache.pekko
+
 import pekko.NotUsed
 import pekko.annotation.InternalApi
 import pekko.stream._

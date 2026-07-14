@@ -22,9 +22,11 @@ import java.util.concurrent.atomic.AtomicReference
 
 import scala.annotation.tailrec
 import scala.collection.immutable
-import scala.concurrent.{ Await, Future }
 import scala.concurrent.duration._
+import scala.concurrent.{ Await, Future }
 import scala.util.control.NonFatal
+
+import org.apache.pekko
 
 import io.aeron.Aeron
 import io.aeron.AvailableImageHandler
@@ -43,7 +45,6 @@ import org.agrona.IoUtil
 import org.agrona.concurrent.BackoffIdleStrategy
 import org.agrona.concurrent.status.CountersReader.MetaData
 
-import org.apache.pekko
 import pekko.Done
 import pekko.actor.Address
 import pekko.actor.Cancellable

@@ -22,6 +22,9 @@ import scala.concurrent.duration.Duration
 import scala.util.control.NonFatal
 
 import org.apache.pekko
+
+import com.typesafe.config.{ Config, ConfigFactory }
+
 import pekko.ConfigurationException
 import pekko.actor.{ Actor, ActorRef, ActorSystem, DeadLetter, Deploy, DynamicAccess, Props }
 import pekko.annotation.InternalStableApi
@@ -34,8 +37,6 @@ import pekko.dispatch.sysmsg.{
 import pekko.event.EventStream
 import pekko.event.Logging.Warning
 import pekko.util.Reflect
-
-import com.typesafe.config.{ Config, ConfigFactory }
 
 object Mailboxes {
   final val DefaultMailboxId = "pekko.actor.default-mailbox"

@@ -16,10 +16,13 @@ package org.apache.pekko.remote.classic.transport
 import java.util.concurrent.TimeoutException
 
 import scala.annotation.nowarn
-import scala.concurrent.{ Await, Promise }
 import scala.concurrent.duration._
+import scala.concurrent.{ Await, Promise }
 
 import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor.Address
 import pekko.protobufv3.internal.{ ByteString => PByteString }
 import pekko.remote.{ FailureDetector, WireFormats }
@@ -37,8 +40,6 @@ import pekko.remote.transport.TestTransport._
 import pekko.remote.transport.Transport._
 import pekko.testkit.{ ImplicitSender, PekkoSpec }
 import pekko.util.{ ByteString, OptionVal }
-
-import com.typesafe.config.ConfigFactory
 
 object PekkoProtocolSpec {
 

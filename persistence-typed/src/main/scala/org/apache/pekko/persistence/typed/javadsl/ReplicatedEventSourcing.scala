@@ -13,13 +13,14 @@
 
 package org.apache.pekko.persistence.typed.javadsl
 
+import java.util.function.{ Function => JFunction }
 import java.util.{ Map => JMap }
 import java.util.{ Set => JSet }
-import java.util.function.{ Function => JFunction }
 
 import scala.jdk.CollectionConverters._
 
 import org.apache.pekko
+
 import pekko.annotation.DoNotInherit
 import pekko.persistence.typed.PersistenceId
 import pekko.persistence.typed.ReplicaId

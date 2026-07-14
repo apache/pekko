@@ -22,10 +22,11 @@ import scala.reflect.ClassTag
 import scala.util.Try
 
 import org.apache.pekko
-import pekko.actor.ExtendedActorSystem
-import pekko.event.{ Logging, LoggingAdapter }
 
 import com.typesafe.config.Config
+
+import pekko.actor.ExtendedActorSystem
+import pekko.event.{ Logging, LoggingAdapter }
 
 /**
  * `EventAdapters` serves as a per-journal collection of bound event adapters.

@@ -19,6 +19,11 @@ import scala.concurrent.duration._
 
 import org.apache.pekko
 import org.apache.pekko.cluster.sharding.ShardCoordinator.ShardAllocationStrategy
+
+import org.scalatest.wordspec.AnyWordSpecLike
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.Done
 import pekko.actor.{ Actor, ActorLogging, ActorRef, Props, Timers }
 import pekko.cluster.Cluster
@@ -31,10 +36,6 @@ import pekko.testkit.PekkoSpec
 import pekko.testkit.TestException
 import pekko.testkit.TestProbe
 import pekko.testkit.WithLogCapturing
-
-import org.scalatest.wordspec.AnyWordSpecLike
-
-import com.typesafe.config.ConfigFactory
 
 object RememberEntitiesFailureSpec {
   val config = ConfigFactory.parseString(s"""

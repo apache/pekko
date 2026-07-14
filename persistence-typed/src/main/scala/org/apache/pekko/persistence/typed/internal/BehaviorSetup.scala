@@ -18,6 +18,12 @@ import scala.concurrent.duration.FiniteDuration
 import scala.util.control.NonFatal
 
 import org.apache.pekko
+
+import org.slf4j.Logger
+import org.slf4j.MDC
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor.{ ActorRef => ClassicActorRef }
 import pekko.actor.Cancellable
 import pekko.actor.typed.Signal
@@ -33,11 +39,6 @@ import pekko.persistence.typed.scaladsl.EventSourcedBehavior
 import pekko.persistence.typed.scaladsl.RetentionCriteria
 import pekko.util.Helpers.ConfigOps
 import pekko.util.OptionVal
-
-import org.slf4j.Logger
-import org.slf4j.MDC
-
-import com.typesafe.config.ConfigFactory
 
 /**
  * INTERNAL API

@@ -14,6 +14,7 @@
 package org.apache.pekko.stream.impl.fusing
 
 import org.apache.pekko
+
 import pekko.stream._
 import pekko.stream.scaladsl.Sink
 import pekko.stream.scaladsl.Source

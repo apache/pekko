@@ -18,12 +18,13 @@ import scala.concurrent.duration._
 import scala.reflect.ClassTag
 
 import org.apache.pekko
+
+import com.typesafe.config.Config
+
 import pekko.actor.{ Actor, ActorRef, OneForOneStrategy, Props }
 import pekko.actor.SupervisorStrategy.Resume
 import pekko.persistence.journal.SteppingInmemJournal
 import pekko.testkit.ImplicitSender
-
-import com.typesafe.config.Config
 
 object PersistentActorStashingSpec {
   final case class Cmd(data: Any)

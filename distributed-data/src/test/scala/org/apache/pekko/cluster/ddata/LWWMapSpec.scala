@@ -14,12 +14,13 @@
 package org.apache.pekko.cluster.ddata
 
 import org.apache.pekko
-import pekko.actor.Address
-import pekko.cluster.UniqueAddress
-import pekko.cluster.ddata.Replicator.Changed
 
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
+
+import pekko.actor.Address
+import pekko.cluster.UniqueAddress
+import pekko.cluster.ddata.Replicator.Changed
 
 class LWWMapSpec extends AnyWordSpec with Matchers {
   import LWWRegister.defaultClock

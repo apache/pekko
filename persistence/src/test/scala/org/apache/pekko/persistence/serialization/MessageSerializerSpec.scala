@@ -14,6 +14,7 @@
 package org.apache.pekko.persistence.serialization
 
 import org.apache.pekko
+
 import pekko.persistence.PersistentRepr
 import pekko.serialization.SerializationExtension
 import pekko.testkit.PekkoSpec

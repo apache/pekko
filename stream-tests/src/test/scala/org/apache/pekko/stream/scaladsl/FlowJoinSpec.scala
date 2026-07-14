@@ -16,12 +16,13 @@ package org.apache.pekko.stream.scaladsl
 import scala.collection.immutable
 
 import org.apache.pekko
+
+import org.scalatest.time._
+
 import pekko.stream.FlowShape
 import pekko.stream.OverflowStrategy
 import pekko.stream.testkit._
 import pekko.stream.testkit.scaladsl._
-
-import org.scalatest.time._
 
 class FlowJoinSpec extends StreamSpec("""
     pekko.stream.materializer.initial-input-buffer-size = 2

@@ -22,13 +22,14 @@ import scala.concurrent.duration.FiniteDuration
 import scala.util.control.NonFatal
 
 import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor.{ Actor, ActorCell, DeadLetter, StashOverflowException }
 import pekko.annotation.{ InternalApi, InternalStableApi }
 import pekko.dispatch.Envelope
 import pekko.event.{ Logging, LoggingAdapter }
 import pekko.util.Helpers.ConfigOps
-
-import com.typesafe.config.ConfigFactory
 
 /** INTERNAL API */
 @InternalApi

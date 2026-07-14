@@ -17,9 +17,10 @@ import java.util.concurrent.TimeUnit
 
 import scala.concurrent.duration._
 
+import org.apache.pekko
+
 import org.openjdk.jmh.annotations._
 
-import org.apache.pekko
 import pekko.routing.RoundRobinPool
 import pekko.testkit.TestActors
 import pekko.testkit.TestProbe

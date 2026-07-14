@@ -16,11 +16,12 @@ package org.apache.pekko.testkit
 import scala.concurrent.duration.FiniteDuration
 
 import org.apache.pekko
+
+import com.typesafe.config.Config
+
 import pekko.actor.{ ActorSystem, ExtendedActorSystem, Extension, ExtensionId }
 import pekko.actor.ClassicActorSystemProvider
 import pekko.util.Timeout
-
-import com.typesafe.config.Config
 
 object TestKitExtension extends ExtensionId[TestKitSettings] {
   override def get(system: ActorSystem): TestKitSettings = super.get(system)

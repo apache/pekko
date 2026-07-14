@@ -16,12 +16,13 @@ package org.apache.pekko.testkit
 import java.util.concurrent.atomic.AtomicInteger
 
 import org.apache.pekko
+
+import com.typesafe.config.Config
+
 import pekko.actor.dispatch.ActorModelSpec
 import pekko.dispatch.DispatcherPrerequisites
 import pekko.dispatch.MessageDispatcher
 import pekko.dispatch.MessageDispatcherConfigurator
-
-import com.typesafe.config.Config
 
 object CallingThreadDispatcherModelSpec {
   import ActorModelSpec._

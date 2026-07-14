@@ -16,6 +16,9 @@ package org.apache.pekko.cluster.sharding.typed
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor.testkit.typed.scaladsl.TestProbe
 import pekko.actor.typed.ActorRef
 import pekko.actor.typed.Behavior
@@ -32,8 +35,6 @@ import pekko.cluster.typed.PrepareForFullClusterShutdown
 import pekko.remote.testkit.MultiNodeConfig
 import pekko.remote.testkit.MultiNodeSpec
 import pekko.serialization.jackson.CborSerializable
-
-import com.typesafe.config.ConfigFactory
 
 object ClusterShardingPreparingForShutdownSpec extends MultiNodeConfig {
   val first = role("first")

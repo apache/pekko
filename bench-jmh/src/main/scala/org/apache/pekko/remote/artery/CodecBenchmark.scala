@@ -25,9 +25,12 @@ import scala.concurrent.Await
 import scala.concurrent.Future
 import scala.concurrent.duration._
 
+import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import org.openjdk.jmh.annotations._
 
-import org.apache.pekko
 import pekko.Done
 import pekko.NotUsed
 import pekko.actor._
@@ -40,8 +43,6 @@ import pekko.serialization.SerializationExtension
 import pekko.stream.SystemMaterializer
 import pekko.stream.scaladsl._
 import pekko.util.OptionVal
-
-import com.typesafe.config.ConfigFactory
 
 @State(Scope.Benchmark)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)

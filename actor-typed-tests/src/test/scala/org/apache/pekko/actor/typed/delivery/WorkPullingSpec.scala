@@ -16,6 +16,9 @@ package org.apache.pekko.actor.typed.delivery
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import org.scalatest.wordspec.AnyWordSpecLike
+
 import pekko.Done
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
 import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
@@ -23,8 +26,6 @@ import pekko.actor.typed.ActorRef
 import pekko.actor.typed.delivery.internal.ProducerControllerImpl
 import pekko.actor.typed.receptionist.Receptionist
 import pekko.actor.typed.receptionist.ServiceKey
-
-import org.scalatest.wordspec.AnyWordSpecLike
 
 class WorkPullingSpec
     extends ScalaTestWithActorTestKit("""

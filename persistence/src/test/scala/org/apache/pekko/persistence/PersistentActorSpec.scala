@@ -23,13 +23,14 @@ import scala.util.Random
 import scala.util.control.NoStackTrace
 
 import org.apache.pekko
-import pekko.actor._
-import pekko.persistence.PersistentActorSpec._
-import pekko.testkit.{ EventFilter, ImplicitSender, TestLatch, TestProbe }
 
 import org.scalatest.concurrent.Eventually
 
 import com.typesafe.config.{ Config, ConfigFactory }
+
+import pekko.actor._
+import pekko.persistence.PersistentActorSpec._
+import pekko.testkit.{ EventFilter, ImplicitSender, TestLatch, TestProbe }
 
 object PersistentActorSpec {
 

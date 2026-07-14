@@ -14,6 +14,7 @@
 package org.apache.pekko.remote.artery
 
 import org.apache.pekko
+
 import pekko.actor.{ EmptyLocalActorRef, InternalActorRef }
 import pekko.actor.ActorRefScope
 import pekko.actor.ExtendedActorSystem

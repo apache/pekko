@@ -16,6 +16,10 @@ package org.apache.pekko.persistence.typed
 import java.util.concurrent.atomic.AtomicInteger
 
 import org.apache.pekko
+
+import org.scalatest.concurrent.Eventually
+import org.scalatest.wordspec.AnyWordSpecLike
+
 import pekko.Done
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
 import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
@@ -30,9 +34,6 @@ import pekko.persistence.typed.scaladsl.EventSourcedBehavior
 import pekko.persistence.typed.scaladsl.ReplicatedEventSourcing
 import pekko.serialization.jackson.CborSerializable
 import pekko.stream.scaladsl.Sink
-
-import org.scalatest.concurrent.Eventually
-import org.scalatest.wordspec.AnyWordSpecLike
 
 object ReplicatedEventSourcingTaggingSpec {
 

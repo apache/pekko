@@ -14,25 +14,26 @@
 package org.apache.pekko.serialization
 
 import java.io._
-import java.nio.{ ByteBuffer, ByteOrder }
 import java.nio.charset.StandardCharsets
+import java.nio.{ ByteBuffer, ByteOrder }
 
 import scala.annotation.nowarn
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
-import SerializationTests._
+import org.apache.pekko
+
+import com.typesafe.config._
+
 import test.org.apache.pekko.serialization.NoVerification
 
-import org.apache.pekko
+import SerializationTests._
 import pekko.actor._
 import pekko.actor.dungeon.SerializationCheckFailedException
 import pekko.pattern.ask
 import pekko.testkit.{ EventFilter, PekkoSpec }
 import pekko.util.ByteString
 import pekko.util.Timeout
-
-import com.typesafe.config._
 
 object SerializationTests {
 

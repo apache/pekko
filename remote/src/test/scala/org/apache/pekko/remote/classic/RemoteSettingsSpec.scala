@@ -16,14 +16,15 @@ package org.apache.pekko.remote.classic
 import scala.annotation.nowarn
 
 import org.apache.pekko
-import pekko.ConfigurationException
-import pekko.remote.RemoteSettings
-import pekko.testkit.PekkoSpec
 
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
 import com.typesafe.config.ConfigFactory
+
+import pekko.ConfigurationException
+import pekko.remote.RemoteSettings
+import pekko.testkit.PekkoSpec
 
 @nowarn("msg=deprecated")
 class RemoteSettingsSpec extends AnyWordSpec with Matchers {

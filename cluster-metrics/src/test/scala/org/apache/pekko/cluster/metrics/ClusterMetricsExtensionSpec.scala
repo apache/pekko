@@ -16,6 +16,7 @@ package org.apache.pekko.cluster.metrics
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
 import pekko.cluster.Cluster
 import pekko.cluster.metrics.StandardMetrics._
 import pekko.testkit._

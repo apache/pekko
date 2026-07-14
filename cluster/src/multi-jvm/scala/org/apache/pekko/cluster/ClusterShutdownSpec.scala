@@ -16,10 +16,11 @@ package org.apache.pekko.cluster
 import scala.concurrent.duration._
 
 import org.apache.pekko
-import pekko.cluster.MemberStatus.Removed
-import pekko.remote.testkit.MultiNodeConfig
 
 import org.scalatest.concurrent.Eventually
+
+import pekko.cluster.MemberStatus.Removed
+import pekko.remote.testkit.MultiNodeConfig
 
 object ClusterShutdownSpec extends MultiNodeConfig {
   val first = role("first")

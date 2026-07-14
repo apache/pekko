@@ -14,6 +14,7 @@
 package org.apache.pekko.cluster.sharding.typed.testkit.scaladsl
 
 import org.apache.pekko
+
 import pekko.actor.typed.ActorRef
 import pekko.cluster.sharding.typed.internal.testkit.TestEntityRefImpl
 import pekko.cluster.sharding.typed.scaladsl.EntityRef

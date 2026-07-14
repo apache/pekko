@@ -21,6 +21,10 @@ import scala.concurrent.duration._
 import scala.language.implicitConversions
 
 import org.apache.pekko
+
+import org.scalatest.Suite
+import org.scalatest.matchers.should.Matchers
+
 import pekko.actor.ActorIdentity
 import pekko.actor.Address
 import pekko.actor.Identify
@@ -39,9 +43,6 @@ import pekko.remote.testkit.MultiNodeSpec
 import pekko.remote.testkit.STMultiNodeSpec
 import pekko.testkit.WatchedByCoroner
 import pekko.util.Timeout
-
-import org.scalatest.Suite
-import org.scalatest.matchers.should.Matchers
 
 trait MultiNodeTypedClusterSpec extends Suite with STMultiNodeSpec with WatchedByCoroner with Matchers {
   self: MultiNodeSpec =>

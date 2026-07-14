@@ -14,6 +14,7 @@
 package org.apache.pekko.io.dns.internal
 
 import org.apache.pekko
+
 import pekko.io.dns.RecordType
 import pekko.util.{ ByteIterator, ByteStringBuilder, OptionVal }
 

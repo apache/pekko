@@ -16,6 +16,7 @@ package org.apache.pekko.stream.impl
 import scala.concurrent.{ Future, Promise }
 
 import org.apache.pekko
+
 import pekko.Done
 import pekko.annotation.InternalApi
 import pekko.stream._

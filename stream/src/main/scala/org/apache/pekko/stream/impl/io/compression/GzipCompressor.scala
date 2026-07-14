@@ -16,6 +16,7 @@ package org.apache.pekko.stream.impl.io.compression
 import java.util.zip.{ CRC32, Deflater }
 
 import org.apache.pekko
+
 import pekko.annotation.InternalApi
 import pekko.util.ByteString
 

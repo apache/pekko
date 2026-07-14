@@ -14,6 +14,7 @@
 package org.apache.pekko.stream.scaladsl
 
 import org.apache.pekko
+
 import pekko.stream.{ SinkRef, SourceRef }
 import pekko.stream.impl.streamref.{ SinkRefStageImpl, SourceRefStageImpl }
 import pekko.util.OptionVal

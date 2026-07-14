@@ -17,12 +17,13 @@ import java.net.{ Inet4Address, Inet6Address, InetAddress, InetSocketAddress }
 
 import scala.annotation.tailrec
 import scala.collection.immutable
-import scala.concurrent.{ ExecutionContextExecutor, Future, Promise }
 import scala.concurrent.ExecutionContext.parasitic
-import scala.util.{ Failure, Success, Try }
+import scala.concurrent.{ ExecutionContextExecutor, Future, Promise }
 import scala.util.control.NonFatal
+import scala.util.{ Failure, Success, Try }
 
 import org.apache.pekko
+
 import pekko.actor.{ Actor, ActorLogging, ActorRef, ActorRefFactory, NoSerializationVerificationNeeded, Props, Status }
 import pekko.annotation.InternalApi
 import pekko.io.SimpleDnsCache

@@ -21,12 +21,13 @@ import java.io.NotSerializableException
 import java.util.Base64
 
 import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor.ActorSystem
 import pekko.persistence.fsm.PersistentFSM.PersistentFSMSnapshot
 import pekko.serialization.SerializationExtension
 import pekko.testkit.PekkoSpec
-
-import com.typesafe.config.ConfigFactory
 
 class SnapshotSerializerMigrationAkkaSpec extends PekkoSpec(
       s"${SnapshotAutoMigration.ConfigName}=akka"

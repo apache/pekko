@@ -12,9 +12,10 @@
  */
 
 package org.apache.pekko.persistence.query.typed
+import org.apache.pekko
+
 import com.typesafe.config.Config
 
-import org.apache.pekko
 import pekko.actor.ExtendedActorSystem
 import pekko.persistence.query.ReadJournalProvider
 

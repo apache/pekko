@@ -18,6 +18,7 @@ import java.nio.charset.StandardCharsets
 import java.util.zip.{ GZIPInputStream, GZIPOutputStream, ZipException }
 
 import org.apache.pekko
+
 import pekko.stream.impl.io.compression.{ Compressor, GzipCompressor }
 import pekko.stream.scaladsl.{ Compression, Flow }
 import pekko.util.ByteString

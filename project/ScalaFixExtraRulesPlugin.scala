@@ -19,10 +19,6 @@ object ScalaFixExtraRulesPlugin extends AutoPlugin with ScalafixSupport {
 
   override lazy val requires: Plugins = ScalafixPlugin
 
-  import sbt._
-  import scalafix.sbt.ScalafixPlugin.autoImport.scalafixDependencies
-  override lazy val projectSettings: Seq[Def.Setting[?]] = super.projectSettings ++ {
-    ThisBuild / scalafixDependencies ++= Seq(
-      "com.nequissimus" %% "sort-imports" % "0.6.1")
-  }
+  import sbt.{ Def, _ }
+  override lazy val projectSettings: Seq[Def.Setting[?]] = super.projectSettings
 }

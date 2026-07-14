@@ -18,9 +18,9 @@ import scala.collection.mutable
 import scala.concurrent.duration.FiniteDuration
 import scala.jdk.DurationConverters._
 
-import language.implicitConversions
-
 import org.apache.pekko
+
+import language.implicitConversions
 import pekko.actor._
 import pekko.japi.function.{ Effect, Function2, Predicate, Predicate2, Procedure, Procedure2, Procedure3 }
 import pekko.japi.pf.{ FSMTransitionHandlerBuilder, UnitMatch, UnitPFBuilder }

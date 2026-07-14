@@ -14,6 +14,7 @@
 package org.apache.pekko.actor.typed
 
 import org.apache.pekko
+
 import pekko.annotation.DoNotInherit
 
 /**

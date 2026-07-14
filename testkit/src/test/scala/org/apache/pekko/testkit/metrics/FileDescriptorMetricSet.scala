@@ -19,11 +19,11 @@ import java.util
 
 import scala.jdk.CollectionConverters._
 
-import com.codahale.metrics.{ Gauge, Metric, MetricSet }
+import com.sun.management.UnixOperatingSystemMXBean
+
 import com.codahale.metrics.MetricRegistry._
 import com.codahale.metrics.jvm.FileDescriptorRatioGauge
-
-import com.sun.management.UnixOperatingSystemMXBean
+import com.codahale.metrics.{ Gauge, Metric, MetricSet }
 
 /**
  * MetricSet exposing number of open and maximum file descriptors used by the JVM process.

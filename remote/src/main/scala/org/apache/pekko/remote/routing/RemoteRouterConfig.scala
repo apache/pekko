@@ -19,6 +19,9 @@ import scala.annotation.nowarn
 import scala.jdk.CollectionConverters._
 
 import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor.ActorCell
 import pekko.actor.ActorContext
 import pekko.actor.ActorSystem
@@ -34,8 +37,6 @@ import pekko.routing.Routee
 import pekko.routing.Router
 import pekko.routing.RouterActor
 import pekko.routing.RouterConfig
-
-import com.typesafe.config.ConfigFactory
 
 /**
  * [[pekko.routing.RouterConfig]] implementation for remote deployment on defined

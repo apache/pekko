@@ -16,10 +16,11 @@ package org.apache.pekko.actor.typed.internal
 import scala.reflect.ClassTag
 
 import org.apache.pekko
-import pekko.actor.typed.{ Behavior, BehaviorInterceptor, Signal, TypedActorContext }
-import pekko.annotation.InternalApi
 
 import org.slf4j.MDC
+
+import pekko.actor.typed.{ Behavior, BehaviorInterceptor, Signal, TypedActorContext }
+import pekko.annotation.InternalApi
 
 /**
  * INTERNAL API

@@ -14,6 +14,7 @@
 package org.apache.pekko.stream.testkit.scaladsl
 
 import org.apache.pekko
+
 import pekko.actor.ActorSystem
 import pekko.actor.ClassicActorSystemProvider
 import pekko.stream._

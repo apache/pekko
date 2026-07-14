@@ -17,10 +17,10 @@
 
 package org.apache.pekko.actor.testkit.typed.javadsl
 
+import org.apache.pekko.actor.testkit.typed.annotations.JUnitJupiterTestKit
+
 import org.junit.jupiter.api.extension.{ AfterAllCallback, BeforeTestExecutionCallback, ExtensionContext }
 import org.junit.platform.commons.support.AnnotationSupport
-
-import org.apache.pekko.actor.testkit.typed.annotations.JUnitJupiterTestKit
 
 final class TestKitJUnitJupiterExtension() extends AfterAllCallback with BeforeTestExecutionCallback {
 

@@ -13,12 +13,12 @@
 
 package org.apache.pekko.serialization.jackson3
 
+import org.apache.pekko.serialization.{ SerializationExtension, Serializer, Serializers }
+
 import tools.jackson.core.{ JsonGenerator, JsonParser }
-import tools.jackson.databind.{ DeserializationContext, JsonNode, SerializationContext }
 import tools.jackson.databind.deser.std.StdScalarDeserializer
 import tools.jackson.databind.ser.std.StdScalarSerializer
-
-import org.apache.pekko.serialization.{ SerializationExtension, Serializer, Serializers }
+import tools.jackson.databind.{ DeserializationContext, JsonNode, SerializationContext }
 
 final class PekkoSerializationSerializer extends StdScalarSerializer[AnyRef](classOf[AnyRef]) with ActorSystemAccess {
   def serialization = SerializationExtension(currentSystem())

@@ -18,6 +18,7 @@ import scala.collection.immutable.Map.Map1
 import scala.language.existentials
 
 import org.apache.pekko
+
 import pekko.annotation.{ DoNotInherit, InternalApi }
 import pekko.stream._
 import pekko.stream.impl.StreamLayout.AtomicModule

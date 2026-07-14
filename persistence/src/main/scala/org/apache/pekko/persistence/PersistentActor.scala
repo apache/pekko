@@ -19,12 +19,13 @@ import scala.collection.immutable
 import scala.util.control.NoStackTrace
 
 import org.apache.pekko
+
+import com.typesafe.config.Config
+
 import pekko.actor._
 import pekko.annotation.InternalApi
 import pekko.japi.Util
 import pekko.japi.function.Procedure
-
-import com.typesafe.config.Config
 
 abstract class RecoveryCompleted
 

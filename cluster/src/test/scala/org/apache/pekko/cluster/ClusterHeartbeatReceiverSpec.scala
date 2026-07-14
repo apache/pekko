@@ -14,6 +14,7 @@
 package org.apache.pekko.cluster
 
 import org.apache.pekko
+
 import pekko.cluster.ClusterHeartbeatSender.{ Heartbeat, HeartbeatRsp }
 import pekko.testkit.{ ImplicitSender, PekkoSpec }
 

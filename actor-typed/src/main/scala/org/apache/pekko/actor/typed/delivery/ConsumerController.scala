@@ -19,6 +19,9 @@ import scala.concurrent.duration._
 import scala.jdk.DurationConverters._
 
 import org.apache.pekko
+
+import com.typesafe.config.Config
+
 import pekko.actor.DeadLetterSuppression
 import pekko.actor.typed.ActorRef
 import pekko.actor.typed.ActorSystem
@@ -32,8 +35,6 @@ import pekko.actor.typed.scaladsl.Behaviors
 import pekko.annotation.ApiMayChange
 import pekko.annotation.DoNotInherit
 import pekko.annotation.InternalApi
-
-import com.typesafe.config.Config
 
 /**
  * `ConsumerController` and [[ProducerController]] or [[WorkPullingProducerController]] are used

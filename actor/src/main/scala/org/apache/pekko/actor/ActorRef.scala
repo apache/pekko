@@ -20,6 +20,7 @@ import scala.collection.immutable
 import scala.util.control.NonFatal
 
 import org.apache.pekko
+
 import pekko.annotation.DoNotInherit
 import pekko.annotation.InternalApi
 import pekko.dispatch._

@@ -22,6 +22,9 @@ import scala.concurrent.duration._
 import scala.util.control.NonFatal
 
 import org.apache.pekko
+
+import com.typesafe.config.{ Config, ConfigFactory }
+
 import pekko.actor._
 import pekko.annotation.InternalApi
 import pekko.annotation.InternalStableApi
@@ -32,8 +35,6 @@ import pekko.persistence.journal.{ EventAdapters, IdentityEventAdapters }
 import pekko.util.Collections.EmptyImmutableSeq
 import pekko.util.Helpers.ConfigOps
 import pekko.util.Reflect
-
-import com.typesafe.config.{ Config, ConfigFactory }
 
 /**
  * Persistence configuration.

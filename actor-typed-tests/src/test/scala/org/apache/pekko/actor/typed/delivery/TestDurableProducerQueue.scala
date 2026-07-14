@@ -19,6 +19,7 @@ import scala.concurrent.duration.Duration
 import scala.concurrent.duration.FiniteDuration
 
 import org.apache.pekko
+
 import pekko.actor.testkit.typed.TestException
 import pekko.actor.typed.Behavior
 import pekko.actor.typed.SupervisorStrategy

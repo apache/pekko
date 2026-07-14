@@ -13,14 +13,15 @@
 
 package org.apache.pekko.remote.artery.tcp.ssl
 
-import scala.concurrent.duration._
 import scala.concurrent.duration.FiniteDuration
+import scala.concurrent.duration._
 import scala.jdk.CollectionConverters._
 
 import org.apache.pekko
-import pekko.annotation.InternalApi
 
 import com.typesafe.config.Config
+
+import pekko.annotation.InternalApi
 
 /**
  * INTERNAL API

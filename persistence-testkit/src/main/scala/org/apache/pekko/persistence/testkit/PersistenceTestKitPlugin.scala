@@ -19,6 +19,9 @@ import scala.concurrent.Future
 import scala.util.Try
 
 import org.apache.pekko
+
+import com.typesafe.config.{ Config, ConfigFactory }
+
 import pekko.actor.ActorLogging
 import pekko.annotation.InternalApi
 import pekko.persistence._
@@ -27,8 +30,6 @@ import pekko.persistence.journal.Tagged
 import pekko.persistence.snapshot.SnapshotStore
 import pekko.persistence.testkit.internal.{ InMemStorageExtension, SnapshotStorageEmulatorExtension }
 import pekko.persistence.testkit.internal.CurrentTime
-
-import com.typesafe.config.{ Config, ConfigFactory }
 
 /**
  * INTERNAL API

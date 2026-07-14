@@ -19,6 +19,9 @@ import java.util.concurrent.atomic.AtomicLong
 import scala.collection.immutable
 
 import org.apache.pekko
+
+import com.typesafe.config.Config
+
 import pekko.PekkoException
 import pekko.actor.Actor
 import pekko.actor.ActorCell
@@ -30,8 +33,6 @@ import pekko.actor.Props
 import pekko.actor.SupervisorStrategy
 import pekko.dispatch.Envelope
 import pekko.dispatch.MessageDispatcher
-
-import com.typesafe.config.Config
 
 /**
  * [[Pool]] routers with dynamically resizable number of routees are implemented by providing a Resizer

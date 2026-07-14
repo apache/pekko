@@ -16,6 +16,7 @@ package org.apache.pekko.cluster.sharding
 import scala.collection.immutable.SortedSet
 
 import org.apache.pekko
+
 import pekko.actor.ActorRef
 import pekko.actor.Address
 import pekko.cluster.ClusterEvent.CurrentClusterState

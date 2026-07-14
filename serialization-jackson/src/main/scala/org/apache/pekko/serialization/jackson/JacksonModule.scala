@@ -13,6 +13,8 @@
 
 package org.apache.pekko.serialization.jackson
 
+import org.apache.pekko
+
 import com.fasterxml.jackson.core.Version
 import com.fasterxml.jackson.core.util.VersionUtil
 import com.fasterxml.jackson.databind.BeanDescription
@@ -28,7 +30,6 @@ import com.fasterxml.jackson.databind.deser.Deserializers
 import com.fasterxml.jackson.databind.ser.BeanSerializerModifier
 import com.fasterxml.jackson.databind.ser.Serializers
 
-import org.apache.pekko
 import pekko.annotation.InternalApi
 
 /**

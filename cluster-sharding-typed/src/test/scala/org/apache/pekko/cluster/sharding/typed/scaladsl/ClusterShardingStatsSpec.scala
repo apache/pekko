@@ -14,6 +14,9 @@
 package org.apache.pekko.cluster.sharding.typed.scaladsl
 
 import org.apache.pekko
+
+import org.scalatest.wordspec.AnyWordSpecLike
+
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
 import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
 import pekko.actor.typed.ActorRef
@@ -25,8 +28,6 @@ import pekko.cluster.sharding.typed.scaladsl.ClusterShardingSpec._
 import pekko.cluster.typed.Cluster
 import pekko.cluster.typed.Join
 import pekko.cluster.typed.SelfUp
-
-import org.scalatest.wordspec.AnyWordSpecLike
 
 class ClusterShardingStatsSpec
     extends ScalaTestWithActorTestKit(ClusterShardingSpec.config)

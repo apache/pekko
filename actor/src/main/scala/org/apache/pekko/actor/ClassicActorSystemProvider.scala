@@ -14,6 +14,7 @@
 package org.apache.pekko.actor
 
 import org.apache.pekko
+
 import pekko.annotation.DoNotInherit
 import pekko.annotation.InternalApi
 

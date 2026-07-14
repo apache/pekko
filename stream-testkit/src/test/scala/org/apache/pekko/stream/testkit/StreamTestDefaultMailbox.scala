@@ -14,6 +14,9 @@
 package org.apache.pekko.stream.testkit
 
 import org.apache.pekko
+
+import com.typesafe.config.Config
+
 import pekko.actor.Actor
 import pekko.actor.ActorRef
 import pekko.actor.ActorRefWithCell
@@ -23,8 +26,6 @@ import pekko.dispatch.MessageQueue
 import pekko.dispatch.ProducesMessageQueue
 import pekko.dispatch.UnboundedMailbox
 import pekko.stream.impl.MaterializerGuardian
-
-import com.typesafe.config.Config
 
 /**
  * INTERNAL API

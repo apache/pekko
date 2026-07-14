@@ -16,6 +16,7 @@ package org.apache.pekko.cluster.sharding.typed
 import java.util.{ Map => JMap }
 
 import org.apache.pekko
+
 import pekko.actor.typed.ActorSystem
 import pekko.actor.typed.Extension
 import pekko.actor.typed.ExtensionId

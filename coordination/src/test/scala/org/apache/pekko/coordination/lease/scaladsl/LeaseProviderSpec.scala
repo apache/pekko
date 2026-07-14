@@ -17,11 +17,12 @@ import scala.concurrent.Future
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor.ExtendedActorSystem
 import pekko.coordination.lease.LeaseSettings
 import pekko.testkit.{ EventFilter, PekkoSpec }
-
-import com.typesafe.config.ConfigFactory
 
 object LeaseProviderSpec {
   class LeaseA(settings: LeaseSettings) extends Lease(settings) {

@@ -14,11 +14,12 @@
 package org.apache.pekko.persistence.snapshot.local
 
 import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.persistence.CapabilityFlag
 import pekko.persistence.PluginCleanup
 import pekko.persistence.snapshot.SnapshotStoreSpec
-
-import com.typesafe.config.ConfigFactory
 
 class LocalSnapshotStoreSpec
     extends SnapshotStoreSpec(

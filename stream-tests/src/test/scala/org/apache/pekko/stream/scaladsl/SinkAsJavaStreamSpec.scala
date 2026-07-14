@@ -16,6 +16,7 @@ package org.apache.pekko.stream.scaladsl
 import java.util.stream.Collectors
 
 import org.apache.pekko
+
 import pekko.stream._
 import pekko.stream.impl.PhasedFusingActorMaterializer
 import pekko.stream.impl.StreamSupervisor

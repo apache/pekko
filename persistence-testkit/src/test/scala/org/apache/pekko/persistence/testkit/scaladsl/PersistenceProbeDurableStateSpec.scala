@@ -14,15 +14,16 @@
 package org.apache.pekko.persistence.testkit.scaladsl
 
 import org.apache.pekko
+
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
+
 import pekko.Done
 import pekko.actor.typed.{ Behavior, RecipientRef }
 import pekko.actor.typed.scaladsl.{ ActorContext, Behaviors }
 import pekko.persistence.typed.PersistenceId
 import pekko.persistence.typed.state.RecoveryCompleted
 import pekko.persistence.typed.state.scaladsl._
-
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpec
 
 object PersistenceProbeDurableStateSpec {
   object BehaviorUnderTest {

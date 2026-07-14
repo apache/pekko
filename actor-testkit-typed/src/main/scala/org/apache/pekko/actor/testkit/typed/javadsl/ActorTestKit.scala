@@ -18,6 +18,9 @@ import java.time.Duration
 import scala.jdk.DurationConverters._
 
 import org.apache.pekko
+
+import com.typesafe.config.Config
+
 import pekko.actor.DeadLetter
 import pekko.actor.Dropped
 import pekko.actor.UnhandledMessage
@@ -30,8 +33,6 @@ import pekko.actor.typed.Behavior
 import pekko.actor.typed.Props
 import pekko.actor.typed.Scheduler
 import pekko.util.Timeout
-
-import com.typesafe.config.Config
 
 object ActorTestKit {
 

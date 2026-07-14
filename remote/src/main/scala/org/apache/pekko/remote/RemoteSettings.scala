@@ -18,6 +18,9 @@ import scala.collection.immutable
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import com.typesafe.config.Config
+
 import pekko.ConfigurationException
 import pekko.actor.Props
 import pekko.annotation.InternalApi
@@ -25,10 +28,8 @@ import pekko.event.Logging
 import pekko.event.Logging.LogLevel
 import pekko.japi.Util._
 import pekko.remote.artery.ArterySettings
-import pekko.util.Helpers.{ toRootLowerCase, ConfigOps, Requiring }
+import pekko.util.Helpers.{ ConfigOps, Requiring, toRootLowerCase }
 import pekko.util.Timeout
-
-import com.typesafe.config.Config
 
 final class RemoteSettings(val config: Config) {
   import scala.jdk.CollectionConverters._

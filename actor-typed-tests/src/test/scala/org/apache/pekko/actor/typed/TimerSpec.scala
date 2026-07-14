@@ -21,6 +21,9 @@ import scala.concurrent.duration._
 import scala.util.control.NoStackTrace
 
 import org.apache.pekko
+
+import org.scalatest.wordspec.AnyWordSpecLike
+
 import pekko.actor.DeadLetter
 import pekko.actor.testkit.typed.TestException
 import pekko.actor.testkit.typed.scaladsl._
@@ -28,8 +31,6 @@ import pekko.actor.testkit.typed.scaladsl.LoggingTestKit
 import pekko.actor.typed.scaladsl.Behaviors
 import pekko.actor.typed.scaladsl.TimerScheduler
 import pekko.testkit.TimingTest
-
-import org.scalatest.wordspec.AnyWordSpecLike
 
 class TimerSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike with LogCapturing {
 

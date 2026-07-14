@@ -20,7 +20,8 @@ import java.util.concurrent.CompletionStage
 import scala.jdk.CollectionConverters._
 
 import org.apache.pekko
-import pekko.stream.{ javadsl, scaladsl, IOResult }
+
+import pekko.stream.{ IOResult, javadsl, scaladsl }
 import pekko.stream.scaladsl.SinkToCompletionStage
 import pekko.stream.scaladsl.SourceToCompletionStage
 import pekko.util.ByteString

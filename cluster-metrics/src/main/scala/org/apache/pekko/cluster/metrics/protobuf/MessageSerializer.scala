@@ -13,14 +13,15 @@
 
 package org.apache.pekko.cluster.metrics.protobuf
 
-import java.{ lang => jl }
 import java.io.{ ByteArrayOutputStream, NotSerializableException, ObjectOutputStream }
 import java.util.zip.{ GZIPInputStream, GZIPOutputStream }
+import java.{ lang => jl }
 
 import scala.collection.immutable
 import scala.jdk.CollectionConverters._
 
 import org.apache.pekko
+
 import pekko.actor.{ Address, ExtendedActorSystem }
 import pekko.cluster.metrics._
 import pekko.cluster.metrics.protobuf.msg.{ ClusterMetricsMessages => cm }

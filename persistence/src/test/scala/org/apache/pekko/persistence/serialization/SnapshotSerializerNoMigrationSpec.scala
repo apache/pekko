@@ -21,6 +21,7 @@ import java.io.NotSerializableException
 import java.util.Base64
 
 import org.apache.pekko
+
 import pekko.persistence.fsm.PersistentFSM.PersistentFSMSnapshot
 import pekko.serialization.SerializationExtension
 import pekko.testkit.PekkoSpec

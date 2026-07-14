@@ -16,6 +16,9 @@ package org.apache.pekko.actor.typed.scaladsl
 import scala.concurrent.Promise
 
 import org.apache.pekko
+
+import org.scalatest.wordspec.AnyWordSpecLike
+
 import pekko.Done
 import pekko.actor.testkit.typed.TestException
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
@@ -25,8 +28,6 @@ import pekko.actor.typed.MessageAdaptionFailure
 import pekko.actor.typed.PreRestart
 import pekko.actor.typed.Signal
 import pekko.actor.typed.Terminated
-
-import org.scalatest.wordspec.AnyWordSpecLike
 
 object AdaptationFailureSpec {
 

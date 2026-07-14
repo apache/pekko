@@ -18,6 +18,7 @@ import java.util.concurrent.atomic.AtomicInteger
 import scala.concurrent.Await
 
 import org.apache.pekko
+
 import pekko.actor.{ Actor, Props }
 import pekko.pattern.ask
 import pekko.testkit.{ DefaultTimeout, ImplicitSender, PekkoSpec, TestLatch }

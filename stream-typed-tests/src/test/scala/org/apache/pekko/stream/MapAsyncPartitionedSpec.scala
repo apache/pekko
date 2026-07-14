@@ -21,14 +21,20 @@ import java.time.Instant
 import java.util.concurrent.{ ExecutorService, Executors }
 
 import scala.annotation.nowarn
-import scala.concurrent.{ blocking, ExecutionContext, Future }
 import scala.concurrent.duration.{ DurationInt, FiniteDuration }
+import scala.concurrent.{ ExecutionContext, Future, blocking }
 import scala.util.Random
+
+import org.apache.pekko
+
+import org.scalatest.BeforeAndAfterAll
+import org.scalatest.concurrent.ScalaFutures
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
 import org.scalacheck.{ Arbitrary, Gen }
 import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks
 
-import org.apache.pekko
 import pekko.actor.typed.ActorSystem
 import pekko.actor.typed.scaladsl.Behaviors
 import pekko.stream.scaladsl.{
@@ -46,11 +52,6 @@ import pekko.stream.scaladsl.{
 import pekko.stream.testkit.scaladsl.TestSink
 import pekko.testkit.TestKitExtension
 import pekko.util.JavaVersion
-
-import org.scalatest.BeforeAndAfterAll
-import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.flatspec.AnyFlatSpec
-import org.scalatest.matchers.should.Matchers
 
 private object MapAsyncPartitionedSpec {
 

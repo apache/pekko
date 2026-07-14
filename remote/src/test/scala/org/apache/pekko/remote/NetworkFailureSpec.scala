@@ -18,6 +18,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 import scala.concurrent.Future
 
 import org.apache.pekko
+
 import pekko.testkit.DefaultTimeout
 import pekko.testkit.PekkoSpec
 

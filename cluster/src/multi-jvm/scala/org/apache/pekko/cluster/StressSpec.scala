@@ -20,6 +20,12 @@ import scala.collection.immutable
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import org.scalatest.BeforeAndAfterEach
+
+import com.typesafe.config.Config
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor.Actor
 import pekko.actor.ActorIdentity
 import pekko.actor.ActorLogging
@@ -47,11 +53,6 @@ import pekko.testkit._
 import pekko.testkit.TestEvent._
 import pekko.util.Helpers.ConfigOps
 import pekko.util.Helpers.Requiring
-
-import org.scalatest.BeforeAndAfterEach
-
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
 
 /**
  * This test is intended to be used as long running stress test

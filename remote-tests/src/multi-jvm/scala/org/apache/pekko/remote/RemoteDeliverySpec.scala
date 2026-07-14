@@ -16,6 +16,9 @@ package org.apache.pekko.remote
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor.Actor
 import pekko.actor.ActorIdentity
 import pekko.actor.ActorRef
@@ -24,8 +27,6 @@ import pekko.actor.Props
 import pekko.remote.testconductor.RoleName
 import pekko.remote.testkit.MultiNodeConfig
 import pekko.serialization.jackson.CborSerializable
-
-import com.typesafe.config.ConfigFactory
 
 class RemoteDeliveryConfig(artery: Boolean) extends MultiNodeConfig {
   val first = role("first")

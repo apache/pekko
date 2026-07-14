@@ -16,6 +16,9 @@ package org.apache.pekko.cluster.metrics
 import scala.collection.immutable
 
 import org.apache.pekko
+
+import com.typesafe.config.Config
+
 import pekko.actor.ActorRef
 import pekko.actor.ActorSystem
 import pekko.actor.ClassicActorSystemProvider
@@ -28,8 +31,6 @@ import pekko.actor.Props
 import pekko.actor.SupervisorStrategy
 import pekko.event.Logging
 import pekko.event.LoggingAdapter
-
-import com.typesafe.config.Config
 
 /**
  * Cluster metrics extension.

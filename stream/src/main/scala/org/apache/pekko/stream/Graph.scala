@@ -16,6 +16,7 @@ package org.apache.pekko.stream
 import scala.annotation.unchecked.uncheckedVariance
 
 import org.apache.pekko
+
 import pekko.annotation.InternalApi
 import pekko.stream.impl.TraversalBuilder
 import pekko.stream.scaladsl.GenericGraph

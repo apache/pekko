@@ -15,9 +15,10 @@ package org.apache.pekko.persistence.typed.state.scaladsl
 
 import scala.annotation.tailrec
 
+import org.apache.pekko
+
 import com.typesafe.config.Config
 
-import org.apache.pekko
 import pekko.actor.typed.BackoffSupervisorStrategy
 import pekko.actor.typed.Behavior
 import pekko.actor.typed.Signal

@@ -18,6 +18,7 @@ import java.io.NotSerializableException
 import scala.jdk.CollectionConverters._
 
 import org.apache.pekko
+
 import pekko.actor.typed.ActorRefResolver
 import pekko.actor.typed.delivery.ConsumerController
 import pekko.actor.typed.delivery.DurableProducerQueue

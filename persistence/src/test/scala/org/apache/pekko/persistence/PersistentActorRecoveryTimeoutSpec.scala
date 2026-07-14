@@ -16,12 +16,13 @@ package org.apache.pekko.persistence
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor.{ Actor, ActorLogging, ActorRef, Props }
 import pekko.actor.Status.Failure
 import pekko.persistence.journal.SteppingInmemJournal
 import pekko.testkit.{ ImplicitSender, PekkoSpec, TestDuration, TestProbe }
-
-import com.typesafe.config.ConfigFactory
 
 object PersistentActorRecoveryTimeoutSpec {
   val journalId = "persistent-actor-recovery-timeout-spec"

@@ -18,6 +18,9 @@ import scala.concurrent._
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import org.scalatest.time.Span
+
 import pekko.Done
 import pekko.actor.Status
 import pekko.pattern.pipe
@@ -29,8 +32,6 @@ import pekko.stream.testkit.TestSourceStage
 import pekko.stream.testkit.TestSubscriber
 import pekko.stream.testkit.scaladsl.TestSink
 import pekko.testkit.TestProbe
-
-import org.scalatest.time.Span
 
 class QueueSourceSpec extends StreamSpec {
   implicit val ec: ExecutionContextExecutor = system.dispatcher

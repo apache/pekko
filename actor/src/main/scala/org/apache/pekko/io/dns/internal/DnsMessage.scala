@@ -19,6 +19,7 @@ import scala.collection.immutable.Seq
 import scala.util.{ Failure, Success, Try }
 
 import org.apache.pekko
+
 import pekko.annotation.InternalApi
 import pekko.io.dns.ResourceRecord
 import pekko.util.{ ByteString, ByteStringBuilder }

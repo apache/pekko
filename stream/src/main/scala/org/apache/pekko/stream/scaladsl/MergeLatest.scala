@@ -16,6 +16,7 @@ package org.apache.pekko.stream.scaladsl
 import scala.collection.immutable
 
 import org.apache.pekko
+
 import pekko.stream.{ Attributes, Inlet, Outlet, UniformFanInShape }
 import pekko.stream.stage.{ GraphStage, GraphStageLogic, InHandler, OutHandler }
 

@@ -29,6 +29,9 @@ import javax.net.ssl.TrustManager
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import com.typesafe.config.Config
+
 import pekko.actor.ActorSystem
 import pekko.annotation.ApiMayChange
 import pekko.annotation.InternalApi
@@ -40,8 +43,6 @@ import pekko.remote.artery.tcp.SslTransportException
 import pekko.remote.artery.tcp.ssl.RotatingKeysSSLEngineProvider.CachedContext
 import pekko.remote.artery.tcp.ssl.RotatingKeysSSLEngineProvider.ConfiguredContext
 import pekko.stream.TLSRole
-
-import com.typesafe.config.Config
 
 /**
  * Variation on ConfigSSLEngineProvider that will periodically reload the keys and certificates

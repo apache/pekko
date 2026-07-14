@@ -13,8 +13,8 @@
 
 package org.apache.pekko.stream.javadsl
 
-import java.util.{ Comparator, Optional }
 import java.util.concurrent.CompletionStage
+import java.util.{ Comparator, Optional }
 
 import scala.annotation.unchecked.uncheckedVariance
 import scala.annotation.varargs
@@ -26,12 +26,13 @@ import scala.jdk.OptionConverters._
 import scala.reflect.ClassTag
 import scala.util.control.NonFatal
 
+import org.apache.pekko
+
 import org.jspecify.annotations.Nullable
 
-import org.apache.pekko
 import pekko.NotUsed
 import pekko.event.{ LogMarker, LoggingAdapter, MarkerLoggingAdapter }
-import pekko.japi.{ function, Pair }
+import pekko.japi.{ Pair, function }
 import pekko.stream._
 import pekko.stream.impl.Stages.DefaultAttributes
 import pekko.stream.impl.fusing.{ StatefulMapConcat, ZipWithIndexJava }

@@ -16,7 +16,9 @@ package org.apache.pekko.stream.impl.fusing
 import scala.concurrent.duration._
 
 import org.apache.pekko
-import pekko.stream.{ Attributes, ClosedShape }
+
+import pekko.stream.Attributes
+import pekko.stream.ClosedShape
 import pekko.stream.impl.fusing.GraphStages.SimpleLinearGraphStage
 import pekko.stream.stage._
 import pekko.stream.testkit.StreamSpec

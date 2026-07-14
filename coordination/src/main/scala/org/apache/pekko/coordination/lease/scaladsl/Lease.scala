@@ -16,6 +16,7 @@ package org.apache.pekko.coordination.lease.scaladsl
 import scala.concurrent.Future
 
 import org.apache.pekko
+
 import pekko.coordination.lease.LeaseSettings
 
 abstract class Lease(val settings: LeaseSettings) {

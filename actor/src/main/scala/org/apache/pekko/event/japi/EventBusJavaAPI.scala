@@ -14,6 +14,7 @@
 package org.apache.pekko.event.japi
 
 import org.apache.pekko
+
 import pekko.actor.{ ActorRef, ActorSystem }
 import pekko.util.Subclassification
 

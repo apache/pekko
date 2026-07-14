@@ -17,14 +17,15 @@ import scala.collection.immutable
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor._
 import pekko.event.Logging.Info
 import pekko.remote.RARP
 import pekko.remote.testkit.MultiNodeConfig
 import pekko.testkit._
 import pekko.testkit.TestKit
-
-import com.typesafe.config.ConfigFactory
 
 object NodeChurnMultiJvmSpec extends MultiNodeConfig {
   val first = role("first")

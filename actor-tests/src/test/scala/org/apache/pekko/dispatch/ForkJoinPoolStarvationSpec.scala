@@ -14,11 +14,12 @@
 package org.apache.pekko.dispatch
 
 import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor.{ Actor, Props }
 import pekko.testkit.{ ImplicitSender, PekkoSpec }
 import pekko.util.JavaVersion
-
-import com.typesafe.config.ConfigFactory
 
 object ForkJoinPoolStarvationSpec {
   val config = ConfigFactory.parseString("""

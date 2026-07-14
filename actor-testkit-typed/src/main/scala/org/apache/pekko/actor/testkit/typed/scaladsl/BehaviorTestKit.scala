@@ -19,14 +19,15 @@ import scala.collection.immutable
 import scala.reflect.ClassTag
 
 import org.apache.pekko
+
+import com.typesafe.config.Config
+
 import pekko.actor.testkit.typed.{ CapturedLogEvent, Effect }
 import pekko.actor.testkit.typed.internal.{ ActorSystemStub, BehaviorTestKitImpl }
 import pekko.actor.typed.{ ActorRef, Behavior, Signal, TypedActorContext }
 import pekko.actor.typed.receptionist.Receptionist
 import pekko.annotation.{ ApiMayChange, DoNotInherit }
 import pekko.pattern.StatusReply
-
-import com.typesafe.config.Config
 
 @ApiMayChange
 object BehaviorTestKit {

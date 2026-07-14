@@ -13,10 +13,11 @@
 
 package org.apache.pekko.persistence.testkit.query
 import org.apache.pekko
-import pekko.actor.ExtendedActorSystem
-import pekko.persistence.query.ReadJournalProvider
 
 import com.typesafe.config.Config
+
+import pekko.actor.ExtendedActorSystem
+import pekko.persistence.query.ReadJournalProvider
 
 class PersistenceTestKitReadJournalProvider(system: ExtendedActorSystem, config: Config, configPath: String)
     extends ReadJournalProvider {

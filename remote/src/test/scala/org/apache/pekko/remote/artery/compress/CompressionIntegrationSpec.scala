@@ -18,14 +18,15 @@ import java.io.NotSerializableException
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor._
 import pekko.actor.ExtendedActorSystem
 import pekko.remote.artery.ArteryMultiNodeSpec
 import pekko.remote.artery.compress.CompressionProtocol.Events
 import pekko.serialization.SerializerWithStringManifest
 import pekko.testkit._
-
-import com.typesafe.config.ConfigFactory
 
 object CompressionIntegrationSpec {
 

@@ -20,13 +20,13 @@ import scala.collection.immutable
 import scala.concurrent.duration._
 import scala.jdk.DurationConverters._
 
-import OptimalSizeExploringResizer._
-
 import org.apache.pekko
-import pekko.actor._
-import pekko.annotation.InternalApi
 
 import com.typesafe.config.Config
+
+import OptimalSizeExploringResizer._
+import pekko.actor._
+import pekko.annotation.InternalApi
 
 trait OptimalSizeExploringResizer extends Resizer {
 

@@ -41,6 +41,9 @@ import scala.jdk.DurationConverters._
 import scala.util.{ Failure, Success, Try }
 
 import org.apache.pekko
+
+import com.typesafe.config.{ Config, ConfigValueType }
+
 import pekko.actor.ExtendedActorSystem
 import pekko.annotation.InternalApi
 import pekko.event.Logging
@@ -49,8 +52,6 @@ import pekko.io.dns.IdGenerator.Policy
 import pekko.io.dns.internal.{ ResolvConf, ResolvConfParser }
 import pekko.util.Helpers
 import pekko.util.Helpers.Requiring
-
-import com.typesafe.config.{ Config, ConfigValueType }
 
 /** INTERNAL API */
 @InternalApi

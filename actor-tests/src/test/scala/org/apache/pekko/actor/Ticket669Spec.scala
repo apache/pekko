@@ -17,13 +17,14 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import org.scalatest.BeforeAndAfterAll
+
 import pekko.pattern.ask
-import pekko.testkit.{ filterEvents, EventFilter }
+import pekko.testkit.{ EventFilter, filterEvents }
 import pekko.testkit.DefaultTimeout
 import pekko.testkit.ImplicitSender
 import pekko.testkit.PekkoSpec
-
-import org.scalatest.BeforeAndAfterAll
 
 class Ticket669Spec extends PekkoSpec with BeforeAndAfterAll with ImplicitSender with DefaultTimeout {
   import Ticket669Spec._

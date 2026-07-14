@@ -17,11 +17,12 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import org.reactivestreams.Publisher
+
 import pekko.stream.impl.EmptyPublisher
 import pekko.stream.scaladsl.Sink
 import pekko.stream.scaladsl.Source
-
-import org.reactivestreams.Publisher
 
 class SplitWhenTest extends PekkoPublisherVerification[Int] {
 

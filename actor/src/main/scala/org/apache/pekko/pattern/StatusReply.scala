@@ -15,12 +15,13 @@ package org.apache.pekko.pattern
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
-import scala.util.{ Failure => ScalaFailure }
-import scala.util.{ Success => ScalaSuccess }
 import scala.util.Try
 import scala.util.control.{ NoStackTrace, NonFatal }
+import scala.util.{ Failure => ScalaFailure }
+import scala.util.{ Success => ScalaSuccess }
 
 import org.apache.pekko
+
 import pekko.Done
 import pekko.actor.InvalidMessageException
 import pekko.annotation.InternalApi

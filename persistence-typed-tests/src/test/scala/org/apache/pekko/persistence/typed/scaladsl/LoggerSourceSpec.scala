@@ -15,6 +15,11 @@ package org.apache.pekko.persistence.typed.scaladsl
 import java.util.concurrent.atomic.AtomicInteger
 
 import org.apache.pekko
+
+import org.scalatest.wordspec.AnyWordSpecLike
+
+import org.slf4j.event.Level
+
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
 import pekko.actor.testkit.typed.scaladsl.LoggingTestKit
 import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
@@ -24,10 +29,6 @@ import pekko.persistence.typed.PersistenceId
 import pekko.persistence.typed.RecoveryCompleted
 import pekko.persistence.typed.SnapshotCompleted
 import pekko.persistence.typed.SnapshotFailed
-
-import org.scalatest.wordspec.AnyWordSpecLike
-
-import org.slf4j.event.Level
 
 // Note that the spec name here is important since there are heuristics in place to avoid names
 // starting with EventSourcedBehavior

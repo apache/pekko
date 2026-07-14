@@ -17,6 +17,9 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor._
 import pekko.cluster.MultiNodeClusterSpec
 import pekko.pattern.ask
@@ -28,8 +31,6 @@ import pekko.routing.Routees
 import pekko.testkit._
 import pekko.testkit.DefaultTimeout
 import pekko.testkit.ImplicitSender
-
-import com.typesafe.config.ConfigFactory
 
 object UseRoleIgnoredMultiJvmSpec extends MultiNodeConfig {
 

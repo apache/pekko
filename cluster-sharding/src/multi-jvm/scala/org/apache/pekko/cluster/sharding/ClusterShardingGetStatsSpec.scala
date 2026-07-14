@@ -16,13 +16,14 @@ package org.apache.pekko.cluster.sharding
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor._
 import pekko.cluster.Cluster
 import pekko.cluster.MemberStatus
 import pekko.testkit.TestDuration
 import pekko.testkit.TestProbe
-
-import com.typesafe.config.ConfigFactory
 
 object ClusterShardingGetStatsSpec {
   import MultiNodeClusterShardingSpec.PingPongActor

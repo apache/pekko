@@ -16,14 +16,15 @@ package org.apache.pekko.actor
 import java.io.{ NotSerializableException, ObjectOutputStream }
 import java.util.concurrent.ThreadLocalRandom
 
-import scala.annotation.{ switch, tailrec }
 import scala.annotation.nowarn
+import scala.annotation.{ switch, tailrec }
 import scala.collection.immutable
 import scala.concurrent.ExecutionContextExecutor
 import scala.concurrent.duration.Duration
 import scala.util.control.NonFatal
 
 import org.apache.pekko
+
 import pekko.actor.dungeon.ChildrenContainer
 import pekko.annotation.{ InternalApi, InternalStableApi }
 import pekko.dispatch.{ Envelope, MessageDispatcher }

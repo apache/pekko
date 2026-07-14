@@ -14,10 +14,11 @@
 package org.apache.pekko.cluster.sharding
 
 import scala.concurrent.Await
-import scala.concurrent.duration._
 import scala.concurrent.duration.FiniteDuration
+import scala.concurrent.duration._
 
 import org.apache.pekko
+
 import pekko.actor.ActorRef
 import pekko.testkit.PekkoSpec
 import pekko.testkit.TestActors

@@ -18,8 +18,8 @@
 package org.apache.pekko.dispatch
 
 import java.util.Optional
-import java.util.concurrent.{ CompletableFuture, CompletionStage, Executor }
 import java.util.concurrent.atomic.AtomicReference
+import java.util.concurrent.{ CompletableFuture, CompletionStage, Executor }
 import java.util.function.{ BiConsumer, BiFunction }
 
 import scala.annotation.nowarn

@@ -16,6 +16,9 @@ package org.apache.pekko.remote
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor.ActorIdentity
 import pekko.actor.ActorRef
 import pekko.actor.ActorSystemImpl
@@ -37,8 +40,6 @@ import pekko.routing.RoundRobinGroup
 import pekko.routing.RoundRobinPool
 import pekko.routing.RoutedActorRef
 import pekko.testkit.TestProbe
-
-import com.typesafe.config.ConfigFactory
 
 class RemotingFeaturesConfig(val useUnsafe: Boolean, artery: Boolean) extends MultiNodeConfig {
 

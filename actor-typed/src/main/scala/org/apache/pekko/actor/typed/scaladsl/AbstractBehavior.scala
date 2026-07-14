@@ -14,6 +14,7 @@
 package org.apache.pekko.actor.typed.scaladsl
 
 import org.apache.pekko
+
 import pekko.actor.typed.{ Behavior, ExtensibleBehavior, Signal, TypedActorContext }
 import pekko.actor.typed.MessageAdaptionFailure
 

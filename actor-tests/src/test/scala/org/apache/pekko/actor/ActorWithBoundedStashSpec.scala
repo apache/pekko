@@ -17,15 +17,16 @@ import scala.annotation.nowarn
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import org.scalatest.BeforeAndAfterEach
+
+import com.typesafe.config.{ Config, ConfigFactory }
+
 import pekko.actor.ActorSystem.Settings
 import pekko.dispatch.BoundedDequeBasedMailbox
 import pekko.testkit._
 import pekko.testkit.DefaultTimeout
 import pekko.testkit.TestEvent._
-
-import org.scalatest.BeforeAndAfterEach
-
-import com.typesafe.config.{ Config, ConfigFactory }
 
 object ActorWithBoundedStashSpec {
 

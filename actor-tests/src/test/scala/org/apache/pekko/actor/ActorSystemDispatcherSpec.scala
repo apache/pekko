@@ -17,12 +17,13 @@ import scala.concurrent.ExecutionContext
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.ConfigurationException
 import pekko.actor.setup.ActorSystemSetup
 import pekko.dispatch.{ Dispatchers, ExecutionContexts }
 import pekko.testkit.{ ImplicitSender, PekkoSpec, TestActors, TestProbe }
-
-import com.typesafe.config.ConfigFactory
 
 object ActorSystemDispatchersSpec {
 

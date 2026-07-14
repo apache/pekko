@@ -14,6 +14,7 @@
 package org.apache.pekko.persistence.testkit.internal
 
 import org.apache.pekko
+
 import pekko.annotation.InternalApi
 import pekko.persistence._
 import pekko.persistence.testkit.EventStorage

@@ -14,6 +14,9 @@
 package org.apache.pekko.cluster.sharding.typed
 
 import org.apache.pekko
+
+import org.scalatest.wordspec.AnyWordSpecLike
+
 import pekko.Done
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
 import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
@@ -24,8 +27,6 @@ import pekko.persistence.typed.PublishedEvent
 import pekko.persistence.typed.ReplicaId
 import pekko.persistence.typed.ReplicationId
 import pekko.persistence.typed.internal.{ PublishedEventImpl, ReplicatedPublishedEventMetaData, VersionVector }
-
-import org.scalatest.wordspec.AnyWordSpecLike
 
 class ReplicatedShardingDirectReplicationSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike with LogCapturing {
 

@@ -17,6 +17,7 @@ import scala.concurrent.duration._
 import scala.util.control.NoStackTrace
 
 import org.apache.pekko
+
 import pekko.actor._
 import pekko.actor.SupervisorStrategy.{ Escalate, Stop }
 import pekko.testkit.{ ImplicitSender, PekkoSpec, TestProbe }

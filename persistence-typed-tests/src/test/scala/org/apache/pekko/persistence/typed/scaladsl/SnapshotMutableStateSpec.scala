@@ -16,6 +16,12 @@ package org.apache.pekko.persistence.typed.scaladsl
 import java.util.concurrent.atomic.AtomicInteger
 
 import org.apache.pekko
+
+import org.scalatest.wordspec.AnyWordSpecLike
+
+import com.typesafe.config.Config
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor.testkit.typed.scaladsl._
 import pekko.actor.typed.ActorRef
 import pekko.actor.typed.Behavior
@@ -24,11 +30,6 @@ import pekko.persistence.typed.PersistenceId
 import pekko.persistence.typed.SnapshotCompleted
 import pekko.persistence.typed.SnapshotFailed
 import pekko.serialization.jackson.CborSerializable
-
-import org.scalatest.wordspec.AnyWordSpecLike
-
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
 
 object SnapshotMutableStateSpec {
 

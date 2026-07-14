@@ -20,12 +20,13 @@ import scala.annotation.nowarn
 import scala.collection.immutable
 
 import org.apache.pekko
+
+import com.typesafe.config.Config
+
 import pekko.actor._
 import pekko.io.Inet.{ SoJavaFactories, SocketOption }
 import pekko.util.ByteString
 import pekko.util.Helpers.Requiring
-
-import com.typesafe.config.Config
 
 /**
  * UDP Extension for Akka’s IO layer.

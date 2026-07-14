@@ -13,12 +13,12 @@
 
 package org.apache.pekko.cluster.ddata.protobuf
 
-import java.{ lang => jl }
 import java.io.NotSerializableException
 import java.util
 import java.util.ArrayList
 import java.util.Collections
 import java.util.Comparator
+import java.{ lang => jl }
 
 import scala.annotation.nowarn
 import scala.annotation.tailrec
@@ -26,6 +26,7 @@ import scala.collection.immutable
 import scala.jdk.CollectionConverters._
 
 import org.apache.pekko
+
 import pekko.actor.ActorRef
 import pekko.actor.ExtendedActorSystem
 import pekko.cluster.ddata._

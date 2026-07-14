@@ -24,6 +24,11 @@ import scala.concurrent.duration._
 import scala.util.control.NoStackTrace
 
 import org.apache.pekko
+
+import org.reactivestreams.Publisher
+
+import org.scalatest.concurrent.ScalaFutures
+
 import pekko.NotUsed
 import pekko.stream.ActorAttributes.supervisionStrategy
 import pekko.stream.KillSwitches
@@ -33,10 +38,6 @@ import pekko.stream.testkit.TestPublisher
 import pekko.stream.testkit.TestSubscriber
 import pekko.stream.testkit.scaladsl.StreamTestKit._
 import pekko.stream.testkit.scaladsl.TestSink
-
-import org.reactivestreams.Publisher
-
-import org.scalatest.concurrent.ScalaFutures
 
 abstract class AbstractFlowConcatSpec extends BaseTwoStreamsSetup {
 

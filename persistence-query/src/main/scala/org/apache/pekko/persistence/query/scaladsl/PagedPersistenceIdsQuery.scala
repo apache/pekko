@@ -14,6 +14,7 @@
 package org.apache.pekko.persistence.query.scaladsl
 
 import org.apache.pekko
+
 import pekko.NotUsed
 import pekko.stream.scaladsl.Source
 

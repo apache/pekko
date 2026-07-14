@@ -16,6 +16,11 @@ package org.apache.pekko.persistence.typed.scaladsl
 import java.util.concurrent.atomic.AtomicInteger
 
 import org.apache.pekko
+
+import org.scalatest.wordspec.AnyWordSpecLike
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
 import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
 import pekko.actor.testkit.typed.scaladsl.TestProbe
@@ -32,10 +37,6 @@ import pekko.persistence.typed.PersistenceId
 import pekko.serialization.jackson.CborSerializable
 import pekko.stream.scaladsl.Sink
 import pekko.testkit.JavaSerializable
-
-import org.scalatest.wordspec.AnyWordSpecLike
-
-import com.typesafe.config.ConfigFactory
 
 object EventSourcedEventAdapterSpec {
 

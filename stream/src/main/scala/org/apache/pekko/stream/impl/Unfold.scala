@@ -20,8 +20,9 @@ import scala.concurrent.Future
 import scala.util.{ Failure, Success, Try }
 
 import org.apache.pekko
+
 import pekko.annotation.InternalApi
-import pekko.japi.{ function, Pair }
+import pekko.japi.{ Pair, function }
 import pekko.stream._
 import pekko.stream.Attributes.SourceLocation
 import pekko.stream.impl.Stages.DefaultAttributes

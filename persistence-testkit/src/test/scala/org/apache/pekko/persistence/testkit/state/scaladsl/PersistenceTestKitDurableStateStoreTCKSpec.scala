@@ -18,11 +18,12 @@
 package org.apache.pekko.persistence.testkit.state.scaladsl
 
 import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.persistence.CapabilityFlag
 import pekko.persistence.state.DurableStateStoreSpec
 import pekko.persistence.testkit.PersistenceTestKitDurableStateStorePlugin
-
-import com.typesafe.config.ConfigFactory
 
 object PersistenceTestKitDurableStateStoreTCKSpec {
   val config = PersistenceTestKitDurableStateStorePlugin.config.withFallback(ConfigFactory.parseString("""

@@ -13,10 +13,14 @@
 
 package org.apache.pekko.cluster.typed.internal.receptionist
 
-import scala.concurrent.duration._
 import scala.concurrent.duration.Deadline
+import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
+
 import pekko.actor.Address
 import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
 import pekko.actor.typed.internal.receptionist.AbstractServiceKey
@@ -24,9 +28,6 @@ import pekko.actor.typed.receptionist.ServiceKey
 import pekko.cluster.UniqueAddress
 import pekko.cluster.typed.internal.receptionist.ClusterReceptionistProtocol.SubscriptionsKV
 import pekko.util.TypedMultiMap
-
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpecLike
 
 class ClusterReceptionistStateSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike with Matchers {
 

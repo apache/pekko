@@ -16,9 +16,10 @@ package org.apache.pekko.cluster
 import scala.collection.{ immutable => im }
 
 import org.apache.pekko
-import pekko.annotation.InternalApi
 
 import com.typesafe.config.Config
+
+import pekko.annotation.InternalApi
 
 /**
  * INTERNAL API

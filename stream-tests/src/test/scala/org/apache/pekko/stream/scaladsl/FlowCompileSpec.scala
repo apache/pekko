@@ -18,10 +18,11 @@ import scala.collection.immutable.Seq
 import scala.concurrent.Future
 
 import org.apache.pekko
-import pekko.NotUsed
-import pekko.stream.testkit.StreamSpec
 
 import org.reactivestreams.Publisher
+
+import pekko.NotUsed
+import pekko.stream.testkit.StreamSpec
 
 @nowarn // unused vars are used in shouldNot compile tests
 class FlowCompileSpec extends StreamSpec {

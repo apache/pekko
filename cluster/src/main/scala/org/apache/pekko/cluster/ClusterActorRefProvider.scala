@@ -16,6 +16,10 @@ package org.apache.pekko.cluster
 import scala.annotation.nowarn
 
 import org.apache.pekko
+
+import com.typesafe.config.Config
+import com.typesafe.config.ConfigFactory
+
 import pekko.ConfigurationException
 import pekko.actor.ActorPath
 import pekko.actor.ActorRef
@@ -37,9 +41,6 @@ import pekko.remote.RemoteDeployer
 import pekko.remote.routing.RemoteRouterConfig
 import pekko.routing.Group
 import pekko.routing.Pool
-
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
 
 /**
  * INTERNAL API

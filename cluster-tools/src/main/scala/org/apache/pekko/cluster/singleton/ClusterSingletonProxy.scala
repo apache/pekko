@@ -17,6 +17,9 @@ import scala.collection.immutable
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import com.typesafe.config.Config
+
 import pekko.actor._
 import pekko.actor.NoSerializationVerificationNeeded
 import pekko.actor.RootActorPath
@@ -31,8 +34,6 @@ import pekko.cluster.ClusterSettings.DataCenter
 import pekko.dispatch.Dispatchers
 import pekko.event.Logging
 import pekko.util.MessageBuffer
-
-import com.typesafe.config.Config
 
 object ClusterSingletonProxySettings {
 

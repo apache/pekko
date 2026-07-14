@@ -26,6 +26,13 @@ import scala.util.Success
 import scala.util.control.NoStackTrace
 
 import org.apache.pekko
+
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
+import org.scalatest.wordspec.AnyWordSpecLike
+
+import org.slf4j.event.Level
+
 import pekko.actor.ActorInitializationException
 import pekko.actor.Dropped
 import pekko.actor.testkit.typed._
@@ -36,12 +43,6 @@ import pekko.actor.typed.scaladsl.AbstractBehavior
 import pekko.actor.typed.scaladsl.ActorContext
 import pekko.actor.typed.scaladsl.Behaviors
 import pekko.actor.typed.scaladsl.Behaviors._
-
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpec
-import org.scalatest.wordspec.AnyWordSpecLike
-
-import org.slf4j.event.Level
 
 object SupervisionSpec {
 

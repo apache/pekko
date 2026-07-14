@@ -20,16 +20,17 @@ import scala.collection.immutable
 import scala.reflect.ClassTag
 import scala.util.control.NoStackTrace
 
-import org.apache.commons.io.FileUtils
-
 import org.apache.pekko
-import pekko.actor.Props
-import pekko.testkit.PekkoSpec
 
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.matchers.{ MatchResult, Matcher }
 
 import com.typesafe.config.{ Config, ConfigFactory }
+
+import org.apache.commons.io.FileUtils
+
+import pekko.actor.Props
+import pekko.testkit.PekkoSpec
 
 abstract class PersistenceSpec(config: Config)
     extends PekkoSpec(config)

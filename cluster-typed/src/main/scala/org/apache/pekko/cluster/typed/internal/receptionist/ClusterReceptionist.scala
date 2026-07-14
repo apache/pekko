@@ -16,6 +16,7 @@ package org.apache.pekko.cluster.typed.internal.receptionist
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
 import pekko.actor.Address
 import pekko.actor.typed.{ ActorRef, Behavior }
 import pekko.actor.typed.internal.receptionist.{

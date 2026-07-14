@@ -26,6 +26,13 @@ import scala.concurrent.Promise
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import org.scalatest.concurrent.PatienceConfiguration
+import org.scalatest.concurrent.PatienceConfiguration.Timeout
+
+import com.typesafe.config.Config
+import com.typesafe.config.ConfigFactory
+
 import pekko.Done
 import pekko.NotUsed
 import pekko.actor.Actor
@@ -53,12 +60,6 @@ import pekko.testkit.TestLatch
 import pekko.testkit.TestProbe
 import pekko.testkit.WithLogCapturing
 import pekko.util.ByteString
-
-import org.scalatest.concurrent.PatienceConfiguration
-import org.scalatest.concurrent.PatienceConfiguration.Timeout
-
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
 
 @nowarn("msg=never used")
 class NonResolvingDnsActor(cache: SimpleDnsCache, config: Config) extends Actor {

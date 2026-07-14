@@ -16,6 +16,9 @@ package org.apache.pekko.cluster.ddata
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.cluster.Cluster
 import pekko.cluster.ClusterEvent.InitialStateAsEvents
 import pekko.cluster.ClusterEvent.MemberUp
@@ -23,8 +26,6 @@ import pekko.remote.testconductor.RoleName
 import pekko.remote.testkit.MultiNodeConfig
 import pekko.remote.testkit.MultiNodeSpec
 import pekko.testkit._
-
-import com.typesafe.config.ConfigFactory
 
 object ReplicatorPruningSpec extends MultiNodeConfig {
   val first = role("first")

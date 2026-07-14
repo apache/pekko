@@ -19,9 +19,12 @@ import java.util.concurrent.TimeUnit
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
+import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import org.openjdk.jmh.annotations._
 
-import org.apache.pekko
 import pekko.NotUsed
 import pekko.actor.ActorSystem
 import pekko.remote.artery.BenchTestSource
@@ -30,8 +33,6 @@ import pekko.remote.artery.LatchSink
 import pekko.stream.scaladsl._
 import pekko.stream.scaladsl.PartitionHub
 import pekko.stream.testkit.scaladsl.StreamTestKit
-
-import com.typesafe.config.ConfigFactory
 
 object PartitionHubBenchmark {
   final val OperationsPerInvocation = 100000

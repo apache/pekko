@@ -19,6 +19,10 @@ import scala.annotation.nowarn
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import com.typesafe.config.Config
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor.Actor
 import pekko.actor.ActorIdentity
 import pekko.actor.ActorRef
@@ -29,9 +33,6 @@ import pekko.event.EventStream
 import pekko.remote.testconductor.RoleName
 import pekko.remote.testkit.MultiNodeConfig
 import pekko.testkit._
-
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
 
 object TransportFailConfig extends MultiNodeConfig {
   val first = role("first")

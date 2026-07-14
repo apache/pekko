@@ -21,12 +21,13 @@ import scala.concurrent.Await
 import scala.concurrent.Future
 import scala.concurrent.duration._
 
-import org.openjdk.jmh.annotations._
+import org.apache.pekko
+
 import org.openjdk.jmh.annotations.BenchmarkMode
 import org.openjdk.jmh.annotations.Scope
 import org.openjdk.jmh.annotations.State
+import org.openjdk.jmh.annotations._
 
-import org.apache.pekko
 import pekko.actor.ActorSystem
 import pekko.stream.IOResult
 import pekko.stream.scaladsl._

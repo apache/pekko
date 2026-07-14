@@ -23,14 +23,15 @@ import java.util.concurrent.{ CountDownLatch, TimeUnit }
 import scala.concurrent.duration._
 
 import org.apache.pekko
-import pekko.Done
-import pekko.actor.testkit.typed.scaladsl.ManualTimeSpec.config
-import pekko.actor.typed.DispatcherSelector
-import pekko.actor.typed.scaladsl.Behaviors
 
 import org.scalatest.wordspec.AnyWordSpecLike
 
 import com.typesafe.config.ConfigFactory
+
+import pekko.Done
+import pekko.actor.testkit.typed.scaladsl.ManualTimeSpec.config
+import pekko.actor.typed.DispatcherSelector
+import pekko.actor.typed.scaladsl.Behaviors
 
 object ManualTimeSpec {
   val config = ConfigFactory

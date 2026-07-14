@@ -16,11 +16,12 @@ package org.apache.pekko.remote
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor._
 import pekko.remote.testkit.MultiNodeConfig
 import pekko.testkit._
-
-import com.typesafe.config.ConfigFactory
 
 class PiercingShouldKeepQuarantineConfig(artery: Boolean) extends MultiNodeConfig {
   val first = role("first")

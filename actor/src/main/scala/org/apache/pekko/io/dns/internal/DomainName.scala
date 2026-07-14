@@ -14,6 +14,7 @@
 package org.apache.pekko.io.dns.internal
 
 import org.apache.pekko
+
 import pekko.annotation.InternalApi
 import pekko.util.{ ByteIterator, ByteString, ByteStringBuilder }
 

@@ -17,6 +17,12 @@ import scala.concurrent.duration.{ FiniteDuration, _ }
 import scala.reflect.ClassTag
 
 import org.apache.pekko
+
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
+
+import org.slf4j.event.Level
+
 import pekko.Done
 import pekko.actor.Address
 import pekko.actor.testkit.typed.{ CapturedLogEvent, Effect }
@@ -27,11 +33,6 @@ import pekko.actor.typed.{ ActorRef, Behavior, Props, Terminated }
 import pekko.actor.typed.receptionist.{ Receptionist, ServiceKey }
 import pekko.actor.typed.scaladsl.Behaviors
 import pekko.util.Timeout
-
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpec
-
-import org.slf4j.event.Level
 
 object BehaviorTestKitSpec {
   object Parent {

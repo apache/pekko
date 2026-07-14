@@ -14,16 +14,17 @@
 package org.apache.pekko.actor.typed
 
 import org.apache.pekko
+
+import org.scalatest.wordspec.AnyWordSpecLike
+
+import org.slf4j.event.Level
+
 import pekko.actor
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
 import pekko.actor.testkit.typed.scaladsl.LoggingTestKit
 import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
 import pekko.actor.typed.scaladsl.Behaviors
 import pekko.actor.typed.scaladsl.adapter._
-
-import org.scalatest.wordspec.AnyWordSpecLike
-
-import org.slf4j.event.Level
 
 class LogMessagesSpec extends ScalaTestWithActorTestKit("""
     pekko.loglevel = DEBUG # test verifies debug

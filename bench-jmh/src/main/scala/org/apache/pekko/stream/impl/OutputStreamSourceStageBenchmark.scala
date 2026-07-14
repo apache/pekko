@@ -18,10 +18,11 @@ import java.util.concurrent.TimeUnit
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
-import org.openjdk.jmh.annotations._
-import org.openjdk.jmh.annotations.TearDown
-
 import org.apache.pekko
+
+import org.openjdk.jmh.annotations.TearDown
+import org.openjdk.jmh.annotations._
+
 import pekko.actor.ActorSystem
 import pekko.stream.scaladsl.Keep
 import pekko.stream.scaladsl.Sink

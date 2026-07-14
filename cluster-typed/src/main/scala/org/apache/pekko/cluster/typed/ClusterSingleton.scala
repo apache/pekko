@@ -17,6 +17,9 @@ import scala.concurrent.duration.{ Duration, FiniteDuration, _ }
 import scala.jdk.DurationConverters._
 
 import org.apache.pekko
+
+import com.typesafe.config.Config
+
 import pekko.actor.typed._
 import pekko.annotation.{ DoNotInherit, InternalApi }
 import pekko.cluster.ClusterSettings.DataCenter
@@ -26,8 +29,6 @@ import pekko.cluster.singleton.{
 }
 import pekko.cluster.typed.internal.AdaptedClusterSingletonImpl
 import pekko.coordination.lease.LeaseUsageSettings
-
-import com.typesafe.config.Config
 
 object ClusterSingletonSettings {
   def apply(system: ActorSystem[?]): ClusterSingletonSettings =

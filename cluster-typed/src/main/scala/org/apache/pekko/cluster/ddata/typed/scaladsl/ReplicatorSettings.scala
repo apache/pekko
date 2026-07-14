@@ -14,12 +14,13 @@
 package org.apache.pekko.cluster.ddata.typed.scaladsl
 
 import org.apache.pekko
+
+import com.typesafe.config.Config
+
 import pekko.actor.typed.ActorSystem
 import pekko.actor.typed.scaladsl.adapter._
 import pekko.annotation.InternalApi
 import pekko.cluster.{ ddata => dd }
-
-import com.typesafe.config.Config
 
 /**
  * @see [[pekko.cluster.ddata.ReplicatorSettings]].

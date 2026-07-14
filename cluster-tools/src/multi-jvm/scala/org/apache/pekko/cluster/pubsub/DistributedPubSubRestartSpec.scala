@@ -17,6 +17,9 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor.Actor
 import pekko.actor.ActorIdentity
 import pekko.actor.ActorRef
@@ -30,8 +33,6 @@ import pekko.remote.testkit.MultiNodeConfig
 import pekko.remote.testkit.MultiNodeSpec
 import pekko.remote.testkit.STMultiNodeSpec
 import pekko.testkit._
-
-import com.typesafe.config.ConfigFactory
 
 object DistributedPubSubRestartSpec extends MultiNodeConfig {
   val first = role("first")

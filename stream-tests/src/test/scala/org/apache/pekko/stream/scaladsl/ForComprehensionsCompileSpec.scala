@@ -23,6 +23,7 @@ import scala.concurrent.Await
 import scala.concurrent.duration.DurationInt
 
 import org.apache.pekko
+
 import pekko.Done
 import pekko.japi.Util
 import pekko.stream.testkit.StreamSpec

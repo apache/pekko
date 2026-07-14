@@ -16,13 +16,14 @@ package org.apache.pekko.cluster.typed
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor.testkit.typed.scaladsl.TestProbe
 import pekko.actor.typed.scaladsl.adapter._
 import pekko.cluster.{ MemberStatus, MultiNodeClusterSpec }
 import pekko.remote.testconductor.RoleName
 import pekko.remote.testkit.{ MultiNodeConfig, MultiNodeSpec }
-
-import com.typesafe.config.ConfigFactory
 
 object MultiDcClusterSingletonSpecConfig extends MultiNodeConfig {
   val first: RoleName = role("first")

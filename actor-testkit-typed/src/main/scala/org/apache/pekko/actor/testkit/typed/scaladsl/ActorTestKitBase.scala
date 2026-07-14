@@ -14,6 +14,10 @@
 package org.apache.pekko.actor.testkit.typed.scaladsl
 
 import org.apache.pekko
+
+import com.typesafe.config.Config
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor.DeadLetter
 import pekko.actor.Dropped
 import pekko.actor.UnhandledMessage
@@ -24,9 +28,6 @@ import pekko.actor.typed.ActorSystem
 import pekko.actor.typed.Behavior
 import pekko.actor.typed.Props
 import pekko.util.Timeout
-
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
 
 object ActorTestKitBase {
   @noinline def testNameFromCallStack(): String = TestKitUtils.testNameFromCallStack(classOf[ActorTestKitBase])

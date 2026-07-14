@@ -19,10 +19,12 @@ package org.apache.pekko.testkit.metrics
 
 import java.lang.management.ManagementFactory
 
-import com.codahale.metrics.Gauge
 import com.sun.management.UnixOperatingSystemMXBean
+
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
+
+import com.codahale.metrics.Gauge
 
 class FileDescriptorMetricSetSpec extends AnyWordSpec with Matchers {
 

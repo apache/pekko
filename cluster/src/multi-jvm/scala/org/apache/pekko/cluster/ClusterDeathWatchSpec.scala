@@ -19,6 +19,11 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import org.scalatest.concurrent.ScalaFutures
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor._
 import pekko.cluster.MultiNodeClusterSpec.EndActor
 import pekko.remote.RemoteActorRef
@@ -26,10 +31,6 @@ import pekko.remote.RemoteWatcher
 import pekko.remote.testkit.MultiNodeConfig
 import pekko.testkit._
 import pekko.testkit.TestEvent._
-
-import org.scalatest.concurrent.ScalaFutures
-
-import com.typesafe.config.ConfigFactory
 
 object ClusterDeathWatchMultiJvmSpec extends MultiNodeConfig {
   val first = role("first")

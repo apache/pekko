@@ -20,6 +20,7 @@ package org.apache.pekko.stream.scaladsl
 import java.util.concurrent.atomic.AtomicInteger
 
 import org.apache.pekko
+
 import pekko.Done
 import pekko.stream.{ ActorAttributes, Supervision }
 import pekko.stream.testkit._

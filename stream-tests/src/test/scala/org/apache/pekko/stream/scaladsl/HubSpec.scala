@@ -14,10 +14,13 @@
 package org.apache.pekko.stream.scaladsl
 
 import scala.collection.immutable
-import scala.concurrent.{ Await, ExecutionContext, Future, Promise }
 import scala.concurrent.duration._
+import scala.concurrent.{ Await, ExecutionContext, Future, Promise }
 
 import org.apache.pekko
+
+import org.scalatest.time.{ Seconds, Span }
+
 import pekko.Done
 import pekko.stream.KillSwitches
 import pekko.stream.ThrottleMode
@@ -30,8 +33,6 @@ import pekko.stream.testkit.scaladsl.TestSink
 import pekko.stream.testkit.scaladsl.TestSource
 import pekko.testkit.EventFilter
 import pekko.testkit.TestDuration
-
-import org.scalatest.time.{ Seconds, Span }
 
 class HubSpec extends StreamSpec {
   implicit val ec: ExecutionContext = system.dispatcher

@@ -16,6 +16,9 @@ package org.apache.pekko.persistence.typed.scaladsl
 import java.util.concurrent.atomic.AtomicInteger
 
 import org.apache.pekko
+
+import org.scalatest.wordspec.AnyWordSpecLike
+
 import pekko.Done
 import pekko.actor.testkit.typed.scaladsl._
 import pekko.actor.typed.ActorRef
@@ -25,8 +28,6 @@ import pekko.actor.typed.scaladsl.Behaviors
 import pekko.persistence.testkit.PersistenceTestKitPlugin
 import pekko.persistence.typed.PersistenceId
 import pekko.serialization.jackson.CborSerializable
-
-import org.scalatest.wordspec.AnyWordSpecLike
 
 object EventSourcedBehaviorReplySpec {
 

@@ -14,6 +14,7 @@
 package org.apache.pekko.actor.typed.javadsl
 
 import org.apache.pekko
+
 import pekko.actor.typed.Behavior
 import pekko.actor.typed.ExtensibleBehavior
 import pekko.actor.typed.Signal

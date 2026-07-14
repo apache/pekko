@@ -14,12 +14,13 @@
 package org.apache.pekko.persistence.typed.internal
 
 import org.apache.pekko
-import pekko.actor.testkit.typed.scaladsl.LogCapturing
-import pekko.persistence.typed.scaladsl.RetentionCriteria
 
 import org.scalatest.TestSuite
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
+
+import pekko.actor.testkit.typed.scaladsl.LogCapturing
+import pekko.persistence.typed.scaladsl.RetentionCriteria
 
 class RetentionCriteriaSpec extends TestSuite with Matchers with AnyWordSpecLike with LogCapturing {
 

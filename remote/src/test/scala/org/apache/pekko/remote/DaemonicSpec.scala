@@ -17,10 +17,11 @@ import scala.concurrent.duration._
 import scala.jdk.CollectionConverters._
 
 import org.apache.pekko
-import pekko.actor.{ ActorSystem, Address }
-import pekko.testkit._
 
 import com.typesafe.config.ConfigFactory
+
+import pekko.actor.{ ActorSystem, Address }
+import pekko.testkit._
 
 class DaemonicSpec extends PekkoSpec {
 

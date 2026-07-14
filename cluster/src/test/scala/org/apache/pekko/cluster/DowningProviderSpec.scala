@@ -20,16 +20,17 @@ import scala.concurrent.duration._
 import scala.util.control.NonFatal
 
 import org.apache.pekko
-import pekko.ConfigurationException
-import pekko.actor.ActorSystem
-import pekko.actor.Props
-import pekko.testkit.TestKit.awaitCond
-import pekko.testkit.TestKit.shutdownActorSystem
 
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
 import com.typesafe.config.ConfigFactory
+
+import pekko.ConfigurationException
+import pekko.actor.ActorSystem
+import pekko.actor.Props
+import pekko.testkit.TestKit.awaitCond
+import pekko.testkit.TestKit.shutdownActorSystem
 
 class FailingDowningProvider(@nowarn("msg=never used") system: ActorSystem) extends DowningProvider {
   override val downRemovalMargin: FiniteDuration = 20.seconds

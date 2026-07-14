@@ -16,6 +16,7 @@ package org.apache.pekko.actor.typed.pubsub
 import scala.reflect.ClassTag
 
 import org.apache.pekko
+
 import pekko.actor.typed.ActorRef
 import pekko.actor.typed.Behavior
 import pekko.actor.typed.internal.pubsub.TopicImpl

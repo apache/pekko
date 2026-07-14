@@ -18,6 +18,9 @@ import java.util.UUID
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import com.typesafe.config.{ Config, ConfigFactory }
+
 import pekko.actor.Actor
 import pekko.actor.ActorIdentity
 import pekko.actor.ActorPath
@@ -29,8 +32,6 @@ import pekko.actor.PoisonPill
 import pekko.actor.Props
 import pekko.actor.RootActorPath
 import pekko.testkit.{ ImplicitSender, TestActors, TestProbe }
-
-import com.typesafe.config.{ Config, ConfigFactory }
 
 class ArteryUpdSendConsistencyWithOneLaneSpec
     extends AbstractRemoteSendConsistencySpec(ConfigFactory.parseString("""

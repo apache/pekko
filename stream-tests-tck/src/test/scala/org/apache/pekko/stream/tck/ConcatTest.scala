@@ -14,10 +14,11 @@
 package org.apache.pekko.stream.tck
 
 import org.apache.pekko
-import pekko.stream.scaladsl.Sink
-import pekko.stream.scaladsl.Source
 
 import org.reactivestreams.Publisher
+
+import pekko.stream.scaladsl.Sink
+import pekko.stream.scaladsl.Source
 
 class ConcatTest extends PekkoPublisherVerification[Int] {
 

@@ -15,6 +15,10 @@ package org.apache.pekko.actor.typed.scaladsl
 import java.util.concurrent.atomic.AtomicInteger
 
 import org.apache.pekko
+
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
+
 import pekko.actor.{ ActorPath, ActorSystem }
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
 import pekko.actor.testkit.typed.scaladsl.LoggingTestKit
@@ -26,9 +30,6 @@ import pekko.actor.typed.internal.routing.RoutingLogics
 import pekko.actor.typed.receptionist.Receptionist
 import pekko.actor.typed.receptionist.ServiceKey
 import pekko.actor.typed.scaladsl.adapter._
-
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpecLike
 
 class RoutersSpec extends ScalaTestWithActorTestKit("""
     pekko.loglevel=debug

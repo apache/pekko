@@ -18,9 +18,10 @@
 package org.apache.pekko.cluster
 
 import org.apache.pekko
-import pekko.annotation.InternalApi
 
 import com.typesafe.config.{ Config, ConfigValue, ConfigValueFactory, ConfigValueType }
+
+import pekko.annotation.InternalApi
 
 @InternalApi
 private[cluster] object ConfigUtil {

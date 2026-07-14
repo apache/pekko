@@ -16,11 +16,12 @@ package org.apache.pekko.stream.impl.io
 import javax.net.ssl.{ SSLContext, SSLEngine, SSLParameters }
 
 import org.apache.pekko
-import pekko.stream.TLSClientAuth
-import pekko.stream.TLSProtocol.NegotiateNewSession
 
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
+
+import pekko.stream.TLSClientAuth
+import pekko.stream.TLSProtocol.NegotiateNewSession
 
 class TLSUtilsSpec extends AnyWordSpecLike with Matchers {
 

@@ -18,8 +18,8 @@
 package org.apache.pekko.dispatch
 
 import java.util
-import java.util.concurrent.{ Callable, Executor, ExecutorService, Future, ThreadFactory, TimeUnit }
 import java.util.concurrent.atomic.{ AtomicBoolean, AtomicInteger }
+import java.util.concurrent.{ Callable, Executor, ExecutorService, Future, ThreadFactory, TimeUnit }
 
 import org.apache.pekko.annotation.InternalApi
 

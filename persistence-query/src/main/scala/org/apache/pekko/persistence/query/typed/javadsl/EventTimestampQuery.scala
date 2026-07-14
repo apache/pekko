@@ -18,6 +18,7 @@ import java.util.Optional
 import java.util.concurrent.CompletionStage
 
 import org.apache.pekko
+
 import pekko.annotation.ApiMayChange
 import pekko.persistence.query.javadsl.ReadJournal
 

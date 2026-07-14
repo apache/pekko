@@ -14,6 +14,9 @@
 package org.apache.pekko.stream.typed.scaladsl
 
 import org.apache.pekko
+
+import org.scalatest.wordspec.AnyWordSpecLike
+
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
 import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
 import pekko.actor.typed.internal.pubsub.TopicImpl
@@ -21,8 +24,6 @@ import pekko.actor.typed.pubsub.Topic
 import pekko.stream.OverflowStrategy
 import pekko.stream.scaladsl.Source
 import pekko.stream.testkit.scaladsl.TestSink
-
-import org.scalatest.wordspec.AnyWordSpecLike
 
 class PubSubSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike with LogCapturing {
 

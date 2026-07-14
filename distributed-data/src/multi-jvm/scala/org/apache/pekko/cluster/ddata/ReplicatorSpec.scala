@@ -17,6 +17,9 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.cluster.Cluster
 import pekko.pattern.ask
 import pekko.remote.testconductor.RoleName
@@ -25,8 +28,6 @@ import pekko.remote.testkit.MultiNodeSpec
 import pekko.remote.transport.ThrottlerTransportAdapter.Direction
 import pekko.testkit._
 import pekko.util.Timeout
-
-import com.typesafe.config.ConfigFactory
 
 object ReplicatorSpec extends MultiNodeConfig {
   val first = role("first")

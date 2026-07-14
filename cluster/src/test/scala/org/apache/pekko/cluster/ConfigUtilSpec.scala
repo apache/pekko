@@ -18,9 +18,10 @@
 package org.apache.pekko.cluster
 
 import org.apache.pekko
-import pekko.testkit.PekkoSpec
 
 import com.typesafe.config.ConfigFactory
+
+import pekko.testkit.PekkoSpec
 
 class ConfigUtilSpec extends PekkoSpec {
 

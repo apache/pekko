@@ -17,13 +17,14 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import com.typesafe.config.{ Config, ConfigFactory }
+
 import pekko.actor._
 import pekko.remote.{ EndpointException, RARP }
 import pekko.remote.classic.transport.PekkoProtocolStressTest._
 import pekko.remote.transport.FailureInjectorTransportAdapter.{ Drop, One }
 import pekko.testkit._
-
-import com.typesafe.config.{ Config, ConfigFactory }
 
 object PekkoProtocolStressTest {
   val configA: Config =

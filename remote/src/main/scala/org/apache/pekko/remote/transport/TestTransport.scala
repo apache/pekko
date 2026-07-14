@@ -15,18 +15,19 @@ package org.apache.pekko.remote.transport
 
 import java.util.concurrent.{ ConcurrentHashMap, CopyOnWriteArrayList }
 
-import scala.concurrent.{ Await, Future, Promise }
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
+import scala.concurrent.{ Await, Future, Promise }
 
 import org.apache.pekko
+
+import com.typesafe.config.Config
+
 import pekko.actor._
 import pekko.event.LoggingAdapter
 import pekko.remote.transport.AssociationHandle._
 import pekko.remote.transport.Transport._
 import pekko.util.ByteString
-
-import com.typesafe.config.Config
 
 /**
  * Transport implementation to be used for testing.

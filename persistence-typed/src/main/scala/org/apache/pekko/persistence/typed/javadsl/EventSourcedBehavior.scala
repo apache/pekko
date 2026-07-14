@@ -19,9 +19,12 @@ import java.util.Optional
 import scala.annotation.nowarn
 import scala.jdk.OptionConverters._
 
+import org.apache.pekko
+
+import com.typesafe.config.Config
+
 import org.jspecify.annotations.Nullable
 
-import org.apache.pekko
 import pekko.actor.typed
 import pekko.actor.typed.BackoffSupervisorStrategy
 import pekko.actor.typed.Behavior
@@ -31,8 +34,6 @@ import pekko.annotation.InternalApi
 import pekko.persistence.typed._
 import pekko.persistence.typed.EventAdapter
 import pekko.persistence.typed.internal._
-
-import com.typesafe.config.Config
 
 abstract class EventSourcedBehavior[Command, Event, State] private[pekko] (
     val persistenceId: PersistenceId,

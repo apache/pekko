@@ -26,21 +26,23 @@ import java.util.concurrent.atomic.AtomicReference
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
-import org.openjdk.jmh.annotations._
-import org.openjdk.jmh.annotations.OperationsPerInvocation
-import org.openjdk.jmh.infra.Blackhole
+import org.apache.pekko
+
 import org.reactivestreams.Publisher
 import org.reactivestreams.Subscriber
 import org.reactivestreams.Subscription
 
-import org.apache.pekko
+import com.typesafe.config.ConfigFactory
+
+import org.openjdk.jmh.annotations.OperationsPerInvocation
+import org.openjdk.jmh.annotations._
+import org.openjdk.jmh.infra.Blackhole
+
 import pekko.actor.ActorSystem
 import pekko.stream.scaladsl.Keep
 import pekko.stream.scaladsl.RunnableGraph
 import pekko.stream.scaladsl.Sink
 import pekko.stream.scaladsl.Source
-
-import com.typesafe.config.ConfigFactory
 
 object ActorGraphInterpreterBoundaryBenchmark {
   final val ElementCount = 100 * 1000

@@ -16,6 +16,7 @@ package org.apache.pekko.stream.impl
 import scala.concurrent.Promise
 
 import org.apache.pekko
+
 import pekko.NotUsed
 import pekko.stream._
 import pekko.stream.impl.Stages.DefaultAttributes

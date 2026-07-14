@@ -17,6 +17,7 @@ import scala.annotation.nowarn
 import scala.concurrent.Await
 
 import org.apache.pekko
+
 import pekko.stream.StreamLimitReachedException
 import pekko.stream.testkit.StreamSpec
 

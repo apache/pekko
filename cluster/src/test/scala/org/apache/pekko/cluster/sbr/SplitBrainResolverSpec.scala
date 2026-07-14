@@ -17,6 +17,11 @@ import scala.concurrent.Future
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import org.scalatest.concurrent.Eventually
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor.ActorRef
 import pekko.actor.Address
 import pekko.actor.ExtendedActorSystem
@@ -39,10 +44,6 @@ import pekko.coordination.lease.TestLease
 import pekko.coordination.lease.TimeoutSettings
 import pekko.testkit.EventFilter
 import pekko.testkit.PekkoSpec
-
-import org.scalatest.concurrent.Eventually
-
-import com.typesafe.config.ConfigFactory
 
 object SplitBrainResolverSpec {
 

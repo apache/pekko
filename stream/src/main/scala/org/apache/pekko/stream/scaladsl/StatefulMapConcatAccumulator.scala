@@ -18,6 +18,7 @@
 package org.apache.pekko.stream.scaladsl
 
 import org.apache.pekko
+
 import pekko.japi.function
 import pekko.stream.{ javadsl, scaladsl }
 

@@ -13,11 +13,12 @@
 
 package org.apache.pekko.remote.artery
 
-import java.nio.{ ByteBuffer, CharBuffer }
 import java.nio.charset.StandardCharsets
+import java.nio.{ ByteBuffer, CharBuffer }
 import java.util.concurrent.atomic.AtomicReference
 
 import org.apache.pekko
+
 import pekko.actor._
 import pekko.testkit.ImplicitSender
 import pekko.testkit.JavaSerializable

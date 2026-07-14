@@ -16,6 +16,7 @@ package org.apache.pekko.persistence.typed.javadsl
 import scala.jdk.CollectionConverters._
 
 import org.apache.pekko
+
 import pekko.actor.typed.ActorRef
 import pekko.annotation.DoNotInherit
 import pekko.annotation.InternalApi

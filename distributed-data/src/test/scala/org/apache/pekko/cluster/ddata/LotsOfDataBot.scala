@@ -18,12 +18,13 @@ import java.util.concurrent.ThreadLocalRandom
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor.Actor
 import pekko.actor.ActorLogging
 import pekko.actor.ActorSystem
 import pekko.actor.Props
-
-import com.typesafe.config.ConfigFactory
 
 /**
  * This "sample" simulates lots of data entries, and can be used for

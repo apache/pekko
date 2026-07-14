@@ -18,6 +18,7 @@ import java.util.zip.Deflater
 import scala.annotation.tailrec
 
 import org.apache.pekko
+
 import pekko.annotation.InternalApi
 import pekko.util.{ ByteString, ByteStringBuilder }
 

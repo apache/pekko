@@ -16,6 +16,7 @@ package org.apache.pekko.io.dns
 import java.nio.ByteOrder
 
 import org.apache.pekko
+
 import pekko.annotation.InternalApi
 import pekko.io.dns.CachePolicy.{ CachePolicy, Forever, Never, Ttl }
 

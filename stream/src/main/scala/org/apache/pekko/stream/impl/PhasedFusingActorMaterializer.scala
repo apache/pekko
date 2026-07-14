@@ -22,6 +22,11 @@ import scala.concurrent.ExecutionContextExecutor
 import scala.concurrent.duration.FiniteDuration
 
 import org.apache.pekko
+
+import org.reactivestreams.Processor
+import org.reactivestreams.Publisher
+import org.reactivestreams.Subscriber
+
 import pekko.NotUsed
 import pekko.actor.ActorContext
 import pekko.actor.ActorRef
@@ -50,10 +55,6 @@ import pekko.stream.stage.GraphStageLogic
 import pekko.stream.stage.InHandler
 import pekko.stream.stage.OutHandler
 import pekko.util.OptionVal
-
-import org.reactivestreams.Processor
-import org.reactivestreams.Publisher
-import org.reactivestreams.Subscriber
 
 /**
  * INTERNAL API

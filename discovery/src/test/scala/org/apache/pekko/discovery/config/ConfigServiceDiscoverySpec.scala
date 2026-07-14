@@ -17,10 +17,6 @@ import scala.collection.immutable
 import scala.concurrent.duration._
 
 import org.apache.pekko
-import pekko.actor.ActorSystem
-import pekko.discovery.Discovery
-import pekko.discovery.ServiceDiscovery.ResolvedTarget
-import pekko.testkit.TestKit
 
 import org.scalatest.BeforeAndAfterAll
 import org.scalatest.concurrent.ScalaFutures
@@ -28,6 +24,11 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 
 import com.typesafe.config.{ Config, ConfigFactory }
+
+import pekko.actor.ActorSystem
+import pekko.discovery.Discovery
+import pekko.discovery.ServiceDiscovery.ResolvedTarget
+import pekko.testkit.TestKit
 
 object ConfigServiceDiscoverySpec {
 

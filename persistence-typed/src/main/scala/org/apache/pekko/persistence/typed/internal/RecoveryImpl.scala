@@ -14,8 +14,9 @@
 package org.apache.pekko.persistence.typed.internal
 
 import org.apache.pekko
+
 import pekko.annotation.InternalApi
-import pekko.persistence.typed.{ javadsl, scaladsl, SnapshotSelectionCriteria }
+import pekko.persistence.typed.{ SnapshotSelectionCriteria, javadsl, scaladsl }
 
 /**
  * INTERNAL API

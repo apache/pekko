@@ -18,9 +18,10 @@ import java.util.function.LongFunction
 import scala.annotation.nowarn
 import scala.annotation.tailrec
 
+import org.apache.pekko
+
 import org.agrona.collections.Long2ObjectHashMap
 
-import org.apache.pekko
 import pekko.actor.ActorRef
 import pekko.actor.ActorSystem
 import pekko.actor.Address

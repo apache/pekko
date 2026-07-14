@@ -20,11 +20,12 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 import scala.util.control.NoStackTrace
 
+import org.apache.pekko
+
 import io.aeron.Aeron
 import io.aeron.driver.MediaDriver
 import org.agrona.IoUtil
 
-import org.apache.pekko
 import pekko.actor.ExtendedActorSystem
 import pekko.remote.artery.aeron.AeronSink.GaveUpMessageException
 import pekko.stream.scaladsl.Sink

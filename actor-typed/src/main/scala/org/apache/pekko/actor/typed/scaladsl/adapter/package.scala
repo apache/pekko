@@ -15,6 +15,7 @@ package org.apache.pekko.actor.typed
 package scaladsl
 
 import org.apache.pekko
+
 import pekko.actor.ExtendedActorSystem
 import pekko.actor.typed.internal.adapter.{ PropsAdapter => _, _ }
 import pekko.annotation.InternalApi

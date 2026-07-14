@@ -20,6 +20,12 @@ import java.util.concurrent.atomic.AtomicInteger
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import org.scalatest.wordspec.AnyWordSpecLike
+
+import com.typesafe.config.Config
+import com.typesafe.config.ConfigFactory
+
 import pekko.NotUsed
 import pekko.actor.Dropped
 import pekko.actor.UnhandledMessage
@@ -36,11 +42,6 @@ import pekko.actor.typed.scaladsl.Behaviors
 import pekko.actor.typed.scaladsl.adapter._
 import pekko.persistence.typed.PersistenceId
 import pekko.persistence.typed.RecoveryCompleted
-
-import org.scalatest.wordspec.AnyWordSpecLike
-
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
 
 object EventSourcedBehaviorStashSpec {
   def conf: Config = ConfigFactory.parseString(s"""

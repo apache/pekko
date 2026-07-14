@@ -18,16 +18,17 @@ import java.util.concurrent.TimeUnit
 import scala.concurrent.duration.FiniteDuration
 
 import org.apache.pekko
+
+import org.scalatest.Failed
+
+import com.typesafe.config.{ Config, ConfigFactory }
+
 import pekko.actor.ActorSystem
 import pekko.stream.Materializer
 import pekko.stream.impl.PhasedFusingActorMaterializer
 import pekko.stream.testkit.scaladsl.StreamTestKit.{ assertNoChildren, printDebugDump, stopAllChildren }
 import pekko.testkit.PekkoSpec
 import pekko.testkit.TestKitUtils
-
-import org.scalatest.Failed
-
-import com.typesafe.config.{ Config, ConfigFactory }
 
 abstract class StreamSpec(_system: ActorSystem) extends PekkoSpec(_system) with StreamConfiguration {
 

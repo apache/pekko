@@ -17,6 +17,9 @@ import java.util.{ BitSet => ProgrammaticJavaDummy }
 import java.util.{ Date => SerializableDummy }
 
 import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor.ActorSystem
 import pekko.actor.BootstrapSetup
 import pekko.actor.ExtendedActorSystem
@@ -24,8 +27,6 @@ import pekko.actor.setup.ActorSystemSetup
 import pekko.serialization._
 import pekko.testkit.PekkoSpec
 import pekko.testkit.TestKit
-
-import com.typesafe.config.ConfigFactory
 
 class ConfigurationDummy
 class ProgrammaticDummy

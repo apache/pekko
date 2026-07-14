@@ -14,6 +14,7 @@
 package org.apache.pekko.cluster.ddata.typed
 
 import org.apache.pekko
+
 import pekko.cluster.{ ddata => dd }
 
 package object scaladsl {

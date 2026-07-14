@@ -17,6 +17,7 @@ import scala.annotation.nowarn
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
 import pekko.actor.ActorRef
 import pekko.persistence.query.EventEnvelope
 import pekko.persistence.query.PersistenceQuery

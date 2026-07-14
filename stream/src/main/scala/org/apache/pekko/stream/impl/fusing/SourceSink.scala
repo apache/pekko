@@ -19,6 +19,7 @@ package org.apache.pekko.stream.impl.fusing
 
 import org.apache.pekko
 import org.apache.pekko.stream.impl.Stages.DefaultAttributes
+
 import pekko.NotUsed
 import pekko.annotation.InternalApi
 import pekko.stream.{ ActorAttributes, Attributes, Inlet, SinkShape, StreamSubscriptionTimeoutTerminationMode }

@@ -17,10 +17,11 @@ import scala.concurrent.duration._
 import scala.util.Random
 
 import org.apache.pekko
-import pekko.actor.ActorSystem
-import pekko.testkit.{ PekkoSpec, TestKitBase }
 
 import com.typesafe.config.{ Config, ConfigFactory }
+
+import pekko.actor.ActorSystem
+import pekko.testkit.{ PekkoSpec, TestKitBase }
 
 /**
  * Builds on TestKitBase to provide some extra utilities to run cluster test.

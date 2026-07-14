@@ -21,9 +21,10 @@ import scala.concurrent.{ Future, Promise }
 import scala.reflect.ClassTag
 import scala.util.control.NonFatal
 
+import org.apache.pekko
+
 import org.agrona.concurrent.{ BackoffIdleStrategy, BusySpinIdleStrategy, IdleStrategy, SleepingIdleStrategy }
 
-import org.apache.pekko
 import pekko.Done
 import pekko.actor.ExtendedActorSystem
 import pekko.dispatch.{ AbstractNodeQueue, MonitorableThreadFactory }

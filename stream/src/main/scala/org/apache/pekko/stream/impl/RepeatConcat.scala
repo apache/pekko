@@ -18,6 +18,7 @@
 package org.apache.pekko.stream.impl
 
 import org.apache.pekko
+
 import pekko.annotation.InternalApi
 import pekko.stream.{ Attributes, FlowShape, Inlet, Outlet }
 import pekko.stream.stage.{ GraphStage, GraphStageLogic, InHandler, OutHandler }

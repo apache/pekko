@@ -26,6 +26,10 @@ import scala.util.Try
 import scala.util.control.NonFatal
 
 import org.apache.pekko
+
+import org.reactivestreams.Publisher
+import org.reactivestreams.Subscriber
+
 import pekko.NotUsed
 import pekko.annotation.DoNotInherit
 import pekko.annotation.InternalApi
@@ -41,9 +45,6 @@ import pekko.stream.impl.StreamLayout.AtomicModule
 import pekko.stream.scaladsl.{ Keep, Sink, SinkQueueWithCancel, Source }
 import pekko.stream.stage._
 import pekko.util.OptionVal
-
-import org.reactivestreams.Publisher
-import org.reactivestreams.Subscriber
 
 /**
  * INTERNAL API

@@ -17,17 +17,18 @@
 
 package org.apache.pekko.serialization.jackson3
 
-import tools.jackson.core.util.JsonRecyclerPools.BoundedPool
-
 import org.apache.pekko
-import pekko.actor.ActorSystem
-import pekko.testkit.TestKit
 
 import org.scalatest.BeforeAndAfterAll
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 
 import com.typesafe.config.ConfigFactory
+
+import tools.jackson.core.util.JsonRecyclerPools.BoundedPool
+
+import pekko.actor.ActorSystem
+import pekko.testkit.TestKit
 
 class JacksonFactorySpec extends TestKit(ActorSystem("JacksonFactorySpec"))
     with AnyWordSpecLike with Matchers with BeforeAndAfterAll {

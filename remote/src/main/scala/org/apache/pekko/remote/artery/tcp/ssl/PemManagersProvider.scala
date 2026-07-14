@@ -16,13 +16,14 @@ package org.apache.pekko.remote.artery.tcp.ssl
 import java.io.File
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
-import java.security.{ KeyStore, PrivateKey }
 import java.security.cert.{ Certificate, CertificateFactory, X509Certificate }
+import java.security.{ KeyStore, PrivateKey }
 import javax.net.ssl.{ KeyManager, KeyManagerFactory, TrustManager, TrustManagerFactory }
 
 import scala.concurrent.blocking
 
 import org.apache.pekko
+
 import pekko.annotation.InternalApi
 import pekko.pki.pem.{ DERPrivateKeyLoader, PEMDecoder }
 

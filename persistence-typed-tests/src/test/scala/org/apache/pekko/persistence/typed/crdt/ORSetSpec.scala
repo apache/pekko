@@ -15,9 +15,9 @@ package org.apache.pekko.persistence.typed.crdt
 
 import scala.util.Random
 
-import ORSetSpec.ORSetEntity._
-
 import org.apache.pekko
+
+import ORSetSpec.ORSetEntity._
 import pekko.actor.typed.{ ActorRef, Behavior }
 import pekko.persistence.testkit.query.scaladsl.PersistenceTestKitReadJournal
 import pekko.persistence.typed.{ ReplicaId, ReplicationBaseSpec }

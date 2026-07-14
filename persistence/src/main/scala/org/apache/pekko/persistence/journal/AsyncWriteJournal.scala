@@ -17,10 +17,11 @@ import scala.collection.immutable
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 import scala.concurrent.duration._
-import scala.util.{ Failure, Success, Try }
 import scala.util.control.NonFatal
+import scala.util.{ Failure, Success, Try }
 
 import org.apache.pekko
+
 import pekko.actor._
 import pekko.annotation.InternalApi
 import pekko.pattern.CircuitBreaker

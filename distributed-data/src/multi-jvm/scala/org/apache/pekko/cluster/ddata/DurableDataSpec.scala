@@ -18,6 +18,11 @@ import scala.concurrent.duration._
 import scala.util.control.NoStackTrace
 
 import org.apache.pekko
+
+import org.scalatest.CancelAfterFailure
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor.Actor
 import pekko.actor.ActorRef
 import pekko.actor.ActorSystem
@@ -27,10 +32,6 @@ import pekko.remote.testconductor.RoleName
 import pekko.remote.testkit.MultiNodeConfig
 import pekko.remote.testkit.MultiNodeSpec
 import pekko.testkit._
-
-import org.scalatest.CancelAfterFailure
-
-import com.typesafe.config.ConfigFactory
 
 final case class DurableDataSpecConfig(writeBehind: Boolean) extends MultiNodeConfig {
   val first = role("first")

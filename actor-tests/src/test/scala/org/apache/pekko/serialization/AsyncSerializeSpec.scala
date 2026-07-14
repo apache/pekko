@@ -19,10 +19,11 @@ import java.util.concurrent.CompletionStage
 import scala.concurrent.Future
 
 import org.apache.pekko
-import pekko.actor.ExtendedActorSystem
-import pekko.testkit.{ EventFilter, PekkoSpec }
 
 import com.typesafe.config.ConfigFactory
+
+import pekko.actor.ExtendedActorSystem
+import pekko.testkit.{ EventFilter, PekkoSpec }
 
 object AsyncSerializeSpec {
 

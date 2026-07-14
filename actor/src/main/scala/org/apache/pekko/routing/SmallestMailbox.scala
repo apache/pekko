@@ -20,13 +20,14 @@ import scala.annotation.tailrec
 import scala.collection.immutable
 
 import org.apache.pekko
+
+import com.typesafe.config.Config
+
 import pekko.actor.ActorCell
 import pekko.actor.ActorRefWithCell
 import pekko.actor.ActorSystem
 import pekko.actor.SupervisorStrategy
 import pekko.dispatch.Dispatchers
-
-import com.typesafe.config.Config
 
 object SmallestMailboxRoutingLogic {
   def apply(): SmallestMailboxRoutingLogic = new SmallestMailboxRoutingLogic

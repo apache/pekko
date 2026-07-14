@@ -17,6 +17,10 @@ import scala.collection.immutable
 import scala.reflect.ClassTag
 
 import org.apache.pekko
+
+import com.typesafe.config.Config
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor.testkit.typed.scaladsl.ActorTestKit
 import pekko.actor.typed.ActorRef
 import pekko.actor.typed.ActorSystem
@@ -26,9 +30,6 @@ import pekko.annotation.DoNotInherit
 import pekko.persistence.testkit.PersistenceTestKitPlugin
 import pekko.persistence.testkit.PersistenceTestKitSnapshotPlugin
 import pekko.persistence.testkit.internal.EventSourcedBehaviorTestKitImpl
-
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
 
 /**
  * Testing of [[pekko.persistence.typed.scaladsl.EventSourcedBehavior]] implementations.

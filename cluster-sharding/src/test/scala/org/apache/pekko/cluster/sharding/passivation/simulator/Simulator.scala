@@ -21,6 +21,9 @@ import scala.util.Failure
 import scala.util.Success
 
 import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.NotUsed
 import pekko.actor.ActorSystem
 import pekko.cluster.sharding.internal.ActiveEntities
@@ -46,8 +49,6 @@ import pekko.stream.scaladsl.Flow
 import pekko.stream.scaladsl.Source
 import pekko.util.Clock
 import pekko.util.OptionVal
-
-import com.typesafe.config.ConfigFactory
 
 /**
  * Simulator for testing the efficiency of passivation strategies.

@@ -16,6 +16,9 @@ package org.apache.pekko.cluster.singleton
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor.{ Actor, ActorIdentity, ActorLogging, ActorRef, Address, Identify, PoisonPill, Props }
 import pekko.cluster._
 import pekko.cluster.MemberStatus.Up
@@ -25,8 +28,6 @@ import pekko.coordination.lease.TestLeaseActorClient
 import pekko.coordination.lease.TestLeaseActorClientExt
 import pekko.remote.testkit.{ MultiNodeConfig, STMultiNodeSpec }
 import pekko.testkit._
-
-import com.typesafe.config.ConfigFactory
 
 object ClusterSingletonManagerLeaseSpec extends MultiNodeConfig {
   val controller = role("controller")

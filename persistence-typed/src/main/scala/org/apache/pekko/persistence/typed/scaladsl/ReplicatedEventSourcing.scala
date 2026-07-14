@@ -14,6 +14,7 @@
 package org.apache.pekko.persistence.typed.scaladsl
 
 import org.apache.pekko
+
 import pekko.annotation.DoNotInherit
 import pekko.annotation.InternalStableApi
 import pekko.persistence.typed.PersistenceId

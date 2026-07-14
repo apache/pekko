@@ -20,6 +20,9 @@ import scala.reflect.ClassTag
 import scala.util.matching.Regex
 
 import org.apache.pekko
+
+import org.slf4j.event.Level
+
 import pekko.actor.testkit.typed.LoggingEvent
 import pekko.actor.testkit.typed.TestKitSettings
 import pekko.actor.testkit.typed.javadsl
@@ -27,8 +30,6 @@ import pekko.actor.testkit.typed.scaladsl
 import pekko.actor.typed.ActorSystem
 import pekko.annotation.InternalApi
 import pekko.testkit.TestKit
-
-import org.slf4j.event.Level
 
 /**
  * INTERNAL API

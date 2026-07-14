@@ -17,17 +17,18 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import org.reactivestreams.Publisher
+
 import pekko.NotUsed
 import pekko.stream._
 import pekko.stream.StreamSubscriptionTimeoutTerminationMode
-import pekko.stream.Supervision.{ resumingDecider, Decider }
+import pekko.stream.Supervision.{ Decider, resumingDecider }
 import pekko.stream.impl.SubscriptionTimeoutException
 import pekko.stream.testkit.StreamSpec
 import pekko.stream.testkit.TestPublisher
 import pekko.stream.testkit.TestSubscriber
 import pekko.stream.testkit.Utils._
-
-import org.reactivestreams.Publisher
 
 object FlowSplitAfterSpec {
 

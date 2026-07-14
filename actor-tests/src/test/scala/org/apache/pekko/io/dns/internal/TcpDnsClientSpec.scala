@@ -18,6 +18,7 @@ import java.net.InetSocketAddress
 import scala.collection.immutable.Seq
 
 import org.apache.pekko
+
 import pekko.actor.{ ActorKilledException, Kill, Props }
 import pekko.io.Tcp
 import pekko.io.Tcp.{ Connected, PeerClosed, Register }

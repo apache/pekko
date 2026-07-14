@@ -15,10 +15,11 @@ package org.apache.pekko.actor
 
 import java.util.concurrent.TimeUnit
 
-import BenchmarkActors._
+import com.typesafe.config.ConfigFactory
+
 import org.openjdk.jmh.annotations._
 
-import com.typesafe.config.ConfigFactory
+import BenchmarkActors._
 
 object ActorBenchmark {
   // Constants because they are used in annotations

@@ -16,8 +16,8 @@ package org.apache.pekko.io
 import java.io.IOException
 import java.net.{ InetSocketAddress, SocketException }
 import java.nio.ByteBuffer
-import java.nio.channels.{ FileChannel, SocketChannel }
 import java.nio.channels.SelectionKey._
+import java.nio.channels.{ FileChannel, SocketChannel }
 import java.nio.file.Path
 
 import scala.annotation.nowarn
@@ -27,6 +27,7 @@ import scala.concurrent.duration._
 import scala.util.control.{ NoStackTrace, NonFatal }
 
 import org.apache.pekko
+
 import pekko.actor._
 import pekko.dispatch.{ RequiresMessageQueue, UnboundedMessageQueueSemantics }
 import pekko.io.Inet.SocketOption

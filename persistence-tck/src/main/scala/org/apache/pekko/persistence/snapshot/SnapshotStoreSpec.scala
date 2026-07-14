@@ -16,14 +16,15 @@ package org.apache.pekko.persistence.snapshot
 import scala.collection.immutable.Seq
 
 import org.apache.pekko
+
+import com.typesafe.config.Config
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor._
 import pekko.persistence._
 import pekko.persistence.SnapshotProtocol._
 import pekko.persistence.scalatest.{ MayVerb, OptionalTests }
 import pekko.testkit.TestProbe
-
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
 
 object SnapshotStoreSpec {
   val config: Config = ConfigFactory.parseString(s"""

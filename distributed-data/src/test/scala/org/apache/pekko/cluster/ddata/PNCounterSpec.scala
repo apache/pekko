@@ -14,12 +14,13 @@
 package org.apache.pekko.cluster.ddata
 
 import org.apache.pekko
-import pekko.actor.Address
-import pekko.cluster.UniqueAddress
-import pekko.cluster.ddata.Replicator.Changed
 
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
+
+import pekko.actor.Address
+import pekko.cluster.UniqueAddress
+import pekko.cluster.ddata.Replicator.Changed
 
 class PNCounterSpec extends AnyWordSpec with Matchers {
   val node1 = UniqueAddress(Address("pekko", "Sys", "localhost", 7354), 1L)

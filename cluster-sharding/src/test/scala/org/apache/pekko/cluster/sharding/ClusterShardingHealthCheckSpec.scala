@@ -16,15 +16,16 @@ package org.apache.pekko.cluster.sharding
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import org.scalatest.concurrent.ScalaFutures
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.cluster.Cluster
 import pekko.cluster.MemberStatus
 import pekko.testkit.PekkoSpec
 import pekko.testkit.TestProbe
 import pekko.testkit.WithLogCapturing
-
-import org.scalatest.concurrent.ScalaFutures
-
-import com.typesafe.config.ConfigFactory
 
 object ClusterShardingHealthCheckSpec {
   val config = ConfigFactory.parseString("""

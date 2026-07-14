@@ -18,12 +18,13 @@ import java.util.concurrent.{ CountDownLatch, TimeUnit }
 import scala.concurrent.Await
 
 import org.apache.pekko
+
+import org.scalatest.BeforeAndAfterEach
+
 import pekko.actor.{ Actor, Props }
 import pekko.pattern.ask
 import pekko.testkit._
 import pekko.testkit.PekkoSpec
-
-import org.scalatest.BeforeAndAfterEach
 
 object PinnedActorSpec {
   val config = """

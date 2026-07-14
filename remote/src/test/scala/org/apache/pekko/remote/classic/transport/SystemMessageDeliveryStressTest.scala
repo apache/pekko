@@ -18,6 +18,9 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import com.typesafe.config.{ Config, ConfigFactory }
+
 import pekko.actor._
 import pekko.dispatch.sysmsg.{ Failed, SystemMessage }
 import pekko.remote.{ EndpointException, QuarantinedEvent, RARP }
@@ -25,8 +28,6 @@ import pekko.remote.transport.AssociationHandle
 import pekko.remote.transport.FailureInjectorTransportAdapter.{ Drop, One }
 import pekko.remote.transport.ThrottlerTransportAdapter._
 import pekko.testkit._
-
-import com.typesafe.config.{ Config, ConfigFactory }
 
 object SystemMessageDeliveryStressTest {
   val msgCount = 5000

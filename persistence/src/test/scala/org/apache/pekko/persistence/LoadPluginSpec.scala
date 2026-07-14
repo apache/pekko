@@ -16,11 +16,12 @@ package org.apache.pekko.persistence
 import scala.annotation.nowarn
 
 import org.apache.pekko
+
+import com.typesafe.config.Config
+
 import pekko.actor.Actor
 import pekko.persistence.journal.inmem.InmemJournal
 import pekko.testkit.ImplicitSender
-
-import com.typesafe.config.Config
 
 object LoadPluginSpec {
 

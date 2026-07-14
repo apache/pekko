@@ -20,6 +20,11 @@ import java.util.concurrent.atomic.AtomicInteger
 import scala.annotation.nowarn
 
 import org.apache.pekko
+
+import org.slf4j.LoggerFactory
+
+import com.typesafe.config.Config
+
 import pekko.Done
 import pekko.actor.typed
 import pekko.actor.typed.ActorRef
@@ -56,10 +61,6 @@ import pekko.persistence.typed.scaladsl._
 import pekko.persistence.typed.scaladsl.{ Recovery => TypedRecovery }
 import pekko.persistence.typed.scaladsl.RetentionCriteria
 import pekko.util.ConstantFun
-
-import org.slf4j.LoggerFactory
-
-import com.typesafe.config.Config
 
 @InternalApi
 private[pekko] object EventSourcedBehaviorImpl {

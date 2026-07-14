@@ -15,8 +15,8 @@ package org.apache.pekko.osgi
 
 import java.io._
 import java.net.URL
-import java.util.{ Date, HashMap, ServiceLoader, UUID }
 import java.util.jar.JarInputStream
+import java.util.{ Date, HashMap, ServiceLoader, UUID }
 
 import scala.annotation.{ nowarn, tailrec }
 import scala.collection.immutable
@@ -24,11 +24,11 @@ import scala.concurrent.duration._
 import scala.jdk.CollectionConverters._
 import scala.reflect.ClassTag
 
+import org.scalatest.{ BeforeAndAfterAll, Suite }
+
 import de.kalpatec.pojosr.framework.launch.{ BundleDescriptor, ClasspathScanner, PojoServiceRegistryFactory }
 import org.apache.commons.io.IOUtils.copy
 import org.osgi.framework._
-
-import org.scalatest.{ BeforeAndAfterAll, Suite }
 
 /**
  * Trait that provides support for building pekko-osgi tests using PojoSR

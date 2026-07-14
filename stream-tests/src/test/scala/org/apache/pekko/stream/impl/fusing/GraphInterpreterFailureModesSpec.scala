@@ -14,6 +14,7 @@
 package org.apache.pekko.stream.impl.fusing
 
 import org.apache.pekko
+
 import pekko.stream.testkit.StreamSpec
 import pekko.stream.testkit.Utils.TE
 import pekko.testkit.EventFilter

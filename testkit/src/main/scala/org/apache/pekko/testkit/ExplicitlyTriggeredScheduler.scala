@@ -25,11 +25,12 @@ import scala.jdk.CollectionConverters._
 import scala.util.Try
 
 import org.apache.pekko
+
+import com.typesafe.config.Config
+
 import pekko.actor.Cancellable
 import pekko.actor.Scheduler
 import pekko.event.LoggingAdapter
-
-import com.typesafe.config.Config
 
 /**
  * For testing: scheduler that does not look at the clock, but must be

@@ -15,11 +15,11 @@ package org.apache.pekko.actor
 
 import java.util.concurrent.TimeUnit
 
-import org.openjdk.jmh.annotations._
-
 import org.apache.pekko.testkit.TestProbe
 
 import com.typesafe.config.ConfigFactory
+
+import org.openjdk.jmh.annotations._
 
 object StashCreationBenchmark {
   class StashingActor extends Actor with Stash {

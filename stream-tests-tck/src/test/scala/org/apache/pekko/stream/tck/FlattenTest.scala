@@ -14,11 +14,12 @@
 package org.apache.pekko.stream.tck
 
 import org.apache.pekko
+
+import org.reactivestreams.Publisher
+
 import pekko.stream.scaladsl.Sink
 import pekko.stream.scaladsl.Source
 import pekko.util.ConstantFun
-
-import org.reactivestreams.Publisher
 
 class FlattenTest extends PekkoPublisherVerification[Int] {
 

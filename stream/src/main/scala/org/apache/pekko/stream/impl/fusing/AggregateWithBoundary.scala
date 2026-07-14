@@ -17,6 +17,7 @@ import scala.concurrent.duration._
 import scala.util.control.NonFatal
 
 import org.apache.pekko
+
 import pekko.annotation.InternalApi
 import pekko.stream.ActorAttributes.SupervisionStrategy
 import pekko.stream.Supervision

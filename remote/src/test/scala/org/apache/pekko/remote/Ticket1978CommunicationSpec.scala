@@ -18,21 +18,22 @@ import java.security.NoSuchAlgorithmException
 import java.util.zip.GZIPOutputStream
 
 import scala.annotation.nowarn
-import scala.concurrent.{ Await, Future }
 import scala.concurrent.duration._
+import scala.concurrent.{ Await, Future }
 import scala.reflect.classTag
 
 import org.apache.pekko
+
+import com.typesafe.config._
+
 import pekko.actor._
 import pekko.event.NoMarkerLogging
 import pekko.pattern.ask
-import pekko.remote.Configuration.{ getCipherConfig, CipherConfig }
+import pekko.remote.Configuration.{ CipherConfig, getCipherConfig }
 import pekko.remote.transport.netty.ConfigSSLEngineProvider
 import pekko.remote.transport.netty.SSLSettings
 import pekko.testkit._
 import pekko.util.Timeout
-
-import com.typesafe.config._
 
 @nowarn("msg=deprecated")
 object Configuration {

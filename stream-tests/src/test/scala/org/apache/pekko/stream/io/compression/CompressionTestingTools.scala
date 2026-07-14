@@ -14,11 +14,12 @@
 package org.apache.pekko.stream.io.compression
 
 import scala.annotation.tailrec
-import scala.concurrent.{ Await, ExecutionContext, Future }
 import scala.concurrent.duration.Duration
+import scala.concurrent.{ Await, ExecutionContext, Future }
 import scala.util.{ Failure, Success }
 
 import org.apache.pekko
+
 import pekko.stream.Materializer
 import pekko.stream.scaladsl.Source
 import pekko.util.ByteString

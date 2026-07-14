@@ -18,14 +18,15 @@ import scala.concurrent.duration._
 import scala.jdk.CollectionConverters._
 
 import org.apache.pekko
-import pekko.actor.Address
-import pekko.actor.AddressFromURIString
-import pekko.annotation.InternalApi
-import pekko.util.Helpers.{ toRootLowerCase, ConfigOps, Requiring }
-import pekko.util.Version
 
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigObject
+
+import pekko.actor.Address
+import pekko.actor.AddressFromURIString
+import pekko.annotation.InternalApi
+import pekko.util.Helpers.{ ConfigOps, Requiring, toRootLowerCase }
+import pekko.util.Version
 
 object ClusterSettings {
   type DataCenter = String

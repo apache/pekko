@@ -14,6 +14,7 @@
 package org.apache.pekko.persistence.query.journal.leveldb.javadsl
 
 import org.apache.pekko
+
 import pekko.NotUsed
 import pekko.persistence.query.{ EventEnvelope, Offset }
 import pekko.persistence.query.javadsl._

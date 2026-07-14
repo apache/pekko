@@ -22,6 +22,7 @@ import scala.util.Failure
 import scala.util.Try
 
 import org.apache.pekko
+
 import pekko.annotation.DoNotInherit
 
 /**

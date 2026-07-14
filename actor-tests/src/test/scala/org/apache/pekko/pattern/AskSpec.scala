@@ -19,6 +19,7 @@ import scala.concurrent.duration._
 import scala.util.Failure
 
 import org.apache.pekko
+
 import pekko.actor._
 import pekko.testkit.{ PekkoSpec, TestProbe }
 import pekko.testkit.WithLogCapturing

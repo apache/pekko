@@ -21,14 +21,15 @@ import scala.concurrent.duration._
 import scala.reflect.ClassTag
 import scala.util.matching.Regex
 
-import com.codahale.metrics._
-
 import org.apache.pekko
-import pekko.testkit.metrics.reporter.PekkoConsoleReporter
 
 import org.scalatest.Notifying
 
 import com.typesafe.config.Config
+
+import com.codahale.metrics._
+
+import pekko.testkit.metrics.reporter.PekkoConsoleReporter
 
 /**
  * Allows to easily measure performance / memory / file descriptor use in tests.

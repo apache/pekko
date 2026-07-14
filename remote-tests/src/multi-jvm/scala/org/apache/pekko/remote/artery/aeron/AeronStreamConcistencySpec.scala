@@ -21,10 +21,13 @@ import java.util.concurrent.atomic.AtomicInteger
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
+import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import io.aeron.Aeron
 import org.agrona.IoUtil
 
-import org.apache.pekko
 import pekko.Done
 import pekko.actor.ExtendedActorSystem
 import pekko.actor.Props
@@ -35,8 +38,6 @@ import pekko.stream.ThrottleMode
 import pekko.stream.scaladsl.Source
 import pekko.testkit._
 import pekko.util.ByteString
-
-import com.typesafe.config.ConfigFactory
 
 object AeronStreamConsistencySpec extends MultiNodeConfig {
   val first = role("first")

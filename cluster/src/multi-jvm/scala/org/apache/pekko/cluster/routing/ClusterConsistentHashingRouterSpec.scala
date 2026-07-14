@@ -16,6 +16,9 @@ package org.apache.pekko.cluster.routing
 import scala.concurrent.Await
 
 import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor.Actor
 import pekko.actor.ActorRef
 import pekko.actor.Address
@@ -31,8 +34,6 @@ import pekko.routing.FromConfig
 import pekko.routing.GetRoutees
 import pekko.routing.Routees
 import pekko.testkit._
-
-import com.typesafe.config.ConfigFactory
 
 object ClusterConsistentHashingRouterMultiJvmSpec extends MultiNodeConfig {
 

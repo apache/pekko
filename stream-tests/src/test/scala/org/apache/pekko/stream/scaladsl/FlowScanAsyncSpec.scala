@@ -21,6 +21,9 @@ import scala.concurrent.duration._
 import scala.util.Failure
 
 import org.apache.pekko
+
+import org.scalatest.matchers.should.Matchers
+
 import pekko.pattern
 import pekko.stream.ActorAttributes
 import pekko.stream.Supervision
@@ -29,8 +32,6 @@ import pekko.stream.testkit._
 import pekko.stream.testkit.TestSubscriber.Probe
 import pekko.stream.testkit.Utils.TE
 import pekko.stream.testkit.scaladsl._
-
-import org.scalatest.matchers.should.Matchers
 
 class FlowScanAsyncSpec extends StreamSpec with Matchers {
 

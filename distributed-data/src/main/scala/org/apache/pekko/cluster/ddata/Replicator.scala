@@ -14,18 +14,18 @@
 package org.apache.pekko.cluster.ddata
 
 import java.security.MessageDigest
-import java.util.{ Locale, Optional }
 import java.util.concurrent.ThreadLocalRandom
 import java.util.concurrent.TimeUnit
 import java.util.function.{ Function => JFunction }
+import java.util.{ Locale, Optional }
 
 import scala.annotation.nowarn
 import scala.annotation.varargs
 import scala.collection.immutable
 import scala.collection.immutable.TreeSet
 import scala.collection.mutable
-import scala.concurrent.duration._
 import scala.concurrent.duration.FiniteDuration
+import scala.concurrent.duration._
 import scala.jdk.DurationConverters._
 import scala.util.Failure
 import scala.util.Success
@@ -34,6 +34,9 @@ import scala.util.control.NoStackTrace
 import scala.util.control.NonFatal
 
 import org.apache.pekko
+
+import com.typesafe.config.Config
+
 import pekko.actor.Actor
 import pekko.actor.ActorInitializationException
 import pekko.actor.ActorLogging
@@ -67,8 +70,6 @@ import pekko.remote.RARP
 import pekko.serialization.SerializationExtension
 import pekko.util.ByteString
 import pekko.util.Helpers.toRootLowerCase
-
-import com.typesafe.config.Config
 
 object ReplicatorSettings {
 

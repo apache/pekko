@@ -20,13 +20,14 @@ import java.util.function.{ Function => JFunction }
 import scala.annotation.nowarn
 
 import org.apache.pekko
+
+import com.typesafe.config.Config
+
 import pekko.actor._
 import pekko.annotation.DoNotInherit
 import pekko.annotation.InternalApi
 import pekko.event.Logging
 import pekko.io.dns.DnsProtocol
-
-import com.typesafe.config.Config
 
 /**
  * Not for user extension.

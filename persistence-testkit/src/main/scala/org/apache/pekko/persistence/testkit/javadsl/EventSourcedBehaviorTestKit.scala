@@ -13,23 +13,24 @@
 
 package org.apache.pekko.persistence.testkit.javadsl
 
-import java.util.{ List => JList }
 import java.util.Optional
 import java.util.function.{ Function => JFunction }
+import java.util.{ List => JList }
 
 import scala.annotation.varargs
 import scala.jdk.CollectionConverters._
 import scala.reflect.ClassTag
 
 import org.apache.pekko
+
+import com.typesafe.config.Config
+
 import pekko.actor.typed.ActorRef
 import pekko.actor.typed.ActorSystem
 import pekko.actor.typed.Behavior
 import pekko.annotation.ApiMayChange
 import pekko.annotation.DoNotInherit
 import pekko.persistence.testkit.scaladsl
-
-import com.typesafe.config.Config
 
 /**
  * Testing of [[pekko.persistence.typed.javadsl.EventSourcedBehavior]] implementations.

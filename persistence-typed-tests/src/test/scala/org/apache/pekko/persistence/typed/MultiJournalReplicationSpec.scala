@@ -16,6 +16,13 @@ package org.apache.pekko.persistence.typed
 import java.util.concurrent.atomic.AtomicInteger
 
 import org.apache.pekko
+
+import org.scalatest.concurrent.Eventually
+import org.scalatest.wordspec.AnyWordSpecLike
+
+import com.typesafe.config.Config
+import com.typesafe.config.ConfigFactory
+
 import pekko.Done
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
 import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
@@ -28,12 +35,6 @@ import pekko.persistence.typed.scaladsl.Effect
 import pekko.persistence.typed.scaladsl.EventSourcedBehavior
 import pekko.persistence.typed.scaladsl.ReplicatedEventSourcing
 import pekko.stream.scaladsl.Sink
-
-import org.scalatest.concurrent.Eventually
-import org.scalatest.wordspec.AnyWordSpecLike
-
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
 
 object MultiJournalReplicationSpec {
 

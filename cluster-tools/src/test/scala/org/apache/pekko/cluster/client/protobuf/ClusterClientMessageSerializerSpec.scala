@@ -16,6 +16,7 @@ package org.apache.pekko.cluster.client.protobuf
 import scala.annotation.nowarn
 
 import org.apache.pekko
+
 import pekko.actor.ExtendedActorSystem
 import pekko.cluster.client.ClusterReceptionist.Internal._
 import pekko.testkit.PekkoSpec

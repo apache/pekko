@@ -16,6 +16,9 @@ package org.apache.pekko.cluster
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor.ActorRef
 import pekko.actor.Identify
 import pekko.actor.RootActorPath
@@ -23,8 +26,6 @@ import pekko.remote.artery.ArterySettings
 import pekko.remote.testkit.MultiNodeConfig
 import pekko.remote.transport.ThrottlerTransportAdapter
 import pekko.testkit.LongRunningTest
-
-import com.typesafe.config.ConfigFactory
 
 object SplitBrainQuarantineSpec extends MultiNodeConfig {
   val first = role("first")

@@ -16,6 +16,7 @@ package org.apache.pekko.persistence.testkit.javadsl
 import java.io.NotSerializableException
 
 import org.apache.pekko
+
 import pekko.actor.Props
 import pekko.persistence.SaveSnapshotFailure
 import pekko.persistence.testkit._

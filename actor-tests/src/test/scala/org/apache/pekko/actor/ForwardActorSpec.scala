@@ -17,6 +17,7 @@ import scala.concurrent.ExecutionContextExecutor
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
 import pekko.pattern.{ ask, pipe }
 import pekko.testkit._
 

@@ -17,12 +17,13 @@ import scala.collection.immutable.SortedSet
 import scala.util.Random
 
 import org.apache.pekko
-import pekko.actor.Address
-import pekko.actor.AddressFromURIString
-import pekko.util.Version
 
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
+
+import pekko.actor.Address
+import pekko.actor.AddressFromURIString
+import pekko.util.Version
 
 class MemberOrderingSpec extends AnyWordSpec with Matchers {
   import Member.addressOrdering

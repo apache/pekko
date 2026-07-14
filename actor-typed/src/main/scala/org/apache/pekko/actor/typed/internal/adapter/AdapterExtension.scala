@@ -14,6 +14,7 @@
 package org.apache.pekko.actor.typed.internal.adapter
 
 import org.apache.pekko
+
 import pekko.actor.ExtendedActorSystem
 import pekko.annotation.InternalApi
 

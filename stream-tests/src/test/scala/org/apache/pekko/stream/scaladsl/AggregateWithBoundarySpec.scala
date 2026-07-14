@@ -18,17 +18,18 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
+
+import com.typesafe.config.{ ConfigFactory, ConfigValueFactory }
+
 import pekko.actor.ActorSystem
 import pekko.stream.ActorAttributes
 import pekko.stream.OverflowStrategy
 import pekko.stream.Supervision
 import pekko.stream.testkit.{ StreamSpec, TestPublisher, TestSubscriber }
 import pekko.testkit.{ ExplicitlyTriggeredScheduler, PekkoSpec }
-
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpecLike
-
-import com.typesafe.config.{ ConfigFactory, ConfigValueFactory }
 
 class AggregateWithBoundarySpec extends StreamSpec {
 

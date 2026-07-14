@@ -15,10 +15,11 @@ package org.apache.pekko.serialization
 
 import java.util.concurrent.CompletionStage
 
-import scala.concurrent.{ Await, Future }
 import scala.concurrent.duration.Duration
+import scala.concurrent.{ Await, Future }
 
 import org.apache.pekko
+
 import pekko.actor.ExtendedActorSystem
 import pekko.event.Logging
 

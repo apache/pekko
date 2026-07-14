@@ -14,6 +14,7 @@
 package org.apache.pekko.cluster.singleton.protobuf
 
 import org.apache.pekko
+
 import pekko.actor.ExtendedActorSystem
 import pekko.cluster.singleton.ClusterSingletonManager.Internal.HandOverDone
 import pekko.cluster.singleton.ClusterSingletonManager.Internal.HandOverInProgress

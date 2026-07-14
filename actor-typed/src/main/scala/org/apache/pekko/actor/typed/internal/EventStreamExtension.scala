@@ -14,6 +14,7 @@
 package org.apache.pekko.actor.typed.internal
 
 import org.apache.pekko
+
 import pekko.actor.typed._
 import pekko.actor.typed.eventstream.EventStream
 import pekko.actor.typed.internal.adapter.EventStreamAdapter

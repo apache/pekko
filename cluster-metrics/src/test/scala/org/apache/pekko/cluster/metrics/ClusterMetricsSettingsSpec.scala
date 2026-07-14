@@ -16,10 +16,11 @@ package org.apache.pekko.cluster.metrics
 import scala.concurrent.duration._
 
 import org.apache.pekko
-import pekko.dispatch.Dispatchers
-import pekko.testkit.PekkoSpec
 
 import com.typesafe.config.ConfigFactory
+
+import pekko.dispatch.Dispatchers
+import pekko.testkit.PekkoSpec
 
 class ClusterMetricsSettingsSpec extends PekkoSpec {
 

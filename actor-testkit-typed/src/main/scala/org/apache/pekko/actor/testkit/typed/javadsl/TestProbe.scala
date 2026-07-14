@@ -14,12 +14,13 @@
 package org.apache.pekko.actor.testkit.typed.javadsl
 
 import java.time.Duration
-import java.util.{ List => JList }
 import java.util.function.Supplier
+import java.util.{ List => JList }
 
 import scala.annotation.nowarn
 
 import org.apache.pekko
+
 import pekko.actor.testkit.typed.FishingOutcome
 import pekko.actor.testkit.typed.TestKitSettings
 import pekko.actor.testkit.typed.internal.TestProbeImpl

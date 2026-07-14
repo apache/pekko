@@ -14,10 +14,11 @@
 package org.apache.pekko.stream.testkit
 
 import org.apache.pekko
-import pekko.stream._
-import pekko.stream.scaladsl._
 
 import org.reactivestreams.Publisher
+
+import pekko.stream._
+import pekko.stream.scaladsl._
 
 abstract class TwoStreamsSetup extends BaseTwoStreamsSetup {
 

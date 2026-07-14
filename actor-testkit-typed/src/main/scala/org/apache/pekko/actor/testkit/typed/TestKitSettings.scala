@@ -17,12 +17,13 @@ import scala.concurrent.duration.{ Duration, FiniteDuration }
 import scala.jdk.DurationConverters._
 
 import org.apache.pekko
+
+import com.typesafe.config.Config
+
 import pekko.actor.typed.ActorSystem
 import pekko.actor.typed.Extension
 import pekko.actor.typed.ExtensionId
 import pekko.util.Timeout
-
-import com.typesafe.config.Config
 
 object TestKitSettings {
 

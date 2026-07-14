@@ -17,16 +17,17 @@ import scala.collection.{ immutable => im }
 import scala.concurrent.duration._
 
 import org.apache.pekko
-import pekko.actor.CoordinatedShutdown
-import pekko.actor.testkit.typed.scaladsl.{ ActorTestKit, LogCapturing, ScalaTestWithActorTestKit }
-import pekko.actor.typed.ActorSystem
-import pekko.cluster.{ Cluster => ClassicCluster }
-import pekko.testkit.LongRunningTest
 
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 
 import com.typesafe.config.{ Config, ConfigFactory }
+
+import pekko.actor.CoordinatedShutdown
+import pekko.actor.testkit.typed.scaladsl.{ ActorTestKit, LogCapturing, ScalaTestWithActorTestKit }
+import pekko.actor.typed.ActorSystem
+import pekko.cluster.{ Cluster => ClassicCluster }
+import pekko.testkit.LongRunningTest
 
 object JoinConfigCompatCheckerClusterShardingSpec {
 

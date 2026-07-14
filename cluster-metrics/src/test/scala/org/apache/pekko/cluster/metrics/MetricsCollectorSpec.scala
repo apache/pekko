@@ -18,6 +18,7 @@ import scala.concurrent.duration._
 import scala.util.Try
 
 import org.apache.pekko
+
 import pekko.cluster.metrics.StandardMetrics._
 import pekko.testkit._
 

@@ -14,10 +14,11 @@
 package org.apache.pekko.cluster.typed.internal.receptionist
 
 import org.apache.pekko
-import pekko.annotation.InternalApi
-import pekko.cluster.{ ConfigValidation, JoinConfigCompatChecker, Valid }
 
 import com.typesafe.config.Config
+
+import pekko.annotation.InternalApi
+import pekko.cluster.{ ConfigValidation, JoinConfigCompatChecker, Valid }
 
 /**
  * INTERNAL API

@@ -16,6 +16,7 @@ package org.apache.pekko.cluster.sharding.internal
 import scala.collection.mutable
 
 import org.apache.pekko
+
 import pekko.actor.ActorLogging
 import pekko.actor.Props
 import pekko.annotation.InternalApi

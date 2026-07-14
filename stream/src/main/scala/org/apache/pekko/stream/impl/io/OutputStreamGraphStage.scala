@@ -19,6 +19,7 @@ import scala.concurrent.{ Future, Promise }
 import scala.util.control.NonFatal
 
 import org.apache.pekko
+
 import pekko.annotation.InternalApi
 import pekko.stream.{ Attributes, IOOperationIncompleteException, IOResult, Inlet, SinkShape }
 import pekko.stream.impl.Stages.DefaultAttributes

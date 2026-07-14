@@ -15,11 +15,12 @@ package org.apache.pekko.stream.scaladsl
 
 import scala.annotation.nowarn
 
+import org.apache.pekko
+
 import org.scalacheck.Gen
 import org.scalacheck.Shrink
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
-import org.apache.pekko
 import pekko.stream._
 import pekko.stream.testkit.TwoStreamsSetup
 

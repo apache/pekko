@@ -15,16 +15,17 @@ package org.apache.pekko.actor
 
 import scala.concurrent.duration._
 
-import com.codahale.metrics.Histogram
-
 import org.apache.pekko
-import pekko.testkit.{ ImplicitSender, PekkoSpec, PerformanceTest }
-import pekko.testkit.metrics._
-import pekko.testkit.metrics.HeapMemoryUsage
 
 import org.scalatest.BeforeAndAfterAll
 
 import com.typesafe.config.ConfigFactory
+
+import com.codahale.metrics.Histogram
+
+import pekko.testkit.{ ImplicitSender, PekkoSpec, PerformanceTest }
+import pekko.testkit.metrics._
+import pekko.testkit.metrics.HeapMemoryUsage
 
 object ActorCreationPerfSpec {
 

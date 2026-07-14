@@ -16,6 +16,9 @@ package org.apache.pekko.event
 import scala.annotation.nowarn
 
 import org.apache.pekko
+
+import com.typesafe.config.Config
+
 import pekko.actor.ActorRef
 import pekko.actor.ActorSystem
 import pekko.dispatch.MailboxType
@@ -23,8 +26,6 @@ import pekko.dispatch.MessageQueue
 import pekko.dispatch.ProducesMessageQueue
 import pekko.dispatch.UnboundedMailbox
 import pekko.event.Logging.LogEvent
-
-import com.typesafe.config.Config
 
 trait LoggerMessageQueueSemantics
 

@@ -20,14 +20,17 @@ import java.util.concurrent.atomic.AtomicBoolean
 
 import scala.annotation.varargs
 import scala.collection.immutable
-import scala.concurrent.{ Await, ExecutionContext }
 import scala.concurrent.Future
 import scala.concurrent.duration._
+import scala.concurrent.{ Await, ExecutionContext }
 import scala.util.Failure
 import scala.util.Success
 import scala.util.control.NonFatal
 
 import org.apache.pekko
+
+import com.typesafe.config.{ Config, ConfigFactory }
+
 import pekko.ConfigurationException
 import pekko.actor._
 import pekko.annotation.InternalApi
@@ -42,8 +45,6 @@ import pekko.pattern._
 import pekko.remote.{ UniqueAddress => _, _ }
 import pekko.util.Helpers.toRootLowerCase
 import pekko.util.Version
-
-import com.typesafe.config.{ Config, ConfigFactory }
 
 /**
  * Cluster Extension Id and factory for creating Cluster extension.

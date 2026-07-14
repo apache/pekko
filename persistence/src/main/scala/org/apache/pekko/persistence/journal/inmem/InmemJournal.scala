@@ -19,6 +19,10 @@ import scala.util.Try
 import scala.util.control.NonFatal
 
 import org.apache.pekko
+
+import com.typesafe.config.Config
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor.ActorRef
 import pekko.annotation.ApiMayChange
 import pekko.annotation.InternalApi
@@ -31,9 +35,6 @@ import pekko.persistence.journal.inmem.InmemJournal.{ MessageWithMeta, ReplayWit
 import pekko.serialization.SerializationExtension
 import pekko.serialization.Serializers
 import pekko.util.OptionVal
-
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
 
 /**
  * The InmemJournal publishes writes and deletes to the `eventStream`, which tests may use to

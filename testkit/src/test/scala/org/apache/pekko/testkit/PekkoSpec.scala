@@ -18,15 +18,7 @@ import java.nio.file.{ Path, Paths }
 import scala.concurrent.Future
 import scala.concurrent.duration._
 
-import org.scalactic.CanEqual
-import org.scalactic.TypeCheckedTripleEquals
-
 import org.apache.pekko
-import pekko.actor.ActorSystem
-import pekko.dispatch.Dispatchers
-import pekko.event.Logging
-import pekko.event.LoggingAdapter
-import pekko.testkit.TestEvent._
 
 import org.scalatest.BeforeAndAfterAll
 import org.scalatest.concurrent.ScalaFutures
@@ -37,6 +29,15 @@ import org.scalatest.wordspec.AnyWordSpecLike
 
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
+
+import org.scalactic.CanEqual
+import org.scalactic.TypeCheckedTripleEquals
+
+import pekko.actor.ActorSystem
+import pekko.dispatch.Dispatchers
+import pekko.event.Logging
+import pekko.event.LoggingAdapter
+import pekko.testkit.TestEvent._
 
 object PekkoSpec {
   val testConf: Config = ConfigFactory.parseString("""

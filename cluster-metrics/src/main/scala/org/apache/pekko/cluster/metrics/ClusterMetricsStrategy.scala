@@ -14,10 +14,11 @@
 package org.apache.pekko.cluster.metrics
 
 import org.apache.pekko
-import pekko.actor.OneForOneStrategy
-import pekko.util.Helpers.ConfigOps
 
 import com.typesafe.config.Config
+
+import pekko.actor.OneForOneStrategy
+import pekko.util.Helpers.ConfigOps
 
 /**
  * Default `ClusterMetricsSupervisor` strategy:

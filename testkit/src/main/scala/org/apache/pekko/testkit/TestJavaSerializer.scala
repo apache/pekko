@@ -16,6 +16,7 @@ package org.apache.pekko.testkit
 import java.io.{ ByteArrayOutputStream, ObjectOutputStream }
 
 import org.apache.pekko
+
 import pekko.actor.ExtendedActorSystem
 import pekko.io.UnsynchronizedByteArrayInputStream
 import pekko.serialization.{ BaseSerializer, JavaSerializer }

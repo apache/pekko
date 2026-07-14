@@ -18,13 +18,14 @@ import scala.annotation.tailrec
 import scala.concurrent.{ Future, Promise }
 import scala.util.control.NonFatal
 
-import io.aeron.{ Aeron, FragmentAssembler, Subscription }
+import org.apache.pekko
+
 import io.aeron.exceptions.{ AeronException, DriverTimeoutException }
 import io.aeron.logbuffer.FragmentHandler
 import io.aeron.logbuffer.Header
+import io.aeron.{ Aeron, FragmentAssembler, Subscription }
 import org.agrona.DirectBuffer
 
-import org.apache.pekko
 import pekko.remote.RemoteTransportException
 import pekko.stream.Attributes
 import pekko.stream.Outlet

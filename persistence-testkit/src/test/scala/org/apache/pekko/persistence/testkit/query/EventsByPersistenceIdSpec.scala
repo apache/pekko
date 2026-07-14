@@ -16,6 +16,11 @@ package org.apache.pekko.persistence.testkit.query
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import org.scalatest.wordspec.AnyWordSpecLike
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.Done
 import pekko.actor.testkit.typed.scaladsl.{ LogCapturing, ScalaTestWithActorTestKit }
 import pekko.actor.typed.ActorRef
@@ -26,10 +31,6 @@ import pekko.persistence.testkit.query.scaladsl.PersistenceTestKitReadJournal
 import pekko.persistence.typed.PersistenceId
 import pekko.persistence.typed.scaladsl.{ Effect, EventSourcedBehavior }
 import pekko.stream.testkit.scaladsl.TestSink
-
-import org.scalatest.wordspec.AnyWordSpecLike
-
-import com.typesafe.config.ConfigFactory
 
 object EventsByPersistenceIdSpec {
   val config = PersistenceTestKitPlugin.config.withFallback(

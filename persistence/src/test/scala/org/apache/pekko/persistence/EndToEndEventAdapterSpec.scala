@@ -17,18 +17,19 @@ import java.io.File
 
 import scala.annotation.nowarn
 
-import org.apache.commons.io.FileUtils
-
 import org.apache.pekko
-import pekko.actor._
-import pekko.persistence.journal.{ EventAdapter, EventSeq }
-import pekko.testkit.TestProbe
 
 import org.scalatest.BeforeAndAfterAll
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 
 import com.typesafe.config.{ Config, ConfigFactory }
+
+import org.apache.commons.io.FileUtils
+
+import pekko.actor._
+import pekko.persistence.journal.{ EventAdapter, EventSeq }
+import pekko.testkit.TestProbe
 
 object EndToEndEventAdapterSpec {
 

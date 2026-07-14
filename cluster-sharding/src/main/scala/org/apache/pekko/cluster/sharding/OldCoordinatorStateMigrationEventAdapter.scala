@@ -14,6 +14,7 @@
 package org.apache.pekko.cluster.sharding
 
 import org.apache.pekko
+
 import pekko.annotation.InternalApi
 import pekko.cluster.sharding.ShardCoordinator.Internal.ShardHomeAllocated
 import pekko.persistence.journal.EventAdapter

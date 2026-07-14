@@ -14,13 +14,14 @@
 package org.apache.pekko.remote.artery
 
 import org.apache.pekko
+
+import com.typesafe.config._
+
 import pekko.ConfigurationException
 import pekko.actor._
 import pekko.remote.RemoteScope
 import pekko.routing._
 import pekko.testkit._
-
-import com.typesafe.config._
 
 object RemoteDeployerSpec {
   val deployerConf = ConfigFactory.parseString("""

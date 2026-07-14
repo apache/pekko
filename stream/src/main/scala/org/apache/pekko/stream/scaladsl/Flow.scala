@@ -22,6 +22,12 @@ import scala.reflect.ClassTag
 import scala.util.control.NonFatal
 
 import org.apache.pekko
+
+import org.reactivestreams.Processor
+import org.reactivestreams.Publisher
+import org.reactivestreams.Subscriber
+import org.reactivestreams.Subscription
+
 import pekko.Done
 import pekko.NotUsed
 import pekko.actor.ActorRef
@@ -56,11 +62,6 @@ import pekko.stream.stage._
 import pekko.util.ConstantFun
 import pekko.util.OptionVal
 import pekko.util.Timeout
-
-import org.reactivestreams.Processor
-import org.reactivestreams.Publisher
-import org.reactivestreams.Subscriber
-import org.reactivestreams.Subscription
 
 /**
  * A `Flow` is a set of stream processing steps that has one open input and one open output.

@@ -16,11 +16,12 @@ package org.apache.pekko.persistence.typed
 import java.util.concurrent.atomic.AtomicInteger
 
 import org.apache.pekko
-import pekko.actor.testkit.typed.scaladsl.{ LogCapturing, ScalaTestWithActorTestKit }
-import pekko.persistence.testkit.{ PersistenceTestKitPlugin, PersistenceTestKitSnapshotPlugin }
 
 import org.scalatest.concurrent.Eventually
 import org.scalatest.wordspec.AnyWordSpecLike
+
+import pekko.actor.testkit.typed.scaladsl.{ LogCapturing, ScalaTestWithActorTestKit }
+import pekko.persistence.testkit.{ PersistenceTestKitPlugin, PersistenceTestKitSnapshotPlugin }
 
 object ReplicationBaseSpec {
   val R1 = ReplicaId("R1")

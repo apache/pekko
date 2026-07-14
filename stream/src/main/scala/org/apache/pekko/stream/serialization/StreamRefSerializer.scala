@@ -16,6 +16,7 @@ package org.apache.pekko.stream.serialization
 import java.nio.charset.StandardCharsets
 
 import org.apache.pekko
+
 import pekko.actor.ExtendedActorSystem
 import pekko.annotation.InternalApi
 import pekko.protobufv3.internal.ByteString

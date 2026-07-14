@@ -18,6 +18,9 @@ import scala.concurrent.duration._
 import scala.jdk.DurationConverters._
 
 import org.apache.pekko
+
+import com.typesafe.config.Config
+
 import pekko.actor.ActorSystem
 import pekko.actor.NoSerializationVerificationNeeded
 import pekko.annotation.InternalApi
@@ -26,8 +29,6 @@ import pekko.cluster.singleton.ClusterSingletonManagerSettings
 import pekko.coordination.lease.LeaseUsageSettings
 import pekko.japi.Util.immutableSeq
 import pekko.util.Helpers.toRootLowerCase
-
-import com.typesafe.config.Config
 
 object ClusterShardingSettings {
 

@@ -16,6 +16,7 @@ package org.apache.pekko.stream.scaladsl
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
 import pekko.actor.Status
 import pekko.stream.CompletionStrategy
 import pekko.stream.testkit.StreamSpec

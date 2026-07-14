@@ -16,6 +16,9 @@ package org.apache.pekko.remote.classic
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor.Actor
 import pekko.actor.ActorIdentity
 import pekko.actor.ActorRef
@@ -35,8 +38,6 @@ import pekko.testkit.JavaSerializable
 import pekko.testkit.PekkoSpec
 import pekko.testkit.TestEvent
 import pekko.testkit.TestProbe
-
-import com.typesafe.config.ConfigFactory
 
 object UntrustedSpec {
   final case class IdentifyReq(path: String) extends JavaSerializable

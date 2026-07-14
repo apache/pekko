@@ -18,6 +18,7 @@ import scala.concurrent.duration._
 import scala.reflect.ClassTag
 
 import org.apache.pekko
+
 import pekko.actor.testkit.typed.FishingOutcome
 import pekko.actor.testkit.typed.TestKitSettings
 import pekko.actor.testkit.typed.internal.TestProbeImpl

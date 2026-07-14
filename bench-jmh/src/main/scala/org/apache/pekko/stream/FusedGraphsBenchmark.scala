@@ -19,16 +19,17 @@ import java.util.concurrent.TimeUnit
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
-import org.openjdk.jmh.annotations._
-import org.openjdk.jmh.annotations.OperationsPerInvocation
-
 import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
+import org.openjdk.jmh.annotations.OperationsPerInvocation
+import org.openjdk.jmh.annotations._
+
 import pekko.NotUsed
 import pekko.actor.ActorSystem
 import pekko.stream.scaladsl._
 import pekko.stream.stage._
-
-import com.typesafe.config.ConfigFactory
 
 object FusedGraphsBenchmark {
   val ElementCount = 100 * 1000

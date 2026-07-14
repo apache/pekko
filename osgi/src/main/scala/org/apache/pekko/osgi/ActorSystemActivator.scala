@@ -17,13 +17,14 @@ import java.util.{ Dictionary, Properties }
 
 import scala.annotation.nowarn
 
+import org.apache.pekko
+
+import com.typesafe.config.{ Config, ConfigFactory }
+
 import org.osgi.framework._
 import org.osgi.service.log.LogService
 
-import org.apache.pekko
 import pekko.actor.{ ActorRefFactory, ActorSystem }
-
-import com.typesafe.config.{ Config, ConfigFactory }
 
 /**
  * Abstract bundle activator implementation to bootstrap and configure an actor system in an

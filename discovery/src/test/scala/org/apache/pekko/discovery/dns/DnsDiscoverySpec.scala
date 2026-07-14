@@ -18,14 +18,15 @@ import java.net.InetAddress
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor.ActorSystem
 import pekko.discovery.{ Discovery, Lookup }
 import pekko.discovery.ServiceDiscovery
 import pekko.discovery.ServiceDiscovery.ResolvedTarget
 import pekko.io.dns.DockerBindDnsService
 import pekko.testkit.{ SocketUtil, TestKit }
-
-import com.typesafe.config.ConfigFactory
 
 object DnsDiscoverySpec {
 

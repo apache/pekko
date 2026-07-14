@@ -16,6 +16,7 @@ package org.apache.pekko.cluster.sharding.external.scaladsl
 import scala.concurrent.Future
 
 import org.apache.pekko
+
 import pekko.Done
 import pekko.actor.Address
 import pekko.annotation.ApiMayChange

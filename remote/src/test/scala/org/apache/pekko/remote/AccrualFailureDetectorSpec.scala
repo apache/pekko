@@ -18,6 +18,7 @@ import scala.collection.immutable.TreeMap
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
 import pekko.remote.FailureDetector.Clock
 import pekko.testkit.PekkoSpec
 

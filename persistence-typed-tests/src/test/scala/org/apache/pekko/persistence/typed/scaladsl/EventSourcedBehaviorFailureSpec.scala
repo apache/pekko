@@ -19,6 +19,12 @@ import scala.concurrent.duration._
 import scala.util.Try
 
 import org.apache.pekko
+
+import org.scalatest.wordspec.AnyWordSpecLike
+
+import com.typesafe.config.Config
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor.testkit.typed.TestException
 import pekko.actor.testkit.typed.TestKitSettings
 import pekko.actor.testkit.typed.scaladsl._
@@ -36,11 +42,6 @@ import pekko.persistence.typed.PersistenceId
 import pekko.persistence.typed.RecoveryCompleted
 import pekko.persistence.typed.RecoveryFailed
 import pekko.persistence.typed.internal.JournalFailureException
-
-import org.scalatest.wordspec.AnyWordSpecLike
-
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
 
 class ChaosJournal extends InmemJournal {
   var counts = Map.empty[String, Int]

@@ -19,12 +19,13 @@ import scala.concurrent.duration.FiniteDuration
 import scala.jdk.DurationConverters._
 
 import org.apache.pekko
+
+import com.typesafe.config.Config
+
 import pekko.actor.typed.ActorSystem
 import pekko.annotation.ApiMayChange
 import pekko.annotation.DoNotInherit
 import pekko.annotation.InternalApi
-
-import com.typesafe.config.Config
 
 object ShardedDaemonProcessSettings {
 

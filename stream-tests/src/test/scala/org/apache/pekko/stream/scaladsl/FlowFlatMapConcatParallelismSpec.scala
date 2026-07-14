@@ -27,13 +27,14 @@ import scala.concurrent.duration.DurationInt
 import scala.util.control.NoStackTrace
 
 import org.apache.pekko
+
+import org.scalatest.time.{ Seconds, Span }
+
 import pekko.NotUsed
 import pekko.pattern.FutureTimeoutSupport
 import pekko.stream._
 import pekko.stream.testkit.{ ScriptedTest, StreamSpec }
 import pekko.stream.testkit.scaladsl.TestSink
-
-import org.scalatest.time.{ Seconds, Span }
 
 class FlowFlatMapConcatParallelismSpec extends StreamSpec("""
     pekko.stream.materializer.initial-input-buffer-size = 2

@@ -16,6 +16,9 @@ package org.apache.pekko.persistence.testkit.scaladsl
 import java.io.NotSerializableException
 
 import org.apache.pekko
+
+import org.scalatest.wordspec.AnyWordSpecLike
+
 import pekko.Done
 import pekko.actor.testkit.typed.TestException
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
@@ -35,8 +38,6 @@ import pekko.persistence.typed.scaladsl.Effect
 import pekko.persistence.typed.scaladsl.EventSourcedBehavior
 import pekko.serialization.DisabledJavaSerializer
 import pekko.serialization.jackson.CborSerializable
-
-import org.scalatest.wordspec.AnyWordSpecLike
 
 object EventSourcedBehaviorTestKitSpec {
 

@@ -17,9 +17,9 @@ import scala.annotation.tailrec
 import scala.collection.immutable
 import scala.concurrent.ExecutionContext
 
-import Tcp._
-
 import org.apache.pekko
+
+import Tcp._
 import pekko.actor.ActorRef
 import pekko.actor.ActorSystem
 import pekko.io.Inet.SocketOption

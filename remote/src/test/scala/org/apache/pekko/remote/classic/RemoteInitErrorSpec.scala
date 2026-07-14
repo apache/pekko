@@ -20,13 +20,14 @@ import scala.jdk.CollectionConverters._
 import scala.util.control.NonFatal
 
 import org.apache.pekko
-import pekko.actor.ActorSystem
 
 import org.scalatest.concurrent.Eventually._
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
 import com.typesafe.config.ConfigFactory
+
+import pekko.actor.ActorSystem
 
 /**
  * The 192.0.2.1 is a Documentation IP-address and should not be used at all

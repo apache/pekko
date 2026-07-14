@@ -13,10 +13,10 @@
 
 package org.apache.pekko.util
 
-import org.scalactic.TypeCheckedTripleEquals
-
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
+
+import org.scalactic.TypeCheckedTripleEquals
 
 object TypedMultiMapSpec {
   trait AbstractKey { type Type }

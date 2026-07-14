@@ -15,6 +15,8 @@ package org.apache.pekko.remote.artery.jfr
 
 import java.net.InetSocketAddress
 
+import org.apache.pekko
+
 import jdk.jfr.Category
 import jdk.jfr.DataAmount
 import jdk.jfr.Enabled
@@ -23,7 +25,6 @@ import jdk.jfr.Label
 import jdk.jfr.StackTrace
 import jdk.jfr.Timespan
 
-import org.apache.pekko
 import pekko.actor.Address
 import pekko.annotation.InternalApi
 import pekko.remote.UniqueAddress

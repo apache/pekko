@@ -21,6 +21,9 @@ import scala.jdk.DurationConverters._
 import scala.util.control.NonFatal
 
 import org.apache.pekko
+
+import com.typesafe.config.Config
+
 import pekko.Done
 import pekko.PekkoException
 import pekko.actor.Actor
@@ -49,8 +52,6 @@ import pekko.event.MarkerLoggingAdapter
 import pekko.pattern.ask
 import pekko.pattern.pipe
 import pekko.util.Timeout
-
-import com.typesafe.config.Config
 
 object ClusterSingletonManagerSettings {
 

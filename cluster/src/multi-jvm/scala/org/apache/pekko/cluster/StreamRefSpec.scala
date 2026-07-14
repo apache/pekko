@@ -20,6 +20,9 @@ import scala.util.Failure
 import scala.util.Success
 
 import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.Done
 import pekko.actor.{ Actor, ActorIdentity, ActorLogging, ActorRef, Identify, Props }
 import pekko.remote.testkit.MultiNodeConfig
@@ -36,8 +39,6 @@ import pekko.stream.scaladsl.StreamRefs
 import pekko.stream.testkit.TestSubscriber
 import pekko.stream.testkit.scaladsl.TestSink
 import pekko.testkit._
-
-import com.typesafe.config.ConfigFactory
 
 object StreamRefSpec extends MultiNodeConfig {
   val first = role("first")

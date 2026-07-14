@@ -14,6 +14,7 @@
 package org.apache.pekko.actor.typed.internal.adapter
 
 import org.apache.pekko
+
 import pekko.actor.Deploy
 import pekko.actor.LocalScope
 import pekko.actor.TypedCreatorFunctionConsumer

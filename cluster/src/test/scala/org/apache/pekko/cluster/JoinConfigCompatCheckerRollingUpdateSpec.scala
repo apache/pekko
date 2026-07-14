@@ -17,10 +17,11 @@ import scala.collection.{ immutable => im }
 import scala.concurrent.duration._
 
 import org.apache.pekko
-import pekko.testkit.GHExcludeAeronTest
-import pekko.testkit.LongRunningTest
 
 import com.typesafe.config.{ Config, ConfigFactory }
+
+import pekko.testkit.GHExcludeAeronTest
+import pekko.testkit.LongRunningTest
 
 object JoinConfigCompatCheckerRollingUpdateSpec {
 

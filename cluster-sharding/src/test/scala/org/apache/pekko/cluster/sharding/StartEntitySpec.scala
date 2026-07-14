@@ -16,6 +16,9 @@ package org.apache.pekko.cluster.sharding
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor.Actor
 import pekko.actor.ActorRef
 import pekko.actor.Props
@@ -24,8 +27,6 @@ import pekko.cluster.MemberStatus
 import pekko.testkit.ImplicitSender
 import pekko.testkit.PekkoSpec
 import pekko.testkit.WithLogCapturing
-
-import com.typesafe.config.ConfigFactory
 
 /**
  * Covers some corner cases around sending triggering an entity with StartEntity

@@ -23,6 +23,10 @@ import scala.concurrent.Promise
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import com.typesafe.config.Config
+import com.typesafe.config.ConfigFactory
+
 import pekko.ConfigurationException
 import pekko.Done
 import pekko.actor.CoordinatedShutdown.Phase
@@ -31,9 +35,6 @@ import pekko.testkit.EventFilter
 import pekko.testkit.PekkoSpec
 import pekko.testkit.TestKit
 import pekko.testkit.TestProbe
-
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
 
 class CoordinatedShutdownSpec
     extends PekkoSpec(ConfigFactory.parseString("""

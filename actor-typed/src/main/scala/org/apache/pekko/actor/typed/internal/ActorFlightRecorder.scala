@@ -14,6 +14,7 @@
 package org.apache.pekko.actor.typed.internal
 
 import org.apache.pekko
+
 import pekko.actor.ActorPath
 import pekko.actor.typed.{ ActorSystem, Extension, ExtensionId }
 import pekko.annotation.InternalApi

@@ -19,13 +19,14 @@ import scala.annotation.nowarn
 import scala.util.Failure
 
 import org.apache.pekko
+
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
+
 import pekko.actor.Address
 import pekko.cluster.metrics.StandardMetrics._
 import pekko.testkit.ImplicitSender
 import pekko.testkit.PekkoSpec
-
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpec
 
 @nowarn
 class MetricNumericConverterSpec extends AnyWordSpec with Matchers with MetricNumericConverter {

@@ -24,6 +24,12 @@ import scala.util.Success
 import scala.util.Try
 
 import org.apache.pekko
+
+import org.scalatest.wordspec.AnyWordSpecLike
+
+import com.typesafe.config.Config
+import com.typesafe.config.ConfigFactory
+
 import pekko.Done
 import pekko.actor.ActorInitializationException
 import pekko.actor.testkit.typed.TestException
@@ -54,11 +60,6 @@ import pekko.persistence.typed.SnapshotMetadata
 import pekko.persistence.typed.SnapshotSelectionCriteria
 import pekko.serialization.jackson.CborSerializable
 import pekko.stream.scaladsl.Sink
-
-import org.scalatest.wordspec.AnyWordSpecLike
-
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
 
 object EventSourcedBehaviorSpec {
 

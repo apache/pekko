@@ -21,6 +21,9 @@ import scala.util.Failure
 import scala.util.Success
 
 import org.apache.pekko
+
+import org.scalatest.wordspec.AnyWordSpecLike
+
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
 import pekko.actor.testkit.typed.scaladsl.LoggingTestKit
 import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
@@ -32,8 +35,6 @@ import pekko.actor.typed.scaladsl.Behaviors._
 import pekko.pattern.StatusReply
 import pekko.testkit.TestException
 import pekko.util.Timeout
-
-import org.scalatest.wordspec.AnyWordSpecLike
 
 object AskSpec {
   sealed trait Msg

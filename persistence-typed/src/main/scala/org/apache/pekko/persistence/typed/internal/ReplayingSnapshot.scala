@@ -16,6 +16,7 @@ package org.apache.pekko.persistence.typed.internal
 import scala.annotation.nowarn
 
 import org.apache.pekko
+
 import pekko.actor.typed.Behavior
 import pekko.actor.typed.internal.PoisonPill
 import pekko.actor.typed.scaladsl.{ ActorContext, Behaviors }

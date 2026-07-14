@@ -18,11 +18,12 @@ import java.util.Optional
 import scala.jdk.OptionConverters._
 
 import org.apache.pekko
-import pekko.annotation.InternalApi
-import pekko.util.OptionVal
 
 import org.slf4j.Marker
 import org.slf4j.event.Level
+
+import pekko.annotation.InternalApi
+import pekko.util.OptionVal
 
 /**
  * Representation of a Log Event issued by a [[pekko.actor.typed.Behavior]]

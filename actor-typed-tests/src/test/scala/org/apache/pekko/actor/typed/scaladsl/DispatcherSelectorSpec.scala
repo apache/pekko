@@ -14,6 +14,12 @@
 package org.apache.pekko.actor.typed.scaladsl
 
 import org.apache.pekko
+
+import org.scalatest.wordspec.AnyWordSpecLike
+
+import com.typesafe.config.Config
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor.BootstrapSetup
 import pekko.actor.setup.ActorSystemSetup
 import pekko.actor.testkit.typed.scaladsl.ActorTestKit
@@ -28,11 +34,6 @@ import pekko.actor.typed.DispatcherSelector
 import pekko.actor.typed.Props
 import pekko.actor.typed.SpawnProtocol
 import pekko.actor.typed.scaladsl.AskPattern._
-
-import org.scalatest.wordspec.AnyWordSpecLike
-
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
 
 object DispatcherSelectorSpec {
   val config = ConfigFactory.parseString("""

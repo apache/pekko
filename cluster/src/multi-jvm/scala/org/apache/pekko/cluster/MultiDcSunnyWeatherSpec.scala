@@ -18,13 +18,14 @@ import scala.collection.immutable.SortedSet
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor.ActorRef
 import pekko.annotation.InternalApi
 import pekko.remote.testconductor.RoleName
 import pekko.remote.testkit.MultiNodeConfig
 import pekko.testkit._
-
-import com.typesafe.config.ConfigFactory
 
 object MultiDcSunnyWeatherMultiJvmSpec extends MultiNodeConfig {
   val first = role("first")

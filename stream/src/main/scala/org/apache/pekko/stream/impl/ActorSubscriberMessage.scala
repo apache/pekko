@@ -14,11 +14,12 @@
 package org.apache.pekko.stream.impl
 
 import org.apache.pekko
+
+import org.reactivestreams.Subscription
+
 import pekko.actor.DeadLetterSuppression
 import pekko.actor.NoSerializationVerificationNeeded
 import pekko.annotation.InternalApi
-
-import org.reactivestreams.Subscription
 
 /**
  * INTERNAL API

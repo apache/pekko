@@ -20,9 +20,12 @@ import java.util.concurrent.locks.LockSupport
 
 import scala.concurrent.duration._
 
+import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import org.HdrHistogram.Histogram
 
-import org.apache.pekko
 import pekko.actor._
 import pekko.dispatch.Dispatchers
 import pekko.remote.RemotingMultiNodeSpec
@@ -32,8 +35,6 @@ import pekko.serialization.jackson.CborSerializable
 import pekko.stream.ThrottleMode
 import pekko.stream.scaladsl.Source
 import pekko.testkit._
-
-import com.typesafe.config.ConfigFactory
 
 object LatencySpec extends MultiNodeConfig {
   val first = role("first")

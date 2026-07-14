@@ -14,6 +14,7 @@
 package org.apache.pekko.cluster.sharding
 
 import org.apache.pekko
+
 import pekko.actor.Props
 import pekko.cluster.Cluster
 import pekko.testkit.PekkoSpec

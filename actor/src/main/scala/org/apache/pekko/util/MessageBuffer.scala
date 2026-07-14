@@ -14,6 +14,7 @@
 package org.apache.pekko.util
 
 import org.apache.pekko
+
 import pekko.actor.{ ActorRef, Dropped }
 import pekko.annotation.InternalApi
 import pekko.japi.function.Procedure2

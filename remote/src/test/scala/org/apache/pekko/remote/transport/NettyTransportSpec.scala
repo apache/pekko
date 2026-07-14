@@ -20,10 +20,6 @@ import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 
 import org.apache.pekko
-import pekko.actor.{ ActorSystem, Address, ExtendedActorSystem }
-import pekko.remote.BoundAddressesExtension
-import pekko.remote.transport.netty.NettyTransport.deriveByteBufAllocator
-import pekko.testkit.SocketUtil
 
 import io.netty.buffer.{ AdaptiveByteBufAllocator, PooledByteBufAllocator, UnpooledByteBufAllocator }
 
@@ -31,6 +27,11 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
 import com.typesafe.config.ConfigFactory
+
+import pekko.actor.{ ActorSystem, Address, ExtendedActorSystem }
+import pekko.remote.BoundAddressesExtension
+import pekko.remote.transport.netty.NettyTransport.deriveByteBufAllocator
+import pekko.testkit.SocketUtil
 
 object NettyTransportSpec {
   val commonConfig = ConfigFactory.parseString("""

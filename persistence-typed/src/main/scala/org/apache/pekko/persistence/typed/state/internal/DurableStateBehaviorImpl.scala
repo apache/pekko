@@ -16,6 +16,11 @@ package org.apache.pekko.persistence.typed.state.internal
 import scala.annotation.nowarn
 
 import org.apache.pekko
+
+import org.slf4j.LoggerFactory
+
+import com.typesafe.config.Config
+
 import pekko.actor.typed
 import pekko.actor.typed.ActorRef
 import pekko.actor.typed.BackoffSupervisorStrategy
@@ -34,10 +39,6 @@ import pekko.persistence.state.scaladsl.GetObjectResult
 import pekko.persistence.typed.PersistenceId
 import pekko.persistence.typed.SnapshotAdapter
 import pekko.persistence.typed.state.scaladsl._
-
-import com.typesafe.config.Config
-
-import org.slf4j.LoggerFactory
 
 @InternalApi
 private[pekko] object DurableStateBehaviorImpl {

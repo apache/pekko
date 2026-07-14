@@ -19,11 +19,12 @@ package org.apache.pekko.actor.testkit.typed.scaladsl
 
 import org.apache.pekko
 import org.apache.pekko.actor.testkit.typed.javadsl.JUnitJupiterTestKitBuilder
-import pekko.actor.typed.ActorSystem
 
 import org.scalatest.wordspec.AnyWordSpec
 
 import com.typesafe.config.ConfigFactory
+
+import pekko.actor.typed.ActorSystem
 
 class JUnitJupiterTestKitBuilderSpec extends AnyWordSpec {
 

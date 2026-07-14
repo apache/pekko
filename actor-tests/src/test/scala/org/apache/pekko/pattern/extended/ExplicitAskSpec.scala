@@ -17,6 +17,7 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
 import pekko.actor._
 import pekko.testkit.PekkoSpec
 import pekko.util.Timeout

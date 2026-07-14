@@ -16,6 +16,9 @@ package org.apache.pekko.cluster.singleton
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor.Actor
 import pekko.actor.ActorRef
 import pekko.actor.ActorSystem
@@ -27,8 +30,6 @@ import pekko.cluster.MemberStatus
 import pekko.cluster.singleton.ClusterSingletonLeavingSpeedSpec.TheSingleton
 import pekko.testkit.PekkoSpec
 import pekko.testkit.TestProbe
-
-import com.typesafe.config.ConfigFactory
 
 object ClusterSingletonLeavingSpeedSpec {
 

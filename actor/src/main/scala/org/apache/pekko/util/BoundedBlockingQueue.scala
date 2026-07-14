@@ -13,9 +13,9 @@
 
 package org.apache.pekko.util
 
-import java.util.{ AbstractQueue, Collection, Iterator, Queue }
-import java.util.concurrent.{ BlockingQueue, TimeUnit }
 import java.util.concurrent.locks.{ Condition, ReentrantLock }
+import java.util.concurrent.{ BlockingQueue, TimeUnit }
+import java.util.{ AbstractQueue, Collection, Iterator, Queue }
 
 import annotation.tailrec
 

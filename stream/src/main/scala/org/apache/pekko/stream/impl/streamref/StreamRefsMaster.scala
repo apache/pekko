@@ -14,6 +14,7 @@
 package org.apache.pekko.stream.impl.streamref
 
 import org.apache.pekko
+
 import pekko.actor.{ ActorSystem, ExtendedActorSystem, Extension, ExtensionId, ExtensionIdProvider }
 import pekko.actor.ClassicActorSystemProvider
 import pekko.annotation.InternalApi

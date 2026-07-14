@@ -14,23 +14,24 @@
 package org.apache.pekko.pattern
 
 import java.util.Optional
-import java.util.concurrent.{ Callable, CompletionException, CompletionStage, CopyOnWriteArrayList, ThreadLocalRandom }
 import java.util.concurrent.atomic.{ AtomicBoolean, AtomicInteger, AtomicLong }
+import java.util.concurrent.{ Callable, CompletionException, CompletionStage, CopyOnWriteArrayList, ThreadLocalRandom }
 import java.util.function.BiFunction
 import java.util.function.Consumer
 
 import scala.annotation.nowarn
-import scala.concurrent.{ Await, ExecutionContext, Future, Promise }
 import scala.concurrent.ExecutionContext.parasitic
 import scala.concurrent.TimeoutException
 import scala.concurrent.duration._
+import scala.concurrent.{ Await, ExecutionContext, Future, Promise }
 import scala.jdk.DurationConverters._
 import scala.jdk.FutureConverters._
-import scala.util.{ Failure, Success, Try }
 import scala.util.control.NoStackTrace
 import scala.util.control.NonFatal
+import scala.util.{ Failure, Success, Try }
 
 import org.apache.pekko
+
 import pekko.PekkoException
 import pekko.actor.{ ExtendedActorSystem, Scheduler }
 import pekko.annotation.InternalApi

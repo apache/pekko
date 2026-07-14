@@ -14,10 +14,11 @@
 package org.apache.pekko.persistence.query.journal.leveldb
 
 import org.apache.pekko
-import pekko.actor.ExtendedActorSystem
-import pekko.persistence.query.ReadJournalProvider
 
 import com.typesafe.config.Config
+
+import pekko.actor.ExtendedActorSystem
+import pekko.persistence.query.ReadJournalProvider
 
 @deprecated("Use another journal/query implementation", "Akka 2.6.15")
 class LeveldbReadJournalProvider(system: ExtendedActorSystem, config: Config) extends ReadJournalProvider {

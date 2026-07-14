@@ -16,6 +16,9 @@ package org.apache.pekko.cluster.singleton
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor.ActorSystem
 import pekko.actor.PoisonPill
 import pekko.cluster.Cluster
@@ -23,8 +26,6 @@ import pekko.cluster.MemberStatus
 import pekko.testkit.PekkoSpec
 import pekko.testkit.TestActors
 import pekko.testkit.TestProbe
-
-import com.typesafe.config.ConfigFactory
 
 class ClusterSingletonRestartSpec
     extends PekkoSpec("""

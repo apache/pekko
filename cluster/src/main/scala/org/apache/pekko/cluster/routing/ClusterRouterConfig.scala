@@ -20,6 +20,10 @@ import scala.collection.immutable
 import scala.jdk.CollectionConverters._
 
 import org.apache.pekko
+
+import com.typesafe.config.Config
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor._
 import pekko.cluster.Cluster
 import pekko.cluster.ClusterEvent._
@@ -39,9 +43,6 @@ import pekko.routing.RouterConfig
 import pekko.routing.RouterPoolActor
 import pekko.routing.RoutingLogic
 import pekko.util.HashCode
-
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
 
 object ClusterRouterGroupSettings {
 

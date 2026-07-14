@@ -16,6 +16,9 @@ package org.apache.pekko.remote.routing
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor.Actor
 import pekko.actor.ActorRef
 import pekko.actor.Address
@@ -27,8 +30,6 @@ import pekko.routing.Broadcast
 import pekko.routing.RandomPool
 import pekko.routing.RoutedActorRef
 import pekko.testkit._
-
-import com.typesafe.config.ConfigFactory
 
 class RemoteRandomConfig(artery: Boolean) extends MultiNodeConfig {
 

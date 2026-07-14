@@ -19,6 +19,12 @@ import java.util.concurrent.atomic.AtomicInteger
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import org.scalatest.wordspec.AnyWordSpecLike
+
+import com.typesafe.config.Config
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor.testkit.typed.scaladsl._
 import pekko.actor.typed.delivery.DurableProducerQueue.Confirmed
 import pekko.actor.typed.delivery.DurableProducerQueue.LoadState
@@ -31,11 +37,6 @@ import pekko.actor.typed.delivery.DurableProducerQueue.StoreMessageSentAck
 import pekko.actor.typed.eventstream.EventStream
 import pekko.persistence.journal.inmem.InmemJournal
 import pekko.persistence.typed.PersistenceId
-
-import org.scalatest.wordspec.AnyWordSpecLike
-
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
 
 object EventSourcedProducerQueueSpec {
   def conf: Config =

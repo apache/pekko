@@ -18,6 +18,9 @@ import java.util.concurrent.{ CompletionStage, TimeUnit }
 import scala.annotation.nowarn
 
 import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.{ Done, NotUsed }
 import pekko.actor.ActorSystem
 import pekko.dispatch.Dispatchers
@@ -29,8 +32,6 @@ import pekko.stream.snapshot.MaterializerState
 import pekko.stream.stage._
 import pekko.stream.testkit._
 import pekko.testkit.TestKit
-
-import com.typesafe.config.ConfigFactory
 
 object AttributesSpec {
 

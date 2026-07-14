@@ -18,10 +18,11 @@ import java.net.InetAddress
 import scala.concurrent.duration._
 
 import org.apache.pekko
-import pekko.actor.ExtendedActorSystem
-import pekko.testkit.PekkoSpec
 
 import com.typesafe.config.ConfigFactory
+
+import pekko.actor.ExtendedActorSystem
+import pekko.testkit.PekkoSpec
 
 class DnsSettingsSpec extends PekkoSpec {
 

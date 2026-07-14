@@ -18,10 +18,11 @@ import java.util.concurrent.TimeUnit
 
 import scala.annotation.nowarn
 
+import org.apache.pekko
+
 import org.apache.commons.io.FileUtils
 import org.openjdk.jmh.annotations._
 
-import org.apache.pekko
 import pekko.actor._
 import pekko.persistence.journal.AsyncWriteTarget._
 import pekko.persistence.journal.leveldb.{ SharedLeveldbJournal, SharedLeveldbStore }

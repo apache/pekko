@@ -14,6 +14,7 @@
 package org.apache.pekko.persistence.typed.javadsl
 
 import org.apache.pekko
+
 import pekko.annotation.InternalApi
 import pekko.persistence.typed.SnapshotSelectionCriteria
 import pekko.persistence.typed.internal.{ DefaultRecovery, DisabledRecovery, RecoveryWithSnapshotSelectionCriteria }

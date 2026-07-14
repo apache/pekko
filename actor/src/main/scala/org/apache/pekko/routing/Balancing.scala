@@ -17,15 +17,16 @@ import scala.annotation.nowarn
 import scala.collection.immutable
 
 import org.apache.pekko
+
+import com.typesafe.config.Config
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor.ActorContext
 import pekko.actor.ActorSystem
 import pekko.actor.Props
 import pekko.actor.SupervisorStrategy
 import pekko.dispatch.BalancingDispatcherConfigurator
 import pekko.dispatch.Dispatchers
-
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
 
 /**
  * INTERNAL API

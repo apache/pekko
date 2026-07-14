@@ -21,8 +21,9 @@ import scala.concurrent.duration._
 import scala.util.control.NonFatal
 
 import org.apache.pekko
+
 import pekko.pattern.ask
-import pekko.testkit.{ filterEvents, EventFilter }
+import pekko.testkit.{ EventFilter, filterEvents }
 import pekko.testkit.DefaultTimeout
 import pekko.testkit.PekkoSpec
 

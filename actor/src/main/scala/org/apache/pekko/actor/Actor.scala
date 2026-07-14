@@ -21,6 +21,7 @@ import scala.beans.BeanProperty
 import scala.util.control.NoStackTrace
 
 import org.apache.pekko
+
 import pekko.PekkoException
 import pekko.annotation.InternalApi
 import pekko.event.LoggingAdapter

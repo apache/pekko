@@ -13,8 +13,8 @@
 
 package org.apache.pekko.actor
 
-import java.lang.{ Iterable => JIterable }
 import java.lang.reflect.InvocationTargetException
+import java.lang.{ Iterable => JIterable }
 import java.util.concurrent.TimeUnit
 
 import scala.collection.immutable
@@ -25,6 +25,7 @@ import scala.language.implicitConversions
 import scala.util.control.NonFatal
 
 import org.apache.pekko
+
 import pekko.annotation.InternalApi
 import pekko.event.Logging
 import pekko.event.Logging.{ Error, LogEvent, LogLevel }

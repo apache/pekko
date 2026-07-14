@@ -20,6 +20,11 @@ import scala.annotation.tailrec
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import org.reactivestreams.Publisher
+
+import org.scalatest.matchers.should.Matchers
+
 import pekko.NotUsed
 import pekko.actor.ActorSystem
 import pekko.stream.ActorMaterializerSettings
@@ -30,10 +35,6 @@ import pekko.stream.scaladsl.Sink
 import pekko.stream.scaladsl.Source
 import pekko.stream.testkit.TestPublisher._
 import pekko.stream.testkit.TestSubscriber._
-
-import org.reactivestreams.Publisher
-
-import org.scalatest.matchers.should.Matchers
 
 trait ScriptedTest extends Matchers {
 

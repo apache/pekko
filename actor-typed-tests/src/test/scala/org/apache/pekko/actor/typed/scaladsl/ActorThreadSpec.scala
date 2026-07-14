@@ -21,14 +21,15 @@ import scala.util.Failure
 import scala.util.Success
 
 import org.apache.pekko
+
+import org.scalatest.wordspec.AnyWordSpecLike
+
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
 import pekko.actor.testkit.typed.scaladsl.LoggingTestKit
 import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
 import pekko.actor.typed.ActorRef
 import pekko.actor.typed.Behavior
 import pekko.actor.typed.scaladsl.ActorThreadSpec.Echo
-
-import org.scalatest.wordspec.AnyWordSpecLike
 
 object ActorThreadSpec {
   object Echo {

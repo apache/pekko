@@ -18,9 +18,10 @@ import java.util.concurrent.TimeUnit
 import scala.concurrent._
 import scala.concurrent.duration._
 
+import org.apache.pekko
+
 import org.openjdk.jmh.annotations._
 
-import org.apache.pekko
 import pekko.{ Done, NotUsed }
 import pekko.actor.ActorSystem
 import pekko.remote.artery.BenchTestSourceSameElement

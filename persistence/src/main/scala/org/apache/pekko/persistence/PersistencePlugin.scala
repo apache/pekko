@@ -20,12 +20,13 @@ import scala.reflect.ClassTag
 import scala.util.Failure
 
 import org.apache.pekko
+
+import com.typesafe.config.Config
+
 import pekko.actor.{ ExtendedActorSystem, Extension, ExtensionId }
 import pekko.annotation.InternalApi
 import pekko.event.Logging
 import pekko.persistence.PersistencePlugin.PluginHolder
-
-import com.typesafe.config.Config
 
 /**
  * INTERNAL API

@@ -14,8 +14,8 @@
 package org.apache.pekko.remote
 
 import java.io.NotSerializableException
-import java.util.concurrent.{ ConcurrentHashMap, TimeoutException }
 import java.util.concurrent.locks.LockSupport
+import java.util.concurrent.{ ConcurrentHashMap, TimeoutException }
 
 import scala.annotation.nowarn
 import scala.annotation.tailrec
@@ -25,6 +25,7 @@ import scala.concurrent.duration.Duration
 import scala.util.control.NonFatal
 
 import org.apache.pekko
+
 import pekko.{ OnlyCauseStackTrace, PekkoException }
 import pekko.actor._
 import pekko.actor.OneForOneStrategy

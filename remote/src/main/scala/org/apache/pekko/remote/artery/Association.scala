@@ -28,9 +28,10 @@ import scala.concurrent.Promise
 import scala.concurrent.duration._
 import scala.util.control.NoStackTrace
 
+import org.apache.pekko
+
 import org.agrona.concurrent.ManyToOneConcurrentArrayQueue
 
-import org.apache.pekko
 import pekko.Done
 import pekko.NotUsed
 import pekko.actor.ActorRef

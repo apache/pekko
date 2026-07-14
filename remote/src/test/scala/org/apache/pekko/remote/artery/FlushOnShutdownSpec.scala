@@ -17,6 +17,7 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
 import pekko.actor.{ Actor, ActorIdentity, Identify, Props }
 import pekko.testkit.TestProbe
 

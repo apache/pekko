@@ -16,12 +16,13 @@ package org.apache.pekko.persistence
 import scala.collection.immutable
 
 import org.apache.pekko
+
+import com.typesafe.config.{ Config, ConfigFactory }
+
 import pekko.actor._
 import pekko.event.Logging
 import pekko.persistence.journal.{ EventAdapter, EventSeq, SingleEventSeq }
 import pekko.testkit.ImplicitSender
-
-import com.typesafe.config.{ Config, ConfigFactory }
 
 object EventAdapterSpec {
 

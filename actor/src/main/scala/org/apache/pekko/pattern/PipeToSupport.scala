@@ -19,9 +19,9 @@ import scala.annotation.nowarn
 import scala.concurrent.{ ExecutionContext, Future }
 import scala.util.{ Failure, Success }
 
-import language.implicitConversions
-
 import org.apache.pekko
+
+import language.implicitConversions
 import pekko.actor.{ Actor, ActorRef, Status }
 import pekko.actor.ActorSelection
 

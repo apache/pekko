@@ -19,9 +19,10 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 import scala.util.Success
 
+import org.apache.pekko
+
 import org.apache.commons.io.FileUtils
 
-import org.apache.pekko
 import pekko.actor.ActorRef
 import pekko.actor.Props
 import pekko.cluster.Cluster

@@ -18,14 +18,15 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import com.typesafe.config.Config
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor.ActorSystem
 import pekko.persistence._
 import pekko.persistence.scalatest.{ MayVerb, OptionalTests }
 import pekko.persistence.state.scaladsl.DurableStateUpdateStore
 import pekko.testkit.TestProbe
-
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
 
 object DurableStateStoreSpec {
   val config: Config = ConfigFactory.parseString(s"""

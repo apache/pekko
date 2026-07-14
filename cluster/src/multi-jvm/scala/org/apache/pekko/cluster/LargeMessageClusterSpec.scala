@@ -20,6 +20,9 @@ import scala.annotation.nowarn
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor.ActorIdentity
 import pekko.actor.ActorRef
 import pekko.actor.ExtendedActorSystem
@@ -31,8 +34,6 @@ import pekko.remote.testconductor.RoleName
 import pekko.remote.testkit.MultiNodeConfig
 import pekko.serialization.SerializerWithStringManifest
 import pekko.testkit._
-
-import com.typesafe.config.ConfigFactory
 
 object LargeMessageClusterMultiJvmSpec extends MultiNodeConfig {
   val first = role("first")

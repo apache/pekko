@@ -14,6 +14,13 @@
 package org.apache.pekko.cluster.sharding.typed
 
 import org.apache.pekko
+
+import org.scalatest.concurrent.Eventually
+import org.scalatest.concurrent.ScalaFutures
+import org.scalatest.time.Span
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.Done
 import pekko.actor.testkit.typed.scaladsl.TestProbe
 import pekko.actor.typed.ActorRef
@@ -36,12 +43,6 @@ import pekko.persistence.typed.scaladsl.ReplicatedEventSourcing
 import pekko.remote.testkit.MultiNodeConfig
 import pekko.remote.testkit.MultiNodeSpec
 import pekko.serialization.jackson.CborSerializable
-
-import org.scalatest.concurrent.Eventually
-import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.time.Span
-
-import com.typesafe.config.ConfigFactory
 
 object ReplicatedShardingSpec extends MultiNodeConfig {
   val first = role("first")

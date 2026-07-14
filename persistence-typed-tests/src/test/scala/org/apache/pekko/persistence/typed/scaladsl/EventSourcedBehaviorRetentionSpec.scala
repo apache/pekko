@@ -21,6 +21,10 @@ import scala.util.Success
 import scala.util.Try
 
 import org.apache.pekko
+
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
+
 import pekko.actor.testkit.typed.scaladsl._
 import pekko.actor.typed.ActorRef
 import pekko.actor.typed.Behavior
@@ -39,9 +43,6 @@ import pekko.persistence.typed.SnapshotCompleted
 import pekko.persistence.typed.SnapshotFailed
 import pekko.persistence.typed.SnapshotSelectionCriteria
 import pekko.serialization.jackson.CborSerializable
-
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpecLike
 
 object EventSourcedBehaviorRetentionSpec extends Matchers {
 

@@ -14,11 +14,6 @@
 package org.apache.pekko.cluster.typed
 
 import org.apache.pekko
-import pekko.{ actor => classic }
-import pekko.actor.{ ExtendedActorSystem, IgnoreActorRef }
-import pekko.actor.typed.{ ActorRef, ActorRefResolver, ActorSystem }
-import pekko.actor.typed.scaladsl.Behaviors
-import pekko.actor.typed.scaladsl.adapter._
 
 import org.scalatest.BeforeAndAfterAll
 import org.scalatest.concurrent.ScalaFutures
@@ -26,6 +21,12 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
 import com.typesafe.config.ConfigFactory
+
+import pekko.{ actor => classic }
+import pekko.actor.{ ExtendedActorSystem, IgnoreActorRef }
+import pekko.actor.typed.{ ActorRef, ActorRefResolver, ActorSystem }
+import pekko.actor.typed.scaladsl.Behaviors
+import pekko.actor.typed.scaladsl.adapter._
 
 class ActorRefIgnoreSerializationSpec extends AnyWordSpec with ScalaFutures with Matchers with BeforeAndAfterAll {
 

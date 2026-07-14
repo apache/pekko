@@ -17,13 +17,14 @@ import scala.annotation.nowarn
 import scala.concurrent.duration.{ Duration, FiniteDuration }
 
 import org.apache.pekko
+
+import com.typesafe.config.Config
+import com.typesafe.config.ConfigFactory
+
 import pekko.ConfigurationException
 import pekko.dispatch._
 import pekko.testkit._
 import pekko.util.Helpers.ConfigOps
-
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
 
 object ActorMailboxSpec {
   val mailboxConf = ConfigFactory.parseString(s"""

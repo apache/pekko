@@ -14,6 +14,7 @@
 package org.apache.pekko.persistence.testkit.query.javadsl
 
 import org.apache.pekko
+
 import pekko.NotUsed
 import pekko.japi.Pair
 import pekko.persistence.query.EventEnvelope

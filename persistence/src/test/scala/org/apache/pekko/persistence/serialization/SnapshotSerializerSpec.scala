@@ -21,9 +21,9 @@ import java.nio.ByteOrder
 import java.nio.charset.StandardCharsets
 import java.util.Base64
 
-import annotation.nowarn
-
 import org.apache.pekko
+
+import annotation.nowarn
 import pekko.persistence.fsm.PersistentFSM.PersistentFSMSnapshot
 import pekko.serialization.{ SerializationExtension, Serializers }
 import pekko.testkit.PekkoSpec

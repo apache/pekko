@@ -13,9 +13,9 @@
 
 package org.apache.pekko.stream
 
-import OverflowStrategies._
-
 import org.apache.pekko
+
+import OverflowStrategies._
 import pekko.annotation.{ DoNotInherit, InternalApi }
 import pekko.event.Logging
 import pekko.event.Logging.LogLevel

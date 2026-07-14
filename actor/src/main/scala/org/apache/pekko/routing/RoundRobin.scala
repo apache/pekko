@@ -19,12 +19,13 @@ import scala.annotation.nowarn
 import scala.collection.immutable
 
 import org.apache.pekko
+
+import com.typesafe.config.Config
+
 import pekko.actor.ActorSystem
 import pekko.actor.SupervisorStrategy
 import pekko.dispatch.Dispatchers
 import pekko.japi.Util.immutableSeq
-
-import com.typesafe.config.Config
 
 object RoundRobinRoutingLogic {
   def apply(): RoundRobinRoutingLogic = new RoundRobinRoutingLogic

@@ -16,11 +16,12 @@ package org.apache.pekko.cluster.metrics
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.cluster.MemberStatus
 import pekko.cluster.MultiNodeClusterSpec
 import pekko.remote.testkit.MultiNodeConfig
-
-import com.typesafe.config.ConfigFactory
 
 trait ClusterMetricsCommonConfig extends MultiNodeConfig {
   import ConfigFactory._

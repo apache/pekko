@@ -16,16 +16,17 @@ package org.apache.pekko.remote.artery
 import scala.util.control.NoStackTrace
 
 import org.apache.pekko
+
+import org.scalatest.concurrent.ScalaFutures
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor._
 import pekko.actor.ActorIdentity
 import pekko.actor.Identify
 import pekko.remote.{ RARP, RemotingMultiNodeSpec }
 import pekko.remote.testkit.MultiNodeConfig
 import pekko.testkit._
-
-import org.scalatest.concurrent.ScalaFutures
-
-import com.typesafe.config.ConfigFactory
 
 object SurviveInboundStreamRestartWithCompressionInFlightSpec extends MultiNodeConfig {
   val first = role("first")

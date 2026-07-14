@@ -20,6 +20,12 @@ import scala.concurrent._
 import scala.jdk.FutureConverters._
 
 import org.apache.pekko
+
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+
+import com.typesafe.config.{ Config, ConfigFactory }
+
 import pekko.{ actor => classic }
 import pekko.Done
 import pekko.actor.{ ActorPath, ActorRefProvider, Address, ReflectiveDynamicAccess }
@@ -37,11 +43,6 @@ import pekko.actor.typed.internal.ActorRefImpl
 import pekko.actor.typed.internal.InternalRecipientRef
 import pekko.actor.typed.receptionist.Receptionist
 import pekko.annotation.InternalApi
-
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
-
-import com.typesafe.config.{ Config, ConfigFactory }
 
 /**
  * INTERNAL API

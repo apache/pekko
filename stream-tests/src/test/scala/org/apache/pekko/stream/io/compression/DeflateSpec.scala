@@ -17,6 +17,7 @@ import java.io.{ InputStream, OutputStream }
 import java.util.zip._
 
 import org.apache.pekko
+
 import pekko.stream.impl.io.compression.{ Compressor, DeflateCompressor }
 import pekko.stream.scaladsl.{ Compression, Flow }
 import pekko.util.ByteString

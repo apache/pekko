@@ -20,6 +20,9 @@ import scala.jdk.CollectionConverters._
 import scala.jdk.DurationConverters._
 
 import org.apache.pekko
+
+import com.typesafe.config.Config
+
 import pekko.actor.ActorRef
 import pekko.actor.ActorSystem
 import pekko.annotation.InternalApi
@@ -29,8 +32,6 @@ import pekko.event.Logging
 import pekko.pattern.AskTimeoutException
 import pekko.pattern.ask
 import pekko.util.Timeout
-
-import com.typesafe.config.Config
 
 /**
  * Internal API

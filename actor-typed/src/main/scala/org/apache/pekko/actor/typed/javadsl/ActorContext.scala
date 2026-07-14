@@ -20,12 +20,13 @@ import java.util.concurrent.CompletionStage
 import scala.concurrent.ExecutionContextExecutor
 
 import org.apache.pekko
+
+import org.slf4j.Logger
+
 import pekko.actor.ClassicActorContextProvider
 import pekko.actor.typed._
 import pekko.annotation.DoNotInherit
 import pekko.pattern.StatusReply
-
-import org.slf4j.Logger
 
 /**
  * An Actor is given by the combination of a [[Behavior]] and a context in

@@ -19,19 +19,20 @@ import java.util.concurrent.atomic.AtomicReference
 import scala.annotation.nowarn
 import scala.annotation.tailrec
 import scala.collection.immutable.Queue
-import scala.concurrent.{ Future, Promise }
 import scala.concurrent.ExecutionContext
 import scala.concurrent.duration._
+import scala.concurrent.{ Future, Promise }
 import scala.math.min
-import scala.util.{ Failure, Success }
 import scala.util.control.NonFatal
+import scala.util.{ Failure, Success }
 
 import org.apache.pekko
+
 import pekko.actor._
 import pekko.dispatch.{ RequiresMessageQueue, UnboundedMessageQueueSemantics }
 import pekko.dispatch.sysmsg.{ Unwatch, Watch }
 import pekko.event.LoggingAdapter
-import pekko.pattern.{ ask, pipe, PromiseActorRef }
+import pekko.pattern.{ PromiseActorRef, ask, pipe }
 import pekko.remote.RARP
 import pekko.remote.transport.ActorTransportAdapter.AssociateUnderlying
 import pekko.remote.transport.AssociationHandle.{

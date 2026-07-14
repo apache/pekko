@@ -16,6 +16,7 @@ package org.apache.pekko.io.dns.internal
 import scala.annotation.nowarn
 
 import org.apache.pekko
+
 import pekko.annotation.InternalApi
 import pekko.io._
 

@@ -16,6 +16,9 @@ package org.apache.pekko.cluster.typed
 import scala.concurrent.Promise
 
 import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.Done
 import pekko.actor.{ ActorSystem => ClassicActorSystem }
 import pekko.actor.typed.ActorRef
@@ -24,8 +27,6 @@ import pekko.actor.typed.scaladsl.Behaviors
 import pekko.actor.typed.scaladsl.adapter._
 import pekko.serialization.jackson.CborSerializable
 import pekko.testkit.PekkoSpec
-
-import com.typesafe.config.ConfigFactory
 
 object RemoteMessageSpec {
   def config = ConfigFactory.parseString(s"""

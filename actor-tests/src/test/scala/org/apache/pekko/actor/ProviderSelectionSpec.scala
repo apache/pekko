@@ -14,12 +14,13 @@
 package org.apache.pekko.actor
 
 import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor.ActorSystem.Settings
 import pekko.actor.ActorSystem.findClassLoader
 import pekko.actor.setup.ActorSystemSetup
 import pekko.testkit.AbstractSpec
-
-import com.typesafe.config.ConfigFactory
 
 class ProviderSelectionSpec extends AbstractSpec {
   import ProviderSelection.{ ClusterActorRefProvider, RemoteActorRefProvider }

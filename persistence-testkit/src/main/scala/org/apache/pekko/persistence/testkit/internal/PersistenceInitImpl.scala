@@ -16,6 +16,7 @@ package org.apache.pekko.persistence.testkit.internal
 import java.util.concurrent.TimeUnit
 
 import org.apache.pekko
+
 import pekko.actor.ActorLogging
 import pekko.actor.Props
 import pekko.annotation.InternalApi

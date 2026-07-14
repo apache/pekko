@@ -24,9 +24,10 @@ import scala.concurrent.Await
 import scala.concurrent.Promise
 import scala.concurrent.duration._
 
+import org.apache.pekko
+
 import org.openjdk.jmh.annotations._
 
-import org.apache.pekko
 import pekko.actor.ActorRef
 import pekko.actor.ActorSystem
 import pekko.actor.NoSerializationVerificationNeeded
