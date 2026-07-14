@@ -74,16 +74,18 @@ trait FutureTimeoutSupport {
       val p = new CompletableFuture[T]
       using.scheduleOnce(
         duration,
-        () =>
-          try {
-            val future = value
-            future.handle[Unit]((t: T, ex: Throwable) => {
-              if (t != null) p.complete(t)
-              if (ex ne null) p.completeExceptionally(ex)
-            })
-          } catch {
-            case NonFatal(ex) => p.completeExceptionally(ex)
-          })
+        new Runnable {
+          override def run(): Unit =
+            try {
+              val future = value
+              future.handle[Unit]((t: T, ex: Throwable) => {
+                if (t != null) p.complete(t)
+                if (ex ne null) p.completeExceptionally(ex)
+              })
+            } catch {
+              case NonFatal(ex) => p.completeExceptionally(ex)
+            }
+        })
       p
     }
 
