@@ -300,10 +300,14 @@ import pekko.util.ByteString
         transportInput.pullIfNeeded(transportInput.isEmpty)
       }
 
-      private def completeOrFlush(): Unit =
-        if (engine.isOutboundDone || (engine.isInboundDone && userInput.isEmpty && !userInBufferHasRemaining))
+      private def completeOrFlush(): Unit = {
+        if (transportOutBuffer.position() > 0)
+          flushToTransport()
+
+        if (engine.isOutboundDone || (engine.isInboundDone && !engineNeedsWrapReady))
           nextPhase(CompletedPhase)
         else nextPhase(FlushingOutboundPhase)
+      }
 
       private def doInbound(isOutboundClosed: Boolean, inboundHalfClosedMode: Boolean): Boolean =
         if (transportInput.isDepleted && transportInput.isEmpty) {
