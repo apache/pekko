@@ -117,7 +117,7 @@ import org.slf4j.Logger
     val nextGen = timerGen.next()
 
     val timerMsg =
-      if (msg.isInstanceOf[NotInfluenceReceiveTimeout])
+      if (pekko.actor.dungeon.ReceiveTimeout.isNotInfluenceReceiveTimeout(msg))
         new TimerMsg(key, nextGen, this) with NotInfluenceReceiveTimeout
       else
         new TimerMsg(key, nextGen, this)
