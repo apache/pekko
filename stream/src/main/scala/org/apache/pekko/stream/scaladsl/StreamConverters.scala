@@ -209,7 +209,7 @@ object StreamConverters {
               },
               0),
             false)
-          .onClose(new Runnable { def run = queue.cancel() }))
+          .onClose(() => queue.cancel()))
       .withAttributes(DefaultAttributes.asJavaStream)
   }
 
