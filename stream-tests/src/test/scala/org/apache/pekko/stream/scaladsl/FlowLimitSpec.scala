@@ -17,6 +17,7 @@ import scala.concurrent.Await
 
 import org.apache.pekko
 import pekko.stream.StreamLimitReachedException
+import pekko.stream.testkit.scaladsl.TestSink
 import pekko.stream.testkit.StreamSpec
 
 class FlowLimitSpec extends StreamSpec("""
@@ -49,15 +50,15 @@ class FlowLimitSpec extends StreamSpec("""
     }
 
     "produce n messages before throwing a StreamLimitReachedException when n < input.size" in {
-      // TODO: check if it actually produces n messages
       val input = 1 to 6
       val n = input.length - 2 // n < input.length
 
-      val future = Source(input).limit(n).grouped(Integer.MAX_VALUE).runWith(Sink.head)
+      val probe = Source(input).limit(n).runWith(TestSink[Int]())
 
-      a[StreamLimitReachedException] shouldBe thrownBy {
-        Await.result(future, remainingOrDefault)
-      }
+      probe
+        .request(n + 1)
+        .expectNextN(input.take(n))
+      probe.expectError() shouldBe a[StreamLimitReachedException]
     }
 
     "throw a StreamLimitReachedException when n < 0" in {
