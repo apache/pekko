@@ -79,6 +79,7 @@ object StageActorRefBenchmark {
         override def preStart(): Unit = {
           control.init(getStageActor {
             case (_, CountDown) => control.countDown()
+            case _              => // unexpected message
           }.ref)
           pull(in)
         }
