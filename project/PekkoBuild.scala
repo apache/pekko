@@ -292,6 +292,7 @@ object PekkoBuild {
         UsefulTask("testQuick *.AnySpec",
           "Only run a selected test. When run multiple times will only run previously failing tests (shell mode only)"),
         UsefulTask("testQuickUntilPassed", "Runs all tests in a continuous loop until all tests pass"),
+        UsefulTask("testQuickUntilPassed *.AnySpec", "Only run a selected test in a continuous loop until it passes"),
         UsefulTask("publishLocal", "Publish current snapshot version to local ~/.ivy2 repo"),
         UsefulTask("verifyCodeStyle", "Verify code style"),
         UsefulTask("applyCodeStyle", "Apply code style"),
