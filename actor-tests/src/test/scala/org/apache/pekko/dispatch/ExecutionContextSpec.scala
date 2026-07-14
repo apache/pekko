@@ -107,20 +107,14 @@ class ExecutionContextSpec extends PekkoSpec(ExecutionContextSpec.config) with D
         val completed = new AtomicInteger(0)
         var innerBatch: Runnable = null
 
-        executor.execute(new Runnable {
-          override def run(): Unit = {
-            executor.execute(new Runnable {
-              override def run(): Unit = completed.incrementAndGet()
-            })
-            // Model a pool worker executing another submitted batch while helping a join.
-            innerBatch.run()
-            completed.incrementAndGet()
-          }
+        executor.execute(() => {
+          executor.execute(() => completed.incrementAndGet())
+          // Model a pool worker executing another submitted batch while helping a join.
+          innerBatch.run()
+          completed.incrementAndGet()
         })
         val outerBatch = submitted.remove()
-        executor.execute(new Runnable {
-          override def run(): Unit = completed.incrementAndGet()
-        })
+        executor.execute(() => completed.incrementAndGet())
         innerBatch = submitted.remove()
 
         outerBatch.run()
@@ -196,14 +190,11 @@ class ExecutionContextSpec extends PekkoSpec(ExecutionContextSpec.config) with D
     "work with same-thread executor plus blocking" in {
       val ec = scala.concurrent.ExecutionContext.parasitic
       var x = 0
-      ec.execute(new Runnable {
-        override def run = {
-          ec.execute(new Runnable {
-            override def run = blocking {
-              x = 1
-            }
+      ec.execute(() => {
+        ec.execute(() =>
+          blocking {
+            x = 1
           })
-        }
       })
       x should be(1)
     }
@@ -255,7 +246,7 @@ class ExecutionContextSpec extends PekkoSpec(ExecutionContextSpec.config) with D
     "be suspendable and resumable" in {
       val sec = SerializedSuspendableExecutionContext(1)(ExecutionContext.global)
       val counter = new AtomicInteger(0)
-      def perform(f: Int => Int) = sec.execute(new Runnable { def run = counter.set(f(counter.get)) })
+      def perform(f: Int => Int) = sec.execute(() => counter.set(f(counter.get)))
       perform(_ + 1)
       perform(x => { sec.suspend(); x * 2 })
       awaitCond(counter.get == 2)
@@ -282,7 +273,7 @@ class ExecutionContextSpec extends PekkoSpec(ExecutionContextSpec.config) with D
       val throughput = 25
       val sec = SerializedSuspendableExecutionContext(throughput)(underlying)
       sec.suspend()
-      def perform(f: Int => Int) = sec.execute(new Runnable { def run = counter.set(f(counter.get)) })
+      def perform(f: Int => Int) = sec.execute(() => counter.set(f(counter.get)))
 
       val total = 1000
       (1 to total).foreach { _ =>
@@ -299,7 +290,7 @@ class ExecutionContextSpec extends PekkoSpec(ExecutionContextSpec.config) with D
       val sec = SerializedSuspendableExecutionContext(1)(ExecutionContext.global)
       val total = 10000
       val counter = new AtomicInteger(0)
-      def perform(f: Int => Int) = sec.execute(new Runnable { def run = counter.set(f(counter.get)) })
+      def perform(f: Int => Int) = sec.execute(() => counter.set(f(counter.get)))
 
       (1 to total).foreach { i =>
         perform(c => if (c == (i - 1)) c + 1 else c)
@@ -318,7 +309,7 @@ class ExecutionContextSpec extends PekkoSpec(ExecutionContextSpec.config) with D
       val throughput = 25
       val sec = SerializedSuspendableExecutionContext(throughput)(underlying)
       sec.suspend()
-      def perform(f: Int => Int) = sec.execute(new Runnable { def run = counter.set(f(counter.get)) })
+      def perform(f: Int => Int) = sec.execute(() => counter.set(f(counter.get)))
       perform(_ + 1)
       (1 to 10).foreach { _ =>
         perform(identity)

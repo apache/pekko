@@ -400,12 +400,11 @@ abstract class ActorModelSpec(config: String) extends PekkoSpec(config) with Def
           // this future is meant to keep the dispatcher alive until the end of the test run even if
           // the boss doesn't create children fast enough to keep the dispatcher from becoming empty
           // and it needs to be on a separate thread to not deadlock the calling thread dispatcher
-          new Thread(new Runnable {
-            def run() =
-              Future {
-                keepAliveLatch.await(waitTime, TimeUnit.MILLISECONDS)
-              }(dispatcher)
-          }).start()
+          new Thread(() =>
+            Future {
+              keepAliveLatch.await(waitTime, TimeUnit.MILLISECONDS)
+            }(dispatcher)
+          ).start()
           boss ! "run"
           assertCountDown(cachedMessage.latch, waitTime, "Counting down from " + num)
           assertCountDown(stopLatch, waitTime, "Expected all children to stop")

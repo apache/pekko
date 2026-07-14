@@ -417,8 +417,8 @@ object LightArrayRevolverScheduler {
     override def isCancelled: Boolean = task eq CancelledTask
   }
 
-  private val CancelledTask = new Runnable { def run = () }
-  private val ExecutedTask = new Runnable { def run = () }
+  private val CancelledTask = () => ()
+  private val ExecutedTask = () => ()
 
   private val NotCancellable: TimerTask = new TimerTask {
     def cancel(): Boolean = false
