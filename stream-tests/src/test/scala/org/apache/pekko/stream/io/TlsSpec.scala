@@ -21,12 +21,12 @@ import javax.net.ssl._
 
 import scala.collection.immutable
 import scala.concurrent.Await
-import scala.concurrent.Future
+import scala.concurrent.{ Future, Promise }
 import scala.concurrent.duration._
-import scala.util.{ Random, Success }
+import scala.util.{ Failure, Random, Success }
 
 import org.apache.pekko
-import pekko.NotUsed
+import pekko.{ Done, NotUsed }
 import pekko.pattern.{ after => later }
 import pekko.stream._
 import pekko.stream.TLSProtocol._
@@ -501,6 +501,30 @@ abstract class AbstractTlsSpec(useLegacyActor: Boolean)
 
         val clientErrText = Await.result(clientErr, 1.second).getMessage
         clientErrText should include("unable to find valid certification path to requested target")
+      }
+
+      "abort the transport when session verification fails" in {
+        val verificationFailure = new SSLException("session verification failed")
+        val rejectingClientTls = tlsBidi(
+          () => createSSLEngine(sslContext, Client),
+          verifySession = _ => Failure(verificationFailure),
+          closing = IgnoreBoth)
+        val clientToServerDone = Promise[Done]()
+        val clientToServer = Flow[ByteString].watchTermination { (_, done) =>
+          done.onComplete(clientToServerDone.tryComplete)
+          NotUsed
+        }
+        val transport = BidiFlow.fromFlows(clientToServer, Flow[ByteString])
+        val serverApplication: Flow[SslTlsInbound, SslTlsOutbound, NotUsed] =
+          Flow.fromSinkAndSource(Sink.ignore, Source.maybe[SslTlsOutbound])
+
+        Source
+          .maybe[SslTlsOutbound]
+          .via(rejectingClientTls.atop(transport).atop(serverTls(IgnoreBoth).reversed).join(serverApplication))
+          .runWith(Sink.ignore)
+
+        val failure = intercept[SSLException](Await.result(clientToServerDone.future, 3.seconds.dilated))
+        (failure should be).theSameInstanceAs(verificationFailure)
       }
 
       "reliably cancel subscriptions when TransportIn fails early" in {
