@@ -380,26 +380,29 @@ import pekko.util.ByteString
         val result = wrapIntoTransportBuffer()
         lastHandshakeStatus = result.getHandshakeStatus
 
-        if (lastHandshakeStatus == FINISHED) handshakeFinished()
-        runDelegatedTasks()
+        if (lastHandshakeStatus == FINISHED && !handshakeFinished()) {
+          // stop processing after failed session verification
+        } else {
+          runDelegatedTasks()
 
-        result.getStatus match {
-          case OK =>
-            if (transportOutBuffer.position() == 0 && lastHandshakeStatus == NEED_WRAP)
-              throw new IllegalStateException("SSLEngine trying to loop NEED_WRAP without producing output")
+          result.getStatus match {
+            case OK =>
+              if (transportOutBuffer.position() == 0 && lastHandshakeStatus == NEED_WRAP)
+                throw new IllegalStateException("SSLEngine trying to loop NEED_WRAP without producing output")
 
-            flushToTransportIfNeeded(result)
+              flushToTransportIfNeeded(result)
 
-          case CLOSED =>
-            flushToTransport()
-            if (engine.isInboundDone) nextPhase(CompletedPhase)
-            else nextPhase(AwaitingClosePhase)
+            case CLOSED =>
+              flushToTransport()
+              if (engine.isInboundDone) nextPhase(CompletedPhase)
+              else nextPhase(AwaitingClosePhase)
 
-          case BUFFER_OVERFLOW =>
-            growTransportOutBuffer()
+            case BUFFER_OVERFLOW =>
+              growTransportOutBuffer()
 
-          case status =>
-            failTls(new IllegalStateException(s"unexpected status $status in doWrap()"))
+            case status =>
+              failTls(new IllegalStateException(s"unexpected status $status in doWrap()"))
+          }
         }
       }
 
@@ -450,8 +453,8 @@ import pekko.util.ByteString
 
               case FINISHED =>
                 flushToUser()
-                handshakeFinished()
-                transportInput.putBackUnreadBuffer(transportInBuffer)
+                if (handshakeFinished())
+                  transportInput.putBackUnreadBuffer(transportInBuffer)
 
               case NEED_UNWRAP
                   if transportInBuffer.hasRemaining &&
@@ -484,16 +487,18 @@ import pekko.util.ByteString
         if (TlsEngineHelpers.runDelegatedTasks(engine) > 0 || lastHandshakeStatus == NEED_TASK)
           lastHandshakeStatus = engine.getHandshakeStatus
 
-      private def handshakeFinished(): Unit = {
+      private def handshakeFinished(): Boolean = {
         val session = engine.getSession
         verifySession(session) match {
           case Success(()) =>
             currentSession = session
             stateBits |= PlainDataAllowedFlag
             flushToUser()
+            true
 
           case Failure(ex) =>
-            throw ex
+            failTls(ex)
+            false
         }
       }
 
