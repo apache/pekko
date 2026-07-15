@@ -42,7 +42,8 @@ private[pekko] object TestKitUtils {
     }
 
     val startFrom = classToStartFrom.getName
-    val classes = StackWalker.getInstance().walk(stackWalker)
+    val classes = StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE)
+      .walk(stackWalker)
     val filteredStack = classes.iterator
       // drop until we find the first occurrence of classToStartFrom
       .dropWhile(!_.getName.startsWith(startFrom))
