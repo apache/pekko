@@ -175,6 +175,10 @@ private[pekko] final class ArterySettings private (config: Config) {
       config
         .getMillisDuration("shutdown-flush-timeout")
         .requiring(timeout => timeout > Duration.Zero, "shutdown-flush-timeout must be more than zero")
+    val ShutdownStreamsTimeout: FiniteDuration =
+      config
+        .getMillisDuration("shutdown-streams-timeout")
+        .requiring(timeout => timeout > Duration.Zero, "shutdown-streams-timeout must be more than zero")
     val DeathWatchNotificationFlushTimeout: FiniteDuration = {
       toRootLowerCase(config.getString("death-watch-notification-flush-timeout")) match {
         case "off" => Duration.Zero

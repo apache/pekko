@@ -93,6 +93,14 @@ listening for connections and handling messages as not to interfere with other a
 The example above only illustrates the bare minimum of properties you have to add to enable remoting.
 All settings are described in @ref:[Remote Configuration](#remote-configuration-artery).
 
+### Shutdown
+
+Artery first flushes outstanding remote messages and then aborts its streams during `ActorSystem` termination.
+The `pekko.remote.artery.advanced.shutdown-streams-timeout` setting limits how long Artery waits for those streams to
+complete. If the timeout expires, Artery proceeds with transport shutdown so a stalled stream cannot indefinitely
+delay transport-specific shutdown handling. The separate
+`pekko.remote.artery.advanced.shutdown-flush-timeout` setting controls the preceding flush.
+
 ## Introduction
 
 We recommend @ref:[Pekko Cluster](cluster-usage.md) over using remoting directly. As remoting is the

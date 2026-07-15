@@ -22,6 +22,7 @@ import java.util.concurrent.atomic.AtomicReference
 import scala.annotation.nowarn
 import scala.annotation.tailrec
 import scala.concurrent.Await
+import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 import scala.concurrent.Promise
 import scala.concurrent.duration._
@@ -36,9 +37,10 @@ import pekko.annotation.InternalStableApi
 import pekko.dispatch.Dispatchers
 import pekko.event.Logging
 import pekko.event.MarkerLoggingAdapter
+import pekko.pattern.after
+import pekko.protobufv3.internal.CodedInputStream
 import pekko.remote.AddressUidExtension
 import pekko.remote.ContainerFormats
-import pekko.protobufv3.internal.CodedInputStream
 import pekko.remote.RemoteActorRef
 import pekko.remote.RemoteActorRefProvider
 import pekko.remote.RemoteTransport
@@ -53,11 +55,11 @@ import pekko.remote.artery.compress.CompressionProtocol.CompressionMessage
 import pekko.remote.transport.ThrottlerTransportAdapter.Blackhole
 import pekko.remote.transport.ThrottlerTransportAdapter.SetThrottle
 import pekko.remote.transport.ThrottlerTransportAdapter.Unthrottled
+import pekko.serialization.SerializationExtension
 import pekko.stream._
 import pekko.stream.scaladsl.Flow
 import pekko.stream.scaladsl.Keep
 import pekko.stream.scaladsl.Sink
-import pekko.serialization.SerializationExtension
 import pekko.util.OptionVal
 import pekko.util.WildcardIndex
 
@@ -658,8 +660,30 @@ private[remote] abstract class ArteryTransport(_system: ExtendedActorSystem, _pr
 
     killSwitch.abort(ShutdownSignal)
     flightRecorder.transportKillSwitchPulled()
+    val streamsStopped = streamsCompleted.recover { case _ => Done }
+    val shutdownStreamsTimeout = settings.Advanced.ShutdownStreamsTimeout
+    val streamsStoppedOrTimedOut =
+      try {
+        val timeoutResult = scheduleShutdownStreamsTimeout(shutdownStreamsTimeout) {
+          if (streamsStopped.isCompleted) streamsStopped
+          else {
+            log.warning(
+              "Graceful shutdown of Artery streams timed out after [{}]. Proceeding with transport shutdown.",
+              shutdownStreamsTimeout.toCoarsest)
+            Future.successful(Done)
+          }
+        }
+        Future.firstCompletedOf(List(streamsStopped, timeoutResult))
+      } catch {
+        case _: IllegalStateException =>
+          log.warning(
+            "Could not schedule the graceful shutdown timeout for Artery streams because the system scheduler is " +
+            "shut down. Proceeding with transport shutdown.")
+          Future.successful(Done)
+      }
+
     for {
-      _ <- streamsCompleted.recover { case _ => Done }
+      _ <- streamsStoppedOrTimedOut
       _ <- shutdownTransport().recover { case _ => Done }
     } yield {
       // no need to explicitly shut down the contained access since it's lifecycle is bound to the Decoder
@@ -668,6 +692,10 @@ private[remote] abstract class ArteryTransport(_system: ExtendedActorSystem, _pr
       Done
     }
   }
+
+  protected def scheduleShutdownStreamsTimeout(timeout: FiniteDuration)(result: => Future[Done])(
+      implicit ec: ExecutionContext): Future[Done] =
+    after(timeout, system.scheduler)(result)
 
   protected def shutdownTransport(): Future[Done]
 
