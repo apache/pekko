@@ -13,7 +13,9 @@
 
 package org.apache.pekko.cluster.sharding
 
+import java.lang.StackWalker.StackFrame
 import java.lang.reflect.Modifier
+import java.util.stream.{ Stream => JStream }
 
 import org.apache.pekko
 import pekko.cluster.MultiNodeClusterSpec
@@ -23,6 +25,10 @@ import pekko.remote.testkit.MultiNodeConfig
 import com.typesafe.config.{ Config, ConfigFactory }
 
 object MultiNodeClusterShardingConfig {
+
+  private val stackWalker: java.util.function.Function[JStream[StackFrame], Array[Class[?]]] =
+    (frames: JStream[StackFrame]) =>
+      frames.map(_.getDeclaringClass).toArray[Class[?]]((size: Int) => new Array[Class[?]](size))
 
   private[sharding] def testNameFromCallStack(classToStartFrom: Class[?]): String = {
 
@@ -35,7 +41,9 @@ object MultiNodeClusterShardingConfig {
     }
 
     val startFrom = classToStartFrom.getName
-    val filteredStack = Thread.currentThread.getStackTrace.iterator
+    val classes = StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE)
+      .walk(stackWalker)
+    val filteredStack = classes.iterator
       // drop until we find the first occurrence of classToStartFrom
       .dropWhile(!_.getName.startsWith(startFrom))
       // then continue to the next entry after classToStartFrom that makes sense
