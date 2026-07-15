@@ -26,9 +26,9 @@ object MultiNodeClusterShardingConfig {
 
   private[sharding] def testNameFromCallStack(classToStartFrom: Class[?]): String = {
 
-    def isAbstractClass(className: String): Boolean = {
+    def isAbstractClass(clazz: Class[_]): Boolean = {
       try {
-        Modifier.isAbstract(Class.forName(className).getModifiers)
+        Modifier.isAbstract(clazz.getModifiers)
       } catch {
         case _: Throwable => false // yes catch everything, best effort check
       }
@@ -36,22 +36,21 @@ object MultiNodeClusterShardingConfig {
 
     val startFrom = classToStartFrom.getName
     val filteredStack = Thread.currentThread.getStackTrace.iterator
-      .map(_.getClassName)
       // drop until we find the first occurrence of classToStartFrom
-      .dropWhile(!_.startsWith(startFrom))
+      .dropWhile(!_.getName.startsWith(startFrom))
       // then continue to the next entry after classToStartFrom that makes sense
       .dropWhile {
-        case `startFrom`                            => true
-        case str if str.startsWith(startFrom + "$") => true // lambdas inside startFrom etc
-        case str if isAbstractClass(str)            => true
-        case _                                      => false
+        case c if c.getName == startFrom                => true
+        case c if c.getName.startsWith(startFrom + "$") => true // lambdas inside startFrom etc
+        case c if isAbstractClass(c)                    => true
+        case _                                          => false
       }
 
     if (filteredStack.isEmpty)
-      throw new IllegalArgumentException(s"Couldn't find [${classToStartFrom.getName}] in call stack")
+      throw new IllegalArgumentException(s"Couldn't find [$startFrom] in call stack")
 
     // sanitize for actor system name
-    scrubActorSystemName(filteredStack.next())
+    scrubActorSystemName(filteredStack.next().getName)
   }
 
   /**
