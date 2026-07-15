@@ -50,7 +50,7 @@ private[pekko] object TestKitUtils {
       .dropWhile {
         case c if c.getName == startFrom                => true
         case c if c.getName.startsWith(startFrom + "$") => true // lambdas inside startFrom etc
-        case c if testKitRegex().matches(c.getName)     => true // testkit internals
+        case c if testKitRegex.matches(c.getName)       => true // testkit internals
         case c if isAbstractClass(c)                    => true
         case _                                          => false
       }
