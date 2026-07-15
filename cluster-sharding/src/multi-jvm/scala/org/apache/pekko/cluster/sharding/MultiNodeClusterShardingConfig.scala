@@ -26,7 +26,7 @@ object MultiNodeClusterShardingConfig {
 
   private[sharding] def testNameFromCallStack(classToStartFrom: Class[?]): String = {
 
-    def isAbstractClass(clazz: Class[_]): Boolean = {
+    def isAbstractClass(clazz: Class[?]): Boolean = {
       try {
         Modifier.isAbstract(clazz.getModifiers)
       } catch {

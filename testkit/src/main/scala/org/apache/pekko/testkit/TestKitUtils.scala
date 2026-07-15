@@ -27,13 +27,13 @@ import org.apache.pekko.annotation.InternalApi
 @InternalApi
 private[pekko] object TestKitUtils {
 
-  private val stackWalker: java.util.function.Function[JStream[StackFrame], Array[Class[_]]] =
+  private val stackWalker: java.util.function.Function[JStream[StackFrame], Array[Class[?]]] =
     (frames: JStream[StackFrame]) =>
-      frames.map(_.getDeclaringClass).toArray[Class[_]]((size: Int) => new Array[Class[_]](size))
+      frames.map(_.getDeclaringClass).toArray[Class[?]]((size: Int) => new Array[Class[?]](size))
 
   def testNameFromCallStack(classToStartFrom: Class[?], testKitRegex: Regex): String = {
 
-    def isAbstractClass(clazz: Class[_]): Boolean = {
+    def isAbstractClass(clazz: Class[?]): Boolean = {
       try {
         Modifier.isAbstract(clazz.getModifiers)
       } catch {
