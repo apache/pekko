@@ -13,7 +13,9 @@
 
 package org.apache.pekko.cluster.sharding
 
+import java.lang.StackWalker.StackFrame
 import java.lang.reflect.Modifier
+import java.util.stream.{ Stream => JStream }
 
 import org.apache.pekko
 import pekko.cluster.MultiNodeClusterSpec
@@ -24,34 +26,39 @@ import com.typesafe.config.{ Config, ConfigFactory }
 
 object MultiNodeClusterShardingConfig {
 
+  private val stackWalker: java.util.function.Function[JStream[StackFrame], Array[Class[?]]] =
+    (frames: JStream[StackFrame]) =>
+      frames.map(_.getDeclaringClass).toArray[Class[?]]((size: Int) => new Array[Class[?]](size))
+
   private[sharding] def testNameFromCallStack(classToStartFrom: Class[?]): String = {
 
-    def isAbstractClass(className: String): Boolean = {
+    def isAbstractClass(clazz: Class[?]): Boolean = {
       try {
-        Modifier.isAbstract(Class.forName(className).getModifiers)
+        Modifier.isAbstract(clazz.getModifiers)
       } catch {
         case _: Throwable => false // yes catch everything, best effort check
       }
     }
 
     val startFrom = classToStartFrom.getName
-    val filteredStack = Thread.currentThread.getStackTrace.iterator
-      .map(_.getClassName)
+    val classes = StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE)
+      .walk(stackWalker)
+    val filteredStack = classes.iterator
       // drop until we find the first occurrence of classToStartFrom
-      .dropWhile(!_.startsWith(startFrom))
+      .dropWhile(!_.getName.startsWith(startFrom))
       // then continue to the next entry after classToStartFrom that makes sense
       .dropWhile {
-        case `startFrom`                            => true
-        case str if str.startsWith(startFrom + "$") => true // lambdas inside startFrom etc
-        case str if isAbstractClass(str)            => true
-        case _                                      => false
+        case c if c.getName == startFrom                => true
+        case c if c.getName.startsWith(startFrom + "$") => true // lambdas inside startFrom etc
+        case c if isAbstractClass(c)                    => true
+        case _                                          => false
       }
 
     if (filteredStack.isEmpty)
-      throw new IllegalArgumentException(s"Couldn't find [${classToStartFrom.getName}] in call stack")
+      throw new IllegalArgumentException(s"Couldn't find [$startFrom] in call stack")
 
     // sanitize for actor system name
-    scrubActorSystemName(filteredStack.next())
+    scrubActorSystemName(filteredStack.next().getName)
   }
 
   /**

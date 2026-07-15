@@ -27,39 +27,40 @@ import org.apache.pekko.annotation.InternalApi
 @InternalApi
 private[pekko] object TestKitUtils {
 
-  private val stackWalker: java.util.function.Function[JStream[StackFrame], Array[String]] =
+  private val stackWalker: java.util.function.Function[JStream[StackFrame], Array[Class[?]]] =
     (frames: JStream[StackFrame]) =>
-      frames.map(_.getClassName).toArray[String]((size: Int) => new Array[String](size))
+      frames.map(_.getDeclaringClass).toArray[Class[?]]((size: Int) => new Array[Class[?]](size))
 
   def testNameFromCallStack(classToStartFrom: Class[?], testKitRegex: Regex): String = {
 
-    def isAbstractClass(className: String): Boolean = {
+    def isAbstractClass(clazz: Class[?]): Boolean = {
       try {
-        Modifier.isAbstract(Class.forName(className).getModifiers)
+        Modifier.isAbstract(clazz.getModifiers)
       } catch {
         case _: Throwable => false // yes catch everything, best effort check
       }
     }
 
     val startFrom = classToStartFrom.getName
-    val classNames = StackWalker.getInstance().walk(stackWalker)
-    val filteredStack = classNames.iterator
+    val classes = StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE)
+      .walk(stackWalker)
+    val filteredStack = classes.iterator
       // drop until we find the first occurrence of classToStartFrom
-      .dropWhile(!_.startsWith(startFrom))
+      .dropWhile(!_.getName.startsWith(startFrom))
       // then continue to the next entry after classToStartFrom that makes sense
       .dropWhile {
-        case `startFrom`                            => true
-        case str if str.startsWith(startFrom + "$") => true // lambdas inside startFrom etc
-        case testKitRegex()                         => true // testkit internals
-        case str if isAbstractClass(str)            => true
-        case _                                      => false
+        case c if c.getName == startFrom                => true
+        case c if c.getName.startsWith(startFrom + "$") => true // lambdas inside startFrom etc
+        case c if testKitRegex.matches(c.getName)       => true // testkit internals
+        case c if isAbstractClass(c)                    => true
+        case _                                          => false
       }
 
     if (filteredStack.isEmpty)
-      throw new IllegalArgumentException(s"Couldn't find [${classToStartFrom.getName}] in call stack")
+      throw new IllegalArgumentException(s"Couldn't find [$startFrom] in call stack")
 
     // sanitize for actor system name
-    scrubActorSystemName(filteredStack.next())
+    scrubActorSystemName(filteredStack.next().getName)
   }
 
   /**
