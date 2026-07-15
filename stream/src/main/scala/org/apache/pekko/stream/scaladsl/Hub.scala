@@ -1374,30 +1374,44 @@ object PartitionHub {
     override def onUpstreamFailure(ex: Throwable): Unit = {
       val failMessage = HubCompleted(Some(ex))
 
-      // Notify pending consumers and set tombstone
+      // Notify pending consumers and set tombstone.
+      // Registered consumers are notified by postStop.
       state.getAndSet(Closed(Some(ex))).asInstanceOf[Open].registrations.foreach { consumer =>
-        consumer.callback.invoke(failMessage)
+        try consumer.callback.invoke(failMessage)
+        catch { case NonFatal(_) => }
       }
 
-      // Notify registered consumers
-      consumerInfo.consumers.foreach { consumer =>
-        consumer.callback.invoke(failMessage)
-      }
       failStage(ex)
     }
 
     override def postStop(): Unit = {
-      // Notify pending consumers and set tombstone
+      // Notify all consumers (pending and registered) when the stage stops.
+      // Registered consumers are notified here (not in onUpstreamFailure)
+      // so that materializer shutdown produces the correct signal.
 
       @tailrec def tryClose(): Unit = state.get() match {
-        case Closed(_)  => // Already closed, ignore
+        case Closed(_) => // Already closed by onUpstreamFailure — notify registered consumers here
+          notifyRegisteredConsumers()
         case open: Open =>
           if (state.compareAndSet(open, Closed(None))) {
             val completedMessage = HubCompleted(None)
             open.registrations.foreach { consumer =>
-              consumer.callback.invoke(completedMessage)
+              try consumer.callback.invoke(completedMessage)
+              catch { case NonFatal(_) => }
             }
+            notifyRegisteredConsumers()
           } else tryClose()
+      }
+
+      def notifyRegisteredConsumers(): Unit = {
+        val message = state.get() match {
+          case Closed(Some(ex)) => HubCompleted(Some(ex))
+          case _                => HubCompleted(None)
+        }
+        consumerInfo.consumers.foreach { consumer =>
+          try consumer.callback.invoke(message)
+          catch { case NonFatal(_) => }
+        }
       }
 
       tryClose()

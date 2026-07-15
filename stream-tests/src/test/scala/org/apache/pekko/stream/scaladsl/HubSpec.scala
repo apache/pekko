@@ -968,6 +968,29 @@ class HubSpec extends StreamSpec {
       result2.futureValue should ===((1 to 9 by 2).filterNot(_ == 3))
     }
 
+    "notify consumers when hub materializer is shut down" in {
+      val hubMat = Materializer(system)
+      val upstream = TestPublisher.probe[Int]()
+      val source = Source.fromPublisher(upstream).runWith(
+        PartitionHub.sink((size, elem) => elem % size, startAfterNrOfConsumers = 1, bufferSize = 8))(hubMat)
+
+      val downstream = TestSubscriber.probe[Int]()
+      source.runWith(Sink.fromSubscriber(downstream))
+
+      downstream.request(1)
+      upstream.expectRequest()
+
+      upstream.sendNext(0)
+      downstream.expectNext(0)
+
+      hubMat.shutdown()
+
+      // The consumer must be notified (not left hanging), which is the fix.
+      // The signal is an error because the SubSink output boundary failure
+      // arrives before the postStop completion callback.
+      downstream.expectError()
+    }
+
   }
 
 }
