@@ -16,6 +16,7 @@ package org.apache.pekko.stream.scaladsl
 import scala.util.control.NoStackTrace
 
 import org.apache.pekko
+
 import pekko.stream.testkit.StreamSpec
 import pekko.stream.testkit.scaladsl.TestSink
 

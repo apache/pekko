@@ -16,6 +16,7 @@ package org.apache.pekko.stream.scaladsl
 import scala.concurrent.duration.FiniteDuration
 
 import org.apache.pekko
+
 import pekko.NotUsed
 import pekko.stream.{ BidiShape, _ }
 import pekko.stream.impl.{ LinearTraversalBuilder, Timers, TraversalBuilder }

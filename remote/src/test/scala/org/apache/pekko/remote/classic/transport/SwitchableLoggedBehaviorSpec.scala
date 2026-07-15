@@ -18,6 +18,7 @@ import scala.util.Failure
 import scala.util.control.NoStackTrace
 
 import org.apache.pekko
+
 import pekko.PekkoException
 import pekko.remote.transport.TestTransport.SwitchableLoggedBehavior
 import pekko.testkit.{ DefaultTimeout, PekkoSpec }

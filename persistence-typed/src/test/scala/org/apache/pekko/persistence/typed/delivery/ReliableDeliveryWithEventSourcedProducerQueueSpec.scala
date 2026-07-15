@@ -19,16 +19,17 @@ import scala.concurrent.duration._
 import scala.util.Try
 
 import org.apache.pekko
-import pekko.actor.testkit.typed.scaladsl._
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.delivery.ConsumerController
-import pekko.actor.typed.delivery.ProducerController
-import pekko.persistence.typed.PersistenceId
 
 import org.scalatest.wordspec.AnyWordSpecLike
 
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
+
+import pekko.actor.testkit.typed.scaladsl._
+import pekko.actor.typed.ActorRef
+import pekko.actor.typed.delivery.ConsumerController
+import pekko.actor.typed.delivery.ProducerController
+import pekko.persistence.typed.PersistenceId
 
 object ReliableDeliveryWithEventSourcedProducerQueueSpec {
   def conf: Config =

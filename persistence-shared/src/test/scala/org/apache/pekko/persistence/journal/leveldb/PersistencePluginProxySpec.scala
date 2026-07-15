@@ -14,12 +14,13 @@
 package org.apache.pekko.persistence.journal.leveldb
 
 import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor._
 import pekko.persistence._
 import pekko.persistence.journal.PersistencePluginProxy
 import pekko.testkit.{ PekkoSpec, TestProbe }
-
-import com.typesafe.config.ConfigFactory
 
 object PersistencePluginProxySpec {
   lazy val config =

@@ -16,17 +16,18 @@ package org.apache.pekko.cluster.ddata
 import scala.concurrent.duration._
 
 import org.apache.pekko
-import pekko.actor.ActorSystem
-import pekko.cluster.ddata.Replicator._
-import pekko.testkit.ImplicitSender
-import pekko.testkit.TestKit
-import pekko.testkit.TestProbe
 
 import org.scalatest.BeforeAndAfterAll
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 
 import com.typesafe.config.ConfigFactory
+
+import pekko.actor.ActorSystem
+import pekko.cluster.ddata.Replicator._
+import pekko.testkit.ImplicitSender
+import pekko.testkit.TestKit
+import pekko.testkit.TestProbe
 
 object ReplicatorWildcardSubscriptionSpec {
   val config = ConfigFactory.parseString("""

@@ -20,6 +20,9 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor.ActorSystem
 import pekko.actor.Address
 import pekko.actor.CoordinatedShutdown
@@ -36,8 +39,6 @@ import pekko.testkit.ImplicitSender
 import pekko.testkit.PekkoSpec
 import pekko.testkit.TestProbe
 import pekko.util.Version
-
-import com.typesafe.config.ConfigFactory
 
 object ClusterSpec {
   val config = """

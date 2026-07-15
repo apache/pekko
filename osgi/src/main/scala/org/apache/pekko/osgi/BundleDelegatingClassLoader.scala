@@ -22,8 +22,8 @@ import scala.util.Failure
 import scala.util.Success
 import scala.util.Try
 
-import org.osgi.framework.{ Bundle, BundleContext }
 import org.osgi.framework.wiring.{ BundleRevision, BundleWire, BundleWiring }
+import org.osgi.framework.{ Bundle, BundleContext }
 
 /*
  * Companion object to create bundle delegating ClassLoader instances

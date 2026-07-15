@@ -16,6 +16,7 @@ package org.apache.pekko.stream.impl.streamref
 import scala.concurrent.duration.FiniteDuration
 
 import org.apache.pekko
+
 import pekko.annotation.InternalApi
 
 /** INTERNAL API */

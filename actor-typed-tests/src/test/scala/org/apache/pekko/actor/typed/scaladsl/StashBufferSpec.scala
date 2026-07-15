@@ -14,13 +14,14 @@
 package org.apache.pekko.actor.typed.scaladsl
 
 import org.apache.pekko
+
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
+
 import pekko.actor.testkit.typed.internal.StubbedActorContext
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
 import pekko.actor.testkit.typed.scaladsl.TestInbox
 import pekko.actor.typed.Behavior
-
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpec
 
 class StashBufferSpec extends AnyWordSpec with Matchers with LogCapturing {
 

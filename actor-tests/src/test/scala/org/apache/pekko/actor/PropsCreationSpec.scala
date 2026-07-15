@@ -16,6 +16,7 @@ package org.apache.pekko.actor
 import scala.annotation.nowarn
 
 import org.apache.pekko
+
 import pekko.testkit.PekkoSpec
 
 object PropsCreationSpec {

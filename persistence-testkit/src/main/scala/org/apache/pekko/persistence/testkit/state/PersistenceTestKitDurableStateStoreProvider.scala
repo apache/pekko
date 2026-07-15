@@ -14,6 +14,7 @@
 package org.apache.pekko.persistence.testkit.state
 
 import org.apache.pekko
+
 import pekko.actor.ExtendedActorSystem
 import pekko.persistence.state.DurableStateStoreProvider
 import pekko.persistence.state.javadsl.{ DurableStateStore => JDurableStateStore }

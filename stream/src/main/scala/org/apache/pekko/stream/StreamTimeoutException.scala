@@ -21,6 +21,7 @@ import scala.concurrent.TimeoutException
 import scala.util.control.NoStackTrace
 
 import org.apache.pekko
+
 import pekko.annotation.DoNotInherit
 
 /**

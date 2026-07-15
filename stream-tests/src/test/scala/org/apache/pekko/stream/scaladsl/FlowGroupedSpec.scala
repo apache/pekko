@@ -18,6 +18,7 @@ import java.util.concurrent.ThreadLocalRandom.{ current => random }
 import scala.collection.immutable
 
 import org.apache.pekko
+
 import pekko.stream.testkit.ScriptedTest
 import pekko.stream.testkit.StreamSpec
 

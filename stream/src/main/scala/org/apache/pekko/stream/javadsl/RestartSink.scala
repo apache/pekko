@@ -14,6 +14,7 @@
 package org.apache.pekko.stream.javadsl
 
 import org.apache.pekko
+
 import pekko.NotUsed
 import pekko.japi.function.Creator
 import pekko.stream.RestartSettings

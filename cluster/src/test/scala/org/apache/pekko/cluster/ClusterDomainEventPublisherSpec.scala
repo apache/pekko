@@ -16,6 +16,9 @@ package org.apache.pekko.cluster
 import scala.collection.immutable.SortedSet
 
 import org.apache.pekko
+
+import org.scalatest.BeforeAndAfterEach
+
 import pekko.actor.ActorRef
 import pekko.actor.Address
 import pekko.actor.PoisonPill
@@ -28,8 +31,6 @@ import pekko.remote.RARP
 import pekko.testkit.ImplicitSender
 import pekko.testkit.PekkoSpec
 import pekko.testkit.TestProbe
-
-import org.scalatest.BeforeAndAfterEach
 
 object ClusterDomainEventPublisherSpec {
   val config = """

@@ -16,6 +16,7 @@ package org.apache.pekko.stream.scaladsl
 import java.util.zip.Deflater
 
 import org.apache.pekko
+
 import pekko.NotUsed
 import pekko.stream.impl.io.compression._
 import pekko.util.ByteString

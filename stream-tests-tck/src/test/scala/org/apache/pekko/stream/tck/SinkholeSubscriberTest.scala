@@ -17,15 +17,16 @@ import java.lang.{ Integer => JInt }
 
 import scala.concurrent.Promise
 
+import org.apache.pekko
+
+import org.reactivestreams.tck.SubscriberWhiteboxVerification.{ SubscriberPuppet, WhiteboxSubscriberProbe }
+import org.reactivestreams.tck.{ SubscriberWhiteboxVerification, TestEnvironment }
+import org.reactivestreams.{ Subscriber, Subscription }
+
 import org.scalatestplus.testng.TestNGSuiteLike
 
-import org.apache.pekko
 import pekko.Done
 import pekko.stream.impl.SinkholeSubscriber
-
-import org.reactivestreams.{ Subscriber, Subscription }
-import org.reactivestreams.tck.{ SubscriberWhiteboxVerification, TestEnvironment }
-import org.reactivestreams.tck.SubscriberWhiteboxVerification.{ SubscriberPuppet, WhiteboxSubscriberProbe }
 
 class SinkholeSubscriberTest extends SubscriberWhiteboxVerification[JInt](new TestEnvironment()) with TestNGSuiteLike {
   override def createSubscriber(probe: WhiteboxSubscriberProbe[JInt]): Subscriber[JInt] = {

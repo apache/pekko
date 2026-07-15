@@ -13,14 +13,15 @@
 
 package org.apache.pekko.dispatch
 
-import java.util.concurrent.{ ExecutorService, RejectedExecutionException }
 import java.util.concurrent.atomic.AtomicReferenceFieldUpdater
+import java.util.concurrent.{ ExecutorService, RejectedExecutionException }
 
 import scala.annotation.nowarn
 import scala.concurrent.duration.Duration
 import scala.concurrent.duration.FiniteDuration
 
 import org.apache.pekko
+
 import pekko.actor.ActorCell
 import pekko.dispatch.sysmsg.SystemMessage
 import pekko.event.Logging

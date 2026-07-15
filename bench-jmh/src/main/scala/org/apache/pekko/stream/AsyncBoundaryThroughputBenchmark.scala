@@ -24,16 +24,17 @@ import scala.annotation.nowarn
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
+import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import org.openjdk.jmh.annotations._
 import org.openjdk.jmh.infra.Blackhole
 
-import org.apache.pekko
 import pekko.NotUsed
 import pekko.actor.ActorSystem
 import pekko.stream.scaladsl._
 import pekko.stream.stage._
-
-import com.typesafe.config.ConfigFactory
 
 object AsyncBoundaryThroughputBenchmark {
   final val ElementCount = 100 * 1000

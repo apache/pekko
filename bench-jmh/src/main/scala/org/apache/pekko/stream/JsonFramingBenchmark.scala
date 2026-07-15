@@ -15,9 +15,10 @@ package org.apache.pekko.stream
 
 import java.util.concurrent.TimeUnit
 
+import org.apache.pekko
+
 import org.openjdk.jmh.annotations._
 
-import org.apache.pekko
 import pekko.stream.impl.JsonObjectParser
 import pekko.util.ByteString
 

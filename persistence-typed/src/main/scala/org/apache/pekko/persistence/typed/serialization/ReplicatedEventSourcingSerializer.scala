@@ -13,15 +13,16 @@
 
 package org.apache.pekko.persistence.typed.serialization
 
-import java.{ lang => jl }
 import java.io.NotSerializableException
 import java.util.{ ArrayList, Collections, Comparator }
+import java.{ lang => jl }
 
 import scala.annotation.tailrec
 import scala.collection.immutable.TreeMap
 import scala.jdk.CollectionConverters._
 
 import org.apache.pekko
+
 import pekko.actor.ExtendedActorSystem
 import pekko.actor.typed.ActorRefResolver
 import pekko.actor.typed.scaladsl.adapter.ClassicActorSystemOps

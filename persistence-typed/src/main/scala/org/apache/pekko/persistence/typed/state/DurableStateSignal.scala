@@ -14,6 +14,7 @@
 package org.apache.pekko.persistence.typed.state
 
 import org.apache.pekko
+
 import pekko.actor.typed.Signal
 import pekko.annotation.DoNotInherit
 

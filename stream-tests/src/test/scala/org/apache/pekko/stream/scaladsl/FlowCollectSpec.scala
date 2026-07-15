@@ -16,6 +16,7 @@ package org.apache.pekko.stream.scaladsl
 import java.util.concurrent.ThreadLocalRandom.{ current => random }
 
 import org.apache.pekko
+
 import pekko.stream.ActorAttributes._
 import pekko.stream.Supervision._
 import pekko.stream.testkit.ScriptedTest

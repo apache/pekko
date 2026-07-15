@@ -18,6 +18,7 @@
 package org.apache.pekko.persistence.query.typed
 
 import org.apache.pekko
+
 import pekko.persistence.query.NoOffset
 import pekko.testkit.PekkoSpec
 

@@ -16,12 +16,13 @@ package org.apache.pekko.stream.impl
 import scala.annotation.nowarn
 
 import org.apache.pekko
+
+import org.reactivestreams.{ Subscriber, Subscription }
+
 import pekko.actor._
 import pekko.annotation.InternalApi
 import pekko.event.Logging
 import pekko.stream.impl.ActorSubscriberMessage.{ OnComplete, OnError, OnNext, OnSubscribe }
-
-import org.reactivestreams.{ Subscriber, Subscription }
 
 /**
  * INTERNAL API

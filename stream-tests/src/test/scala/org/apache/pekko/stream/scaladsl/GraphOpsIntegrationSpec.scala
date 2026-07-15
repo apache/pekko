@@ -19,6 +19,7 @@ import scala.concurrent.Future
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
 import pekko.NotUsed
 import pekko.stream._
 import pekko.stream.testkit._

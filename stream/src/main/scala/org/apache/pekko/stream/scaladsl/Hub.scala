@@ -15,9 +15,9 @@ package org.apache.pekko.stream.scaladsl
 
 import java.util
 import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.atomic.{ AtomicLong, AtomicReference }
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.atomic.AtomicReferenceArray
+import java.util.concurrent.atomic.{ AtomicLong, AtomicReference }
 
 import scala.annotation.tailrec
 import scala.collection.immutable
@@ -28,6 +28,7 @@ import scala.util.{ Failure, Success, Try }
 import scala.util.control.NonFatal
 
 import org.apache.pekko
+
 import pekko.NotUsed
 import pekko.annotation.DoNotInherit
 import pekko.annotation.InternalApi

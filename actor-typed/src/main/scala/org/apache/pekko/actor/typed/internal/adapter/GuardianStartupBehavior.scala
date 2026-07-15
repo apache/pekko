@@ -14,6 +14,7 @@
 package org.apache.pekko.actor.typed.internal.adapter
 
 import org.apache.pekko
+
 import pekko.actor.typed.Behavior
 import pekko.actor.typed.BehaviorInterceptor
 import pekko.actor.typed.Signal

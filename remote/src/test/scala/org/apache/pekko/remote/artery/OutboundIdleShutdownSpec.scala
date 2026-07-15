@@ -18,6 +18,11 @@ import scala.concurrent.Promise
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import org.scalatest.concurrent.Eventually
+import org.scalatest.time.Span
+import org.scalatest.time.Span.convertSpanToDuration
+
 import pekko.actor.ActorRef
 import pekko.actor.ActorSystem
 import pekko.actor.Address
@@ -27,10 +32,6 @@ import pekko.remote.UniqueAddress
 import pekko.testkit.ImplicitSender
 import pekko.testkit.TestActors
 import pekko.testkit.TestProbe
-
-import org.scalatest.concurrent.Eventually
-import org.scalatest.time.Span
-import org.scalatest.time.Span.convertSpanToDuration
 
 class OutboundIdleShutdownSpec extends ArteryMultiNodeSpec("""
   pekko.loglevel=INFO

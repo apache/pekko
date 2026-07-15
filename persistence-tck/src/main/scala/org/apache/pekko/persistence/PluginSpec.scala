@@ -19,14 +19,15 @@ import java.util.concurrent.atomic.AtomicInteger
 import scala.reflect.ClassTag
 
 import org.apache.pekko
-import pekko.actor._
-import pekko.testkit._
 
 import org.scalatest._
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 
 import com.typesafe.config._
+
+import pekko.actor._
+import pekko.testkit._
 
 abstract class PluginSpec(val config: Config)
     extends TestKitBase

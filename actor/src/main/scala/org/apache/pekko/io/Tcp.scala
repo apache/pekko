@@ -25,13 +25,14 @@ import scala.jdk.CollectionConverters._
 import scala.jdk.DurationConverters._
 
 import org.apache.pekko
+
+import com.typesafe.config.Config
+
 import pekko.actor._
 import pekko.annotation.InternalApi
 import pekko.io.Inet._
 import pekko.util.{ ByteString, Helpers }
 import pekko.util.Helpers.Requiring
-
-import com.typesafe.config.Config
 
 /**
  * TCP Extension for Akka’s IO layer.

@@ -23,6 +23,9 @@ import scala.util.Success
 import scala.util.control.NonFatal
 
 import org.apache.pekko
+
+import com.typesafe.config.Config
+
 import pekko.Done
 import pekko.actor._
 import pekko.actor.SupervisorStrategy.Stop
@@ -35,8 +38,6 @@ import pekko.pattern.ask
 import pekko.remote.{ QuarantinedEvent => ClassicQuarantinedEvent, RemoteSettings }
 import pekko.remote.artery.QuarantinedEvent
 import pekko.util.{ Timeout, Version }
-
-import com.typesafe.config.Config
 
 /**
  * Base trait for all cluster messages. All ClusterMessage's are serializable.

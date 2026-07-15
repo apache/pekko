@@ -14,6 +14,7 @@
 package org.apache.pekko.persistence.query.typed.javadsl
 
 import org.apache.pekko
+
 import pekko.NotUsed
 import pekko.annotation.ApiMayChange
 import pekko.japi.Pair

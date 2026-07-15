@@ -14,6 +14,7 @@
 package org.apache.pekko.persistence.query.javadsl
 
 import org.apache.pekko
+
 import pekko.NotUsed
 import pekko.persistence.query.{ EventEnvelope, Offset }
 import pekko.stream.javadsl.Source

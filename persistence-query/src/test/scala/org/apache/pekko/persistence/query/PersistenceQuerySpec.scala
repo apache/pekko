@@ -16,14 +16,15 @@ package org.apache.pekko.persistence.query
 import java.util.concurrent.atomic.AtomicInteger
 
 import org.apache.pekko
-import pekko.actor.ActorSystem
-import pekko.persistence.journal.{ EventSeq, ReadEventAdapter }
 
 import org.scalatest.BeforeAndAfterAll
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 
 import com.typesafe.config.{ Config, ConfigFactory }
+
+import pekko.actor.ActorSystem
+import pekko.persistence.journal.{ EventSeq, ReadEventAdapter }
 
 class PersistenceQuerySpec extends AnyWordSpecLike with Matchers with BeforeAndAfterAll {
 

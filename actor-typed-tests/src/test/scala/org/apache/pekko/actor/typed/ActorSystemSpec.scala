@@ -21,10 +21,11 @@ import scala.annotation.nowarn
 import scala.util.Using
 
 import org.apache.pekko
-import pekko.actor.typed.scaladsl.Behaviors
-import pekko.testkit.PekkoSpec
 
 import com.typesafe.config.ConfigFactory
+
+import pekko.actor.typed.scaladsl.Behaviors
+import pekko.testkit.PekkoSpec
 
 @nowarn("msg=possible missing interpolator")
 class ActorSystemSpec extends PekkoSpec {

@@ -14,6 +14,7 @@
 package org.apache.pekko.persistence.journal
 
 import org.apache.pekko
+
 import pekko.persistence.JournalProtocol
 import pekko.persistence.PersistentRepr
 import pekko.testkit._

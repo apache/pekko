@@ -19,14 +19,15 @@ import scala.concurrent.duration._
 import scala.util.{ Failure, Success }
 
 import org.apache.pekko
+
+import org.scalatest.concurrent.PatienceConfiguration.{ Timeout => PatienceTimeout }
+import org.scalatest.wordspec.AnyWordSpecLike
+
 import pekko.actor.testkit.typed.scaladsl.{ ScalaTestWithActorTestKit, TestProbe }
 import pekko.actor.typed.scaladsl.AskPattern._
 import pekko.actor.typed.scaladsl.Behaviors
 import pekko.actor.typed.scaladsl.adapter._
 import pekko.util.Timeout
-
-import org.scalatest.concurrent.PatienceConfiguration.{ Timeout => PatienceTimeout }
-import org.scalatest.wordspec.AnyWordSpecLike
 
 class ActorRefIgnoreSpec extends ScalaTestWithActorTestKit() with AnyWordSpecLike {
 

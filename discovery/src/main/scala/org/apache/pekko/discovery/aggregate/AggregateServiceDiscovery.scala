@@ -19,6 +19,9 @@ import scala.jdk.CollectionConverters._
 import scala.util.control.NonFatal
 
 import org.apache.pekko
+
+import com.typesafe.config.Config
+
 import pekko.actor.ExtendedActorSystem
 import pekko.annotation.InternalApi
 import pekko.discovery.{ Discovery, Lookup, ServiceDiscovery }
@@ -27,8 +30,6 @@ import pekko.discovery.aggregate.AggregateServiceDiscovery.Methods
 import pekko.dispatch.MessageDispatcher
 import pekko.event.Logging
 import pekko.util.Helpers.Requiring
-
-import com.typesafe.config.Config
 
 /**
  * INTERNAL API

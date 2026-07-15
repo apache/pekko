@@ -16,6 +16,7 @@ package org.apache.pekko.persistence
 import java.io.{ File, IOException }
 
 import org.apache.pekko
+
 import pekko.actor.{ ActorInitializationException, ActorRef, Props }
 import pekko.testkit.{ EventFilter, ImplicitSender, PekkoSpec }
 

@@ -23,6 +23,7 @@ import scala.util.control.Exception.Catcher
 import scala.util.control.NonFatal
 
 import org.apache.pekko
+
 import pekko.actor.ActorPath
 import pekko.actor.testkit.typed.{ CapturedLogEvent, Effect }
 import pekko.actor.testkit.typed.Effect._

@@ -13,8 +13,8 @@
 
 package org.apache.pekko.testkit
 
-import java.util.concurrent._
 import java.util.concurrent.TimeUnit
+import java.util.concurrent._
 import java.util.concurrent.atomic.AtomicInteger
 
 import scala.annotation.nowarn
@@ -26,6 +26,7 @@ import scala.reflect.ClassTag
 import scala.util.control.NonFatal
 
 import org.apache.pekko
+
 import pekko.actor._
 import pekko.actor.DeadLetter
 import pekko.actor.IllegalActorStateException

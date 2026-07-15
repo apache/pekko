@@ -22,6 +22,9 @@ import scala.jdk.OptionConverters._
 import scala.reflect.ClassTag
 
 import org.apache.pekko
+
+import com.typesafe.config.Config
+
 import pekko.actor.typed.ActorRef
 import pekko.actor.typed.ActorSystem
 import pekko.actor.typed.Behavior
@@ -32,8 +35,6 @@ import pekko.annotation.ApiMayChange
 import pekko.annotation.InternalApi
 import pekko.util.Helpers.Requiring
 import pekko.util.Helpers.toRootLowerCase
-
-import com.typesafe.config.Config
 
 /**
  * Point-to-point reliable delivery between a single producer actor sending messages and a single consumer

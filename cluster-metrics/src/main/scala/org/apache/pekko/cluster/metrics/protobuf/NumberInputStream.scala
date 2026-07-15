@@ -20,6 +20,7 @@ package org.apache.pekko.cluster.metrics.protobuf
 import java.io.{ InputStream, ObjectStreamClass }
 
 import org.apache.pekko
+
 import pekko.annotation.InternalApi
 import pekko.util.ClassLoaderObjectInputStream
 

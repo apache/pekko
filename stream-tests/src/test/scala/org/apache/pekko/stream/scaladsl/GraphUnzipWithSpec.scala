@@ -19,6 +19,9 @@ import scala.concurrent.duration._
 import scala.util.control.NoStackTrace
 
 import org.apache.pekko
+
+import org.reactivestreams.Publisher
+
 import pekko.Done
 import pekko.NotUsed
 import pekko.stream._
@@ -27,8 +30,6 @@ import pekko.stream.testkit.TestSubscriber.Probe
 import pekko.stream.testkit.Utils.TE
 import pekko.testkit.EventFilter
 import pekko.testkit.TestProbe
-
-import org.reactivestreams.Publisher
 
 class GraphUnzipWithSpec extends StreamSpec("""
     pekko.stream.materializer.initial-input-buffer-size = 2

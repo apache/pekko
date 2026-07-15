@@ -16,6 +16,12 @@ package org.apache.pekko.persistence.typed.state.scaladsl
 import java.util.concurrent.atomic.AtomicInteger
 
 import org.apache.pekko
+
+import org.scalatest.wordspec.AnyWordSpecLike
+
+import com.typesafe.config.Config
+import com.typesafe.config.ConfigFactory
+
 import pekko.Done
 import pekko.actor.testkit.typed.scaladsl._
 import pekko.actor.typed.ActorRef
@@ -25,11 +31,6 @@ import pekko.actor.typed.scaladsl.Behaviors
 import pekko.persistence.testkit.PersistenceTestKitDurableStateStorePlugin
 import pekko.persistence.typed.PersistenceId
 import pekko.serialization.jackson.CborSerializable
-
-import org.scalatest.wordspec.AnyWordSpecLike
-
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
 
 object DurableStateBehaviorReplySpec {
   def conf: Config = PersistenceTestKitDurableStateStorePlugin.config.withFallback(ConfigFactory.parseString(s"""

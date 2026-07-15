@@ -15,9 +15,9 @@ package org.apache.pekko.testkit
 
 import java.util.concurrent.{ CountDownLatch, TimeUnit, TimeoutException }
 
-import scala.concurrent.{ Awaitable, CanAwait }
 import scala.concurrent.duration.Duration
 import scala.concurrent.duration.FiniteDuration
+import scala.concurrent.{ Awaitable, CanAwait }
 
 import org.apache.pekko.actor.ActorSystem
 

@@ -14,10 +14,11 @@
 package org.apache.pekko.cluster
 
 import org.apache.pekko
-import pekko.actor.{ Address, ExtendedActorSystem }
-import pekko.testkit.{ EventFilter, ImplicitSender, PekkoSpec }
 
 import com.typesafe.config.{ Config, ConfigFactory }
+
+import pekko.actor.{ Address, ExtendedActorSystem }
+import pekko.testkit.{ EventFilter, ImplicitSender, PekkoSpec }
 
 object ClusterLogSpec {
   val config = """

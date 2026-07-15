@@ -17,17 +17,18 @@ import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 import java.util.concurrent.atomic.AtomicInteger
 
-import scala.concurrent.{ Await, Future, Promise }
 import scala.concurrent.duration._
+import scala.concurrent.{ Await, Future, Promise }
 
 import org.apache.pekko
+
+import org.scalatest.BeforeAndAfterEach
+
 import pekko.actor.{ Actor, ActorLogging, ActorRef, PoisonPill, Props }
 import pekko.testkit.ImplicitSender
 import pekko.testkit.PekkoSpec
 import pekko.testkit.TestLatch
 import pekko.testkit.TestProbe
-
-import org.scalatest.BeforeAndAfterEach
 
 object BalancingSpec {
   val counter = new AtomicInteger(1)

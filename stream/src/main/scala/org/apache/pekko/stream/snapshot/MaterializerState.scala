@@ -14,10 +14,11 @@
 package org.apache.pekko.stream.snapshot
 
 import scala.collection.immutable
-import scala.concurrent.{ ExecutionContext, Future }
 import scala.concurrent.duration._
+import scala.concurrent.{ ExecutionContext, Future }
 
 import org.apache.pekko
+
 import pekko.actor.{ ActorPath, ActorRef }
 import pekko.actor.ActorSystem
 import pekko.annotation.{ ApiMayChange, DoNotInherit, InternalApi }

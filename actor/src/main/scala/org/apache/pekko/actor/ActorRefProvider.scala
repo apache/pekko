@@ -20,6 +20,7 @@ import scala.concurrent.{ ExecutionContextExecutor, Future, Promise }
 import scala.util.control.NonFatal
 
 import org.apache.pekko
+
 import pekko.ConfigurationException
 import pekko.annotation.DoNotInherit
 import pekko.annotation.InternalApi

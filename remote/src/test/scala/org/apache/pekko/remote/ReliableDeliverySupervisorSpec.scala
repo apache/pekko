@@ -24,14 +24,15 @@ import scala.concurrent.Promise
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor.{ ActorRef, Address, Nobody, RootActorPath, Terminated }
 import pekko.remote.EndpointManager.{ Link, ResendState, Send }
 import pekko.remote.ReliableDeliverySupervisor.AckFromReader
 import pekko.remote.transport._
 import pekko.testkit.{ ImplicitSender, PekkoSpec, TestActorRef, TestProbe }
 import pekko.util.OptionVal
-
-import com.typesafe.config.ConfigFactory
 
 object ReliableDeliverySupervisorSpec {
   val config = ConfigFactory.parseString("""

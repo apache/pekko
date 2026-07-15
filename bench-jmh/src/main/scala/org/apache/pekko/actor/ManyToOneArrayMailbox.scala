@@ -16,17 +16,18 @@ package org.apache.pekko.actor
 import scala.annotation.tailrec
 import scala.concurrent.duration.Duration
 
+import org.apache.pekko
+
+import com.typesafe.config.Config
+
 import org.agrona.concurrent.ManyToOneConcurrentArrayQueue
 
-import org.apache.pekko
 import pekko.dispatch.BoundedMessageQueueSemantics
 import pekko.dispatch.BoundedNodeMessageQueue
 import pekko.dispatch.Envelope
 import pekko.dispatch.MailboxType
 import pekko.dispatch.MessageQueue
 import pekko.dispatch.ProducesMessageQueue
-
-import com.typesafe.config.Config
 
 /**
  * ManyToOneArrayMailbox is a high-performance, multiple-producer single-consumer, bounded MailboxType,

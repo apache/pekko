@@ -27,6 +27,11 @@ import scala.concurrent.duration._
 import scala.util.control.NonFatal
 
 import org.apache.pekko
+
+import org.scalatest.Outcome
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor.ActorIdentity
 import pekko.actor.ActorPath
 import pekko.actor.ActorRef
@@ -44,10 +49,6 @@ import pekko.testkit.ImplicitSender
 import pekko.testkit.TestActors
 import pekko.testkit.TestProbe
 import pekko.util.JavaVersion
-
-import org.scalatest.Outcome
-
-import com.typesafe.config.ConfigFactory
 
 // This is a simplification Spec. It doesn't rely on changing files.
 class RotatingProviderWithStaticKeysSpec

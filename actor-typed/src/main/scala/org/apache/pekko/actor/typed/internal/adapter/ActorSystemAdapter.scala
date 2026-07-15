@@ -19,6 +19,9 @@ import scala.concurrent.ExecutionContextExecutor
 import scala.jdk.FutureConverters._
 
 import org.apache.pekko
+
+import org.slf4j.{ Logger, LoggerFactory }
+
 import pekko.{ actor => classic }
 import pekko.Done
 import pekko.actor
@@ -42,8 +45,6 @@ import pekko.actor.typed.internal.SystemMessage
 import pekko.actor.typed.scaladsl.Behaviors
 import pekko.annotation.InternalApi
 import pekko.util.OptionVal
-
-import org.slf4j.{ Logger, LoggerFactory }
 
 /**
  * INTERNAL API. Lightweight wrapper for presenting a classic ActorSystem to a Behavior (via the context).

@@ -18,6 +18,11 @@ import java.util.UUID
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import org.scalatest.wordspec.AnyWordSpecLike
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor.testkit.typed.TestException
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
 import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
@@ -30,10 +35,6 @@ import pekko.persistence.testkit.PersistenceTestKitSnapshotPlugin
 import pekko.persistence.typed.PersistenceId
 import pekko.persistence.typed.RecoveryCompleted
 import pekko.persistence.typed.scaladsl.EventSourcedBehavior.CommandHandler
-
-import org.scalatest.wordspec.AnyWordSpecLike
-
-import com.typesafe.config.ConfigFactory
 
 object PerformanceSpec {
 

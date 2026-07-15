@@ -15,9 +15,9 @@ package org.apache.pekko.event
 
 import scala.runtime.BoxedUnit
 
-import language.existentials
-
 import org.apache.pekko
+
+import language.existentials
 import pekko.actor.AbstractActor
 import pekko.actor.Actor.Receive
 import pekko.actor.ActorCell

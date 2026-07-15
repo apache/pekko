@@ -16,6 +16,7 @@ package org.apache.pekko.stream.scaladsl
 import scala.util.control.NonFatal
 
 import org.apache.pekko
+
 import pekko.NotUsed
 import pekko.stream.Attributes
 import pekko.stream.impl.JsonObjectParser

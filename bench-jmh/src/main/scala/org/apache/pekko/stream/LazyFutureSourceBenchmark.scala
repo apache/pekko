@@ -22,14 +22,15 @@ import java.util.concurrent.TimeUnit
 import scala.concurrent._
 import scala.concurrent.duration._
 
+import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import org.openjdk.jmh.annotations._
 
-import org.apache.pekko
 import pekko.NotUsed
 import pekko.actor.ActorSystem
 import pekko.stream.scaladsl._
-
-import com.typesafe.config.ConfigFactory
 
 object LazyFutureSourceBenchmark {
   final val OperationsPerInvocation = 100000

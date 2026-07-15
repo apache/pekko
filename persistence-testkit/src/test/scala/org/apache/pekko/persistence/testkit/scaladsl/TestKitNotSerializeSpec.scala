@@ -14,6 +14,7 @@
 package org.apache.pekko.persistence.testkit.scaladsl
 
 import org.apache.pekko
+
 import pekko.actor.Props
 import pekko.persistence.testkit._
 

@@ -16,13 +16,14 @@ package org.apache.pekko.stream.impl
 import scala.annotation.unchecked.uncheckedVariance
 
 import org.apache.pekko
+
+import org.reactivestreams._
+
 import pekko.NotUsed
 import pekko.annotation.{ DoNotInherit, InternalApi }
 import pekko.event.Logging
 import pekko.stream._
 import pekko.stream.impl.StreamLayout.AtomicModule
-
-import org.reactivestreams._
 
 /**
  * INTERNAL API

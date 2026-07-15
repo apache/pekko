@@ -19,6 +19,7 @@ import java.util.concurrent.CompletionStage
 import scala.jdk.OptionConverters._
 
 import org.apache.pekko
+
 import pekko.persistence.state.scaladsl.{ GetObjectResult => SGetObjectResult }
 
 /**

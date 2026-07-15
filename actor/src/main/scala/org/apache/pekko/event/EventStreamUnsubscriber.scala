@@ -16,6 +16,7 @@ package org.apache.pekko.event
 import java.util.concurrent.atomic.AtomicInteger
 
 import org.apache.pekko
+
 import pekko.actor._
 import pekko.dispatch.Dispatchers
 import pekko.event.Logging.simpleName

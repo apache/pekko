@@ -15,16 +15,17 @@ package org.apache.pekko.stream.stage
 
 import java.lang.invoke.{ MethodHandles, VarHandle }
 import java.util.Spliterator
-import java.util.concurrent.{ CompletionStage, ConcurrentHashMap }
 import java.util.concurrent.atomic.AtomicReference
+import java.util.concurrent.{ CompletionStage, ConcurrentHashMap }
 
 import scala.annotation.nowarn
 import scala.annotation.tailrec
 import scala.collection.{ immutable, mutable }
-import scala.concurrent.{ Await, Future, Promise }
 import scala.concurrent.duration.FiniteDuration
+import scala.concurrent.{ Await, Future, Promise }
 
 import org.apache.pekko
+
 import pekko.{ Done, NotUsed }
 import pekko.actor._
 import pekko.annotation.InternalApi

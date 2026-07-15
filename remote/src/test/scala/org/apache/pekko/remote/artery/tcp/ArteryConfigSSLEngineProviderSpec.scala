@@ -10,9 +10,10 @@
 package org.apache.pekko.remote.artery.tcp
 
 import org.apache.pekko
-import pekko.testkit.PekkoSpec
 
 import com.typesafe.config.ConfigFactory
+
+import pekko.testkit.PekkoSpec
 
 class ArteryConfigSSLEngineProviderSpec
     extends PekkoSpec(

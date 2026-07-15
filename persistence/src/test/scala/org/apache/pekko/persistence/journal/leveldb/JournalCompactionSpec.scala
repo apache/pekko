@@ -17,16 +17,17 @@ import java.io.File
 
 import scala.util.Random
 
+import org.apache.pekko
+
+import com.typesafe.config.Config
+
 import org.apache.commons.io.FileUtils
 
-import org.apache.pekko
 import pekko.actor.{ ActorLogging, ActorRef, ActorSystem, Props }
 import pekko.persistence.{ DeleteMessagesSuccess, PersistenceSpec, PersistentActor }
 import pekko.persistence.journal.leveldb.JournalCompactionSpec.EventLogger._
 import pekko.persistence.journal.leveldb.JournalCompactionSpec.SpecComponentBuilder
 import pekko.testkit.TestProbe
-
-import com.typesafe.config.Config
 
 class JournalNoCompactionSpec
     extends JournalCompactionSpecBase(SpecComponentBuilder("leveldb-JournalNoCompactionSpec")) {

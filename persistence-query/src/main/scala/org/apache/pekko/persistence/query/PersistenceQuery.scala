@@ -17,12 +17,13 @@ import scala.annotation.nowarn
 import scala.reflect.ClassTag
 
 import org.apache.pekko
+
+import com.typesafe.config.{ Config, ConfigFactory }
+
 import pekko.actor._
 import pekko.annotation.InternalApi
 import pekko.persistence.{ PersistencePlugin, PluginProvider }
 import pekko.persistence.query.scaladsl.ReadJournal
-
-import com.typesafe.config.{ Config, ConfigFactory }
 
 /**
  * Persistence extension for queries.

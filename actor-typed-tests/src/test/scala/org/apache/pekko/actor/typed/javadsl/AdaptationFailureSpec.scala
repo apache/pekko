@@ -16,6 +16,9 @@ package org.apache.pekko.actor.typed.javadsl
 import scala.concurrent.Promise
 
 import org.apache.pekko
+
+import org.scalatest.wordspec.AnyWordSpecLike
+
 import pekko.Done
 import pekko.actor.testkit.typed.TestException
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
@@ -24,8 +27,6 @@ import pekko.actor.typed.Behavior
 import pekko.actor.typed.MessageAdaptionFailure
 import pekko.actor.typed.PreRestart
 import pekko.actor.typed.Terminated
-
-import org.scalatest.wordspec.AnyWordSpecLike
 
 object AdaptationFailureSpec {
   def emptyAbstractBehavior: Behavior[Any] = Behaviors.setup(new EmptyAbstractBehavior(_))

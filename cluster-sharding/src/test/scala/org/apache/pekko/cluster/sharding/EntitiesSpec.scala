@@ -13,6 +13,10 @@
 
 package org.apache.pekko.cluster.sharding
 import org.apache.pekko
+
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
+
 import pekko.actor.ActorRef
 import pekko.cluster.sharding
 import pekko.cluster.sharding.Shard.Active
@@ -23,9 +27,6 @@ import pekko.cluster.sharding.Shard.RememberingStart
 import pekko.cluster.sharding.Shard.RememberingStop
 import pekko.event.NoLogging
 import pekko.util.OptionVal
-
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpec
 
 class EntitiesSpec extends AnyWordSpec with Matchers {
 

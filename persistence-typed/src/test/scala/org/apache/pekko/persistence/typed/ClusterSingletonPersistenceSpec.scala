@@ -14,6 +14,11 @@
 package org.apache.pekko.persistence.typed
 
 import org.apache.pekko
+
+import org.scalatest.wordspec.AnyWordSpecLike
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
 import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
@@ -25,10 +30,6 @@ import pekko.cluster.typed.ClusterSingleton
 import pekko.cluster.typed.SingletonActor
 import pekko.persistence.typed.scaladsl.Effect
 import pekko.persistence.typed.scaladsl.EventSourcedBehavior
-
-import org.scalatest.wordspec.AnyWordSpecLike
-
-import com.typesafe.config.ConfigFactory
 
 object ClusterSingletonPersistenceSpec {
   val config = ConfigFactory.parseString("""

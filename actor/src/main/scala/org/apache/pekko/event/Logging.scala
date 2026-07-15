@@ -25,6 +25,7 @@ import scala.language.existentials
 import scala.util.control.{ NoStackTrace, NonFatal }
 
 import org.apache.pekko
+
 import pekko.{ ConfigurationException, PekkoException }
 import pekko.actor._
 import pekko.actor.ActorSystem.Settings

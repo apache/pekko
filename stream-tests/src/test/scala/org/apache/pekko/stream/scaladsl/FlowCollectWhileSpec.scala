@@ -18,6 +18,7 @@
 package org.apache.pekko.stream.scaladsl
 
 import org.apache.pekko
+
 import pekko.stream.ActorAttributes._
 import pekko.stream.OverflowStrategy
 import pekko.stream.Supervision._

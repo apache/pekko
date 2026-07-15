@@ -23,11 +23,12 @@ import scala.util.Success
 import scala.util.Try
 import scala.util.control.NoStackTrace
 
+import org.apache.pekko
+
 import io.aeron.Aeron
 import io.aeron.Publication
 import org.agrona.concurrent.UnsafeBuffer
 
-import org.apache.pekko
 import pekko.Done
 import pekko.stream.Attributes
 import pekko.stream.Inlet

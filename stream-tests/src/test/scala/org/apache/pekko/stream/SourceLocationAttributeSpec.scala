@@ -14,6 +14,7 @@
 package org.apache.pekko.stream
 
 import org.apache.pekko
+
 import pekko.stream.scaladsl.Flow
 import pekko.stream.testkit.StreamSpec
 

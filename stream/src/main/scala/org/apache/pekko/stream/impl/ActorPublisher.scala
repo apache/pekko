@@ -20,11 +20,12 @@ import scala.collection.immutable
 import scala.util.control.NoStackTrace
 
 import org.apache.pekko
+
+import org.reactivestreams.Subscription
+import org.reactivestreams.{ Publisher, Subscriber }
+
 import pekko.actor.{ Actor, ActorRef, Terminated }
 import pekko.annotation.InternalApi
-
-import org.reactivestreams.{ Publisher, Subscriber }
-import org.reactivestreams.Subscription
 
 /**
  * INTERNAL API

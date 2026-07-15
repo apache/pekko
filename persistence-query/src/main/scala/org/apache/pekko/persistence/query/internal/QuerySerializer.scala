@@ -22,6 +22,7 @@ import java.util.UUID
 import scala.util.control.NonFatal
 
 import org.apache.pekko
+
 import pekko.annotation.InternalApi
 import pekko.event.Logging
 import pekko.persistence.query.NoOffset

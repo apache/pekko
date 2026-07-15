@@ -16,6 +16,7 @@ package org.apache.pekko.cluster.singleton.protobuf
 import java.io.NotSerializableException
 
 import org.apache.pekko
+
 import pekko.actor.ExtendedActorSystem
 import pekko.cluster.singleton.ClusterSingletonManager.Internal.HandOverDone
 import pekko.cluster.singleton.ClusterSingletonManager.Internal.HandOverInProgress

@@ -16,6 +16,7 @@ package org.apache.pekko.persistence
 import scala.collection.immutable
 
 import org.apache.pekko
+
 import pekko.actor.{ ActorRef, NoSerializationVerificationNeeded }
 import pekko.annotation.DoNotInherit
 import pekko.persistence.serialization.Message

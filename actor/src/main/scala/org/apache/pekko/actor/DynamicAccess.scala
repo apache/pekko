@@ -18,6 +18,7 @@ import scala.reflect.ClassTag
 import scala.util.Try
 
 import org.apache.pekko
+
 import pekko.annotation.DoNotInherit
 
 /**

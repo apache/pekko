@@ -17,10 +17,11 @@ import scala.annotation.nowarn
 import scala.concurrent.duration._
 
 import org.apache.pekko
-import pekko.actor.{ Actor, ActorSystem, Props }
-import pekko.testkit.{ DefaultTimeout, PekkoSpec }
 
 import com.typesafe.config.Config
+
+import pekko.actor.{ Actor, ActorSystem, Props }
+import pekko.testkit.{ DefaultTimeout, PekkoSpec }
 
 object StablePriorityDispatcherSpec {
   case object Result

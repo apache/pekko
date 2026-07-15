@@ -14,6 +14,7 @@
 package org.apache.pekko.cluster.sharding
 
 import org.apache.pekko
+
 import pekko.cluster.sharding.Shard.{ CurrentShardState, ShardStats }
 import pekko.cluster.sharding.ShardRegion.ShardState
 import pekko.cluster.sharding.ShardingQueries.ShardsQueryResult

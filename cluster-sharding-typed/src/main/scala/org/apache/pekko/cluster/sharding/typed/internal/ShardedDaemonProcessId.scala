@@ -14,6 +14,7 @@
 package org.apache.pekko.cluster.sharding.typed.internal
 
 import org.apache.pekko
+
 import pekko.annotation.InternalApi
 import pekko.cluster.sharding.typed.ShardingEnvelope
 import pekko.cluster.sharding.typed.ShardingMessageExtractor

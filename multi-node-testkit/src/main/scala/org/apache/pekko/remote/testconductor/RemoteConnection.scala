@@ -19,13 +19,11 @@ import java.util.concurrent.TimeUnit
 import scala.util.control.NonFatal
 
 import org.apache.pekko
-import pekko.protobufv3.internal.Message
-import pekko.util.Helpers
 
 import io.netty.bootstrap.{ Bootstrap, ServerBootstrap }
 import io.netty.buffer.{ ByteBuf, ByteBufUtil }
-import io.netty.channel._
 import io.netty.channel.ChannelHandler.Sharable
+import io.netty.channel._
 import io.netty.channel.nio.NioIoHandler
 import io.netty.channel.socket.SocketChannel
 import io.netty.channel.socket.nio.{ NioServerSocketChannel, NioSocketChannel }
@@ -35,6 +33,9 @@ import io.netty.handler.codec.{
   MessageToMessageDecoder,
   MessageToMessageEncoder
 }
+
+import pekko.protobufv3.internal.Message
+import pekko.util.Helpers
 
 /**
  * INTERNAL API.

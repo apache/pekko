@@ -16,6 +16,7 @@ package org.apache.pekko.persistence.snapshot
 import scala.concurrent.Future
 
 import org.apache.pekko
+
 import pekko.persistence.{ SelectedSnapshot, SnapshotMetadata, SnapshotSelectionCriteria }
 
 /**

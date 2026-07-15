@@ -18,6 +18,7 @@ import java.net.{ InetAddress, InetSocketAddress }
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
 import pekko.actor._
 import pekko.testkit.{ EventFilter, ImplicitSender, PekkoSpec, TestProbe, TimingTest }
 

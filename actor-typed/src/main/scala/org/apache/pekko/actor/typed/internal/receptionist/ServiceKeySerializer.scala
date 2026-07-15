@@ -16,6 +16,7 @@ package org.apache.pekko.actor.typed.internal.receptionist
 import java.nio.charset.StandardCharsets
 
 import org.apache.pekko
+
 import pekko.actor.typed.receptionist.ServiceKey
 import pekko.annotation.InternalApi
 import pekko.serialization.{ BaseSerializer, SerializerWithStringManifest }

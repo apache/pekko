@@ -17,10 +17,11 @@ import scala.collection.{ immutable => im }
 import scala.jdk.CollectionConverters._
 
 import org.apache.pekko
-import pekko.actor.ExtendedActorSystem
-import pekko.annotation.{ DoNotInherit, InternalApi }
 
 import com.typesafe.config.{ Config, ConfigFactory, ConfigValue }
+
+import pekko.actor.ExtendedActorSystem
+import pekko.annotation.{ DoNotInherit, InternalApi }
 
 abstract class JoinConfigCompatChecker {
 

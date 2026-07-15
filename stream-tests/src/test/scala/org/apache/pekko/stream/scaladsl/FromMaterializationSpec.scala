@@ -14,10 +14,11 @@
 package org.apache.pekko.stream.scaladsl
 
 import org.apache.pekko
+
 import pekko.NotUsed
 import pekko.stream.Attributes
 import pekko.stream.Attributes.Attribute
-import pekko.stream.scaladsl.AttributesSpec.{ whateverAttribute, WhateverAttribute }
+import pekko.stream.scaladsl.AttributesSpec.{ WhateverAttribute, whateverAttribute }
 import pekko.stream.testkit.StreamSpec
 
 class FromMaterializerSpec extends StreamSpec {

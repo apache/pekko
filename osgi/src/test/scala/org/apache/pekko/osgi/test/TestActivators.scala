@@ -13,10 +13,11 @@
 
 package org.apache.pekko.osgi.test
 
-import PingPong._
+import org.apache.pekko
+
 import org.osgi.framework.BundleContext
 
-import org.apache.pekko
+import PingPong._
 import pekko.actor.{ ActorSystem, Props }
 import pekko.osgi.ActorSystemActivator
 

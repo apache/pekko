@@ -20,17 +20,20 @@ import java.util.concurrent.atomic.AtomicReference
 
 import scala.annotation.tailrec
 import scala.collection.immutable
-import scala.concurrent.{ Await, ExecutionContext, ExecutionContextExecutor, Future, Promise }
 import scala.concurrent.blocking
 import scala.concurrent.duration.Duration
+import scala.concurrent.{ Await, ExecutionContext, ExecutionContextExecutor, Future, Promise }
 import scala.jdk.CollectionConverters._
 import scala.jdk.DurationConverters._
 import scala.jdk.FutureConverters._
 import scala.jdk.OptionConverters._
-import scala.util.{ Failure, Success, Try }
 import scala.util.control.{ ControlThrowable, NonFatal }
+import scala.util.{ Failure, Success, Try }
 
 import org.apache.pekko
+
+import com.typesafe.config.{ Config, ConfigFactory }
+
 import pekko.ConfigurationException
 import pekko.actor.dungeon.ChildrenContainer
 import pekko.actor.setup.{ ActorSystemSetup, Setup }
@@ -43,8 +46,6 @@ import pekko.japi.Util.immutableSeq
 import pekko.serialization.SerializationExtension
 import pekko.util._
 import pekko.util.Helpers.toRootLowerCase
-
-import com.typesafe.config.{ Config, ConfigFactory }
 
 object BootstrapSetup {
 

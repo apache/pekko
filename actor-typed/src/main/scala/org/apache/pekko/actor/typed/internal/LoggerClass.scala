@@ -16,6 +16,7 @@ package org.apache.pekko.actor.typed.internal
 import scala.util.control.NonFatal
 
 import org.apache.pekko
+
 import pekko.annotation.InternalApi
 import pekko.util.OptionVal
 

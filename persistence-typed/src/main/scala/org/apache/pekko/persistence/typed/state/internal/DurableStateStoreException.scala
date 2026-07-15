@@ -14,6 +14,7 @@
 package org.apache.pekko.persistence.typed.state.internal
 
 import org.apache.pekko
+
 import pekko.annotation.InternalApi
 import pekko.persistence.state.exception.DurableStateException
 import pekko.persistence.typed.PersistenceId

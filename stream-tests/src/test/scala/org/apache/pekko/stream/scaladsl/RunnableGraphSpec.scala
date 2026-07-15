@@ -14,6 +14,7 @@
 package org.apache.pekko.stream.scaladsl
 
 import org.apache.pekko
+
 import pekko.NotUsed
 import pekko.stream.Attributes
 import pekko.stream.javadsl

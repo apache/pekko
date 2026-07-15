@@ -19,13 +19,14 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor.Actor
 import pekko.actor.ActorSystemImpl
 import pekko.actor.Props
 import pekko.remote.testkit.MultiNodeConfig
 import pekko.testkit._
-
-import com.typesafe.config.ConfigFactory
 
 class RemoteDeploymentDeathWatchMultiJvmSpec(artery: Boolean) extends MultiNodeConfig {
   val first = role("first")

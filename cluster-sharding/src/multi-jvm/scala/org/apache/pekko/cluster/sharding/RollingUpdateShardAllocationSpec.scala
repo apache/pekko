@@ -16,6 +16,9 @@ package org.apache.pekko.cluster.sharding
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor.Actor
 import pekko.actor.ActorLogging
 import pekko.actor.Address
@@ -24,8 +27,6 @@ import pekko.cluster.Cluster
 import pekko.cluster.MemberStatus.Up
 import pekko.serialization.jackson.CborSerializable
 import pekko.testkit.ImplicitSender
-
-import com.typesafe.config.ConfigFactory
 
 object RollingUpdateShardAllocationSpecConfig
     extends MultiNodeClusterShardingConfig(

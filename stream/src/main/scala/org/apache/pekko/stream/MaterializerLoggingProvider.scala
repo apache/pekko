@@ -14,6 +14,7 @@
 package org.apache.pekko.stream
 
 import org.apache.pekko
+
 import pekko.annotation.DoNotInherit
 import pekko.event.LoggingAdapter
 

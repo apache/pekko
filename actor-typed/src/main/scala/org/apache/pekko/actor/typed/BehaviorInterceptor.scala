@@ -16,6 +16,7 @@ package org.apache.pekko.actor.typed
 import scala.reflect.ClassTag
 
 import org.apache.pekko
+
 import pekko.annotation.{ DoNotInherit, InternalApi }
 import pekko.util.BoxedType
 

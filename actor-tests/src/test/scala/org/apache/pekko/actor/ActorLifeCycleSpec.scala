@@ -20,11 +20,12 @@ import java.util.concurrent.atomic._
 import scala.concurrent.{ Await, Future }
 
 import org.apache.pekko
+
+import org.scalatest.BeforeAndAfterEach
+
 import pekko.actor.Actor._
 import pekko.pattern.ask
 import pekko.testkit._
-
-import org.scalatest.BeforeAndAfterEach
 
 object ActorLifeCycleSpec {
 

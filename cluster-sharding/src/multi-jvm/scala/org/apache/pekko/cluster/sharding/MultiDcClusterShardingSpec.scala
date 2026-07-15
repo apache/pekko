@@ -16,14 +16,15 @@ package org.apache.pekko.cluster.sharding
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor.{ Actor, ActorRef, Address, Props }
 import pekko.cluster.{ Cluster, MemberStatus }
 import pekko.cluster.sharding.ShardRegion.{ CurrentRegions, GetCurrentRegions }
 import pekko.remote.testconductor.RoleName
 import pekko.serialization.jackson.CborSerializable
 import pekko.testkit._
-
-import com.typesafe.config.ConfigFactory
 
 object MultiDcClusterShardingSpec {
   sealed trait EntityMsg extends CborSerializable {

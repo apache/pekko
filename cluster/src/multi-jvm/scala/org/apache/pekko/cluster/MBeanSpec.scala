@@ -20,10 +20,11 @@ import javax.management.ObjectName
 import scala.concurrent.duration._
 
 import org.apache.pekko
-import pekko.remote.testkit.MultiNodeConfig
-import pekko.testkit._
 
 import com.typesafe.config.ConfigFactory
+
+import pekko.remote.testkit.MultiNodeConfig
+import pekko.testkit._
 
 object MBeanMultiJvmSpec extends MultiNodeConfig {
   val first = role("first")

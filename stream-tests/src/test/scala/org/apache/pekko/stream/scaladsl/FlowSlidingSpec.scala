@@ -15,15 +15,16 @@ package org.apache.pekko.stream.scaladsl
 
 import scala.annotation.nowarn
 
+import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
-import org.apache.pekko
 import pekko.pattern.pipe
 import pekko.stream.{ ActorMaterializer, ActorMaterializerSettings, Materializer }
 import pekko.stream.testkit._
-
-import com.typesafe.config.ConfigFactory
 
 @nowarn
 class FlowSlidingSpec

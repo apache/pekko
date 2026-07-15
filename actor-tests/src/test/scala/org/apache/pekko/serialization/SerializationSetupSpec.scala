@@ -13,17 +13,18 @@
 
 package org.apache.pekko.serialization
 
-import java.util.{ BitSet => ProgrammaticJavaDummy }
-import java.util.{ Date => SerializableDummy }
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicInteger
+import java.util.{ BitSet => ProgrammaticJavaDummy }
+import java.util.{ Date => SerializableDummy }
 
 import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor.{ ActorSystem, BootstrapSetup, ExtendedActorSystem }
 import pekko.actor.setup.ActorSystemSetup
 import pekko.testkit.{ PekkoSpec, TestKit }
-
-import com.typesafe.config.ConfigFactory
 
 class ConfigurationDummy
 class ProgrammaticDummy

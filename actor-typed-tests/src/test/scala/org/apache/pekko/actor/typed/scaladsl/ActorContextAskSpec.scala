@@ -20,16 +20,17 @@ import scala.util.{ Failure, Success }
 
 import org.apache.pekko
 import org.apache.pekko.actor.testkit.typed.TestException
+
+import org.scalatest.wordspec.AnyWordSpecLike
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
 import pekko.actor.testkit.typed.scaladsl.LoggingTestKit
 import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
 import pekko.actor.testkit.typed.scaladsl.TestProbe
 import pekko.actor.typed.{ ActorRef, PostStop, Props }
 import pekko.pattern.StatusReply
-
-import org.scalatest.wordspec.AnyWordSpecLike
-
-import com.typesafe.config.ConfigFactory
 
 object ActorContextAskSpec {
   val config = ConfigFactory.parseString("""

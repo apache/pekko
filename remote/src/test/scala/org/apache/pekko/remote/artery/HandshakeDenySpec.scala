@@ -16,11 +16,12 @@ package org.apache.pekko.remote.artery
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor.{ ActorIdentity, Identify }
 import pekko.actor.RootActorPath
 import pekko.testkit._
-
-import com.typesafe.config.ConfigFactory
 
 object HandshakeDenySpec {
 

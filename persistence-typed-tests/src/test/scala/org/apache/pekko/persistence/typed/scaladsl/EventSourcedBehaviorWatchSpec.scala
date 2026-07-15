@@ -16,6 +16,11 @@ package org.apache.pekko.persistence.typed.scaladsl
 import java.util.concurrent.atomic.AtomicInteger
 
 import org.apache.pekko
+
+import org.scalatest.wordspec.AnyWordSpecLike
+
+import org.slf4j.LoggerFactory
+
 import pekko.actor.testkit.typed.TestException
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
 import pekko.actor.testkit.typed.scaladsl.LoggingTestKit
@@ -36,10 +41,6 @@ import pekko.persistence.typed.internal.NoOpSnapshotAdapter
 import pekko.persistence.typed.internal.StashState
 import pekko.serialization.jackson.CborSerializable
 import pekko.util.ConstantFun
-
-import org.scalatest.wordspec.AnyWordSpecLike
-
-import org.slf4j.LoggerFactory
 
 object EventSourcedBehaviorWatchSpec {
   sealed trait Command extends CborSerializable

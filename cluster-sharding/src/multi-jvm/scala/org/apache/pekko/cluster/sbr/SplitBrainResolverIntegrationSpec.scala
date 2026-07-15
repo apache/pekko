@@ -17,6 +17,13 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import org.scalatest.BeforeAndAfterEach
+
+import com.typesafe.config.Config
+import com.typesafe.config.ConfigFactory
+import com.typesafe.config.ConfigValueFactory
+
 import pekko.actor._
 import pekko.cluster.Cluster
 import pekko.cluster.ClusterSettings.DataCenter
@@ -37,12 +44,6 @@ import pekko.testkit.LongRunningTest
 import pekko.testkit.TestKit
 import pekko.testkit.TestProbe
 import pekko.util.Timeout
-
-import org.scalatest.BeforeAndAfterEach
-
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
-import com.typesafe.config.ConfigValueFactory
 
 /*
  * Depends on Pekko private classes so needs to be in this package

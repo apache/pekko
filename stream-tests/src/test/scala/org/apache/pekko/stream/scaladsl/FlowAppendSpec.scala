@@ -14,13 +14,14 @@
 package org.apache.pekko.stream.scaladsl
 
 import org.apache.pekko
-import pekko.actor.ActorSystem
-import pekko.stream.testkit.StreamSpec
-import pekko.stream.testkit.TestSubscriber
 
 import org.reactivestreams.Subscriber
 
 import org.scalatest.matchers.should.Matchers
+
+import pekko.actor.ActorSystem
+import pekko.stream.testkit.StreamSpec
+import pekko.stream.testkit.TestSubscriber
 
 class FlowAppendSpec extends StreamSpec with River {
 

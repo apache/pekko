@@ -16,6 +16,7 @@ package org.apache.pekko.persistence.typed.scaladsl
 import scala.collection.{ immutable => im }
 
 import org.apache.pekko
+
 import pekko.actor.typed.ActorRef
 import pekko.annotation.DoNotInherit
 import pekko.persistence.typed.internal._

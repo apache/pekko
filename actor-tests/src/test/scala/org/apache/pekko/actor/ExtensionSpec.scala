@@ -18,13 +18,14 @@ import java.util.concurrent.atomic.AtomicInteger
 import scala.util.control.NoStackTrace
 
 import org.apache.pekko
-import pekko.testkit.EventFilter
-import pekko.testkit.TestKit._
 
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
 import com.typesafe.config.ConfigFactory
+
+import pekko.testkit.EventFilter
+import pekko.testkit.TestKit._
 
 object TestExtension extends ExtensionId[TestExtension] with ExtensionIdProvider {
   def lookup = this

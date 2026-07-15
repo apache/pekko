@@ -13,12 +13,13 @@
 
 package org.apache.pekko.stream.scaladsl
 
-import java.nio.file.{ OpenOption, Path }
 import java.nio.file.StandardOpenOption._
+import java.nio.file.{ OpenOption, Path }
 
 import scala.concurrent.Future
 
 import org.apache.pekko
+
 import pekko.stream.IOResult
 import pekko.stream.impl.Stages.DefaultAttributes
 import pekko.stream.impl.io._

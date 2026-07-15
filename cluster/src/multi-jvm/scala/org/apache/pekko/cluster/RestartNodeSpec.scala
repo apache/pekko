@@ -17,6 +17,9 @@ import scala.collection.immutable
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.Done
 import pekko.actor.Actor
 import pekko.actor.ActorIdentity
@@ -32,8 +35,6 @@ import pekko.cluster.MemberStatus._
 import pekko.remote.testkit.MultiNodeConfig
 import pekko.remote.testkit.MultiNodeSpec
 import pekko.testkit._
-
-import com.typesafe.config.ConfigFactory
 
 object RestartNodeMultiJvmSpec extends MultiNodeConfig {
   val first = role("first")

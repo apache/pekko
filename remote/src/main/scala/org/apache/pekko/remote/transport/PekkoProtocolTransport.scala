@@ -17,11 +17,14 @@ import java.util.concurrent.TimeoutException
 
 import scala.annotation.nowarn
 import scala.collection.immutable
-import scala.concurrent.{ Future, Promise }
 import scala.concurrent.duration._
+import scala.concurrent.{ Future, Promise }
 import scala.util.control.NonFatal
 
 import org.apache.pekko
+
+import com.typesafe.config.Config
+
 import pekko.{ OnlyCauseStackTrace, PekkoException }
 import pekko.actor._
 import pekko.actor.SupervisorStrategy.Stop
@@ -37,8 +40,6 @@ import pekko.remote.transport.ProtocolStateActor._
 import pekko.remote.transport.Transport._
 import pekko.util.ByteString
 import pekko.util.Helpers.Requiring
-
-import com.typesafe.config.Config
 
 @SerialVersionUID(1L)
 class PekkoProtocolException(

@@ -16,6 +16,7 @@ package org.apache.pekko.persistence.query.journal.leveldb
 import scala.concurrent.duration.FiniteDuration
 
 import org.apache.pekko
+
 import pekko.actor.ActorRef
 import pekko.annotation.InternalApi
 import pekko.persistence.JournalProtocol.RecoverySuccess

@@ -21,6 +21,7 @@ import scala.collection.immutable
 import scala.util.Random
 
 import org.apache.pekko
+
 import pekko.annotation.InternalApi
 import pekko.cluster.ClusterSettings.DataCenter
 import pekko.cluster.MemberStatus._

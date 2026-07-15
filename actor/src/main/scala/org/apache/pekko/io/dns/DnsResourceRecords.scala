@@ -19,9 +19,9 @@ import scala.annotation.nowarn
 import scala.annotation.switch
 import scala.concurrent.duration._
 
-import CachePolicy._
-
 import org.apache.pekko
+
+import CachePolicy._
 import pekko.actor.NoSerializationVerificationNeeded
 import pekko.annotation.DoNotInherit
 import pekko.annotation.InternalApi

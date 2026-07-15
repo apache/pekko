@@ -13,14 +13,15 @@
 
 package org.apache.pekko.actor.typed.internal
 
-import java.util.function.{ Function => JFunction }
 import java.util.function.Predicate
+import java.util.function.{ Function => JFunction }
 
 import scala.annotation.nowarn
 import scala.annotation.tailrec
 import scala.util.control.NonFatal
 
 import org.apache.pekko
+
 import pekko.actor.DeadLetter
 import pekko.actor.typed.Behavior
 import pekko.actor.typed.Signal

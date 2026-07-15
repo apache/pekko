@@ -17,9 +17,10 @@ import java.io.PrintStream
 import java.util
 import java.util.concurrent.TimeUnit
 
+import org.apache.pekko
+
 import com.codahale.metrics._
 
-import org.apache.pekko
 import pekko.testkit.metrics._
 
 /**

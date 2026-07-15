@@ -16,6 +16,7 @@ package org.apache.pekko.cluster.metrics.sample
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
 import pekko.actor.{ Actor, ActorRef, Props, ReceiveTimeout }
 import pekko.routing.ConsistentHashingRouter.ConsistentHashableEnvelope
 import pekko.routing.FromConfig

@@ -17,9 +17,12 @@ import java.io.File
 
 import scala.concurrent.{ ExecutionContext, Future }
 
+import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import org.apache.commons.io.FileUtils
 
-import org.apache.pekko
 import pekko.Done
 import pekko.actor.{ Actor, ActorLogging, ActorRef, ActorSystem, PoisonPill, Props }
 import pekko.cluster.{ Cluster, MemberStatus }
@@ -28,8 +31,6 @@ import pekko.cluster.sharding.ShardRegion.MessageExtractor
 import pekko.stream.scaladsl.{ Sink, Source }
 import pekko.testkit.{ DeadLettersFilter, PekkoSpec, TestProbe, WithLogCapturing }
 import pekko.testkit.TestEvent.Mute
-
-import com.typesafe.config.ConfigFactory
 
 object ShardRegionSpec {
   val host = "127.0.0.1"

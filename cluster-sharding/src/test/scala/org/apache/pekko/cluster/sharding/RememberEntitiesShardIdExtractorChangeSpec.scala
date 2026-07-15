@@ -16,6 +16,9 @@ package org.apache.pekko.cluster.sharding
 import java.util.UUID
 
 import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor.ActorRef
 import pekko.actor.ActorSystem
 import pekko.actor.Props
@@ -25,8 +28,6 @@ import pekko.persistence.PersistentActor
 import pekko.testkit.ImplicitSender
 import pekko.testkit.PekkoSpec
 import pekko.testkit.TestProbe
-
-import com.typesafe.config.ConfigFactory
 
 /**
  * Covers that remembered entities is correctly migrated when used and the shard id extractor

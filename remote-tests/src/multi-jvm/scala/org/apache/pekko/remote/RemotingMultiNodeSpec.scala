@@ -14,13 +14,14 @@
 package org.apache.pekko.remote
 
 import org.apache.pekko
-import pekko.remote.artery.ArterySpecSupport
-import pekko.remote.testkit.{ MultiNodeConfig, MultiNodeSpec, STMultiNodeSpec }
-import pekko.testkit.{ DefaultTimeout, ImplicitSender }
 
 import org.scalatest.Suite
 
 import com.typesafe.config.ConfigFactory
+
+import pekko.remote.artery.ArterySpecSupport
+import pekko.remote.testkit.{ MultiNodeConfig, MultiNodeSpec, STMultiNodeSpec }
+import pekko.testkit.{ DefaultTimeout, ImplicitSender }
 
 object RemotingMultiNodeSpec {
 

@@ -14,18 +14,19 @@
 package org.apache.pekko.stream.scaladsl
 
 import scala.annotation.nowarn
-import scala.concurrent.{ Future, Promise }
 import scala.concurrent.duration._
+import scala.concurrent.{ Future, Promise }
 import scala.util.control.NoStackTrace
 
 import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.stream._
 import pekko.stream.stage.{ GraphStage, GraphStageLogic }
 import pekko.stream.testkit.StreamSpec
 import pekko.stream.testkit.Utils._
 import pekko.stream.testkit.scaladsl.TestSink
-
-import com.typesafe.config.ConfigFactory
 
 @nowarn // tests deprecated APIs
 class FlowRecoverWithSpec

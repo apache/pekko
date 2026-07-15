@@ -15,9 +15,10 @@ package org.apache.pekko.persistence.journal.leveldb
 
 import scala.concurrent.Future
 
+import org.apache.pekko
+
 import org.iq80.leveldb.DBIterator
 
-import org.apache.pekko
 import pekko.persistence._
 import pekko.persistence.journal.AsyncRecovery
 import pekko.persistence.journal.leveldb.LeveldbJournal.ReplayedTaggedMessage

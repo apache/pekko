@@ -20,6 +20,10 @@ package org.apache.pekko.remote.artery
 import java.nio.ByteBuffer
 
 import org.apache.pekko
+
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
+
 import pekko.actor.SelectChildName
 import pekko.actor.SelectChildPattern
 import pekko.actor.SelectParent
@@ -28,9 +32,6 @@ import pekko.protobufv3.internal.ByteString
 import pekko.protobufv3.internal.UnknownFieldSet
 import pekko.remote.ContainerFormats
 import pekko.remote.ContainerFormats.PatternType
-
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpec
 
 class ActorSelectionQueueDistributionSpec extends AnyWordSpec with Matchers {
 

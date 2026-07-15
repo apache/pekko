@@ -21,9 +21,12 @@ import scala.concurrent.duration._
 import scala.util.Failure
 import scala.util.Success
 
+import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import org.openjdk.jmh.annotations._
 
-import org.apache.pekko
 import pekko.Done
 import pekko.actor.typed.ActorRef
 import pekko.actor.typed.ActorSystem
@@ -32,8 +35,6 @@ import pekko.actor.typed.delivery.ProducerController.MessageWithConfirmation
 import pekko.actor.typed.receptionist.ServiceKey
 import pekko.actor.typed.scaladsl.AskPattern._
 import pekko.actor.typed.scaladsl.Behaviors
-
-import com.typesafe.config.ConfigFactory
 
 object Producer {
   sealed trait Command

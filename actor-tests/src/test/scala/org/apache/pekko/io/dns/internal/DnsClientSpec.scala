@@ -20,6 +20,7 @@ import scala.collection.{ immutable => im }
 
 import org.apache.pekko
 import org.apache.pekko.actor.Status.Failure
+
 import pekko.actor.Props
 import pekko.io.Udp
 import pekko.io.dns.{ ARecord, CachePolicy, RecordClass, RecordType }

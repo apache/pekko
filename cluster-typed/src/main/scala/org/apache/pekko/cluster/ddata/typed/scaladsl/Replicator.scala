@@ -16,6 +16,7 @@ package org.apache.pekko.cluster.ddata.typed.scaladsl
 import scala.concurrent.duration.FiniteDuration
 
 import org.apache.pekko
+
 import pekko.actor.typed.ActorRef
 import pekko.actor.typed.Behavior
 import pekko.cluster.{ ddata => dd }

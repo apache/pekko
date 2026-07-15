@@ -21,13 +21,14 @@ import scala.concurrent.duration._
 import scala.reflect.ClassTag
 
 import org.apache.pekko
+
+import org.scalatest.wordspec.AnyWordSpecLike
+
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
 import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
 import pekko.actor.testkit.typed.scaladsl.TestProbe
 import pekko.actor.typed.scaladsl.Behaviors
 import pekko.actor.typed.scaladsl.adapter._
-
-import org.scalatest.wordspec.AnyWordSpecLike
 
 class CancelReceiveTimeoutSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike with LogCapturing {
 

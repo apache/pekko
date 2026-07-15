@@ -15,9 +15,10 @@ package org.apache.pekko.persistence
 
 import java.io.File
 
+import org.apache.pekko
+
 import org.apache.commons.io.FileUtils
 
-import org.apache.pekko
 import pekko.actor._
 import pekko.persistence.serialization.Snapshot
 import pekko.serialization.{ Serialization, SerializationExtension }

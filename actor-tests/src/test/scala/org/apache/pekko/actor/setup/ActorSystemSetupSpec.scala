@@ -14,11 +14,12 @@
 package org.apache.pekko.actor.setup
 
 import org.apache.pekko
-import pekko.actor.ActorSystem
-import pekko.testkit.TestKit
 
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
+
+import pekko.actor.ActorSystem
+import pekko.testkit.TestKit
 
 case class DummySetup(name: String) extends Setup
 case class DummySetup2(name: String) extends Setup

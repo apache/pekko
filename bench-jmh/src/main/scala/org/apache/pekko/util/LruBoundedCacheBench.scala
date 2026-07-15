@@ -18,9 +18,9 @@ import java.util.concurrent.TimeUnit
 
 import scala.util.Random
 
-import org.openjdk.jmh.annotations.{ Param, _ }
-
 import org.apache.pekko.remote.artery.LruBoundedCache
+
+import org.openjdk.jmh.annotations.{ Param, _ }
 
 @State(Scope.Benchmark)
 @Measurement(timeUnit = TimeUnit.MICROSECONDS)

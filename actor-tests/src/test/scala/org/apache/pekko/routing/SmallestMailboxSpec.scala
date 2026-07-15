@@ -18,6 +18,7 @@ import java.util.concurrent.ConcurrentHashMap
 import scala.concurrent.Await
 
 import org.apache.pekko
+
 import pekko.actor.{ Actor, Props }
 import pekko.testkit.{ DefaultTimeout, ImplicitSender, PekkoSpec, TestLatch }
 

@@ -20,10 +20,11 @@ package org.apache.pekko.dispatch
 import java.util.concurrent.ThreadFactory
 
 import org.apache.pekko
-import pekko.testkit.PekkoSpec
-import pekko.util.JavaVersion
 
 import com.typesafe.config.{ Config, ConfigFactory }
+
+import pekko.testkit.PekkoSpec
+import pekko.util.JavaVersion
 
 object ForkJoinExecutorConfiguratorSpec {
   // Keep the root config explicit so the dispatcher-config integration checks below

@@ -14,6 +14,7 @@
 package org.apache.pekko.dispatch.internal
 
 import org.apache.pekko
+
 import pekko.annotation.InternalApi
 
 /**

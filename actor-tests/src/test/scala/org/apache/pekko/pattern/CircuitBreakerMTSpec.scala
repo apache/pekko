@@ -14,9 +14,9 @@
 package org.apache.pekko.pattern
 
 import scala.collection.immutable
-import scala.concurrent.{ Await, Future }
 import scala.concurrent.ExecutionContextExecutor
 import scala.concurrent.duration._
+import scala.concurrent.{ Await, Future }
 
 import org.apache.pekko.testkit._
 

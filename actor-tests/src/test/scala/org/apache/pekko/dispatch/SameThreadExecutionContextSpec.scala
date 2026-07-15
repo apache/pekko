@@ -17,10 +17,11 @@ import scala.concurrent.ExecutionContext
 import scala.concurrent.Promise
 
 import org.apache.pekko
-import pekko.Done
-import pekko.testkit.PekkoSpec
 
 import org.scalatest.matchers.should.Matchers
+
+import pekko.Done
+import pekko.testkit.PekkoSpec
 
 class SameThreadExecutionContextSpec extends PekkoSpec with Matchers {
 

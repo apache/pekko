@@ -14,6 +14,9 @@
 package org.apache.pekko.persistence.typed
 
 import org.apache.pekko
+
+import org.scalatest.wordspec.AnyWordSpecLike
+
 import pekko.Done
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
 import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
@@ -26,8 +29,6 @@ import pekko.persistence.typed.internal.{ ReplicatedPublishedEventMetaData, Vers
 import pekko.persistence.typed.scaladsl.Effect
 import pekko.persistence.typed.scaladsl.EventSourcedBehavior
 import pekko.persistence.typed.scaladsl.ReplicatedEventSourcing
-
-import org.scalatest.wordspec.AnyWordSpecLike
 
 object ReplicatedEventPublishingSpec {
 

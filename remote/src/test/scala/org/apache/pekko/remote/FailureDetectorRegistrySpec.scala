@@ -16,6 +16,7 @@ package org.apache.pekko.remote
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
 import pekko.remote.FailureDetector.Clock
 import pekko.testkit.PekkoSpec
 

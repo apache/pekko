@@ -16,6 +16,7 @@ package org.apache.pekko.persistence.typed.scaladsl
 import scala.concurrent.duration.FiniteDuration
 
 import org.apache.pekko
+
 import pekko.persistence.fsm.PersistentFSM.PersistentFSMSnapshot
 import pekko.persistence.typed.SnapshotAdapter
 

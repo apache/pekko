@@ -14,12 +14,13 @@
 package org.apache.pekko.cluster
 
 import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.cluster.MemberStatus._
 import pekko.remote.testconductor.RoleName
 import pekko.remote.testkit.MultiNodeConfig
 import pekko.testkit._
-
-import com.typesafe.config.ConfigFactory
 
 object MinMembersBeforeUpMultiJvmSpec extends MultiNodeConfig {
   val first = role("first")

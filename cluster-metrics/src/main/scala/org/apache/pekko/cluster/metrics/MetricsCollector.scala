@@ -20,9 +20,10 @@ import java.lang.management.MemoryMXBean
 import java.lang.management.MemoryUsage
 import java.lang.management.OperatingSystemMXBean
 
+import org.apache.pekko
+
 import org.hyperic.sigar.SigarProxy
 
-import org.apache.pekko
 import pekko.ConfigurationException
 import pekko.actor.ActorSystem
 import pekko.actor.Address

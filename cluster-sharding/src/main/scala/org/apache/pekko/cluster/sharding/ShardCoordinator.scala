@@ -21,6 +21,7 @@ import scala.concurrent.duration._
 import scala.util.Success
 
 import org.apache.pekko
+
 import pekko.actor._
 import pekko.actor.DeadLetterSuppression
 import pekko.annotation.{ InternalApi, InternalStableApi }
@@ -43,7 +44,7 @@ import pekko.cluster.sharding.internal.ClusterShardAllocationMixin.RegionEntry
 import pekko.cluster.sharding.internal.ClusterShardAllocationMixin.ShardSuitabilityOrdering
 import pekko.cluster.sharding.internal.EventSourcedRememberEntitiesCoordinatorStore.MigrationMarker
 import pekko.event.{ BusLogging, Logging }
-import pekko.pattern.{ pipe, AskTimeoutException }
+import pekko.pattern.{ AskTimeoutException, pipe }
 import pekko.persistence._
 import pekko.util.PrettyDuration._
 import pekko.util.Timeout

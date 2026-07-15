@@ -27,8 +27,16 @@ import java.util.logging.FileHandler
 
 import scala.annotation.nowarn
 import scala.collection.immutable
-import scala.concurrent.duration._
 import scala.concurrent.duration.FiniteDuration
+import scala.concurrent.duration._
+
+import org.apache.pekko
+
+import org.scalatest.BeforeAndAfterAll
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
+
+import com.typesafe.config.ConfigFactory
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonSubTypes
@@ -54,7 +62,6 @@ import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.scala.JsonScalaEnumeration
 
-import org.apache.pekko
 import pekko.actor.ActorRef
 import pekko.actor.ActorSystem
 import pekko.actor.Address
@@ -68,12 +75,6 @@ import pekko.serialization.SerializationExtension
 import pekko.serialization.SerializerWithStringManifest
 import pekko.testkit.TestActors
 import pekko.testkit.TestKit
-
-import org.scalatest.BeforeAndAfterAll
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpecLike
-
-import com.typesafe.config.ConfigFactory
 
 object ScalaTestMessages {
   trait TestMessage

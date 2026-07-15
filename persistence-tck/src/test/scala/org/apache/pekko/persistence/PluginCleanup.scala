@@ -15,9 +15,9 @@ package org.apache.pekko.persistence
 
 import java.io.File
 
-import org.apache.commons.io.FileUtils
-
 import org.scalatest.BeforeAndAfterAll
+
+import org.apache.commons.io.FileUtils
 
 trait PluginCleanup extends BeforeAndAfterAll { self: PluginSpec =>
   val storageLocations =

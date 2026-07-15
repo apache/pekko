@@ -17,14 +17,15 @@ import scala.concurrent.Future
 import scala.concurrent.duration.FiniteDuration
 
 import org.apache.pekko
-import pekko.actor.ActorSystem
-import pekko.discovery.ServiceDiscovery.Resolved
-import pekko.testkit.TestKit
 
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
 import com.typesafe.config.ConfigFactory
+
+import pekko.actor.ActorSystem
+import pekko.discovery.ServiceDiscovery.Resolved
+import pekko.testkit.TestKit
 
 class DiscoveryConfigurationSpec extends AnyWordSpec with Matchers {
 

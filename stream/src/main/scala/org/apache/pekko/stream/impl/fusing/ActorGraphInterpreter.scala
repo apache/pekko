@@ -23,6 +23,11 @@ import scala.concurrent.Promise
 import scala.util.control.NonFatal
 
 import org.apache.pekko
+
+import org.reactivestreams.Publisher
+import org.reactivestreams.Subscriber
+import org.reactivestreams.Subscription
+
 import pekko.Done
 import pekko.actor._
 import pekko.annotation.InternalApi
@@ -40,10 +45,6 @@ import pekko.stream.stage.GraphStageLogic
 import pekko.stream.stage.InHandler
 import pekko.stream.stage.OutHandler
 import pekko.util.OptionVal
-
-import org.reactivestreams.Publisher
-import org.reactivestreams.Subscriber
-import org.reactivestreams.Subscription
 
 /**
  * INTERNAL API

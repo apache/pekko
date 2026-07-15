@@ -17,6 +17,9 @@ import scala.concurrent.duration.FiniteDuration
 import scala.jdk.DurationConverters._
 
 import org.apache.pekko
+
+import org.slf4j.LoggerFactory
+
 import pekko.actor.ExtendedActorSystem
 import pekko.actor.typed.{ ActorRef, ActorSystem, Extension, ExtensionId, Props }
 import pekko.actor.typed.Behavior
@@ -27,8 +30,6 @@ import pekko.cluster.{ ddata => dd }
 import pekko.cluster.Cluster
 import pekko.cluster.ddata.ReplicatedData
 import pekko.cluster.ddata.SelfUniqueAddress
-
-import org.slf4j.LoggerFactory
 
 object DistributedData extends ExtensionId[DistributedData] {
   def get(system: ActorSystem[?]): DistributedData = apply(system)

@@ -24,6 +24,9 @@ import scala.collection.immutable
 import scala.util.control.NoStackTrace
 
 import org.apache.pekko
+
+import org.reactivestreams.{ Publisher, Subscriber }
+
 import pekko.annotation.InternalApi
 import pekko.stream._
 import pekko.stream.ActorAttributes.StreamSubscriptionTimeout
@@ -37,8 +40,6 @@ import pekko.stream.stage.{
   InHandler,
   TimerGraphStageLogic
 }
-
-import org.reactivestreams.{ Publisher, Subscriber }
 
 /**
  * INTERNAL API

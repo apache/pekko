@@ -16,6 +16,7 @@ package org.apache.pekko.stream.testkit
 import scala.util.control.NonFatal
 
 import org.apache.pekko
+
 import pekko.actor.NoSerializationVerificationNeeded
 import pekko.stream._
 import pekko.stream.scaladsl.{ Sink, Source }

@@ -18,6 +18,7 @@ import java.util
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
 import pekko.stream.scaladsl.Source
 import pekko.stream.testkit.scaladsl.TestSink
 import pekko.testkit._

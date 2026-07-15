@@ -17,6 +17,9 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import org.scalatest.wordspec.AnyWordSpecLike
+
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
 import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
 import pekko.actor.testkit.typed.scaladsl.TestProbe
@@ -25,8 +28,6 @@ import pekko.actor.typed.scaladsl.adapter.TypedActorSystemOps
 import pekko.persistence.typed.scaladsl.{ Effect, EventSourcedBehavior }
 import pekko.persistence.typed.scaladsl.EventSourcedBehavior.CommandHandler
 import pekko.testkit.TestLatch
-
-import org.scalatest.wordspec.AnyWordSpecLike
 
 object ManyRecoveriesSpec {
 

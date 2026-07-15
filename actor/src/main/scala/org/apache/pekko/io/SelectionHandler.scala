@@ -13,12 +13,12 @@
 
 package org.apache.pekko.io
 
-import java.nio.channels.{ CancelledKeyException, SelectableChannel, SelectionKey }
 import java.nio.channels.ClosedChannelException
 import java.nio.channels.SelectionKey._
 import java.nio.channels.spi.SelectorProvider
-import java.util.{ Iterator => JIterator }
+import java.nio.channels.{ CancelledKeyException, SelectableChannel, SelectionKey }
 import java.util.concurrent.atomic.AtomicBoolean
+import java.util.{ Iterator => JIterator }
 
 import scala.annotation.tailrec
 import scala.concurrent.ExecutionContext
@@ -26,6 +26,9 @@ import scala.util.Try
 import scala.util.control.NonFatal
 
 import org.apache.pekko
+
+import com.typesafe.config.Config
+
 import pekko.actor._
 import pekko.dispatch.{ RequiresMessageQueue, UnboundedMessageQueueSemantics }
 import pekko.event.Logging
@@ -33,8 +36,6 @@ import pekko.event.LoggingAdapter
 import pekko.routing.RandomPool
 import pekko.util.Helpers.Requiring
 import pekko.util.SerializedSuspendableExecutionContext
-
-import com.typesafe.config.Config
 
 abstract class SelectionHandlerSettings(config: Config) {
   import config._

@@ -16,13 +16,14 @@ package org.apache.pekko.persistence.testkit
 import java.util.UUID
 
 import org.apache.pekko
-import pekko.actor.{ ActorRef, ActorSystem }
-import pekko.persistence._
-import pekko.testkit.TestKitBase
 
 import org.scalatest.wordspec.AnyWordSpecLike
 
 import com.typesafe.config.ConfigFactory
+
+import pekko.actor.{ ActorRef, ActorSystem }
+import pekko.persistence._
+import pekko.testkit.TestKitBase
 
 trait CommonUtils extends AnyWordSpecLike with TestKitBase {
 

@@ -16,6 +16,7 @@ package org.apache.pekko.persistence
 import java.io._
 
 import org.apache.pekko
+
 import pekko.actor.{ ActorRef, Props }
 import pekko.serialization.Serializer
 import pekko.testkit.ImplicitSender

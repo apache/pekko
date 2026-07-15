@@ -18,6 +18,7 @@ import scala.concurrent.Promise
 import scala.util.control.NonFatal
 
 import org.apache.pekko
+
 import pekko.annotation.InternalApi
 import pekko.stream._
 import pekko.stream.Attributes.SourceLocation

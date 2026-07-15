@@ -16,6 +16,7 @@ package org.apache.pekko.actor
 import scala.util.control.NoStackTrace
 
 import org.apache.pekko
+
 import pekko.actor.SupervisorStrategy.{ Restart, Stop }
 import pekko.dispatch.sysmsg.SystemMessage
 import pekko.event.EventStream

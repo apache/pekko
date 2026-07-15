@@ -16,6 +16,7 @@ package org.apache.pekko.cluster.routing
 import scala.concurrent.Await
 
 import org.apache.pekko
+
 import pekko.actor.{ Actor, ActorRef, Props }
 import pekko.cluster.MultiNodeClusterSpec
 import pekko.pattern.ask

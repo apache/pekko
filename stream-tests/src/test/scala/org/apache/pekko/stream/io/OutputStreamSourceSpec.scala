@@ -19,11 +19,12 @@ import java.util.concurrent.TimeoutException
 
 import scala.concurrent.Await
 import scala.concurrent.Future
-import scala.concurrent.duration._
 import scala.concurrent.duration.Duration.Zero
+import scala.concurrent.duration._
 import scala.util.Random
 
 import org.apache.pekko
+
 import pekko.stream._
 import pekko.stream.Attributes.inputBuffer
 import pekko.stream.impl.io.OutputStreamSourceStage

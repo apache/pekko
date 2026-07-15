@@ -16,6 +16,12 @@ package org.apache.pekko.cluster.sharding.passivation
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import org.scalatest.concurrent.Eventually
+
+import com.typesafe.config.Config
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor.Actor
 import pekko.actor.ActorRef
 import pekko.actor.Props
@@ -27,11 +33,6 @@ import pekko.testkit.PekkoSpec
 import pekko.testkit.TestProbe
 import pekko.testkit.WithLogCapturing
 import pekko.util.Clock
-
-import org.scalatest.concurrent.Eventually
-
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
 
 object EntityPassivationSpec {
 

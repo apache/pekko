@@ -19,17 +19,18 @@ import java.util.concurrent.atomic.AtomicInteger
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import org.scalatest.wordspec.AnyWordSpecLike
+
+import com.typesafe.config.Config
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor.testkit.typed.FishingOutcome
 import pekko.actor.testkit.typed.scaladsl._
 import pekko.actor.typed.delivery.ConsumerController
 import pekko.actor.typed.delivery.WorkPullingProducerController
 import pekko.actor.typed.receptionist.ServiceKey
 import pekko.persistence.typed.PersistenceId
-
-import org.scalatest.wordspec.AnyWordSpecLike
-
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
 
 object WorkPullingWithEventSourcedProducerQueueSpec {
   def conf: Config =

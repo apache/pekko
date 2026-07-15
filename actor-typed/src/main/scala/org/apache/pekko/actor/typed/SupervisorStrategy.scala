@@ -18,10 +18,11 @@ import scala.concurrent.duration.FiniteDuration
 import scala.jdk.DurationConverters._
 
 import org.apache.pekko
-import pekko.annotation.DoNotInherit
-import pekko.annotation.InternalApi
 
 import org.slf4j.event.Level
+
+import pekko.annotation.DoNotInherit
+import pekko.annotation.InternalApi
 
 object SupervisorStrategy {
 

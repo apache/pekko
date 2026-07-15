@@ -14,6 +14,7 @@
 package org.apache.pekko.cluster.sharding.typed
 
 import org.apache.pekko
+
 import pekko.cluster.sharding.typed.internal.Murmur2
 
 abstract class Murmur2NoEnvelopeMessageExtractor[M](val numberOfShards: Int) extends ShardingMessageExtractor[M, M] {

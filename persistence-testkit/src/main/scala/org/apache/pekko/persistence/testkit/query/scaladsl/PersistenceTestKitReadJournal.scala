@@ -19,6 +19,11 @@ import scala.annotation.nowarn
 import scala.collection.immutable
 
 import org.apache.pekko
+
+import org.slf4j.LoggerFactory
+
+import com.typesafe.config.Config
+
 import pekko.NotUsed
 import pekko.actor.ExtendedActorSystem
 import pekko.persistence.Persistence
@@ -48,10 +53,6 @@ import pekko.persistence.testkit.query.internal.EventsByTagStage
 import pekko.persistence.testkit.query.internal.TypedEventsByPersistenceIdStage
 import pekko.persistence.typed.PersistenceId
 import pekko.stream.scaladsl.Source
-
-import org.slf4j.LoggerFactory
-
-import com.typesafe.config.Config
 
 object PersistenceTestKitReadJournal {
   val Identifier = "pekko.persistence.testkit.query"

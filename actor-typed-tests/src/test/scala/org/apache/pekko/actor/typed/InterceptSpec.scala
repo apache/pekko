@@ -18,6 +18,9 @@ import java.util.concurrent.atomic.AtomicBoolean
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import org.scalatest.wordspec.AnyWordSpecLike
+
 import pekko.actor.ActorInitializationException
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
 import pekko.actor.testkit.typed.scaladsl.LoggingTestKit
@@ -26,8 +29,6 @@ import pekko.actor.testkit.typed.scaladsl.TestProbe
 import pekko.actor.typed.internal.PoisonPill
 import pekko.actor.typed.internal.PoisonPillInterceptor
 import pekko.actor.typed.scaladsl.Behaviors
-
-import org.scalatest.wordspec.AnyWordSpecLike
 
 object InterceptSpec {
   final case class Msg(hello: String, replyTo: ActorRef[String])

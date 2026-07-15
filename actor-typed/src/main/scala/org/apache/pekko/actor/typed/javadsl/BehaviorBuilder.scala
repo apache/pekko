@@ -15,9 +15,9 @@ package org.apache.pekko.actor.typed.javadsl
 
 import scala.annotation.tailrec
 
-import BehaviorBuilder._
-
 import org.apache.pekko
+
+import BehaviorBuilder._
 import pekko.actor.typed.Behavior
 import pekko.actor.typed.ExtensibleBehavior
 import pekko.actor.typed.Signal

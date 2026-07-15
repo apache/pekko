@@ -16,6 +16,7 @@ package org.apache.pekko.actor.typed.javadsl
 import scala.annotation.tailrec
 
 import org.apache.pekko
+
 import pekko.actor.typed.{ Behavior, MessageAdaptionFailure, Signal }
 import pekko.annotation.InternalApi
 import pekko.japi.function.{ Creator, Function => JFunction, Predicate => JPredicate }

@@ -16,6 +16,7 @@ package org.apache.pekko.stream.scaladsl
 import scala.collection.immutable
 
 import org.apache.pekko
+
 import pekko.NotUsed
 import pekko.stream.testkit.StreamSpec
 import pekko.stream.testkit.TestSubscriber.Probe

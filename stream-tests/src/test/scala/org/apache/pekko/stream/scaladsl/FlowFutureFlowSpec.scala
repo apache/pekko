@@ -16,6 +16,7 @@ package org.apache.pekko.stream.scaladsl
 import scala.concurrent.{ Future, Promise }
 
 import org.apache.pekko
+
 import pekko.NotUsed
 import pekko.stream.{ AbruptStageTerminationException, Attributes, Materializer, NeverMaterializedException }
 import pekko.stream.SubscriptionWithCancelException.NonFailureCancellation

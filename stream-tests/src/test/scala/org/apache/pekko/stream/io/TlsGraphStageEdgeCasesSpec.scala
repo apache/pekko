@@ -25,6 +25,9 @@ import scala.concurrent.duration._
 import scala.util.{ Success, Try }
 
 import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.NotUsed
 import pekko.stream._
 import pekko.stream.TLSProtocol._
@@ -33,8 +36,6 @@ import pekko.stream.scaladsl._
 import pekko.stream.testkit.StreamSpec
 import pekko.testkit.TestDuration
 import pekko.util.ByteString
-
-import com.typesafe.config.ConfigFactory
 
 /**
  * Edge cases for the [[TlsGraphStage]] path that are awkward to express in the

@@ -16,6 +16,7 @@ package org.apache.pekko.persistence.testkit.scaladsl
 import java.io.NotSerializableException
 
 import org.apache.pekko
+
 import pekko.persistence.CapabilityFlag
 import pekko.persistence.journal.JournalSpec
 import pekko.persistence.snapshot.SnapshotStoreSpec

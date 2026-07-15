@@ -17,6 +17,7 @@ import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
 import org.apache.pekko
+
 import pekko.actor.typed.ActorRef
 import pekko.actor.typed.Behavior
 import pekko.persistence.testkit.query.scaladsl.PersistenceTestKitReadJournal

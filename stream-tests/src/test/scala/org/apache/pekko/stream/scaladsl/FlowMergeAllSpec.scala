@@ -14,6 +14,7 @@
 package org.apache.pekko.stream.scaladsl
 
 import org.apache.pekko
+
 import pekko.stream.testkit._
 import pekko.stream.testkit.scaladsl.TestSink
 

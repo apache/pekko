@@ -17,6 +17,9 @@ import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
 import org.apache.pekko
+
+import org.scalatest.wordspec.AnyWordSpecLike
+
 import pekko.actor.ActorCell
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
 import pekko.actor.testkit.typed.scaladsl.LoggingTestKit
@@ -28,8 +31,6 @@ import pekko.dispatch.BoundedMessageQueueSemantics
 import pekko.dispatch.BoundedNodeMessageQueue
 import pekko.dispatch.MessageQueue
 import pekko.dispatch.UnboundedMessageQueueSemantics
-
-import org.scalatest.wordspec.AnyWordSpecLike
 
 class MailboxSelectorSpec extends ScalaTestWithActorTestKit("""
     specific-mailbox {

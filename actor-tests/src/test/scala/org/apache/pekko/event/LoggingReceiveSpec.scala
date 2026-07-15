@@ -18,13 +18,14 @@ import scala.concurrent.duration._
 import scala.jdk.CollectionConverters._
 
 import org.apache.pekko
-import pekko.actor._
-import pekko.testkit._
 
 import org.scalatest.BeforeAndAfterAll
 import org.scalatest.wordspec.AnyWordSpec
 
 import com.typesafe.config.ConfigFactory
+
+import pekko.actor._
+import pekko.testkit._
 
 object LoggingReceiveSpec {
   class TestLogActor extends Actor {

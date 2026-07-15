@@ -17,6 +17,7 @@ import scala.concurrent.duration._
 import scala.util.control.NoStackTrace
 
 import org.apache.pekko
+
 import pekko.stream.{ AbruptStageTerminationException, KillSwitches, Materializer }
 import pekko.stream.testkit.StreamSpec
 import pekko.stream.testkit.TestSubscriber

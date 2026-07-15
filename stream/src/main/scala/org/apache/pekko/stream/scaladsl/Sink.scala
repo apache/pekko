@@ -21,7 +21,10 @@ import scala.concurrent.Future
 import scala.util.{ Failure, Success, Try }
 
 import org.apache.pekko
-import pekko.{ util, Done, NotUsed }
+
+import org.reactivestreams.{ Publisher, Subscriber }
+
+import pekko.{ Done, NotUsed, util }
 import pekko.actor.ActorRef
 import pekko.annotation.InternalApi
 import pekko.stream._
@@ -29,8 +32,6 @@ import pekko.stream.impl._
 import pekko.stream.impl.Stages.DefaultAttributes
 import pekko.stream.impl.fusing.{ CountSink, GraphStages, SourceSink }
 import pekko.stream.stage._
-
-import org.reactivestreams.{ Publisher, Subscriber }
 
 /**
  * A `Sink` is a set of stream processing steps that has one open input.

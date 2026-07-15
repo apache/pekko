@@ -16,6 +16,7 @@ package org.apache.pekko.stream.impl.io.compression
 import java.util.zip.Inflater
 
 import org.apache.pekko
+
 import pekko.annotation.InternalApi
 import pekko.stream.impl.io.ByteStringParser
 import pekko.stream.impl.io.ByteStringParser.{ ParseResult, ParseStep }

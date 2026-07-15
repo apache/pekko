@@ -18,10 +18,11 @@ import scala.collection.immutable
 import scala.concurrent.{ Await, Future }
 
 import org.apache.pekko
-import pekko.stream.{ AbruptTerminationException, ActorMaterializer, ActorMaterializerSettings, Materializer }
-import pekko.stream.testkit.{ StreamSpec, TestPublisher }
 
 import com.typesafe.config.ConfigFactory
+
+import pekko.stream.{ AbruptTerminationException, ActorMaterializer, ActorMaterializerSettings, Materializer }
+import pekko.stream.testkit.{ StreamSpec, TestPublisher }
 
 @nowarn
 class TakeLastSinkSpec

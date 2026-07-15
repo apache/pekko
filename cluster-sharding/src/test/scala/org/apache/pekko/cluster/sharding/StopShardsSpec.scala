@@ -16,6 +16,9 @@ package org.apache.pekko.cluster.sharding
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor.Actor
 import pekko.actor.ActorLogging
 import pekko.actor.ActorRef
@@ -32,8 +35,6 @@ import pekko.testkit.PekkoSpec
 import pekko.testkit.TestEvent.Mute
 import pekko.testkit.TestProbe
 import pekko.testkit.WithLogCapturing
-
-import com.typesafe.config.ConfigFactory
 
 object StopShardsSpec {
 

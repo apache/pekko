@@ -17,6 +17,10 @@ import scala.annotation.nowarn
 import scala.reflect.ClassTag
 
 import org.apache.pekko
+
+import com.typesafe.config.Config
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor.ActorSystem
 import pekko.actor.ClassicActorSystemProvider
 import pekko.actor.ExtendedActorSystem
@@ -28,9 +32,6 @@ import pekko.persistence.Persistence
 import pekko.persistence.PersistencePlugin
 import pekko.persistence.PluginProvider
 import pekko.persistence.state.scaladsl.DurableStateStore
-
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
 
 /**
  * Persistence extension for queries.

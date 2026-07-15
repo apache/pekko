@@ -16,7 +16,8 @@ package org.apache.pekko.stream.javadsl
 import scala.jdk.CollectionConverters._
 
 import org.apache.pekko
-import pekko.stream.{ scaladsl, UniformFanInShape }
+
+import pekko.stream.{ UniformFanInShape, scaladsl }
 import pekko.stream.stage.GraphStage
 
 /**

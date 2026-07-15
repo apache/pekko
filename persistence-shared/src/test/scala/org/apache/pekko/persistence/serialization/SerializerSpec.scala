@@ -16,17 +16,18 @@ package org.apache.pekko.persistence.serialization
 import java.io.NotSerializableException
 import java.util.UUID
 
+import org.apache.pekko
+
+import com.typesafe.config._
+
 import org.apache.commons.codec.binary.Hex.{ decodeHex, encodeHex }
 
-import org.apache.pekko
 import pekko.actor._
 import pekko.persistence._
 import pekko.persistence.AtLeastOnceDelivery.{ AtLeastOnceDeliverySnapshot, UnconfirmedDelivery }
 import pekko.serialization._
 import pekko.testkit._
 import pekko.util.ByteString.UTF_8
-
-import com.typesafe.config._
 
 object SerializerSpecConfigs {
   val customSerializers =

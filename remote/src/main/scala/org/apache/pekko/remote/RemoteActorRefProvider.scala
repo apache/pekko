@@ -20,6 +20,7 @@ import scala.util.control.Exception.Catcher
 import scala.util.control.NonFatal
 
 import org.apache.pekko
+
 import pekko.ConfigurationException
 import pekko.Done
 import pekko.actor._

@@ -20,6 +20,7 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
 import pekko.pattern.ask
 import pekko.testkit.DefaultTimeout
 import pekko.testkit.EventFilter

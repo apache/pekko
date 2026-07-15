@@ -16,6 +16,7 @@ package org.apache.pekko.persistence.typed.internal
 import scala.jdk.CollectionConverters._
 
 import org.apache.pekko
+
 import pekko.annotation.InternalApi
 import pekko.persistence.typed.PersistenceId
 import pekko.persistence.typed.ReplicaId

@@ -16,10 +16,11 @@ package org.apache.pekko.remote.artery.compress
 import java.util
 import java.util.Comparator
 
+import org.apache.pekko
+
 import org.agrona.collections.Hashing
 import org.agrona.collections.Object2IntHashMap
 
-import org.apache.pekko
 import pekko.util.HashCode
 
 /**

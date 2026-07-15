@@ -20,18 +20,19 @@ import scala.util.Try
 import scala.xml.Node
 
 import org.apache.pekko
-import pekko.Done
-import pekko.NotUsed
-import pekko.stream._
-import pekko.stream.testkit._
-import pekko.stream.testkit.scaladsl.TestSource
-import pekko.testkit.TestProbe
 
 import org.reactivestreams.Publisher
 import org.reactivestreams.Subscriber
 import org.reactivestreams.Subscription
 
 import org.scalatest.Assertion
+
+import pekko.Done
+import pekko.NotUsed
+import pekko.stream._
+import pekko.stream.testkit._
+import pekko.stream.testkit.scaladsl.TestSource
+import pekko.testkit.TestProbe
 
 class CoupledTerminationFlowSpec extends StreamSpec("""
     pekko.stream.materializer.initial-input-buffer-size = 2

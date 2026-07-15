@@ -22,9 +22,10 @@ import scala.concurrent.Future
 import scala.concurrent.Promise
 import scala.concurrent.duration._
 
+import org.apache.pekko
+
 import org.openjdk.jmh.annotations._
 
-import org.apache.pekko
 import pekko.Done
 import pekko.NotUsed
 import pekko.actor.ActorSystem

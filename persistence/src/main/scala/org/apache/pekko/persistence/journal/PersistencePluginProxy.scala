@@ -19,6 +19,9 @@ import java.util.concurrent.TimeoutException
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import com.typesafe.config.Config
+
 import pekko.actor._
 import pekko.persistence.{
   AtomicWrite,
@@ -32,8 +35,6 @@ import pekko.persistence.{
   SnapshotProtocol
 }
 import pekko.util.Helpers.Requiring
-
-import com.typesafe.config.Config
 
 object PersistencePluginProxy {
   final case class TargetLocation(address: Address)

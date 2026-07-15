@@ -15,12 +15,13 @@ package org.apache.pekko.osgi
 
 import scala.annotation.nowarn
 
-import org.osgi.framework.BundleContext
-
 import org.apache.pekko
-import pekko.actor.ActorSystem
 
 import com.typesafe.config.{ Config, ConfigFactory }
+
+import org.osgi.framework.BundleContext
+
+import pekko.actor.ActorSystem
 
 /**
  * Factory class to create ActorSystem implementations in an OSGi environment.  This mainly involves dealing with

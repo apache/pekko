@@ -17,6 +17,9 @@ import scala.annotation.nowarn
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor._
 import pekko.cluster.Cluster
 import pekko.cluster.ddata.{ Replicator, ReplicatorSettings }
@@ -31,8 +34,6 @@ import pekko.persistence.journal.leveldb.{ SharedLeveldbJournal, SharedLeveldbSt
 import pekko.remote.testconductor.RoleName
 import pekko.testkit._
 import pekko.testkit.TestEvent.Mute
-
-import com.typesafe.config.ConfigFactory
 
 object ClusterShardingSpec {
   // #counter-actor

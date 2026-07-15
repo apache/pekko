@@ -20,6 +20,7 @@ package org.apache.pekko.stream.impl.fusing
 import scala.collection.immutable
 
 import org.apache.pekko
+
 import pekko.annotation.InternalApi
 import pekko.stream.{ Attributes, Outlet, SourceShape }
 import pekko.stream.impl.ReactiveStreamsCompliance

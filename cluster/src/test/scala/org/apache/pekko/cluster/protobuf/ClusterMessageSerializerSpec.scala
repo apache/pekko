@@ -15,9 +15,11 @@ package org.apache.pekko.cluster.protobuf
 
 import scala.annotation.nowarn
 
-import collection.immutable.SortedSet
-
 import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
+import collection.immutable.SortedSet
 import pekko.actor.{ Address, ExtendedActorSystem }
 import pekko.cluster._
 import pekko.cluster.InternalClusterAction.CompatibleConfig
@@ -25,8 +27,6 @@ import pekko.cluster.routing.{ ClusterRouterPool, ClusterRouterPoolSettings }
 import pekko.routing.RoundRobinPool
 import pekko.testkit.PekkoSpec
 import pekko.util.Version
-
-import com.typesafe.config.ConfigFactory
 
 @nowarn
 class ClusterMessageSerializerSpec extends PekkoSpec("pekko.actor.provider = cluster") {

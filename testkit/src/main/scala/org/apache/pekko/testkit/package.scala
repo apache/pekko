@@ -20,6 +20,7 @@ import scala.concurrent.duration.{ Duration, FiniteDuration }
 import scala.reflect.ClassTag
 
 import org.apache.pekko
+
 import pekko.actor.ActorSystem
 
 package object testkit {

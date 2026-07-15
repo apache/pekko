@@ -18,11 +18,12 @@
 package org.apache.pekko.actor.testkit.typed.javadsl
 
 import org.apache.pekko
+
+import com.typesafe.config.Config
+
 import pekko.actor.testkit.typed.internal.TestKitUtils
 import pekko.actor.testkit.typed.scaladsl.ActorTestKit.ApplicationTestConfig
 import pekko.actor.typed.ActorSystem
-
-import com.typesafe.config.Config
 
 final class JUnitJupiterTestKitBuilder() {
 

@@ -15,9 +15,10 @@ package org.apache.pekko.persistence.journal.leveldb
 
 import scala.annotation.nowarn
 
+import org.apache.pekko
+
 import org.iq80.leveldb.DBIterator
 
-import org.apache.pekko
 import pekko.actor.Actor
 import pekko.util.ByteString.UTF_8
 

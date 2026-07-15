@@ -17,9 +17,14 @@ import java.net.InetAddress
 
 import scala.concurrent.duration._
 
-import CachePolicy.Ttl
-
 import org.apache.pekko
+
+import org.scalatest.time.Millis
+import org.scalatest.time.Span
+
+import com.typesafe.config.ConfigFactory
+
+import CachePolicy.Ttl
 import pekko.io.{ Dns, IO }
 import pekko.io.dns.DnsProtocol.{ Ip, RequestType, Srv }
 import pekko.pattern.ask
@@ -27,11 +32,6 @@ import pekko.testkit.SocketUtil
 import pekko.testkit.SocketUtil.Both
 import pekko.testkit.WithLogCapturing
 import pekko.util.Timeout
-
-import org.scalatest.time.Millis
-import org.scalatest.time.Span
-
-import com.typesafe.config.ConfigFactory
 
 /**
  * These tests rely on a DNS server with 2 zones configured, foo.test and bar.example.

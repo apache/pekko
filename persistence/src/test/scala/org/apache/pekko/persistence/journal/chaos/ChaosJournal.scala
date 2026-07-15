@@ -21,6 +21,7 @@ import scala.util.Try
 import scala.util.control.NonFatal
 
 import org.apache.pekko
+
 import pekko.persistence._
 import pekko.persistence.journal.AsyncWriteJournal
 import pekko.persistence.journal.inmem.InmemMessages

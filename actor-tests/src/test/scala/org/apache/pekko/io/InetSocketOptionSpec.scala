@@ -24,6 +24,7 @@ import java.nio.channels.ServerSocketChannel
 import java.nio.channels.SocketChannel
 
 import org.apache.pekko
+
 import pekko.testkit.PekkoSpec
 
 class InetSocketOptionSpec extends PekkoSpec {

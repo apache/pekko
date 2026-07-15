@@ -19,6 +19,7 @@ import scala.concurrent.duration._
 import scala.util.control.NonFatal
 
 import org.apache.pekko
+
 import pekko.actor.typed.{ Behavior, Signal }
 import pekko.actor.typed.internal.PoisonPill
 import pekko.actor.typed.internal.UnstashException

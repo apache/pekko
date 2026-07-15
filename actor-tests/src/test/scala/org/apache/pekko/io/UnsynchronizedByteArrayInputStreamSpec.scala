@@ -20,10 +20,11 @@ package org.apache.pekko.util
 import java.nio.charset.StandardCharsets
 
 import org.apache.pekko
-import pekko.io.UnsynchronizedByteArrayInputStream
 
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
+
+import pekko.io.UnsynchronizedByteArrayInputStream
 
 class UnsynchronizedByteArrayInputStreamSpec extends AnyWordSpec with Matchers {
   "UnsynchronizedByteArrayInputStream" must {

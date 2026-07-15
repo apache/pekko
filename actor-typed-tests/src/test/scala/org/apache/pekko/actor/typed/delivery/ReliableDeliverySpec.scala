@@ -16,13 +16,14 @@ package org.apache.pekko.actor.typed.delivery
 import scala.concurrent.duration._
 
 import org.apache.pekko
-import pekko.actor.testkit.typed.scaladsl.LogCapturing
-import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
 
 import org.scalatest.wordspec.AnyWordSpecLike
 
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
+
+import pekko.actor.testkit.typed.scaladsl.LogCapturing
+import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
 
 object ReliableDeliverySpec {
   val config: Config = ConfigFactory.parseString("""

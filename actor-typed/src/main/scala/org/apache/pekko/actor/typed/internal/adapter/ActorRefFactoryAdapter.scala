@@ -14,6 +14,7 @@
 package org.apache.pekko.actor.typed.internal.adapter
 
 import org.apache.pekko
+
 import pekko.ConfigurationException
 import pekko.actor.typed._
 import pekko.actor.typed.internal.CachedProps

@@ -19,6 +19,7 @@ import scala.collection.immutable
 import scala.jdk.CollectionConverters._
 
 import org.apache.pekko
+
 import pekko.actor.testkit.typed.internal.TestInboxImpl
 import pekko.actor.typed.ActorRef
 import pekko.annotation.{ ApiMayChange, DoNotInherit }

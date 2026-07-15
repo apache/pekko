@@ -24,6 +24,9 @@ import scala.jdk.DurationConverters._
 import scala.reflect.ClassTag
 
 import org.apache.pekko
+
+import org.reactivestreams.{ Publisher, Subscriber, Subscription }
+
 import pekko.actor.{
   ActorRef,
   ActorSystem,
@@ -36,8 +39,6 @@ import pekko.stream._
 import pekko.stream.impl._
 import pekko.testkit.{ TestActor, TestProbe }
 import pekko.testkit.TestActor.AutoPilot
-
-import org.reactivestreams.{ Publisher, Subscriber, Subscription }
 
 /**
  * Provides factory methods for various Publishers.

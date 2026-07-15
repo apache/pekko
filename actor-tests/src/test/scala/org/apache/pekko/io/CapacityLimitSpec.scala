@@ -13,9 +13,9 @@
 
 package org.apache.pekko.io
 
-import Tcp._
-
 import org.apache.pekko
+
+import Tcp._
 import pekko.testkit.{ PekkoSpec, TestProbe }
 import pekko.testkit.SocketUtil.temporaryServerAddresses
 

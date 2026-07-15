@@ -14,6 +14,11 @@
 package org.apache.pekko.persistence.testkit.query
 
 import org.apache.pekko
+
+import org.scalatest.wordspec.AnyWordSpecLike
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.Done
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
 import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
@@ -29,10 +34,6 @@ import pekko.persistence.typed.scaladsl.Effect
 import pekko.persistence.typed.scaladsl.EventSourcedBehavior
 import pekko.stream.scaladsl.Sink
 import pekko.stream.testkit.scaladsl.TestSink
-
-import org.scalatest.wordspec.AnyWordSpecLike
-
-import com.typesafe.config.ConfigFactory
 
 object EventsByPersistenceIdTypedSpec {
   val config = PersistenceTestKitPlugin.config.withFallback(

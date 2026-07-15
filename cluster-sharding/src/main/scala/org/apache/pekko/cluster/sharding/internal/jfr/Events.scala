@@ -13,9 +13,9 @@
 
 package org.apache.pekko.cluster.sharding.internal.jfr
 
-import jdk.jfr.{ Category, Event, Label, StackTrace, Timespan }
-
 import org.apache.pekko.annotation.InternalApi
+
+import jdk.jfr.{ Category, Event, Label, StackTrace, Timespan }
 
 // requires jdk.jfr (available since JDK 9, project baseline is Java 17)
 

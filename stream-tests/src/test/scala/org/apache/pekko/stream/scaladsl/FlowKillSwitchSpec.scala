@@ -16,6 +16,7 @@ package org.apache.pekko.stream.scaladsl
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
 import pekko.Done
 import pekko.stream.ClosedShape
 import pekko.stream.KillSwitches

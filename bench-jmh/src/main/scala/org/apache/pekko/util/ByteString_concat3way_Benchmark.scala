@@ -12,10 +12,10 @@ package org.apache.pekko.util
 import java.nio.{ ByteBuffer, ByteOrder }
 import java.util.concurrent.TimeUnit
 
+import org.apache.pekko.util.ByteString.{ ByteString1C, ByteString2 }
+
 import org.openjdk.jmh.annotations._
 import org.openjdk.jmh.infra.Blackhole
-
-import org.apache.pekko.util.ByteString.{ ByteString1C, ByteString2 }
 
 /**
  * Directional benchmark for PR #2924, comparing the two candidate strategies for

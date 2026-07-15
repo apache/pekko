@@ -16,6 +16,7 @@ package org.apache.pekko.persistence.testkit.scaladsl
 import scala.reflect.ClassTag
 
 import org.apache.pekko
+
 import pekko.actor.testkit.typed.scaladsl.BehaviorTestKit
 import pekko.actor.typed.Behavior
 import pekko.annotation.DoNotInherit

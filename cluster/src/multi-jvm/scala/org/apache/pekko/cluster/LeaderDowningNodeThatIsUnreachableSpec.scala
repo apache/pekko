@@ -16,10 +16,11 @@ package org.apache.pekko.cluster
 import scala.concurrent.duration._
 
 import org.apache.pekko
-import pekko.remote.testkit.MultiNodeConfig
-import pekko.testkit._
 
 import com.typesafe.config.ConfigFactory
+
+import pekko.remote.testkit.MultiNodeConfig
+import pekko.testkit._
 
 final case class LeaderDowningNodeThatIsUnreachableMultiNodeConfig(failureDetectorPuppet: Boolean)
     extends MultiNodeConfig {

@@ -25,6 +25,9 @@ import scala.util.control.Exception.Catcher
 import scala.util.control.NonFatal
 
 import org.apache.pekko
+
+import org.slf4j.event.Level
+
 import pekko.actor.DeadLetterSuppression
 import pekko.actor.Dropped
 import pekko.actor.typed.BehaviorInterceptor.PreStartTarget
@@ -36,8 +39,6 @@ import pekko.actor.typed.scaladsl.StashBuffer
 import pekko.annotation.InternalApi
 import pekko.event.Logging
 import pekko.util.OptionVal
-
-import org.slf4j.event.Level
 
 /**
  * INTERNAL API

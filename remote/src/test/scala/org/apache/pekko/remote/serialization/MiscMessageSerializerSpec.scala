@@ -22,6 +22,9 @@ import scala.concurrent.duration._
 import scala.util.control.NoStackTrace
 
 import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.{ Done, NotUsed }
 import pekko.actor._
 import pekko.pattern.AskTimeoutException
@@ -32,8 +35,6 @@ import pekko.routing._
 import pekko.serialization.SerializationExtension
 import pekko.testkit.JavaSerializable
 import pekko.testkit.PekkoSpec
-
-import com.typesafe.config.ConfigFactory
 
 object MiscMessageSerializerSpec {
   val serializationTestOverrides =

@@ -20,6 +20,11 @@ import scala.concurrent.Promise
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import org.reactivestreams.Publisher
+import org.reactivestreams.Subscriber
+import org.reactivestreams.Subscription
+
 import pekko.Done
 import pekko.stream._
 import pekko.stream.impl.{ PhasedFusingActorMaterializer, StreamSupervisor }
@@ -35,10 +40,6 @@ import pekko.stream.testkit.TestPublisher
 import pekko.stream.testkit.TestSubscriber
 import pekko.stream.testkit.Utils._
 import pekko.testkit.{ EventFilter, TestLatch }
-
-import org.reactivestreams.Publisher
-import org.reactivestreams.Subscriber
-import org.reactivestreams.Subscription
 
 class ActorGraphInterpreterSpec extends StreamSpec {
   "ActorGraphInterpreter" must {

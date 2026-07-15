@@ -18,10 +18,11 @@ import java.util.concurrent.atomic.AtomicReference
 import scala.annotation.nowarn
 
 import org.apache.pekko
-import pekko.event.EventStream
-import pekko.remote.FailureDetector
 
 import com.typesafe.config.Config
+
+import pekko.event.EventStream
+import pekko.remote.FailureDetector
 
 /**
  * User controllable "puppet" failure detector.

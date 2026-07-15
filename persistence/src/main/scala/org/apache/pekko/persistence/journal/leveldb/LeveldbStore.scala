@@ -22,16 +22,17 @@ import scala.jdk.CollectionConverters._
 import scala.util._
 import scala.util.control.NonFatal
 
+import org.apache.pekko
+
+import com.typesafe.config.{ Config, ConfigFactory, ConfigObject }
+
 import org.iq80.leveldb._
 
-import org.apache.pekko
 import pekko.actor._
 import pekko.persistence._
 import pekko.persistence.journal.Tagged
 import pekko.persistence.journal.WriteJournalBase
 import pekko.serialization.SerializationExtension
-
-import com.typesafe.config.{ Config, ConfigFactory, ConfigObject }
 
 private[persistence] object LeveldbStore {
   val emptyConfig = ConfigFactory.empty()

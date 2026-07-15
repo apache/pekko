@@ -16,6 +16,7 @@ package org.apache.pekko.stream.scaladsl
 import java.util.StringJoiner
 
 import org.apache.pekko
+
 import pekko.stream.testkit._
 import pekko.stream.testkit.scaladsl.StreamTestKit._
 import pekko.stream.testkit.scaladsl.TestSink

@@ -16,6 +16,7 @@ package org.apache.pekko.cluster.sharding.protobuf
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
 import pekko.actor.Address
 import pekko.actor.ExtendedActorSystem
 import pekko.actor.Props

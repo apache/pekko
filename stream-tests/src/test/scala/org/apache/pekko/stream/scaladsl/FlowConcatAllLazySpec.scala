@@ -19,6 +19,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 import scala.util.control.NoStackTrace
 
 import org.apache.pekko
+
 import pekko.stream.testkit._
 import pekko.stream.testkit.scaladsl.TestSink
 

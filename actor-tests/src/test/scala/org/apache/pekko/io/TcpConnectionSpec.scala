@@ -14,11 +14,11 @@
 package org.apache.pekko.io
 
 import java.io.IOException
-import java.net.{ InetSocketAddress, ServerSocket }
 import java.net.SocketTimeoutException
+import java.net.{ InetSocketAddress, ServerSocket }
 import java.nio.ByteBuffer
-import java.nio.channels._
 import java.nio.channels.SelectionKey._
+import java.nio.channels._
 import java.nio.channels.spi.SelectorProvider
 import java.nio.file.Files
 import java.util.Random
@@ -29,9 +29,14 @@ import scala.concurrent.duration._
 import scala.util.Try
 import scala.util.control.NonFatal
 
+import org.apache.pekko
+
+import org.scalatest.matchers._
+
+import com.typesafe.config.ConfigFactory
+
 import com.google.common.jimfs.{ Configuration, Jimfs }
 
-import org.apache.pekko
 import pekko.actor._
 import pekko.io.Inet.SocketOption
 import pekko.io.SelectionHandler._
@@ -40,10 +45,6 @@ import pekko.testkit.{ EventFilter, PekkoSpec, SocketUtil, TestActorRef, TestPro
 import pekko.testkit.SocketUtil.temporaryServerAddress
 import pekko.testkit.WithLogCapturing
 import pekko.util.{ ByteString, Helpers }
-
-import org.scalatest.matchers._
-
-import com.typesafe.config.ConfigFactory
 
 object TcpConnectionSpec {
   case class Ack(i: Int) extends Event

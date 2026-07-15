@@ -17,11 +17,14 @@ import java.io.NotSerializableException
 import java.util.concurrent.ThreadLocalRandom
 
 import scala.annotation.nowarn
-import scala.concurrent.{ Await, Future }
 import scala.concurrent.duration._
+import scala.concurrent.{ Await, Future }
 import scala.util.control.NonFatal
 
 import org.apache.pekko
+
+import com.typesafe.config._
+
 import pekko.actor._
 import pekko.event.AddressTerminatedTopic
 import pekko.pattern.ask
@@ -32,8 +35,6 @@ import pekko.remote.transport.Transport.InvalidAssociationException
 import pekko.testkit._
 import pekko.testkit.SocketUtil.temporaryServerAddress
 import pekko.util.ByteString
-
-import com.typesafe.config._
 
 object RemotingSpec {
 

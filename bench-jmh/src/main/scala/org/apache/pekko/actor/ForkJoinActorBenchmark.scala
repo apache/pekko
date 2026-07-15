@@ -17,12 +17,13 @@ import java.util.concurrent.TimeUnit
 
 import scala.annotation.tailrec
 
-import BenchmarkActors._
-import org.openjdk.jmh.annotations._
-
 import org.apache.pekko.testkit.TestProbe
 
 import com.typesafe.config.ConfigFactory
+
+import org.openjdk.jmh.annotations._
+
+import BenchmarkActors._
 
 @State(Scope.Benchmark)
 @BenchmarkMode(Array(Mode.Throughput))

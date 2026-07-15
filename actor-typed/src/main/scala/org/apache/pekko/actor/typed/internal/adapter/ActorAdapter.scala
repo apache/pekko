@@ -23,6 +23,7 @@ import scala.util.control.Exception.Catcher
 import scala.util.control.NonFatal
 
 import org.apache.pekko
+
 import pekko.{ actor => classic }
 import pekko.actor.ActorInitializationException
 import pekko.actor.ActorRefWithCell

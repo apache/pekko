@@ -18,11 +18,12 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.event._
 import pekko.testkit._
 import pekko.util.Timeout
-
-import com.typesafe.config.ConfigFactory
 
 object FSMActorSpec {
 

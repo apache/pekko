@@ -19,6 +19,7 @@ import scala.reflect.ClassTag
 import scala.util.control.NonFatal
 
 import org.apache.pekko
+
 import pekko.actor.testkit.typed.scaladsl.ActorTestKit
 import pekko.actor.testkit.typed.scaladsl.SerializationTestKit
 import pekko.actor.typed.ActorRef

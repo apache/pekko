@@ -16,6 +16,7 @@ package org.apache.pekko.cluster.sharding.typed
 import scala.annotation.nowarn
 
 import org.apache.pekko
+
 import pekko.actor.{ InvalidMessageException, WrappedMessage }
 import pekko.cluster.sharding.typed.internal.ClusterShardingTypedSerializable
 

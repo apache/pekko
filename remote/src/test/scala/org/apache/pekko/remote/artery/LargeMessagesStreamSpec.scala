@@ -17,6 +17,7 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
 import pekko.actor.{ Actor, ActorRef, ActorSelection, Props, RootActorPath }
 import pekko.remote.{ RARP, RemoteActorRef }
 import pekko.testkit.JavaSerializable

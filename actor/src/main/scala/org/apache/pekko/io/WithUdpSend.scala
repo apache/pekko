@@ -19,6 +19,7 @@ import java.nio.channels.{ DatagramChannel, SelectionKey }
 import scala.util.control.NonFatal
 
 import org.apache.pekko
+
 import pekko.actor.{ Actor, ActorLogging, ActorRef }
 import pekko.io.SelectionHandler._
 import pekko.io.Udp.{ CommandFailed, Send }

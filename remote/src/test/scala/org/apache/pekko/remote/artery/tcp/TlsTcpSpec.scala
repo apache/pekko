@@ -22,6 +22,12 @@ import scala.concurrent.duration._
 import scala.util.{ Failure, Success }
 
 import org.apache.pekko
+
+import org.scalatest.matchers.should.Matchers
+
+import com.typesafe.config.Config
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor.{ ActorIdentity, ActorPath, ActorRef, Identify, RootActorPath }
 import pekko.actor.setup.ActorSystemSetup
 import pekko.remote.artery.tcp.ssl.CipherSuiteSupportCheck
@@ -29,11 +35,6 @@ import pekko.testkit.EventFilter
 import pekko.testkit.ImplicitSender
 import pekko.testkit.TestActors
 import pekko.testkit.TestProbe
-
-import org.scalatest.matchers.should.Matchers
-
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
 
 class TlsTcpWithDefaultConfigSpec extends TlsTcpSpec(ConfigFactory.empty())
 

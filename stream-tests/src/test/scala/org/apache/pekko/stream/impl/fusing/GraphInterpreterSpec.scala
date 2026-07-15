@@ -14,6 +14,7 @@
 package org.apache.pekko.stream.impl.fusing
 
 import org.apache.pekko
+
 import pekko.stream.scaladsl.{ Balance, Broadcast, Merge, Zip }
 import pekko.stream.testkit.StreamSpec
 

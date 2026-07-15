@@ -18,6 +18,7 @@
 package org.apache.pekko.stream.scaladsl
 
 import org.apache.pekko
+
 import pekko.stream.{ Attributes, StreamSubscriptionTimeoutTerminationMode }
 import pekko.stream.ActorAttributes.StreamSubscriptionTimeout
 import pekko.stream.testkit.StreamSpec

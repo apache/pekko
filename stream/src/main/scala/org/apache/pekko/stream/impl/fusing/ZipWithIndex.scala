@@ -18,6 +18,7 @@
 package org.apache.pekko.stream.impl.fusing
 
 import org.apache.pekko
+
 import pekko.annotation.InternalApi
 import pekko.japi.Pair
 import pekko.stream.{ Attributes, FlowShape, Inlet, Outlet }

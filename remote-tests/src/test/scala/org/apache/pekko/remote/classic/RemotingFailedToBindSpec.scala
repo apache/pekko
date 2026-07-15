@@ -16,13 +16,14 @@ package org.apache.pekko.remote.classic
 import java.net.BindException
 
 import org.apache.pekko
-import pekko.actor.ActorSystem
-import pekko.testkit.SocketUtil
 
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
 import com.typesafe.config.ConfigFactory
+
+import pekko.actor.ActorSystem
+import pekko.testkit.SocketUtil
 
 class RemotingFailedToBindSpec extends AnyWordSpec with Matchers {
 

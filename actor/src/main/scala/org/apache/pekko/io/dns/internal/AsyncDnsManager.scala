@@ -20,6 +20,9 @@ import scala.concurrent.ExecutionContextExecutor
 import scala.concurrent.duration.Duration
 
 import org.apache.pekko
+
+import com.typesafe.config.Config
+
 import pekko.actor.{ Actor, ActorLogging, ActorRefFactory, Deploy, ExtendedActorSystem, Props, Timers }
 import pekko.annotation.InternalApi
 import pekko.dispatch.{ RequiresMessageQueue, UnboundedMessageQueueSemantics }
@@ -29,8 +32,6 @@ import pekko.io.dns.{ DnsProtocol, DnsSettings }
 import pekko.io.dns.internal.AsyncDnsManager.CacheCleanup
 import pekko.routing.FromConfig
 import pekko.util.Timeout
-
-import com.typesafe.config.Config
 
 /**
  * INTERNAL API

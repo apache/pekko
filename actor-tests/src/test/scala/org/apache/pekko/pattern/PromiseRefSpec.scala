@@ -13,10 +13,11 @@
 
 package org.apache.pekko.pattern
 
-import scala.concurrent.{ Await, Promise }
 import scala.concurrent.duration._
+import scala.concurrent.{ Await, Promise }
 
 import org.apache.pekko
+
 import pekko.actor._
 import pekko.testkit.{ ImplicitSender, PekkoSpec, TestProbe }
 

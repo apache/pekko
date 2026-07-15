@@ -14,6 +14,7 @@
 package org.apache.pekko.stream.impl
 
 import org.apache.pekko
+
 import pekko.actor.{ DeadLetterSuppression, NoSerializationVerificationNeeded }
 import pekko.annotation.InternalApi
 

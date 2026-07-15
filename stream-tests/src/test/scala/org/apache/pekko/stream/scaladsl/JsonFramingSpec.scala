@@ -18,6 +18,7 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
 import pekko.stream.impl.JsonObjectParser
 import pekko.stream.scaladsl.Framing.FramingException
 import pekko.stream.scaladsl.JsonFraming.PartialObjectException

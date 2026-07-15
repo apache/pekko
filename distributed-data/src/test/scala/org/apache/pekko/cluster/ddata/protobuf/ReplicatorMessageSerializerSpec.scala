@@ -17,6 +17,13 @@ import scala.annotation.nowarn
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import org.scalatest.BeforeAndAfterAll
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor.ActorSystem
 import pekko.actor.Address
 import pekko.actor.ExtendedActorSystem
@@ -36,12 +43,6 @@ import pekko.cluster.ddata.VersionVector
 import pekko.remote.RARP
 import pekko.testkit.TestKit
 import pekko.util.ByteString
-
-import org.scalatest.BeforeAndAfterAll
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpecLike
-
-import com.typesafe.config.ConfigFactory
 
 class ReplicatorMessageSerializerSpec
     extends TestKit(

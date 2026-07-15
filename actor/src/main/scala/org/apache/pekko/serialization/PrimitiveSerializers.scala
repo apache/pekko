@@ -13,10 +13,11 @@
 
 package org.apache.pekko.serialization
 
-import java.nio.{ BufferOverflowException, ByteBuffer }
 import java.nio.charset.StandardCharsets
+import java.nio.{ BufferOverflowException, ByteBuffer }
 
 import org.apache.pekko
+
 import pekko.actor.ExtendedActorSystem
 import pekko.annotation.InternalApi
 import pekko.util.ByteString

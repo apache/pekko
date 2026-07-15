@@ -17,10 +17,11 @@ import scala.concurrent.duration.Duration
 import scala.concurrent.duration.FiniteDuration
 
 import org.apache.pekko
-import pekko.util.Helpers.ConfigOps
-import pekko.util.Helpers.Requiring
 
 import com.typesafe.config.Config
+
+import pekko.util.Helpers.ConfigOps
+import pekko.util.Helpers.Requiring
 
 /**
  * Metrics extension settings. Documented in: `src/main/resources/reference.conf`.

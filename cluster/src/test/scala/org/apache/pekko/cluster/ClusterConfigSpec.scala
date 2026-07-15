@@ -17,14 +17,15 @@ import scala.annotation.nowarn
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor.Address
 import pekko.dispatch.Dispatchers
 import pekko.remote.PhiAccrualFailureDetector
 import pekko.testkit.PekkoSpec
 import pekko.util.Helpers.ConfigOps
 import pekko.util.Version
-
-import com.typesafe.config.ConfigFactory
 
 @nowarn
 class ClusterConfigSpec extends PekkoSpec {

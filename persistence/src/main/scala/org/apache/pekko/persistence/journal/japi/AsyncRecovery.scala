@@ -20,6 +20,7 @@ import scala.concurrent.Future
 import scala.jdk.FutureConverters._
 
 import org.apache.pekko
+
 import pekko.actor.Actor
 import pekko.persistence.PersistentRepr
 import pekko.persistence.journal.{ AsyncRecovery => SAsyncReplay }

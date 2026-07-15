@@ -22,6 +22,9 @@ import scala.annotation.tailrec
 import scala.collection.immutable
 
 import org.apache.pekko
+
+import com.typesafe.config.Config
+
 import pekko.actor.Actor
 import pekko.actor.ActorSystem
 import pekko.actor.Address
@@ -34,8 +37,6 @@ import pekko.cluster.routing.ClusterRouterSettingsBase
 import pekko.dispatch.Dispatchers
 import pekko.japi.Util.immutableSeq
 import pekko.routing._
-
-import com.typesafe.config.Config
 
 /**
  * Load balancing of messages to cluster nodes based on cluster metric data.

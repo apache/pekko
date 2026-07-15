@@ -16,6 +16,7 @@ package org.apache.pekko.persistence.query.typed.scaladsl
 import scala.concurrent.Future
 
 import org.apache.pekko
+
 import pekko.annotation.ApiMayChange
 import pekko.persistence.query.scaladsl.ReadJournal
 import pekko.persistence.query.typed.EventEnvelope

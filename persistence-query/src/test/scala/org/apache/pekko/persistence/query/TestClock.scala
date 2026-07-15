@@ -13,11 +13,11 @@
 
 package org.apache.pekko.persistence.query
 
-import java.time.{ Duration => JDuration }
 import java.time.Clock
 import java.time.Instant
 import java.time.ZoneId
 import java.time.ZoneOffset
+import java.time.{ Duration => JDuration }
 
 import scala.concurrent.duration.FiniteDuration
 

@@ -14,14 +14,15 @@
 package org.apache.pekko.stream.testkit
 
 import org.apache.pekko
+
+import org.reactivestreams.Subscription
+
 import pekko.stream.scaladsl.Sink
 import pekko.stream.scaladsl.Source
 import pekko.stream.testkit.TestPublisher._
 import pekko.stream.testkit.TestSubscriber._
 import pekko.stream.testkit.scaladsl.StreamTestKit._
 import pekko.testkit.PekkoSpec
-
-import org.reactivestreams.Subscription
 
 class TestPublisherSubscriberSpec extends PekkoSpec("""
     pekko.stream.materializer.initial-input-buffer-size = 2

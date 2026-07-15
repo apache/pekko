@@ -18,14 +18,15 @@ import java.util.concurrent.atomic.AtomicInteger
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import org.scalatest.wordspec.AnyWordSpecLike
+
 import pekko.actor.testkit.typed.scaladsl._
 import pekko.actor.typed.ActorRef
 import pekko.actor.typed.Behavior
 import pekko.actor.typed.scaladsl.Behaviors
 import pekko.persistence.testkit.PersistenceTestKitPlugin
 import pekko.persistence.typed.PersistenceId
-
-import org.scalatest.wordspec.AnyWordSpecLike
 
 object EventSourcedBehaviorTimersSpec {
 

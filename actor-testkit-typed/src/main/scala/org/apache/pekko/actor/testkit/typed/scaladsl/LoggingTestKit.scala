@@ -16,12 +16,13 @@ package org.apache.pekko.actor.testkit.typed.scaladsl
 import scala.reflect.ClassTag
 
 import org.apache.pekko
+
+import org.slf4j.event.Level
+
 import pekko.actor.testkit.typed.LoggingEvent
 import pekko.actor.testkit.typed.internal.LoggingTestKitImpl
 import pekko.actor.typed.ActorSystem
 import pekko.annotation.DoNotInherit
-
-import org.slf4j.event.Level
 
 /**
  * Facilities for verifying logs.

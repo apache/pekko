@@ -25,8 +25,8 @@ import org.apache.pekko.remote.testkit.MultiNodeConfig
 import org.apache.pekko.routing.Broadcast
 import org.apache.pekko.routing.RoutedActorRef
 import org.apache.pekko.routing.ScatterGatherFirstCompletedPool
-import org.apache.pekko.testkit._
 import org.apache.pekko.testkit.TestEvent._
+import org.apache.pekko.testkit._
 
 import com.typesafe.config.ConfigFactory
 

@@ -16,11 +16,12 @@ package org.apache.pekko.testkit
 import java.io.{ OutputStream, PrintStream }
 
 import org.apache.pekko
+
+import org.scalatest.{ Outcome, SuiteMixin, TestSuite }
+
 import pekko.actor.ActorSystem
 import pekko.event.Logging
 import pekko.event.Logging._
-
-import org.scalatest.{ Outcome, SuiteMixin, TestSuite }
 
 /**
  * Mixin this trait to a test to make log lines appear only when the test failed.

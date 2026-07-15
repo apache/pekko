@@ -18,7 +18,12 @@ import java.util.concurrent.{ CompletionStage, ThreadFactory, TimeoutException }
 import scala.concurrent.{ ExecutionContextExecutor, Future }
 
 import org.apache.pekko
-import pekko.{ actor => classic, Done }
+
+import org.slf4j.Logger
+
+import com.typesafe.config.{ Config, ConfigFactory }
+
+import pekko.{ Done, actor => classic }
 import pekko.actor.{ Address, BootstrapSetup, ClassicActorSystemProvider }
 import pekko.actor.setup.ActorSystemSetup
 import pekko.actor.typed.eventstream.EventStream
@@ -27,10 +32,6 @@ import pekko.actor.typed.internal.adapter.{ ActorSystemAdapter, GuardianStartupB
 import pekko.actor.typed.receptionist.Receptionist
 import pekko.annotation.DoNotInherit
 import pekko.util.Helpers.{ ConfigOps, Requiring }
-
-import org.slf4j.Logger
-
-import com.typesafe.config.{ Config, ConfigFactory }
 
 /**
  * An ActorSystem is home to a hierarchy of Actors. It is created using

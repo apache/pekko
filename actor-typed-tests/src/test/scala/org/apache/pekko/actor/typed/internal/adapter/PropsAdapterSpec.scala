@@ -14,15 +14,16 @@
 package org.apache.pekko.actor.typed.internal.adapter
 
 import org.apache.pekko
+
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
+
 import pekko.actor
 import pekko.actor.typed.ActorTags
 import pekko.actor.typed.MailboxSelector
 import pekko.actor.typed.Props
 import pekko.actor.typed.internal.adapter.PropsAdapter
 import pekko.actor.typed.scaladsl.Behaviors
-
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpec
 
 class PropsAdapterSpec extends AnyWordSpec with Matchers {
 

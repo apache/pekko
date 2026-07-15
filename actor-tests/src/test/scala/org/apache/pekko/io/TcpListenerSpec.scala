@@ -14,14 +14,14 @@
 package org.apache.pekko.io
 
 import java.net.Socket
-import java.nio.channels.{ SelectableChannel, SocketChannel }
 import java.nio.channels.SelectionKey.OP_ACCEPT
+import java.nio.channels.{ SelectableChannel, SocketChannel }
 
 import scala.concurrent.duration._
 
-import Tcp._
-
 import org.apache.pekko
+
+import Tcp._
 import pekko.actor._
 import pekko.io.SelectionHandler._
 import pekko.io.TcpListener.{ FailedRegisterIncoming, RegisterIncoming }

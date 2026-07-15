@@ -13,6 +13,8 @@
 
 package org.apache.pekko.serialization.jackson3
 
+import org.apache.pekko
+
 import com.fasterxml.jackson.annotation.JsonFormat
 import tools.jackson.core.Version
 import tools.jackson.core.util.VersionUtil
@@ -28,7 +30,6 @@ import tools.jackson.databind.deser.Deserializers
 import tools.jackson.databind.ser.Serializers
 import tools.jackson.databind.ser.ValueSerializerModifier
 
-import org.apache.pekko
 import pekko.annotation.InternalApi
 
 /**

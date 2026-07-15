@@ -16,7 +16,8 @@ package org.apache.pekko.actor.typed.javadsl
 import java.util.function.{ Function => JFunction, Predicate }
 
 import org.apache.pekko
-import pekko.actor.typed.{ scaladsl, Behavior }
+
+import pekko.actor.typed.{ Behavior, scaladsl }
 import pekko.annotation.DoNotInherit
 import pekko.japi.function.Procedure
 

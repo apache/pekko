@@ -18,15 +18,16 @@ import java.nio.ByteBuffer
 import java.util.zip.{ GZIPInputStream, GZIPOutputStream }
 
 import scala.annotation.{ nowarn, tailrec }
-import scala.util.{ Failure, Success }
 import scala.util.control.NonFatal
+import scala.util.{ Failure, Success }
+
+import org.apache.pekko
 
 import net.jpountz.lz4.LZ4Factory
 import tools.jackson.databind.ObjectMapper
 import tools.jackson.databind.jsontype.impl.SubTypeValidator
 import tools.jackson.dataformat.cbor.CBORFactory
 
-import org.apache.pekko
 import pekko.actor.ExtendedActorSystem
 import pekko.annotation.InternalApi
 import pekko.event.{ LogMarker, Logging }

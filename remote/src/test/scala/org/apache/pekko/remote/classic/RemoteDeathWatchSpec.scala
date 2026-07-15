@@ -17,12 +17,13 @@ import scala.annotation.nowarn
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor.{ RootActorPath, _ }
 import pekko.event.Logging.Warning
 import pekko.remote.{ QuarantinedEvent, RARP, RemoteActorRef }
 import pekko.testkit.{ SocketUtil, _ }
-
-import com.typesafe.config.ConfigFactory
 
 @nowarn // classic deprecated
 class RemoteDeathWatchSpec

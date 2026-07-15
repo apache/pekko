@@ -14,6 +14,7 @@
 package org.apache.pekko.persistence.typed.crdt
 
 import org.apache.pekko
+
 import pekko.actor.typed.ActorRef
 import pekko.actor.typed.scaladsl.Behaviors
 import pekko.persistence.testkit.query.scaladsl.PersistenceTestKitReadJournal

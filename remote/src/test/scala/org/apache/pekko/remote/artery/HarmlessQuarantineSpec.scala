@@ -17,6 +17,10 @@ import scala.concurrent.Future
 import scala.concurrent.Promise
 
 import org.apache.pekko
+
+import org.scalatest.concurrent.Eventually
+import org.scalatest.time.Span
+
 import pekko.actor.ActorRef
 import pekko.actor.ActorSystem
 import pekko.actor.Address
@@ -26,9 +30,6 @@ import pekko.remote.UniqueAddress
 import pekko.testkit.ImplicitSender
 import pekko.testkit.TestActors
 import pekko.testkit.TestProbe
-
-import org.scalatest.concurrent.Eventually
-import org.scalatest.time.Span
 
 // pekko.remote.artery.propagate-harmless-quarantine-events defaults to off since Pekko 2.0.0
 class HarmlessQuarantineSpec extends ArteryMultiNodeSpec("""

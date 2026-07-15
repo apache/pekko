@@ -17,13 +17,14 @@ import scala.annotation.nowarn
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import com.typesafe.config._
+
 import pekko.actor._
 import pekko.persistence._
 import pekko.persistence.JournalProtocol._
 import pekko.persistence.scalatest.{ MayVerb, OptionalTests }
 import pekko.testkit._
-
-import com.typesafe.config._
 
 object JournalSpec {
   val config: Config = ConfigFactory.parseString(s"""

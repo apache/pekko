@@ -16,6 +16,7 @@ package org.apache.pekko.stream.impl
 import java.{ util => ju }
 
 import org.apache.pekko
+
 import pekko.annotation.{ InternalApi, InternalStableApi }
 import pekko.stream._
 

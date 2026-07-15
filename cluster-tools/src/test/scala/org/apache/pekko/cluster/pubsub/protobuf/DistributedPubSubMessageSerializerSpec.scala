@@ -16,6 +16,7 @@ package org.apache.pekko.cluster.pubsub.protobuf
 import scala.collection.immutable.TreeMap
 
 import org.apache.pekko
+
 import pekko.actor.{ Address, ExtendedActorSystem }
 import pekko.actor.Props
 import pekko.cluster.pubsub.DistributedPubSubMediator._

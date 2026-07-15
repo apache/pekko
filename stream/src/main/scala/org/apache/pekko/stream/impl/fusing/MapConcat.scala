@@ -21,6 +21,7 @@ import scala.util.control.Exception.Catcher
 import scala.util.control.NonFatal
 
 import org.apache.pekko
+
 import pekko.annotation.InternalApi
 import pekko.stream.{ Attributes, FlowShape, Inlet, Outlet, Supervision }
 import pekko.stream.ActorAttributes.SupervisionStrategy

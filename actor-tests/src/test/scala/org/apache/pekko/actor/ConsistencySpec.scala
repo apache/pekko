@@ -16,6 +16,7 @@ package org.apache.pekko.actor
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
 import pekko.dispatch.ThreadPoolConfig
 import pekko.testkit.PekkoSpec
 

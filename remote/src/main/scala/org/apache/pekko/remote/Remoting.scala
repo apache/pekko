@@ -21,12 +21,15 @@ import java.util.concurrent.TimeoutException
 import scala.annotation.nowarn
 import scala.collection.immutable
 import scala.collection.immutable.{ HashMap, Seq }
-import scala.concurrent.{ Await, Future, Promise }
 import scala.concurrent.duration._
-import scala.util.{ Failure, Success }
+import scala.concurrent.{ Await, Future, Promise }
 import scala.util.control.NonFatal
+import scala.util.{ Failure, Success }
 
 import org.apache.pekko
+
+import com.typesafe.config.Config
+
 import pekko.Done
 import pekko.actor._
 import pekko.actor.SupervisorStrategy._
@@ -41,8 +44,6 @@ import pekko.remote.transport._
 import pekko.remote.transport.PekkoPduCodec.Message
 import pekko.remote.transport.Transport.{ ActorAssociationEventListener, AssociationEventListener, InboundAssociation }
 import pekko.util.OptionVal
-
-import com.typesafe.config.Config
 
 /**
  * INTERNAL API

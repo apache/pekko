@@ -18,17 +18,18 @@
 package org.apache.pekko.stream.impl.io
 
 import java.nio.ByteBuffer
-import javax.net.ssl._
 import javax.net.ssl.SSLEngineResult.HandshakeStatus
 import javax.net.ssl.SSLEngineResult.HandshakeStatus._
 import javax.net.ssl.SSLEngineResult.Status._
+import javax.net.ssl._
 
 import scala.annotation.{ switch, tailrec }
 import scala.concurrent.duration.Duration
-import scala.util.{ Failure, Success, Try }
 import scala.util.control.NonFatal
+import scala.util.{ Failure, Success, Try }
 
 import org.apache.pekko
+
 import pekko.annotation.InternalApi
 import pekko.io.{ BufferPool, Tcp }
 import pekko.stream._

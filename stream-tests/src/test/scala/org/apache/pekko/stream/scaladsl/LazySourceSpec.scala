@@ -20,6 +20,9 @@ import scala.concurrent.Future
 import scala.concurrent.Promise
 
 import org.apache.pekko
+
+import org.scalatest.concurrent.ScalaFutures
+
 import pekko.Done
 import pekko.NotUsed
 import pekko.stream._
@@ -33,8 +36,6 @@ import pekko.stream.testkit.TestSubscriber
 import pekko.stream.testkit.Utils.TE
 import pekko.testkit.DefaultTimeout
 import pekko.testkit.TestProbe
-
-import org.scalatest.concurrent.ScalaFutures
 
 class LazySourceSpec extends StreamSpec with DefaultTimeout with ScalaFutures {
 

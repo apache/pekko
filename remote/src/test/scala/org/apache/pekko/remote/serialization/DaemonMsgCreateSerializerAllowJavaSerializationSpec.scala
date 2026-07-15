@@ -16,6 +16,9 @@ package org.apache.pekko.remote.serialization
 import scala.annotation.nowarn
 
 import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor.Actor
 import pekko.actor.ActorRef
 import pekko.actor.Address
@@ -32,8 +35,6 @@ import pekko.serialization.Serialization
 import pekko.serialization.SerializationExtension
 import pekko.testkit.JavaSerializable
 import pekko.testkit.PekkoSpec
-
-import com.typesafe.config.ConfigFactory
 
 object DaemonMsgCreateSerializerAllowJavaSerializationSpec {
 

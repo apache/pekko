@@ -19,10 +19,6 @@ import scala.concurrent.Future
 import scala.concurrent.duration._
 
 import org.apache.pekko
-import pekko.actor.{ ActorSystem, ExtendedActorSystem }
-import pekko.discovery.{ Discovery, Lookup, ServiceDiscovery }
-import pekko.discovery.ServiceDiscovery.{ Resolved, ResolvedTarget }
-import pekko.testkit.TestKit
 
 import org.scalatest.BeforeAndAfterAll
 import org.scalatest.concurrent.ScalaFutures
@@ -30,6 +26,11 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 
 import com.typesafe.config.{ Config, ConfigFactory }
+
+import pekko.actor.{ ActorSystem, ExtendedActorSystem }
+import pekko.discovery.{ Discovery, Lookup, ServiceDiscovery }
+import pekko.discovery.ServiceDiscovery.{ Resolved, ResolvedTarget }
+import pekko.testkit.TestKit
 
 class StubbedServiceDiscovery(@nowarn("msg=never used") system: ExtendedActorSystem) extends ServiceDiscovery {
 

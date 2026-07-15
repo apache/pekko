@@ -14,6 +14,7 @@
 package org.apache.pekko.cluster.sharding.typed.internal
 
 import org.apache.pekko
+
 import pekko.actor.typed.Behavior
 import pekko.actor.typed.SupervisorStrategy
 import pekko.actor.typed.scaladsl.Behaviors

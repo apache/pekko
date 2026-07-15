@@ -24,13 +24,14 @@ import scala.jdk.OptionConverters._
 import scala.reflect.ClassTag
 
 import org.apache.pekko
-import pekko.annotation.ApiMayChange
-import pekko.event.{ LogMarker, LoggingAdapter, MarkerLoggingAdapter }
-import pekko.japi.{ function, Pair }
-import pekko.stream._
-import pekko.util.ConstantFun
 
 import org.jspecify.annotations.Nullable
+
+import pekko.annotation.ApiMayChange
+import pekko.event.{ LogMarker, LoggingAdapter, MarkerLoggingAdapter }
+import pekko.japi.{ Pair, function }
+import pekko.stream._
+import pekko.util.ConstantFun
 
 object FlowWithContext {
 

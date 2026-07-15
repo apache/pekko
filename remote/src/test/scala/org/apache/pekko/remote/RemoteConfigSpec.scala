@@ -17,13 +17,14 @@ import scala.annotation.nowarn
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import io.netty.buffer.PooledByteBufAllocator
+
 import pekko.remote.transport.PekkoProtocolSettings
 import pekko.remote.transport.netty.{ NettyTransportSettings, SSLSettings }
 import pekko.testkit.PekkoSpec
 import pekko.util.Helpers
 import pekko.util.Helpers.ConfigOps
-
-import io.netty.buffer.PooledByteBufAllocator
 
 @nowarn // classic deprecated
 class RemoteConfigSpec extends PekkoSpec("""

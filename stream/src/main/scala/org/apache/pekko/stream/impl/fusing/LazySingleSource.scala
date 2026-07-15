@@ -18,6 +18,7 @@
 package org.apache.pekko.stream.impl.fusing
 
 import org.apache.pekko
+
 import pekko.stream.Attributes
 import pekko.stream.Attributes.SourceLocation
 import pekko.stream.Outlet

@@ -21,6 +21,7 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
 import pekko.NotUsed
 import pekko.stream._
 import pekko.stream.testkit.StreamSpec

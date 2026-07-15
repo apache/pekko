@@ -13,14 +13,15 @@
 
 package org.apache.pekko.remote.artery
 
-import java.nio.{ ByteBuffer, CharBuffer }
 import java.nio.ByteOrder
 import java.nio.charset.StandardCharsets
+import java.nio.{ ByteBuffer, CharBuffer }
 
 import scala.annotation.nowarn
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
 import pekko.actor.{ ActorRef, ActorSystem, ExtendedActorSystem, InternalActorRef }
 import pekko.event._
 import pekko.testkit.{ EventFilter, PekkoSpec, TestProbe }

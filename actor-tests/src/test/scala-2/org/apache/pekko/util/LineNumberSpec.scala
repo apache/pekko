@@ -14,6 +14,7 @@
 package org.apache.pekko.util
 
 import org.apache.pekko
+
 import pekko.testkit.PekkoSpec
 import pekko.util.LineNumbers._
 

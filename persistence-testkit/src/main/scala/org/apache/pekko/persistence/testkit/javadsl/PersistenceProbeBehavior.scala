@@ -17,9 +17,10 @@ import java.util.{ List, Set }
 
 import scala.collection.immutable.{ Set => ScalaSet }
 
+import org.apache.pekko
+
 import org.jspecify.annotations.Nullable
 
-import org.apache.pekko
 import pekko.actor.testkit.typed.javadsl.BehaviorTestKit
 import pekko.actor.typed.Behavior
 import pekko.annotation.DoNotInherit

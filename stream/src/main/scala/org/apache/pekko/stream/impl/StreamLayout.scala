@@ -19,15 +19,16 @@ import scala.annotation.tailrec
 import scala.util.control.NonFatal
 
 import org.apache.pekko
-import pekko.annotation.InternalApi
-import pekko.stream._
-import pekko.stream.impl.Stages.DefaultAttributes
-import pekko.util.OptionVal
 
 import org.reactivestreams.Processor
 import org.reactivestreams.Publisher
 import org.reactivestreams.Subscriber
 import org.reactivestreams.Subscription
+
+import pekko.annotation.InternalApi
+import pekko.stream._
+import pekko.stream.impl.Stages.DefaultAttributes
+import pekko.util.OptionVal
 
 /**
  * INTERNAL API

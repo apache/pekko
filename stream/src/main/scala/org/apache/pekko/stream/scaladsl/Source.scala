@@ -15,15 +15,18 @@ package org.apache.pekko.stream.scaladsl
 
 import java.util.concurrent.CompletionStage
 
-import scala.annotation.{ switch, tailrec, varargs }
 import scala.annotation.unchecked.uncheckedVariance
-import scala.collection.{ immutable, AbstractIterator }
-import scala.concurrent.{ Future, Promise }
+import scala.annotation.{ switch, tailrec, varargs }
+import scala.collection.{ AbstractIterator, immutable }
 import scala.concurrent.duration.FiniteDuration
+import scala.concurrent.{ Future, Promise }
 import scala.jdk.FutureConverters._
 import scala.util.control.NonFatal
 
 import org.apache.pekko
+
+import org.reactivestreams.{ Publisher, Subscriber }
+
 import pekko.{ Done, NotUsed }
 import pekko.actor.{ ActorRef, Cancellable }
 import pekko.annotation.InternalApi
@@ -42,8 +45,6 @@ import pekko.stream.impl.fusing.{
 import pekko.stream.impl.fusing.GraphStages._
 import pekko.stream.stage.GraphStageWithMaterializedValue
 import pekko.util.ConstantFun
-
-import org.reactivestreams.{ Publisher, Subscriber }
 
 /**
  * A `Source` is a set of stream processing steps that has one open output. It can comprise

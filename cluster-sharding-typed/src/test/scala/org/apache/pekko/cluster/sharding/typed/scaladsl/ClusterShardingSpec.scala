@@ -18,6 +18,11 @@ import scala.util.Failure
 import scala.util.Success
 
 import org.apache.pekko
+
+import org.scalatest.wordspec.AnyWordSpecLike
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor.testkit.typed.scaladsl.ActorTestKit
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
 import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
@@ -36,10 +41,6 @@ import pekko.cluster.typed.Leave
 import pekko.pattern.AskTimeoutException
 import pekko.serialization.jackson.CborSerializable
 import pekko.util.Timeout
-
-import org.scalatest.wordspec.AnyWordSpecLike
-
-import com.typesafe.config.ConfigFactory
 
 object ClusterShardingSpec {
   val config = ConfigFactory.parseString(s"""

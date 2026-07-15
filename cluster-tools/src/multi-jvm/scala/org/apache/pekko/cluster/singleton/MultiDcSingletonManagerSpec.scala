@@ -16,14 +16,15 @@ package org.apache.pekko.cluster.singleton
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor.{ Actor, ActorLogging, Address, PoisonPill, Props }
 import pekko.cluster.Cluster
 import pekko.cluster.ClusterSettings
 import pekko.remote.testkit.{ MultiNodeConfig, MultiNodeSpec, STMultiNodeSpec }
 import pekko.serialization.jackson.CborSerializable
 import pekko.testkit.ImplicitSender
-
-import com.typesafe.config.ConfigFactory
 
 object MultiDcSingletonManagerSpec extends MultiNodeConfig {
   val controller = role("controller")

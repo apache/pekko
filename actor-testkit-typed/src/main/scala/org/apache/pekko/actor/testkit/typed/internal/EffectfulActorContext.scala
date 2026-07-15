@@ -23,6 +23,7 @@ import scala.util.Try
 import scala.util.control.NonFatal
 
 import org.apache.pekko
+
 import pekko.actor.{ ActorPath, Cancellable }
 import pekko.actor.testkit.typed.Effect
 import pekko.actor.testkit.typed.Effect._

@@ -19,6 +19,9 @@ import scala.concurrent.duration._
 import scala.util.control.NoStackTrace
 
 import org.apache.pekko
+
+import com.typesafe.config.Config
+
 import pekko.actor.ActorContext
 import pekko.actor.ActorRef
 import pekko.actor.ActorRefFactory
@@ -29,8 +32,6 @@ import pekko.stream.impl._
 import pekko.stream.impl.streamref.StreamRefDefaultSettings
 import pekko.stream.stage.GraphStageLogic
 import pekko.util.Helpers.toRootLowerCase
-
-import com.typesafe.config.Config
 
 @InternalApi
 private[pekko] object ActorMaterializer {

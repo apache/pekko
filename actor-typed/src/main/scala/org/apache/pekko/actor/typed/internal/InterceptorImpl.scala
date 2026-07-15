@@ -16,15 +16,16 @@ package org.apache.pekko.actor.typed.internal
 import scala.reflect.ClassTag
 
 import org.apache.pekko
+
+import org.slf4j.LoggerFactory
+import org.slf4j.event.Level
+
 import pekko.actor.typed
 import pekko.actor.typed._
 import pekko.actor.typed.LogOptions
 import pekko.actor.typed.scaladsl.Behaviors
 import pekko.annotation.InternalApi
 import pekko.util.LineNumbers
-
-import org.slf4j.LoggerFactory
-import org.slf4j.event.Level
 
 /**
  * Provides the impl of any behavior that could nest another behavior

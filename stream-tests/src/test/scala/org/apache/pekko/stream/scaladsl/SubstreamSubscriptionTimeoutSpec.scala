@@ -16,6 +16,7 @@ package org.apache.pekko.stream.scaladsl
 import scala.concurrent.Await
 
 import org.apache.pekko
+
 import pekko.stream.impl.SubscriptionTimeoutException
 import pekko.stream.testkit._
 

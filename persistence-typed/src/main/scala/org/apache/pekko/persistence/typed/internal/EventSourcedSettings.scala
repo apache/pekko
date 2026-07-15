@@ -14,11 +14,12 @@
 package org.apache.pekko.persistence.typed.internal
 
 import org.apache.pekko
+
+import com.typesafe.config.Config
+
 import pekko.actor.typed.ActorSystem
 import pekko.annotation.InternalApi
 import pekko.util.Helpers.toRootLowerCase
-
-import com.typesafe.config.Config
 
 /**
  * INTERNAL API

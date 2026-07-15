@@ -22,13 +22,16 @@ import scala.jdk.CollectionConverters._
 import scala.util.Try
 import scala.util.control.NonFatal
 
+import org.apache.pekko
+
+import com.typesafe.config.Config
+
 import org.lmdbjava.Dbi
 import org.lmdbjava.DbiFlags
 import org.lmdbjava.Env
 import org.lmdbjava.EnvFlags
 import org.lmdbjava.Txn
 
-import org.apache.pekko
 import pekko.actor.Actor
 import pekko.actor.ActorLogging
 import pekko.actor.ActorRef
@@ -44,8 +47,6 @@ import pekko.serialization.SerializerWithStringManifest
 import pekko.util.ByteString
 import pekko.util.OptionVal
 import pekko.util.Helpers.toRootLowerCase
-
-import com.typesafe.config.Config
 
 /**
  * An actor implementing the durable store for the Distributed Data `Replicator`

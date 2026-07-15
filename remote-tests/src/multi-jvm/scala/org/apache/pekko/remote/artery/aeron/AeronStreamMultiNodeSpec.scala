@@ -16,10 +16,11 @@ package org.apache.pekko.remote.artery.aeron
 import java.io.File
 import java.util.UUID
 
+import org.apache.pekko
+
 import io.aeron.CommonContext
 import io.aeron.driver.MediaDriver
 
-import org.apache.pekko
 import pekko.remote.artery.UdpPortActor
 import pekko.remote.testconductor.RoleName
 import pekko.remote.testkit.{ MultiNodeConfig, MultiNodeSpec }

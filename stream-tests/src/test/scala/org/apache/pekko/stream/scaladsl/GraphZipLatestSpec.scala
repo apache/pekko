@@ -15,10 +15,13 @@ package org.apache.pekko.stream.scaladsl
 
 import scala.concurrent.duration._
 
+import org.apache.pekko
+
+import org.scalatest.concurrent.ScalaFutures
+
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
-import org.apache.pekko
 import pekko.stream.ClosedShape
 import pekko.stream.testkit.StreamSpec
 import pekko.stream.testkit.TestPublisher
@@ -26,8 +29,6 @@ import pekko.stream.testkit.TestPublisher.Probe
 import pekko.stream.testkit.TestSubscriber
 import pekko.stream.testkit.scaladsl.TestSink
 import pekko.stream.testkit.scaladsl.TestSource
-
-import org.scalatest.concurrent.ScalaFutures
 
 object GraphZipLatestSpec {
   val someString = "someString"

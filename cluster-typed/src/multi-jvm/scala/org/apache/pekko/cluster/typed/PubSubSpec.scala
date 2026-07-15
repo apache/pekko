@@ -14,6 +14,9 @@
 package org.apache.pekko.cluster.typed
 
 import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor.testkit.typed.scaladsl.TestProbe
 import pekko.actor.typed.ActorRef
 import pekko.actor.typed.pubsub.Topic
@@ -23,8 +26,6 @@ import pekko.remote.testconductor.RoleName
 import pekko.remote.testkit.MultiNodeConfig
 import pekko.remote.testkit.MultiNodeSpec
 import pekko.serialization.jackson.CborSerializable
-
-import com.typesafe.config.ConfigFactory
 
 object PubSubSpecConfig extends MultiNodeConfig {
   val first: RoleName = role("first")

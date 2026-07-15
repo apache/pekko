@@ -14,6 +14,7 @@
 package org.apache.pekko.serialization
 
 import org.apache.pekko
+
 import pekko.actor.{ ActorSystem, ExtendedActorSystem, ExtensionId, ExtensionIdProvider }
 import pekko.actor.ClassicActorSystemProvider
 

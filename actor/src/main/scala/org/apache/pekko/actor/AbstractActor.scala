@@ -20,6 +20,7 @@ import scala.concurrent.duration.{ Duration, FiniteDuration }
 import scala.runtime.BoxedUnit
 
 import org.apache.pekko
+
 import pekko.annotation.DoNotInherit
 import pekko.dispatch.{
   DequeBasedMessageQueueSemantics,

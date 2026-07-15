@@ -14,6 +14,7 @@
 package org.apache.pekko.event
 
 import org.apache.pekko
+
 import pekko.event.Logging._
 import pekko.testkit._
 

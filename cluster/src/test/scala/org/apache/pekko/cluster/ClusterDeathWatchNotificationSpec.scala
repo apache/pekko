@@ -16,12 +16,13 @@ package org.apache.pekko.cluster
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor._
 import pekko.remote.artery.ArteryMultiNodeSpec
 import pekko.remote.artery.ArterySpecSupport
 import pekko.testkit._
-
-import com.typesafe.config.ConfigFactory
 
 object ClusterDeathWatchNotificationSpec {
 

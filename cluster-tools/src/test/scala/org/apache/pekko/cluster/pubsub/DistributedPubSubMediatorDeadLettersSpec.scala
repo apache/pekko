@@ -16,6 +16,7 @@ package org.apache.pekko.cluster.pubsub
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
 import pekko.actor.DeadLetter
 import pekko.cluster.pubsub.DistributedPubSubMediator.{ Subscribe, _ }
 import pekko.testkit._

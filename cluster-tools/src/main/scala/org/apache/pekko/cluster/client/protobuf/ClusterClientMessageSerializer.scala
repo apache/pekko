@@ -19,6 +19,7 @@ import scala.annotation.nowarn
 import scala.jdk.CollectionConverters._
 
 import org.apache.pekko
+
 import pekko.actor.ExtendedActorSystem
 import pekko.cluster.client.ClusterReceptionist
 import pekko.cluster.client.protobuf.msg.{ ClusterClientMessages => cm }

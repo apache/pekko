@@ -18,6 +18,9 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor.Actor
 import pekko.actor.ActorPath
 import pekko.actor.ActorRef
@@ -35,8 +38,6 @@ import pekko.remote.testkit.STMultiNodeSpec
 import pekko.remote.transport.ThrottlerTransportAdapter.Direction
 import pekko.testkit._
 import pekko.util.Timeout
-
-import com.typesafe.config.ConfigFactory
 
 object ClusterClientSpec extends MultiNodeConfig {
   val client = role("client")

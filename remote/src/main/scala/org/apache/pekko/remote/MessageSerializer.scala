@@ -17,6 +17,7 @@ import scala.annotation.nowarn
 import scala.util.control.NonFatal
 
 import org.apache.pekko
+
 import pekko.actor.ExtendedActorSystem
 import pekko.annotation.InternalApi
 import pekko.protobufv3.internal.ByteString

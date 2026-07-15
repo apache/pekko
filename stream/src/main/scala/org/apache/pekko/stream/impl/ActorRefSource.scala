@@ -16,6 +16,7 @@ package org.apache.pekko.stream.impl
 import scala.util.control.NonFatal
 
 import org.apache.pekko
+
 import pekko.actor.{ ActorRef, FunctionRef, Kill, PoisonPill }
 import pekko.annotation.InternalApi
 import pekko.stream._

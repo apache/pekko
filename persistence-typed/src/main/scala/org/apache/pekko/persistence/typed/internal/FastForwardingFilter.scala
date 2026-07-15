@@ -14,6 +14,7 @@
 package org.apache.pekko.persistence.typed.internal
 
 import org.apache.pekko
+
 import pekko.annotation.InternalApi
 import pekko.persistence.query.EventEnvelope
 import pekko.stream.Attributes

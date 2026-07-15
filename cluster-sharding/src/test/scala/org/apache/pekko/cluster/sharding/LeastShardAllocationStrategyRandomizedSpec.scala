@@ -19,6 +19,7 @@ import scala.collection.immutable.SortedSet
 import scala.util.Random
 
 import org.apache.pekko
+
 import pekko.actor.ActorRef
 import pekko.cluster.ClusterEvent
 import pekko.cluster.ClusterEvent.CurrentClusterState

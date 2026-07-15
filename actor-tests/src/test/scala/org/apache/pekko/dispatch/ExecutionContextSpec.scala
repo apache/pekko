@@ -13,14 +13,15 @@
 
 package org.apache.pekko.dispatch
 
-import java.util.concurrent.{ Executor, ExecutorService, Executors }
 import java.util.concurrent.atomic.AtomicInteger
+import java.util.concurrent.{ Executor, ExecutorService, Executors }
 
-import scala.concurrent.{ ExecutionContext, ExecutionContextExecutor, ExecutionContextExecutorService }
-import scala.concurrent.{ blocking, Await, Future, Promise }
 import scala.concurrent.duration._
+import scala.concurrent.{ Await, Future, Promise, blocking }
+import scala.concurrent.{ ExecutionContext, ExecutionContextExecutor, ExecutionContextExecutorService }
 
 import org.apache.pekko
+
 import pekko.actor.Actor
 import pekko.actor.Props
 import pekko.testkit.{ DefaultTimeout, PekkoSpec, TestLatch }

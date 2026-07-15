@@ -21,6 +21,10 @@ import scala.concurrent.ExecutionContextExecutor
 import scala.concurrent.duration.FiniteDuration
 
 import org.apache.pekko
+
+import org.slf4j.helpers.{ MessageFormatter, SubstituteLoggerFactory }
+import org.slf4j.{ Logger, Marker }
+
 import pekko.{ actor => classic }
 import pekko.actor.{ ActorPath, ActorRefProvider, InvalidMessageException }
 import pekko.actor.testkit.typed.CapturedLogEvent
@@ -28,9 +32,6 @@ import pekko.actor.typed._
 import pekko.actor.typed.internal._
 import pekko.annotation.InternalApi
 import pekko.util.Helpers
-
-import org.slf4j.{ Logger, Marker }
-import org.slf4j.helpers.{ MessageFormatter, SubstituteLoggerFactory }
 
 /**
  * INTERNAL API

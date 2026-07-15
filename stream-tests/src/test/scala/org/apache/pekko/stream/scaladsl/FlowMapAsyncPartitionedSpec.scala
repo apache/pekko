@@ -25,6 +25,11 @@ import scala.concurrent.Promise
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import org.scalatest.compatible.Assertion
+import org.scalatest.time.Millis
+import org.scalatest.time.Span
+
 import pekko.Done
 import pekko.stream.ActorAttributes
 import pekko.stream.Attributes
@@ -37,10 +42,6 @@ import pekko.testkit.TestDuration
 import pekko.testkit.TestLatch
 import pekko.testkit.TestProbe
 import pekko.testkit.WithLogCapturing
-
-import org.scalatest.compatible.Assertion
-import org.scalatest.time.Millis
-import org.scalatest.time.Span
 
 // Tests ported from akka/akka-core#31582 and akka/akka-core#31882,
 // adapted for Pekko's mapAsyncPartitioned API (no perPartition parameter).

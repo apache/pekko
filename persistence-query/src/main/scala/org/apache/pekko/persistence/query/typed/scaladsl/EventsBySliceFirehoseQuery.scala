@@ -19,9 +19,10 @@ import scala.annotation.nowarn
 import scala.collection.immutable
 import scala.concurrent.Future
 
+import org.apache.pekko
+
 import com.typesafe.config.Config
 
-import org.apache.pekko
 import pekko.NotUsed
 import pekko.actor.ExtendedActorSystem
 import pekko.persistence.Persistence

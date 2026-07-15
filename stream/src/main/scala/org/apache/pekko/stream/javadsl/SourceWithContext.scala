@@ -24,6 +24,9 @@ import scala.jdk.OptionConverters._
 import scala.reflect.ClassTag
 
 import org.apache.pekko
+
+import org.jspecify.annotations.Nullable
+
 import pekko.actor.ClassicActorSystemProvider
 import pekko.annotation.ApiMayChange
 import pekko.event.{ LogMarker, LoggingAdapter, MarkerLoggingAdapter }
@@ -31,8 +34,6 @@ import pekko.japi.Pair
 import pekko.japi.function
 import pekko.stream._
 import pekko.util.ConstantFun
-
-import org.jspecify.annotations.Nullable
 
 object SourceWithContext {
 

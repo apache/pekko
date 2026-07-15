@@ -19,11 +19,12 @@ import scala.annotation.nowarn
 import scala.annotation.tailrec
 
 import org.apache.pekko
+
+import com.typesafe.config._
+
 import pekko.annotation.InternalApi
 import pekko.routing._
 import pekko.util.WildcardIndex
-
-import com.typesafe.config._
 
 object Deploy {
   final val NoDispatcherGiven = ""

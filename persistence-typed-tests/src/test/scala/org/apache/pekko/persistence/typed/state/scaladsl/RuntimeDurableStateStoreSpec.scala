@@ -18,6 +18,12 @@
 package org.apache.pekko.persistence.typed.state.scaladsl
 
 import org.apache.pekko
+
+import org.scalatest.wordspec.AnyWordSpecLike
+
+import com.typesafe.config.Config
+import com.typesafe.config.ConfigFactory
+
 import pekko.Done
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
 import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
@@ -27,10 +33,6 @@ import pekko.persistence.state.DurableStateStoreRegistry
 import pekko.persistence.state.scaladsl.DurableStateUpdateStore
 import pekko.persistence.testkit.state.PersistenceTestKitDurableStateStoreProvider
 import pekko.persistence.typed.PersistenceId
-
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
-import org.scalatest.wordspec.AnyWordSpecLike
 
 object RuntimeDurableStateStoreSpec {
 

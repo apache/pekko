@@ -16,6 +16,11 @@ package org.apache.pekko.cluster.sharding.typed
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import org.scalatest.concurrent.ScalaFutures
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor.testkit.typed.scaladsl.TestProbe
 import pekko.actor.typed.Behavior
 import pekko.actor.typed.receptionist.Receptionist
@@ -28,10 +33,6 @@ import pekko.cluster.typed.MultiNodeTypedClusterSpec
 import pekko.remote.testkit.MultiNodeConfig
 import pekko.remote.testkit.MultiNodeSpec
 import pekko.serialization.jackson.CborSerializable
-
-import org.scalatest.concurrent.ScalaFutures
-
-import com.typesafe.config.ConfigFactory
 
 object ShardedDaemonProcessSpec extends MultiNodeConfig {
   val first = role("first")

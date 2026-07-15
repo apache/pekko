@@ -16,11 +16,12 @@ package org.apache.pekko.persistence.query
 import scala.annotation.nowarn
 
 import org.apache.pekko
+
+import com.typesafe.config.{ Config, ConfigFactory }
+
 import pekko.NotUsed
 import pekko.actor.ExtendedActorSystem
 import pekko.stream.scaladsl.Source
-
-import com.typesafe.config.{ Config, ConfigFactory }
 
 /**
  * Use for tests only!

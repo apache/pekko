@@ -20,6 +20,7 @@ package org.apache.pekko.stream.impl.fusing
 import scala.util.control.NonFatal
 
 import org.apache.pekko
+
 import pekko.stream.{ Attributes, FlowShape, Inlet, Outlet, Supervision }
 import pekko.stream.ActorAttributes.SupervisionStrategy
 import pekko.stream.impl.Stages.DefaultAttributes

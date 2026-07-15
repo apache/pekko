@@ -17,13 +17,14 @@ import java.nio.ByteBuffer
 import java.nio.ByteOrder
 
 import org.apache.pekko
+
+import org.scalatest.wordspec.AnyWordSpecLike
+
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
 import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
 import pekko.actor.typed.internal.adapter.ActorSystemAdapter
 import pekko.cluster.sharding.typed.internal.ShardingSerializer
 import pekko.serialization.SerializationExtension
-
-import org.scalatest.wordspec.AnyWordSpecLike
 
 class ShardingSerializerSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike with LogCapturing {
 

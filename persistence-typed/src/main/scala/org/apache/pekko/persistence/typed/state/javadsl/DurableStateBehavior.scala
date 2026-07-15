@@ -15,9 +15,14 @@ package org.apache.pekko.persistence.typed.state.javadsl
 
 import java.util.Optional
 
-import org.jspecify.annotations.Nullable
+import scala.jdk.OptionConverters._
 
 import org.apache.pekko
+
+import com.typesafe.config.Config
+
+import org.jspecify.annotations.Nullable
+
 import pekko.actor.typed
 import pekko.actor.typed.BackoffSupervisorStrategy
 import pekko.actor.typed.Behavior
@@ -30,10 +35,6 @@ import pekko.persistence.typed.SnapshotAdapter
 import pekko.persistence.typed.state.internal
 import pekko.persistence.typed.state.internal._
 import pekko.persistence.typed.state.scaladsl
-
-import scala.jdk.OptionConverters._
-
-import com.typesafe.config.Config
 
 /**
  * A `Behavior` for a persistent actor with durable storage of its state.

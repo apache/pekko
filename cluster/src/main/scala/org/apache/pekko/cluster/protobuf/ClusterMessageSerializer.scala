@@ -21,6 +21,9 @@ import scala.concurrent.duration.Deadline
 import scala.jdk.CollectionConverters._
 
 import org.apache.pekko
+
+import com.typesafe.config.{ Config, ConfigFactory, ConfigRenderOptions }
+
 import pekko.actor.{ Address, ExtendedActorSystem }
 import pekko.annotation.InternalApi
 import pekko.cluster._
@@ -33,8 +36,6 @@ import pekko.remote.ByteStringUtils
 import pekko.routing.Pool
 import pekko.serialization._
 import pekko.util.Version
-
-import com.typesafe.config.{ Config, ConfigFactory, ConfigRenderOptions }
 
 /**
  * INTERNAL API

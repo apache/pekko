@@ -16,13 +16,14 @@ package org.apache.pekko.remote
 import scala.collection.immutable
 
 import org.apache.pekko
+
+import com.typesafe.config._
+
 import pekko.actor._
 import pekko.remote.routing._
 import pekko.routing._
 import pekko.testkit._
 import pekko.testkit.TestActors.echoActorProps
-
-import com.typesafe.config._
 
 object RemoteRouterSpec {
   class Parent extends Actor {

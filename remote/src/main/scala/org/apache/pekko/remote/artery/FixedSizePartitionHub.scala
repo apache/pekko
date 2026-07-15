@@ -13,9 +13,10 @@
 
 package org.apache.pekko.remote.artery
 
+import org.apache.pekko
+
 import org.agrona.concurrent.OneToOneConcurrentArrayQueue
 
-import org.apache.pekko
 import pekko.annotation.InternalApi
 import pekko.stream.scaladsl.PartitionHub
 

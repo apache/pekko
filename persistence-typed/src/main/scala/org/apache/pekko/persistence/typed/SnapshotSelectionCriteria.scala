@@ -14,6 +14,7 @@
 package org.apache.pekko.persistence.typed
 
 import org.apache.pekko
+
 import pekko.annotation.InternalApi
 import pekko.persistence.{ SnapshotSelectionCriteria => ClassicSnapshotSelectionCriteria }
 import pekko.util.HashCode

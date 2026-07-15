@@ -16,6 +16,7 @@ package org.apache.pekko.stream.scaladsl
 import scala.concurrent.Promise
 
 import org.apache.pekko
+
 import pekko.stream._
 import pekko.stream.testkit._
 import pekko.stream.testkit.scaladsl.StreamTestKit._

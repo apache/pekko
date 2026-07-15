@@ -16,13 +16,14 @@ package org.apache.pekko.event.slf4j
 import scala.annotation.nowarn
 
 import org.apache.pekko
+
+import org.slf4j.{ Logger => SLFLogger, LoggerFactory => SLFLoggerFactory, MDC, Marker, MarkerFactory }
+
 import pekko.actor._
 import pekko.dispatch.RequiresMessageQueue
 import pekko.event.{ LogMarker, _ }
 import pekko.event.Logging._
 import pekko.util.Helpers
-
-import org.slf4j.{ Logger => SLFLogger, LoggerFactory => SLFLoggerFactory, MDC, Marker, MarkerFactory }
 
 /**
  * Base trait for all classes that wants to be able use the SLF4J logging infrastructure.

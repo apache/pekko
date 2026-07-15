@@ -15,20 +15,21 @@ package org.apache.pekko.stream.scaladsl
 
 import scala.annotation.nowarn
 import scala.collection.immutable
-import scala.concurrent.{ Await, Future }
 import scala.concurrent.duration._
+import scala.concurrent.{ Await, Future }
 
 import org.apache.pekko
+
+import org.reactivestreams.Publisher
+
+import org.scalatest.concurrent.ScalaFutures
+
 import pekko.Done
 import pekko.stream._
 import pekko.stream.ActorAttributes.supervisionStrategy
 import pekko.stream.testkit._
 import pekko.stream.testkit.scaladsl.{ TestSink, TestSource }
 import pekko.testkit.DefaultTimeout
-
-import org.reactivestreams.Publisher
-
-import org.scalatest.concurrent.ScalaFutures
 
 class SinkSpec extends StreamSpec with DefaultTimeout with ScalaFutures {
 

@@ -17,13 +17,14 @@ import scala.concurrent.Future
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.{ AnyWordSpec, AnyWordSpecLike }
+
 import pekko.actor.testkit.typed.TestKitSettings
 import pekko.actor.testkit.typed.scaladsl._
 import pekko.actor.typed.scaladsl.Behaviors
 import pekko.util.Timeout
-
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.{ AnyWordSpec, AnyWordSpecLike }
 
 object SpawnProtocolSpec {
   sealed trait Message

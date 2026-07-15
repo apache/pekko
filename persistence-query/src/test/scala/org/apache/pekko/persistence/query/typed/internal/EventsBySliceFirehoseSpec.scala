@@ -17,13 +17,15 @@ import java.time.{ Duration => JDuration }
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
 
-import scala.concurrent.{ ExecutionContext, Promise }
 import scala.concurrent.duration._
-
-import com.typesafe.config.ConfigFactory
-import org.scalatest.concurrent.Eventually
+import scala.concurrent.{ ExecutionContext, Promise }
 
 import org.apache.pekko
+
+import org.scalatest.concurrent.Eventually
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.NotUsed
 import pekko.persistence.Persistence
 import pekko.persistence.query.NoOffset

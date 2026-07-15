@@ -14,6 +14,7 @@
 package org.apache.pekko.stream.impl
 
 import org.apache.pekko
+
 import pekko.NotUsed
 import pekko.annotation.InternalApi
 import pekko.stream._

@@ -18,15 +18,16 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import org.apache.pekko
-import pekko.actor._
-import pekko.actor.DeadLetter
-import pekko.pattern.ask
-import pekko.util.Timeout
 
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
 import com.typesafe.config.ConfigFactory
+
+import pekko.actor._
+import pekko.actor.DeadLetter
+import pekko.pattern.ask
+import pekko.util.Timeout
 
 @nowarn
 class PekkoSpecSpec extends AnyWordSpec with Matchers {

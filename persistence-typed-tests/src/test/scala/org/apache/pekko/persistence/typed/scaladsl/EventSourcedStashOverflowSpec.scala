@@ -16,6 +16,11 @@ package org.apache.pekko.persistence.typed.scaladsl
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import org.scalatest.wordspec.AnyWordSpecLike
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.Done
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
 import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
@@ -24,10 +29,6 @@ import pekko.actor.typed.Behavior
 import pekko.actor.typed.scaladsl.adapter._
 import pekko.persistence.journal.SteppingInmemJournal
 import pekko.persistence.typed.PersistenceId
-
-import org.scalatest.wordspec.AnyWordSpecLike
-
-import com.typesafe.config.ConfigFactory
 
 // Reproducer for #29401
 object EventSourcedStashOverflowSpec {

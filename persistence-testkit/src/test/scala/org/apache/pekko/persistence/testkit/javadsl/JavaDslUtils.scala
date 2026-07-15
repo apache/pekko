@@ -16,6 +16,7 @@ package org.apache.pekko.persistence.testkit.javadsl
 import java.util
 
 import org.apache.pekko
+
 import pekko.actor.typed.ActorRef
 import pekko.persistence.testkit.{ Cmd, CommonUtils, EmptyState, Evt, Passivate, Recovered, Stopped, TestCommand }
 import pekko.persistence.typed.{ PersistenceId, RecoveryCompleted }

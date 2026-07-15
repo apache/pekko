@@ -15,11 +15,11 @@ package org.apache.pekko.testkit.metrics
 
 import java.util
 
+import org.scalatest.Notifying
+
 import com.codahale.metrics._
 import com.codahale.metrics.jvm
 import com.codahale.metrics.jvm.MemoryUsageGaugeSet
-
-import org.scalatest.Notifying
 
 /**
  * User Land operations provided by the [[MetricsKit]].

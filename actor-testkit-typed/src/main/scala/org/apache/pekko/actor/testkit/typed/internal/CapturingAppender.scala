@@ -13,10 +13,11 @@
 
 package org.apache.pekko.actor.testkit.typed.internal
 
+import org.apache.pekko
+
 import ch.qos.logback.classic.spi.ILoggingEvent
 import ch.qos.logback.core.AppenderBase
 
-import org.apache.pekko
 import pekko.annotation.InternalApi
 
 /**

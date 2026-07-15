@@ -16,6 +16,7 @@ package org.apache.pekko.cluster.sharding.passivation.simulator
 import java.nio.file.Paths
 
 import org.apache.pekko
+
 import pekko.NotUsed
 import pekko.cluster.sharding.ShardRegion.EntityId
 import pekko.stream.scaladsl._

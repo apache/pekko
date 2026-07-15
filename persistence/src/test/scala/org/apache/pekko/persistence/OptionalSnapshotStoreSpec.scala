@@ -14,12 +14,13 @@
 package org.apache.pekko.persistence
 
 import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor.{ Actor, Props }
 import pekko.event.Logging
 import pekko.event.Logging.Warning
 import pekko.testkit.{ EventFilter, ImplicitSender, TestEvent }
-
-import com.typesafe.config.ConfigFactory
 
 object OptionalSnapshotStoreSpec {
 

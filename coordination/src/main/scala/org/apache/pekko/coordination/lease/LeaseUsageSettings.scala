@@ -17,6 +17,7 @@ import scala.concurrent.duration.FiniteDuration
 import scala.jdk.DurationConverters._
 
 import org.apache.pekko
+
 import pekko.util.PrettyDuration._
 
 final class LeaseUsageSettings private[pekko] (val leaseImplementation: String,

@@ -14,10 +14,11 @@
 package org.apache.pekko.stream.scaladsl
 
 import org.apache.pekko
-import pekko.stream.testkit._
-import pekko.stream.testkit.scaladsl.StreamTestKit._
 
 import org.reactivestreams.Publisher
+
+import pekko.stream.testkit._
+import pekko.stream.testkit.scaladsl.StreamTestKit._
 
 class FlowInterleaveSpec extends BaseTwoStreamsSetup {
 

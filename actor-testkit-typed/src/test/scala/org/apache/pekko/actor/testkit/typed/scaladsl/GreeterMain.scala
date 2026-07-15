@@ -14,6 +14,7 @@
 package org.apache.pekko.actor.testkit.typed.scaladsl
 
 import org.apache.pekko
+
 import pekko.actor.typed.{ ActorRef, Behavior }
 import pekko.actor.typed.scaladsl.Behaviors
 

@@ -14,6 +14,7 @@
 package org.apache.pekko.persistence.journal.inmem
 
 import org.apache.pekko
+
 import pekko.persistence.CapabilityFlag
 import pekko.persistence.PersistenceSpec
 import pekko.persistence.journal.JournalSpec

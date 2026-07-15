@@ -16,6 +16,7 @@ package org.apache.pekko.persistence.typed
 import java.util.Optional
 
 import org.apache.pekko
+
 import pekko.annotation.DoNotInherit
 import pekko.persistence.typed.internal.ReplicatedPublishedEventMetaData
 

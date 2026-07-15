@@ -16,6 +16,13 @@ package org.apache.pekko.cluster.sharding.typed
 import java.util.concurrent.ThreadLocalRandom
 
 import org.apache.pekko
+
+import org.scalatest.time.Span
+import org.scalatest.wordspec.AnyWordSpecLike
+
+import com.typesafe.config.Config
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor.testkit.typed.scaladsl.{ ActorTestKit, LogCapturing, ScalaTestWithActorTestKit }
 import pekko.actor.typed.ActorRef
 import pekko.actor.typed.ActorSystem
@@ -40,12 +47,6 @@ import pekko.persistence.typed.scaladsl.Effect
 import pekko.persistence.typed.scaladsl.EventSourcedBehavior
 import pekko.persistence.typed.scaladsl.ReplicatedEventSourcing
 import pekko.serialization.jackson.CborSerializable
-
-import org.scalatest.time.Span
-import org.scalatest.wordspec.AnyWordSpecLike
-
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
 
 object ReplicatedShardingSpec {
   def commonConfig = ConfigFactory.parseString("""

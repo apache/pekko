@@ -16,6 +16,7 @@ package org.apache.pekko.stream.scaladsl
 import scala.util.control.NoStackTrace
 
 import org.apache.pekko
+
 import pekko.actor.{ Actor, ActorRef, Props }
 import pekko.stream.testkit._
 import pekko.stream.testkit.scaladsl._

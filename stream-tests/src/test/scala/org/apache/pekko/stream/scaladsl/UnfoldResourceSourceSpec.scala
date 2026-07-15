@@ -20,10 +20,11 @@ import java.util.concurrent.atomic.AtomicInteger
 
 import scala.concurrent.duration._
 
+import org.apache.pekko
+
 import com.google.common.jimfs.Configuration
 import com.google.common.jimfs.Jimfs
 
-import org.apache.pekko
 import pekko.stream.ActorAttributes
 import pekko.stream.ActorAttributes._
 import pekko.stream.Supervision._

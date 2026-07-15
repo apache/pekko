@@ -17,6 +17,9 @@ import scala.annotation.nowarn
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor._
 import pekko.actor.ActorIdentity
 import pekko.actor.Identify
@@ -24,8 +27,6 @@ import pekko.remote.{ RARP, RemotingMultiNodeSpec }
 import pekko.remote.testkit.MultiNodeConfig
 import pekko.remote.transport.ThrottlerTransportAdapter.Direction
 import pekko.testkit._
-
-import com.typesafe.config.ConfigFactory
 
 object SurviveNetworkPartitionSpec extends MultiNodeConfig {
   val first = role("first")

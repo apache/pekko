@@ -17,6 +17,7 @@ import scala.annotation.nowarn
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
 import pekko.persistence.query.PersistenceQuery
 import pekko.persistence.query.journal.leveldb.scaladsl.LeveldbReadJournal
 import pekko.persistence.query.scaladsl.PersistenceIdsQuery

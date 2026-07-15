@@ -16,6 +16,11 @@ package org.apache.pekko.cluster.sharding
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
+import org.scalatest.wordspec.AnyWordSpecLike
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor.Actor
 import pekko.actor.ActorRef
 import pekko.actor.PoisonPill
@@ -29,10 +34,6 @@ import pekko.cluster.sharding.ShardRegion.StartEntityAck
 import pekko.testkit.ImplicitSender
 import pekko.testkit.PekkoSpec
 import pekko.testkit.WithLogCapturing
-
-import org.scalatest.wordspec.AnyWordSpecLike
-
-import com.typesafe.config.ConfigFactory
 
 object RememberEntitiesAndStartEntitySpec {
   class EntityActor extends Actor {

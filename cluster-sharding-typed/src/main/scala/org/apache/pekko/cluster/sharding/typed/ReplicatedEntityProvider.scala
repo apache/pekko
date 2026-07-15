@@ -20,6 +20,7 @@ import scala.jdk.CollectionConverters._
 import scala.reflect.ClassTag
 
 import org.apache.pekko
+
 import pekko.actor.typed.Behavior
 import pekko.cluster.sharding.typed.internal.EntityTypeKeyImpl
 import pekko.cluster.sharding.typed.javadsl.{ Entity => JEntity, EntityTypeKey => JEntityTypeKey }

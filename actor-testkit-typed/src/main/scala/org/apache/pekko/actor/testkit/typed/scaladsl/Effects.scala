@@ -16,6 +16,7 @@ package org.apache.pekko.actor.testkit.typed.scaladsl
 import scala.concurrent.duration.FiniteDuration
 
 import org.apache.pekko
+
 import pekko.actor.typed.{ ActorRef, Behavior, Props, RecipientRef }
 
 /**

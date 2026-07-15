@@ -18,6 +18,9 @@ import scala.concurrent.duration._
 import scala.util.control.NoStackTrace
 
 import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor.Actor
 import pekko.actor.ActorRef
 import pekko.actor.Address
@@ -31,8 +34,6 @@ import pekko.remote.testkit.MultiNodeConfig
 import pekko.remote.transport.ThrottlerTransportAdapter.Direction
 import pekko.serialization.jackson.CborSerializable
 import pekko.testkit._
-
-import com.typesafe.config.ConfigFactory
 
 object SurviveNetworkInstabilityMultiJvmSpec extends MultiNodeConfig {
   val first = role("first")

@@ -14,6 +14,7 @@
 package org.apache.pekko.dispatch
 
 import org.apache.pekko
+
 import pekko.actor.{ Actor, Props }
 import pekko.testkit.{ DefaultTimeout, PekkoSpec }
 

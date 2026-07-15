@@ -21,9 +21,10 @@ import scala.annotation.nowarn
 import scala.concurrent.Future
 import scala.concurrent.duration._
 
+import org.apache.pekko
+
 import com.google.common.jimfs.{ Configuration, Jimfs }
 
-import org.apache.pekko
 import pekko.actor.ActorRef
 import pekko.stream._
 import pekko.stream.IOResult._

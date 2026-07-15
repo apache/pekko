@@ -17,6 +17,7 @@ import scala.collection.immutable
 import scala.concurrent.duration._
 
 import org.apache.pekko
+
 import pekko.stream._
 import pekko.stream.testkit._
 import pekko.stream.testkit.scaladsl.StreamTestKit._

@@ -13,11 +13,11 @@
 
 package org.apache.pekko.stream
 
-import scala.concurrent.{ duration, Await, Promise }
-
-import duration._
+import scala.concurrent.{ Await, Promise, duration }
 
 import org.apache.pekko
+
+import duration._
 import pekko.Done
 import pekko.stream.QueueOfferResult
 import pekko.stream.impl.UnfoldResourceSource

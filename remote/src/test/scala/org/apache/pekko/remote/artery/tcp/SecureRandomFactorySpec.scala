@@ -19,6 +19,7 @@ import java.security.SecureRandom
 import java.util.zip.GZIPOutputStream
 
 import org.apache.pekko
+
 import pekko.event.NoMarkerLogging
 import pekko.testkit.PekkoSpec
 

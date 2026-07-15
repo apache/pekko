@@ -14,11 +14,12 @@
 package org.apache.pekko.cluster.metrics
 
 import org.apache.pekko
-import pekko.actor.Address
-import pekko.cluster.metrics.StandardMetrics._
 
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
+
+import pekko.actor.Address
+import pekko.cluster.metrics.StandardMetrics._
 
 class MetricsSelectorSpec extends AnyWordSpec with Matchers {
 

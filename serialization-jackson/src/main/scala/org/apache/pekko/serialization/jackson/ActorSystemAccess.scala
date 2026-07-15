@@ -14,6 +14,7 @@
 package org.apache.pekko.serialization.jackson
 
 import org.apache.pekko
+
 import pekko.actor.ExtendedActorSystem
 import pekko.annotation.InternalApi
 import pekko.serialization.Serialization

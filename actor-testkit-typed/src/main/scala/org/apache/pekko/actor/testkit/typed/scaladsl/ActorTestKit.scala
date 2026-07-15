@@ -21,6 +21,12 @@ import scala.concurrent.duration._
 import scala.reflect.ClassTag
 
 import org.apache.pekko
+
+import org.slf4j.LoggerFactory
+
+import com.typesafe.config.Config
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor.DeadLetter
 import pekko.actor.DeadLetterSuppression
 import pekko.actor.Dropped
@@ -38,11 +44,6 @@ import pekko.actor.typed.scaladsl.AskPattern._
 import pekko.actor.typed.scaladsl.adapter._
 import pekko.annotation.InternalApi
 import pekko.util.Timeout
-
-import org.slf4j.LoggerFactory
-
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
 
 object ActorTestKit {
 

@@ -18,12 +18,13 @@ import java.util.concurrent.atomic.AtomicReference
 import scala.collection.immutable.SortedSet
 
 import org.apache.pekko
+
+import com.typesafe.config.ConfigFactory
+
 import pekko.actor.Actor
 import pekko.actor.Props
 import pekko.remote.testkit.MultiNodeConfig
 import pekko.testkit._
-
-import com.typesafe.config.ConfigFactory
 
 object SunnyWeatherMultiJvmSpec extends MultiNodeConfig {
   val first = role("first")

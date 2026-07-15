@@ -21,14 +21,15 @@ import scala.concurrent.duration._
 import scala.reflect.ClassTag
 
 import org.apache.pekko
+
+import com.typesafe.config.Config
+
 import pekko.actor._
 import pekko.annotation.InternalApi
 import pekko.persistence.{ PersistentActor, RecoveryCompleted, SnapshotOffer }
 import pekko.persistence.fsm.PersistentFSM.FSMState
 import pekko.persistence.serialization.Message
 import pekko.util.Helpers.toRootLowerCase
-
-import com.typesafe.config.Config
 
 /**
  * SnapshotAfter Extension Id and factory for creating SnapshotAfter extension

@@ -22,6 +22,9 @@ import scala.concurrent.duration._
 import scala.jdk.CollectionConverters._
 
 import org.apache.pekko
+
+import com.typesafe.config.Config
+
 import pekko.actor.Actor
 import pekko.actor.ActorIdentity
 import pekko.actor.ActorLogging
@@ -51,8 +54,6 @@ import pekko.remote.DeadlineFailureDetector
 import pekko.routing.ConsistentHash
 import pekko.routing.MurmurHash
 import pekko.util.MessageBuffer
-
-import com.typesafe.config.Config
 
 @deprecated(
   "Use Pekko gRPC instead, see https://pekko.apache.org/docs/pekko/current/cluster-client.html#migration-to-pekko-grpc",

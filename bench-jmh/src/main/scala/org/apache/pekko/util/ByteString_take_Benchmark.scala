@@ -17,9 +17,9 @@ import java.util.concurrent.TimeUnit
 
 import scala.util.Random
 
-import org.openjdk.jmh.annotations.{ Benchmark, Measurement, Scope, State }
-
 import org.apache.pekko.util.ByteString.{ ByteString1, ByteStrings }
+
+import org.openjdk.jmh.annotations.{ Benchmark, Measurement, Scope, State }
 
 @State(Scope.Benchmark)
 @Measurement(timeUnit = TimeUnit.MILLISECONDS)

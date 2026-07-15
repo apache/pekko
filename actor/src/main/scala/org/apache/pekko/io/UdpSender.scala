@@ -19,6 +19,7 @@ import scala.annotation.nowarn
 import scala.util.control.NonFatal
 
 import org.apache.pekko
+
 import pekko.actor._
 import pekko.dispatch.{ RequiresMessageQueue, UnboundedMessageQueueSemantics }
 import pekko.io.Inet.DatagramChannelCreator
