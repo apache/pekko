@@ -136,6 +136,9 @@ private[pekko] trait JournalInteractions[C, E, S] {
   protected def replayEvents(fromSeqNr: Long, toSeqNr: Long): Unit = {
     setup.internalLogger.debug2("Replaying events: from: {}, to: {}", fromSeqNr, toSeqNr)
     setup.journal.tell(
+      JournalProtocol.ReplayMessagesWithBatching(setup.writerIdentity.instanceId),
+      setup.selfClassic)
+    setup.journal.tell(
       ReplayMessages(fromSeqNr, toSeqNr, setup.recovery.replayMax, setup.persistenceId.id, setup.selfClassic),
       setup.selfClassic)
   }

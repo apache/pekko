@@ -157,6 +157,33 @@ class ReplayFilterSpec extends PekkoSpec with ImplicitSender {
   }
 
   "ReplayFilter in Fail mode" must {
+    "keep its buffer and writer state across bounded replay batches" in {
+      val journalProbe = TestProbe()
+      val filter = system.actorOf(
+        ReplayFilter.props(testActor, mode = Fail, windowSize = 100, maxOldWriters = 10, debugEnabled = false))
+      val m2b = m2.copy(persistent = m2.persistent.update(writerUuid = writerB))
+      val batchReady = ReplayBatchReady(1L)
+
+      filter.tell(m1, journalProbe.ref)
+      filter.tell(m2b, journalProbe.ref)
+      filter.tell(batchReady, journalProbe.ref)
+
+      // The marker passes through without flushing the look-ahead buffer.
+      expectMsg(batchReady)
+
+      EventFilter.error(start = "Invalid replayed event", occurrences = 1).intercept {
+        filter.tell(m2, journalProbe.ref) // writerA is now an old writer
+        expectMsgType[ReplayMessagesFailure].cause.getClass should be(classOf[IllegalStateException])
+
+        // The failed filter cancels the replay session when the journal finishes the current batch.
+        filter.tell(batchReady, journalProbe.ref)
+        journalProbe.expectMsg(ReplayBatchCancel(1L))
+      }
+
+      watch(filter)
+      expectTerminated(filter)
+    }
+
     "fail when message with same seqNo from old overlapping writer" in {
       val filter = system.actorOf(
         ReplayFilter.props(testActor, mode = Fail, windowSize = 100, maxOldWriters = 10, debugEnabled = false))

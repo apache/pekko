@@ -126,12 +126,47 @@ private[persistence] object JournalProtocol {
       extends Request
 
   /**
+   * Opts the sender in to bounded replay for the immediately following [[ReplayMessages]] request.
+   * Journals that don't support bounded replay can ignore this message and process [[ReplayMessages]] as before.
+   * The `actorInstanceId` identifies the current incarnation of the recovering actor so that responses from a
+   * cancelled replay can be discarded after a restart.
+   */
+  final case class ReplayMessagesWithBatching(actorInstanceId: Int) extends Request
+
+  /** Cancels all bounded replays requested by the sender. */
+  case object ReplayMessagesCancel extends Request
+
+  /**
+   * Acknowledges that the requester has processed the replayed messages emitted before the corresponding
+   * [[ReplayBatchReady]].
+   */
+  final case class ReplayBatchAck(replayId: Long) extends Request
+
+  /** Cancels a bounded replay after its replay filter has failed. */
+  final case class ReplayBatchCancel(replayId: Long) extends Request
+
+  /**
    * Reply message to a [[ReplayMessages]] request. A separate reply is sent to the requester for each
    * replayed message.
    *
    * @param persistent replayed message.
    */
   final case class ReplayedMessage(persistent: PersistentRepr)
+      extends Response
+      with DeadLetterSuppression
+      with NoSerializationVerificationNeeded
+
+  /**
+   * Signals that one bounded replay batch has been emitted. The requester must process all preceding
+   * [[ReplayedMessage]] responses and reply with [[ReplayBatchAck]] before the journal emits another batch.
+   */
+  final case class ReplayBatchReady(replayId: Long)
+      extends Response
+      with DeadLetterSuppression
+      with NoSerializationVerificationNeeded
+
+  /** Associates a bounded replay response with the recovering actor incarnation that requested it. */
+  final case class ReplayBatchResponse(actorInstanceId: Int, response: Response)
       extends Response
       with DeadLetterSuppression
       with NoSerializationVerificationNeeded

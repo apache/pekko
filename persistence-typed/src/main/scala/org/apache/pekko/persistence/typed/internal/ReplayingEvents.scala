@@ -131,6 +131,10 @@ private[pekko] final class ReplayingEvents[C, E, S](
   private def onJournalResponse(response: JournalProtocol.Response): Behavior[InternalProtocol] = {
     try {
       response match {
+        case ReplayBatchResponse(actorInstanceId, currentResponse) =>
+          if (actorInstanceId == setup.writerIdentity.instanceId) onJournalResponse(currentResponse)
+          else this
+
         case ReplayedMessage(repr) =>
           var eventForErrorReporting: OptionVal[Any] = OptionVal.None
           try {
@@ -191,6 +195,11 @@ private[pekko] final class ReplayingEvents[C, E, S](
               state = state.copy(repr.sequenceNr)
               onRecoveryFailure(ex, eventForErrorReporting.toOption)
           }
+
+        case ReplayBatchReady(replayId) =>
+          state = state.copy(eventSeenInInterval = true)
+          setup.journal.tell(ReplayBatchAck(replayId), setup.selfClassic)
+          this
 
         case RecoverySuccess(highestJournalSeqNr) =>
           val highestSeqNr = Math.max(highestJournalSeqNr, state.seqNr)
@@ -255,6 +264,7 @@ private[pekko] final class ReplayingEvents[C, E, S](
    * @param event the event that was being processed when the exception was thrown
    */
   private def onRecoveryFailure(cause: Throwable, event: Option[Any]): Behavior[InternalProtocol] = {
+    setup.journal.tell(ReplayMessagesCancel, setup.selfClassic)
     onRecoveryFailed(setup.context, cause, event)
     setup.onSignal(state.state, RecoveryFailed(cause), catchAndLog = true)
     setup.cancelRecoveryTimer()
