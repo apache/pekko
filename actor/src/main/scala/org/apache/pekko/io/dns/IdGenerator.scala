@@ -21,7 +21,8 @@ import java.security.SecureRandom
 import java.util.concurrent.ThreadLocalRandom
 import java.util.random.RandomGenerator
 
-import org.apache.pekko.annotation.InternalApi
+import org.apache.pekko
+import pekko.annotation.InternalApi
 
 /**
  * INTERNAL API

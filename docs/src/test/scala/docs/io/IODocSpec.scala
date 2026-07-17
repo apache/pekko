@@ -21,7 +21,7 @@ import pekko.util.ByteString
 import java.net.InetSocketAddress
 //#imports
 
-import org.apache.pekko.testkit.PekkoSpec
+import pekko.testkit.PekkoSpec
 import scala.concurrent.duration._
 
 class DemoActor extends Actor {

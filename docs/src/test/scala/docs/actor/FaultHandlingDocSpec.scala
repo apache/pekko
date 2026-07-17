@@ -13,7 +13,9 @@
 
 package docs.actor
 
-import org.apache.pekko.actor.{ ActorRef, ActorSystem, Props, Terminated }
+import org.apache.pekko
+
+import pekko.actor.{ ActorRef, ActorSystem, Props, Terminated }
 import FaultHandlingDocSpec._
 
 //#testkit
@@ -21,7 +23,7 @@ import com.typesafe.config.{ Config, ConfigFactory }
 import org.scalatest.BeforeAndAfterAll
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
-import org.apache.pekko.testkit.{ EventFilter, ImplicitSender, TestKit }
+import pekko.testkit.{ EventFilter, ImplicitSender, TestKit }
 
 //#testkit
 object FaultHandlingDocSpec {

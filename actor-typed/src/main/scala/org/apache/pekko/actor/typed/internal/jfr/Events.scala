@@ -19,7 +19,8 @@ import jdk.jfr.Event
 import jdk.jfr.Label
 import jdk.jfr.StackTrace
 
-import org.apache.pekko.annotation.InternalApi
+import org.apache.pekko
+import pekko.annotation.InternalApi
 
 // requires jdk.jfr (available since JDK 9, project baseline is Java 17)
 

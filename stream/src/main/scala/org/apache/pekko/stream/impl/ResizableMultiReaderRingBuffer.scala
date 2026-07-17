@@ -18,7 +18,8 @@ import scala.util.control.NoStackTrace
 
 import ResizableMultiReaderRingBuffer.{ Cursor, Cursors, NothingToReadException }
 
-import org.apache.pekko.annotation.InternalApi
+import org.apache.pekko
+import pekko.annotation.InternalApi
 
 /**
  * INTERNAL API

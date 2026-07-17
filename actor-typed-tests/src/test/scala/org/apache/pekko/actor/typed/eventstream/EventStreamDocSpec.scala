@@ -17,10 +17,11 @@
 
 package org.apache.pekko.actor.typed.eventstream
 
-import org.apache.pekko.actor.{ AllDeadLetters, DeadLetter, Dropped, SuppressedDeadLetter, UnhandledMessage }
-import org.apache.pekko.actor.testkit.typed.scaladsl.{ LogCapturing, ScalaTestWithActorTestKit }
-import org.apache.pekko.actor.typed.ActorSystem
-import org.apache.pekko.actor.typed.scaladsl.Behaviors
+import org.apache.pekko
+import pekko.actor.{ AllDeadLetters, DeadLetter, Dropped, SuppressedDeadLetter, UnhandledMessage }
+import pekko.actor.testkit.typed.scaladsl.{ LogCapturing, ScalaTestWithActorTestKit }
+import pekko.actor.typed.ActorSystem
+import pekko.actor.typed.scaladsl.Behaviors
 
 import org.scalatest.wordspec.AnyWordSpecLike
 

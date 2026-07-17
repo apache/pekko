@@ -15,7 +15,8 @@ package org.apache.pekko.stream.tck
 
 import org.scalatestplus.testng.TestNGSuiteLike
 
-import org.apache.pekko.actor.ActorSystem
+import org.apache.pekko
+import pekko.actor.ActorSystem
 
 import org.reactivestreams.tck.SubscriberBlackboxVerification
 import org.reactivestreams.tck.SubscriberWhiteboxVerification

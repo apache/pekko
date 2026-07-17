@@ -15,7 +15,8 @@ package org.apache.pekko.pki.pem
 
 import java.util.Base64
 
-import org.apache.pekko.annotation.ApiMayChange
+import org.apache.pekko
+import pekko.annotation.ApiMayChange
 
 /**
  * Decodes lax PEM encoded data, according to

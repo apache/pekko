@@ -13,7 +13,8 @@
 
 package org.apache.pekko.cluster.metrics.sample
 
-import org.apache.pekko.actor.Actor
+import org.apache.pekko
+import pekko.actor.Actor
 
 //#worker
 class StatsWorker extends Actor {

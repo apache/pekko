@@ -18,7 +18,6 @@ import pekko.NotUsed
 import pekko.pattern.StatusReply
 
 //#imports
-import org.apache.pekko
 import pekko.stream.scaladsl.{ Flow, Sink, Source }
 import pekko.stream.typed.scaladsl.ActorFlow
 import pekko.actor.typed.ActorRef

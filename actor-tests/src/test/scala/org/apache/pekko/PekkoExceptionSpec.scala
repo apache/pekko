@@ -15,7 +15,8 @@ package org.apache.pekko
 
 import java.lang.invoke.{ MethodHandles, MethodType }
 
-import org.apache.pekko.actor._
+import org.apache.pekko
+import pekko.actor._
 
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec

@@ -14,7 +14,8 @@
 package doc.org.apache.pekko.serialization.jackson.v1withv2
 
 // #forward-one-rename
-import org.apache.pekko.serialization.jackson.JacksonMigration
+import org.apache.pekko
+import pekko.serialization.jackson.JacksonMigration
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.node.ObjectNode
 

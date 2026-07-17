@@ -13,7 +13,8 @@
 
 package org.apache.pekko.cluster.metrics.sample
 
-import org.apache.pekko.serialization.jackson.CborSerializable
+import org.apache.pekko
+import pekko.serialization.jackson.CborSerializable
 
 //#messages
 final case class StatsJob(text: String) extends CborSerializable

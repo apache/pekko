@@ -13,7 +13,8 @@
 
 package org.apache.pekko.persistence.journal.leveldb
 
-import org.apache.pekko.actor.{ Actor, ActorLogging }
+import org.apache.pekko
+import pekko.actor.{ Actor, ActorLogging }
 
 private[persistence] object LeveldbCompaction {
 

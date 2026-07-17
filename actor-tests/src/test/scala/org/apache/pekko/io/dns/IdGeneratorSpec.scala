@@ -17,7 +17,8 @@
 
 package org.apache.pekko.io.dns
 
-import org.apache.pekko.testkit.PekkoSpec
+import org.apache.pekko
+import pekko.testkit.PekkoSpec
 
 class IdGeneratorSpec extends PekkoSpec {
 

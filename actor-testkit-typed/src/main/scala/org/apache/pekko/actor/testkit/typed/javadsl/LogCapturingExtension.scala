@@ -20,7 +20,8 @@ import scala.util.control.NonFatal
 import org.junit.jupiter.api.extension.{ ExtensionContext, InvocationInterceptor, ReflectiveInvocationContext }
 import org.junit.jupiter.api.extension.InvocationInterceptor.Invocation
 
-import org.apache.pekko.actor.testkit.typed.internal.CapturingAppender
+import org.apache.pekko
+import pekko.actor.testkit.typed.internal.CapturingAppender
 
 import org.slf4j.LoggerFactory
 

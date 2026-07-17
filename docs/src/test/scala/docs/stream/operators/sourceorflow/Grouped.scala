@@ -12,7 +12,9 @@
  */
 
 package docs.stream.operators.sourceorflow
-import org.apache.pekko.stream.scaladsl.Source
+
+import org.apache.pekko
+import pekko.stream.scaladsl.Source
 
 object Grouped {
   def groupedExample(): Unit = {

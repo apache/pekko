@@ -13,7 +13,8 @@
 
 package docs.faq
 
-import org.apache.pekko.actor.Actor
+import org.apache.pekko
+import pekko.actor.Actor
 
 //#exhaustiveness-check
 object MyActor {

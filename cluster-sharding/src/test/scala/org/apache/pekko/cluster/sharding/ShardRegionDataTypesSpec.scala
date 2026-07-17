@@ -17,7 +17,8 @@
 
 package org.apache.pekko.cluster.sharding
 
-import org.apache.pekko.cluster.sharding.ShardRegion._
+import org.apache.pekko
+import pekko.cluster.sharding.ShardRegion._
 
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec

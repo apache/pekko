@@ -17,7 +17,8 @@ import java.util.LinkedList
 
 import scala.concurrent.ExecutionContextExecutor
 
-import org.apache.pekko.annotation.InternalApi
+import org.apache.pekko
+import pekko.annotation.InternalApi
 
 /**
  * INTERNAL API

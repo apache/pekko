@@ -13,7 +13,8 @@
 
 package org.apache.pekko.persistence.japi
 
-import org.apache.pekko.persistence.japi.journal.JavaJournalSpec
+import org.apache.pekko
+import pekko.persistence.japi.journal.JavaJournalSpec
 
 import org.scalatest.DoNotDiscover
 

@@ -17,7 +17,8 @@ import scala.collection.immutable
 
 import org.scalatestplus.testng.TestNGSuiteLike
 
-import org.apache.pekko.stream.testkit.TestPublisher
+import org.apache.pekko
+import pekko.stream.testkit.TestPublisher
 
 import org.reactivestreams.Publisher
 import org.reactivestreams.tck.PublisherVerification

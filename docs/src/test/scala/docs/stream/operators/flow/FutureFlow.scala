@@ -13,10 +13,11 @@
 
 package docs.stream.operators.flow
 
-import org.apache.pekko.NotUsed
-import org.apache.pekko.actor.ActorSystem
-import org.apache.pekko.stream.scaladsl.Flow
-import org.apache.pekko.stream.scaladsl.Source
+import org.apache.pekko
+import pekko.NotUsed
+import pekko.actor.ActorSystem
+import pekko.stream.scaladsl.Flow
+import pekko.stream.scaladsl.Source
 
 import scala.concurrent.Future
 

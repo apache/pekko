@@ -16,7 +16,8 @@ package org.apache.pekko.stream.scaladsl
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
-import org.apache.pekko.stream.testkit.StreamSpec
+import org.apache.pekko
+import pekko.stream.testkit.StreamSpec
 
 class SubscriberSourceSpec extends StreamSpec {
 

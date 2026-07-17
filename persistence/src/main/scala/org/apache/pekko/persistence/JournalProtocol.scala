@@ -15,7 +15,8 @@ package org.apache.pekko.persistence
 
 import scala.collection.immutable
 
-import org.apache.pekko.actor._
+import org.apache.pekko
+import pekko.actor._
 
 /**
  * INTERNAL API.

@@ -20,7 +20,8 @@ import java.util.concurrent.TimeUnit
 
 import org.openjdk.jmh.annotations._
 
-import org.apache.pekko.util.Unsafe
+import org.apache.pekko
+import pekko.util.Unsafe
 
 @State(Scope.Benchmark)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)

@@ -13,7 +13,8 @@
 
 package org.apache.pekko.stream
 
-import org.apache.pekko.actor.ActorRef
+import org.apache.pekko
+import pekko.actor.ActorRef
 
 /**
  * Used as failure exception by an `ask` operator if the target actor terminates.

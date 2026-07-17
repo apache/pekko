@@ -13,9 +13,10 @@
 
 package docs.stream
 
-import org.apache.pekko.stream.{ ClosedShape, OverflowStrategy }
-import org.apache.pekko.stream.scaladsl._
-import org.apache.pekko.testkit.PekkoSpec
+import org.apache.pekko
+import pekko.stream.{ ClosedShape, OverflowStrategy }
+import pekko.stream.scaladsl._
+import pekko.testkit.PekkoSpec
 
 class GraphCyclesSpec extends PekkoSpec {
 

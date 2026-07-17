@@ -13,7 +13,8 @@
 
 package org.apache.pekko.stream.impl
 
-import org.apache.pekko.annotation.InternalApi
+import org.apache.pekko
+import pekko.annotation.InternalApi
 
 import org.reactivestreams.{ Publisher, Subscriber, Subscription }
 

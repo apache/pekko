@@ -29,12 +29,11 @@ import scala.annotation.nowarn
 //#oo-style
 //#fun-style
 
-import org.apache.pekko
 import pekko.actor.typed.Behavior
 import pekko.actor.typed.scaladsl.ActorContext
 import pekko.actor.typed.scaladsl.Behaviors
 //#fun-style
-import org.apache.pekko.actor.typed.scaladsl.AbstractBehavior
+import pekko.actor.typed.scaladsl.AbstractBehavior
 import org.slf4j.Logger
 //#oo-style
 
@@ -437,7 +436,6 @@ object StyleGuideDocExamples {
     implicit val system: ActorSystem[Nothing] = ???
 
     // #ask-1
-    import org.apache.pekko
     import pekko.actor.typed.scaladsl.AskPattern._
     import pekko.util.Timeout
 

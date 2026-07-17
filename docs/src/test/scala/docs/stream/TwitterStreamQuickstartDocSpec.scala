@@ -13,19 +13,21 @@
 
 package docs.stream
 
+import org.apache.pekko
+
 //#imports
 
-import org.apache.pekko.{ Done, NotUsed }
-import org.apache.pekko.actor.ActorSystem
-import org.apache.pekko.stream.{ ClosedShape, OverflowStrategy }
-import org.apache.pekko.stream.scaladsl._
+import pekko.{ Done, NotUsed }
+import pekko.actor.ActorSystem
+import pekko.stream.{ ClosedShape, OverflowStrategy }
+import pekko.stream.scaladsl._
 import scala.concurrent.Await
 import scala.concurrent.Future
 import scala.io.StdIn.readLine
 
 //#imports
 
-import org.apache.pekko.testkit.PekkoSpec
+import pekko.testkit.PekkoSpec
 import scala.concurrent.ExecutionContext
 
 object TwitterStreamQuickstartDocSpec {

@@ -21,9 +21,10 @@ import scala.collection.{ immutable, mutable }
 import scala.concurrent.{ ExecutionContext, Future, Promise }
 import scala.util.Try
 
-import org.apache.pekko.persistence.{ AtomicWrite, JournalProtocol, PersistenceSpec, PersistentRepr }
-import org.apache.pekko.persistence.journal.AsyncWriteJournalResponseOrderSpec._
-import org.apache.pekko.testkit.ImplicitSender
+import org.apache.pekko
+import pekko.persistence.{ AtomicWrite, JournalProtocol, PersistenceSpec, PersistentRepr }
+import pekko.persistence.journal.AsyncWriteJournalResponseOrderSpec._
+import pekko.testkit.ImplicitSender
 
 /**
  * Verifies write response ordering logic for [[AsyncWriteJournal]].

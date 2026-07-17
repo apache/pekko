@@ -15,18 +15,19 @@ package org.apache.pekko.remote.routing
 
 import scala.concurrent.duration._
 
-import org.apache.pekko.actor.Actor
-import org.apache.pekko.actor.ActorRef
-import org.apache.pekko.actor.Address
-import org.apache.pekko.actor.PoisonPill
-import org.apache.pekko.actor.Props
-import org.apache.pekko.remote.RemotingMultiNodeSpec
-import org.apache.pekko.remote.testkit.MultiNodeConfig
-import org.apache.pekko.routing.Broadcast
-import org.apache.pekko.routing.RoutedActorRef
-import org.apache.pekko.routing.ScatterGatherFirstCompletedPool
-import org.apache.pekko.testkit._
-import org.apache.pekko.testkit.TestEvent._
+import org.apache.pekko
+import pekko.actor.Actor
+import pekko.actor.ActorRef
+import pekko.actor.Address
+import pekko.actor.PoisonPill
+import pekko.actor.Props
+import pekko.remote.RemotingMultiNodeSpec
+import pekko.remote.testkit.MultiNodeConfig
+import pekko.routing.Broadcast
+import pekko.routing.RoutedActorRef
+import pekko.routing.ScatterGatherFirstCompletedPool
+import pekko.testkit._
+import pekko.testkit.TestEvent._
 
 import com.typesafe.config.ConfigFactory
 

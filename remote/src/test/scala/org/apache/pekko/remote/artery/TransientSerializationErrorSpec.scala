@@ -13,6 +13,7 @@
 
 package org.apache.pekko.remote.artery
 
-import org.apache.pekko.remote.AbstractTransientSerializationErrorSpec
+import org.apache.pekko
+import pekko.remote.AbstractTransientSerializationErrorSpec
 
 class TransientSerializationErrorSpec extends AbstractTransientSerializationErrorSpec(ArterySpecSupport.defaultConfig)

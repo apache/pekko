@@ -13,15 +13,17 @@
 
 package docs.routing
 
-import org.apache.pekko.testkit.PekkoSpec
-import org.apache.pekko.testkit.ImplicitSender
-import org.apache.pekko.actor.Actor
-import org.apache.pekko.actor.Props
+import org.apache.pekko
+
+import pekko.testkit.PekkoSpec
+import pekko.testkit.ImplicitSender
+import pekko.actor.Actor
+import pekko.actor.Props
 import CustomRouterDocSpec.RedundancyRoutingLogic
 import scala.collection.immutable
-import org.apache.pekko.actor.ActorSystem
-import org.apache.pekko.routing.FromConfig
-import org.apache.pekko.actor.ActorRef
+import pekko.actor.ActorSystem
+import pekko.routing.FromConfig
+import pekko.actor.ActorRef
 
 object CustomRouterDocSpec {
 
@@ -82,7 +84,6 @@ pekko.actor.deployment {
 }
 
 //#group
-import org.apache.pekko
 import pekko.dispatch.Dispatchers
 import pekko.routing.Group
 import pekko.routing.Router

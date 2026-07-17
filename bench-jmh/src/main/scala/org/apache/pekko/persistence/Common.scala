@@ -13,7 +13,8 @@
 
 package org.apache.pekko.persistence
 
-import org.apache.pekko.actor.Actor
+import org.apache.pekko
+import pekko.actor.Actor
 
 /** only as a "the best we could possibly get" baseline, does not persist anything */
 class BaselineActor(respondAfter: Int) extends Actor {

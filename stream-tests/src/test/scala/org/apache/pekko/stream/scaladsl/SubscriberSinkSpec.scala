@@ -13,7 +13,8 @@
 
 package org.apache.pekko.stream.scaladsl
 
-import org.apache.pekko.stream.testkit._
+import org.apache.pekko
+import pekko.stream.testkit._
 
 class SubscriberSinkSpec extends StreamSpec("""
     pekko.stream.materializer.initial-input-buffer-size = 2

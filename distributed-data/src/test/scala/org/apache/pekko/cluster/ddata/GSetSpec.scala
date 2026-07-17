@@ -13,7 +13,8 @@
 
 package org.apache.pekko.cluster.ddata
 
-import org.apache.pekko.cluster.ddata.Replicator.Changed
+import org.apache.pekko
+import pekko.cluster.ddata.Replicator.Changed
 
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec

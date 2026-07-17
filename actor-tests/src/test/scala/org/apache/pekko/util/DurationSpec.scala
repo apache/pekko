@@ -15,7 +15,8 @@ package org.apache.pekko.util
 
 import scala.concurrent.duration._
 
-import org.apache.pekko.testkit.PekkoSpec
+import org.apache.pekko
+import pekko.testkit.PekkoSpec
 
 class DurationSpec extends PekkoSpec {
 

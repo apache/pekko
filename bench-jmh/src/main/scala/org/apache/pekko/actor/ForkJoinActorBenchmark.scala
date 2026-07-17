@@ -20,7 +20,8 @@ import scala.annotation.tailrec
 import BenchmarkActors._
 import org.openjdk.jmh.annotations._
 
-import org.apache.pekko.testkit.TestProbe
+import org.apache.pekko
+import pekko.testkit.TestProbe
 
 import com.typesafe.config.ConfigFactory
 

@@ -13,15 +13,16 @@
 
 package docs.stream.operators.sourceorflow
 
-import org.apache.pekko.NotUsed
-import org.apache.pekko.actor.ActorSystem
-import org.apache.pekko.actor.Cancellable
-import org.apache.pekko.stream.DelayOverflowStrategy
-import org.apache.pekko.stream.scaladsl.DelayStrategy
-import org.apache.pekko.stream.scaladsl.Flow
-import org.apache.pekko.stream.scaladsl.Sink
-import org.apache.pekko.stream.scaladsl.Source
-import org.apache.pekko.util.ByteString
+import org.apache.pekko
+import pekko.NotUsed
+import pekko.actor.ActorSystem
+import pekko.actor.Cancellable
+import pekko.stream.DelayOverflowStrategy
+import pekko.stream.scaladsl.DelayStrategy
+import pekko.stream.scaladsl.Flow
+import pekko.stream.scaladsl.Sink
+import pekko.stream.scaladsl.Source
+import pekko.util.ByteString
 import docs.stream.operators.sourceorflow.ExtrapolateAndExpand.fps
 import docs.stream.operators.sourceorflow.ExtrapolateAndExpand.nowInSeconds
 import docs.stream.operators.sourceorflow.ExtrapolateAndExpand.periodInMillis

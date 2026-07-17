@@ -20,7 +20,8 @@ import scala.util.Random
 
 import org.openjdk.jmh.annotations.{ Param, _ }
 
-import org.apache.pekko.remote.artery.LruBoundedCache
+import org.apache.pekko
+import pekko.remote.artery.LruBoundedCache
 
 @State(Scope.Benchmark)
 @Measurement(timeUnit = TimeUnit.MICROSECONDS)

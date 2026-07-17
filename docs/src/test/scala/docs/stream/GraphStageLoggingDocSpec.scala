@@ -15,9 +15,10 @@ package docs.stream
 
 import java.util.concurrent.ThreadLocalRandom
 
-import org.apache.pekko.stream._
-import org.apache.pekko.stream.scaladsl._
-import org.apache.pekko.testkit.{ EventFilter, PekkoSpec }
+import org.apache.pekko
+import pekko.stream._
+import pekko.stream.scaladsl._
+import pekko.testkit.{ EventFilter, PekkoSpec }
 import scala.concurrent.ExecutionContext
 
 class GraphStageLoggingDocSpec extends PekkoSpec("pekko.loglevel = DEBUG") {

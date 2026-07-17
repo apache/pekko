@@ -21,7 +21,8 @@ import java.net.InetSocketAddress
 
 import scala.annotation.nowarn
 
-import org.apache.pekko.testkit.PekkoSpec
+import org.apache.pekko
+import pekko.testkit.PekkoSpec
 
 @nowarn("msg=deprecated")
 class NettySSLSupportSpec extends PekkoSpec {

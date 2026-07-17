@@ -22,7 +22,8 @@ import scala.concurrent.duration.Deadline
 import ClusterSettings.DataCenter
 import MemberStatus._
 
-import org.apache.pekko.annotation.InternalApi
+import org.apache.pekko
+import pekko.annotation.InternalApi
 
 /**
  * INTERNAL API

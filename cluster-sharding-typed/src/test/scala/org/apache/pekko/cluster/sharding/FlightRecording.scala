@@ -12,11 +12,13 @@
  */
 
 package org.apache.pekko.cluster.sharding
+
 import java.lang.invoke.{ MethodHandles, MethodType }
 import java.nio.file.Files
 import java.nio.file.Path
 
-import org.apache.pekko.actor.{ ActorSystem, ExtendedActorSystem }
+import org.apache.pekko
+import pekko.actor.{ ActorSystem, ExtendedActorSystem }
 
 /**
  * This will work on JDK11 and JDK8 built with the enable-jfr flag (8u262+).

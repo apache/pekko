@@ -22,7 +22,6 @@ import pekko.persistence.typed.state.scaladsl.Effect
 
 //#structure
 //#behavior
-import org.apache.pekko
 import pekko.persistence.typed.state.scaladsl.DurableStateBehavior
 import pekko.persistence.typed.PersistenceId
 
@@ -116,7 +115,6 @@ object DurableStatePersistentBehaviorCompileOnly {
 
   object BehaviorWithContext {
     // #actor-context
-    import org.apache.pekko
     import pekko.persistence.typed.state.scaladsl.Effect
     import pekko.persistence.typed.state.scaladsl.DurableStateBehavior.CommandHandler
 

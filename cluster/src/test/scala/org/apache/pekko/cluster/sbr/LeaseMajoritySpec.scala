@@ -13,7 +13,8 @@
 
 package org.apache.pekko.cluster.sbr
 
-import org.apache.pekko.testkit.PekkoSpec
+import org.apache.pekko
+import pekko.testkit.PekkoSpec
 
 import org.scalatest.concurrent.Eventually
 

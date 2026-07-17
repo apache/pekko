@@ -15,14 +15,15 @@ package docs.testkit
 
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
-import org.apache.pekko.testkit.TestKitBase
-import org.apache.pekko.actor.ActorSystem
-import org.apache.pekko.actor.Props
-import org.apache.pekko.actor.Actor
-import org.apache.pekko.actor.ActorRef
-import org.apache.pekko.testkit.TestProbe
-import org.apache.pekko.actor.ActorRefFactory
-import org.apache.pekko.testkit.TestKit
+import org.apache.pekko
+import pekko.testkit.TestKitBase
+import pekko.actor.ActorSystem
+import pekko.actor.Props
+import pekko.actor.Actor
+import pekko.actor.ActorRef
+import pekko.testkit.TestProbe
+import pekko.actor.ActorRefFactory
+import pekko.testkit.TestKit
 import org.scalatest.BeforeAndAfterAll
 
 /**

@@ -18,7 +18,8 @@ import scala.concurrent.ExecutionContextExecutor
 import scala.concurrent.Future
 import scala.concurrent.duration._
 
-import org.apache.pekko.stream.testkit._
+import org.apache.pekko
+import pekko.stream.testkit._
 
 class LastSinkSpec extends StreamSpec with ScriptedTest {
 

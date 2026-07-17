@@ -13,9 +13,10 @@
 
 package docs.actor.typed
 
-import org.apache.pekko.actor.typed.scaladsl._
-import org.apache.pekko.actor.typed.{ ActorRef, Behavior }
-import org.apache.pekko.util.Timeout
+import org.apache.pekko
+import pekko.actor.typed.scaladsl._
+import pekko.actor.typed.{ ActorRef, Behavior }
+import pekko.util.Timeout
 
 import scala.collection.mutable
 import scala.concurrent.Future

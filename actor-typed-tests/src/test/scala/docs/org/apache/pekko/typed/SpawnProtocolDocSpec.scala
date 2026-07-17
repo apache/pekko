@@ -25,7 +25,6 @@ import org.scalatest.wordspec.AnyWordSpecLike
 import scala.annotation.nowarn
 
 //#imports1
-import org.apache.pekko
 import pekko.actor.typed.Behavior
 import pekko.actor.typed.SpawnProtocol
 import pekko.actor.typed.scaladsl.Behaviors
@@ -34,7 +33,6 @@ import pekko.actor.typed.scaladsl.LoggerOps
 //#imports1
 
 //#imports2
-import org.apache.pekko
 import pekko.actor.typed.ActorRef
 import pekko.actor.typed.ActorSystem
 import pekko.actor.typed.Props

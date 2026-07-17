@@ -13,10 +13,11 @@
 
 package docs.stream.cookbook
 
-import org.apache.pekko.NotUsed
-import org.apache.pekko.stream.{ Attributes, FlowShape, Inlet, Outlet }
-import org.apache.pekko.stream.scaladsl.{ Flow, Sink, Source }
-import org.apache.pekko.util.ByteString
+import org.apache.pekko
+import pekko.NotUsed
+import pekko.stream.{ Attributes, FlowShape, Inlet, Outlet }
+import pekko.stream.scaladsl.{ Flow, Sink, Source }
+import pekko.util.ByteString
 
 import scala.concurrent.Await
 import scala.concurrent.duration._

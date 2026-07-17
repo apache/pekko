@@ -18,7 +18,8 @@ import scala.concurrent.{ Await, Future }
 import scala.concurrent.ExecutionContextExecutor
 import scala.concurrent.duration._
 
-import org.apache.pekko.testkit._
+import org.apache.pekko
+import pekko.testkit._
 
 class CircuitBreakerMTSpec extends PekkoSpec {
   implicit val ec: ExecutionContextExecutor = system.dispatcher

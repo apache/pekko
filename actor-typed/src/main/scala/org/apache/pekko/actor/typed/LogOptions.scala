@@ -15,7 +15,8 @@ package org.apache.pekko.actor.typed
 
 import java.util.Optional
 
-import org.apache.pekko.annotation.{ DoNotInherit, InternalApi }
+import org.apache.pekko
+import pekko.annotation.{ DoNotInherit, InternalApi }
 
 import org.slf4j.Logger
 import org.slf4j.event.Level

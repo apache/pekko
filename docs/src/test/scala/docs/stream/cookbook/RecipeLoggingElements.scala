@@ -13,11 +13,12 @@
 
 package docs.stream.cookbook
 
-import org.apache.pekko.event.Logging
-import org.apache.pekko.event.LoggingAdapter
-import org.apache.pekko.stream.Attributes
-import org.apache.pekko.stream.scaladsl.{ Sink, Source }
-import org.apache.pekko.testkit.{ EventFilter, TestProbe }
+import org.apache.pekko
+import pekko.event.Logging
+import pekko.event.LoggingAdapter
+import pekko.stream.Attributes
+import pekko.stream.scaladsl.{ Sink, Source }
+import pekko.testkit.{ EventFilter, TestProbe }
 
 class RecipeLoggingElements extends RecipeSpec {
 

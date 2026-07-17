@@ -17,7 +17,7 @@ import scala.concurrent.Future
 import scala.concurrent.duration._
 
 import org.apache.pekko
-import org.apache.pekko.Done
+import pekko.Done
 import pekko.actor._
 import pekko.cluster.sharding.ShardCoordinator.ShardAllocationStrategy
 import pekko.cluster.sharding.ShardRegion.{ CurrentRegions, GracefulShutdown }

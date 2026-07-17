@@ -13,8 +13,9 @@
 
 package org.apache.pekko.actor.typed.internal
 
-import org.apache.pekko.actor.typed.Props
-import org.apache.pekko.annotation.InternalApi
+import org.apache.pekko
+import pekko.actor.typed.Props
+import pekko.annotation.InternalApi
 
 /**
  * INTERNAL API

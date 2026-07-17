@@ -13,7 +13,8 @@
 
 package org.apache.pekko.remote
 
-import org.apache.pekko.actor.ActorMailboxSpec
+import org.apache.pekko
+import pekko.actor.ActorMailboxSpec
 
 import com.typesafe.config.ConfigFactory
 

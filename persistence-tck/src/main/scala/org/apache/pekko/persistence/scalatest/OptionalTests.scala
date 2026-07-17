@@ -13,7 +13,8 @@
 
 package org.apache.pekko.persistence.scalatest
 
-import org.apache.pekko.persistence.CapabilityFlag
+import org.apache.pekko
+import pekko.persistence.CapabilityFlag
 
 import org.scalatest.Informing
 

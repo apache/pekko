@@ -13,9 +13,10 @@
 
 package docs.stream.operators.sourceorflow
 
-import org.apache.pekko.NotUsed
-import org.apache.pekko.actor.ActorSystem
-import org.apache.pekko.stream.scaladsl.{ Flow, Sink, Source }
+import org.apache.pekko
+import pekko.NotUsed
+import pekko.actor.ActorSystem
+import pekko.stream.scaladsl.{ Flow, Sink, Source }
 
 object Collect {
   private implicit val system: ActorSystem = null

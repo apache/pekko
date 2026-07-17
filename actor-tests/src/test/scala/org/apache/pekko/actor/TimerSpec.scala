@@ -19,7 +19,8 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 import scala.util.control.NoStackTrace
 
-import org.apache.pekko.testkit._
+import org.apache.pekko
+import pekko.testkit._
 
 object TimerSpec {
   sealed trait Command

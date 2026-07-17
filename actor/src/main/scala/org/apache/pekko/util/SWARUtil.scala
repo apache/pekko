@@ -18,7 +18,8 @@ package org.apache.pekko.util
 import java.lang.invoke.MethodHandles
 import java.nio.ByteOrder
 
-import org.apache.pekko.annotation.InternalApi
+import org.apache.pekko
+import pekko.annotation.InternalApi
 
 /**
  * SWAR (SIMD Within A Register) utility class. Internal Use Only.

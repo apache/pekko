@@ -13,8 +13,9 @@
 
 package docs.ddata
 
-import org.apache.pekko.cluster.ddata.ReplicatedData
-import org.apache.pekko.cluster.ddata.GSet
+import org.apache.pekko
+import pekko.cluster.ddata.ReplicatedData
+import pekko.cluster.ddata.GSet
 
 //#twophaseset
 case class TwoPhaseSet(adds: GSet[String] = GSet.empty, removals: GSet[String] = GSet.empty) extends ReplicatedData {

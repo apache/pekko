@@ -11,7 +11,8 @@
  * Copyright (C) 2009-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-import org.apache.pekko.persistence.{ PersistentActor, RuntimePluginConfig }
+import org.apache.pekko
+import pekko.persistence.{ PersistentActor, RuntimePluginConfig }
 import com.typesafe.config.ConfigFactory
 
 object PersistenceMultiDocSpec {

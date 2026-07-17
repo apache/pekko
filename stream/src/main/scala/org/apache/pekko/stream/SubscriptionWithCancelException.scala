@@ -15,7 +15,8 @@ package org.apache.pekko.stream
 
 import scala.util.control.NoStackTrace
 
-import org.apache.pekko.annotation.DoNotInherit
+import org.apache.pekko
+import pekko.annotation.DoNotInherit
 
 import org.reactivestreams.Subscription
 

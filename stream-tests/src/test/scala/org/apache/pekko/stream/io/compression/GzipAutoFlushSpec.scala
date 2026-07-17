@@ -19,8 +19,9 @@ package org.apache.pekko.stream.io.compression
 
 import java.util.zip.Deflater
 
-import org.apache.pekko.stream.scaladsl.{ Compression, Flow }
-import org.apache.pekko.util.ByteString
+import org.apache.pekko
+import pekko.stream.scaladsl.{ Compression, Flow }
+import pekko.util.ByteString
 
 class GzipAutoFlushSpec extends GzipSpec {
   override protected val encoderFlow: Flow[ByteString, ByteString, Any] =

@@ -13,7 +13,8 @@
 
 package org.apache.pekko.actor.typed.internal
 
-import org.apache.pekko.annotation.InternalApi
+import org.apache.pekko
+import pekko.annotation.InternalApi
 
 import org.slf4j.MDC
 
