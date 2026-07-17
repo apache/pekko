@@ -215,6 +215,10 @@ The actor will always receive a `RecoveryCompleted` message, even if there are n
 in the journal and the snapshot store is empty, or if it's a new persistent actor with a previously
 unused `persistenceId`.
 
+If handling `RecoveryCompleted` throws an exception, the failure is reported to the parent supervisor
+as an `ActorInitializationException`. The default supervision strategy stops the actor, while a custom
+supervision strategy may resume or restart it.
+
 If there is a problem with recovering the state of the actor from the journal, `onRecoveryFailure`
 is called (logging the error by default) and the actor will be stopped.
 

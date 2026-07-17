@@ -22,7 +22,7 @@ import scala.concurrent.duration.FiniteDuration
 import scala.util.control.NonFatal
 
 import org.apache.pekko
-import pekko.actor.{ Actor, ActorCell, DeadLetter, StashOverflowException }
+import pekko.actor.{ Actor, ActorCell, ActorInitializationException, DeadLetter, StashOverflowException }
 import pekko.annotation.{ InternalApi, InternalStableApi }
 import pekko.dispatch.Envelope
 import pekko.event.{ Logging, LoggingAdapter }
@@ -792,9 +792,15 @@ private[persistence] trait Eventsourced
               sequenceNr = highestSeqNr
               setLastSequenceNr(highestSeqNr)
               _recoveryRunning = false
-              try Eventsourced.super.aroundReceive(recoveryBehavior, RecoveryCompleted)
-              finally transitToProcessingState() // in finally in case exception and resume strategy
-              // if exception from RecoveryCompleted the permit is returned in below catch
+              try {
+                Eventsourced.super.aroundReceive(recoveryBehavior, RecoveryCompleted)
+              } catch {
+                case NonFatal(t) =>
+                  throw ActorInitializationException(
+                    self,
+                    s"Exception in receiveRecover when handling RecoveryCompleted for persistenceId [$persistenceId]",
+                    t)
+              } finally transitToProcessingState()
               returnRecoveryPermit()
             case ReplayMessagesFailure(cause) =>
               timeoutCancellable.cancel()
