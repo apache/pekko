@@ -27,6 +27,7 @@ import com.typesafe.config.ConfigFactory
 object RecoveryPermitterSpec {
 
   class TestExc extends RuntimeException("simulated exc") with NoStackTrace
+  final case class Supervised(cause: Throwable)
 
   def testProps(name: String, probe: ActorRef, throwFromRecoveryCompleted: Boolean = false): Props =
     Props(new TestPersistentActor(name, probe, throwFromRecoveryCompleted))
@@ -46,10 +47,28 @@ object RecoveryPermitterSpec {
         if (throwFromRecoveryCompleted)
           throw new TestExc
     }
+
     override def receiveCommand: Receive = {
       case "stop" =>
         context.stop(self)
     }
+  }
+
+  class RestartOnceSupervisor(childProps: Props, probe: ActorRef) extends Actor {
+    private var failures = 0
+
+    override val supervisorStrategy = OneForOneStrategy(loggingEnabled = false) {
+      case cause: ActorInitializationException =>
+        failures += 1
+        probe ! Supervised(cause)
+        if (failures == 1) SupervisorStrategy.Restart
+        else SupervisorStrategy.Stop
+    }
+
+    override def preStart(): Unit =
+      probe ! context.actorOf(childProps)
+
+    override def receive: Receive = Actor.emptyBehavior
   }
 
 }
@@ -62,7 +81,7 @@ class RecoveryPermitterSpec extends PersistenceSpec(ConfigFactory.parseString(s"
   import RecoveryPermitter._
   import RecoveryPermitterSpec._
 
-  system.eventStream.publish(TestEvent.Mute(EventFilter[TestExc]()))
+  system.eventStream.publish(TestEvent.Mute(EventFilter[ActorInitializationException]()))
 
   val permitter = Persistence(system).recoveryPermitter
   val p1 = TestProbe()
@@ -171,23 +190,43 @@ class RecoveryPermitterSpec extends PersistenceSpec(ConfigFactory.parseString(s"
       permitter.tell(ReturnRecoveryPermit, p4.ref)
     }
 
-    "return permit when actor throws from RecoveryCompleted" in {
+    "return permit and stop actor by default when it throws from RecoveryCompleted" in {
       requestPermit(p1)
       requestPermit(p2)
 
       val persistentActor = system.actorOf(testProps("p3", p3.ref, throwFromRecoveryCompleted = true))
+      p3.watch(persistentActor)
       p3.expectMsg(RecoveryCompleted)
       p3.expectMsg("postStop")
-      // it's restarting
-      (1 to 5).foreach { _ =>
+      p3.expectTerminated(persistentActor)
+
+      requestPermit(p4)
+
+      permitter.tell(ReturnRecoveryPermit, p1.ref)
+      permitter.tell(ReturnRecoveryPermit, p2.ref)
+      permitter.tell(ReturnRecoveryPermit, p4.ref)
+    }
+
+    "allow the parent supervisor to restart an actor that throws from RecoveryCompleted" in {
+      requestPermit(p1)
+      requestPermit(p2)
+
+      val supervisor = system.actorOf(
+        Props(new RestartOnceSupervisor(testProps("p3", p3.ref, throwFromRecoveryCompleted = true), p3.ref)))
+      val persistentActor = p3.expectMsgType[ActorRef]
+      p3.watch(persistentActor)
+
+      (1 to 2).foreach { _ =>
         p3.expectMsg(RecoveryCompleted)
+        p3.lastSender shouldBe persistentActor
+        p3.expectMsgPF(hint = "supervised ActorInitializationException caused by TestExc") {
+          case Supervised(cause: ActorInitializationException)
+              if cause.getActor == persistentActor && cause.getCause.isInstanceOf[TestExc] =>
+        }
         p3.expectMsg("postStop")
       }
-      // stop it
-      val stopProbe = TestProbe()
-      stopProbe.watch(persistentActor)
-      system.stop(persistentActor)
-      stopProbe.expectTerminated(persistentActor)
+      p3.expectTerminated(persistentActor)
+      system.stop(supervisor)
 
       requestPermit(p4)
 
