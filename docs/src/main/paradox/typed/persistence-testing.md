@@ -95,6 +95,32 @@ To test recovery the `restart` method of the `EventSourcedBehaviorTestKit` can b
 behavior, which will then recover from stored snapshot and events from previous commands. It's also possible
 to populate the storage with events or simulate failures by using the underlying @apidoc[PersistenceTestKit].
 
+## Unit testing with the ActorTestKit and DurableStateBehaviorTestKit
+
+**Note!** The `DurableStateBehaviorTestKit` is a new feature: the API may have changes breaking source compatibility in future versions.
+
+Unit testing of `DurableStateBehavior` can be done with the @apidoc[DurableStateBehaviorTestKit]. It supports
+running one command at a time and asserting that the synchronously returned state is as expected. It also has
+support for verifying the reply to a command.
+
+You need to configure the `ActorSystem` with the `DurableStateBehaviorTestKit.config`. The configuration enables
+the in-memory durable state store.
+
+Scala
+:  @@snip [DurableStateBehaviorTestKitSpec.scala](/persistence-testkit/src/test/scala/org/apache/pekko/persistence/testkit/scaladsl/DurableStateBehaviorTestKitSpec.scala) { #basic-test }
+
+Java
+:  @@snip [DurableStateBehaviorTestKitApiTest.java](/persistence-testkit/src/test/java/org/apache/pekko/persistence/testkit/javadsl/DurableStateBehaviorTestKitApiTest.java) { #basic-test }
+
+Serialization of commands and state is verified automatically. The serialization checks can be customized with
+the `SerializationSettings` when creating the `DurableStateBehaviorTestKit`. By default, the serialization
+roundtrip is checked but the equality of the result of the serialization is not checked. `equals` must be
+implemented @scala[(or using `case class`)] in the commands and state if `verifyEquality` is enabled.
+
+To test recovery, use the `restart` method. It restarts the behavior, which then recovers the state stored by
+previous commands. The `clear` method removes the state for the behavior's persistence ID and restarts it
+with its empty state.
+
 ## Persistence TestKit
 
 **Note!** The `PersistenceTestKit` is a new feature, api may have changes breaking source compatibility in future versions.

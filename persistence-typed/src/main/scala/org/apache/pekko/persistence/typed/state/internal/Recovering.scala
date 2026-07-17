@@ -30,7 +30,11 @@ import pekko.persistence._
 import pekko.persistence.state.scaladsl.GetObjectResult
 import pekko.persistence.typed.state.RecoveryCompleted
 import pekko.persistence.typed.state.RecoveryFailed
-import pekko.persistence.typed.state.internal.DurableStateBehaviorImpl.GetState
+import pekko.persistence.typed.state.internal.DurableStateBehaviorImpl.{
+  GetPersistenceIdForTestKit,
+  GetState,
+  GetStateWithReply
+}
 import pekko.persistence.typed.state.internal.Running.WithRevisionAccessible
 import pekko.util.PrettyDuration._
 
@@ -94,12 +98,14 @@ private[pekko] class Recovering[C, S](
           Behaviors.unhandled
         } else
           onCommand(cmd)
-      case get: GetState[S @unchecked] => stashInternal(get)
-      case RecoveryPermitGranted       => Behaviors.unhandled // should not happen, we already have the permit
-      case UpsertSuccess               => Behaviors.unhandled
-      case _: UpsertFailure            => Behaviors.unhandled
-      case DeleteSuccess               => Behaviors.unhandled
-      case _: DeleteFailure            => Behaviors.unhandled
+      case get: GetPersistenceIdForTestKit      => stashInternal(get)
+      case get: GetState[S @unchecked]          => stashInternal(get)
+      case get: GetStateWithReply[S @unchecked] => stashInternal(get)
+      case RecoveryPermitGranted                => Behaviors.unhandled // should not happen, we already have the permit
+      case UpsertSuccess                        => Behaviors.unhandled
+      case _: UpsertFailure                     => Behaviors.unhandled
+      case DeleteSuccess                        => Behaviors.unhandled
+      case _: DeleteFailure                     => Behaviors.unhandled
     }
   }
 

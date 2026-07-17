@@ -35,9 +35,9 @@ import pekko.persistence.typed.PersistenceId
 import pekko.persistence.typed.SnapshotAdapter
 import pekko.persistence.typed.state.scaladsl._
 
-import com.typesafe.config.Config
-
 import org.slf4j.LoggerFactory
+
+import com.typesafe.config.Config
 
 @InternalApi
 private[pekko] object DurableStateBehaviorImpl {
@@ -48,10 +48,23 @@ private[pekko] object DurableStateBehaviorImpl {
   final case class GetPersistenceId(replyTo: ActorRef[PersistenceId]) extends Signal
 
   /**
-   * Used by DurableStateBehaviorTestKit to retrieve the state.
+   * Used by DurableStateBehaviorTestKit to retrieve the `persistenceId` without invoking user signal handlers.
+   */
+  final case class GetPersistenceIdForTestKit(replyTo: ActorRef[PersistenceId]) extends InternalProtocol
+
+  /**
+   * Used to retrieve a non-null state.
    * Can't be a Signal because those are not stashed.
    */
   final case class GetState[State](replyTo: ActorRef[State]) extends InternalProtocol
+
+  /**
+   * Used by DurableStateBehaviorTestKit to retrieve the state.
+   * The response envelope supports a `null` state.
+   */
+  final case class GetStateWithReply[State](replyTo: ActorRef[GetStateReply[State]]) extends InternalProtocol
+
+  final case class GetStateReply[State](currentState: State)
 
 }
 
