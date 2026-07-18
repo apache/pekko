@@ -54,6 +54,39 @@ class FlowMapAsyncPartitionedSpec extends StreamSpec with WithLogCapturing {
   override implicit def patienceConfig: PatienceConfig =
     PatienceConfig(timeout = 30.seconds.dilated, interval = Span(15, Millis))
 
+  private def verifyCompletedElementsAreEmittedAfterDemandResumes(orderedOutput: Boolean): Unit = {
+    val processingProbe = TestProbe()
+    val promises = Array.fill(4)(Promise[Int]())
+    val operation: (Int, Int) => Future[Int] = { (elem, _) =>
+      processingProbe.ref ! elem
+      promises(elem).future
+    }
+    val flow =
+      if (orderedOutput) Flow[Int].mapAsyncPartitioned(3)(identity)(operation)
+      else Flow[Int].mapAsyncPartitionedUnordered(3)(identity)(operation)
+    val downstream = Source(0 until 4).via(flow).runWith(TestSink[Int]())
+
+    downstream.request(1)
+    processingProbe.expectMsg(0)
+    processingProbe.expectMsg(1)
+    processingProbe.expectMsg(2)
+
+    promises(0).success(0)
+    downstream.expectNext(0)
+    processingProbe.expectMsg(3)
+
+    promises(1).success(1)
+    promises(2).success(2)
+    promises(3).success(3)
+    downstream.expectNoMessage(200.millis)
+
+    downstream.request(3)
+    val remaining = downstream.expectNextN(3)
+    if (orderedOutput) remaining should ===(Seq(1, 2, 3))
+    else remaining should contain theSameElementsAs Seq(1, 2, 3)
+    downstream.expectComplete()
+  }
+
   "A Flow with mapAsyncPartitioned" must {
     "produce future elements" in {
       implicit val ec: ExecutionContext = system.dispatcher
@@ -108,6 +141,14 @@ class FlowMapAsyncPartitionedSpec extends StreamSpec with WithLogCapturing {
         c.expectNext(i)
       }
       c.expectComplete()
+    }
+
+    "emit completed ordered elements after downstream demand resumes" in {
+      verifyCompletedElementsAreEmittedAfterDemandResumes(orderedOutput = true)
+    }
+
+    "emit completed unordered elements after downstream demand resumes" in {
+      verifyCompletedElementsAreEmittedAfterDemandResumes(orderedOutput = false)
     }
 
     "not run more futures than overall parallelism" in {
