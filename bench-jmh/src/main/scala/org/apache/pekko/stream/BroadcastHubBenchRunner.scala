@@ -22,9 +22,10 @@ import java.util.concurrent.{ CountDownLatch, TimeUnit }
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
-import org.apache.pekko.actor.ActorSystem
-import org.apache.pekko.remote.artery.{ BenchTestSource, LatchSink }
-import org.apache.pekko.stream.scaladsl._
+import org.apache.pekko
+import pekko.actor.ActorSystem
+import pekko.remote.artery.{ BenchTestSource, LatchSink }
+import pekko.stream.scaladsl._
 
 import com.typesafe.config.ConfigFactory
 

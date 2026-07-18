@@ -13,11 +13,13 @@
 
 package docs.stream.cookbook
 
-import org.apache.pekko.NotUsed
-import org.apache.pekko.stream.scaladsl.{ Flow, Sink, Source }
-import org.apache.pekko.stream.testkit._
+import org.apache.pekko
+import pekko.NotUsed
+import pekko.stream.scaladsl.{ Flow, Sink, Source }
+import pekko.stream.testkit._
+
 import scala.concurrent.duration._
-import org.apache.pekko.testkit.TestLatch
+import pekko.testkit.TestLatch
 import scala.concurrent.Await
 
 class RecipeSimpleDrop extends RecipeSpec {

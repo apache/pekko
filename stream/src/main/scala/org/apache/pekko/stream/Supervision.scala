@@ -13,7 +13,8 @@
 
 package org.apache.pekko.stream
 
-import org.apache.pekko.japi.{ function => japi }
+import org.apache.pekko
+import pekko.japi.{ function => japi }
 
 object Supervision {
   sealed trait Directive

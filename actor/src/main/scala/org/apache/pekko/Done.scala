@@ -15,7 +15,8 @@ package org.apache.pekko
 
 import java.io.Serializable
 
-import org.apache.pekko.annotation.DoNotInherit
+import org.apache.pekko
+import pekko.annotation.DoNotInherit
 
 /**
  * Typically used together with `Future` to signal completion

@@ -13,7 +13,8 @@
 
 package org.apache.pekko.actor.typed
 
-import org.apache.pekko.actor.testkit.typed.scaladsl.LogCapturing
+import org.apache.pekko
+import pekko.actor.testkit.typed.scaladsl.LogCapturing
 
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec

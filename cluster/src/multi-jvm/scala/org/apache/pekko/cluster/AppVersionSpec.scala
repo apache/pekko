@@ -16,8 +16,9 @@ package org.apache.pekko.cluster
 import scala.concurrent.Promise
 import scala.concurrent.duration._
 
-import org.apache.pekko.remote.testkit.MultiNodeConfig
-import org.apache.pekko.util.Version
+import org.apache.pekko
+import pekko.remote.testkit.MultiNodeConfig
+import pekko.util.Version
 
 object AppVersionMultiJvmSpec extends MultiNodeConfig {
   val first = role("first")

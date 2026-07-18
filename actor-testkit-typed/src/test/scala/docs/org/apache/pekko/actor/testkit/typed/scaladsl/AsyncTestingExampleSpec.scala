@@ -17,7 +17,7 @@ import org.apache.pekko
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
 import pekko.actor.typed.Scheduler
 //#test-header
-import org.apache.pekko.actor.testkit.typed.scaladsl.ActorTestKit
+import pekko.actor.testkit.typed.scaladsl.ActorTestKit
 
 //#test-header
 import pekko.actor.typed._

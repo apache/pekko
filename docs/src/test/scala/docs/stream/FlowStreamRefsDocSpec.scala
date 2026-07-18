@@ -13,11 +13,13 @@
 
 package docs.stream
 
+import org.apache.pekko
+import pekko.NotUsed
+import pekko.actor.{ Actor, Props }
+import pekko.stream.scaladsl._
+import pekko.testkit.PekkoSpec
+
 import docs.CompileOnlySpec
-import org.apache.pekko.NotUsed
-import org.apache.pekko.actor.{ Actor, Props }
-import org.apache.pekko.stream.scaladsl._
-import org.apache.pekko.testkit.PekkoSpec
 
 object FlowStreamRefsDocSpec {
   // #offer-source

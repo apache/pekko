@@ -16,7 +16,8 @@ package org.apache.pekko.cluster
 import scala.collection.{ immutable => im }
 import scala.concurrent.duration._
 
-import org.apache.pekko.testkit.{ LongRunningTest, PekkoSpec }
+import org.apache.pekko
+import pekko.testkit.{ LongRunningTest, PekkoSpec }
 
 import com.typesafe.config.{ Config, ConfigFactory }
 

@@ -24,11 +24,12 @@ import scala.concurrent.duration._
 
 import org.openjdk.jmh.annotations._
 
-import org.apache.pekko.NotUsed
-import org.apache.pekko.actor.ActorSystem
-import org.apache.pekko.remote.artery.{ BenchTestSource, LatchSink }
-import org.apache.pekko.stream.scaladsl._
-import org.apache.pekko.stream.testkit.scaladsl.StreamTestKit
+import org.apache.pekko
+import pekko.NotUsed
+import pekko.actor.ActorSystem
+import pekko.remote.artery.{ BenchTestSource, LatchSink }
+import pekko.stream.scaladsl._
+import pekko.stream.testkit.scaladsl.StreamTestKit
 
 import com.typesafe.config.ConfigFactory
 

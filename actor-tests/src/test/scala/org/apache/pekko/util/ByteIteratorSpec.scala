@@ -15,7 +15,8 @@ package org.apache.pekko.util
 
 import java.nio.ByteOrder
 
-import org.apache.pekko.util.ByteIterator.ByteArrayIterator
+import org.apache.pekko
+import pekko.util.ByteIterator.ByteArrayIterator
 
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec

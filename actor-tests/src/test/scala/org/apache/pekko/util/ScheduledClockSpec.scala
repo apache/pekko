@@ -15,8 +15,9 @@ package org.apache.pekko.util
 
 import scala.concurrent.duration._
 
-import org.apache.pekko.testkit.PekkoSpec
-import org.apache.pekko.testkit.TimingTest
+import org.apache.pekko
+import pekko.testkit.PekkoSpec
+import pekko.testkit.TimingTest
 
 class ScheduledClockSpec extends PekkoSpec {
 

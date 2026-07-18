@@ -17,7 +17,8 @@ import java.util.concurrent.atomic.AtomicInteger
 
 import scala.concurrent.Future
 
-import org.apache.pekko.actor.testkit.typed.TestException
+import org.apache.pekko
+import pekko.actor.testkit.typed.TestException
 
 import org.scalatest.wordspec.AnyWordSpecLike
 

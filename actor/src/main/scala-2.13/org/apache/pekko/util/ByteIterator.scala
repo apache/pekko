@@ -22,7 +22,8 @@ import scala.collection.LinearSeq
 import scala.collection.mutable.ListBuffer
 import scala.reflect.ClassTag
 
-import org.apache.pekko.util.Collections.EmptyImmutableSeq
+import org.apache.pekko
+import pekko.util.Collections.EmptyImmutableSeq
 
 object ByteIterator {
   object ByteArrayIterator {

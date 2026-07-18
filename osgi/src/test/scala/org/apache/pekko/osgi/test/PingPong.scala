@@ -13,7 +13,8 @@
 
 package org.apache.pekko.osgi.test
 
-import org.apache.pekko.actor.Actor
+import org.apache.pekko
+import pekko.actor.Actor
 
 /**
  * Simple ping-pong actor, used for testing

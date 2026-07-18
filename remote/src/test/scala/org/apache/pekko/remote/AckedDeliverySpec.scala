@@ -18,7 +18,8 @@ import java.util.concurrent.ThreadLocalRandom
 import scala.annotation.nowarn
 import scala.annotation.tailrec
 
-import org.apache.pekko.testkit.PekkoSpec
+import org.apache.pekko
+import pekko.testkit.PekkoSpec
 
 @nowarn("msg=deprecated")
 object AckedDeliverySpec {

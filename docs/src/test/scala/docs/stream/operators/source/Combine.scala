@@ -13,9 +13,10 @@
 
 package docs.stream.operators.source
 
-import org.apache.pekko.actor.ActorSystem
+import org.apache.pekko
+import pekko.actor.ActorSystem
 // #imports
-import org.apache.pekko.stream.scaladsl.{ Concat, Merge, Source }
+import pekko.stream.scaladsl.{ Concat, Merge, Source }
 // ...
 
 // #imports

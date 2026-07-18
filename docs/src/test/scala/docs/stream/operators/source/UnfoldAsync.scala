@@ -13,13 +13,14 @@
 
 package docs.stream.operators.source
 
-import org.apache.pekko.NotUsed
-import org.apache.pekko.actor.typed.ActorRef
-import org.apache.pekko.actor.typed.ActorSystem
-import org.apache.pekko.stream.scaladsl.Source
-import org.apache.pekko.util.ByteString
-import org.apache.pekko.actor.typed.scaladsl.AskPattern._
-import org.apache.pekko.util.Timeout
+import org.apache.pekko
+import pekko.NotUsed
+import pekko.actor.typed.ActorRef
+import pekko.actor.typed.ActorSystem
+import pekko.stream.scaladsl.Source
+import pekko.util.ByteString
+import pekko.actor.typed.scaladsl.AskPattern._
+import pekko.util.Timeout
 
 import scala.concurrent.Future
 import scala.concurrent.duration._

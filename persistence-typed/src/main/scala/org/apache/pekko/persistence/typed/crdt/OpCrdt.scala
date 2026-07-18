@@ -13,7 +13,8 @@
 
 package org.apache.pekko.persistence.typed.crdt
 
-import org.apache.pekko.annotation.DoNotInherit
+import org.apache.pekko
+import pekko.annotation.DoNotInherit
 
 @DoNotInherit
 trait OpCrdt[Operation] { self =>

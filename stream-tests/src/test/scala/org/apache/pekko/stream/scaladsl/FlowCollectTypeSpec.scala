@@ -13,7 +13,8 @@
 
 package org.apache.pekko.stream.scaladsl
 
-import org.apache.pekko.stream.testkit.StreamSpec
+import org.apache.pekko
+import pekko.stream.testkit.StreamSpec
 
 class FlowCollectTypeSpec extends StreamSpec {
 

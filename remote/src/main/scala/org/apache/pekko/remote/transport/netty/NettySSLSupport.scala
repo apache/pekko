@@ -23,7 +23,8 @@ import io.netty.handler.ssl.SslHandler
 import io.netty.util.concurrent.Future
 
 import com.typesafe.config.Config
-import org.apache.pekko.event.MarkerLoggingAdapter
+import org.apache.pekko
+import pekko.event.MarkerLoggingAdapter
 
 /**
  * INTERNAL API

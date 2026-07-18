@@ -13,8 +13,10 @@
 
 package docs.cluster.singleton
 
+import org.apache.pekko
+
 //#singleton-supervisor-actor
-import org.apache.pekko.actor.{ Actor, Props, SupervisorStrategy }
+import pekko.actor.{ Actor, Props, SupervisorStrategy }
 class SupervisorActor(childProps: Props, override val supervisorStrategy: SupervisorStrategy) extends Actor {
   val child = context.actorOf(childProps, "supervised-child")
 
@@ -24,7 +26,7 @@ class SupervisorActor(childProps: Props, override val supervisorStrategy: Superv
 }
 //#singleton-supervisor-actor
 
-import org.apache.pekko.actor.Actor
+import pekko.actor.Actor
 abstract class ClusterSingletonSupervision extends Actor {
   import org.apache.pekko.actor.{ ActorRef, Props, SupervisorStrategy }
   def createSingleton(name: String, props: Props, supervisorStrategy: SupervisorStrategy): ActorRef = {

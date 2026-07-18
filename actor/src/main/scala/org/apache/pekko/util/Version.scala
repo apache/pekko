@@ -13,7 +13,8 @@
 
 package org.apache.pekko.util
 
-import org.apache.pekko.annotation.InternalApi
+import org.apache.pekko
+import pekko.annotation.InternalApi
 
 object Version {
   val Zero: Version = Version("0.0.0")

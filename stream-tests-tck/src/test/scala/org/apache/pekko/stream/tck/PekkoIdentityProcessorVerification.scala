@@ -20,7 +20,8 @@ import java.util.concurrent.TimeUnit
 import org.scalatestplus.testng.TestNGSuiteLike
 import org.testng.annotations.AfterClass
 
-import org.apache.pekko.stream.testkit.TestPublisher
+import org.apache.pekko
+import pekko.stream.testkit.TestPublisher
 
 import org.reactivestreams.{ Processor, Publisher, Subscriber, Subscription }
 import org.reactivestreams.tck.IdentityProcessorVerification

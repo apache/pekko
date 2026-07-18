@@ -15,7 +15,8 @@ package org.apache.pekko.routing
 
 import java.util.{ Set, TreeSet }
 
-import org.apache.pekko.actor.{ Actor, ActorRef }
+import org.apache.pekko
+import pekko.actor.{ Actor, ActorRef }
 
 sealed trait ListenerMessage
 final case class Listen(listener: ActorRef) extends ListenerMessage

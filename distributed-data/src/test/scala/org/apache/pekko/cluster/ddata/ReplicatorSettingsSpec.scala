@@ -13,7 +13,8 @@
 
 package org.apache.pekko.cluster.ddata
 
-import org.apache.pekko.testkit.PekkoSpec
+import org.apache.pekko
+import pekko.testkit.PekkoSpec
 
 import org.scalatest.BeforeAndAfterAll
 import org.scalatest.wordspec.AnyWordSpecLike

@@ -13,7 +13,8 @@
 
 package org.apache.pekko.stream.scaladsl
 
-import org.apache.pekko.NotUsed
+import org.apache.pekko
+import pekko.NotUsed
 
 /**
  * Convenience functions for often-encountered purposes like keeping only the

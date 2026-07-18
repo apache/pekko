@@ -30,16 +30,17 @@ import org.openjdk.jmh.annotations.Scope
 import org.openjdk.jmh.annotations.State
 import org.openjdk.jmh.infra.Blackhole
 
-import org.apache.pekko.NotUsed
-import org.apache.pekko.stream.impl.LinearTraversalBuilder
-import org.apache.pekko.stream.impl.Stages.DefaultAttributes
-import org.apache.pekko.stream.impl.fusing.GraphStages
-import org.apache.pekko.stream.impl.fusing.IterableSource
-import org.apache.pekko.stream.scaladsl.Flow
-import org.apache.pekko.stream.scaladsl.Keep
-import org.apache.pekko.stream.scaladsl.Sink
-import org.apache.pekko.stream.scaladsl.Source
-import org.apache.pekko.stream.stage.GraphStageWithMaterializedValue
+import org.apache.pekko
+import pekko.NotUsed
+import pekko.stream.impl.LinearTraversalBuilder
+import pekko.stream.impl.Stages.DefaultAttributes
+import pekko.stream.impl.fusing.GraphStages
+import pekko.stream.impl.fusing.IterableSource
+import pekko.stream.scaladsl.Flow
+import pekko.stream.scaladsl.Keep
+import pekko.stream.scaladsl.Sink
+import pekko.stream.scaladsl.Source
+import pekko.stream.stage.GraphStageWithMaterializedValue
 
 @State(Scope.Benchmark)
 @BenchmarkMode(Array(Mode.Throughput))

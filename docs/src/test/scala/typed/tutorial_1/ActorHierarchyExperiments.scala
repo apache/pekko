@@ -20,15 +20,16 @@ package com.example
 //#print-refs
  */
 
-import org.apache.pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
+import org.apache.pekko
+import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
+
 import org.scalatest.wordspec.AnyWordSpecLike
-import org.apache.pekko.actor.typed.PostStop
-import org.apache.pekko.actor.typed.PreRestart
-import org.apache.pekko.actor.typed.Signal
-import org.apache.pekko.actor.typed.SupervisorStrategy
+import pekko.actor.typed.PostStop
+import pekko.actor.typed.PreRestart
+import pekko.actor.typed.Signal
+import pekko.actor.typed.SupervisorStrategy
 
 //#print-refs
-import org.apache.pekko
 import pekko.actor.typed.ActorSystem
 import pekko.actor.typed.Behavior
 import pekko.actor.typed.scaladsl.AbstractBehavior

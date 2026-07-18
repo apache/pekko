@@ -17,7 +17,8 @@
 
 package org.apache.pekko.stream.scaladsl
 
-import org.apache.pekko.testkit.PekkoSpec
+import org.apache.pekko
+import pekko.testkit.PekkoSpec
 
 class TlsEngineSelectionSpec extends PekkoSpec {
 

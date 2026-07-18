@@ -18,7 +18,7 @@ import scala.concurrent.ExecutionContext
 import scala.concurrent.duration._
 
 import org.apache.pekko
-import org.apache.pekko.cluster.sharding.ShardCoordinator.ShardAllocationStrategy
+import pekko.cluster.sharding.ShardCoordinator.ShardAllocationStrategy
 import pekko.Done
 import pekko.actor.{ Actor, ActorLogging, ActorRef, Props, Timers }
 import pekko.cluster.Cluster

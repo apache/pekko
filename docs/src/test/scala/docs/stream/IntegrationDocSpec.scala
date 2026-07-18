@@ -15,22 +15,23 @@ package docs.stream
 
 import scala.concurrent.duration._
 
-import org.apache.pekko.Done
-import org.apache.pekko.NotUsed
-import org.apache.pekko.testkit.PekkoSpec
-import org.apache.pekko.stream.scaladsl._
-import org.apache.pekko.stream._
+import org.apache.pekko
+import pekko.Done
+import pekko.NotUsed
+import pekko.testkit.PekkoSpec
+import pekko.stream.scaladsl._
+import pekko.stream._
 
 import scala.concurrent.Future
-import org.apache.pekko.testkit.TestProbe
-import org.apache.pekko.actor.{ Actor, ActorLogging, ActorRef, Props }
+import pekko.testkit.TestProbe
+import pekko.actor.{ Actor, ActorLogging, ActorRef, Props }
 import com.typesafe.config.ConfigFactory
-import org.apache.pekko.util.Timeout
+import pekko.util.Timeout
 
 import scala.concurrent.ExecutionContext
 import java.util.concurrent.atomic.AtomicInteger
 
-import org.apache.pekko.stream.scaladsl.Flow
+import pekko.stream.scaladsl.Flow
 import org.scalacheck.Gen.const
 
 object IntegrationDocSpec {

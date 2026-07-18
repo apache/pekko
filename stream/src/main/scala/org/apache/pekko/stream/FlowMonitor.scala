@@ -13,7 +13,8 @@
 
 package org.apache.pekko.stream
 
-import org.apache.pekko.stream.FlowMonitorState.StreamState
+import org.apache.pekko
+import pekko.stream.FlowMonitorState.StreamState
 
 /**
  * Used to monitor the state of a stream

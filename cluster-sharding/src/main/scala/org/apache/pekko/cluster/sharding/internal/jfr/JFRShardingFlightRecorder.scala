@@ -13,7 +13,8 @@
 
 package org.apache.pekko.cluster.sharding.internal.jfr
 
-import org.apache.pekko.cluster.sharding.ShardingFlightRecorder
+import org.apache.pekko
+import pekko.cluster.sharding.ShardingFlightRecorder
 
 class JFRShardingFlightRecorder extends ShardingFlightRecorder {
   override def rememberEntityOperation(duration: Long): Unit =

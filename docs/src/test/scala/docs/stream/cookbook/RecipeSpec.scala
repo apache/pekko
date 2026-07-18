@@ -13,7 +13,8 @@
 
 package docs.stream.cookbook
 
-import org.apache.pekko.testkit.PekkoSpec
+import org.apache.pekko
+import pekko.testkit.PekkoSpec
 
 trait RecipeSpec extends PekkoSpec {
 

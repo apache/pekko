@@ -22,7 +22,8 @@ import scala.concurrent.duration._
 
 import org.openjdk.jmh.annotations._
 
-import org.apache.pekko.util.Timeout
+import org.apache.pekko
+import pekko.util.Timeout
 
 @State(Scope.Benchmark)
 @BenchmarkMode(Array(Mode.Throughput))

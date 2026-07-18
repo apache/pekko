@@ -13,17 +13,18 @@
 
 package docs.stream.operators.source
 
-import org.apache.pekko.NotUsed
-import org.apache.pekko.actor.ActorSystem
-import org.apache.pekko.stream.{ KillSwitches, RestartSettings, UniqueKillSwitch }
-import org.apache.pekko.stream.scaladsl.Keep
-import org.apache.pekko.stream.scaladsl.RestartSource
-import org.apache.pekko.stream.scaladsl.Sink
+import org.apache.pekko
+import pekko.NotUsed
+import pekko.actor.ActorSystem
+import pekko.stream.{ KillSwitches, RestartSettings, UniqueKillSwitch }
+import pekko.stream.scaladsl.Keep
+import pekko.stream.scaladsl.RestartSource
+import pekko.stream.scaladsl.Sink
 
 import scala.concurrent.duration._
 import scala.util.control.NoStackTrace
 // #imports
-import org.apache.pekko.stream.scaladsl.Source
+import pekko.stream.scaladsl.Source
 // #imports
 
 object Restart {

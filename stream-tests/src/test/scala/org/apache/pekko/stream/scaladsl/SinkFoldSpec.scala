@@ -17,7 +17,8 @@
 
 package org.apache.pekko.stream.scaladsl
 
-import org.apache.pekko.stream.testkit.StreamSpec
+import org.apache.pekko
+import pekko.stream.testkit.StreamSpec
 
 class SinkFoldSpec extends StreamSpec("""
     pekko.stream.materializer.initial-input-buffer-size = 2

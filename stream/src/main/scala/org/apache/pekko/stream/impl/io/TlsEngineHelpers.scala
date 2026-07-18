@@ -20,7 +20,8 @@ package org.apache.pekko.stream.impl.io
 import java.nio.ByteBuffer
 import javax.net.ssl.SSLEngine
 
-import org.apache.pekko.annotation.InternalApi
+import org.apache.pekko
+import pekko.annotation.InternalApi
 
 /**
  * INTERNAL API.

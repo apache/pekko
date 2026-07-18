@@ -13,7 +13,8 @@
 
 package org.apache.pekko.cluster.ddata
 
-import org.apache.pekko.cluster.ddata.Key.UnspecificKey
+import org.apache.pekko
+import pekko.cluster.ddata.Key.UnspecificKey
 
 object Key {
 

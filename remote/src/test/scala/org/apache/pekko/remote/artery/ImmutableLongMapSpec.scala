@@ -15,7 +15,8 @@ package org.apache.pekko.remote.artery
 
 import scala.util.Random
 
-import org.apache.pekko.util.OptionVal
+import org.apache.pekko
+import pekko.util.OptionVal
 
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec

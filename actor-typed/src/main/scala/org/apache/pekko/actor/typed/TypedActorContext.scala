@@ -13,7 +13,8 @@
 
 package org.apache.pekko.actor.typed
 
-import org.apache.pekko.annotation.DoNotInherit
+import org.apache.pekko
+import pekko.annotation.DoNotInherit
 
 /**
  * This trait is not meant to be extended by user code. If you do so, you may

@@ -20,7 +20,8 @@ import java.util.concurrent.atomic.AtomicInteger
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
-import org.apache.pekko.testkit._
+import org.apache.pekko
+import pekko.testkit._
 
 object ReceiveTimeoutSpec {
   case object Tick

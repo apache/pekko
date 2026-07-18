@@ -22,7 +22,8 @@ import java.util.Optional
 import scala.concurrent.duration._
 import scala.runtime.BoxedUnit
 
-import org.apache.pekko.testkit.{ ImplicitSender, PekkoSpec, TestProbe }
+import org.apache.pekko
+import pekko.testkit.{ ImplicitSender, PekkoSpec, TestProbe }
 
 object AbstractActorPreRestartFinalSpec {
 

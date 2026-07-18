@@ -15,11 +15,12 @@ package org.apache.pekko.cluster.ddata
 
 import scala.concurrent.duration._
 
-import org.apache.pekko.cluster.Cluster
-import org.apache.pekko.remote.testconductor.RoleName
-import org.apache.pekko.remote.testkit.MultiNodeConfig
-import org.apache.pekko.remote.testkit.MultiNodeSpec
-import org.apache.pekko.testkit._
+import org.apache.pekko
+import pekko.cluster.Cluster
+import pekko.remote.testconductor.RoleName
+import pekko.remote.testkit.MultiNodeConfig
+import pekko.remote.testkit.MultiNodeSpec
+import pekko.testkit._
 
 import com.typesafe.config.ConfigFactory
 

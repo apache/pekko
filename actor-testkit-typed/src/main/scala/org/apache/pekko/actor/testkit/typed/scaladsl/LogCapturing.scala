@@ -15,7 +15,8 @@ package org.apache.pekko.actor.testkit.typed.scaladsl
 
 import scala.util.control.NonFatal
 
-import org.apache.pekko.actor.testkit.typed.internal.CapturingAppender
+import org.apache.pekko
+import pekko.actor.testkit.typed.internal.CapturingAppender
 
 import org.scalatest.BeforeAndAfterAll
 import org.scalatest.Outcome

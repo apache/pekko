@@ -13,7 +13,8 @@
 
 package org.apache.pekko.remote.artery.compress
 
-import org.apache.pekko.testkit.PekkoSpec
+import org.apache.pekko
+import pekko.testkit.PekkoSpec
 
 class CompressionTableSpec extends PekkoSpec {
 

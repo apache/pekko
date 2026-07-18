@@ -13,7 +13,8 @@
 
 package org.apache.pekko.persistence
 
-import org.apache.pekko.actor.NoSerializationVerificationNeeded
+import org.apache.pekko
+import pekko.actor.NoSerializationVerificationNeeded
 
 /**
  * INTERNAL API.

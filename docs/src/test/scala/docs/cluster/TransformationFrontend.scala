@@ -15,13 +15,15 @@ package scala.docs.cluster
 
 import scala.util.Success
 import scala.concurrent.duration._
-import org.apache.pekko.actor.Actor
-import org.apache.pekko.actor.ActorRef
-import org.apache.pekko.actor.ActorSystem
-import org.apache.pekko.actor.Props
-import org.apache.pekko.actor.Terminated
-import org.apache.pekko.pattern.ask
-import org.apache.pekko.util.Timeout
+import org.apache.pekko
+import pekko.actor.Actor
+import pekko.actor.ActorRef
+import pekko.actor.ActorSystem
+import pekko.actor.Props
+import pekko.actor.Terminated
+import pekko.pattern.ask
+import pekko.util.Timeout
+
 import com.typesafe.config.ConfigFactory
 import java.util.concurrent.atomic.AtomicInteger
 

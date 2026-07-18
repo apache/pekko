@@ -21,11 +21,11 @@ import pekko.actor.typed.scaladsl.Behaviors
 import pekko.testkit.TestKit
 //#adapter-import
 // adds support for actors to a classic actor system and context
-import org.apache.pekko.actor.typed.scaladsl.adapter._
+import pekko.actor.typed.scaladsl.adapter._
 //#adapter-import
-import org.apache.pekko.testkit.TestProbe
+import pekko.testkit.TestProbe
 //#import-alias
-import org.apache.pekko.{ actor => classic }
+import pekko.{ actor => classic }
 //#import-alias
 import org.scalatest.wordspec.AnyWordSpec
 

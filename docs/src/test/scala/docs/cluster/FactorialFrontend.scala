@@ -13,15 +13,17 @@
 
 package scala.docs.cluster
 
+import org.apache.pekko
+import pekko.actor.Actor
+import pekko.actor.ActorLogging
+import pekko.actor.ActorSystem
+import pekko.actor.Props
+import pekko.cluster.Cluster
+import pekko.routing.FromConfig
+import pekko.actor.ReceiveTimeout
+
 import scala.concurrent.duration._
 import com.typesafe.config.ConfigFactory
-import org.apache.pekko.actor.Actor
-import org.apache.pekko.actor.ActorLogging
-import org.apache.pekko.actor.ActorSystem
-import org.apache.pekko.actor.Props
-import org.apache.pekko.cluster.Cluster
-import org.apache.pekko.routing.FromConfig
-import org.apache.pekko.actor.ReceiveTimeout
 import scala.util.Try
 import scala.concurrent.Await
 

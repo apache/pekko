@@ -19,7 +19,8 @@ import org.junit.rules.TestRule
 import org.junit.runner.Description
 import org.junit.runners.model.Statement
 
-import org.apache.pekko.actor.testkit.typed.internal.CapturingAppender
+import org.apache.pekko
+import pekko.actor.testkit.typed.internal.CapturingAppender
 
 import org.slf4j.LoggerFactory
 

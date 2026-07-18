@@ -18,7 +18,8 @@ import java.util.concurrent.{ CyclicBarrier, TimeUnit, TimeoutException }
 import scala.concurrent.duration.Duration
 import scala.concurrent.duration.FiniteDuration
 
-import org.apache.pekko.actor.ActorSystem
+import org.apache.pekko
+import pekko.actor.ActorSystem
 
 class TestBarrierTimeoutException(message: String) extends RuntimeException(message)
 

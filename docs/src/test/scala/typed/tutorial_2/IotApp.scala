@@ -17,11 +17,13 @@ package typed.tutorial_2
 //#iot-app
 package com.example
 
+
 //#iot-app
  */
 
 //#iot-app
-import org.apache.pekko.actor.typed.ActorSystem
+import org.apache.pekko
+import pekko.actor.typed.ActorSystem
 
 object IotApp {
 

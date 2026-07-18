@@ -12,11 +12,13 @@
  */
 
 package org.apache.pekko.util
+
 import java.util.Arrays
 
 import scala.annotation.tailrec
 
-import org.apache.pekko.annotation.InternalApi
+import org.apache.pekko
+import pekko.annotation.InternalApi
 
 /**
  * INTERNAL API

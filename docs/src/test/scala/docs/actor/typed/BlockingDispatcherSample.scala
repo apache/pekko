@@ -13,8 +13,10 @@
 
 package docs.actor.typed
 
-import org.apache.pekko.actor.typed._
-import org.apache.pekko.actor.typed.scaladsl._
+import org.apache.pekko
+import pekko.actor.typed._
+import pekko.actor.typed.scaladsl._
+
 import com.typesafe.config.{ Config, ConfigFactory }
 
 import scala.concurrent.{ ExecutionContext, Future }

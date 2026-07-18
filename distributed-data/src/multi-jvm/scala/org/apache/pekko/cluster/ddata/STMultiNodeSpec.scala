@@ -13,7 +13,8 @@
 
 package org.apache.pekko.cluster.ddata
 
-import org.apache.pekko.remote.testkit.MultiNodeSpecCallbacks
+import org.apache.pekko
+import pekko.remote.testkit.MultiNodeSpecCallbacks
 
 import org.scalatest.BeforeAndAfterAll
 import org.scalatest.matchers.should.Matchers

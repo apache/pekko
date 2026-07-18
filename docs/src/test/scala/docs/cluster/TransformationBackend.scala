@@ -14,16 +14,18 @@
 package scala.docs.cluster
 
 import scala.concurrent.duration._
-import org.apache.pekko.actor.Actor
-import org.apache.pekko.actor.ActorRef
-import org.apache.pekko.actor.ActorSystem
-import org.apache.pekko.actor.Props
-import org.apache.pekko.actor.RootActorPath
-import org.apache.pekko.cluster.Cluster
-import org.apache.pekko.cluster.ClusterEvent.CurrentClusterState
-import org.apache.pekko.cluster.ClusterEvent.MemberUp
-import org.apache.pekko.cluster.Member
-import org.apache.pekko.cluster.MemberStatus
+import org.apache.pekko
+import pekko.actor.Actor
+import pekko.actor.ActorRef
+import pekko.actor.ActorSystem
+import pekko.actor.Props
+import pekko.actor.RootActorPath
+import pekko.cluster.Cluster
+import pekko.cluster.ClusterEvent.CurrentClusterState
+import pekko.cluster.ClusterEvent.MemberUp
+import pekko.cluster.Member
+import pekko.cluster.MemberStatus
+
 import com.typesafe.config.ConfigFactory
 
 //#backend

@@ -14,7 +14,9 @@
 package typed.tutorial_5
 
 import scala.concurrent.duration._
-import org.apache.pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
+import org.apache.pekko
+import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
+
 import org.scalatest.wordspec.AnyWordSpecLike
 import typed.tutorial_5.Device.Command
 import typed.tutorial_5.DeviceGroupQuery.WrappedRespondTemperature

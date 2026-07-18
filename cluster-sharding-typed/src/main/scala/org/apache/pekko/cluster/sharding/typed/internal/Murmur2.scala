@@ -22,7 +22,8 @@ package org.apache.pekko.cluster.sharding.typed.internal
 
 import java.nio.charset.StandardCharsets
 
-import org.apache.pekko.annotation.InternalApi
+import org.apache.pekko
+import pekko.annotation.InternalApi
 
 /**
  * INTERNAL API

@@ -334,7 +334,7 @@ final case class Give(thing: Any)
 
 //#receive-orElse
 
-import org.apache.pekko.actor.{ Actor, ActorRef, ActorSystem, PoisonPill, Props }
+import pekko.actor.{ Actor, ActorRef, ActorSystem, PoisonPill, Props }
 import scala.concurrent.duration._
 
 case object Ping

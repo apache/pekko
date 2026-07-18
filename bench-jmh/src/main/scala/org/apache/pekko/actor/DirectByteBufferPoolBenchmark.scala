@@ -19,7 +19,8 @@ import java.util.concurrent.TimeUnit
 
 import org.openjdk.jmh.annotations._
 
-import org.apache.pekko.io.DirectByteBufferPool
+import org.apache.pekko
+import pekko.io.DirectByteBufferPool
 
 @State(Scope.Benchmark)
 @BenchmarkMode(Array(Mode.AverageTime))

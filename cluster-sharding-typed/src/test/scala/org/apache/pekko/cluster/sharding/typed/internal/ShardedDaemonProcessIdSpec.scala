@@ -13,7 +13,8 @@
 
 package org.apache.pekko.cluster.sharding.typed.internal
 
-import org.apache.pekko.cluster.sharding.typed.internal.ShardedDaemonProcessId.DecodedId
+import org.apache.pekko
+import pekko.cluster.sharding.typed.internal.ShardedDaemonProcessId.DecodedId
 
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike

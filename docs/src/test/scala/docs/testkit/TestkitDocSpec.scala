@@ -13,13 +13,15 @@
 
 package docs.testkit
 
+import org.apache.pekko
+import pekko.testkit._
+
 import scala.util.Success
-import org.apache.pekko.testkit._
 
 //#imports-test-probe
 import scala.concurrent.duration._
-import org.apache.pekko.actor._
-import org.apache.pekko.testkit.TestProbe
+import pekko.actor._
+import pekko.testkit.TestProbe
 
 //#imports-test-probe
 

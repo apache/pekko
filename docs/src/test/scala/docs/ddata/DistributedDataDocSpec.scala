@@ -13,14 +13,15 @@
 
 package docs.ddata
 
-import scala.concurrent.duration._
+import org.apache.pekko
+import pekko.actor.Actor
+import pekko.cluster.ddata._
+import pekko.testkit.PekkoSpec
+import pekko.testkit.TestProbe
+import pekko.actor.ActorRef
+import pekko.serialization.SerializationExtension
 
-import org.apache.pekko.actor.Actor
-import org.apache.pekko.cluster.ddata._
-import org.apache.pekko.testkit.PekkoSpec
-import org.apache.pekko.testkit.TestProbe
-import org.apache.pekko.actor.ActorRef
-import org.apache.pekko.serialization.SerializationExtension
+import scala.concurrent.duration._
 import jdocs.ddata
 
 object DistributedDataDocSpec {

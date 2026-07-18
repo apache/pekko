@@ -13,7 +13,9 @@
 
 package docs.discovery
 
-import org.apache.pekko.testkit.PekkoSpec
+import org.apache.pekko
+import pekko.testkit.PekkoSpec
+
 import com.typesafe.config.ConfigFactory
 
 import scala.concurrent.duration._

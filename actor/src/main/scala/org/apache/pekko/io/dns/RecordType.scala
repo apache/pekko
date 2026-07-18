@@ -13,7 +13,8 @@
 
 package org.apache.pekko.io.dns
 
-import org.apache.pekko.util.OptionVal
+import org.apache.pekko
+import pekko.util.OptionVal
 
 /**
  * DNS Record Type

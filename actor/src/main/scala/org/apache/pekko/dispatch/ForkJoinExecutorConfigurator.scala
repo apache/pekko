@@ -15,8 +15,9 @@ package org.apache.pekko.dispatch
 
 import java.util.concurrent.{ ExecutorService, ForkJoinPool, ForkJoinTask, ThreadFactory, TimeUnit }
 
-import org.apache.pekko.annotation.InternalApi
-import org.apache.pekko.util.JavaVersion
+import org.apache.pekko
+import pekko.annotation.InternalApi
+import pekko.util.JavaVersion
 
 import com.typesafe.config.Config
 

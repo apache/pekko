@@ -12,6 +12,7 @@
  */
 
 package org.apache.pekko.util
+
 import java.lang.StackWalker
 import java.lang.invoke.{ MethodHandle, MethodHandles, MethodType }
 import java.lang.reflect.{ Constructor, InvocationTargetException, Modifier, ParameterizedType, Type }
@@ -20,7 +21,8 @@ import scala.annotation.tailrec
 import scala.collection.immutable
 import scala.util.control.NonFatal
 
-import org.apache.pekko.annotation.InternalApi
+import org.apache.pekko
+import pekko.annotation.InternalApi
 
 /**
  * Collection of internal reflection utilities which may or may not be

@@ -28,13 +28,11 @@ import pekko.persistence.typed.EventSeq
 import pekko.persistence.typed.scaladsl.Recovery
 //#structure
 //#behavior
-import org.apache.pekko
 import pekko.persistence.typed.scaladsl.EventSourcedBehavior
 import pekko.persistence.typed.PersistenceId
 
 //#behavior
 //#structure
-import org.apache.pekko
 import pekko.persistence.typed.SnapshotFailed
 import scala.annotation.nowarn
 
@@ -215,7 +213,6 @@ object BasicPersistentBehaviorCompileOnly {
 
   object BehaviorWithContext {
     // #actor-context
-    import org.apache.pekko
     import pekko.persistence.typed.scaladsl.Effect
     import pekko.persistence.typed.scaladsl.EventSourcedBehavior.CommandHandler
 

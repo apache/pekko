@@ -13,7 +13,9 @@
 
 package org.apache.pekko.stream.scaladsl
 
-import org.apache.pekko.testkit.PekkoSpec
+import org.apache.pekko
+import pekko.testkit.PekkoSpec
+
 import scala.annotation.nowarn
 
 @nowarn // for keeping imports

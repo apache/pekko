@@ -13,14 +13,16 @@
 
 package docs.stream
 
-import org.apache.pekko.Done
-import org.apache.pekko.NotUsed
-import org.apache.pekko.actor.{ Actor, ActorSystem, Cancellable }
-import org.apache.pekko.stream.CompletionStrategy
-import org.apache.pekko.stream.Materializer
-import org.apache.pekko.stream.{ ClosedShape, FlowShape, OverflowStrategy }
-import org.apache.pekko.stream.scaladsl._
-import org.apache.pekko.testkit.PekkoSpec
+import org.apache.pekko
+import pekko.Done
+import pekko.NotUsed
+import pekko.actor.{ Actor, ActorSystem, Cancellable }
+import pekko.stream.CompletionStrategy
+import pekko.stream.Materializer
+import pekko.stream.{ ClosedShape, FlowShape, OverflowStrategy }
+import pekko.stream.scaladsl._
+import pekko.testkit.PekkoSpec
+
 import docs.CompileOnlySpec
 
 import scala.concurrent.{ Future, Promise }

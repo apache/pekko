@@ -13,11 +13,11 @@
 
 package docs.actor
 
-import org.apache.pekko.testkit.{ PekkoSpec => MyFavoriteTestFrameWorkPlusPekkoTestKit }
-import org.apache.pekko.util.ByteString
+import org.apache.pekko
+import pekko.testkit.{ PekkoSpec => MyFavoriteTestFrameWorkPlusPekkoTestKit }
+import pekko.util.ByteString
 
 //#test-code
-import org.apache.pekko
 import pekko.actor.Props
 import scala.collection.immutable
 

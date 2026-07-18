@@ -13,11 +13,12 @@
 
 package docs.stream.operators.sourceorflow
 
-import org.apache.pekko.NotUsed
-import org.apache.pekko.actor.ActorSystem
-import org.apache.pekko.stream.ThrottleMode
-import org.apache.pekko.stream.scaladsl.Sink
-import org.apache.pekko.stream.scaladsl.Source
+import org.apache.pekko
+import pekko.NotUsed
+import pekko.actor.ActorSystem
+import pekko.stream.ThrottleMode
+import pekko.stream.scaladsl.Sink
+import pekko.stream.scaladsl.Source
 
 import scala.concurrent.duration._
 

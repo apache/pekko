@@ -13,7 +13,8 @@
 
 package org.apache.pekko.stream.tck
 
-import org.apache.pekko.stream.impl.EmptyPublisher
+import org.apache.pekko
+import pekko.stream.impl.EmptyPublisher
 
 import org.reactivestreams.Publisher
 

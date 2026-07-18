@@ -19,7 +19,8 @@ import scala.annotation.{ switch, tailrec }
 import scala.concurrent.ExecutionContext
 import scala.util.control.NonFatal
 
-import org.apache.pekko.dispatch.AbstractNodeQueue
+import org.apache.pekko
+import pekko.dispatch.AbstractNodeQueue
 
 private[pekko] object SerializedSuspendableExecutionContext {
   final val Off = 0

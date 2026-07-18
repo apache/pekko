@@ -23,7 +23,8 @@ import java.time.format.DateTimeFormatter
 
 import scala.util.Try
 
-import org.apache.pekko.actor.ActorSystem
+import org.apache.pekko
+import pekko.actor.ActorSystem
 
 /**
  * Simple to file logger for benchmark results. Will log relevant settings first to make sure

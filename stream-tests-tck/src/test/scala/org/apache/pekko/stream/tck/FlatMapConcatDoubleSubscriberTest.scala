@@ -16,7 +16,8 @@ package org.apache.pekko.stream.tck
 import scala.concurrent.{ Await, Promise }
 import scala.concurrent.duration._
 
-import org.apache.pekko.stream.scaladsl.{ Sink, Source }
+import org.apache.pekko
+import pekko.stream.scaladsl.{ Sink, Source }
 
 import org.reactivestreams.{ Publisher, Subscriber }
 

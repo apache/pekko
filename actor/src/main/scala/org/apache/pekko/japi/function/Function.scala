@@ -15,7 +15,8 @@ package org.apache.pekko.japi.function
 
 import scala.annotation.nowarn
 
-import org.apache.pekko.util.ConstantFun
+import org.apache.pekko
+import pekko.util.ConstantFun
 
 /**
  * A Function interface. Used to create first-class-functions is Java.
