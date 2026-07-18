@@ -799,6 +799,12 @@ an ordinary message you are not guaranteed that the routees have been changed wh
 is routed. If you need to know when the change has been applied you can send `AddRoutee` followed by `GetRoutees`
 and when you receive the `Routees` reply you know that the preceding change has been applied.
 
+Routee-changing management messages directly change the routees. The `nr-of-instances` setting only defines the initial
+pool size, and changes made by management messages are not constrained by configured resizer bounds. A resizer may
+adjust the pool back within its bounds the next time it runs. If management messages reduce a resizable pool to zero
+routees, ordinary messages are lost until the resizer adds routees. A message that triggers a resize is routed without
+waiting for that resize to complete, so it may be lost if no routees have been added yet.
+
 <a id="resizable-routers"></a>
 ## Dynamically Resizable Pool
 
