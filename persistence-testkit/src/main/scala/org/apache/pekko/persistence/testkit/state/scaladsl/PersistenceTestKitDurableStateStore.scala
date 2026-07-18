@@ -54,6 +54,14 @@ class PersistenceTestKitDurableStateStore[A](val system: ExtendedActorSystem)
   private val persistence = Persistence(system)
   private var store = Map.empty[String, Record[A]]
 
+  private[pekko] def clearAll(): Unit = this.synchronized {
+    store = Map.empty
+  }
+
+  private[pekko] def clearByPersistenceId(persistenceId: String): Unit = this.synchronized {
+    store = store - persistenceId
+  }
+
   private val (publisher, changesSource) =
     ActorSource
       .actorRef[Record[A]](PartialFunction.empty, PartialFunction.empty, 256, OverflowStrategy.dropHead)

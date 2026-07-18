@@ -28,7 +28,12 @@ import pekko.actor.typed.scaladsl.Behaviors
 import pekko.actor.typed.scaladsl.LoggerOps
 import pekko.annotation.InternalApi
 import pekko.annotation.InternalStableApi
-import pekko.persistence.typed.state.internal.DurableStateBehaviorImpl.GetState
+import pekko.persistence.typed.state.internal.DurableStateBehaviorImpl.{
+  GetPersistenceIdForTestKit,
+  GetState,
+  GetStateReply,
+  GetStateWithReply
+}
 import pekko.persistence.typed.state.scaladsl.Effect
 
 /**
@@ -109,8 +114,10 @@ private[pekko] object Running {
         } else {
           onCommand(state, c)
         }
-      case get: GetState[S @unchecked] => onGetState(get)
-      case _                           => Behaviors.unhandled
+      case get: GetPersistenceIdForTestKit      => onGetPersistenceId(get)
+      case get: GetState[S @unchecked]          => onGetState(get)
+      case get: GetStateWithReply[S @unchecked] => onGetStateWithReply(get)
+      case _                                    => Behaviors.unhandled
     }
 
     override def onSignal: PartialFunction[Signal, Behavior[InternalProtocol]] = {
@@ -174,9 +181,20 @@ private[pekko] object Running {
       }
     }
 
-    // Used by DurableStateBehaviorTestKit to retrieve the state.
+    // Used by DurableStateBehaviorTestKit to retrieve the persistence id.
+    def onGetPersistenceId(get: GetPersistenceIdForTestKit): Behavior[InternalProtocol] = {
+      get.replyTo ! setup.persistenceId
+      this
+    }
+
     def onGetState(get: GetState[S]): Behavior[InternalProtocol] = {
       get.replyTo ! state.state
+      this
+    }
+
+    // Used by DurableStateBehaviorTestKit to retrieve the state.
+    def onGetStateWithReply(get: GetStateWithReply[S]): Behavior[InternalProtocol] = {
+      get.replyTo ! GetStateReply(state.state)
       this
     }
 
@@ -276,16 +294,18 @@ private[pekko] object Running {
 
     override def onMessage(msg: InternalProtocol): Behavior[InternalProtocol] = {
       msg match {
-        case UpsertSuccess                     => onUpsertSuccess()
-        case UpsertFailure(exc)                => onUpsertFailed(exc)
-        case in: IncomingCommand[C @unchecked] => onCommand(in)
-        case get: GetState[S @unchecked]       => stashInternal(get)
-        case DeleteSuccess                     => onDeleteSuccess()
-        case DeleteFailure(exc)                => onDeleteFailed(exc)
-        case RecoveryTimeout                   => Behaviors.unhandled
-        case RecoveryPermitGranted             => Behaviors.unhandled
-        case _: GetSuccess[?]                  => Behaviors.unhandled
-        case _: GetFailure                     => Behaviors.unhandled
+        case UpsertSuccess                        => onUpsertSuccess()
+        case UpsertFailure(exc)                   => onUpsertFailed(exc)
+        case in: IncomingCommand[C @unchecked]    => onCommand(in)
+        case get: GetPersistenceIdForTestKit      => stashInternal(get)
+        case get: GetState[S @unchecked]          => stashInternal(get)
+        case get: GetStateWithReply[S @unchecked] => stashInternal(get)
+        case DeleteSuccess                        => onDeleteSuccess()
+        case DeleteFailure(exc)                   => onDeleteFailed(exc)
+        case RecoveryTimeout                      => Behaviors.unhandled
+        case RecoveryPermitGranted                => Behaviors.unhandled
+        case _: GetSuccess[?]                     => Behaviors.unhandled
+        case _: GetFailure                        => Behaviors.unhandled
       }
     }
 
