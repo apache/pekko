@@ -205,24 +205,58 @@ private[stream] final class MapAsyncPartitioned[In, Out, Partition](
         if (orderedOutput) pushNextIfPossibleOrdered _
         else pushNextIfPossibleUnordered _
 
-      private def pushNextIfPossibleOrdered(): Unit =
-        if (partitionsInProgress.isEmpty) {
-          drainQueue()
-          pullIfNeeded()
-        } else {
-          while (buffer.nonEmpty && !(buffer.front._2.element.out eq NotYetThere) && isAvailable(out)) {
-            val (partition, wrappedInput) = buffer.dequeue()
-            import wrappedInput.{ element => holder }
+      private def pushNextIfPossibleOrdered(): Unit = {
+        while (buffer.nonEmpty && !(buffer.front._2.element.out eq NotYetThere) && isAvailable(out)) {
+          val (partition, wrappedInput) = buffer.dequeue()
+          import wrappedInput.{ element => holder }
+          partitionsInProgress -= partition
+
+          holder.out match {
+            case Success(elem) =>
+              if (elem != null) {
+                push(out, elem)
+                pullIfNeeded()
+              } else {
+                // elem is null
+                pullIfNeeded()
+              }
+
+            case Failure(NonFatal(ex)) =>
+              holder.supervisionDirectiveFor(decider, ex) match {
+                // this could happen if we are looping in pushNextIfPossible and end up on a failed future before the
+                // onComplete callback has run
+                case Supervision.Stop =>
+                  failStage(ex)
+                case _ =>
+                  // try next element
+                  logSupervisionFailure(ex)
+              }
+            case Failure(ex) =>
+              // fatal exception in buffer, not sure that it can actually happen, but for good measure
+              throw ex
+          }
+        }
+        drainQueue()
+        // The while-loop's Failure (resume) branch dequeues elements without calling pullIfNeeded(),
+        // so when the final buffered elements are resumed failures the buffer empties here without any
+        // completion check. pullIfNeeded() is the only path that runs completeStage() once upstream has
+        // finished, so it must run after draining or the stage hangs forever (mirrors the unordered branch).
+        pullIfNeeded()
+      }
+
+      private def pushNextIfPossibleUnordered(): Unit = {
+        buffer = buffer.filter { case (partition, wrappedInput) =>
+          import wrappedInput.{ element => holder }
+
+          if ((holder.out eq NotYetThere) || !isAvailable(out)) {
+            true
+          } else {
             partitionsInProgress -= partition
 
             holder.out match {
               case Success(elem) =>
                 if (elem != null) {
                   push(out, elem)
-                  pullIfNeeded()
-                } else {
-                  // elem is null
-                  pullIfNeeded()
                 }
 
               case Failure(NonFatal(ex)) =>
@@ -239,54 +273,12 @@ private[stream] final class MapAsyncPartitioned[In, Out, Partition](
                 // fatal exception in buffer, not sure that it can actually happen, but for good measure
                 throw ex
             }
+            false
           }
-          drainQueue()
-          // The while-loop's Failure (resume) branch dequeues elements without calling pullIfNeeded(),
-          // so when the final buffered elements are resumed failures the buffer empties here without any
-          // completion check. pullIfNeeded() is the only path that runs completeStage() once upstream has
-          // finished, so it must run after draining or the stage hangs forever (mirrors the unordered branch).
-          pullIfNeeded()
         }
-
-      private def pushNextIfPossibleUnordered(): Unit =
-        if (partitionsInProgress.isEmpty) {
-          drainQueue()
-          pullIfNeeded()
-        } else {
-          buffer = buffer.filter { case (partition, wrappedInput) =>
-            import wrappedInput.{ element => holder }
-
-            if ((holder.out eq NotYetThere) || !isAvailable(out)) {
-              true
-            } else {
-              partitionsInProgress -= partition
-
-              holder.out match {
-                case Success(elem) =>
-                  if (elem != null) {
-                    push(out, elem)
-                  }
-
-                case Failure(NonFatal(ex)) =>
-                  holder.supervisionDirectiveFor(decider, ex) match {
-                    // this could happen if we are looping in pushNextIfPossible and end up on a failed future before the
-                    // onComplete callback has run
-                    case Supervision.Stop =>
-                      failStage(ex)
-                    case _ =>
-                      // try next element
-                      logSupervisionFailure(ex)
-                  }
-                case Failure(ex) =>
-                  // fatal exception in buffer, not sure that it can actually happen, but for good measure
-                  throw ex
-              }
-              false
-            }
-          }
-          pullIfNeeded()
-          drainQueue()
-        }
+        pullIfNeeded()
+        drainQueue()
+      }
 
       private def drainQueue(): Unit = {
         if (buffer.nonEmpty) {
