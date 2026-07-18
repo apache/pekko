@@ -29,6 +29,7 @@ import pekko.japi.Util.immutableSeq
 import pekko.remote.RemoteScope
 import pekko.routing.ActorRefRoutee
 import pekko.routing.ActorSelectionRoutee
+import pekko.routing.AdjustPoolSize
 import pekko.routing.Group
 import pekko.routing.Pool
 import pekko.routing.Resizer
@@ -406,28 +407,37 @@ private[pekko] class ClusterRouterPoolActor(
     extends RouterPoolActor(supervisorStrategy)
     with ClusterRouterActor {
 
-  override def receive = clusterReceive.orElse(super.receive)
+  override def receive =
+    clusterReceive
+      .orElse({
+        case AdjustPoolSize(change) if change > 0 => addRoutees(change)
+      }: Actor.Receive)
+      .orElse(super.receive)
 
   /**
    * Adds routees based on totalInstances and maxInstancesPerNode settings
    */
-  override def addRoutees(): Unit = {
+  override def addRoutees(): Unit = addRoutees(settings.totalInstances)
+
+  private def addRoutees(numberOfRoutees: Int): Unit = {
     @tailrec
-    def doAddRoutees(): Unit = selectDeploymentTarget match {
-      case None         => // done
-      case Some(target) =>
-        val routeeProps = cell.routeeProps
-        val deploy =
-          Deploy(config = ConfigFactory.empty(), routerConfig = routeeProps.routerConfig, scope = RemoteScope(target))
-        val routee = pool.newRoutee(routeeProps.withDeploy(deploy), context)
-        // must register each one, since registered routees are used in selectDeploymentTarget
-        cell.addRoutee(routee)
+    def doAddRoutees(remaining: Int): Unit =
+      if (remaining > 0)
+        selectDeploymentTarget match {
+          case None         => // done
+          case Some(target) =>
+            val routeeProps = cell.routeeProps
+            val deploy =
+              Deploy(config = ConfigFactory.empty(), routerConfig = routeeProps.routerConfig,
+                scope = RemoteScope(target))
+            val routee = pool.newRoutee(routeeProps.withDeploy(deploy), context)
+            // must register each one, since registered routees are used in selectDeploymentTarget
+            cell.addRoutee(routee)
 
-        // recursion until all created
-        doAddRoutees()
-    }
+            doAddRoutees(remaining - 1)
+        }
 
-    doAddRoutees()
+    doAddRoutees(numberOfRoutees)
   }
 
   def selectDeploymentTarget: Option[Address] = {

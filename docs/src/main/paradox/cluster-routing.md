@@ -176,6 +176,10 @@ per node, `max-nr-of-instances-per-node`, will not be exceeded. By default `max-
 is set to a high value (10000) that will result in new routees added to the router when nodes join the cluster.
 Set it to a lower value if you want to limit total number of routees.
 
+Routees added with @apidoc[routing.AdjustPoolSize] are deployed only to eligible nodes and are constrained by
+`max-total-nr-of-instances` and `max-nr-of-instances-per-node`. If fewer eligible slots are available than requested,
+only the available number of routees are added.
+
 The same type of router could also have been defined in code:
 
 Scala
