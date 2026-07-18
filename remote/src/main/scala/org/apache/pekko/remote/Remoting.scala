@@ -538,6 +538,7 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
 
   var pendingReadHandoffs = Map[ActorRef, PekkoProtocolHandle]()
   private var readOnlyReaderResumptions = Map[ActorRef, ResumableReader]()
+  private var readOnlyEndpointHandles = Map[ActorRef, PekkoProtocolHandle]()
   var stashedInbound = Map[ActorRef, Vector[InboundAssociation]]()
 
   def handleStashedInbound(endpoint: ActorRef, writerIsIdle: Boolean): Unit = {
@@ -850,6 +851,10 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
           pendingReadHandoffs
             .get(endpoint)
             .foreach(_.disassociate("the existing readOnly association was replaced by a new incoming one", log))
+          readOnlyEndpointHandles.get(endpoint).foreach { previousHandle =>
+            handle.inboundMessageDispatched = previousHandle.inboundMessageDispatched
+            readOnlyEndpointHandles += endpoint -> handle
+          }
           pendingReadHandoffs += endpoint -> handle
           endpoint ! EndpointWriter.TakeOver(handle, self)
           endpoints.writableEndpointWithPolicyFor(handle.remoteAddress) match {
@@ -971,6 +976,11 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
       pendingReadHandoffs -= takingOverFrom
       eventPublisher.notifyListeners(AssociatedEvent(handle.localAddress, handle.remoteAddress, inbound = true))
 
+      val inheritedResumableReader = readOnlyReaderResumptions.get(takingOverFrom).filter(
+        resumableReaderMatchesHandle(_, readOnlyEndpoint = takingOverFrom, handle = handle))
+      val resumableReader = resumeReadingFrom
+        .map(writer => ResumableReader(writer, handle.remoteAddress, handle.handshakeInfo.uid))
+        .orElse(inheritedResumableReader)
       val endpoint = createEndpoint(
         handle.remoteAddress,
         handle.localAddress,
@@ -979,15 +989,12 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
         Some(handle),
         writing = false)
       endpoints.registerReadOnlyEndpoint(handle.remoteAddress, endpoint, handle.handshakeInfo.uid)
-      val inheritedResumableReader = readOnlyReaderResumptions.get(takingOverFrom).filter(
-        resumableReaderMatchesHandle(_, readOnlyEndpoint = takingOverFrom, handle = handle))
-      val resumableReader = resumeReadingFrom
-        .map(writer => ResumableReader(writer, handle.remoteAddress, handle.handshakeInfo.uid))
-        .orElse(inheritedResumableReader)
       readOnlyReaderResumptions -= takingOverFrom
+      readOnlyEndpointHandles -= takingOverFrom
       resumableReader.foreach {
-        case ResumableReader(writer, remoteAddress, uid) =>
-          readOnlyReaderResumptions += endpoint -> ResumableReader(writer, remoteAddress, uid)
+        case resumableReader @ ResumableReader(writer, remoteAddress, uid) =>
+          readOnlyReaderResumptions += endpoint -> resumableReader
+          readOnlyEndpointHandles += endpoint -> handle
           log.debug(
             "Registered passive read handoff fallback for [{}] with UID [{}] from writable endpoint [{}] to read-only endpoint [{}]",
             remoteAddress,
@@ -1004,13 +1011,24 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
       case ResumableReader(writer, remoteAddress, uid) =>
         endpoints.writableEndpointWithPolicyFor(remoteAddress) match {
           case Some(Pass(`writer`, Some(`uid`))) =>
-            log.info(
-              "Resuming outbound reader [{}] for [{}] with UID [{}] after passive read-only endpoint [{}] stopped",
-              writer,
-              remoteAddress,
-              uid,
-              readOnlyEndpoint)
-            writer ! EndpointWriter.ResumeReading
+            if (readOnlyEndpointHandles.get(readOnlyEndpoint).forall(_.inboundMessageDispatched.get())) {
+              log.warning(
+                "Reconnecting outbound endpoint [{}] for [{}] with UID [{}] after passive read-only endpoint [{}] " +
+                "dispatched messages and then stopped, because resuming the original reader could violate message ordering",
+                writer,
+                remoteAddress,
+                uid,
+                readOnlyEndpoint)
+              writer ! ReliableDeliverySupervisor.Reconnect
+            } else {
+              log.info(
+                "Resuming outbound reader [{}] for [{}] with UID [{}] after passive read-only endpoint [{}] stopped",
+                writer,
+                remoteAddress,
+                uid,
+                readOnlyEndpoint)
+              writer ! EndpointWriter.ResumeReading
+            }
           case currentPolicy =>
             log.debug(
               "Not resuming outbound reader [{}] for [{}] with UID [{}] after passive read-only endpoint [{}] stopped",
@@ -1025,6 +1043,7 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
         }
     }
     readOnlyReaderResumptions -= readOnlyEndpoint
+    readOnlyEndpointHandles -= readOnlyEndpoint
   }
 
   private def resumableReaderMatchesHandle(
@@ -1047,8 +1066,10 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
       endpoints.registerReadOnlyEndpoint(withHandle.remoteAddress, takingOverFrom, withHandle.handshakeInfo.uid)
       if (!readOnlyReaderResumptions
           .get(takingOverFrom)
-          .forall(resumableReaderMatchesHandle(_, readOnlyEndpoint = takingOverFrom, handle = withHandle)))
+          .forall(resumableReaderMatchesHandle(_, readOnlyEndpoint = takingOverFrom, handle = withHandle))) {
         readOnlyReaderResumptions -= takingOverFrom
+        readOnlyEndpointHandles -= takingOverFrom
+      }
     }
   }
 

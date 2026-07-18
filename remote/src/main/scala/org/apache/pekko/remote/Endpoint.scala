@@ -15,6 +15,7 @@ package org.apache.pekko.remote
 
 import java.io.NotSerializableException
 import java.util.concurrent.{ ConcurrentHashMap, TimeoutException }
+import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.locks.LockSupport
 
 import scala.annotation.nowarn
@@ -224,6 +225,7 @@ private[remote] class OversizedPayloadException(msg: String) extends EndpointExc
  */
 private[remote] object ReliableDeliverySupervisor {
   case object Ungate
+  case object Reconnect
   case object AttemptSysMsgRedelivery
   final case class GotUid(uid: Int, remoteAddres: Address)
   @nowarn("msg=deprecated")
@@ -308,6 +310,11 @@ private[remote] class ReliableDeliverySupervisor(
     bailoutAt = None
   }
 
+  private def prepareForReconnect(): Unit = {
+    currentHandle = None
+    uidConfirmed = false
+  }
+
   reset()
 
   def nextSeq(): SeqNo = {
@@ -387,6 +394,11 @@ private[remote] class ReliableDeliverySupervisor(
     case s: EndpointWriter.StopReading =>
       writer.forward(s)
 
+    case Reconnect =>
+      prepareForReconnect()
+      context.stop(writer)
+      context.become(gated(writerTerminated = false, earlyUngateRequested = true))
+
     case EndpointWriter.ResumeReading =>
       writer ! EndpointWriter.ResumeReading
 
@@ -436,6 +448,13 @@ private[remote] class ReliableDeliverySupervisor(
     case EndpointWriter.StopReading(w, replyTo) =>
       replyTo ! EndpointWriter.StoppedReading(w)
       sender() ! EndpointWriter.StoppedReading(w)
+    case Reconnect =>
+      prepareForReconnect()
+      if (writerTerminated) self ! Ungate
+      else {
+        context.stop(writer)
+        context.become(gated(writerTerminated = false, earlyUngateRequested = true))
+      }
   }
 
   def idle: Receive = {
@@ -465,6 +484,8 @@ private[remote] class ReliableDeliverySupervisor(
       goToActive()
     case EndpointWriter.StopReading(w, replyTo) =>
       replyTo ! EndpointWriter.StoppedReading(w)
+    case Reconnect =>
+      prepareForReconnect()
     case Ungate => // ok, not gated
   }
 
@@ -1069,7 +1090,8 @@ private[remote] class EndpointWriter(
                 inbound,
                 handle.handshakeInfo.uid,
                 reliableDeliverySupervisor,
-                receiveBuffers))
+                receiveBuffers,
+                handle.inboundMessageDispatched))
             .withDeploy(Deploy.local),
           "endpointReader-" + AddressUrlEncoder(remoteAddress) + "-" + readerId.next()))
     handle.readHandlerPromise.success(ActorHandleEventListener(newReader))
@@ -1104,6 +1126,31 @@ private[remote] object EndpointReader {
       uid: Int,
       reliableDeliverySupervisor: Option[ActorRef],
       receiveBuffers: ConcurrentHashMap[Link, ResendState]): Props =
+    props(
+      localAddress,
+      remoteAddress,
+      transport,
+      settings,
+      codec,
+      msgDispatch,
+      inbound,
+      uid,
+      reliableDeliverySupervisor,
+      receiveBuffers,
+      new AtomicBoolean(false))
+
+  def props(
+      localAddress: Address,
+      remoteAddress: Address,
+      transport: Transport,
+      settings: RemoteSettings,
+      codec: PekkoPduCodec,
+      msgDispatch: InboundMessageDispatcher,
+      inbound: Boolean,
+      uid: Int,
+      reliableDeliverySupervisor: Option[ActorRef],
+      receiveBuffers: ConcurrentHashMap[Link, ResendState],
+      inboundMessageDispatched: AtomicBoolean): Props =
     Props(
       classOf[EndpointReader],
       localAddress,
@@ -1115,7 +1162,8 @@ private[remote] object EndpointReader {
       inbound,
       uid,
       reliableDeliverySupervisor,
-      receiveBuffers)
+      receiveBuffers,
+      inboundMessageDispatched)
 
 }
 
@@ -1133,13 +1181,39 @@ private[remote] class EndpointReader(
     val inbound: Boolean,
     val uid: Int,
     val reliableDeliverySupervisor: Option[ActorRef],
-    val receiveBuffers: ConcurrentHashMap[Link, ResendState])
+    val receiveBuffers: ConcurrentHashMap[Link, ResendState],
+    val inboundMessageDispatched: AtomicBoolean)
     extends EndpointActor(localAddress, remoteAddress, transport, settings, codec) {
+
+  def this(
+      localAddress: Address,
+      remoteAddress: Address,
+      transport: Transport,
+      settings: RemoteSettings,
+      codec: PekkoPduCodec,
+      msgDispatch: InboundMessageDispatcher,
+      inbound: Boolean,
+      uid: Int,
+      reliableDeliverySupervisor: Option[ActorRef],
+      receiveBuffers: ConcurrentHashMap[Link, ResendState]) =
+    this(
+      localAddress,
+      remoteAddress,
+      transport,
+      settings,
+      codec,
+      msgDispatch,
+      inbound,
+      uid,
+      reliableDeliverySupervisor,
+      receiveBuffers,
+      new AtomicBoolean(false))
 
   import EndpointWriter.{ OutboundAck, ResumeReading, StopReading, StoppedReading }
 
   val provider = RARP(context.system).provider
   var ackedReceiveBuffer = new AckedReceiveBuffer[Message]
+  private var suspendedMessages = Vector.empty[Message]
 
   override def preStart(): Unit = {
     receiveBuffers.get(Link(localAddress, remoteAddress)) match {
@@ -1189,10 +1263,7 @@ private[remote] class EndpointReader(
             ackedReceiveBuffer = ackedReceiveBuffer.receive(msg)
             deliverAndAck()
           } else
-            try msgDispatch.dispatch(msg.recipient, msg.recipientAddress, msg.serializedMessage, msg.senderOption)
-            catch {
-              case NonFatal(e) => logTransientSerializationError(msg, e)
-            }
+            dispatchMessage(msg)
 
         case None =>
       }
@@ -1230,6 +1301,8 @@ private[remote] class EndpointReader(
       replyTo ! StoppedReading(writer)
 
     case ResumeReading =>
+      suspendedMessages.foreach(dispatchMessage)
+      suspendedMessages = Vector.empty
       context.become(receive)
 
     case InboundPayload(p) if p.length <= transport.maximumPayloadBytes =>
@@ -1237,13 +1310,21 @@ private[remote] class EndpointReader(
       for (ack <- ackOption; reliableDelivery <- reliableDeliverySupervisor)
         reliableDelivery ! ReliableDeliverySupervisor.AckFromReader(uid, ack)
 
-      if (log.isWarningEnabled)
-        log.warning(
-          "Discarding inbound message to [{}] in read-only association to [{}]. " +
-          "If this happens often you may consider using pekko.remote.classic.use-passive-connections=off " +
-          "or use Artery TCP.",
-          msgOption.map(_.recipient).getOrElse("unknown"),
-          remoteAddress)
+      msgOption.foreach { msg =>
+        if (!msg.reliableDeliveryEnabled) {
+          if (suspendedMessages.size < settings.PassiveConnectionBufferSize)
+            suspendedMessages :+= msg
+          else if (log.isWarningEnabled)
+            log.warning(
+              "Discarding inbound message to [{}] in read-only association to [{}] because the passive connection " +
+              "buffer of [{}] messages is full. If this happens often you may consider increasing " +
+              "pekko.remote.classic.passive-connection-buffer-size, setting " +
+              "pekko.remote.classic.use-passive-connections=off, or using Artery TCP.",
+              msg.recipient,
+              remoteAddress,
+              settings.PassiveConnectionBufferSize)
+        }
+      }
 
     case InboundPayload(oversized) =>
       log.error(
@@ -1279,13 +1360,16 @@ private[remote] class EndpointReader(
 
     // Notify writer that some messages can be acked
     context.parent ! OutboundAck(ack)
-    deliver.foreach { m =>
-      try msgDispatch.dispatch(m.recipient, m.recipientAddress, m.serializedMessage, m.senderOption)
-      catch {
-        case NonFatal(e) => logTransientSerializationError(m, e)
-      }
-    }
+    deliver.foreach(dispatchMessage)
   }
+
+  private def dispatchMessage(msg: Message): Unit =
+    try {
+      inboundMessageDispatched.set(true)
+      msgDispatch.dispatch(msg.recipient, msg.recipientAddress, msg.serializedMessage, msg.senderOption)
+    } catch {
+      case NonFatal(e) => logTransientSerializationError(msg, e)
+    }
 
   private def tryDecodeMessageAndAck(pdu: ByteString): (Option[Ack], Option[Message]) =
     try {

@@ -111,6 +111,11 @@ final class RemoteSettings(val config: Config) {
   val UsePassiveConnections: Boolean = getBoolean("pekko.remote.classic.use-passive-connections")
 
   @deprecated("Classic remoting is deprecated, use Artery", "Akka 2.6.0")
+  val PassiveConnectionBufferSize: Int = {
+    getInt("pekko.remote.classic.passive-connection-buffer-size")
+  }.requiring(_ >= 0, "passive-connection-buffer-size must be >= 0")
+
+  @deprecated("Classic remoting is deprecated, use Artery", "Akka 2.6.0")
   val BackoffPeriod: FiniteDuration = {
     config.getMillisDuration("pekko.remote.classic.backoff-interval")
   }.requiring(_ > Duration.Zero, "backoff-interval must be > 0")
