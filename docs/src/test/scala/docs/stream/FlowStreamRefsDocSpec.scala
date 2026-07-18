@@ -14,12 +14,12 @@
 package docs.stream
 
 import org.apache.pekko
-
-import docs.CompileOnlySpec
 import pekko.NotUsed
 import pekko.actor.{ Actor, Props }
 import pekko.stream.scaladsl._
 import pekko.testkit.PekkoSpec
+
+import docs.CompileOnlySpec
 
 object FlowStreamRefsDocSpec {
   // #offer-source

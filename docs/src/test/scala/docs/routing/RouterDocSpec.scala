@@ -14,8 +14,6 @@
 package docs.routing
 
 import org.apache.pekko
-
-import scala.concurrent.duration._
 import pekko.testkit._
 import pekko.actor.{ Actor, ActorRef, Props }
 import pekko.actor.Terminated
@@ -35,6 +33,8 @@ import pekko.routing.ScatterGatherFirstCompletedPool
 import pekko.routing.BalancingPool
 import pekko.routing.TailChoppingGroup
 import pekko.routing.TailChoppingPool
+
+import scala.concurrent.duration._
 import scala.jdk.CollectionConverters._
 
 object RouterDocSpec {

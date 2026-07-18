@@ -14,7 +14,6 @@
 package docs.dispatcher
 
 import org.apache.pekko
-
 import pekko.testkit.PekkoSpec
 import pekko.event.Logging
 import pekko.event.LoggingAdapter

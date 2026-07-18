@@ -20,6 +20,7 @@ import org.apache.pekko
 import pekko.actor.testkit.typed.scaladsl.ActorTestKit
 import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
+
 import docs.org.apache.pekko.typed.IntroSpec.HelloWorld
 import org.scalatest.wordspec.AnyWordSpecLike
 import scala.annotation.nowarn

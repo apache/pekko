@@ -17,6 +17,7 @@ import org.apache.pekko
 import pekko.actor.typed.ActorSystem
 import pekko.persistence.testkit.{ PersistenceTestKitPlugin, PersistenceTestKitSnapshotPlugin }
 import pekko.persistence.testkit.scaladsl.{ PersistenceTestKit, SnapshotTestKit }
+
 import com.typesafe.config.ConfigFactory
 
 object TestKitTypedConf {

@@ -21,6 +21,7 @@ import pekko.actor.ActorSystem
 import pekko.persistence.journal.{ EventAdapter, EventSeq }
 import pekko.serialization.{ SerializationExtension, SerializerWithStringManifest }
 import pekko.testkit.TestKit
+
 import com.typesafe.config._
 import org.scalatest.wordspec.AnyWordSpec
 import spray.json.JsObject

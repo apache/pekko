@@ -13,6 +13,7 @@
 
 import org.apache.pekko
 import pekko.persistence.{ PersistentActor, RuntimePluginConfig }
+
 import com.typesafe.config.ConfigFactory
 
 object PersistenceMultiDocSpec {

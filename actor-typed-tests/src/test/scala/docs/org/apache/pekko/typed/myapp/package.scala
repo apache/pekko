@@ -17,6 +17,7 @@ package docs.org.apache.pekko.typed
 import scala.language.implicitConversions
 import org.apache.pekko
 import pekko.actor.typed.scaladsl.LoggerOps
+
 import org.slf4j.Logger
 
 package object myapp {

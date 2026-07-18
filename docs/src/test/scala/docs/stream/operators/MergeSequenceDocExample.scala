@@ -14,7 +14,6 @@
 package docs.stream.operators
 
 import org.apache.pekko
-
 import pekko.actor.ActorSystem
 
 object MergeSequenceDocExample {

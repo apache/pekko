@@ -15,6 +15,7 @@ package docs.stream
 
 import org.apache.pekko
 import pekko.stream.scaladsl.{ Sink, Source }
+
 import docs.stream.cookbook.RecipeSpec
 
 import scala.concurrent.Future

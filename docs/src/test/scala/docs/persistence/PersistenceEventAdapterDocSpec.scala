@@ -18,6 +18,7 @@ import pekko.actor.{ ExtendedActorSystem, Props }
 import pekko.persistence.journal.{ EventAdapter, EventSeq }
 import pekko.persistence.{ PersistentActor, RecoveryCompleted }
 import pekko.testkit.{ PekkoSpec, TestProbe }
+
 import com.google.gson.{ Gson, JsonElement }
 
 import scala.collection.immutable

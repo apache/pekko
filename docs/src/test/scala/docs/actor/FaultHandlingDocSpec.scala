@@ -14,8 +14,8 @@
 package docs.actor
 
 import org.apache.pekko
-
 import pekko.actor.{ ActorRef, ActorSystem, Props, Terminated }
+
 import FaultHandlingDocSpec._
 
 //#testkit

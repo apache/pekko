@@ -14,7 +14,6 @@
 package docs.routing
 
 import org.apache.pekko
-
 import pekko.testkit.PekkoSpec
 import pekko.testkit.ImplicitSender
 import pekko.routing.FromConfig

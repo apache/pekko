@@ -14,7 +14,6 @@
 package docs.persistence
 
 import org.apache.pekko
-
 import pekko.actor._
 import pekko.pattern.{ BackoffOpts, BackoffSupervisor }
 import pekko.persistence._

@@ -18,6 +18,7 @@ import pekko.NotUsed
 import pekko.stream.{ KillSwitches, UniqueKillSwitch }
 import pekko.stream.scaladsl._
 import pekko.testkit.PekkoSpec
+
 import docs.CompileOnlySpec
 
 import scala.concurrent.duration._

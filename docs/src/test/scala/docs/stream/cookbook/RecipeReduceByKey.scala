@@ -16,6 +16,7 @@ package docs.stream.cookbook
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.stream.scaladsl._
+
 import scala.concurrent.Await
 import scala.concurrent.duration._
 

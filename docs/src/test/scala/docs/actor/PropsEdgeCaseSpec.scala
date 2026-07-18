@@ -15,6 +15,7 @@ package docs.actor
 
 import org.apache.pekko
 import pekko.actor.{ Actor, Props }
+
 import docs.CompileOnlySpec
 import org.scalatest.wordspec.AnyWordSpec
 

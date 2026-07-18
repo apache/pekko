@@ -14,7 +14,6 @@
 package doc.org.apache.pekko.discovery
 
 import org.apache.pekko
-
 import pekko.actor.ActorSystem
 
 import scala.concurrent.Future

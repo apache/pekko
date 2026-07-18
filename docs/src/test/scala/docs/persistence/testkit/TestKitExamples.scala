@@ -18,6 +18,7 @@ import pekko.persistence.typed.PersistenceId
 import pekko.persistence.typed.scaladsl.Effect
 import pekko.persistence.typed.scaladsl.EventSourcedBehavior
 import pekko.serialization.jackson.CborSerializable
+
 import com.typesafe.config.ConfigFactory
 import docs.persistence.testkit.PersistenceTestKitSampleSpec.{ Cmd, Evt, _ }
 import org.scalatest.BeforeAndAfterEach

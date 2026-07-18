@@ -19,6 +19,7 @@ import org.apache.pekko
 import pekko.stream._
 import pekko.stream.scaladsl._
 import pekko.testkit.{ EventFilter, PekkoSpec }
+
 import scala.concurrent.ExecutionContext
 
 class GraphStageLoggingDocSpec extends PekkoSpec("pekko.loglevel = DEBUG") {

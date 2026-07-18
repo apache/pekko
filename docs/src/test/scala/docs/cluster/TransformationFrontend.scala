@@ -23,6 +23,7 @@ import pekko.actor.Props
 import pekko.actor.Terminated
 import pekko.pattern.ask
 import pekko.util.Timeout
+
 import com.typesafe.config.ConfigFactory
 import java.util.concurrent.atomic.AtomicInteger
 

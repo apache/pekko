@@ -14,11 +14,11 @@
 package docs.event
 
 import org.apache.pekko
-
-import scala.concurrent.duration._
 import pekko.testkit.PekkoSpec
 import pekko.actor.{ ActorRef, ActorSystem }
 import pekko.testkit.TestProbe
+
+import scala.concurrent.duration._
 
 object EventBusDocSpec {
 

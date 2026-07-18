@@ -14,7 +14,6 @@
 package docs.persistence.query
 
 import org.apache.pekko
-
 import pekko.NotUsed
 import pekko.testkit.PekkoSpec
 import pekko.persistence.query.{ EventEnvelope, PersistenceQuery, Sequence }

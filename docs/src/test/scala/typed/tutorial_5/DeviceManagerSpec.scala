@@ -15,6 +15,7 @@ package typed.tutorial_5
 
 import org.apache.pekko
 import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
+
 import org.scalatest.wordspec.AnyWordSpecLike
 import typed.tutorial_5.DeviceManager._
 

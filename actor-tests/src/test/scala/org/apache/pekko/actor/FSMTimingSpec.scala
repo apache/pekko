@@ -15,6 +15,7 @@ package org.apache.pekko.actor
 
 import org.apache.pekko
 import pekko.testkit._
+
 import scala.concurrent.duration._
 
 class FSMTimingSpec extends PekkoSpec with ImplicitSender {

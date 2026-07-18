@@ -14,9 +14,6 @@
 package scala.docs.cluster
 
 import org.apache.pekko
-
-import scala.concurrent.duration._
-import com.typesafe.config.ConfigFactory
 import pekko.actor.Actor
 import pekko.actor.ActorLogging
 import pekko.actor.ActorSystem
@@ -24,6 +21,9 @@ import pekko.actor.Props
 import pekko.cluster.Cluster
 import pekko.routing.FromConfig
 import pekko.actor.ReceiveTimeout
+
+import scala.concurrent.duration._
+import com.typesafe.config.ConfigFactory
 import scala.util.Try
 import scala.concurrent.Await
 

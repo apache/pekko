@@ -17,6 +17,7 @@ import org.apache.pekko
 import pekko.stream.scaladsl._
 import pekko.stream.{ DelayOverflowStrategy, KillSwitches }
 import pekko.testkit.PekkoSpec
+
 import docs.CompileOnlySpec
 
 import scala.concurrent.Await

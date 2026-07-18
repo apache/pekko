@@ -14,13 +14,11 @@
 package docs.stream.operators
 
 import org.apache.pekko
-
-import java.util.concurrent.ThreadLocalRandom
-
-import scala.concurrent.Future
-
 import pekko.actor.ActorSystem
 import pekko.stream.scaladsl.Broadcast
+
+import java.util.concurrent.ThreadLocalRandom
+import scala.concurrent.Future
 
 object BroadcastDocExample {
 

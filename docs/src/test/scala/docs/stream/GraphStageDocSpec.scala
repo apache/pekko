@@ -14,7 +14,6 @@
 package docs.stream
 
 import org.apache.pekko
-
 import pekko.NotUsed
 import pekko.stream.scaladsl.{ Flow, Keep, Sink, Source }
 import pekko.stream.stage._

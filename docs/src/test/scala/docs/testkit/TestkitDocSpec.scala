@@ -14,9 +14,9 @@
 package docs.testkit
 
 import org.apache.pekko
+import pekko.testkit._
 
 import scala.util.Success
-import pekko.testkit._
 
 //#imports-test-probe
 import scala.concurrent.duration._

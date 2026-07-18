@@ -17,6 +17,7 @@ import com.lightbend.paradox.apidoc.ApidocPlugin
 import com.lightbend.paradox.projectinfo.ParadoxProjectInfoPluginKeys.projectInfoVersion
 import org.apache.pekko
 import pekko.PekkoParadoxPlugin.autoImport._
+
 import sbt.Keys._
 import sbt._
 import sbtlicensereport.SbtLicenseReport.autoImportImpl.dumpLicenseReportAggregate

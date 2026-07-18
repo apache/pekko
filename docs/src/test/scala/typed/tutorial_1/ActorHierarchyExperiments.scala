@@ -22,6 +22,7 @@ package com.example
 
 import org.apache.pekko
 import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
+
 import org.scalatest.wordspec.AnyWordSpecLike
 import pekko.actor.typed.PostStop
 import pekko.actor.typed.PreRestart

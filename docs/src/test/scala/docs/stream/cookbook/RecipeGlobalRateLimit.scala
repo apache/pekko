@@ -14,7 +14,6 @@
 package docs.stream.cookbook
 
 import org.apache.pekko
-
 import pekko.NotUsed
 import pekko.actor.{ Actor, ActorRef, Props }
 import pekko.stream.ClosedShape

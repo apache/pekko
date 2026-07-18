@@ -17,6 +17,7 @@ import org.apache.pekko
 import pekko.NotUsed
 import pekko.stream.scaladsl._
 import pekko.stream.testkit._
+
 import scala.concurrent.duration._
 import pekko.testkit.TestLatch
 import scala.concurrent.Await

@@ -22,6 +22,7 @@ import pekko.stream.Materializer
 import pekko.stream.{ ClosedShape, FlowShape, OverflowStrategy }
 import pekko.stream.scaladsl._
 import pekko.testkit.PekkoSpec
+
 import docs.CompileOnlySpec
 
 import scala.concurrent.{ Future, Promise }

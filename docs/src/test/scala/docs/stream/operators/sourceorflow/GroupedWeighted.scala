@@ -15,6 +15,7 @@ package docs.stream.operators.sourceorflow
 
 import org.apache.pekko
 import pekko.stream.scaladsl.Source
+
 import scala.collection.immutable
 
 object GroupedWeighted {

@@ -19,6 +19,7 @@ import pekko.stream.Supervision
 import pekko.stream.scaladsl._
 import pekko.testkit.PekkoSpec
 import pekko.stream.ActorAttributes
+
 import scala.concurrent.duration._
 
 class FlowErrorDocSpec extends PekkoSpec {
