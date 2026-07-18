@@ -107,8 +107,10 @@ case object DefaultResizer {
 /**
  * Implementation of [[Resizer]] that adjust the [[Pool]] based on specified
  * thresholds.
- * @param lowerBound The fewest number of routees the router should ever have.
- * @param upperBound The most number of routees the router should ever have. Must be greater than or equal to `lowerBound`.
+ * Router management messages can move the pool outside the configured bounds
+ * until this resizer runs again.
+ * @param lowerBound The minimum pool size targeted when this resizer is invoked.
+ * @param upperBound The maximum pool size targeted when this resizer is invoked. Must be greater than or equal to `lowerBound`.
  * @param pressureThreshold Threshold to evaluate if routee is considered to be busy (under pressure).
  * Implementation depends on this value (default is 1).
  * <ul>

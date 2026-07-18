@@ -444,6 +444,13 @@ final case class RemoveRoutee(routee: Routee) extends RouterManagementMesssage
  *
  * Positive `change` will add that number of routees to the [[Pool]].
  * Negative `change` will remove that number of routees from the [[Pool]].
+ * This is a direct management operation, so `change` is not constrained by the
+ * pool's initial `nrOfInstances` or by bounds configured on a [[Resizer]].
+ * A resizer may adjust the pool back within its bounds the next time it runs.
+ *
+ * If a resizable pool is reduced to zero routees, the ordinary message that
+ * triggers the next resize may be lost before new routees are added.
+ *
  * Routees are stopped by sending a [[pekko.actor.PoisonPill]] to the routee.
  * Precautions are taken reduce the risk of dropping messages that are concurrently
  * being routed to the removed routee, but it is not guaranteed that messages are not
