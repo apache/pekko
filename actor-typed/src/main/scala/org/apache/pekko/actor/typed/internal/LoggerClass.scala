@@ -70,7 +70,7 @@ private[pekko] object LoggerClass {
             lambdaNameIdx = nextName.indexOf("$$Lambda")
             if nextName.startsWith(cls.getName()) && lambdaNameIdx > 0
             lambdaClsOwner = nextName.substring(0, lambdaNameIdx)
-          } yield Class.forName(lambdaClsOwner)
+          } yield Class.forName(lambdaClsOwner, false, this.getClass.getClassLoader)
           // TODO: can potentially guard for ClassNotFoundException, but seems unlikely
           lambdaClsOwner.getOrElse(cls)
         case _ =>

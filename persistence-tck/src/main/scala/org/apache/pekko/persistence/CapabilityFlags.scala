@@ -19,7 +19,7 @@ sealed abstract class CapabilityFlag {
   private val capturedStack = new Throwable().getStackTrace
     .filter(_.getMethodName.startsWith("supports"))
     .find { el =>
-      val clazz = Class.forName(el.getClassName)
+      val clazz = Class.forName(el.getClassName, false, this.getClass.getClassLoader)
       clazz.getDeclaredMethod(el.getMethodName).getReturnType == classOf[CapabilityFlag]
     }
     .map { _.getMethodName }
