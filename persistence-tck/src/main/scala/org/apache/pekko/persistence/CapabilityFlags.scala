@@ -14,16 +14,21 @@
 package org.apache.pekko.persistence
 
 import scala.language.implicitConversions
+import scala.jdk.CollectionConverters._
+import scala.util.Try
 
 sealed abstract class CapabilityFlag {
-  private val capturedStack = new Throwable().getStackTrace
-    .filter(_.getMethodName.startsWith("supports"))
-    .find { el =>
-      val clazz = Class.forName(el.getClassName)
-      clazz.getDeclaredMethod(el.getMethodName).getReturnType == classOf[CapabilityFlag]
-    }
-    .map { _.getMethodName }
-    .getOrElse("[unknown]")
+  private val capturedStack: String =
+    StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE).walk { stream =>
+      stream.iterator().asScala
+        .filter(_.getMethodName.startsWith("supports"))
+        .find { frame =>
+          Try(frame.getDeclaringClass.getDeclaredMethod(frame.getMethodName).getReturnType)
+            .toOption
+            .contains(classOf[CapabilityFlag])
+        }
+        .map(_.getMethodName)
+    }.getOrElse("[unknown]")
 
   def name: String = capturedStack
   def value: Boolean
