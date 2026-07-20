@@ -688,7 +688,6 @@ import pekko.util.OptionVal
  */
 @InternalApi private[pekko] object LinearTraversalBuilder {
 
-  // TODO: Remove
   private val cachedEmptyLinear =
     LinearTraversalBuilder(OptionVal.None, OptionVal.None, 0, 0, PushNotUsed, OptionVal.None, Attributes.none)
 
