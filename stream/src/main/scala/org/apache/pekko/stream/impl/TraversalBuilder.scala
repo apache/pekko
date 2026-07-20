@@ -633,7 +633,6 @@ import pekko.util.OptionVal
     extends TraversalBuilder {
 
   override def add(submodule: TraversalBuilder, shape: Shape, combineMat: AnyFunction2): TraversalBuilder = {
-    // TODO: Use automatically a linear builder if applicable
     // Create a composite, add ourselves, then the other.
     CompositeTraversalBuilder(attributes = attributes)
       .add(this, module.shape, Keep.right)
