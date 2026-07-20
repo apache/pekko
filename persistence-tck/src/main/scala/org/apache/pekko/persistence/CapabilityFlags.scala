@@ -123,11 +123,5 @@ trait DurableStateStoreCapabilityFlags extends CapabilityFlags {
    * and deserializes values via the configured Pekko serializer infrastructure.
    */
   protected def supportsSerialization: CapabilityFlag
-
-  /**
-   * When `true` enables tests which check the deprecated single-argument `deleteObject(persistenceId)`
-   * overload, which deletes regardless of the current revision.
-   */
-  protected def supportsSoftDelete: CapabilityFlag
 }
 //#durable-state-store-flags
