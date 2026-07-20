@@ -25,9 +25,7 @@ import pekko.actor.NotInfluenceReceiveTimeout
 private[pekko] object ReceiveTimeout {
   final val emptyReceiveTimeoutData: (Duration, Cancellable) = (Duration.Undefined, ActorCell.emptyCancellable)
 
-  // Identify is also an AutoReceivedMessage. Checking its concrete class first avoids polluting its secondary
-  // supertype cache on JDKs affected by JDK-8180450 when actor runtime code also checks the AutoReceivedMessage marker.
-  @inline def isNotInfluenceReceiveTimeout(message: Any): Boolean =
+  def isNotInfluenceReceiveTimeout(message: Any): Boolean =
     message.isInstanceOf[Identify] || message.isInstanceOf[NotInfluenceReceiveTimeout]
 }
 
