@@ -1316,26 +1316,13 @@ import pekko.util.OptionVal
 
     // Do the assignment in the submodule
     val result = submodule.assign(out.mappedTo, relativeSlot)
-    val wired = if (result.isTraversalComplete) {
-      // Remove the builder (and associated data).
-      // We can't simply append its Traversal as there might be uncompleted builders that come earlier in the
-      // final traversal (remember, input ports are assigned in traversal order of modules, and the inOffsets
-      // and inBaseOffseForOut Maps are updated when adding a module; we must respect addition order).
-
+    val wired =
       copy(
         inBaseOffsetForOut = inBaseOffsetForOut - out,
         outOwners = outOwners - out,
-        // TODO Optimize Map access
         pendingBuilders = pendingBuilders.updated(builderKey, result),
         // pendingBuilders = pendingBuilders - builderKey,
         unwiredOuts = unwiredOuts - 1)
-    } else {
-      // Update structures with result
-      copy(
-        inBaseOffsetForOut = inBaseOffsetForOut - out,
-        unwiredOuts = unwiredOuts - 1,
-        pendingBuilders = pendingBuilders.updated(builderKey, result))
-    }
 
     // If we have no more unconnected outputs, we can finally build the Traversal and shed most of the auxiliary data.
     wired.completeIfPossible
