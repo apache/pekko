@@ -620,13 +620,6 @@ import pekko.util.OptionVal
       private var substreamWaitingToBePushed = false
       private var substreamCancelled = false
 
-      def propagateSubstreamCancel(ex: Throwable): Boolean =
-        decider(ex) match {
-          case Supervision.Stop    => true
-          case Supervision.Resume  => false
-          case Supervision.Restart => false
-        }
-
       override def onPull(): Unit = {
         if (substreamSource eq null) {
           // can be already pulled from substream in case split after
@@ -718,12 +711,29 @@ import pekko.util.OptionVal
 
         override def onDownstreamFinish(cause: Throwable): Unit = {
           substreamCancelled = true
-          if (isClosed(in) || propagateSubstreamCancel(cause)) {
-            cancelStage(cause)
-          } else {
-            // Start draining
-            if (!hasBeenPulled(in)) pull(in)
+          decider(cause) match {
+            case Supervision.Stop =>
+              cancelStage(cause)
+            case Supervision.Resume =>
+              if (isClosed(in)) cancelStage(cause)
+              else {
+                // Start draining
+                if (!hasBeenPulled(in)) pull(in)
+              }
+            case Supervision.Restart =>
+              if (isClosed(in)) completeStage()
+              else {
+                restartState()
+                // Start draining
+                if (!hasBeenPulled(in)) pull(in)
+              }
           }
+        }
+
+        private def restartState(): Unit = {
+          substreamSource = null
+          substreamWaitingToBePushed = false
+          substreamCancelled = false
         }
 
         override def onPush(): Unit = {
@@ -746,9 +756,15 @@ import pekko.util.OptionVal
           } catch {
             case NonFatal(ex) =>
               decider(ex) match {
-                case Supervision.Resume  => pull(in)
-                case Supervision.Stop    => onUpstreamFailure(ex)
-                case Supervision.Restart => onUpstreamFailure(ex) // TODO implement restart?
+                case Supervision.Resume => pull(in)
+                case Supervision.Stop   => onUpstreamFailure(ex)
+                case Supervision.Restart =>
+                  if (isClosed(in)) completeStage()
+                  else {
+                    restartState()
+                    // Start draining
+                    if (!hasBeenPulled(in)) pull(in)
+                  }
               }
           }
         }
