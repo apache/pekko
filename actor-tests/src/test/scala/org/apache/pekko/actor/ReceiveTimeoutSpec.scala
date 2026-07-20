@@ -21,7 +21,7 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import org.apache.pekko
-import pekko.actor.dungeon.{ ReceiveTimeout => ReceiveTimeoutSupport }
+import pekko.actor.dungeon.{ ReceiveTimeoutCompat => ReceiveTimeoutSupport }
 import pekko.testkit._
 
 object ReceiveTimeoutSpec {

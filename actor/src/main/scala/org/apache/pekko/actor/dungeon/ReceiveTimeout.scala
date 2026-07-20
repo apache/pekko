@@ -19,14 +19,10 @@ import scala.concurrent.duration.FiniteDuration
 import org.apache.pekko
 import pekko.actor.ActorCell
 import pekko.actor.Cancellable
-import pekko.actor.Identify
-import pekko.actor.NotInfluenceReceiveTimeout
+import pekko.actor.dungeon.ReceiveTimeoutCompat
 
 private[pekko] object ReceiveTimeout {
   final val emptyReceiveTimeoutData: (Duration, Cancellable) = (Duration.Undefined, ActorCell.emptyCancellable)
-
-  def isNotInfluenceReceiveTimeout(message: Any): Boolean =
-    message.isInstanceOf[Identify] || message.isInstanceOf[NotInfluenceReceiveTimeout]
 }
 
 private[pekko] trait ReceiveTimeout { this: ActorCell =>
@@ -76,7 +72,7 @@ private[pekko] trait ReceiveTimeout { this: ActorCell =>
 
   protected def cancelReceiveTimeoutIfNeeded(message: Any): (Duration, Cancellable) = {
     val beforeReceive = receiveTimeoutData
-    if ((beforeReceive ne emptyReceiveTimeoutData) && !isNotInfluenceReceiveTimeout(message))
+    if ((beforeReceive ne emptyReceiveTimeoutData) && !ReceiveTimeoutCompat.isNotInfluenceReceiveTimeout(message))
       cancelReceiveTimeoutTask()
 
     // Returning the state from before cancellation lets checkReceiveTimeoutIfNeeded infer whether this message
