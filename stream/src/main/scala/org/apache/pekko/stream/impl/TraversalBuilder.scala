@@ -1377,7 +1377,6 @@ import pekko.util.OptionVal
         val in = inIterator.next()
         // Calculate offset in the current scope. This is the our first unused input slot plus
         // the relative offset of the input port in the submodule.
-        // TODO Optimize Map access
         newInOffsets = newInOffsets.updated(in, inSlots + submodule.offsetOf(in.mappedTo))
       }
 
@@ -1398,7 +1397,6 @@ import pekko.util.OptionVal
       while (inIterator.hasNext) {
         val in = inIterator.next()
         // Calculate offset in the current scope
-        // TODO Optimize Map access
         newInOffsets = newInOffsets.updated(in, inSlots + submodule.offsetOf(in.mappedTo))
       }
 
@@ -1408,7 +1406,6 @@ import pekko.util.OptionVal
         // Record the base offsets of all the modules we included and which have unwired output ports. We need
         // to adjust their offset by inSlots as that would be their new position in this module.
         newBaseOffsetsForOut = newBaseOffsetsForOut.updated(out, inSlots + submodule.offsetOfModule(out.mappedTo))
-        // TODO Optimize Map access
         newOutOwners = newOutOwners.updated(out, builderKey)
       }
 
