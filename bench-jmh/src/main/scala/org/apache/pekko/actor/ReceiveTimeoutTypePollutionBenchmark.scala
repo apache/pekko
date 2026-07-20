@@ -51,7 +51,7 @@ class ReceiveTimeoutTypePollutionBenchmark {
 
   @CompilerControl(CompilerControl.Mode.DONT_INLINE)
   def isNotInfluenceReceiveTimeoutGuarded(message: AnyRef): Boolean =
-    dungeon.ReceiveTimeout.isNotInfluenceReceiveTimeout(message)
+    dungeon.ReceiveTimeoutCompat.isNotInfluenceReceiveTimeout(message)
 
   @Benchmark
   def typePolluted(input: ReceiveTimeoutTypePollutionInput): Int = {
