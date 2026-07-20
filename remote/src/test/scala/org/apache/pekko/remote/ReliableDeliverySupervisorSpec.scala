@@ -25,6 +25,7 @@ import scala.concurrent.duration._
 
 import org.apache.pekko
 import pekko.actor.{ ActorRef, Address, Nobody, RootActorPath, Terminated }
+import pekko.dispatch.sysmsg.Watch
 import pekko.remote.EndpointManager.{ Link, ResendState, Send }
 import pekko.remote.ReliableDeliverySupervisor.AckFromReader
 import pekko.remote.transport._
@@ -145,6 +146,47 @@ class ReliableDeliverySupervisorSpec extends PekkoSpec(ReliableDeliverySuperviso
       supervisor.receive(EndpointWriter.ResumeReading)
 
       writerProbe.expectMsg(EndpointWriter.ResumeReading)
+    }
+
+    "reconnect without discarding buffered system messages" in {
+      val parentProbe = TestProbe()
+      val supervisor = newSupervisor(initialUid = oldUid, parentProbe.ref)
+      val underlying = supervisor.underlyingActor
+      val oldWriter = underlying.writer
+      val writerProbe = TestProbe()
+      val supervisorProbe = TestProbe()
+
+      underlying.resendBuffer = bufferWith(0L, 1L)
+      underlying.seqCounter = 2L
+      writerProbe.watch(oldWriter)
+      supervisorProbe.watch(supervisor)
+      supervisor.unwatch(oldWriter)
+
+      supervisor.receive(ReliableDeliverySupervisor.Reconnect)
+      writerProbe.expectTerminated(oldWriter)
+      underlying.currentHandle shouldBe None
+      underlying.uidConfirmed shouldBe false
+      underlying.resendBuffer.nonAcked.map(_.seq) should ===(Vector(SeqNo(0), SeqNo(1)))
+      underlying.seqCounter should ===(2L)
+
+      underlying.writer = writerProbe.ref
+      underlying.context.become(underlying.receive)
+      val systemSend = Send(Watch(remoteRef, remoteRef), OptionVal.None, remoteRef, seqOpt = None)
+      supervisor.receive(systemSend)
+
+      writerProbe.expectNoMessage(100.millis)
+      underlying.resendBuffer.nonAcked.map(_.seq) should ===(Vector(SeqNo(0), SeqNo(1), SeqNo(2)))
+      underlying.seqCounter should ===(3L)
+
+      supervisor.receive(ReliableDeliverySupervisor.GotUid(oldUid, remoteAddress))
+      parentProbe.expectMsg(ReliableDeliverySupervisor.GotUid(oldUid, remoteAddress))
+      writerProbe.expectMsg(send(0L))
+      writerProbe.expectMsg(send(1L))
+      writerProbe.expectMsg(systemSend.copy(seqOpt = Some(SeqNo(2L))))
+      underlying.uidConfirmed shouldBe true
+
+      underlying.resendBuffer = new AckedSendBuffer[Send](0)
+      supervisorProbe.expectNoMessage(100.millis)
     }
   }
 

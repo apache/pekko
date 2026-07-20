@@ -31,7 +31,7 @@ import pekko.remote.transport.AssociationHandle.{ HandleEvent, HandleEventListen
 import pekko.remote.transport.Transport.InvalidAssociationException
 import pekko.testkit._
 import pekko.testkit.SocketUtil.temporaryServerAddress
-import pekko.util.ByteString
+import pekko.util.{ ByteString, OptionVal }
 
 import com.typesafe.config._
 
@@ -688,7 +688,7 @@ class RemotingSpec extends PekkoSpec(RemotingSpec.cfg) with ImplicitSender with 
 
     }
 
-    "should resume the outbound reader when passive read handoff fails" in {
+    "should recover buffered unreliable messages without reordering across a failed passive read handoff" in {
       val localAddress = Address("pekko.test", "resume-system1", "localhost", 101)
       val rawLocalAddress = localAddress.copy(protocol = "test")
       val remoteAddress = Address("pekko.test", "resume-system2", "localhost", 102)
@@ -700,6 +700,7 @@ class RemotingSpec extends PekkoSpec(RemotingSpec.cfg) with ImplicitSender with 
         pekko.remote.classic.enabled-transports = ["pekko.remote.classic.test"]
         pekko.remote.classic.retry-gate-closed-for = 5s
         pekko.remote.classic.log-remote-lifecycle-events = on
+        pekko.remote.classic.passive-connection-buffer-size = 1
 
         pekko.remote.classic.test {
           registry-key = TwHFcESm
@@ -713,7 +714,7 @@ class RemotingSpec extends PekkoSpec(RemotingSpec.cfg) with ImplicitSender with 
         val receiverProbe = TestProbe()(thisSystem)
         thisSystem.actorOf(Props(new Actor {
             def receive = {
-              case message => receiverProbe.ref ! message
+              case message => receiverProbe.ref ! (message -> sender().path)
             }
           }).withDeploy(Deploy.local), receiverName)
         val associationEventProbe = TestProbe()(thisSystem)
@@ -751,7 +752,13 @@ class RemotingSpec extends PekkoSpec(RemotingSpec.cfg) with ImplicitSender with 
         }
         outboundRemoteHandle.association.write(originalHandshakePacket)
 
-        def payload(message: String): ByteString = {
+        val remoteSender =
+          RARP(thisSystem).provider.resolveActorRef(remoteAddress.toString + "/user/handoff-sender")
+
+        def payload(
+            message: String,
+            seqOption: Option[SeqNo] = None,
+            senderOption: OptionVal[ActorRef] = OptionVal.None): ByteString = {
           val serializedMessage =
             MessageSerializer.serialize(thisSystem.asInstanceOf[ExtendedActorSystem], message)
           val recipient = new EmptyLocalActorRef(
@@ -764,41 +771,113 @@ class RemotingSpec extends PekkoSpec(RemotingSpec.cfg) with ImplicitSender with 
               localAddress,
               recipient,
               serializedMessage,
-              pekko.util.OptionVal.None))
+              senderOption,
+              seqOption = seqOption))
         }
 
-        outboundRemoteHandle.association.write(payload("before-handoff"))
-        receiverProbe.expectMsg("before-handoff")
+        def establishPassiveAssociation(): (TestAssociationHandle, TestProbe) = {
+          val inboundHandleProbe = TestProbe()
+          val inboundHandle =
+            Await.result(remoteTransport.associate(rawLocalAddress), 3.seconds).asInstanceOf[TestAssociationHandle]
+          inboundHandle.readHandlerPromise.success(new AssociationHandle.HandleEventListener {
+            override def notify(ev: HandleEvent): Unit = inboundHandleProbe.ref ! ev
+          })
 
-        val inboundHandleProbe = TestProbe()
-        val inboundHandle = Await.result(remoteTransport.associate(rawLocalAddress), 3.seconds)
-        inboundHandle.readHandlerPromise.success(new AssociationHandle.HandleEventListener {
-          override def notify(ev: HandleEvent): Unit = inboundHandleProbe.ref ! ev
-        })
+          awaitAssert {
+            registry.getRemoteReadHandlerFor(inboundHandle).get
+          }
 
-        awaitAssert {
-          registry.getRemoteReadHandlerFor(inboundHandle.asInstanceOf[TestAssociationHandle]).get
-        }
-
-        inboundHandle.write(originalHandshakePacket)
-        associationEventProbe.fishForMessage(3.seconds, "passive association") {
-          case AssociatedEvent(`localAddress`, `remoteAddress`, true) => true
-          case _                                                      => false
+          inboundHandle.write(originalHandshakePacket)
+          associationEventProbe.fishForMessage(3.seconds, "passive association") {
+            case AssociatedEvent(`localAddress`, `remoteAddress`, true) => true
+            case _                                                      => false
+          }
+          inboundHandle -> inboundHandleProbe
         }
 
         val brokenPacket = PekkoPduProtobufCodec.constructPayload(ByteString(0, 1, 2, 3, 4, 5, 6))
-        inboundHandle.write(brokenPacket)
-        inboundHandleProbe.fishForMessage(3.seconds, "read-only endpoint disassociation") {
-          case _: AssociationHandle.Disassociated => true
-          case _                                  => false
+
+        def breakAssociation(handle: TestAssociationHandle, probe: TestProbe): Unit = {
+          handle.write(brokenPacket)
+          probe.fishForMessage(3.seconds, "read-only endpoint disassociation") {
+            case _: AssociationHandle.Disassociated => true
+            case _                                  => false
+          }
         }
+
+        outboundRemoteHandle.association.write(
+          payload("before-handoff", senderOption = OptionVal.Some(remoteSender)))
+        receiverProbe.expectMsg("before-handoff" -> remoteSender.path)
+
+        val (failedHandle, failedHandleProbe) = establishPassiveAssociation()
+
+        EventFilter
+          .warning(pattern = ".*passive connection buffer.*full.*", occurrences = 1)
+          .intercept {
+            outboundRemoteHandle.association.write(payload("reliable-during-handoff", Some(SeqNo(0))))
+            outboundRemoteHandle.association.write(
+              payload("during-handoff", senderOption = OptionVal.Some(remoteSender)))
+            outboundRemoteHandle.association.write(
+              payload("buffer-overflow", senderOption = OptionVal.Some(remoteSender)))
+          }(thisSystem)
+
+        breakAssociation(failedHandle, failedHandleProbe)
+        receiverProbe.expectMsg("during-handoff" -> remoteSender.path)
+        receiverProbe.expectNoMessage(200.millis)
 
         // The read-only handle disassociation and resuming the outbound reader are handled by different actors.
         // Retry until the outbound reader has processed ResumeReading.
         awaitAssert {
-          outboundRemoteHandle.association.write(payload("after-handoff-failure"))
-          receiverProbe.expectMsg(500.millis, "after-handoff-failure")
+          outboundRemoteHandle.association.write(
+            payload("after-handoff-failure", senderOption = OptionVal.Some(remoteSender)))
+          receiverProbe.expectMsg(500.millis, "after-handoff-failure" -> remoteSender.path)
         }
+
+        val (orderingHandle, orderingHandleProbe) = establishPassiveAssociation()
+
+        EventFilter
+          .warning(pattern = ".*passive connection buffer.*full.*", occurrences = 1)
+          .intercept {
+            outboundRemoteHandle.association.write(
+              payload("older-message", senderOption = OptionVal.Some(remoteSender)))
+            outboundRemoteHandle.association.write(
+              payload("ordering-buffer-overflow", senderOption = OptionVal.Some(remoteSender)))
+          }(thisSystem)
+
+        orderingHandle.write(payload("newer-message", senderOption = OptionVal.Some(remoteSender)))
+        receiverProbe.expectMsg("newer-message" -> remoteSender.path)
+
+        EventFilter
+          .warning(pattern = "Reconnecting outbound endpoint.*message ordering", occurrences = 1)
+          .intercept {
+            breakAssociation(orderingHandle, orderingHandleProbe)
+          }(thisSystem)
+        outboundHandleProbe.fishForMessage(3.seconds, "original endpoint disassociation") {
+          case _: AssociationHandle.Disassociated => true
+          case _                                  => false
+        }
+        receiverProbe.expectNoMessage(200.millis)
+
+        val reconnectedRemoteHandle = awaitAssert {
+          dummySelection.tell("reconnect", system.deadLetters)
+          remoteTransportProbe.expectMsgType[Transport.InboundAssociation](500.millis)
+        }
+        val reconnectedHandleProbe = TestProbe()
+        reconnectedRemoteHandle.association.readHandlerPromise.success(new HandleEventListener {
+          override def notify(ev: HandleEvent): Unit = reconnectedHandleProbe.ref ! ev
+        })
+        reconnectedHandleProbe.fishForMessage(3.seconds, "reconnected outbound handshake") {
+          case AssociationHandle.InboundPayload(_) => true
+          case _                                   => false
+        }
+        reconnectedRemoteHandle.association.write(originalHandshakePacket)
+        associationEventProbe.fishForMessage(3.seconds, "reconnected outbound association") {
+          case AssociatedEvent(`localAddress`, `remoteAddress`, false) => true
+          case _                                                       => false
+        }
+        reconnectedRemoteHandle.association.write(
+          payload("after-ordering-reconnect", senderOption = OptionVal.Some(remoteSender)))
+        receiverProbe.expectMsg("after-ordering-reconnect" -> remoteSender.path)
       } finally shutdown(thisSystem)
 
     }

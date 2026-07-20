@@ -14,6 +14,7 @@
 package org.apache.pekko.remote.transport
 
 import java.util.concurrent.TimeoutException
+import java.util.concurrent.atomic.AtomicBoolean
 
 import scala.annotation.nowarn
 import scala.collection.immutable
@@ -236,6 +237,8 @@ private[remote] class PekkoProtocolHandle(
     private val codec: PekkoPduCodec,
     override val addedSchemeIdentifier: String)
     extends AbstractTransportAdapterHandle(_localAddress, _remoteAddress, _wrappedHandle, addedSchemeIdentifier) {
+
+  private[remote] var inboundMessageDispatched = new AtomicBoolean(false)
 
   override def write(payload: ByteString): Boolean = wrappedHandle.write(codec.constructPayload(payload))
 
