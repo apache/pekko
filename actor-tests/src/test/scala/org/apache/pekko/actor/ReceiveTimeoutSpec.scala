@@ -21,6 +21,7 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import org.apache.pekko
+import pekko.actor.dungeon.{ ReceiveTimeoutCompat => ReceiveTimeoutSupport }
 import pekko.testkit._
 
 object ReceiveTimeoutSpec {
@@ -79,6 +80,12 @@ class ReceiveTimeoutSpec extends PekkoSpec() {
   import ReceiveTimeoutSpec._
 
   "An actor with receive timeout" must {
+
+    "classify messages that do not influence the timeout" in {
+      ReceiveTimeoutSupport.isNotInfluenceReceiveTimeout(Identify(None)) should ===(true)
+      ReceiveTimeoutSupport.isNotInfluenceReceiveTimeout(TransparentTick) should ===(true)
+      ReceiveTimeoutSupport.isNotInfluenceReceiveTimeout(Tick) should ===(false)
+    }
 
     "get timeout" taggedAs TimingTest in {
       val timeoutLatch = TestLatch()

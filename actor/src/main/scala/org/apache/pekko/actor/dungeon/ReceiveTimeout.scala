@@ -19,7 +19,7 @@ import scala.concurrent.duration.FiniteDuration
 import org.apache.pekko
 import pekko.actor.ActorCell
 import pekko.actor.Cancellable
-import pekko.actor.NotInfluenceReceiveTimeout
+import pekko.actor.dungeon.ReceiveTimeoutCompat
 
 private[pekko] object ReceiveTimeout {
   final val emptyReceiveTimeoutData: (Duration, Cancellable) = (Duration.Undefined, ActorCell.emptyCancellable)
@@ -37,9 +37,11 @@ private[pekko] trait ReceiveTimeout { this: ActorCell =>
   final def setReceiveTimeout(timeout: Duration): Unit = receiveTimeoutData = receiveTimeoutData.copy(_1 = timeout)
 
   /** Called after `ActorCell.receiveMessage` or `ActorCell.autoReceiveMessage`. */
-  protected def checkReceiveTimeoutIfNeeded(message: Any, beforeReceive: (Duration, Cancellable)): Unit =
-    if (hasTimeoutData || receiveTimeoutChanged(beforeReceive))
-      checkReceiveTimeout(!message.isInstanceOf[NotInfluenceReceiveTimeout] || receiveTimeoutChanged(beforeReceive))
+  protected def checkReceiveTimeoutIfNeeded(beforeReceive: (Duration, Cancellable)): Unit = {
+    val timeoutChanged = receiveTimeoutChanged(beforeReceive)
+    if (hasTimeoutData || timeoutChanged)
+      checkReceiveTimeout(timeoutChanged)
+  }
 
   final def checkReceiveTimeout(reschedule: Boolean): Unit = {
     val (recvTimeout, task) = receiveTimeoutData
@@ -69,10 +71,13 @@ private[pekko] trait ReceiveTimeout { this: ActorCell =>
     receiveTimeoutData ne beforeReceive
 
   protected def cancelReceiveTimeoutIfNeeded(message: Any): (Duration, Cancellable) = {
-    if (hasTimeoutData && !message.isInstanceOf[NotInfluenceReceiveTimeout])
+    val beforeReceive = receiveTimeoutData
+    if ((beforeReceive ne emptyReceiveTimeoutData) && !ReceiveTimeoutCompat.isNotInfluenceReceiveTimeout(message))
       cancelReceiveTimeoutTask()
 
-    receiveTimeoutData
+    // Returning the state from before cancellation lets checkReceiveTimeoutIfNeeded infer whether this message
+    // influenced the timeout without performing the type check a second time.
+    beforeReceive
   }
 
   private[pekko] def cancelReceiveTimeoutTask(): Unit =

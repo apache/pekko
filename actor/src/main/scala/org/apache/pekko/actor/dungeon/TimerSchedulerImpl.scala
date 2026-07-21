@@ -90,7 +90,7 @@ import pekko.util.OptionVal
     val nextGen = nextTimerGen()
 
     val timerMsg =
-      if (msg.isInstanceOf[NotInfluenceReceiveTimeout])
+      if (dungeon.ReceiveTimeoutCompat.isNotInfluenceReceiveTimeout(msg))
         NotInfluenceReceiveTimeoutTimerMsg(key, nextGen, this)
       else
         InfluenceReceiveTimeoutTimerMsg(key, nextGen, this)
