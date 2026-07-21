@@ -13,7 +13,7 @@
 
 package org.apache.pekko.stream.impl.fusing
 
-import java.util.concurrent.ThreadLocalRandom
+import java.util.concurrent.{ ThreadLocalRandom, TimeUnit }
 
 import scala.concurrent.Promise
 import scala.util.control.NonFatal
@@ -269,6 +269,26 @@ import pekko.stream.stage._
   private var _subFusingMaterializer: Materializer = _
   private lazy val defaultErrorReportingLogLevel = LogLevels.defaultErrorLevel(materializer.system)
 
+  // Throttle state for stage error logging
+  private[this] lazy val throttlePeriodNanos: Long = {
+    try {
+      val config = materializer.system.settings.config
+      val path = "pekko.stream.materializer.stage-errors-log-throttle-period"
+      val value = config.getString(path)
+      if (pekko.util.Helpers.toRootLowerCase(value) == "off") 0L
+      else {
+        val nanos = config.getDuration(path, TimeUnit.NANOSECONDS)
+        require(nanos > 0L, s"$path must be a positive duration or 'off', got: $value")
+        nanos
+      }
+    } catch {
+      case _: UnsupportedOperationException => 0L // NoMaterializer in tests
+    }
+  }
+  private[this] var lastErrorLogTime: Long = 0L
+  private[this] var errorLogInitialized: Boolean = false
+  private[this] var suppressedErrorCount: Int = 0
+
   def subFusingMaterializer: Materializer = _subFusingMaterializer
 
   // An event queue implemented as a circular buffer
@@ -362,6 +382,12 @@ import pekko.stream.stage._
    * Finalizes the state of all operators by calling postStop() (if necessary).
    */
   def finish(): Unit = {
+    // Flush any suppressed error count so operators know errors were throttled
+    if (suppressedErrorCount > 0) {
+      log.warning("{} additional stage error(s) were suppressed during throttle period",
+        suppressedErrorCount)
+      suppressedErrorCount = 0
+    }
     var i = 0
     while (i < logics.length) {
       val logic = logics(i)
@@ -441,16 +467,35 @@ import pekko.stream.stage._
         case Some(levels) => levels.onFailure
         case None         => defaultErrorReportingLogLevel
       }
-      logAt match {
-        case Logging.ErrorLevel =>
-          log.error(e, "Error in stage [{}]: {}", activeStage.toString, e.getMessage)
-        case Logging.WarningLevel =>
-          log.warning(e, "Error in stage [{}]: {}", activeStage.toString, e.getMessage)
-        case Logging.InfoLevel =>
-          log.info("Error in stage [{}]: {}", activeStage.toString, e.getMessage)
-        case Logging.DebugLevel =>
-          log.debug("Error in stage [{}]: {}", activeStage.toString, e.getMessage)
-        case _ => // Off, nop
+      val shouldLog = if (throttlePeriodNanos > 0L) {
+        val now = System.nanoTime()
+        if (!errorLogInitialized || now - lastErrorLogTime >= throttlePeriodNanos) {
+          if (suppressedErrorCount > 0) {
+            log.warning("{} additional stage error(s) were suppressed during throttle period",
+              suppressedErrorCount)
+          }
+          errorLogInitialized = true
+          lastErrorLogTime = now
+          suppressedErrorCount = 0
+          true
+        } else {
+          suppressedErrorCount += 1
+          false
+        }
+      } else true
+
+      if (shouldLog) {
+        logAt match {
+          case Logging.ErrorLevel =>
+            log.error(e, "Error in stage [{}]: {}", activeStage.toString, e.getMessage)
+          case Logging.WarningLevel =>
+            log.warning(e, "Error in stage [{}]: {}", activeStage.toString, e.getMessage)
+          case Logging.InfoLevel =>
+            log.info("Error in stage [{}]: {}", activeStage.toString, e.getMessage)
+          case Logging.DebugLevel =>
+            log.debug("Error in stage [{}]: {}", activeStage.toString, e.getMessage)
+          case _ => // Off, nop
+        }
       }
       activeStage.failStage(e)
 
