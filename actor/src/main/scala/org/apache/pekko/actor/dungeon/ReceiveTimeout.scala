@@ -22,7 +22,8 @@ import pekko.actor.Cancellable
 import pekko.actor.dungeon.ReceiveTimeoutCompat
 
 private[pekko] object ReceiveTimeout {
-  final val emptyReceiveTimeoutData: (Duration, Cancellable) = (Duration.Undefined, ActorCell.emptyCancellable)
+  // Compared only across one message invocation, so wrapping over an actor's lifetime is harmless.
+  private final class State(var timeout: Duration, var task: Cancellable, var version: Int)
 }
 
 private[pekko] trait ReceiveTimeout { this: ActorCell =>
@@ -30,60 +31,74 @@ private[pekko] trait ReceiveTimeout { this: ActorCell =>
   import ActorCell._
   import ReceiveTimeout._
 
-  private var receiveTimeoutData: (Duration, Cancellable) = emptyReceiveTimeoutData
+  private var receiveTimeoutData: State = null
 
-  final def receiveTimeout: Duration = receiveTimeoutData._1
+  final def receiveTimeout: Duration =
+    if (receiveTimeoutData eq null) Duration.Undefined else receiveTimeoutData.timeout
 
-  final def setReceiveTimeout(timeout: Duration): Unit = receiveTimeoutData = receiveTimeoutData.copy(_1 = timeout)
+  final def setReceiveTimeout(timeout: Duration): Unit = {
+    val data = receiveTimeoutData
+    if (data eq null)
+      receiveTimeoutData = new State(timeout, emptyCancellable, version = 1)
+    else {
+      data.timeout = timeout
+      data.version += 1
+    }
+  }
 
   /** Called after `ActorCell.receiveMessage` or `ActorCell.autoReceiveMessage`. */
-  protected def checkReceiveTimeoutIfNeeded(beforeReceive: (Duration, Cancellable)): Unit = {
-    val timeoutChanged = receiveTimeoutChanged(beforeReceive)
+  protected def checkReceiveTimeoutIfNeeded(message: Any, beforeReceiveVersion: Int): Unit = {
+    val timeoutChanged = receiveTimeoutChanged(beforeReceiveVersion)
     if (hasTimeoutData || timeoutChanged)
-      checkReceiveTimeout(timeoutChanged)
+      checkReceiveTimeout(!ReceiveTimeoutCompat.isNotInfluenceReceiveTimeout(message) || timeoutChanged)
   }
 
   final def checkReceiveTimeout(reschedule: Boolean): Unit = {
-    val (recvTimeout, task) = receiveTimeoutData
-    recvTimeout match {
-      case f: FiniteDuration =>
-        // The fact that recvTimeout is FiniteDuration and task is emptyCancellable
-        // means that a user called `context.setReceiveTimeout(...)`
-        // while sending the ReceiveTimeout message is not scheduled yet.
-        // We have to handle the case and schedule sending the ReceiveTimeout message
-        // ignoring the reschedule parameter.
-        if (reschedule || (task eq emptyCancellable))
-          rescheduleReceiveTimeout(f)
+    val data = receiveTimeoutData
+    if (data ne null) {
+      data.timeout match {
+        case f: FiniteDuration =>
+          // The fact that timeout is FiniteDuration and task is emptyCancellable
+          // means that a user called `context.setReceiveTimeout(...)`
+          // while sending the ReceiveTimeout message is not scheduled yet.
+          // We have to handle the case and schedule sending the ReceiveTimeout message
+          // ignoring the reschedule parameter.
+          if (reschedule || (data.task eq emptyCancellable))
+            rescheduleReceiveTimeout(data, f)
 
-      case _ => cancelReceiveTimeoutTask()
+        case _ => cancelReceiveTimeoutTask()
+      }
     }
   }
 
-  private def rescheduleReceiveTimeout(f: FiniteDuration): Unit = {
-    receiveTimeoutData._2.cancel() // Cancel any ongoing future
-    val task = system.scheduler.scheduleOnce(f, self, pekko.actor.ReceiveTimeout)(this.dispatcher)
-    receiveTimeoutData = (f, task)
+  private def rescheduleReceiveTimeout(data: State, timeout: FiniteDuration): Unit = {
+    data.task.cancel() // Cancel any ongoing future
+    data.task = system.scheduler.scheduleOnce(timeout, self, pekko.actor.ReceiveTimeout)(this.dispatcher)
+    data.version += 1
   }
 
-  private def hasTimeoutData: Boolean = receiveTimeoutData ne emptyReceiveTimeoutData
+  private def hasTimeoutData: Boolean = receiveTimeoutData ne null
 
-  private def receiveTimeoutChanged(beforeReceive: (Duration, Cancellable)): Boolean =
-    receiveTimeoutData ne beforeReceive
+  private def receiveTimeoutVersion: Int =
+    if (receiveTimeoutData eq null) 0 else receiveTimeoutData.version
 
-  protected def cancelReceiveTimeoutIfNeeded(message: Any): (Duration, Cancellable) = {
-    val beforeReceive = receiveTimeoutData
-    if ((beforeReceive ne emptyReceiveTimeoutData) && !ReceiveTimeoutCompat.isNotInfluenceReceiveTimeout(message))
+  private def receiveTimeoutChanged(beforeReceiveVersion: Int): Boolean =
+    receiveTimeoutVersion != beforeReceiveVersion
+
+  protected def cancelReceiveTimeoutIfNeeded(message: Any): Int = {
+    if (hasTimeoutData && !ReceiveTimeoutCompat.isNotInfluenceReceiveTimeout(message))
       cancelReceiveTimeoutTask()
 
-    // Returning the state from before cancellation lets checkReceiveTimeoutIfNeeded infer whether this message
-    // influenced the timeout without performing the type check a second time.
-    beforeReceive
+    receiveTimeoutVersion
   }
 
-  private[pekko] def cancelReceiveTimeoutTask(): Unit =
-    if (receiveTimeoutData._2 ne emptyCancellable) {
-      receiveTimeoutData._2.cancel()
-      receiveTimeoutData = (receiveTimeoutData._1, emptyCancellable)
+  private[pekko] def cancelReceiveTimeoutTask(): Unit = {
+    val data = receiveTimeoutData
+    if ((data ne null) && (data.task ne emptyCancellable)) {
+      data.task.cancel()
+      data.task = emptyCancellable
+      data.version += 1
     }
+  }
 
 }

@@ -104,18 +104,22 @@ class ReceiveTimeoutSpec extends PekkoSpec() {
 
     "reschedule timeout after regular receive" taggedAs TimingTest in {
       val timeoutLatch = TestLatch()
+      val messageCount = 100
+      val processedLatch = TestLatch(messageCount)
 
       val timeoutActor = system.actorOf(Props(new Actor {
-        context.setReceiveTimeout(500.milliseconds)
+        context.setReceiveTimeout(1.second)
 
         def receive = {
-          case Tick           => ()
+          case Tick           => processedLatch.countDown()
           case ReceiveTimeout => timeoutLatch.open()
         }
       }))
 
-      timeoutActor ! Tick
+      (1 to messageCount).foreach(_ => timeoutActor ! Tick)
 
+      Await.ready(processedLatch, TestLatch.DefaultTimeout)
+      intercept[TimeoutException] { Await.ready(timeoutLatch, 500.milliseconds) }
       Await.ready(timeoutLatch, TestLatch.DefaultTimeout)
       system.stop(timeoutActor)
     }
