@@ -341,7 +341,7 @@ public class PatternsTest {
   @Test
   public void testAfterFailedCallable() throws Exception {
     Callable<CompletionStage<String>> failedCallable =
-        () -> CompletableFuture.failedFuture(new IllegalStateException("Illegal!"));
+        () -> CompletableFuture.failedStage(new IllegalStateException("Illegal!"));
 
     CompletionStage<String> delayedFuture =
         Patterns.after(Duration.ofMillis(200), system.scheduler(), ec, failedCallable);
@@ -368,7 +368,7 @@ public class PatternsTest {
             Duration.ofMillis(200),
             system.scheduler(),
             ec,
-            () -> CompletableFuture.failedFuture(new IllegalStateException("Illegal!")));
+            () -> CompletableFuture.failedStage(new IllegalStateException("Illegal!")));
 
     CompletionStage<String> resultFuture =
         CompletionStages.firstCompletedOf(List.of(delayedFuture));
