@@ -281,10 +281,14 @@ import pekko.stream.stage._
   private var chaseCounter = 0 // the first events in preStart blocks should be not chased
   private var chasedPush: Connection = NoEvent
   private var chasedPull: Connection = NoEvent
-  // Set whenever a stage's shutdownCounter transitions to 0 (i.e. the stage just became completed and
-  // needs finalization). Lets the chase / dispatch loops skip the per-iteration shutdownCounter array
-  // load in afterStageHasRun when no stage has completed since the last finalization pass.
-  private var pendingFinalization: Boolean = false
+  // Counts stages whose shutdownCounter just transitioned to 0 (completed, awaiting finalization).
+  // Incremented by completeConnection/setKeepGoing; decremented by the O(1) fast path in
+  // afterStageHasRun. When > 0 after the fast path, the scan loop finalizes remaining stages.
+  // A counter (not Boolean) is required: multiple stages may complete during one event dispatch
+  // (e.g. cascading completion), and the fast path must not erase signals for other pending stages.
+  // PERFORMANCE: the scan loop is O(initializedStages) — with 1M+ stages this causes O(n^2) if it
+  // runs on every dispatch. The counter ensures it only runs when stages are genuinely pending.
+  private var pendingFinalizations: Int = 0
 
   private def queueStatus: String = {
     val contents = (queueHead until queueTail).map(idx => {
@@ -375,7 +379,7 @@ import pekko.stream.stage._
       i += 1
     }
     activeStage = null
-    pendingFinalization = false
+    pendingFinalizations = 0
 
     // Release connection references and any in-flight payloads retained by the stopped interpreter
     var j = 0
@@ -493,7 +497,7 @@ import pekko.stream.stage._
         catch {
           case NonFatal(e) => reportStageError(e)
         }
-        if (pendingFinalization) {
+        if (pendingFinalizations > 0) {
           afterStageHasRun(activeStage)
         }
 
@@ -528,7 +532,7 @@ import pekko.stream.stage._
           catch {
             case NonFatal(e) => reportStageError(e)
           }
-          if (pendingFinalization) {
+          if (pendingFinalizations > 0) {
             afterStageHasRun(activeStage)
           }
         }
@@ -541,7 +545,7 @@ import pekko.stream.stage._
           catch {
             case NonFatal(e) => reportStageError(e)
           }
-          if (pendingFinalization) {
+          if (pendingFinalizations > 0) {
             afterStageHasRun(activeStage)
           }
         }
@@ -687,11 +691,22 @@ import pekko.stream.stage._
   }
 
   def afterStageHasRun(logic: GraphStageLogic): Unit = {
-    if ((logic ne null) && isStageCompleted(logic) && !isStageFinalized(logic))
-      pendingFinalization = true
+    // O(1) fast path: finalize the stage that just ran if it completed.
+    // Guard the decrement: zero-port stages are completed from construction (shutdownCounter == 0)
+    // without a corresponding completeConnection increment — must not underflow the counter.
+    if ((logic ne null) && isStageCompleted(logic) && !isStageFinalized(logic)) {
+      markStageFinalized(logic)
+      runningStages -= 1
+      if (pendingFinalizations > 0) pendingFinalizations -= 1
+      finalizeStage(logic)
+      releaseStage(logic)
+    }
 
-    while (pendingFinalization) {
-      pendingFinalization = false
+    // O(n) scan: only entered when other stages also completed (cascading completion).
+    // Uses while (not if) because finalizeStage → postStop → cancel can complete further stages
+    // mid-scan, incrementing the counter again.
+    while (pendingFinalizations > 0) {
+      pendingFinalizations = 0
       var stageId = 0
       while (stageId < initializedStages) {
         val completedLogic = logics(stageId)
@@ -764,16 +779,22 @@ import pekko.stream.stage._
     if (activeConnections > 0) {
       val next = activeConnections - 1
       shutdownCounter(stageId) = next
-      if (next == 0) pendingFinalization = true
+      if (next == 0) pendingFinalizations += 1
     }
   }
 
   private[stream] def setKeepGoing(logic: GraphStageLogic, enabled: Boolean): Unit =
     if (enabled) shutdownCounter(logic.stageId) |= KeepGoingFlag
     else {
-      val next = shutdownCounter(logic.stageId) & KeepGoingMask
-      shutdownCounter(logic.stageId) = next
-      if (next == 0) pendingFinalization = true
+      val current = shutdownCounter(logic.stageId)
+      // Only signal finalization if the KeepGoing flag was actually set. Without this guard,
+      // internalCompleteStage's trailing setKeepGoing(false) would spuriously increment the
+      // counter when shutdownCounter is already 0 (no KeepGoing was ever enabled).
+      if ((current & KeepGoingFlag) != 0) {
+        val next = current & KeepGoingMask
+        shutdownCounter(logic.stageId) = next
+        if (next == 0) pendingFinalizations += 1
+      }
     }
 
   @InternalStableApi
