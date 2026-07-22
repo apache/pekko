@@ -22,8 +22,6 @@ import java.util.concurrent.{ CompletableFuture, CompletionStage, Executor }
 import java.util.concurrent.atomic.AtomicReference
 import java.util.function.{ BiConsumer, BiFunction }
 
-import scala.annotation.nowarn
-
 import org.apache.pekko
 
 /**
@@ -37,6 +35,16 @@ object CompletionStages {
   def asScala[T](stage: CompletionStage[T]): scala.concurrent.Future[T] = {
     import scala.jdk.FutureConverters._
     stage.asScala
+  }
+
+  /**
+   * Convert a Scala `Future` to a `CompletionStage`.
+   *
+   * @since 2.0.0
+   */
+  def fromScala[T](future: scala.concurrent.Future[T]): CompletionStage[T] = {
+    import scala.jdk.FutureConverters._
+    future.asJava
   }
 
   /**
@@ -143,7 +151,6 @@ object CompletionStages {
    *         or a `NoSuchElementException` if the given iterable is empty
    * @since 1.2.0
    */
-  @nowarn("msg=deprecated")
   def reduce[T <: AnyRef, R >: T](
       stages: java.lang.Iterable[? <: CompletionStage[? <: T]],
       function: pekko.japi.function.Function2[R, T, R]): CompletionStage[R] = {
@@ -151,7 +158,7 @@ object CompletionStages {
     if (iterator.hasNext) {
       iterator.next().thenCompose { v => foldWithNext[T, R](iterator, v, function) }
     } else {
-      Futures.failedCompletionStage(new NoSuchElementException("reduce of an empty iterable of CompletionStages"))
+      CompletableFuture.failedFuture(new NoSuchElementException("reduce of an empty iterable of CompletionStages"))
     }
   }
 

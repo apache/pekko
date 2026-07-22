@@ -26,7 +26,6 @@ import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.pekko.actor.*;
 import org.apache.pekko.dispatch.CompletionStages;
-import org.apache.pekko.dispatch.Futures;
 import org.apache.pekko.testkit.PekkoJUnitJupiterActorSystemResource;
 import org.apache.pekko.testkit.PekkoSpec;
 import org.apache.pekko.testkit.TestProbe;
@@ -316,7 +315,7 @@ public class PatternsTest {
 
     Future<String> retriedFuture =
         Patterns.retry(
-            () -> Futures.successful(expected),
+            () -> scala.concurrent.Future$.MODULE$.successful(expected),
             3,
             scala.concurrent.duration.Duration.apply(200, "millis"),
             system.scheduler(),
@@ -340,10 +339,9 @@ public class PatternsTest {
   }
 
   @Test
-  @SuppressWarnings("deprecation")
   public void testAfterFailedCallable() throws Exception {
     Callable<CompletionStage<String>> failedCallable =
-        () -> Futures.failedCompletionStage(new IllegalStateException("Illegal!"));
+        () -> CompletableFuture.failedFuture(new IllegalStateException("Illegal!"));
 
     CompletionStage<String> delayedFuture =
         Patterns.after(Duration.ofMillis(200), system.scheduler(), ec, failedCallable);
@@ -363,7 +361,6 @@ public class PatternsTest {
   }
 
   @Test
-  @SuppressWarnings("deprecation")
   public void testAfterFailedFuture() throws Exception {
 
     CompletionStage<String> delayedFuture =
@@ -371,7 +368,7 @@ public class PatternsTest {
             Duration.ofMillis(200),
             system.scheduler(),
             ec,
-            () -> Futures.failedCompletionStage(new IllegalStateException("Illegal!")));
+            () -> CompletableFuture.failedFuture(new IllegalStateException("Illegal!")));
 
     CompletionStage<String> resultFuture =
         CompletionStages.firstCompletedOf(List.of(delayedFuture));
