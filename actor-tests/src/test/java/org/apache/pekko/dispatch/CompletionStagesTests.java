@@ -35,15 +35,14 @@ public class CompletionStagesTests {
     private final Duration timeout = Duration.create(5, TimeUnit.SECONDS);
 
     @Test
-    @SuppressWarnings("deprecation")
     public void testAsScala() throws Exception {
         final CompletionStage<Integer> successCs = CompletableFuture.completedFuture(42);
         Future<Integer> scalaFuture = CompletionStages.asScala(successCs);
         assertEquals(42, Await.result(scalaFuture, timeout).intValue());
         //failed
         assertThrows(RuntimeException.class, () -> {
-            final CompletionStage<Integer> failedCs = Futures.failedCompletionStage(new RuntimeException(
-                "Simulated failure"));
+            final CompletionStage<Integer> failedCs = CompletableFuture.failedFuture(
+                new RuntimeException("Simulated failure"));
             Await.result(CompletionStages.asScala(failedCs), timeout);
         });
     }

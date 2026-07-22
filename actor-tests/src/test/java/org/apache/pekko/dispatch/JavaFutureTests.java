@@ -42,14 +42,14 @@ public class JavaFutureTests {
 
   @Test
   public void mustBeAbleToCreateAJavaCompletionStage() throws Exception {
-    Future<Integer> f = Futures.successful(42);
-    CompletableFuture<Integer> cs = Futures.asJava(f).toCompletableFuture();
+    Future<Integer> f = scala.concurrent.Future$.MODULE$.successful(42);
+    CompletableFuture<Integer> cs = CompletionStages.fromScala(f).toCompletableFuture();
     assertEquals(42, cs.get(3, TimeUnit.SECONDS).intValue());
   }
 
   @Test
   public void blockMustBeCallable() throws Exception {
-    Promise<String> p = Futures.promise();
+    Promise<String> p = scala.concurrent.Promise$.MODULE$.apply();
     Duration d = Duration.create(1, TimeUnit.SECONDS);
     p.success("foo");
     Await.ready(p.future(), d);
@@ -58,7 +58,7 @@ public class JavaFutureTests {
 
   @Test
   public void mapToMustBeCallable() throws Exception {
-    Promise<Object> p = Futures.promise();
+    Promise<Object> p = scala.concurrent.Promise$.MODULE$.apply();
     Future<String> f = p.future().mapTo(classTag(String.class));
     Duration d = Duration.create(1, TimeUnit.SECONDS);
     p.success("foo");

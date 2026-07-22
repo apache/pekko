@@ -79,7 +79,10 @@ object ExecutionContexts {
 
 /**
  * Futures is the Java API for Futures and Promises
+ *
+ * @deprecated Use `CompletionStages` and standard `java.util.concurrent.CompletableFuture` APIs instead.
  */
+@deprecated("Use CompletionStages and standard java.util.concurrent.CompletableFuture APIs instead.", since = "2.0.0")
 object Futures {
 
   /**
@@ -87,6 +90,7 @@ object Futures {
    *
    * @since 1.2.0
    */
+  @deprecated("Use scala.jdk.FutureConverters instead.", since = "2.0.0")
   def asJava[T](future: Future[T]): CompletionStage[T] = {
     import scala.jdk.FutureConverters._
     future.asJava
@@ -101,6 +105,7 @@ object Futures {
    * @param executor the execution context on which the future is run
    * @return         the `Future` holding the result of the computation
    */
+  @deprecated("Use CompletableFuture.supplyAsync instead.", since = "2.0.0")
   def future[T](body: Callable[T], executor: ExecutionContext): Future[T] = Future(body.call)(executor)
 
   /**
@@ -108,22 +113,25 @@ object Futures {
    *
    * @return         the newly created `Promise` object
    */
+  @deprecated("Use new CompletableFuture instead.", since = "2.0.0")
   def promise[T](): Promise[T] = Promise[T]()
 
   /**
    * creates an already completed Promise with the specified exception
    */
+  @deprecated("Use CompletableFuture.failedFuture instead.", since = "2.0.0")
   def failed[T](exception: Throwable): Future[T] = Future.failed(exception)
 
   /**
    * Creates an already completed Promise with the specified result
    */
+  @deprecated("Use CompletableFuture.completedFuture instead.", since = "2.0.0")
   def successful[T](result: T): Future[T] = Future.successful(result)
 
   /**
    * Creates an already completed CompletionStage with the specified exception
    */
-  @deprecated("Use `CompletableFuture#failedStage` instead.", since = "2.0.0")
+  @deprecated("Use CompletableFuture.failedFuture instead.", since = "2.0.0")
   def failedCompletionStage[T](ex: Throwable): CompletionStage[T] = {
     val f = CompletableFuture.completedFuture[T](null.asInstanceOf[T])
     f.obtrudeException(ex)
