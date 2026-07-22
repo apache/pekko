@@ -90,7 +90,7 @@ object Futures {
    *
    * @since 1.2.0
    */
-  @deprecated("Use scala.jdk.FutureConverters instead.", since = "2.0.0")
+  @deprecated("Use CompletionStages.fromScala instead.", since = "2.0.0")
   def asJava[T](future: Future[T]): CompletionStage[T] = {
     import scala.jdk.FutureConverters._
     future.asJava
