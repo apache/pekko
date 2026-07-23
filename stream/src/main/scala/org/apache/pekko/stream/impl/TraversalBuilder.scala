@@ -633,7 +633,6 @@ import pekko.util.OptionVal
     extends TraversalBuilder {
 
   override def add(submodule: TraversalBuilder, shape: Shape, combineMat: AnyFunction2): TraversalBuilder = {
-    // TODO: Use automatically a linear builder if applicable
     // Create a composite, add ourselves, then the other.
     CompositeTraversalBuilder(attributes = attributes)
       .add(this, module.shape, Keep.right)
@@ -689,7 +688,6 @@ import pekko.util.OptionVal
  */
 @InternalApi private[pekko] object LinearTraversalBuilder {
 
-  // TODO: Remove
   private val cachedEmptyLinear =
     LinearTraversalBuilder(OptionVal.None, OptionVal.None, 0, 0, PushNotUsed, OptionVal.None, Attributes.none)
 
@@ -1318,26 +1316,13 @@ import pekko.util.OptionVal
 
     // Do the assignment in the submodule
     val result = submodule.assign(out.mappedTo, relativeSlot)
-    val wired = if (result.isTraversalComplete) {
-      // Remove the builder (and associated data).
-      // We can't simply append its Traversal as there might be uncompleted builders that come earlier in the
-      // final traversal (remember, input ports are assigned in traversal order of modules, and the inOffsets
-      // and inBaseOffseForOut Maps are updated when adding a module; we must respect addition order).
-
+    val wired =
       copy(
         inBaseOffsetForOut = inBaseOffsetForOut - out,
         outOwners = outOwners - out,
-        // TODO Optimize Map access
         pendingBuilders = pendingBuilders.updated(builderKey, result),
         // pendingBuilders = pendingBuilders - builderKey,
         unwiredOuts = unwiredOuts - 1)
-    } else {
-      // Update structures with result
-      copy(
-        inBaseOffsetForOut = inBaseOffsetForOut - out,
-        unwiredOuts = unwiredOuts - 1,
-        pendingBuilders = pendingBuilders.updated(builderKey, result))
-    }
 
     // If we have no more unconnected outputs, we can finally build the Traversal and shed most of the auxiliary data.
     wired.completeIfPossible
@@ -1378,7 +1363,6 @@ import pekko.util.OptionVal
         val in = inIterator.next()
         // Calculate offset in the current scope. This is the our first unused input slot plus
         // the relative offset of the input port in the submodule.
-        // TODO Optimize Map access
         newInOffsets = newInOffsets.updated(in, inSlots + submodule.offsetOf(in.mappedTo))
       }
 
@@ -1399,7 +1383,6 @@ import pekko.util.OptionVal
       while (inIterator.hasNext) {
         val in = inIterator.next()
         // Calculate offset in the current scope
-        // TODO Optimize Map access
         newInOffsets = newInOffsets.updated(in, inSlots + submodule.offsetOf(in.mappedTo))
       }
 
@@ -1409,7 +1392,6 @@ import pekko.util.OptionVal
         // Record the base offsets of all the modules we included and which have unwired output ports. We need
         // to adjust their offset by inSlots as that would be their new position in this module.
         newBaseOffsetsForOut = newBaseOffsetsForOut.updated(out, inSlots + submodule.offsetOfModule(out.mappedTo))
-        // TODO Optimize Map access
         newOutOwners = newOutOwners.updated(out, builderKey)
       }
 

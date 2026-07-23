@@ -14,11 +14,11 @@
 package org.apache.pekko.stream.impl
 
 import scala.concurrent.Promise
-
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.stream._
 import pekko.stream.impl.Stages.DefaultAttributes
+import pekko.stream.impl.StreamLayout.AtomicModule
 import pekko.stream.impl.TraversalTestUtils._
 import pekko.stream.impl.fusing.{ IterableSource, IteratorSource, RangeSource }
 import pekko.stream.impl.fusing.GraphStages.{ FutureSource, RepeatSource, SingleSource }
@@ -450,6 +450,45 @@ class TraversalBuilderSpec extends PekkoSpec {
           (source, Attributes.none, TestDefaultIsland),
           (flow1, Attributes.name("test") and Attributes.name("flow"), TestIsland1),
           (sink, Attributes.none, TestDefaultIsland)))
+    }
+
+    "mark only the assigned output as wired when a submodule still has other unwired outputs" in {
+      class CompositeTestFanOut2 extends AtomicModule[FanOutShape2[Any, Any, Any], Any] {
+        val in = Inlet[Any]("testFanOut2.in")
+        val out0 = Outlet[Any]("testFanOut2.out0")
+        val out1 = Outlet[Any]("testFanOut2.out1")
+
+        override val shape: FanOutShape2[Any, Any, Any] = new FanOutShape2(in, out0, out1)
+        override val traversalBuilder = TraversalBuilder.atomic(this, Attributes.name("testFanOut2"))
+
+        override def withAttributes(attributes: Attributes): AtomicModule[FanOutShape2[Any, Any, Any], Any] = ???
+        override def toString = "TestFanOut2"
+      }
+
+      val fanOut = new CompositeTestFanOut2
+      val sink1 = new CompositeTestSink
+      val sink2 = new CompositeTestSink
+
+      val partial = source.traversalBuilder
+        .add(fanOut.traversalBuilder, fanOut.shape, Keep.left)
+        .add(sink1.traversalBuilder, sink1.shape, Keep.left)
+        .add(sink2.traversalBuilder, sink2.shape, Keep.left)
+        .wire(source.out, fanOut.in)
+        .wire(fanOut.out0, sink1.in)
+
+      partial.isUnwired(fanOut.out0) should ===(false)
+      partial.isUnwired(fanOut.out1) should ===(true)
+
+      val builder = partial.wire(fanOut.out1, sink2.in)
+
+      val mat = testMaterialize(builder)
+      mat.connections should ===(3)
+      mat.outlets(0) should ===(source.out)
+      mat.inlets(0) should ===(fanOut.in)
+      mat.outlets(1) should ===(fanOut.out0)
+      mat.inlets(1) should ===(sink1.in)
+      mat.outlets(2) should ===(fanOut.out1)
+      mat.inlets(2) should ===(sink2.in)
     }
   }
 
