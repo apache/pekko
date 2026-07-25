@@ -33,3 +33,7 @@ were a few mistakes in the Java API where Scala classes leaked into some of the 
 An example is in the Scala DSL for Flow and Source, the `watchTermination` function call no longer needs an empty param
 list before a second param list. Instead of `watchTermination(){ ... }`, you now must use `watchTermination{ ... }`.
 ([PR2378](https://github.com/apache/pekko/pull/2378))
+
+In the Java API, `FSMTransitionHandlerBuilder.build` and `FSMTransitionHandlerBuilder.state` now use
+`pekko.japi.Pair` instead of `scala.Tuple2`. Java users need to update their code to use `Pair` instead of `Tuple2`.
+([PR3378](https://github.com/apache/pekko/pull/3378))

@@ -23,6 +23,7 @@ import language.implicitConversions
 import org.apache.pekko
 import pekko.actor._
 import pekko.japi.function.{ Effect, Function2, Predicate, Predicate2, Procedure, Procedure2, Procedure3 }
+import pekko.japi.Pair
 import pekko.japi.pf.{ FSMTransitionHandlerBuilder, UnitMatch, UnitPFBuilder }
 import pekko.routing.{ Deafen, Listen, Listeners }
 
@@ -850,8 +851,13 @@ abstract class AbstractPersistentFSMBase[S, D, E] extends PersistentFSMBase[S, D
    * <b>Multiple handlers may be installed, and every one of them will be
    * called, not only the first one matching.</b>
    */
-  final def onTransition(transitionHandlerBuilder: FSMTransitionHandlerBuilder[S]): Unit =
-    onTransition(transitionHandlerBuilder.build().asInstanceOf[TransitionHandler])
+  final def onTransition(transitionHandlerBuilder: FSMTransitionHandlerBuilder[S]): Unit = {
+    val pf = transitionHandlerBuilder.build()
+    onTransition(new TransitionHandler {
+      def isDefinedAt(in: (S, S)): Boolean = pf.isDefinedAt(Pair(in._1, in._2))
+      def apply(in: (S, S)): Unit = pf(Pair(in._1, in._2))
+    })
+  }
 
   /**
    * Add a handler which is called upon each state transition, i.e. not when

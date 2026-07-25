@@ -13,12 +13,12 @@
 
 package org.apache.pekko.japi.pf;
 
+import org.apache.pekko.japi.Pair;
 import org.apache.pekko.japi.function.Effect;
 import org.apache.pekko.japi.function.Predicate;
 import org.apache.pekko.japi.function.Procedure;
 import org.apache.pekko.japi.function.Procedure2;
 import scala.PartialFunction;
-import scala.Tuple2;
 import scala.runtime.BoxedUnit;
 
 /**
@@ -28,7 +28,7 @@ import scala.runtime.BoxedUnit;
  */
 public class FSMTransitionHandlerBuilder<S> {
 
-  private final UnitPFBuilder<Tuple2<S, S>> builder = new UnitPFBuilder<Tuple2<S, S>>();
+  private final UnitPFBuilder<Pair<S, S>> builder = new UnitPFBuilder<Pair<S, S>>();
 
   /**
    * Add a case statement that matches on a from state and a to state.
@@ -41,17 +41,17 @@ public class FSMTransitionHandlerBuilder<S> {
   public FSMTransitionHandlerBuilder<S> state(
       final S fromState, final S toState, final Effect apply) {
     builder.match(
-        Tuple2.class,
-        new Predicate<Tuple2>() {
+        Pair.class,
+        new Predicate<Pair>() {
           @Override
-          public boolean test(Tuple2 t) {
-            return (fromState == null || fromState.equals(t._1()))
-                && (toState == null || toState.equals(t._2()));
+          public boolean test(Pair t) {
+            return (fromState == null || fromState.equals(t.first()))
+                && (toState == null || toState.equals(t.second()));
           }
         },
-        new Procedure<Tuple2>() {
+        new Procedure<Pair>() {
           @Override
-          public void apply(Tuple2 t) throws Exception {
+          public void apply(Pair t) throws Exception {
             apply.apply();
           }
         });
@@ -69,21 +69,21 @@ public class FSMTransitionHandlerBuilder<S> {
   public FSMTransitionHandlerBuilder<S> state(
       final S fromState, final S toState, final Procedure2<S, S> apply) {
     builder.match(
-        Tuple2.class,
-        new Predicate<Tuple2>() {
+        Pair.class,
+        new Predicate<Pair>() {
           @Override
-          public boolean test(Tuple2 t) {
-            return (fromState == null || fromState.equals(t._1()))
-                && (toState == null || toState.equals(t._2()));
+          public boolean test(Pair t) {
+            return (fromState == null || fromState.equals(t.first()))
+                && (toState == null || toState.equals(t.second()));
           }
         },
-        new Procedure<Tuple2>() {
+        new Procedure<Pair>() {
           @Override
-          public void apply(Tuple2 t) throws Exception {
+          public void apply(Pair t) throws Exception {
             @SuppressWarnings("unchecked")
-            S sf = (S) t._1();
+            S sf = (S) t.first();
             @SuppressWarnings("unchecked")
-            S st = (S) t._2();
+            S st = (S) t.second();
             apply.apply(sf, st);
           }
         });
@@ -96,7 +96,7 @@ public class FSMTransitionHandlerBuilder<S> {
    *
    * @return a PartialFunction for this builder.
    */
-  public PartialFunction<Tuple2<S, S>, BoxedUnit> build() {
+  public PartialFunction<Pair<S, S>, BoxedUnit> build() {
     return builder.build();
   }
 }
