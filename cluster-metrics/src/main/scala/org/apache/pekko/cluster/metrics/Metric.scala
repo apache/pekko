@@ -275,10 +275,11 @@ private[metrics] trait MetricNumericConverter {
     case n: Long                 => Left(n)
     case n: Double               => Right(n)
     case n: Float                => Right(n)
-    case n: java.math.BigInteger => Left(n.longValue)
-    case n: java.math.BigDecimal => Right(n.doubleValue)
     case n: BigInt               => Left(n.longValue)
     case n: BigDecimal           => Right(n.doubleValue)
+    case n: java.math.BigInteger => Left(n.longValue)
+    case n: java.math.BigDecimal => Right(n.doubleValue)
+    case n: Number               => Left(n.longValue)
     case x                       => throw new IllegalArgumentException(s"Not a number [$x]")
   }
 

@@ -46,6 +46,17 @@ class MetricNumericConverterSpec extends AnyWordSpec with Matchers with MetricNu
       convertNumber(new java.math.BigDecimal("3.14")).right.get should ===(3.14 +- 0.0001)
     }
 
+    "convert any Number subtype" in {
+      convertNumber(42.toShort).isLeft should ===(true)
+      convertNumber(42.toShort).left.get should ===(42L)
+      convertNumber(7.toByte).isLeft should ===(true)
+      convertNumber(7.toByte).left.get should ===(7L)
+      convertNumber(new java.util.concurrent.atomic.AtomicInteger(99)).isLeft should ===(true)
+      convertNumber(new java.util.concurrent.atomic.AtomicInteger(99)).left.get should ===(99L)
+      convertNumber(new java.util.concurrent.atomic.AtomicLong(1234L)).isLeft should ===(true)
+      convertNumber(new java.util.concurrent.atomic.AtomicLong(1234L)).left.get should ===(1234L)
+    }
+
     "define a metric with java.math.BigInteger and java.math.BigDecimal values" in {
       val Some(intMetric) = Metric.create("big-int", java.math.BigInteger.valueOf(1024L), None): @unchecked
       intMetric.value should ===(java.math.BigInteger.valueOf(1024L))

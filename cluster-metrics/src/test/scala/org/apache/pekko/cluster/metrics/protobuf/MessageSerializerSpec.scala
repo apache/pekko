@@ -63,7 +63,11 @@ class MessageSerializerSpec extends PekkoSpec("""
               Metric("bar2", Float.MaxValue, None),
               Metric("bar3", Int.MaxValue, None),
               Metric("bar4", Long.MaxValue, None),
-              Metric("bar5", BigInt(Long.MaxValue), None)))))
+              Metric("bar5", BigInt(Long.MaxValue), None),
+              Metric("bar6", BigDecimal("3.14"), None),
+              Metric("bar7", java.math.BigInteger.valueOf(9999L), None),
+              Metric("bar8", new java.math.BigDecimal("2.718"), None),
+              Metric("bar9", 42.toShort, None)))))
 
       checkSerialization(MetricsGossipEnvelope(a1.address, metricsGossip, true))
 
