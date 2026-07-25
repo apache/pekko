@@ -1,0 +1,5 @@
+# Replace scala.Tuple2 with pekko.japi.Pair in FSMTransitionHandlerBuilder
+# https://github.com/apache/pekko/issues/2086
+ProblemFilters.exclude[IncompatibleResultTypeProblem]("org.apache.pekko.japi.pf.FSMTransitionHandlerBuilder.build")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.japi.pf.FSMTransitionHandlerBuilder.build")
+ProblemFilters.exclude[IncompatibleMethTypeProblem]("org.apache.pekko.japi.pf.FSMTransitionHandlerBuilder.state")
