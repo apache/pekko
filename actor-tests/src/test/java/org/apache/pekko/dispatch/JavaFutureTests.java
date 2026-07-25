@@ -43,7 +43,7 @@ public class JavaFutureTests {
   @Test
   public void mustBeAbleToCreateAJavaCompletionStage() throws Exception {
     Future<Integer> f = scala.concurrent.Future$.MODULE$.successful(42);
-    CompletableFuture<Integer> cs = CompletionStages.fromScala(f).toCompletableFuture();
+    CompletableFuture<Integer> cs = scala.jdk.javaapi.FutureConverters.asJava(f).toCompletableFuture();
     assertEquals(42, cs.get(3, TimeUnit.SECONDS).intValue());
   }
 

@@ -31,20 +31,13 @@ object CompletionStages {
 
   /**
    * Convert a `CompletionStage` to a Scala `Future`.
+   *
+   * @deprecated Use `scala.jdk.javaapi.FutureConverters.asScala` instead.
    */
+  @deprecated("Use scala.jdk.javaapi.FutureConverters.asScala instead.", since = "2.0.0")
   def asScala[T](stage: CompletionStage[T]): scala.concurrent.Future[T] = {
     import scala.jdk.FutureConverters._
     stage.asScala
-  }
-
-  /**
-   * Convert a Scala `Future` to a `CompletionStage`.
-   *
-   * @since 2.0.0
-   */
-  def fromScala[T](future: scala.concurrent.Future[T]): CompletionStage[T] = {
-    import scala.jdk.FutureConverters._
-    future.asJava
   }
 
   /**
