@@ -39,6 +39,21 @@ class MetricNumericConverterSpec extends AnyWordSpec with Matchers with MetricNu
       convertNumber(0.0).isRight should ===(true)
     }
 
+    "convert java.math.BigInteger and java.math.BigDecimal" in {
+      convertNumber(java.math.BigInteger.valueOf(42)).isLeft should ===(true)
+      convertNumber(java.math.BigInteger.valueOf(42)).left.get should ===(42L)
+      convertNumber(new java.math.BigDecimal("3.14")).isRight should ===(true)
+      convertNumber(new java.math.BigDecimal("3.14")).right.get should ===(3.14 +- 0.0001)
+    }
+
+    "define a metric with java.math.BigInteger and java.math.BigDecimal values" in {
+      val Some(intMetric) = Metric.create("big-int", java.math.BigInteger.valueOf(1024L), None): @unchecked
+      intMetric.value should ===(java.math.BigInteger.valueOf(1024L))
+
+      val Some(decMetric) = Metric.create("big-dec", new java.math.BigDecimal("99.9"), None): @unchecked
+      decMetric.value should ===(new java.math.BigDecimal("99.9"))
+    }
+
     "define a new metric" in {
       val Some(metric) = Metric.create(HeapMemoryUsed, 256L, decayFactor = Some(0.18)): @unchecked
       metric.name should ===(HeapMemoryUsed)
