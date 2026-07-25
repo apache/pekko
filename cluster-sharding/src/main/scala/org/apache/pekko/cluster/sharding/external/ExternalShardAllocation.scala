@@ -33,10 +33,8 @@ final class ExternalShardAllocation(system: ExtendedActorSystem) extends Extensi
 
   private val clients = new ConcurrentHashMap[String, ExternalShardAllocationClientImpl]
 
-  private val factory = new JFunction[String, ExternalShardAllocationClientImpl] {
-    override def apply(typeName: String): ExternalShardAllocationClientImpl =
-      new ExternalShardAllocationClientImpl(system, typeName)
-  }
+  private val factory: JFunction[String, ExternalShardAllocationClientImpl] =
+    (typeName: String) => new ExternalShardAllocationClientImpl(system, typeName)
 
   /**
    * Scala API

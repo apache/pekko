@@ -63,12 +63,12 @@ object Helpers {
    * consistent with equals, otherwise it would not be an enhancement over
    * the identityHashCode.
    */
-  def identityHashComparator[T <: AnyRef](comp: Comparator[T]): Comparator[T] = new Comparator[T] {
-    def compare(a: T, b: T): Int = compareIdentityHash(a, b) match {
-      case 0 if a != b => comp.compare(a, b)
-      case x           => x
-    }
-  }
+  def identityHashComparator[T <: AnyRef](comp: Comparator[T]): Comparator[T] =
+    (a: T, b: T) =>
+      compareIdentityHash(a, b) match {
+        case 0 if a != b => comp.compare(a, b)
+        case x           => x
+      }
 
   /**
    * Converts a "currentTimeMillis"-obtained timestamp accordingly:

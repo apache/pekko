@@ -101,10 +101,8 @@ private[remote] final class CompressionTable[T](
 private[remote] object CompressionTable {
   final val NotCompressedId = -1
 
-  final val CompareBy2ndValue: Comparator[(Object, Int)] = new Comparator[(Object, Int)] {
-    override def compare(o1: (Object, Int), o2: (Object, Int)): Int =
-      o1._2.compare(o2._2)
-  }
+  final val CompareBy2ndValue: Comparator[(Object, Int)] =
+    (o1: (Object, Int), o2: (Object, Int)) => o1._2.compare(o2._2)
   def compareBy2ndValue[T]: Comparator[Tuple2[T, Int]] = CompareBy2ndValue.asInstanceOf[Comparator[(T, Int)]]
 
   private def newObject2IntHashMap[T](initialCapacity: Int): Object2IntHashMap[T] = {

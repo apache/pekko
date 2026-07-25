@@ -79,8 +79,8 @@ private[pekko] final class AdaptedClusterSingletonImpl(system: ActorSystem[?]) e
   }
 
   private def getProxy[T](name: String, settings: ClusterSingletonSettings): ActorRef[T] = {
-    val proxyCreator = new JFunction[(String, Option[DataCenter]), ActorRef[?]] {
-      def apply(singletonNameAndDc: (String, Option[DataCenter])): ActorRef[?] = {
+    val proxyCreator: JFunction[(String, Option[DataCenter]), ActorRef[?]] =
+      (singletonNameAndDc: (String, Option[DataCenter])) => {
         val (singletonName, _) = singletonNameAndDc
         val proxyName = s"singletonProxy$singletonName-${settings.dataCenter.getOrElse("no-dc")}"
         classicSystem.systemActorOf(
@@ -88,7 +88,6 @@ private[pekko] final class AdaptedClusterSingletonImpl(system: ActorSystem[?]) e
             .props(s"/system/${managerNameFor(singletonName)}", settings.toProxySettings(singletonName)),
           proxyName)
       }
-    }
     proxies.computeIfAbsent((name, settings.dataCenter), proxyCreator).asInstanceOf[ActorRef[T]]
   }
 }

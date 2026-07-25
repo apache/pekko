@@ -167,9 +167,7 @@ final class EventHandlerBuilder[State, Event]() {
 
 object EventHandlerBuilderByState {
 
-  private val _trueStatePredicate: Predicate[Any] = new Predicate[Any] {
-    override def test(t: Any): Boolean = true
-  }
+  private val _trueStatePredicate: Predicate[Any] = (_: Any) => true
 
   private def trueStatePredicate[S]: Predicate[S] = _trueStatePredicate.asInstanceOf[Predicate[S]]
 
@@ -242,9 +240,7 @@ final class EventHandlerBuilderByState[S <: State, State, Event](
       eventClass: Class[E],
       handler: JFunction[E, State]): EventHandlerBuilderByState[S, State, Event] = {
     onEvent[E](eventClass,
-      new BiFunction[S, E, State] {
-        override def apply(state: S, event: E): State = handler(event)
-      })
+      (_: S, event: E) => handler(event))
   }
 
   /**
@@ -260,9 +256,7 @@ final class EventHandlerBuilderByState[S <: State, State, Event](
       eventClass: Class[E],
       handler: Supplier[State]): EventHandlerBuilderByState[S, State, Event] = {
 
-    val supplierBiFunction = new BiFunction[S, E, State] {
-      def apply(t: S, u: E): State = handler.get()
-    }
+    val supplierBiFunction: BiFunction[S, E, State] = (_: S, _: E) => handler.get()
 
     onEvent(eventClass, supplierBiFunction)
   }
@@ -300,9 +294,7 @@ final class EventHandlerBuilderByState[S <: State, State, Event](
    * @return An EventHandler from the appended states.
    */
   def onAnyEvent(handler: JFunction[Event, State]): EventHandler[State, Event] = {
-    onAnyEvent(new BiFunction[State, Event, State] {
-      override def apply(state: State, event: Event): State = handler(event)
-    })
+    onAnyEvent((_: State, event: Event) => handler(event))
     build()
   }
 

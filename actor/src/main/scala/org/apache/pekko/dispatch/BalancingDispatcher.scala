@@ -13,7 +13,7 @@
 
 package org.apache.pekko.dispatch
 
-import java.util.{ Comparator, Iterator }
+import java.util.Iterator
 import java.util.concurrent.ConcurrentSkipListSet
 
 import scala.annotation.tailrec
@@ -64,9 +64,8 @@ private[pekko] class BalancingDispatcher(
    * INTERNAL API
    */
   private[pekko] val team =
-    new ConcurrentSkipListSet[ActorCell](Helpers.identityHashComparator(new Comparator[ActorCell] {
-      def compare(l: ActorCell, r: ActorCell) = l.self.path.compareTo(r.self.path)
-    }))
+    new ConcurrentSkipListSet[ActorCell](Helpers.identityHashComparator((l: ActorCell, r: ActorCell) =>
+      l.self.path.compareTo(r.self.path)))
 
   /**
    * INTERNAL API

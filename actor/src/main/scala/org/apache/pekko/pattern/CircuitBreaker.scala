@@ -363,9 +363,7 @@ class CircuitBreaker(
    *   `scala.concurrent.TimeoutException` if the call timed out
    */
   def callWithCircuitBreakerCS[T](body: Callable[CompletionStage[T]]): CompletionStage[T] =
-    callWithCircuitBreaker(new Callable[Future[T]] {
-      override def call(): Future[T] = body.call().asScala
-    }).asJava
+    callWithCircuitBreaker(() => body.call().asScala).asJava
 
   /**
    * Java API (8) for `withCircuitBreaker`.
@@ -378,9 +376,7 @@ class CircuitBreaker(
   def callWithCircuitBreakerCS[T](
       body: Callable[CompletionStage[T]],
       defineFailureFn: BiFunction[Optional[T], Optional[Throwable], java.lang.Boolean]): CompletionStage[T] =
-    callWithCircuitBreaker(new Callable[Future[T]] {
-        override def call(): Future[T] = body.call().asScala
-      }, defineFailureFn).asJava
+    callWithCircuitBreaker(() => body.call().asScala, defineFailureFn).asJava
 
   /**
    * Wraps invocations of synchronous calls that need to be protected.
@@ -560,9 +556,7 @@ class CircuitBreaker(
    * @return CircuitBreaker for fluent usage
    */
   def onCallSuccess(callback: Long => Unit): CircuitBreaker =
-    addOnCallSuccessListener(new Consumer[Long] {
-      def accept(result: Long): Unit = callback(result)
-    })
+    addOnCallSuccessListener(result => callback(result))
 
   /**
    * JavaAPI for onCallSuccess
@@ -584,9 +578,7 @@ class CircuitBreaker(
    * @return CircuitBreaker for fluent usage
    */
   def onCallFailure(callback: Long => Unit): CircuitBreaker =
-    addOnCallFailureListener(new Consumer[Long] {
-      def accept(result: Long): Unit = callback(result)
-    })
+    addOnCallFailureListener(result => callback(result))
 
   /**
    * JavaAPI for onCallFailure.
@@ -608,9 +600,7 @@ class CircuitBreaker(
    * @return CircuitBreaker for fluent usage
    */
   def onCallTimeout(callback: Long => Unit): CircuitBreaker =
-    addOnCallTimeoutListener(new Consumer[Long] {
-      def accept(result: Long): Unit = callback(result)
-    })
+    addOnCallTimeoutListener(result => callback(result))
 
   /**
    * JavaAPI for onCallTimeout.
