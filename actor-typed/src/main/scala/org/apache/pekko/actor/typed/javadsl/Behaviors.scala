@@ -20,6 +20,8 @@ import scala.annotation.nowarn
 import scala.jdk.CollectionConverters._
 import scala.reflect.ClassTag
 
+import org.jspecify.annotations.Nullable
+
 import org.apache.pekko
 import pekko.actor.typed._
 import pekko.actor.typed.internal.{ BehaviorImpl, StashBufferImpl, TimerSchedulerImpl, WithMdcBehaviorInterceptor }
@@ -402,8 +404,8 @@ object Behaviors {
    */
   def withMdc[T](
       interceptMessageClass: Class[T],
-      staticMdc: java.util.Map[String, String],
-      mdcForMessage: pekko.japi.function.Function[T, java.util.Map[String, String]],
+      @Nullable staticMdc: java.util.Map[String, String],
+      @Nullable mdcForMessage: pekko.japi.function.Function[T, java.util.Map[String, String]],
       behavior: Behavior[T]): Behavior[T] = {
 
     def asScalaMap(m: java.util.Map[String, String]): Map[String, String] = {

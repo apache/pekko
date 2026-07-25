@@ -21,6 +21,8 @@ import java.util.concurrent.CompletionStage
 import scala.annotation.nowarn
 import scala.jdk.OptionConverters._
 
+import org.jspecify.annotations.Nullable
+
 import org.apache.pekko
 import pekko.actor.typed.ActorRef
 import pekko.actor.typed.ActorSystem
@@ -279,7 +281,7 @@ final class Entity[M, E] private (
   /**
    * Additional settings, typically loaded from configuration.
    */
-  def withSettings(newSettings: ClusterShardingSettings): Entity[M, E] =
+  def withSettings(@Nullable newSettings: ClusterShardingSettings): Entity[M, E] =
     copy(settings = Optional.ofNullable(newSettings))
 
   /**
@@ -288,7 +290,7 @@ final class Entity[M, E] private (
    * It can be useful to define a custom stop message if the entity needs to perform
    * some asynchronous cleanup or interactions before stopping.
    */
-  def withStopMessage(newStopMessage: M): Entity[M, E] =
+  def withStopMessage(@Nullable newStopMessage: M): Entity[M, E] =
     copy(stopMessage = Optional.ofNullable(newStopMessage))
 
   /**
@@ -298,7 +300,8 @@ final class Entity[M, E] private (
    * shards is then defined by `numberOfShards` in `ClusterShardingSettings`, which by default
    * is configured with `pekko.cluster.sharding.number-of-shards`.
    */
-  def withMessageExtractor[Envelope](newExtractor: ShardingMessageExtractor[Envelope, M]): Entity[M, Envelope] =
+  def withMessageExtractor[Envelope](
+      @Nullable newExtractor: ShardingMessageExtractor[Envelope, M]): Entity[M, Envelope] =
     new Entity(
       createBehavior,
       typeKey,
@@ -313,7 +316,7 @@ final class Entity[M, E] private (
   /**
    *  Run the Entity actors on nodes with the given role.
    */
-  def withRole(role: String): Entity[M, E] =
+  def withRole(@Nullable role: String): Entity[M, E] =
     copy(role = Optional.ofNullable(role))
 
   /**
@@ -322,13 +325,14 @@ final class Entity[M, E] private (
    * dataCenter does not match the data center of the current node the `ShardRegion` will be started
    * in proxy mode.
    */
-  def withDataCenter(newDataCenter: String): Entity[M, E] = copy(dataCenter = Optional.ofNullable(newDataCenter))
+  def withDataCenter(@Nullable newDataCenter: String): Entity[M, E] =
+    copy(dataCenter = Optional.ofNullable(newDataCenter))
 
   /**
    * Allocation strategy which decides on which nodes to allocate new shards,
    * [[ClusterSharding#defaultShardAllocationStrategy]] is used if this is not specified.
    */
-  def withAllocationStrategy(newAllocationStrategy: ShardAllocationStrategy): Entity[M, E] =
+  def withAllocationStrategy(@Nullable newAllocationStrategy: ShardAllocationStrategy): Entity[M, E] =
     copy(allocationStrategy = Optional.ofNullable(newAllocationStrategy))
 
   private def copy(

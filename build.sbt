@@ -575,6 +575,7 @@ lazy val clusterShardingTyped = pekkoModule("cluster-sharding-typed")
     remoteTests % "test->test",
     remoteTests % "test->test;multi-jvm->multi-jvm",
     jackson % "test->test")
+  .settings(Dependencies.clusterShardingTyped)
   .settings(javacOptions += "-parameters") // for Jackson
   .settings(AutomaticModuleName.settings("pekko.cluster.sharding.typed"))
   // To be able to import ContainerFormats.proto

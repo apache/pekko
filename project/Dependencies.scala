@@ -214,13 +214,14 @@ object Dependencies {
 
   lazy val actor = l ++= Seq(config)
 
-  val actorTyped = l ++= Seq(slf4jApi)
+  val actorTyped = l ++= Seq(slf4jApi, jspecify)
 
   val discovery = l ++= Seq(TestDependencies.junit, TestDependencies.scalatest)
 
   val coordination = l ++= Seq(TestDependencies.junit, TestDependencies.scalatest)
 
   val testkit = l ++= Seq(
+    jspecify,
     TestDependencies.junit,
     TestDependencies.junit6,
     TestDependencies.junitPlatformLauncher,
@@ -277,6 +278,8 @@ object Dependencies {
     TestDependencies.scalatest,
     TestDependencies.commonsIo,
     TestDependencies.ycsb)
+
+  lazy val clusterShardingTyped = l ++= Seq(jspecify)
 
   lazy val clusterMetrics = l ++= Seq(
     Provided.sigarLoader,
