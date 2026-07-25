@@ -42,8 +42,8 @@ public class CompletionStagesTests {
         assertEquals(42, Await.result(scalaFuture, timeout).intValue());
         //failed
         assertThrows(RuntimeException.class, () -> {
-            final CompletionStage<Integer> failedCs = Futures.failedCompletionStage(new RuntimeException(
-                "Simulated failure"));
+            final CompletionStage<Integer> failedCs = CompletableFuture.failedStage(
+                new RuntimeException("Simulated failure"));
             Await.result(CompletionStages.asScala(failedCs), timeout);
         });
     }
