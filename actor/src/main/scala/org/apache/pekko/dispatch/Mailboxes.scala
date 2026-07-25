@@ -127,7 +127,6 @@ private[pekko] class Mailboxes(
     }
 
   // don’t care if this happens twice
-  private var mailboxSizeWarningIssued = false
   private var mailboxNonZeroPushTimeoutWarningIssued = false
 
   def getMailboxRequirement(config: Config) = config.getString("mailbox-requirement") match {
@@ -168,16 +167,6 @@ private[pekko] class Mailboxes(
     val hasMailboxType =
       dispatcherConfig.hasPath("mailbox-type") &&
       dispatcherConfig.getString("mailbox-type") != Deploy.NoMailboxGiven
-
-    // TODO remove in Akka 2.3
-    if (!hasMailboxType && !mailboxSizeWarningIssued && dispatcherConfig.hasPath("mailbox-size")) {
-      eventStream.publish(
-        Warning(
-          "mailboxes",
-          getClass,
-          s"ignoring setting 'mailbox-size' for dispatcher [$id], you need to specify 'mailbox-type=bounded'"))
-      mailboxSizeWarningIssued = true
-    }
 
     def verifyRequirements(mailboxType: MailboxType): MailboxType = {
       lazy val mqType: Class[?] = getProducedMessageQueueType(mailboxType)
@@ -227,7 +216,6 @@ private[pekko] class Mailboxes(
       case null =>
         // It doesn't matter if we create a mailbox type configurator that isn't used due to concurrent lookup.
         val newConfigurator = id match {
-          // TODO RK remove these two for Akka 2.3
           case "unbounded"                               => UnboundedMailbox()
           case "bounded"                                 => new BoundedMailbox(settings, config(id))
           case _ if id.startsWith(BoundedCapacityPrefix) =>

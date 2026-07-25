@@ -266,13 +266,7 @@ class Dispatchers @InternalApi private[pekko] (
         cfg.renderWithRedactions())
 
     cfg.getString("type") match {
-      case "Dispatcher"          => new DispatcherConfigurator(cfg, prerequisites)
-      case "BalancingDispatcher" =>
-        // FIXME remove this case in Akka 2.4
-        throw new IllegalArgumentException(
-          "BalancingDispatcher is deprecated, use a BalancingPool instead. " +
-          "During a migration period you can still use BalancingDispatcher by specifying the full class name: " +
-          classOf[BalancingDispatcherConfigurator].getName)
+      case "Dispatcher"       => new DispatcherConfigurator(cfg, prerequisites)
       case "PinnedDispatcher" => new PinnedDispatcherConfigurator(cfg, prerequisites)
       case fqn                =>
         val args = List(classOf[Config] -> cfg, classOf[DispatcherPrerequisites] -> prerequisites)
