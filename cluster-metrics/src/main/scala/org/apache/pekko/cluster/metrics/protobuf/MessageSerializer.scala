@@ -193,7 +193,14 @@ class MessageSerializer(val system: ExtendedActorSystem) extends SerializerWithS
         case n: jl.Long    => Number.newBuilder().setType(NumberType.Long).setValue64(n)
         case n: jl.Float   => Number.newBuilder().setType(NumberType.Float).setValue32(jl.Float.floatToIntBits(n))
         case n: jl.Integer => Number.newBuilder().setType(NumberType.Integer).setValue32(n)
-        case _             =>
+        case n: BigInt     => Number.newBuilder().setType(NumberType.Long).setValue64(n.longValue)
+        case n: BigDecimal =>
+          Number.newBuilder().setType(NumberType.Double).setValue64(jl.Double.doubleToLongBits(n.doubleValue))
+        case n: java.math.BigInteger => Number.newBuilder().setType(NumberType.Long).setValue64(n.longValue)
+        case n: java.math.BigDecimal =>
+          Number.newBuilder().setType(NumberType.Double).setValue64(jl.Double.doubleToLongBits(n.doubleValue))
+        case n: java.lang.Number => Number.newBuilder().setType(NumberType.Long).setValue64(n.longValue)
+        case _                   =>
           val bos = new ByteArrayOutputStream
           val out = new ObjectOutputStream(bos)
           out.writeObject(number)
