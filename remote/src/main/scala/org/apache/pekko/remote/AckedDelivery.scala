@@ -21,12 +21,11 @@ import pekko.PekkoException
 @deprecated("Classic remoting is deprecated, use Artery", "Akka 2.6.0")
 object SeqNo {
 
-  implicit val ord: Ordering[SeqNo] = new Ordering[SeqNo] {
-    override def compare(x: SeqNo, y: SeqNo): Int = {
+  implicit val ord: Ordering[SeqNo] =
+    (x: SeqNo, y: SeqNo) => {
       val sgn = if (x.rawValue < y.rawValue) -1 else if (x.rawValue > y.rawValue) 1 else 0
       if (((x.rawValue - y.rawValue) * sgn) < 0L) -sgn else sgn
     }
-  }
 
 }
 
@@ -57,9 +56,8 @@ final case class SeqNo(rawValue: Long) extends Ordered[SeqNo] {
 
 @deprecated("Classic remoting is deprecated, use Artery", "Akka 2.6.0")
 object HasSequenceNumber {
-  implicit def seqOrdering[T <: HasSequenceNumber]: Ordering[T] = new Ordering[T] {
-    def compare(x: T, y: T) = x.seq.compare(y.seq)
-  }
+  implicit def seqOrdering[T <: HasSequenceNumber]: Ordering[T] =
+    (x: T, y: T) => x.seq.compare(y.seq)
 }
 
 /**

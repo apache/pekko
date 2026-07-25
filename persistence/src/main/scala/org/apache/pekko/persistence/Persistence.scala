@@ -14,7 +14,6 @@
 package org.apache.pekko.persistence
 
 import java.util.concurrent.atomic.AtomicReference
-import java.util.function.Consumer
 
 import scala.annotation.tailrec
 import scala.collection.immutable
@@ -268,19 +267,15 @@ class Persistence(val system: ExtendedActorSystem) extends Extension {
 
   config
     .getStringList("journal.auto-start-journals")
-    .forEach(new Consumer[String] {
-      override def accept(id: String): Unit = {
-        log.info("Auto-starting journal plugin `{}`", id)
-        journalFor(id)
-      }
+    .forEach((id: String) => {
+      log.info("Auto-starting journal plugin `{}`", id)
+      journalFor(id)
     })
   config
     .getStringList("snapshot-store.auto-start-snapshot-stores")
-    .forEach(new Consumer[String] {
-      override def accept(id: String): Unit = {
-        log.info("Auto-starting snapshot store `{}`", id)
-        snapshotStoreFor(id)
-      }
+    .forEach((id: String) => {
+      log.info("Auto-starting snapshot store `{}`", id)
+      snapshotStoreFor(id)
     })
 
   /**

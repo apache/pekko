@@ -160,11 +160,8 @@ object Member {
   /**
    * `Member` ordering type class, sorts members by host and port.
    */
-  implicit val ordering: Ordering[Member] = new Ordering[Member] {
-    def compare(a: Member, b: Member): Int = {
-      a.uniqueAddress.compare(b.uniqueAddress)
-    }
-  }
+  implicit val ordering: Ordering[Member] =
+    (a: Member, b: Member) => a.uniqueAddress.compare(b.uniqueAddress)
 
   /**
    * Sort members by age, i.e. using [[Member#isOlderThan]].

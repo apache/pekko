@@ -136,9 +136,6 @@ object SimpleDnsCache {
    * INTERNAL API
    */
   @InternalApi
-  private[io] def expiryEntryOrdering[K]() = new Ordering[ExpiryEntry[K]] {
-    override def compare(x: ExpiryEntry[K], y: ExpiryEntry[K]): Int = {
-      x.until.compareTo(y.until)
-    }
-  }
+  private[io] def expiryEntryOrdering[K](): Ordering[ExpiryEntry[K]] =
+    (x: ExpiryEntry[K], y: ExpiryEntry[K]) => x.until.compareTo(y.until)
 }

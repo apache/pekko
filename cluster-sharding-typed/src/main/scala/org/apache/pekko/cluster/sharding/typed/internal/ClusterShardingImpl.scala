@@ -193,13 +193,10 @@ import pekko.util.Timeout
         val shardCommandDelegator: ActorRef[scaladsl.ClusterSharding.ShardCommand] =
           shardCommandActors.computeIfAbsent(
             typeKey.name,
-            new java.util.function.Function[String, ActorRef[scaladsl.ClusterSharding.ShardCommand]] {
-              override def apply(t: String): ActorRef[scaladsl.ClusterSharding.ShardCommand] = {
-                system.systemActorOf(
-                  ShardCommandActor.behavior(stopMessage.getOrElse(PoisonPill)),
-                  URLEncoder.encode(typeKey.name, StandardCharsets.UTF_8) + "ShardCommandDelegator")
-              }
-            })
+            (_: String) =>
+              system.systemActorOf(
+                ShardCommandActor.behavior(stopMessage.getOrElse(PoisonPill)),
+                URLEncoder.encode(typeKey.name, StandardCharsets.UTF_8) + "ShardCommandDelegator"))
 
         def poisonPillInterceptor(behv: Behavior[M]): Behavior[M] = {
           stopMessage match {

@@ -13,7 +13,6 @@
 
 package org.apache.pekko.event
 
-import java.util.Comparator
 import java.util.concurrent.ConcurrentSkipListSet
 import java.util.concurrent.atomic.AtomicReference
 
@@ -93,9 +92,7 @@ trait PredicateClassifier { this: EventBus =>
 trait LookupClassification { this: EventBus =>
 
   protected final val subscribers = new Index[Classifier, Subscriber](mapSize(),
-    new Comparator[Subscriber] {
-      def compare(a: Subscriber, b: Subscriber): Int = compareSubscribers(a, b)
-    })
+    (a: Subscriber, b: Subscriber) => compareSubscribers(a, b))
 
   /**
    * This is a size hint for the number of Classifiers you expect to have (use powers of 2)
@@ -218,13 +215,11 @@ trait SubchannelClassification { this: EventBus =>
  */
 trait ScanningClassification { self: EventBus =>
   protected final val subscribers =
-    new ConcurrentSkipListSet[(Classifier, Subscriber)](new Comparator[(Classifier, Subscriber)] {
-      def compare(a: (Classifier, Subscriber), b: (Classifier, Subscriber)): Int =
-        compareClassifiers(a._1, b._1) match {
-          case 0     => compareSubscribers(a._2, b._2)
-          case other => other
-        }
-    })
+    new ConcurrentSkipListSet[(Classifier, Subscriber)]((a: (Classifier, Subscriber), b: (Classifier, Subscriber)) =>
+      compareClassifiers(a._1, b._1) match {
+        case 0     => compareSubscribers(a._2, b._2)
+        case other => other
+      })
 
   /**
    * Provides a total ordering of Classifiers (think java.util.Comparator.compare)

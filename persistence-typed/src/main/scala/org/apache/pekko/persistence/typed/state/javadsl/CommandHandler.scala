@@ -169,9 +169,7 @@ final class CommandHandlerBuilder[Command, State]() {
 
 object CommandHandlerBuilderByState {
 
-  private val _trueStatePredicate: Predicate[Any] = new Predicate[Any] {
-    override def test(t: Any): Boolean = true
-  }
+  private val _trueStatePredicate: Predicate[Any] = (_: Any) => true
 
   private def trueStatePredicate[S]: Predicate[S] = _trueStatePredicate.asInstanceOf[Predicate[S]]
 
@@ -245,9 +243,7 @@ final class CommandHandlerBuilderByState[Command, S <: State, State] @InternalAp
       predicate: Predicate[Command],
       handler: JFunction[Command, Effect[State]]): CommandHandlerBuilderByState[Command, S, State] = {
     addCase(cmd => predicate.test(cmd),
-      new BiFunction[S, Command, Effect[State]] {
-        override def apply(state: S, cmd: Command): Effect[State] = handler(cmd)
-      })
+      (_: S, cmd: Command) => handler(cmd))
     this
   }
 
@@ -281,9 +277,7 @@ final class CommandHandlerBuilderByState[Command, S <: State, State] @InternalAp
       commandClass: Class[C],
       handler: JFunction[C, Effect[State]]): CommandHandlerBuilderByState[Command, S, State] = {
     onCommand[C](commandClass,
-      new BiFunction[S, C, Effect[State]] {
-        override def apply(state: S, cmd: C): Effect[State] = handler(cmd)
-      })
+      (_: S, cmd: C) => handler(cmd))
   }
 
   /**
@@ -299,9 +293,7 @@ final class CommandHandlerBuilderByState[Command, S <: State, State] @InternalAp
       commandClass: Class[C],
       handler: Supplier[Effect[State]]): CommandHandlerBuilderByState[Command, S, State] = {
     onCommand[C](commandClass,
-      new BiFunction[S, C, Effect[State]] {
-        override def apply(state: S, cmd: C): Effect[State] = handler.get()
-      })
+      (_: S, _: C) => handler.get())
   }
 
   /**
@@ -343,9 +335,7 @@ final class CommandHandlerBuilderByState[Command, S <: State, State] @InternalAp
    */
   def onAnyCommand(handler: JFunction[Command, Effect[State]]): CommandHandler[Command, State] = {
     addCase(_ => true,
-      new BiFunction[S, Command, Effect[State]] {
-        override def apply(state: S, cmd: Command): Effect[State] = handler(cmd)
-      })
+      (_: S, cmd: Command) => handler(cmd))
     build()
   }
 
@@ -368,9 +358,7 @@ final class CommandHandlerBuilderByState[Command, S <: State, State] @InternalAp
    */
   def onAnyCommand(handler: Supplier[Effect[State]]): CommandHandler[Command, State] = {
     addCase(_ => true,
-      new BiFunction[S, Command, Effect[State]] {
-        override def apply(state: S, cmd: Command): Effect[State] = handler.get()
-      })
+      (_: S, _: Command) => handler.get())
     build()
   }
 

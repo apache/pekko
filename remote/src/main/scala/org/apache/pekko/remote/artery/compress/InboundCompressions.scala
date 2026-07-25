@@ -121,24 +121,22 @@ private[remote] final class InboundCompressionsImpl(
 
   private val _actorRefsIns = new Long2ObjectHashMap[InboundActorRefCompression]()
   private val _inboundActorRefsLog = Logging(system, classOf[InboundActorRefCompression])
-  private val createInboundActorRefsForOrigin = new LongFunction[InboundActorRefCompression] {
-    override def apply(originUid: Long): InboundActorRefCompression = {
+  private val createInboundActorRefsForOrigin: LongFunction[InboundActorRefCompression] =
+    (originUid: Long) => {
       val actorRefHitters = new TopHeavyHitters[ActorRef](settings.ActorRefs.Max)
       new InboundActorRefCompression(_inboundActorRefsLog, settings, originUid, inboundContext, actorRefHitters)
     }
-  }
   private def actorRefsIn(originUid: Long): InboundActorRefCompression =
     _actorRefsIns.computeIfAbsent(originUid, createInboundActorRefsForOrigin)
 
   private val _classManifestsIns = new Long2ObjectHashMap[InboundManifestCompression]()
 
   private val _inboundManifestLog = Logging(system, classOf[InboundManifestCompression])
-  private val createInboundManifestsForOrigin = new LongFunction[InboundManifestCompression] {
-    override def apply(originUid: Long): InboundManifestCompression = {
+  private val createInboundManifestsForOrigin: LongFunction[InboundManifestCompression] =
+    (originUid: Long) => {
       val manifestHitters = new TopHeavyHitters[String](settings.Manifests.Max)
       new InboundManifestCompression(_inboundManifestLog, settings, originUid, inboundContext, manifestHitters)
     }
-  }
   private def classManifestsIn(originUid: Long): InboundManifestCompression =
     _classManifestsIns.computeIfAbsent(originUid, createInboundManifestsForOrigin)
 
