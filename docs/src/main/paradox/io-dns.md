@@ -27,7 +27,7 @@ Users should pick one of the built in extensions.
 
 @@@
 
-Pekko DNS is a pluggable way to interact with DNS. Implementations much implement `org.apache.pekko.io.DnsProvider` and provide a configuration
+Pekko DNS is a pluggable way to interact with DNS. Implementations must implement `org.apache.pekko.io.DnsProvider` and provide a configuration
 block that specifies the implementation via `provider-object`.
 
 @@@ note { title="DNS via Pekko Discovery" }

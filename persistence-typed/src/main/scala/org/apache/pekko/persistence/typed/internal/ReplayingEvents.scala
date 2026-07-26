@@ -28,6 +28,7 @@ import pekko.event.Logging
 import pekko.persistence._
 import pekko.persistence.JournalProtocol._
 import pekko.persistence.typed.EmptyEventSeq
+import pekko.persistence.typed.EventSeq
 import pekko.persistence.typed.EventsSeq
 import pekko.persistence.typed.RecoveryCompleted
 import pekko.persistence.typed.RecoveryFailed
@@ -138,7 +139,9 @@ private[pekko] final class ReplayingEvents[C, E, S](
         case ReplayedMessage(repr) =>
           var eventForErrorReporting: OptionVal[Any] = OptionVal.None
           try {
-            val eventSeq = setup.eventAdapter.fromJournal(repr.payload, repr.manifest)
+            val eventSeq =
+              if (repr.payload == FilteredPayload) EventSeq.empty // ignore FilteredPayload
+              else setup.eventAdapter.fromJournal(repr.payload, repr.manifest)
             def handleEvent(event: E): Unit = {
               eventForErrorReporting = OptionVal.Some(event)
               state = state.copy(seqNr = repr.sequenceNr, eventsReplayed = state.eventsReplayed + 1)
