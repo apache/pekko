@@ -492,3 +492,78 @@ abstract class AbstractActorWithUnrestrictedStash extends AbstractActor with Abs
  * @since 2.0.0
  */
 abstract class UntypedAbstractActorWithUnrestrictedStash extends UntypedAbstractActor with AbstractActorStashSupport
+
+/**
+ * Java API: compatible with lambda expressions
+ *
+ * Actor base class that mixes in logging and a stash.
+ * By default requests a `DequeBasedMessageQueueSemantics` mailbox.
+ *
+ * @see [[pekko.actor.AbstractActorWithStash]] for details on how `Stash` works.
+ *
+ * @since 2.0.0
+ */
+abstract class AbstractLoggingActorWithStash extends AbstractActor with AbstractActorStashSupport
+    with RequiresMessageQueue[DequeBasedMessageQueueSemantics] with ActorLogging
+
+/**
+ * Java API: compatible with lambda expressions
+ *
+ * Actor base class that mixes in logging and a stash.
+ * By default requests a `DequeBasedMessageQueueSemantics` mailbox.
+ *
+ * @see [[pekko.actor.AbstractActorWithStash]] for details on how `Stash` works.
+ *
+ * @since 2.0.0
+ */
+abstract class UntypedAbstractLoggingActorWithStash extends UntypedAbstractActor with AbstractActorStashSupport
+    with RequiresMessageQueue[DequeBasedMessageQueueSemantics] with ActorLogging
+
+/**
+ * Java API: compatible with lambda expressions
+ *
+ * Actor base class that mixes in logging and an unbounded stash.
+ *
+ * @see [[pekko.actor.AbstractActorWithUnboundedStash]] for details on how `Stash` works.
+ *
+ * @since 2.0.0
+ */
+abstract class AbstractLoggingActorWithUnboundedStash extends AbstractActor with AbstractActorStashSupport
+    with RequiresMessageQueue[UnboundedDequeBasedMessageQueueSemantics] with ActorLogging
+
+/**
+ * Java API: compatible with lambda expressions
+ *
+ * Actor base class that mixes in logging and an unbounded stash.
+ *
+ * @see [[pekko.actor.AbstractActorWithUnboundedStash]] for details on how `Stash` works.
+ *
+ * @since 2.0.0
+ */
+abstract class UntypedAbstractLoggingActorWithUnboundedStash extends UntypedAbstractActor
+    with AbstractActorStashSupport
+    with RequiresMessageQueue[UnboundedDequeBasedMessageQueueSemantics] with ActorLogging
+
+/**
+ * Java API: compatible with lambda expressions
+ *
+ * Actor base class that mixes in logging and an unrestricted stash.
+ *
+ * @see [[pekko.actor.AbstractActorWithUnrestrictedStash]] for details on how `Stash` works.
+ *
+ * @since 2.0.0
+ */
+abstract class AbstractLoggingActorWithUnrestrictedStash extends AbstractActor with AbstractActorStashSupport
+    with ActorLogging
+
+/**
+ * Java API: compatible with lambda expressions
+ *
+ * Actor base class that mixes in logging and an unrestricted stash.
+ *
+ * @see [[pekko.actor.AbstractActorWithUnrestrictedStash]] for details on how `Stash` works.
+ *
+ * @since 2.0.0
+ */
+abstract class UntypedAbstractLoggingActorWithUnrestrictedStash
+    extends UntypedAbstractActor with AbstractActorStashSupport with ActorLogging
