@@ -53,8 +53,7 @@ object CapabilityFlag {
     new CapabilityFlag { override def value = v }
 }
 
-/** Not for user extension */
-@DoNotInherit sealed trait CapabilityFlags
+sealed trait CapabilityFlags
 
 //#journal-flags
 trait JournalCapabilityFlags extends CapabilityFlags {

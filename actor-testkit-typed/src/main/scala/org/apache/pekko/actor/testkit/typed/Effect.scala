@@ -258,7 +258,8 @@ object Effect {
 
   case object ReceiveTimeoutCancelled extends ReceiveTimeoutCancelled
 
-  sealed abstract class ReceiveTimeoutCancelled extends Effect
+  /** Not for user extension */
+  @DoNotInherit sealed abstract class ReceiveTimeoutCancelled extends Effect
 
   /**
    * The behavior used `context.scheduleOnce` to schedule `message` to be sent to `target` after `delay`
@@ -281,7 +282,8 @@ object Effect {
   object TimerScheduled {
     import scala.jdk.DurationConverters._
 
-    sealed trait TimerMode
+    /** Not for user extension */
+    @DoNotInherit sealed trait TimerMode
     case object FixedRateMode extends TimerMode
     case class FixedRateModeWithInitialDelay(initialDelay: FiniteDuration) extends TimerMode
     case object FixedDelayMode extends TimerMode
@@ -308,6 +310,7 @@ object Effect {
 
   /**
    * Used for NoEffects expectations by type
+   * Not for user extension
    */
-  sealed abstract class NoEffects extends Effect
+  @DoNotInherit sealed abstract class NoEffects extends Effect
 }
