@@ -22,9 +22,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletionStage;
 import java.util.concurrent.TimeUnit;
 import org.apache.pekko.japi.Pair;
 import org.apache.pekko.japi.pf.PFBuilder;
+import org.apache.pekko.stream.ClosedShape;
 import org.apache.pekko.stream.StreamTestJupiter;
 import org.apache.pekko.testkit.PekkoJUnitJupiterActorSystemResource;
 import org.apache.pekko.testkit.PekkoSpec;
@@ -154,5 +156,33 @@ public class SourceWithContextTest extends StreamTestJupiter {
             .get(3, TimeUnit.SECONDS);
 
     assertEquals(List.of(new Pair<>(1, "one")), timedResult);
+  }
+
+  @Test
+  public void mustConnectPairTypedOutletToJavaSinkInGraphDsl() throws Exception {
+    SourceWithContext<Integer, String, String> contextSource =
+        Source.from(List.of(3, 5))
+            .mapMaterializedValue(ignored -> "upstream-control")
+            .asSourceWithContext(value -> "request-" + value)
+            .map(value -> value * 10);
+    Sink<Pair<Integer, String>, CompletionStage<List<Pair<Integer, String>>>> pairSink = Sink.seq();
+
+    RunnableGraph<Pair<String, CompletionStage<List<Pair<Integer, String>>>>> graph =
+        RunnableGraph.fromGraph(
+            GraphDSL.create(
+                contextSource,
+                pairSink,
+                Keep.both(),
+                (builder, sourceShape, sinkShape) -> {
+                  builder.from(sourceShape).to(sinkShape);
+                  return ClosedShape.getInstance();
+                }));
+
+    Pair<String, CompletionStage<List<Pair<Integer, String>>>> materialized = graph.run(system);
+
+    assertEquals("upstream-control", materialized.first());
+    assertEquals(
+        List.of(new Pair<>(30, "request-3"), new Pair<>(50, "request-5")),
+        materialized.second().toCompletableFuture().get(3, TimeUnit.SECONDS));
   }
 }

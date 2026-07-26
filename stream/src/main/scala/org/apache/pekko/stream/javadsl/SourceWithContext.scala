@@ -82,10 +82,13 @@ object SourceWithContext {
  * use [[SourceWithContext#via]] to manually provide the context propagation for otherwise unsupported
  * operations.
  *
+ * When used as a [[Graph]], its outlet emits [[pekko.japi.Pair]] elements, matching [[SourceWithContext#asSource]].
+ *
  * Can be created by calling [[Source.asSourceWithContext]]
  */
 final class SourceWithContext[+Out, +Ctx, +Mat](delegate: scaladsl.SourceWithContext[Out, Ctx, Mat])
-    extends GraphDelegate(delegate) {
+    extends GraphDelegate[SourceShape[Pair[Out @uncheckedVariance, Ctx @uncheckedVariance]], Mat @uncheckedVariance](
+      delegate.asSource.map { case (out, ctx) => Pair(out, ctx) }.asJava) {
 
   /**
    * Transform this flow by the regular flow. The given flow must support manual context propagation by
@@ -103,8 +106,7 @@ final class SourceWithContext[+Out, +Ctx, +Mat](delegate: scaladsl.SourceWithCon
   def via[Out2, Ctx2, Mat2](
       viaFlow: Graph[FlowShape[Pair[Out @uncheckedVariance, Ctx @uncheckedVariance], Pair[Out2, Ctx2]], Mat2])
       : SourceWithContext[Out2, Ctx2, Mat] =
-    viaScala(_.via(pekko.stream.scaladsl.Flow[(Out, Ctx)].map { case (o, c) => Pair(o, c) }.via(viaFlow).map(
-      _.toScala)))
+    SourceWithContext.fromPairs(asSource().via(viaFlow))
 
   /**
    * Transform this flow by the regular flow. The given flow works on the data portion of the stream and
@@ -152,7 +154,7 @@ final class SourceWithContext[+Out, +Ctx, +Mat](delegate: scaladsl.SourceWithCon
    * stream of a pair of (data, context).
    */
   def asSource(): Source[Pair[Out @uncheckedVariance, Ctx @uncheckedVariance], Mat @uncheckedVariance] =
-    delegate.asSource.map { case (o, c) => Pair(o, c) }.asJava
+    Source.fromGraph(this)
 
   // remaining operations in alphabetic order
 
@@ -565,7 +567,7 @@ final class SourceWithContext[+Out, +Ctx, +Mat](delegate: scaladsl.SourceWithCon
    */
   def to[Mat2](
       sink: Graph[SinkShape[Pair[Out @uncheckedVariance, Ctx @uncheckedVariance]], Mat2]): javadsl.RunnableGraph[Mat] =
-    RunnableGraph.fromGraph(asScala.asSource.map { case (o, e) => Pair(o, e) }.to(sink))
+    asSource().to(sink)
 
   /**
    * Connect this [[pekko.stream.javadsl.SourceWithContext]] to a [[pekko.stream.javadsl.Sink]],
@@ -574,7 +576,7 @@ final class SourceWithContext[+Out, +Ctx, +Mat](delegate: scaladsl.SourceWithCon
   def toMat[Mat2, Mat3](
       sink: Graph[SinkShape[Pair[Out @uncheckedVariance, Ctx @uncheckedVariance]], Mat2],
       combine: function.Function2[Mat, Mat2, Mat3]): javadsl.RunnableGraph[Mat3] =
-    RunnableGraph.fromGraph(asScala.asSource.map { case (o, e) => Pair(o, e) }.toMat(sink)(combinerToScala(combine)))
+    asSource().toMat(sink, combine)
 
   /**
    * Connect this [[pekko.stream.javadsl.SourceWithContext]] to a [[pekko.stream.javadsl.Sink]] and run it.

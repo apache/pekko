@@ -37,3 +37,8 @@ list before a second param list. Instead of `watchTermination(){ ... }`, you now
 In the Java API, `FSMTransitionHandlerBuilder.build` and `FSMTransitionHandlerBuilder.state` now use
 `pekko.japi.Pair` instead of `scala.Tuple2`. Java users need to update their code to use `Pair` instead of `Tuple2`.
 ([PR3378](https://github.com/apache/pekko/pull/3378))
+
+The Java DSL `SourceWithContext` graph shape now uses `pekko.japi.Pair` instead of `scala.Tuple2`.
+Java code that passes a `SourceWithContext` directly to `GraphDSL` must use `Pair`-typed stages.
+Code that converts it with `asSource()` already uses `Pair` and requires no changes.
+([PR3388](https://github.com/apache/pekko/pull/3388))

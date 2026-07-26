@@ -20,6 +20,8 @@ import scala.jdk.CollectionConverters._
 import scala.util.control.NoStackTrace
 
 import org.apache.pekko
+import pekko.NotUsed
+import pekko.stream.impl.TraversalTestUtils
 import pekko.stream.testkit.StreamSpec
 import pekko.stream.testkit.scaladsl.TestSink
 
@@ -62,6 +64,28 @@ class SourceWithContextSpec extends StreamSpec {
         .request(1)
         .expectNext("a")
         .expectComplete()
+    }
+
+    "add only the requested operators to the Java DSL graph" in {
+      def moduleCount[T](source: Source[T, NotUsed]): Int =
+        TraversalTestUtils
+          .testMaterialize(source.to(Sink.ignore).traversalBuilder)
+          .attributesAssignments
+          .size
+
+      val source = Source.single(1).asSourceWithContext(_.toString).asJava
+      val transformed = source
+        .map((value: Int) => value + 1)
+        .map((value: Int) => value + 1)
+        .map((value: Int) => value + 1)
+
+      val scalaModules = moduleCount(source.asScala.asSource)
+      val sourceModules = moduleCount(source.asSource().asScala)
+      val transformedModules = moduleCount(transformed.asSource().asScala)
+      withClue(s"scala=$scalaModules, java=$sourceModules, transformed=$transformedModules: ") {
+        sourceModules - scalaModules shouldBe 1
+        transformedModules - sourceModules shouldBe 3
+      }
     }
 
     "pass through contexts using map and filter" in {
