@@ -19,6 +19,7 @@ import scala.annotation.varargs
 import scala.collection.immutable
 
 import org.apache.pekko
+import pekko.annotation.DoNotInherit
 import pekko.util.ByteString
 
 /**
@@ -38,20 +39,24 @@ object TLSRole {
    */
   def server: TLSRole = Server
 }
-sealed abstract class TLSRole
+
+/** Not for user extension */
+@DoNotInherit sealed abstract class TLSRole
 
 /**
  * The client is usually the side that consumes the service provided by its
  * interlocutor. The precise interpretation of this role is protocol specific.
+ * Not for user extension
  */
-sealed abstract class Client extends TLSRole
+@DoNotInherit sealed abstract class Client extends TLSRole
 case object Client extends Client
 
 /**
  * The server is usually the side the provides the service to its interlocutor.
  * The precise interpretation of this role is protocol specific.
+ * Not for user extension
  */
-sealed abstract class Server extends TLSRole
+@DoNotInherit sealed abstract class Server extends TLSRole
 case object Server extends Server
 
 /**
@@ -85,8 +90,9 @@ case object Server extends Server
  *    side unless the receiving side has already canceled
  *  - [[IgnoreBoth]] means to ignore the first termination signal—be that
  *    cancellation or completion—and only act upon the second one
+ * Not for user extension
  */
-sealed abstract class TLSClosing {
+@DoNotInherit sealed abstract class TLSClosing {
   def ignoreCancel: Boolean
   def ignoreComplete: Boolean
 }
@@ -115,8 +121,9 @@ object TLSClosing {
 
 /**
  * see [[TLSClosing]]
+ * Not for user extension
  */
-sealed abstract class EagerClose extends TLSClosing {
+@DoNotInherit sealed abstract class EagerClose extends TLSClosing {
   override def ignoreCancel = false
   override def ignoreComplete = false
 }
@@ -124,8 +131,9 @@ case object EagerClose extends EagerClose
 
 /**
  * see [[TLSClosing]]
+ * Not for user extension
  */
-sealed abstract class IgnoreCancel extends TLSClosing {
+@DoNotInherit sealed abstract class IgnoreCancel extends TLSClosing {
   override def ignoreCancel = true
   override def ignoreComplete = false
 }
@@ -133,8 +141,9 @@ case object IgnoreCancel extends IgnoreCancel
 
 /**
  * see [[TLSClosing]]
+ * Not for user extension
  */
-sealed abstract class IgnoreComplete extends TLSClosing {
+@DoNotInherit sealed abstract class IgnoreComplete extends TLSClosing {
   override def ignoreCancel = false
   override def ignoreComplete = true
 }
@@ -142,8 +151,9 @@ case object IgnoreComplete extends IgnoreComplete
 
 /**
  * see [[TLSClosing]]
+ * Not for user extension
  */
-sealed abstract class IgnoreBoth extends TLSClosing {
+@DoNotInherit sealed abstract class IgnoreBoth extends TLSClosing {
   override def ignoreCancel = true
   override def ignoreComplete = true
 }
@@ -154,8 +164,9 @@ object TLSProtocol {
   /**
    * This is the supertype of all messages that the SslTls operator emits on the
    * plaintext side.
+   * Not for user extension
    */
-  sealed trait SslTlsInbound
+  @DoNotInherit sealed trait SslTlsInbound
 
   /**
    * If the underlying transport is closed before the final TLS closure command
@@ -164,8 +175,9 @@ object TLSProtocol {
    * translated into this message when encountered. Most of the time this occurs
    * not because of a malicious attacker but due to a connection abort or a
    * misbehaving communication peer.
+   * Not for user extension
    */
-  sealed abstract class SessionTruncated extends SslTlsInbound
+  @DoNotInherit sealed abstract class SessionTruncated extends SslTlsInbound
 
   case object SessionTruncated extends SessionTruncated
 
@@ -186,8 +198,9 @@ object TLSProtocol {
   /**
    * This is the supertype of all messages that the SslTls operator accepts on its
    * plaintext side.
+   * Not for user extension
    */
-  sealed trait SslTlsOutbound
+  @DoNotInherit sealed trait SslTlsOutbound
 
   /**
    * Initiate a new session negotiation. Any [[SendBytes]] commands following
@@ -269,8 +282,9 @@ object TLSProtocol {
  * verification.
  *
  * See the documentation for `SSLEngine::setWantClientAuth` for more information.
+ * Not for user extension
  */
-sealed abstract class TLSClientAuth
+@DoNotInherit sealed abstract class TLSClientAuth
 object TLSClientAuth {
   case object None extends TLSClientAuth
   case object Want extends TLSClientAuth

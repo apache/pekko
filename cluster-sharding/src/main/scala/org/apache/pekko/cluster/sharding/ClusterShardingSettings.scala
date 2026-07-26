@@ -20,7 +20,7 @@ import scala.jdk.DurationConverters._
 import org.apache.pekko
 import pekko.actor.ActorSystem
 import pekko.actor.NoSerializationVerificationNeeded
-import pekko.annotation.InternalApi
+import pekko.annotation.{ DoNotInherit, InternalApi }
 import pekko.cluster.Cluster
 import pekko.cluster.singleton.ClusterSingletonManagerSettings
 import pekko.coordination.lease.LeaseUsageSettings
@@ -258,7 +258,8 @@ object ClusterShardingSettings {
         }
     }
 
-    sealed trait PolicySettings
+    /** Not for user extension */
+    @DoNotInherit sealed trait PolicySettings
 
     object LeastRecentlyUsedSettings {
       val defaults: LeastRecentlyUsedSettings = new LeastRecentlyUsedSettings(segmentedSettings = None)
@@ -356,7 +357,8 @@ object ClusterShardingSettings {
           }
       }
 
-      sealed trait FilterSettings
+      /** Not for user extension */
+      @DoNotInherit sealed trait FilterSettings
 
       object FrequencySketchSettings {
         val defaults =
@@ -463,7 +465,8 @@ object ClusterShardingSettings {
           }
       }
 
-      sealed trait OptimizerSettings
+      /** Not for user extension */
+      @DoNotInherit sealed trait OptimizerSettings
 
       object HillClimbingSettings {
         val defaults: HillClimbingSettings = new HillClimbingSettings(

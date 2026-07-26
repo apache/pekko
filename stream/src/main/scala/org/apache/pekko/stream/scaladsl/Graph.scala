@@ -23,6 +23,7 @@ import scala.util.control.{ NoStackTrace, NonFatal }
 
 import org.apache.pekko
 import pekko.NotUsed
+import pekko.annotation.DoNotInherit
 import pekko.annotation.InternalApi
 import pekko.stream._
 import pekko.stream.ActorAttributes.SupervisionStrategy
@@ -1841,7 +1842,8 @@ object GraphDSL extends GraphApply {
       else junction.in(n)
     }
 
-    sealed trait CombinerBase[+T] extends Any {
+    /** Not for user extension */
+    @DoNotInherit sealed trait CombinerBase[+T] extends Any {
       def importAndGetPort(b: Builder[?]): Outlet[T @uncheckedVariance]
 
       def ~>[U >: T](to: Inlet[U])(implicit b: Builder[?]): Unit =
@@ -1884,7 +1886,8 @@ object GraphDSL extends GraphApply {
         b.addEdge(importAndGetPort(b), to.in)
     }
 
-    sealed trait ReverseCombinerBase[T] extends Any {
+    /** Not for user extension */
+    @DoNotInherit sealed trait ReverseCombinerBase[T] extends Any {
       def importAndGetPortReverse(b: Builder[?]): Inlet[T]
 
       def <~[U <: T](from: Outlet[U])(implicit b: Builder[?]): Unit =

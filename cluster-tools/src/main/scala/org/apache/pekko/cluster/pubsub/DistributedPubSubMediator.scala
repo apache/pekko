@@ -219,7 +219,8 @@ object DistributedPubSubMediator {
     override def message: Any = msg
   }
 
-  sealed abstract class GetTopics
+  /** Not for user extension */
+  @DoNotInherit sealed abstract class GetTopics
 
   /**
    * Send this message to the mediator and it will reply with
@@ -251,7 +252,8 @@ object DistributedPubSubMediator {
     }
   }
 
-  sealed abstract class Count
+  /** Not for user extension */
+  @DoNotInherit sealed abstract class Count
 
   /**
    * Scala API: Send this message to the mediator and it will reply with an `Int` of

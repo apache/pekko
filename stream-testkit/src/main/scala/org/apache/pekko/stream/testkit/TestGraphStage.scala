@@ -17,6 +17,7 @@ import scala.util.control.NonFatal
 
 import org.apache.pekko
 import pekko.actor.NoSerializationVerificationNeeded
+import pekko.annotation.DoNotInherit
 import pekko.stream._
 import pekko.stream.scaladsl.{ Sink, Source }
 import pekko.stream.stage.{ GraphStageWithMaterializedValue, InHandler, OutHandler }
@@ -26,7 +27,9 @@ import pekko.testkit.TestProbe
  * Messages emitted after the corresponding `stageUnderTest` methods has been invoked.
  */
 object GraphStageMessages {
-  sealed trait StageMessage
+
+  /** Not for user extension */
+  @DoNotInherit sealed trait StageMessage
   case object Push extends StageMessage with NoSerializationVerificationNeeded
   case object UpstreamFinish extends StageMessage with NoSerializationVerificationNeeded
   case class Failure(ex: Throwable) extends StageMessage with NoSerializationVerificationNeeded

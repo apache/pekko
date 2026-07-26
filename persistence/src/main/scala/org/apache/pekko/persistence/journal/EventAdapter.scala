@@ -16,6 +16,9 @@ package org.apache.pekko.persistence.journal
 import scala.annotation.varargs
 import scala.collection.immutable
 
+import org.apache.pekko
+import pekko.annotation.DoNotInherit
+
 /**
  * An [[EventAdapter]] is both a [[WriteEventAdapter]] and a [[ReadEventAdapter]].
  * Facility to convert from and to specialised data models, as may be required by specialized persistence Journals.
@@ -93,7 +96,8 @@ trait ReadEventAdapter {
   // #event-adapter-api
 }
 
-sealed abstract class EventSeq {
+/** Not for user extension */
+@DoNotInherit sealed abstract class EventSeq {
   def events: immutable.Seq[Any]
 }
 object EventSeq {
@@ -113,7 +117,8 @@ final case class SingleEventSeq(event: Any) extends EventSeq { // TODO try to ma
   override def toString = s"SingleEventSeq($event)"
 }
 
-sealed trait EmptyEventSeq extends EventSeq
+/** Not for user extension */
+@DoNotInherit sealed trait EmptyEventSeq extends EventSeq
 object EmptyEventSeq extends EmptyEventSeq {
   override def events = Nil
 }

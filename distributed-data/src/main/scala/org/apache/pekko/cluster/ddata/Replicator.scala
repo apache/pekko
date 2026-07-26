@@ -51,6 +51,7 @@ import pekko.actor.Props
 import pekko.actor.ReceiveTimeout
 import pekko.actor.SupervisorStrategy
 import pekko.actor.Terminated
+import pekko.annotation.DoNotInherit
 import pekko.annotation.InternalApi
 import pekko.cluster.Cluster
 import pekko.cluster.ClusterEvent._
@@ -370,7 +371,8 @@ object Replicator {
 
   val DefaultMajorityMinCap: Int = 0
 
-  sealed trait ReadConsistency {
+  /** Not for user extension */
+  @DoNotInherit sealed trait ReadConsistency {
     def timeout: FiniteDuration
   }
   case object ReadLocal extends ReadConsistency {
@@ -414,7 +416,8 @@ object Replicator {
     def this(timeout: java.time.Duration) = this(timeout.toScala)
   }
 
-  sealed trait WriteConsistency {
+  /** Not for user extension */
+  @DoNotInherit sealed trait WriteConsistency {
     def timeout: FiniteDuration
   }
   case object WriteLocal extends WriteConsistency {
@@ -488,7 +491,8 @@ object Replicator {
     }
   }
 
-  sealed trait Command[A <: ReplicatedData] {
+  /** Not for user extension */
+  @DoNotInherit sealed trait Command[A <: ReplicatedData] {
     def key: Key[A]
   }
 
@@ -516,7 +520,9 @@ object Replicator {
       this(key, consistency, Option(request.orElse(null)))
 
   }
-  sealed abstract class GetResponse[A <: ReplicatedData] extends NoSerializationVerificationNeeded {
+
+  /** Not for user extension */
+  @DoNotInherit sealed abstract class GetResponse[A <: ReplicatedData] extends NoSerializationVerificationNeeded {
     def key: Key[A]
     def request: Option[Any]
 
@@ -594,8 +600,10 @@ object Replicator {
 
   /**
    * @see [[Replicator.Subscribe]]
+   *
+   * Not for user extension
    */
-  sealed trait SubscribeResponse[A <: ReplicatedData] extends NoSerializationVerificationNeeded {
+  @DoNotInherit sealed trait SubscribeResponse[A <: ReplicatedData] extends NoSerializationVerificationNeeded {
     def key: Key[A]
   }
 
@@ -712,7 +720,8 @@ object Replicator {
 
   }
 
-  sealed abstract class UpdateResponse[A <: ReplicatedData] extends NoSerializationVerificationNeeded {
+  /** Not for user extension */
+  @DoNotInherit sealed abstract class UpdateResponse[A <: ReplicatedData] extends NoSerializationVerificationNeeded {
     def key: Key[A]
     def request: Option[Any]
 
@@ -722,7 +731,9 @@ object Replicator {
   final case class UpdateSuccess[A <: ReplicatedData](key: Key[A], request: Option[Any])
       extends UpdateResponse[A]
       with DeadLetterSuppression
-  sealed abstract class UpdateFailure[A <: ReplicatedData] extends UpdateResponse[A]
+
+  /** Not for user extension */
+  @DoNotInherit sealed abstract class UpdateFailure[A <: ReplicatedData] extends UpdateResponse[A]
 
   /**
    * The direct replication of the [[Update]] could not be fulfill according to
@@ -789,7 +800,8 @@ object Replicator {
       this(key, consistency, Option(request.orElse(null)))
   }
 
-  sealed trait DeleteResponse[A <: ReplicatedData] extends NoSerializationVerificationNeeded {
+  /** Not for user extension */
+  @DoNotInherit sealed trait DeleteResponse[A <: ReplicatedData] extends NoSerializationVerificationNeeded {
     def key: Key[A]
     def request: Option[Any]
 

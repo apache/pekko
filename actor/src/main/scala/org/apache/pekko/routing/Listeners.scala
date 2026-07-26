@@ -17,8 +17,10 @@ import java.util.{ Set, TreeSet }
 
 import org.apache.pekko
 import pekko.actor.{ Actor, ActorRef }
+import pekko.annotation.DoNotInherit
 
-sealed trait ListenerMessage
+/** Not for user extension */
+@DoNotInherit sealed trait ListenerMessage
 final case class Listen(listener: ActorRef) extends ListenerMessage
 final case class Deafen(listener: ActorRef) extends ListenerMessage
 final case class WithListeners(f: (ActorRef) => Unit) extends ListenerMessage

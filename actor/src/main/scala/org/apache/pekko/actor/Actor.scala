@@ -22,7 +22,7 @@ import scala.util.control.NoStackTrace
 
 import org.apache.pekko
 import pekko.PekkoException
-import pekko.annotation.InternalApi
+import pekko.annotation.{ DoNotInherit, InternalApi }
 import pekko.event.LoggingAdapter
 
 /**
@@ -310,7 +310,9 @@ final case class UnhandledMessage(
  * Used for internal ACKing protocol. But exposed as utility class for user-specific ACKing protocols as well.
  */
 object Status {
-  sealed trait Status extends Serializable
+
+  /** Not for user extension */
+  @DoNotInherit sealed trait Status extends Serializable
 
   /**
    * This class/message type is preferably used to indicate success of some operation performed.

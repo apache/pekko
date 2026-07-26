@@ -19,6 +19,7 @@ import scala.runtime.AbstractPartialFunction
 import scala.util.control.NoStackTrace
 
 import org.apache.pekko
+import pekko.annotation.DoNotInherit
 import pekko.util.Collections.EmptyImmutableSeq
 
 /**
@@ -36,7 +37,9 @@ object Pair {
 }
 
 object JavaPartialFunction {
-  sealed abstract class NoMatchException extends RuntimeException with NoStackTrace
+
+  /** Not for user extension */
+  @DoNotInherit sealed abstract class NoMatchException extends RuntimeException with NoStackTrace
   case object NoMatch extends NoMatchException
   final def noMatch(): RuntimeException = NoMatch
 }

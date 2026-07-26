@@ -36,6 +36,7 @@ import scala.annotation.tailrec
 import scala.collection.immutable
 
 import org.apache.pekko
+import pekko.annotation.DoNotInherit
 import pekko.annotation.InternalApi
 import pekko.cluster.UniqueAddress
 import pekko.util.HashCode
@@ -68,7 +69,9 @@ object ORSet {
    */
   @InternalApi private[pekko] type Dot = VersionVector
 
-  sealed trait DeltaOp extends ReplicatedDelta with RequiresCausalDeliveryOfDeltas with ReplicatedDataSerialization {
+  /** Not for user extension */
+  @DoNotInherit sealed trait DeltaOp extends ReplicatedDelta with RequiresCausalDeliveryOfDeltas
+      with ReplicatedDataSerialization {
     type T = DeltaOp
   }
 

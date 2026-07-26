@@ -29,6 +29,7 @@ import pekko.actor.typed.delivery.internal.WorkPullingProducerControllerImpl
 import pekko.actor.typed.receptionist.ServiceKey
 import pekko.actor.typed.scaladsl.Behaviors
 import pekko.annotation.ApiMayChange
+import pekko.annotation.DoNotInherit
 
 import com.typesafe.config.Config
 
@@ -111,7 +112,8 @@ object WorkPullingProducerController {
 
   import WorkPullingProducerControllerImpl.UnsealedInternalCommand
 
-  sealed trait Command[A] extends UnsealedInternalCommand
+  /** Not for user extension */
+  @DoNotInherit sealed trait Command[A] extends UnsealedInternalCommand
 
   /**
    * Initial message from the producer actor. The `producer` is typically constructed

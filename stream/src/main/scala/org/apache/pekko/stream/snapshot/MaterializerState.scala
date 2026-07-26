@@ -160,7 +160,9 @@ sealed trait LogicSnapshot {
 
 @ApiMayChange
 object ConnectionSnapshot {
-  sealed trait ConnectionState
+
+  /** Not for user extension */
+  @DoNotInherit sealed trait ConnectionState
   case object ShouldPull extends ConnectionState
   case object ShouldPush extends ConnectionState
   case object Closed extends ConnectionState

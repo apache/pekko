@@ -17,7 +17,11 @@ import scala.language.implicitConversions
 import scala.jdk.CollectionConverters._
 import scala.util.Try
 
-sealed abstract class CapabilityFlag {
+import org.apache.pekko
+import pekko.annotation.DoNotInherit
+
+/** Not for user extension */
+@DoNotInherit sealed abstract class CapabilityFlag {
   private val capturedStack: String =
     StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE).walk { stream =>
       stream.iterator().asScala

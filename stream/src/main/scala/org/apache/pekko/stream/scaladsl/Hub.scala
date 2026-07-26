@@ -51,8 +51,9 @@ object MergeHub {
   /**
    * A DrainingControl object is created during the materialization of a MergeHub and allows to initiate the draining
    * and eventual completion of the Hub from the outside.
+   * Not for user extension
    */
-  sealed trait DrainingControl {
+  @DoNotInherit sealed trait DrainingControl {
 
     /**
      * Set the operation mode of the linked MergeHub to draining. In this mode the Hub will cancel any new producer and

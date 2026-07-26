@@ -167,8 +167,10 @@ final class ClusterSingletonManagerSettings(
 
 /**
  * Marker trait for remote messages with special serializer.
+ *
+ * Not for user extension
  */
-sealed trait ClusterSingletonMessage extends Serializable
+@DoNotInherit sealed trait ClusterSingletonMessage extends Serializable
 
 object ClusterSingletonManager {
 

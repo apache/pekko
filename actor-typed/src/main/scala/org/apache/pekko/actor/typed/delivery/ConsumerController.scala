@@ -62,7 +62,8 @@ object ConsumerController {
 
   type SeqNr = Long
 
-  sealed trait Command[+A] extends UnsealedInternalCommand
+  /** Not for user extension */
+  @DoNotInherit sealed trait Command[+A] extends UnsealedInternalCommand
 
   /**
    * Initial message from the consumer actor. The `deliverTo` is typically constructed

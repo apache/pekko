@@ -18,6 +18,7 @@ import scala.collection.immutable
 import scala.jdk.CollectionConverters._
 
 import org.apache.pekko
+import pekko.annotation.DoNotInherit
 import pekko.annotation.InternalApi
 import pekko.util.Collections.EmptyImmutableSeq
 
@@ -26,8 +27,9 @@ import pekko.util.Collections.EmptyImmutableSeq
  * into the impl package but must live here due to how `sealed` works.
  * It is also used in the Java DSL for “classic Inlets” as a work-around
  * for otherwise unreasonable existential types.
+ * Not for user extension
  */
-sealed abstract class InPort { self: Inlet[?] =>
+@DoNotInherit sealed abstract class InPort { self: Inlet[?] =>
   final override def hashCode: Int = super.hashCode
   final override def equals(that: Any): Boolean = this eq that.asInstanceOf[AnyRef]
 
@@ -52,8 +54,9 @@ sealed abstract class InPort { self: Inlet[?] =>
  * into the impl package but must live here due to how `sealed` works.
  * It is also used in the Java DSL for “classic Outlets” as a work-around
  * for otherwise unreasonable existential types.
+ * Not for user extension
  */
-sealed abstract class OutPort { self: Outlet[?] =>
+@DoNotInherit sealed abstract class OutPort { self: Outlet[?] =>
   final override def hashCode: Int = super.hashCode
   final override def equals(that: Any): Boolean = this eq that.asInstanceOf[AnyRef]
 
@@ -262,8 +265,9 @@ abstract class AbstractShape extends Shape {
 /**
  * This [[Shape]] is used for graphs that have neither open inputs nor open
  * outputs. Only such a [[Graph]] can be materialized by a [[Materializer]].
+ * Not for user extension
  */
-sealed abstract class ClosedShape extends Shape
+@DoNotInherit sealed abstract class ClosedShape extends Shape
 object ClosedShape extends ClosedShape {
   override val inlets: immutable.Seq[Inlet[?]] = EmptyImmutableSeq
   override val outlets: immutable.Seq[Outlet[?]] = EmptyImmutableSeq

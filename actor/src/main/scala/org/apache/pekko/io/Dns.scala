@@ -46,7 +46,9 @@ abstract class Dns {
 }
 
 object Dns extends ExtensionId[DnsExt] with ExtensionIdProvider {
-  sealed trait Command
+
+  /** Not for user extension */
+  @DoNotInherit sealed trait Command
 
   /**
    * Lookup if a DNS resolved is cached. The exact behavior of caching will depend on

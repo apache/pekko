@@ -17,6 +17,7 @@ import scala.annotation.varargs
 import scala.collection.immutable
 
 import org.apache.pekko
+import pekko.annotation.DoNotInherit
 import pekko.annotation.InternalApi
 
 /**
@@ -75,7 +76,8 @@ abstract class EventAdapter[E, P] {
   def fromJournal(p: P, manifest: String): EventSeq[E]
 }
 
-sealed trait EventSeq[+A] {
+/** Not for user extension */
+@DoNotInherit sealed trait EventSeq[+A] {
   def events: immutable.Seq[A]
   def isEmpty: Boolean = events.isEmpty
   def nonEmpty: Boolean = events.nonEmpty

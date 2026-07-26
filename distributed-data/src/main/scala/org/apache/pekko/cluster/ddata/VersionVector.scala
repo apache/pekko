@@ -19,6 +19,7 @@ import scala.annotation.tailrec
 import scala.collection.immutable.TreeMap
 
 import org.apache.pekko
+import pekko.annotation.DoNotInherit
 import pekko.annotation.InternalApi
 import pekko.cluster.UniqueAddress
 
@@ -50,7 +51,8 @@ object VersionVector {
    */
   def create(): VersionVector = empty
 
-  sealed trait Ordering
+  /** Not for user extension */
+  @DoNotInherit sealed trait Ordering
   case object After extends Ordering
   case object Before extends Ordering
   case object Same extends Ordering
@@ -106,9 +108,12 @@ object VersionVector {
  * Based on code from `org.apache.pekko.cluster.VectorClock`.
  *
  * This class is immutable, i.e. "modifying" methods return a new instance.
+ *
+ * Not for user extension
  */
 @SerialVersionUID(1L)
-sealed abstract class VersionVector extends ReplicatedData with ReplicatedDataSerialization with RemovedNodePruning {
+@DoNotInherit sealed abstract class VersionVector extends ReplicatedData with ReplicatedDataSerialization
+    with RemovedNodePruning {
 
   type T = VersionVector
 

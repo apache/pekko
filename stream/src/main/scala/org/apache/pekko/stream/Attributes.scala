@@ -454,7 +454,8 @@ object Attributes {
   object CancellationStrategy {
     private[stream] val Default: CancellationStrategy = CancellationStrategy(PropagateFailure)
 
-    sealed trait Strategy
+    /** Not for user extension */
+    @DoNotInherit sealed trait Strategy
 
     /**
      * Strategy that treats `cancelStage` the same as `completeStage`, i.e. all inlets are cancelled (propagating the

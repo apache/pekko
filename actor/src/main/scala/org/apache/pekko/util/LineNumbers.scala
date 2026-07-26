@@ -19,6 +19,8 @@ import java.lang.invoke.{ MethodHandle, MethodHandles, MethodType, SerializedLam
 import scala.annotation.switch
 import scala.util.control.NonFatal
 
+import org.apache.pekko.annotation.DoNotInherit
+
 /**
  * This is a minimized byte-code parser that concentrates exclusively on line
  * numbers and source file extraction. It works for all normal classes up to
@@ -39,7 +41,8 @@ object LineNumbers {
         .findVirtual(clazz, "writeReplace", writeReplaceMethodType)
   }
 
-  sealed trait Result
+  /** Not for user extension */
+  @DoNotInherit sealed trait Result
   case object NoSourceInfo extends Result
   final case class UnknownSourceFormat(explanation: String) extends Result
   final case class SourceFile(filename: String) extends Result {

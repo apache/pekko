@@ -17,6 +17,7 @@ import scala.annotation.tailrec
 import scala.collection.immutable
 
 import org.apache.pekko
+import pekko.annotation.DoNotInherit
 import pekko.annotation.InternalApi
 import pekko.persistence.typed.ReplicaId
 import pekko.persistence.typed.crdt.ORSet.DeltaOp
@@ -42,7 +43,8 @@ object ORSet {
    */
   @InternalApi private[pekko] type Dot = VersionVector
 
-  sealed trait DeltaOp {
+  /** Not for user extension */
+  @DoNotInherit sealed trait DeltaOp {
     def merge(that: DeltaOp): DeltaOp
   }
 

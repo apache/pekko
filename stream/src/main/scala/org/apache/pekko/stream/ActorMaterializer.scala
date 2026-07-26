@@ -24,6 +24,7 @@ import pekko.actor.ActorRef
 import pekko.actor.ActorRefFactory
 import pekko.actor.ActorSystem
 import pekko.actor.ExtendedActorSystem
+import pekko.annotation.DoNotInherit
 import pekko.annotation.InternalApi
 import pekko.stream.impl._
 import pekko.stream.impl.streamref.StreamRefDefaultSettings
@@ -416,8 +417,9 @@ final class StreamSubscriptionTimeoutSettings(
 /**
  * This mode describes what shall happen when the subscription timeout expires for
  * substream Publishers created by operations like `prefixAndTail`.
+ * Not for user extension
  */
-sealed abstract class StreamSubscriptionTimeoutTerminationMode
+@DoNotInherit sealed abstract class StreamSubscriptionTimeoutTerminationMode
 
 object StreamSubscriptionTimeoutTerminationMode {
   case object NoopTermination extends StreamSubscriptionTimeoutTerminationMode

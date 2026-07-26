@@ -16,8 +16,12 @@ package org.apache.pekko.stream
 import scala.annotation.unchecked.uncheckedVariance
 import scala.collection.immutable
 
+import org.apache.pekko.annotation.DoNotInherit
+
 object FanOutShape {
-  sealed trait Init[I] {
+
+  /** Not for user extension */
+  @DoNotInherit sealed trait Init[I] {
     def inlet: Inlet[I]
     def outlets: immutable.Seq[Outlet[?]]
     def name: String
