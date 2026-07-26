@@ -16,6 +16,7 @@ package org.apache.pekko.cluster.ddata
 import scala.collection.immutable
 
 import org.apache.pekko
+import pekko.annotation.DoNotInherit
 import pekko.annotation.InternalApi
 import pekko.cluster.UniqueAddress
 import pekko.cluster.ddata.ORMap.ZeroTag
@@ -36,7 +37,9 @@ object ORMap {
    */
   def unapply[A, B <: ReplicatedData](m: ORMap[A, B]): Option[Map[A, B]] = Some(m.entries)
 
-  sealed trait DeltaOp extends ReplicatedDelta with RequiresCausalDeliveryOfDeltas with ReplicatedDataSerialization {
+  /** Not for user extension */
+  @DoNotInherit sealed trait DeltaOp extends ReplicatedDelta with RequiresCausalDeliveryOfDeltas
+      with ReplicatedDataSerialization {
     type T = DeltaOp
     override def zero: DeltaReplicatedData
   }

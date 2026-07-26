@@ -25,7 +25,7 @@ import scala.language.implicitConversions
 import scala.util.control.NonFatal
 
 import org.apache.pekko
-import pekko.annotation.InternalApi
+import pekko.annotation.{ DoNotInherit, InternalApi }
 import pekko.event.Logging
 import pekko.event.Logging.{ Error, LogEvent, LogLevel }
 import pekko.japi.Util.immutableSeq
@@ -113,7 +113,9 @@ trait SupervisorStrategyLowPriorityImplicits { this: SupervisorStrategy.type =>
 }
 
 object SupervisorStrategy extends SupervisorStrategyLowPriorityImplicits {
-  sealed trait Directive {
+
+  /** Not for user extension */
+  @DoNotInherit sealed trait Directive {
 
     /** INTERNAL API */
     @InternalApi

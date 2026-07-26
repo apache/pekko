@@ -23,7 +23,7 @@ import scala.concurrent.duration.FiniteDuration
 import language.implicitConversions
 
 import org.apache.pekko
-import pekko.annotation.InternalApi
+import pekko.annotation.{ DoNotInherit, InternalApi }
 import pekko.routing.{ Deafen, Listen, Listeners }
 
 object FSM {
@@ -69,8 +69,10 @@ object FSM {
 
   /**
    * Reason why this [[pekko.actor.FSM]] is shutting down.
+   *
+   * Not for user extension
    */
-  sealed trait Reason
+  @DoNotInherit sealed trait Reason
 
   /**
    * Default reason if calling `stop()`.

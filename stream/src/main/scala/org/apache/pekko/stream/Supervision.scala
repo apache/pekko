@@ -14,10 +14,13 @@
 package org.apache.pekko.stream
 
 import org.apache.pekko
+import pekko.annotation.DoNotInherit
 import pekko.japi.{ function => japi }
 
 object Supervision {
-  sealed trait Directive
+
+  /** Not for user extension */
+  @DoNotInherit sealed trait Directive
 
   /**
    * Scala API: The stream will be completed with failure if application code for processing an element

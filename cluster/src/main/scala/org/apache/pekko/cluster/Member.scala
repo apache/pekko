@@ -18,7 +18,7 @@ import scala.runtime.AbstractFunction2
 
 import org.apache.pekko
 import pekko.actor.Address
-import pekko.annotation.InternalApi
+import pekko.annotation.{ DoNotInherit, InternalApi }
 import pekko.cluster.ClusterSettings.DataCenter
 import pekko.cluster.MemberStatus._
 import pekko.util.Version
@@ -234,8 +234,10 @@ object Member {
  * Defines the current status of a cluster member node
  *
  * Can be one of: Joining, WeaklyUp, Up, Leaving, Exiting and Down and Removed.
+ *
+ * Not for user extension
  */
-sealed abstract class MemberStatus
+@DoNotInherit sealed abstract class MemberStatus
 
 object MemberStatus {
   @SerialVersionUID(1L) case object Joining extends MemberStatus

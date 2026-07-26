@@ -27,7 +27,7 @@ import scala.util.{ Failure, Success }
 import org.apache.pekko
 import pekko.Done
 import pekko.actor._
-import pekko.annotation.{ InternalApi, InternalStableApi }
+import pekko.annotation.{ DoNotInherit, InternalApi, InternalStableApi }
 import pekko.cluster.Cluster
 import pekko.cluster.ClusterEvent._
 import pekko.cluster.ClusterSettings
@@ -194,7 +194,8 @@ object ShardRegion {
     }
   }
 
-  sealed trait ShardRegionCommand
+  /** Not for user extension */
+  @DoNotInherit sealed trait ShardRegionCommand
 
   /**
    * If the state of the entities are persistent you may stop entities that are not used to
@@ -235,7 +236,8 @@ object ShardRegion {
    */
   final case class ShardInitialized(shardId: ShardId)
 
-  sealed trait ShardRegionQuery
+  /** Not for user extension */
+  @DoNotInherit sealed trait ShardRegionQuery
 
   /**
    * Send this message to the `ShardRegion` actor to request for [[CurrentRegions]],

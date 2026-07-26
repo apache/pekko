@@ -21,6 +21,9 @@ import scala.collection.immutable
 import scala.util.Random
 import scala.util.control.NonFatal
 
+import org.apache.pekko
+import pekko.annotation.DoNotInherit
+
 /**
  * Utilities to get free socket address.
  */
@@ -37,7 +40,8 @@ object SocketUtil {
     }
   }
 
-  sealed trait Protocol
+  /** Not for user extension */
+  @DoNotInherit sealed trait Protocol
   case object Tcp extends Protocol
   case object Udp extends Protocol
   case object Both extends Protocol

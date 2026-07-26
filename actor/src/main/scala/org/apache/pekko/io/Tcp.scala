@@ -26,7 +26,7 @@ import scala.jdk.DurationConverters._
 
 import org.apache.pekko
 import pekko.actor._
-import pekko.annotation.InternalApi
+import pekko.annotation.{ DoNotInherit, InternalApi }
 import pekko.io.Inet._
 import pekko.util.{ ByteString, Helpers }
 import pekko.util.Helpers.Requiring
@@ -107,8 +107,10 @@ object Tcp extends ExtensionId[TcpExt] with ExtensionIdProvider {
 
   /**
    * The common interface for [[Command]] and [[Event]].
+   *
+   * Not for user extension
    */
-  sealed trait Message extends NoSerializationVerificationNeeded
+  @DoNotInherit sealed trait Message extends NoSerializationVerificationNeeded
 
   /// COMMANDS
 
@@ -196,8 +198,10 @@ object Tcp extends ExtensionId[TcpExt] with ExtensionIdProvider {
 
   /**
    * Common interface for all commands which aim to close down an open connection.
+   *
+   * Not for user extension
    */
-  sealed trait CloseCommand extends Command with DeadLetterSuppression {
+  @DoNotInherit sealed trait CloseCommand extends Command with DeadLetterSuppression {
 
     /**
      * The corresponding event which is sent as an acknowledgment once the
@@ -268,8 +272,10 @@ object Tcp extends ExtensionId[TcpExt] with ExtensionIdProvider {
 
   /**
    * Common interface for all write commands.
+   *
+   * Not for user extension
    */
-  sealed abstract class WriteCommand extends Command {
+  @DoNotInherit sealed abstract class WriteCommand extends Command {
 
     /**
      * Prepends this command with another `Write` or `WriteFile` to form
@@ -317,8 +323,10 @@ object Tcp extends ExtensionId[TcpExt] with ExtensionIdProvider {
 
   /**
    * Common supertype of [[Write]] and [[WritePath]].
+   *
+   * Not for user extension
    */
-  sealed abstract class SimpleWriteCommand extends WriteCommand {
+  @DoNotInherit sealed abstract class SimpleWriteCommand extends WriteCommand {
     require(ack != null, "ack must be non-null. Use NoAck if you don't want acks.")
 
     /**
@@ -504,8 +512,10 @@ object Tcp extends ExtensionId[TcpExt] with ExtensionIdProvider {
    * which it is safe to send at least one write. This means that all writes preceding
    * the first [[CommandFailed]] message have been enqueued to the O/S kernel at this
    * point.
+   *
+   * Not for user extension
    */
-  sealed trait WritingResumed extends Event
+  @DoNotInherit sealed trait WritingResumed extends Event
   case object WritingResumed extends WritingResumed
 
   /**
@@ -518,15 +528,19 @@ object Tcp extends ExtensionId[TcpExt] with ExtensionIdProvider {
   /**
    * The sender of an `Unbind` command will receive confirmation through this
    * message once the listening socket has been closed.
+   *
+   * Not for user extension
    */
-  sealed trait Unbound extends Event
+  @DoNotInherit sealed trait Unbound extends Event
   case object Unbound extends Unbound
 
   /**
    * This is the common interface for all events which indicate that a connection
    * has been closed or half-closed.
+   *
+   * Not for user extension
    */
-  sealed trait ConnectionClosed extends Event with DeadLetterSuppression {
+  @DoNotInherit sealed trait ConnectionClosed extends Event with DeadLetterSuppression {
 
     /**
      * `true` iff the connection has been closed in response to an `Abort` command.

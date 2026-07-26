@@ -24,6 +24,7 @@ import pekko.actor.ActorLogging
 import pekko.actor.Address
 import pekko.actor.DeadLetterSuppression
 import pekko.actor.Props
+import pekko.annotation.DoNotInherit
 import pekko.cluster.Cluster
 import pekko.cluster.ClusterEvent
 import pekko.cluster.Member
@@ -31,8 +32,10 @@ import pekko.cluster.MemberStatus
 
 /**
  *  Runtime collection management commands.
+ *
+ *  Not for user extension
  */
-sealed abstract class CollectionControlMessage extends Serializable
+@DoNotInherit sealed abstract class CollectionControlMessage extends Serializable
 
 /**
  * Command for `ClusterMetricsSupervisor` to start metrics collection.

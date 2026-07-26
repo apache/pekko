@@ -38,7 +38,10 @@ import pekko.event.EventStream
  */
 object ClusterEvent {
 
-  sealed abstract class SubscriptionInitialStateMode
+  /**
+   * Not for user extension
+   */
+  @DoNotInherit sealed abstract class SubscriptionInitialStateMode
 
   /**
    * When using this subscription mode a snapshot of
@@ -259,8 +262,10 @@ object ClusterEvent {
    * The state change was performed by the leader when there was
    * convergence on the leader node, i.e. all members had seen previous
    * state.
+   *
+   * Not for user extension
    */
-  sealed trait MemberEvent extends ClusterDomainEvent {
+  @DoNotInherit sealed trait MemberEvent extends ClusterDomainEvent {
     def member: Member
   }
 
@@ -373,8 +378,10 @@ object ClusterEvent {
   /**
    * Marker interface to facilitate subscription of
    * both [[UnreachableMember]] and [[ReachableMember]].
+   *
+   * Not for user extension
    */
-  sealed trait ReachabilityEvent extends ClusterDomainEvent {
+  @DoNotInherit sealed trait ReachabilityEvent extends ClusterDomainEvent {
     def member: Member
   }
 
@@ -393,8 +400,10 @@ object ClusterEvent {
   /**
    * Marker interface to facilitate subscription of
    * both [[UnreachableDataCenter]] and [[ReachableDataCenter]].
+   *
+   * Not for user extension
    */
-  sealed trait DataCenterReachabilityEvent extends ClusterDomainEvent
+  @DoNotInherit sealed trait DataCenterReachabilityEvent extends ClusterDomainEvent
 
   /**
    * A data center is considered as unreachable when any members from the data center are unreachable

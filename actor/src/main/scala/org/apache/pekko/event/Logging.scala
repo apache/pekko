@@ -731,8 +731,10 @@ object Logging {
 
   /**
    * Base type of LogEvents
+   *
+   * Not for user extension
    */
-  sealed trait LogEvent extends NoSerializationVerificationNeeded {
+  @DoNotInherit sealed trait LogEvent extends NoSerializationVerificationNeeded {
 
     /**
      * The thread that created this log event

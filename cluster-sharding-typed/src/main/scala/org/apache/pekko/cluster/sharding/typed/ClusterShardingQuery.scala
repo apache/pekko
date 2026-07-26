@@ -18,14 +18,17 @@ import scala.jdk.DurationConverters._
 
 import org.apache.pekko
 import pekko.actor.typed.ActorRef
+import pekko.annotation.DoNotInherit
 import pekko.cluster.sharding.ShardRegion.ClusterShardingStats
 import pekko.cluster.sharding.ShardRegion.CurrentShardRegionState
 import pekko.cluster.sharding.typed.scaladsl.EntityTypeKey
 
 /**
  * Protocol for querying sharding state e.g. A ShardRegion's state
+ *
+ * Not for user extension
  */
-sealed trait ClusterShardingQuery
+@DoNotInherit sealed trait ClusterShardingQuery
 
 /**
  * Query the ShardRegion state for the given entity type key. This will get the state of the

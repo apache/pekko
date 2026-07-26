@@ -29,6 +29,7 @@ import pekko.actor.typed.delivery.internal.DeliverySerializable
 import pekko.actor.typed.delivery.internal.ProducerControllerImpl
 import pekko.actor.typed.scaladsl.Behaviors
 import pekko.annotation.ApiMayChange
+import pekko.annotation.DoNotInherit
 import pekko.annotation.InternalApi
 import pekko.util.Helpers.Requiring
 import pekko.util.Helpers.toRootLowerCase
@@ -99,7 +100,8 @@ object ProducerController {
 
   type SeqNr = Long
 
-  sealed trait Command[A] extends UnsealedInternalCommand
+  /** Not for user extension */
+  @DoNotInherit sealed trait Command[A] extends UnsealedInternalCommand
 
   /**
    * Initial message from the producer actor. The `producer` is typically constructed

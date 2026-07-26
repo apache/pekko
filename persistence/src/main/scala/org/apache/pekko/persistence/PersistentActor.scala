@@ -20,6 +20,7 @@ import scala.util.control.NoStackTrace
 
 import org.apache.pekko
 import pekko.actor._
+import pekko.annotation.DoNotInherit
 import pekko.annotation.InternalApi
 import pekko.japi.Util
 import pekko.japi.function.Procedure
@@ -118,8 +119,10 @@ final class RecoveryTimedOut(message: String) extends RuntimeException(message) 
 /**
  * This defines how to handle the current received message which failed to stash, when the size of
  * Stash exceeding the capacity of Stash.
+ *
+ * Not for user extension
  */
-sealed trait StashOverflowStrategy
+@DoNotInherit sealed trait StashOverflowStrategy
 
 /**
  * Discard the message to [[pekko.actor.DeadLetter]].

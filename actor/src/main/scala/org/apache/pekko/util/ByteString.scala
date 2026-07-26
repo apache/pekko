@@ -27,6 +27,7 @@ import scala.jdk.CollectionConverters._
 import scala.reflect.ClassTag
 
 import org.apache.pekko
+import pekko.annotation.DoNotInherit
 import pekko.io.UnsynchronizedByteArrayInputStream
 
 object ByteString {
@@ -1867,8 +1868,10 @@ object ByteString {
  * and also providing a thread safe way of working with bytes.
  *
  * TODO: Add performance characteristics
+ *
+ * Not for user extension
  */
-sealed abstract class ByteString
+@DoNotInherit sealed abstract class ByteString
     extends IndexedSeq[Byte]
     with IndexedSeqOps[Byte, IndexedSeq, ByteString]
     with StrictOptimizedSeqOps[Byte, IndexedSeq, ByteString] {
@@ -2742,8 +2745,10 @@ object CompactByteString {
  *
  * The ByteString is guaranteed to be contiguous in memory and to use only
  * as much memory as required for its contents.
+ *
+ * Not for user extension
  */
-sealed abstract class CompactByteString extends ByteString with Serializable {
+@DoNotInherit sealed abstract class CompactByteString extends ByteString with Serializable {
   def isCompact: Boolean = true
   def compact: this.type = this
 }

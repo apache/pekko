@@ -21,6 +21,7 @@ import scala.collection.immutable
 import scala.jdk.CollectionConverters._
 
 import org.apache.pekko
+import pekko.annotation.DoNotInherit
 
 /**
  * Java API
@@ -170,10 +171,12 @@ object ActorPath {
  * re-created with the same path. In other words, in contrast to how actor
  * references are compared the unique id of the actor is not taken into account
  * when comparing actor paths.
+ *
+ * Not for user extension
  */
 @nowarn("msg=@SerialVersionUID (has no effect|does nothing)")
 @SerialVersionUID(1L)
-sealed trait ActorPath extends Comparable[ActorPath] with Serializable {
+@DoNotInherit sealed trait ActorPath extends Comparable[ActorPath] with Serializable {
 
   /**
    * The Address under which this path can be reached; walks up the tree to

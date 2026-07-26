@@ -21,6 +21,7 @@ import scala.collection.immutable
 
 import org.apache.pekko
 import pekko.actor._
+import pekko.annotation.DoNotInherit
 import pekko.io.Inet.SocketOption
 import pekko.io.Udp.UdpSettings
 import pekko.util.ByteString
@@ -51,8 +52,10 @@ object UdpConnected extends ExtensionId[UdpConnectedExt] with ExtensionIdProvide
 
   /**
    * The common interface for [[Command]] and [[Event]].
+   *
+   * Not for user extension
    */
-  sealed trait Message
+  @DoNotInherit sealed trait Message
 
   /**
    * The common type of all commands supported by the UDP implementation.
@@ -151,15 +154,19 @@ object UdpConnected extends ExtensionId[UdpConnectedExt] with ExtensionIdProvide
    * This message is sent by the connection actor to the actor which sent the
    * [[Connect]] message when the UDP socket has been bound to the local and
    * remote addresses given.
+   *
+   * Not for user extension
    */
-  sealed trait Connected extends Event
+  @DoNotInherit sealed trait Connected extends Event
   case object Connected extends Connected
 
   /**
    * This message is sent by the connection actor to the actor which sent the
    * `Disconnect` message when the UDP socket has been closed.
+   *
+   * Not for user extension
    */
-  sealed trait Disconnected extends Event
+  @DoNotInherit sealed trait Disconnected extends Event
   case object Disconnected extends Disconnected
 
 }

@@ -24,6 +24,7 @@ import org.apache.pekko
 import pekko.actor.{ ActorSystem, DeadLetter, UnhandledMessage }
 import pekko.actor.Dropped
 import pekko.actor.NoSerializationVerificationNeeded
+import pekko.annotation.DoNotInherit
 import pekko.dispatch.sysmsg.{ SystemMessage, Terminate }
 import pekko.event.Logging
 import pekko.event.Logging.{ Debug, Error, Info, InitializeLogger, LogEvent, LoggerInitialized, Warning }
@@ -38,8 +39,10 @@ import pekko.util.BoxedType
  * You should always prefer the filter methods in the package object
  * (see `org.apache.pekko.testkit` `filterEvents` and `filterException`) or on the
  * EventFilter implementations.
+ *
+ * Not for user extension
  */
-sealed trait TestEvent
+@DoNotInherit sealed trait TestEvent
 
 /**
  * Implementation helpers of the EventFilter facilities: send <code>Mute</code>

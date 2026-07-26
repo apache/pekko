@@ -29,7 +29,7 @@ import pekko.actor.typed.delivery.ConsumerController
 import pekko.actor.typed.delivery.DurableProducerQueue
 import pekko.actor.typed.delivery.ProducerController
 import pekko.actor.typed.scaladsl.Behaviors
-import pekko.annotation.ApiMayChange
+import pekko.annotation.{ ApiMayChange, DoNotInherit }
 import pekko.cluster.sharding.typed.ShardingEnvelope
 import pekko.cluster.sharding.typed.delivery.internal.ShardingProducerControllerImpl
 
@@ -107,7 +107,8 @@ object ShardingProducerController {
 
   type EntityId = String
 
-  sealed trait Command[A] extends UnsealedInternalCommand
+  /** Not for user extension */
+  @DoNotInherit sealed trait Command[A] extends UnsealedInternalCommand
 
   /**
    * Initial message from the producer actor. The `producer` is typically constructed
