@@ -72,6 +72,34 @@ object MergeHub {
   /**
    * Creates a [[Source]] that emits elements merged from a dynamic set of producers. After the [[Source]] returned
    * by this method is materialized, it returns a [[Sink]] as a materialized value. This [[Sink]] can be materialized
+   * arbitrary many times and each of the materializations will feed the elements into the original [[Source]].
+   *
+   * Every new materialization of the [[Source]] results in a new, independent hub, which materializes to its own
+   * [[Sink]] for feeding that materialization.
+   *
+   * Completed or failed [[Sink]]s are simply removed. Once the [[Source]] is cancelled, the Hub is considered closed
+   * and any new producers using the [[Sink]] will be cancelled.
+   *
+   * @param clazz Type of elements this hub emits and consumes
+   * @param perProducerBufferSize Buffer space used per producer.
+   * @param maxTotalBufferSize Admission threshold for the total number of elements buffered across all producers.
+   *   New producers are cancelled at registration when the buffered element count meets or exceeds this value.
+   *   Transient overshoot up to the per-producer buffer of concurrently admitted producers is possible.
+   *   Use 0 for unlimited (default behavior).
+   */
+  def of[T](
+      @nowarn("msg=never used") clazz: Class[T],
+      perProducerBufferSize: Int,
+      maxTotalBufferSize: Int): Source[T, Sink[T, NotUsed]] = {
+    pekko.stream.scaladsl.MergeHub
+      .source[T](perProducerBufferSize, maxTotalBufferSize)
+      .mapMaterializedValue(_.asJava[T])
+      .asJava
+  }
+
+  /**
+   * Creates a [[Source]] that emits elements merged from a dynamic set of producers. After the [[Source]] returned
+   * by this method is materialized, it returns a [[Sink]] as a materialized value. This [[Sink]] can be materialized
    * arbitrarily many times and each of the materializations will feed the elements into the original [[Source]].
    *
    * Every new materialization of the [[Source]] results in a new, independent hub, which materializes to its own
@@ -91,6 +119,40 @@ object MergeHub {
       perProducerBufferSize: Int): Source[T, pekko.japi.Pair[Sink[T, NotUsed], DrainingControl]] = {
     pekko.stream.scaladsl.MergeHub
       .sourceWithDraining[T](perProducerBufferSize)
+      .mapMaterializedValue {
+        case (sink, draining) =>
+          pekko.japi.Pair(sink.asJava[T], new DrainingControlImpl(draining): DrainingControl)
+      }
+      .asJava
+  }
+
+  /**
+   * Creates a [[Source]] that emits elements merged from a dynamic set of producers. After the [[Source]] returned
+   * by this method is materialized, it returns a [[Sink]] as a materialized value. This [[Sink]] can be materialized
+   * arbitrarily many times and each of the materializations will feed the elements into the original [[Source]].
+   *
+   * Every new materialization of the [[Source]] results in a new, independent hub, which materializes to its own
+   * [[Sink]] for feeding that materialization.
+   *
+   * Completed or failed [[Sink]]s are simply removed. Once the [[Source]] is cancelled, the Hub is considered closed
+   * and any new producers using the [[Sink]] will be cancelled.
+   *
+   * The materialized [[DrainingControl]] can be used to drain the Hub: any new produces using the [[Sink]] will be cancelled
+   * and the Hub will be closed completing the [[Source]] as soon as all currently connected producers complete.
+   *
+   * @param clazz Type of elements this hub emits and consumes
+   * @param perProducerBufferSize Buffer space used per producer. Default value is 16.
+   * @param maxTotalBufferSize Admission threshold for the total number of elements buffered across all producers.
+   *   New producers are cancelled at registration when the buffered element count meets or exceeds this value.
+   *   Transient overshoot up to the per-producer buffer of concurrently admitted producers is possible.
+   *   Use 0 for unlimited (default behavior).
+   */
+  def withDraining[T](
+      @nowarn("msg=never used") clazz: Class[T],
+      perProducerBufferSize: Int,
+      maxTotalBufferSize: Int): Source[T, pekko.japi.Pair[Sink[T, NotUsed], DrainingControl]] = {
+    pekko.stream.scaladsl.MergeHub
+      .sourceWithDraining[T](perProducerBufferSize, maxTotalBufferSize)
       .mapMaterializedValue {
         case (sink, draining) =>
           pekko.japi.Pair(sink.asJava[T], new DrainingControlImpl(draining): DrainingControl)
