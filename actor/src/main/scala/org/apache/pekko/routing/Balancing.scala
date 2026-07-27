@@ -79,6 +79,7 @@ private[pekko] final class BalancingRoutingLogic extends RoutingLogic {
  * @param routerDispatcher dispatcher to use for the router head actor, which handles
  *   supervision, death watch and router management messages
  */
+@nowarn("msg=deprecated")
 @SerialVersionUID(1L)
 final case class BalancingPool(
     nrOfInstances: Int,

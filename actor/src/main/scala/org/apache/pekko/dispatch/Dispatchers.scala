@@ -319,12 +319,15 @@ private[pekko] object BalancingDispatcherConfigurator {
 }
 
 /**
+ * INTERNAL API
+ *
  * Configurator for creating `BalancingDispatcher`.
  * Returns the same dispatcher instance for each invocation
  * of the `dispatcher()` method.
  */
+@deprecated("Use BalancingPool instead of BalancingDispatcherConfigurator", "Pekko 2.0.0")
 @nowarn("msg=deprecated")
-class BalancingDispatcherConfigurator(_config: Config, _prerequisites: DispatcherPrerequisites)
+private[pekko] class BalancingDispatcherConfigurator(_config: Config, _prerequisites: DispatcherPrerequisites)
     extends MessageDispatcherConfigurator(BalancingDispatcherConfigurator.amendConfig(_config), _prerequisites) {
 
   private val instance = {
