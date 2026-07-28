@@ -63,6 +63,16 @@ trait Resizer {
    */
   def resize(currentRoutees: immutable.IndexedSeq[Routee]): Int
 
+  /**
+   * Constrain a proposed total pool size to the bounds enforced by this resizer.
+   * Used by [[AdjustPoolSize]] management messages to respect resizer bounds.
+   * The default implementation only ensures the size is at least 1.
+   *
+   * @param proposedSize the proposed total number of routees
+   * @return the clamped pool size
+   */
+  def clamp(proposedSize: Int): Int = math.max(1, proposedSize)
+
 }
 
 object Resizer {
@@ -187,6 +197,9 @@ case class DefaultResizer(
     else if (proposed > upperBound) delta - (proposed - upperBound)
     else delta
   }
+
+  override def clamp(proposedSize: Int): Int =
+    math.max(lowerBound, math.min(proposedSize, upperBound))
 
   /**
    * Number of routees considered busy, or above 'pressure level'.
@@ -347,6 +360,18 @@ private[pekko] class ResizablePoolActor(supervisorStrategy: SupervisorStrategy)
     ({
       case Resize =>
         resizerCell.resize(initial = false)
+      case AdjustPoolSize(change: Int) =>
+        val currentRoutees = cell.router.routees
+        val currentSize = currentRoutees.size
+        val clampedSize = resizerCell.resizer.clamp(currentSize + change)
+        val effectiveChange = clampedSize - currentSize
+        if (effectiveChange > 0) {
+          val newRoutees = Vector.fill(effectiveChange)(pool.newRoutee(cell.routeeProps, context))
+          cell.addRoutees(newRoutees)
+        } else if (effectiveChange < 0) {
+          val abandon = currentRoutees.drop(currentRoutees.length + effectiveChange)
+          cell.removeRoutees(abandon, stopChild = true)
+        }
     }: Actor.Receive).orElse(super.receive)
 
 }
