@@ -284,6 +284,9 @@ case class DefaultOptimalSizeExploringResizer(
     Math.max(lowerBound, Math.min(proposedChange + currentSize, upperBound)) - currentSize
   }
 
+  override def clamp(proposedSize: Int): Int =
+    Math.max(lowerBound, Math.min(proposedSize, upperBound))
+
   private def optimize(currentSize: PoolSize): Int = {
 
     val adjacentDispatchWaits: Map[PoolSize, Duration] = {
