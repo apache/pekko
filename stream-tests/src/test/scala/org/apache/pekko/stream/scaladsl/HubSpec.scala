@@ -153,6 +153,103 @@ class HubSpec extends StreamSpec {
       sub.cancel()
     }
 
+    "cancel new producers when maxTotalBufferSize is exceeded" in {
+      val downstream = TestSubscriber.manualProbe[Int]()
+      // perProducerBufferSize=4, maxTotalBufferSize=3
+      val sink = Sink.fromSubscriber(downstream).runWith(MergeHub.source[Int](4, 3))
+
+      val sub = downstream.expectSubscription()
+
+      // Producer connects and pushes 4 elements
+      val upstream1 = TestPublisher.probe[Int]()
+      Source.fromPublisher(upstream1).runWith(sink)
+      for (i <- 1 to 4) upstream1.sendNext(i)
+
+      // Consume 1 element: proves all 4 were enqueued (counter was 4, now 3 = threshold)
+      sub.request(1)
+      downstream.expectNext(1)
+
+      // Buffer count (3) >= maxTotalBufferSize (3): new producer is rejected
+      val upstream2 = TestPublisher.probe[Int]()
+      Source.fromPublisher(upstream2).runWith(sink)
+      upstream2.expectCancellation()
+
+      sub.cancel()
+    }
+
+    "allow new producers after elements are consumed from the aggregate buffer" in {
+      val downstream = TestSubscriber.manualProbe[Int]()
+      // perProducerBufferSize=4, maxTotalBufferSize=3
+      val sink = Sink.fromSubscriber(downstream).runWith(MergeHub.source[Int](4, 3))
+
+      val sub = downstream.expectSubscription()
+
+      // First producer connects and pushes 4 elements
+      val upstream1 = TestPublisher.probe[Int]()
+      Source.fromPublisher(upstream1).runWith(sink)
+      for (i <- 1 to 4) upstream1.sendNext(i)
+
+      // Consume 1 to prove all 4 were enqueued (counter was 4, now 3 = threshold)
+      sub.request(1)
+      downstream.expectNext(1)
+
+      // Second producer is cancelled because buffer count (3) >= threshold (3)
+      val upstream2 = TestPublisher.probe[Int]()
+      Source.fromPublisher(upstream2).runWith(sink)
+      upstream2.expectCancellation()
+
+      // Consume all remaining elements, freeing the buffer (counter drops to 0 < 3)
+      sub.request(3)
+      downstream.expectNext(2)
+      downstream.expectNext(3)
+      downstream.expectNext(4)
+
+      // Now a new producer should be accepted and its element delivered
+      val upstream3 = TestPublisher.probe[Int]()
+      Source.fromPublisher(upstream3).runWith(sink)
+      upstream3.sendNext(5)
+      sub.request(1)
+      downstream.expectNext(5)
+
+      sub.cancel()
+    }
+
+    "allow already admitted producers to continue when buffer is full" in {
+      val downstream = TestSubscriber.manualProbe[Int]()
+      // perProducerBufferSize=4, maxTotalBufferSize=3
+      val sink = Sink.fromSubscriber(downstream).runWith(MergeHub.source[Int](4, 3))
+
+      val sub = downstream.expectSubscription()
+
+      // First producer connects and pushes 4 elements (counter = 4 > threshold 3)
+      val upstream1 = TestPublisher.probe[Int]()
+      Source.fromPublisher(upstream1).runWith(sink)
+      for (i <- 1 to 4) upstream1.sendNext(i)
+
+      // Consume 1 to prove elements were enqueued (counter = 3 = threshold)
+      sub.request(1)
+      downstream.expectNext(1)
+
+      // New producer is rejected
+      val upstream2 = TestPublisher.probe[Int]()
+      Source.fromPublisher(upstream2).runWith(sink)
+      upstream2.expectCancellation()
+
+      // But the already admitted producer can still push (it has remaining demand)
+      // Consume all remaining to make room and generate demand signals
+      sub.request(3)
+      downstream.expectNext(2)
+      downstream.expectNext(3)
+      downstream.expectNext(4)
+
+      // First producer received demand signal and can push more
+      upstream1.sendNext(5)
+      sub.request(1)
+      downstream.expectNext(5)
+
+      sub.cancel()
+    }
+
     "work with long streams" in {
       val (sink, result) = MergeHub.source[Int](16).take(2000).toMat(Sink.seq)(Keep.both).run()
       Source(1 to 1000).runWith(sink)

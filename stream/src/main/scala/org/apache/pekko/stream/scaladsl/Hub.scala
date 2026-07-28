@@ -15,8 +15,7 @@ package org.apache.pekko.stream.scaladsl
 
 import java.util
 import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.atomic.{ AtomicLong, AtomicReference }
-import java.util.concurrent.atomic.AtomicInteger
+import java.util.concurrent.atomic.{ AtomicInteger, AtomicLong, AtomicReference }
 import java.util.concurrent.atomic.AtomicReferenceArray
 
 import scala.annotation.tailrec
@@ -89,6 +88,27 @@ object MergeHub {
    * Completed or failed [[Sink]]s are simply removed. Once the [[Source]] is cancelled, the Hub is considered closed
    * and any new producers using the [[Sink]] will be cancelled.
    *
+   * @param perProducerBufferSize Buffer space used per producer.
+   * @param maxTotalBufferSize Admission threshold for the total number of elements buffered across all producers.
+   *   New producers are cancelled at registration when the buffered element count meets or exceeds this value.
+   *   Already admitted producers are unaffected and may continue to push up to their per-producer buffer.
+   *   Use 0 for unlimited (default behavior).
+   * @since 2.0.0
+   */
+  def source[T](perProducerBufferSize: Int, maxTotalBufferSize: Int): Source[T, Sink[T, NotUsed]] =
+    Source.fromGraph(new MergeHub[T](perProducerBufferSize, false, maxTotalBufferSize)).mapMaterializedValue(_._1)
+
+  /**
+   * Creates a [[Source]] that emits elements merged from a dynamic set of producers. After the [[Source]] returned
+   * by this method is materialized, it returns a [[Sink]] as a materialized value. This [[Sink]] can be materialized
+   * arbitrary many times and each of the materializations will feed the elements into the original [[Source]].
+   *
+   * Every new materialization of the [[Source]] results in a new, independent hub, which materializes to its own
+   * [[Sink]] for feeding that materialization.
+   *
+   * Completed or failed [[Sink]]s are simply removed. Once the [[Source]] is cancelled, the Hub is considered closed
+   * and any new producers using the [[Sink]] will be cancelled.
+   *
    * The materialized [[DrainingControl]] can be used to drain the Hub: any new producers using the [[Sink]] will be cancelled
    * and the Hub will be closed completing the [[Source]] as soon as all currently connected producers complete.
    *
@@ -96,6 +116,32 @@ object MergeHub {
    */
   def sourceWithDraining[T](perProducerBufferSize: Int): Source[T, (Sink[T, NotUsed], DrainingControl)] =
     Source.fromGraph(new MergeHub[T](perProducerBufferSize, true))
+
+  /**
+   * Creates a [[Source]] that emits elements merged from a dynamic set of producers. After the [[Source]] returned
+   * by this method is materialized, it returns a [[Sink]] as a materialized value. This [[Sink]] can be materialized
+   * arbitrary many times and each of the materializations will feed the elements into the original [[Source]].
+   *
+   * Every new materialization of the [[Source]] results in a new, independent hub, which materializes to its own
+   * [[Sink]] for feeding that materialization.
+   *
+   * Completed or failed [[Sink]]s are simply removed. Once the [[Source]] is cancelled, the Hub is considered closed
+   * and any new producers using the [[Sink]] will be cancelled.
+   *
+   * The materialized [[DrainingControl]] can be used to drain the Hub: any new producers using the [[Sink]] will be cancelled
+   * and the Hub will be closed completing the [[Source]] as soon as all currently connected producers complete.
+   *
+   * @param perProducerBufferSize Buffer space used per producer.
+   * @param maxTotalBufferSize Admission threshold for the total number of elements buffered across all producers.
+   *   New producers are cancelled at registration when the buffered element count meets or exceeds this value.
+   *   Already admitted producers are unaffected and may continue to push up to their per-producer buffer.
+   *   Use 0 for unlimited (default behavior).
+   * @since 2.0.0
+   */
+  def sourceWithDraining[T](
+      perProducerBufferSize: Int,
+      maxTotalBufferSize: Int): Source[T, (Sink[T, NotUsed], DrainingControl)] =
+    Source.fromGraph(new MergeHub[T](perProducerBufferSize, true, maxTotalBufferSize))
 
   /**
    * Creates a [[Source]] that emits elements merged from a dynamic set of producers. After the [[Source]] returned
@@ -140,9 +186,13 @@ private[pekko] final class MergeHubDrainingControlImpl(drainAction: () => Unit) 
   }
 }
 
-private[pekko] class MergeHub[T](perProducerBufferSize: Int, drainingEnabled: Boolean = false)
+private[pekko] class MergeHub[T](
+    perProducerBufferSize: Int,
+    drainingEnabled: Boolean = false,
+    maxTotalBufferSize: Int = 0)
     extends GraphStageWithMaterializedValue[SourceShape[T], (Sink[T, NotUsed], MergeHub.DrainingControl)] {
   require(perProducerBufferSize > 0, "Buffer size must be positive")
+  require(maxTotalBufferSize >= 0, "Max total buffer size must be non-negative (0 means unlimited)")
 
   val out: Outlet[T] = Outlet("MergeHub.out")
   override val shape: SourceShape[T] = SourceShape(out)
@@ -182,6 +232,7 @@ private[pekko] class MergeHub[T](perProducerBufferSize: Int, drainingEnabled: Bo
      * processing of control messages. This causes no issues though, see the explanation in 'tryProcessNext'.
      */
     private val queue = new AbstractNodeQueue[Event] {}
+    private val totalBufferedElements = new AtomicInteger(0)
     @volatile private var needWakeup = false
     @volatile private var shuttingDown = false
     @volatile private var draining = false
@@ -224,6 +275,7 @@ private[pekko] class MergeHub[T](perProducerBufferSize: Int, drainingEnabled: Bo
         needWakeup = false
         nextElem match {
           case Element(id, elem) =>
+            totalBufferedElements.decrementAndGet()
             demands(id).onElement()
             push(out, elem)
           // demand consumed by push — exit and wait for the next onPull
@@ -248,9 +300,14 @@ private[pekko] class MergeHub[T](perProducerBufferSize: Int, drainingEnabled: Bo
 
     def isShuttingDown: Boolean = shuttingDown
     def isDraining: Boolean = drainingEnabled && draining
+    def isBufferFull: Boolean = maxTotalBufferSize > 0 && totalBufferedElements.get() >= maxTotalBufferSize
 
     // External API
     private[MergeHub] def enqueue(ev: Event): Unit = {
+      ev match {
+        case _: Element => totalBufferedElements.incrementAndGet()
+        case _          =>
+      }
       queue.add(ev)
       /*
        * Simple volatile var is enough, there is no need for a CAS here. The first important thing to note
@@ -325,7 +382,8 @@ private[pekko] class MergeHub[T](perProducerBufferSize: Int, drainingEnabled: Bo
           private val id = idCounter.getAndIncrement()
 
           override def preStart(): Unit = {
-            if (!logic.isDraining && !logic.isShuttingDown) {
+            // Best-effort admission check: already admitted producers may overshoot the bound.
+            if (!logic.isDraining && !logic.isShuttingDown && !logic.isBufferFull) {
               logic.enqueue(Register(id, getAsyncCallback(onDemand)))
 
               // At this point, we could be in the unfortunate situation that:
