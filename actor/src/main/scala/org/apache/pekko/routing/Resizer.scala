@@ -70,6 +70,7 @@ trait Resizer {
    *
    * @param proposedSize the proposed total number of routees
    * @return the clamped pool size
+   * @since 2.0.0
    */
   def clamp(proposedSize: Int): Int = math.max(1, proposedSize)
 
