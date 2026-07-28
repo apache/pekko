@@ -84,8 +84,9 @@ object MergeHub {
    * @param perProducerBufferSize Buffer space used per producer.
    * @param maxTotalBufferSize Admission threshold for the total number of elements buffered across all producers.
    *   New producers are cancelled at registration when the buffered element count meets or exceeds this value.
-   *   Transient overshoot up to the per-producer buffer of concurrently admitted producers is possible.
+   *   Already admitted producers are unaffected and may continue to push up to their per-producer buffer.
    *   Use 0 for unlimited (default behavior).
+   * @since 2.0.0
    */
   def of[T](
       @nowarn("msg=never used") clazz: Class[T],
@@ -137,15 +138,16 @@ object MergeHub {
    * Completed or failed [[Sink]]s are simply removed. Once the [[Source]] is cancelled, the Hub is considered closed
    * and any new producers using the [[Sink]] will be cancelled.
    *
-   * The materialized [[DrainingControl]] can be used to drain the Hub: any new produces using the [[Sink]] will be cancelled
+   * The materialized [[DrainingControl]] can be used to drain the Hub: any new producers using the [[Sink]] will be cancelled
    * and the Hub will be closed completing the [[Source]] as soon as all currently connected producers complete.
    *
    * @param clazz Type of elements this hub emits and consumes
-   * @param perProducerBufferSize Buffer space used per producer. Default value is 16.
+   * @param perProducerBufferSize Buffer space used per producer.
    * @param maxTotalBufferSize Admission threshold for the total number of elements buffered across all producers.
    *   New producers are cancelled at registration when the buffered element count meets or exceeds this value.
-   *   Transient overshoot up to the per-producer buffer of concurrently admitted producers is possible.
+   *   Already admitted producers are unaffected and may continue to push up to their per-producer buffer.
    *   Use 0 for unlimited (default behavior).
+   * @since 2.0.0
    */
   def withDraining[T](
       @nowarn("msg=never used") clazz: Class[T],
