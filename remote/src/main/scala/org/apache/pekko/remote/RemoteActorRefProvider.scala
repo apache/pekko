@@ -33,6 +33,7 @@ import pekko.dispatch.sysmsg._
 import pekko.event.EventStream
 import pekko.event.Logging
 import pekko.event.Logging.Error
+import pekko.event.LogMarker
 import pekko.event.LoggingAdapter
 import pekko.pattern.pipe
 import pekko.remote.artery.ArterySettings
@@ -267,6 +268,7 @@ private[pekko] class RemoteActorRefProvider(
 
     warnIfDirectUse()
     warnIfUseUnsafeWithoutCluster()
+    warnIfNoTls()
 
     // this enables reception of remote requests
     transport.start()
@@ -350,6 +352,43 @@ private[pekko] class RemoteActorRefProvider(
         log.warning(
           "Pekko Cluster not in use - Using Pekko Cluster is recommended if you need remote watch and deploy.")
     }
+
+  // Log on `init` to warn about non-TLS remote transports.
+  private def warnIfNoTls(): Unit = {
+    if (remoteSettings.Artery.Enabled) {
+      remoteSettings.Artery.Transport match {
+        case ArterySettings.Tcp =>
+          log.warning(
+            LogMarker.Security,
+            "Artery remote is configured without TLS (transport = tcp), " +
+            "messages are not encrypted in transit. " +
+            "Use 'tls-tcp' transport to enable TLS. " +
+            "See https://pekko.apache.org/docs/pekko/current/remoting-artery.html#configuring-ssl-tls-for-artery")
+        case AeronUpd =>
+          log.warning(
+            LogMarker.Security,
+            "Artery remote is configured without TLS (transport = aeron-udp), " +
+            "messages are not encrypted in transit. " +
+            "Use 'tls-tcp' transport if encryption is required. " +
+            "See https://pekko.apache.org/docs/pekko/current/remoting-artery.html#configuring-ssl-tls-for-artery")
+        case _ => // TlsTcp, no warning needed
+      }
+    } else {
+      remoteSettings.Transports.foreach {
+        case (transportClass, _, transportConfig) =>
+          val enableSsl = transportConfig.hasPath("enable-ssl") && transportConfig.getBoolean("enable-ssl")
+          if (!enableSsl) {
+            log.warning(
+              LogMarker.Security,
+              "Classic Netty remote is configured without TLS (enable-ssl = false for transport [{}]), " +
+              "messages are not encrypted in transit. " +
+              "Enable SSL or use Artery with 'tls-tcp' transport. " +
+              "See https://pekko.apache.org/docs/pekko/current/remoting.html",
+              transportClass)
+          }
+      }
+    }
+  }
 
   protected def warnOnUnsafe(message: String): Unit =
     if (warnOnUnsafeRemote) log.warning(message)
