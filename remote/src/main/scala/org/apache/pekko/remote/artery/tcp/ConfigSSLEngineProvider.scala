@@ -66,6 +66,16 @@ class ConfigSSLEngineProvider(protected val config: Config, protected val log: M
   val SSLRequireMutualAuthentication: Boolean = sslEngineConfig.SSLRequireMutualAuthentication
   val HostnameVerification: Boolean = sslEngineConfig.HostnameVerification
 
+  private val defaultPassword = "changeme"
+  // log default password warning once
+  if (SSLKeyStorePassword == defaultPassword || SSLKeyPassword == defaultPassword ||
+    SSLTrustStorePassword == defaultPassword)
+    log.warning(
+      LogMarker.Security,
+      "TLS/SSL is configured with default passwords. " +
+      "Set pekko.remote.artery.ssl.config-ssl-engine.key-store-password, " +
+      "key-password, and trust-store-password to secure values for production.")
+
   private val sslContext: SSLContext = {
     // log hostname verification warning once
     if (HostnameVerification)

@@ -32,6 +32,7 @@ import org.apache.pekko
 import pekko.actor.ActorSystem
 import pekko.annotation.ApiMayChange
 import pekko.annotation.InternalApi
+import pekko.event.LogMarker
 import pekko.event.Logging
 import pekko.event.MarkerLoggingAdapter
 import pekko.remote.artery.tcp.SSLEngineProvider
@@ -69,9 +70,17 @@ final class RotatingKeysSSLEngineProvider(val config: Config, protected val log:
   private val SSLKeyFile: String = config.getString("key-file")
   private val SSLCertFile: String = config.getString("cert-file")
   private val SSLCACertFile: String = config.getString("ca-cert-file")
+  private val SSLKeystorePassword: String = config.getString("keystore-password")
 
   private val sslEngineConfig = new SSLEngineConfig(config)
   import sslEngineConfig._
+
+  // log default password warning once
+  if (SSLKeystorePassword == "changeit")
+    log.warning(
+      LogMarker.Security,
+      "TLS/SSL rotating-keys-engine is configured with the default keystore password. " +
+      "Set pekko.remote.artery.ssl.rotating-keys-engine.keystore-password to a secure value for production.")
 
   // build a PRNG (created once, reused on every instance of SSLContext
   private val rng: SecureRandom = SecureRandomFactory.createSecureRandom(SSLRandomNumberGenerator, log)
@@ -105,7 +114,8 @@ final class RotatingKeysSSLEngineProvider(val config: Config, protected val log:
   private def constructContext(): ConfiguredContext = {
     val (privateKey, cert, cacert) = readFiles()
     try {
-      val keyManagers: Array[KeyManager] = PemManagersProvider.buildKeyManagers(privateKey, cert, cacert)
+      val keyManagers: Array[KeyManager] =
+        PemManagersProvider.buildKeyManagers(privateKey, cert, cacert, SSLKeystorePassword)
       val trustManagers: Array[TrustManager] = PemManagersProvider.buildTrustManagers(cacert)
 
       val sessionVerifier = new PeerSubjectVerifier(cert)

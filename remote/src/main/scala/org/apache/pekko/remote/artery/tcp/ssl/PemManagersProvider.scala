@@ -39,17 +39,19 @@ private[ssl] object PemManagersProvider {
   private[ssl] def buildKeyManagers(
       privateKey: PrivateKey,
       cert: X509Certificate,
-      cacert: Certificate): Array[KeyManager] = {
+      cacert: Certificate,
+      keystorePassword: String = "changeit"): Array[KeyManager] = {
     val keyStore = KeyStore.getInstance("JKS")
     keyStore.load(null)
 
+    val passwordChars = keystorePassword.toCharArray
     keyStore.setCertificateEntry("cert", cert)
     keyStore.setCertificateEntry("cacert", cacert)
-    keyStore.setKeyEntry("private-key", privateKey, "changeit".toCharArray, Array(cert, cacert))
+    keyStore.setKeyEntry("private-key", privateKey, passwordChars, Array(cert, cacert))
 
     val kmf =
       KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm)
-    kmf.init(keyStore, "changeit".toCharArray)
+    kmf.init(keyStore, passwordChars)
     val keyManagers = kmf.getKeyManagers
     keyManagers
   }

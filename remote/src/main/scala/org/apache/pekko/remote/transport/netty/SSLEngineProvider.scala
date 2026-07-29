@@ -71,6 +71,16 @@ class ConfigSSLEngineProvider(protected val log: MarkerLoggingAdapter, private v
 
   import settings._
 
+  private val defaultPassword = "changeme"
+  // log default password warning once
+  if (settings.SSLKeyStorePassword == defaultPassword || settings.SSLKeyPassword == defaultPassword ||
+    settings.SSLTrustStorePassword == defaultPassword)
+    log.warning(
+      LogMarker.Security,
+      "TLS/SSL is configured with default passwords. " +
+      "Set pekko.remote.classic.netty.ssl.security.key-store-password, " +
+      "key-password, and trust-store-password to secure values for production.")
+
   if (SSLHostnameVerification)
     log.debug("TLS/SSL hostname verification is enabled.")
   else
