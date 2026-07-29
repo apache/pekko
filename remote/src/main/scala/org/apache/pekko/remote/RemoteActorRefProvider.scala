@@ -34,7 +34,7 @@ import pekko.event.EventStream
 import pekko.event.Logging
 import pekko.event.Logging.Error
 import pekko.event.LogMarker
-import pekko.event.LoggingAdapter
+import pekko.event.MarkerLoggingAdapter
 import pekko.pattern.pipe
 import pekko.remote.artery.ArterySettings
 import pekko.remote.artery.ArterySettings.AeronUpd
@@ -195,7 +195,7 @@ private[pekko] class RemoteActorRefProvider(
 
   @volatile
   private var _log = local.log
-  def log: LoggingAdapter = _log
+  def log: MarkerLoggingAdapter = _log
 
   override def rootPath: ActorPath = local.rootPath
   override def deadLetters: InternalActorRef = local.deadLetters
