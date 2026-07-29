@@ -17,10 +17,12 @@
 
 package org.apache.pekko.remote
 
+import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import org.apache.pekko
 import pekko.actor.ActorSystem
+import pekko.remote.artery.ArterySettings
 import pekko.testkit.PekkoSpec
 
 import org.scalatest.BeforeAndAfterAll
@@ -41,8 +43,7 @@ class NonTlsWarningSpec extends AnyWordSpecLike with Matchers with BeforeAndAfte
 
   override def afterAll(): Unit = {
     systems.foreach { sys =>
-      sys.terminate()
-      sys.whenTerminated.await(10.seconds)
+      Await.result(sys.terminate(), 10.seconds)
     }
     super.afterAll()
   }
@@ -58,7 +59,7 @@ class NonTlsWarningSpec extends AnyWordSpecLike with Matchers with BeforeAndAfte
         .withFallback(ConfigFactory.load())
 
       val system = createSystem("artery-tcp-test", config)
-      val settings = RemoteSettings(system.settings.config)
+      val settings = new RemoteSettings(system.settings.config)
       settings.Artery.Enabled should be(true)
       settings.Artery.Transport should be(ArterySettings.Tcp)
     }
@@ -72,7 +73,7 @@ class NonTlsWarningSpec extends AnyWordSpecLike with Matchers with BeforeAndAfte
         .withFallback(ConfigFactory.load())
 
       val system = createSystem("artery-aeron-test", config)
-      val settings = RemoteSettings(system.settings.config)
+      val settings = new RemoteSettings(system.settings.config)
       settings.Artery.Enabled should be(true)
       settings.Artery.Transport should be(ArterySettings.AeronUpd)
     }
@@ -86,7 +87,7 @@ class NonTlsWarningSpec extends AnyWordSpecLike with Matchers with BeforeAndAfte
         .withFallback(ConfigFactory.load())
 
       val system = createSystem("classic-netty-test", config)
-      val settings = RemoteSettings(system.settings.config)
+      val settings = new RemoteSettings(system.settings.config)
       settings.Artery.Enabled should be(false)
       settings.Transports should not be empty
       // Default classic transport (pekko.remote.classic.netty.tcp) has no enable-ssl key
@@ -106,7 +107,7 @@ class NonTlsWarningSpec extends AnyWordSpecLike with Matchers with BeforeAndAfte
         .withFallback(ConfigFactory.load())
 
       val system = createSystem("artery-tls-tcp-test", config)
-      val settings = RemoteSettings(system.settings.config)
+      val settings = new RemoteSettings(system.settings.config)
       settings.Artery.Enabled should be(true)
       settings.Artery.Transport should be(ArterySettings.TlsTcp)
     }
@@ -121,7 +122,7 @@ class NonTlsWarningSpec extends AnyWordSpecLike with Matchers with BeforeAndAfte
         .withFallback(ConfigFactory.load())
 
       val system = createSystem("classic-netty-ssl-test", config)
-      val settings = RemoteSettings(system.settings.config)
+      val settings = new RemoteSettings(system.settings.config)
       settings.Artery.Enabled should be(false)
       settings.Transports should not be empty
       settings.Transports.exists {
