@@ -156,7 +156,7 @@ private class ReplayMediator(
     case ReplayFailure(cause) =>
       replayCompletionPromise.failure(cause)
       context.stop(self)
-    case ReceiveTimeout =>
+    case _: ReceiveTimeout =>
       replayCompletionPromise.failure(
         new AsyncReplayTimeoutException(s"replay timed out after ${replayTimeout.toSeconds} seconds inactivity"))
       context.stop(self)

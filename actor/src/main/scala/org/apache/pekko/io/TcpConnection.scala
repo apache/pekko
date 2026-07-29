@@ -100,7 +100,7 @@ private[io] abstract class TcpConnection(val tcp: TcpExt, val channel: SocketCha
       val info = ConnectionInfo(registration, commander, keepOpenOnPeerClosed = false, useResumeWriting = false)
       handleClose(info, Some(sender()), cmd.event)
 
-    case ReceiveTimeout =>
+    case _: ReceiveTimeout =>
       // after sending `Register` user should watch this actor to make sure
       // it didn't die because of the timeout
       log.debug("Configured registration timeout of [{}] expired, stopping", RegisterTimeout)

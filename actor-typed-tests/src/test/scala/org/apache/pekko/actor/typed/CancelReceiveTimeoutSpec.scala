@@ -96,7 +96,7 @@ class CancelReceiveTimeoutSpec extends ScalaTestWithActorTestKit with AnyWordSpe
       // This is what happens when the scheduler fires ReceiveTimeout before
       // cancelReceiveTimeout() is processed but the actor dequeues them in the
       // opposite order.
-      ref.toClassic ! pekko.actor.ReceiveTimeout
+      ref.toClassic ! pekko.actor.ReceiveTimeout(1.second)
 
       // Step 3: verify the actor is still alive and responsive (no NPE crash).
       ref ! Ping

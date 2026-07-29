@@ -84,8 +84,8 @@ public class FaultHandlingDocSample {
                       getContext().getSystem().terminate();
                     }
                   })
-              .matchEquals(
-                  ReceiveTimeout.getInstance(),
+              .match(
+                  ReceiveTimeout.class,
                   x -> {
                     // No progress within 15 seconds, ServiceUnavailable
                     log().error("Shutting down due to unavailable service");

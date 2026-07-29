@@ -144,19 +144,17 @@ private[pekko] final case class AddressTerminated(address: Address)
     with PossiblyHarmful
     with DeadLetterSuppression
 
-abstract class ReceiveTimeout extends PossiblyHarmful
-
 /**
- * When using ActorContext.setReceiveTimeout, the singleton instance of ReceiveTimeout will be sent
- * to the Actor when there hasn't been any message for that long.
+ * When using ActorContext.setReceiveTimeout, a ReceiveTimeout message carrying the configured
+ * timeout duration will be sent to the Actor when there hasn't been any message for that long.
  */
 @SerialVersionUID(1L)
-case object ReceiveTimeout extends ReceiveTimeout {
+final case class ReceiveTimeout(timeout: scala.concurrent.duration.FiniteDuration) extends PossiblyHarmful {
 
   /**
-   * Java API: get the singleton instance
+   * Java API: get the timeout duration
    */
-  def getInstance = this
+  def getTimeout: java.time.Duration = java.time.Duration.ofNanos(timeout.toNanos)
 }
 
 /**

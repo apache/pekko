@@ -90,7 +90,7 @@ object ReceiveTimeoutBenchmark {
     override def receive: Receive = {
       case Message            =>
       case finished: Finished => finished.latch.countDown()
-      case ReceiveTimeout     =>
+      case _: ReceiveTimeout     =>
     }
   }
 }

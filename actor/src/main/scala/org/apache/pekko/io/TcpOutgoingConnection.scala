@@ -87,7 +87,7 @@ private[io] class TcpOutgoingConnection(
           register(remoteAddress, registration)
         }
       }
-    case ReceiveTimeout =>
+    case _: ReceiveTimeout =>
       connectionTimeout()
   }
 
@@ -96,7 +96,7 @@ private[io] class TcpOutgoingConnection(
       reportConnectFailure {
         register(new InetSocketAddress(resolved.address(), remoteAddress.getPort), registration)
       }
-    case ReceiveTimeout =>
+    case _: ReceiveTimeout =>
       connectionTimeout()
     case Failure(ex) =>
       // async-dns responds with a Failure on DNS server lookup failure
@@ -141,7 +141,7 @@ private[io] class TcpOutgoingConnection(
         reportConnectFailure {
           channelRegistry.register(channel, SelectionKey.OP_CONNECT)
         }
-      case ReceiveTimeout =>
+      case _: ReceiveTimeout =>
         connectionTimeout()
     }
   }

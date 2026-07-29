@@ -103,7 +103,7 @@ object TestActorRefSpec {
   class ReceiveTimeoutActor(target: ActorRef) extends Actor {
     context.setReceiveTimeout(1.second)
     def receive = {
-      case ReceiveTimeout =>
+      case _: ReceiveTimeout =>
         target ! "timeout"
         context.stop(self)
     }

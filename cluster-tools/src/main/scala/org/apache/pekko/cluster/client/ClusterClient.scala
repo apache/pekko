@@ -925,7 +925,7 @@ object ClusterReceptionist {
 
       def receive = {
         case Ping           => // keep alive from client
-        case ReceiveTimeout =>
+        case _: ReceiveTimeout =>
           log.debug("ClientResponseTunnel for client [{}] stopped due to inactivity", client.path)
           context.stop(self)
         case msg =>

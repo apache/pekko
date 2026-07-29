@@ -99,7 +99,7 @@ import pekko.util.OptionVal
               ChildFailed(ActorRefAdapter(ref), ex)
             } else Terminated(ActorRefAdapter(ref))
           handleSignal(msg)
-        case classic.ReceiveTimeout =>
+        case _: classic.ReceiveTimeout =>
           // cancelReceiveTimeout() sets receiveTimeoutMsg to null, but a classic ReceiveTimeout
           // that was already enqueued in the mailbox before the cancel cannot be retracted.
           // Discard the stale timeout to avoid passing null into the typed behavior stack (#3084).
