@@ -632,7 +632,7 @@ object ShardCoordinator {
 
     def stoppingShard: Receive = {
       case ShardStopped(`shard`)                                    => done(ok = true)
-      case _: ReceiveTimeout                                          => done(ok = false)
+      case _: ReceiveTimeout                                        => done(ok = false)
       case RebalanceWorker.ShardRegionTerminated(`shardRegionFrom`) =>
         log.debug(
           "{}: ShardRegion [{}] terminated while waiting for ShardStopped for shard [{}].",

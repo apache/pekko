@@ -176,9 +176,9 @@ final class PersistencePluginProxy(config: Config) extends Actor with Stash with
         context.watch(target)
         unstashAll()
         context.become(active(target, address == selfAddress))
-      case _: ActorIdentity => // will retry after ReceiveTimeout
-      case Terminated(_)    =>
-      case _: ReceiveTimeout   =>
+      case _: ActorIdentity  => // will retry after ReceiveTimeout
+      case Terminated(_)     =>
+      case _: ReceiveTimeout =>
         sendIdentify(address)
     }: Receive).orElse(init)
 

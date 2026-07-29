@@ -70,11 +70,11 @@ object ClusterShardingSpec {
     }
 
     override def receiveCommand: Receive = {
-      case Increment      => persist(CounterChanged(+1))(updateState)
-      case Decrement      => persist(CounterChanged(-1))(updateState)
-      case Get(_)         => sender() ! count
+      case Increment         => persist(CounterChanged(+1))(updateState)
+      case Decrement         => persist(CounterChanged(-1))(updateState)
+      case Get(_)            => sender() ! count
       case _: ReceiveTimeout => context.parent ! Passivate(stopMessage = Stop)
-      case Stop           => context.stop(self)
+      case Stop              => context.stop(self)
     }
   }
   // #counter-actor

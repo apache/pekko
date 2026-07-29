@@ -2947,7 +2947,7 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
     case _: ReadResult =>
       // collect late replies
       remaining -= sender().path.address
-    case SendToSecondary =>
-    case _: ReceiveTimeout  =>
+    case SendToSecondary   =>
+    case _: ReceiveTimeout =>
   }
 }

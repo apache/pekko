@@ -127,7 +127,7 @@ class ReceiveTimeoutSpec extends PekkoSpec() {
         context.setReceiveTimeout(1.second)
 
         def receive = {
-          case Tick           => processedLatch.countDown()
+          case Tick              => processedLatch.countDown()
           case _: ReceiveTimeout => timeoutLatch.open()
         }
       }))
@@ -148,7 +148,7 @@ class ReceiveTimeoutSpec extends PekkoSpec() {
         context.setReceiveTimeout(500.milliseconds)
 
         def receive = {
-          case Tick           => ()
+          case Tick              => ()
           case _: ReceiveTimeout =>
             count.incrementAndGet
             timeoutLatch.open()
@@ -183,8 +183,8 @@ class ReceiveTimeoutSpec extends PekkoSpec() {
         context.setReceiveTimeout(1.second)
 
         def receive = {
-          case _: ReceiveTimeout  => timeoutLatch.open()
-          case TransparentTick =>
+          case _: ReceiveTimeout => timeoutLatch.open()
+          case TransparentTick   =>
         }
       }))
 
@@ -245,8 +245,8 @@ class ReceiveTimeoutSpec extends PekkoSpec() {
 
       val timeoutActor = system.actorOf(Props(new Actor {
         def receive = {
-          case TransparentTick => context.setReceiveTimeout(500.milliseconds)
-          case _: ReceiveTimeout  => timeoutLatch.open()
+          case TransparentTick   => context.setReceiveTimeout(500.milliseconds)
+          case _: ReceiveTimeout => timeoutLatch.open()
         }
       }))
 
@@ -263,8 +263,8 @@ class ReceiveTimeoutSpec extends PekkoSpec() {
         context.setReceiveTimeout(500.milliseconds)
 
         def receive = {
-          case TransparentTick => context.setReceiveTimeout(Duration.Inf)
-          case _: ReceiveTimeout  => timeoutLatch.open()
+          case TransparentTick   => context.setReceiveTimeout(Duration.Inf)
+          case _: ReceiveTimeout => timeoutLatch.open()
         }
       }))
 
@@ -282,8 +282,8 @@ class ReceiveTimeoutSpec extends PekkoSpec() {
         context.setReceiveTimeout(initialTimeout)
 
         def receive: Receive = {
-          case TransparentTick => context.setReceiveTimeout(Duration.Undefined)
-          case _: ReceiveTimeout  => timeoutLatch.open()
+          case TransparentTick   => context.setReceiveTimeout(Duration.Undefined)
+          case _: ReceiveTimeout => timeoutLatch.open()
         }
       }))
 
