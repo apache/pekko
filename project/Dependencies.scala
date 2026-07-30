@@ -110,7 +110,7 @@ object Dependencies {
 
     val logback = "ch.qos.logback" % "logback-classic" % logbackVersion
 
-    val jspecify = "org.jspecify" % "jspecify" % "1.0.0" % Optional
+    val jspecify = "org.jspecify" % "jspecify" % "1.0.1" % Optional
 
     object Docs {
       val sprayJson = "io.spray" %% "spray-json" % "1.3.6" % Test
