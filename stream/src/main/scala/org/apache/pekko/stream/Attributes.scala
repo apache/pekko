@@ -31,7 +31,7 @@ import pekko.actor.ActorSystem
 import pekko.annotation.ApiMayChange
 import pekko.annotation.DoNotInherit
 import pekko.annotation.InternalApi
-import pekko.anotation.InternalStableApi
+import pekko.annotation.InternalStableApi
 import pekko.event.Logging
 import pekko.japi.function
 import pekko.stream.impl.TraversalBuilder
