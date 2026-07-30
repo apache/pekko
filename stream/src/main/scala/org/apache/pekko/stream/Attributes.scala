@@ -304,28 +304,28 @@ final class Attributes private[pekko] (
   }
 
   /**
-    *  INTERNAL API
-    * 
-    * Java API: Get the least specific attribute (added first) of a given `Class` or subclass thereof.
-    * If no such attribute exists the `default` value is returned.
-    */
+   *  INTERNAL API
+   *
+   * Java API: Get the least specific attribute (added first) of a given `Class` or subclass thereof.
+   * If no such attribute exists the `default` value is returned.
+   */
   @InternalStableApi
   def getFirstAttribute[T <: Attribute](c: Class[T], default: T): T =
     getFirstAttribute(c).orElse(default)
 
   /**
-    *  INTERNAL API
-    * 
-    * Java API: Get the least specific attribute (added first) of a given `Class` or subclass thereof.
-    */
+   *  INTERNAL API
+   *
+   * Java API: Get the least specific attribute (added first) of a given `Class` or subclass thereof.
+   */
   @InternalStableApi
   def getFirstAttribute[T <: Attribute](c: Class[T]): Optional[T] =
     attributeList.reverseIterator.collectFirst { case attr if c.isInstance(attr) => c.cast(attr) }.toJava
 
   /**
-    *  INTERNAL API
-    * 
-    * Scala API: Get the least specific attribute (added first) of a given type parameter T `Class` or subclass thereof.
+   *  INTERNAL API
+   *
+   * Scala API: Get the least specific attribute (added first) of a given type parameter T `Class` or subclass thereof.
    * If no such attribute exists the `default` value is returned.
    */
   @InternalStableApi
@@ -337,10 +337,10 @@ final class Attributes private[pekko] (
   }
 
   /**
-    * INTERNAL API
-    * 
-    * Scala API: Get the least specific attribute (added first) of a given type parameter T `Class` or subclass thereof.
-    */
+   * INTERNAL API
+   *
+   * Scala API: Get the least specific attribute (added first) of a given type parameter T `Class` or subclass thereof.
+   */
   @InternalStableApi
   def getFirst[T <: Attribute: ClassTag]: Option[T] = {
     val c = classTag[T].runtimeClass.asInstanceOf[Class[T]]
