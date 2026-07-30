@@ -306,14 +306,14 @@ final class Attributes private[pekko] (
    * Java API: Get the least specific attribute (added first) of a given `Class` or subclass thereof.
    * If no such attribute exists the `default` value is returned.
    */
-  @deprecated("Attributes should always be most specific, use getAttribute[T]", "Akka 2.5.7")
+  // Maintained active: required to retrieve the least specific attribute without breaking precedence. See apache/pekko-http#345
   def getFirstAttribute[T <: Attribute](c: Class[T], default: T): T =
     getFirstAttribute(c).orElse(default)
 
   /**
    * Java API: Get the least specific attribute (added first) of a given `Class` or subclass thereof.
    */
-  @deprecated("Attributes should always be most specific, use get[T]", "Akka 2.5.7")
+  // Maintained active: required to retrieve the least specific attribute without breaking precedence. See apache/pekko-http#345
   def getFirstAttribute[T <: Attribute](c: Class[T]): Optional[T] =
     attributeList.reverseIterator.collectFirst { case attr if c.isInstance(attr) => c.cast(attr) }.toJava
 
@@ -321,7 +321,7 @@ final class Attributes private[pekko] (
    * Scala API: Get the least specific attribute (added first) of a given type parameter T `Class` or subclass thereof.
    * If no such attribute exists the `default` value is returned.
    */
-  @deprecated("Attributes should always be most specific, use get[T]", "Akka 2.5.7")
+  // Maintained active: required to retrieve the least specific attribute without breaking precedence. See apache/pekko-http#345
   def getFirst[T <: Attribute: ClassTag](default: T): T = {
     getFirst[T] match {
       case Some(a) => a
@@ -331,8 +331,8 @@ final class Attributes private[pekko] (
 
   /**
    * Scala API: Get the least specific attribute (added first) of a given type parameter T `Class` or subclass thereof.
-   */
-  @deprecated("Attributes should always be most specific, use get[T]", "Akka 2.5.7")
+    */
+  // Maintained active: required to retrieve the least specific attribute without breaking precedence. See apache/pekko-http#345
   def getFirst[T <: Attribute: ClassTag]: Option[T] = {
     val c = classTag[T].runtimeClass.asInstanceOf[Class[T]]
     attributeList.reverseIterator.collectFirst { case attr if c.isInstance(attr) => c.cast(attr) }
