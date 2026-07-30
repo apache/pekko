@@ -81,7 +81,7 @@ class ConfigSSLEngineProvider(protected val config: Config, protected val log: M
     if (HostnameVerification)
       log.debug("TLS/SSL hostname verification is enabled.")
     else
-      log.info(
+      log.warning(
         LogMarker.Security,
         "TLS/SSL hostname verification is disabled. See Pekko reference documentation for more information.")
 
