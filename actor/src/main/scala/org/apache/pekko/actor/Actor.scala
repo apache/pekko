@@ -18,6 +18,7 @@ import java.util.Optional
 import scala.annotation.nowarn
 import scala.annotation.tailrec
 import scala.beans.BeanProperty
+import scala.jdk.DurationConverters._
 import scala.util.control.NoStackTrace
 
 import org.apache.pekko
@@ -154,7 +155,7 @@ final case class ReceiveTimeout(timeout: scala.concurrent.duration.FiniteDuratio
   /**
    * Java API: get the timeout duration
    */
-  def getTimeout: java.time.Duration = java.time.Duration.ofNanos(timeout.toNanos)
+  def getTimeout: java.time.Duration = timeout.toJava
 }
 
 /**
