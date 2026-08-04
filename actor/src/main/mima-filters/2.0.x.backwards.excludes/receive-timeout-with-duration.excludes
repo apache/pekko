@@ -37,3 +37,7 @@ ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.actor.Recei
 ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.actor.ReceiveTimeout$")
 ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.actor.ReceiveTimeout.getInstance")
 ProblemFilters.exclude[IncompatibleTemplateDefProblem]("org.apache.pekko.actor.ReceiveTimeout")
+# Scala 3 only: Mirror/product members of the former case object
+ProblemFilters.exclude[IncompatibleResultTypeProblem]("org.apache.pekko.actor.ReceiveTimeout.fromProduct")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.actor.ReceiveTimeout.productElementNames")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.actor.ReceiveTimeout.productIterator")

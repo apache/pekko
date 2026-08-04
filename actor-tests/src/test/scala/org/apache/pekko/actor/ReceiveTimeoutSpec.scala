@@ -115,6 +115,7 @@ class ReceiveTimeoutSpec extends PekkoSpec() {
 
       val msg = probe.expectMsgType[ReceiveTimeout]
       msg.timeout should ===(500.milliseconds)
+      msg.getTimeout should ===(java.time.Duration.ofMillis(500))
       system.stop(timeoutActor)
     }
 
