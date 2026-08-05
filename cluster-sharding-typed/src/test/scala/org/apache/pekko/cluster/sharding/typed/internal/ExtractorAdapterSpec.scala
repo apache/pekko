@@ -22,6 +22,8 @@ import scala.annotation.nowarn
 import org.apache.pekko
 import pekko.cluster.sharding.ShardRegion.{ StartEntity => ClassicStartEntity }
 import pekko.cluster.sharding.internal.RememberEntitiesShardStore
+import pekko.cluster.sharding.typed.ShardingEnvelope
+import pekko.cluster.sharding.typed.ShardingMessageExtractor
 
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
