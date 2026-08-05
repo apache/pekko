@@ -66,24 +66,24 @@ class ExtractorAdapterSpec extends AnyWordSpecLike with Matchers {
     }
 
     "unwrap ShardingEnvelope message" in {
-      adapter.unwrapMessage(ShardingEnvelope("entity-1", "hello")) should ===("hello")
+      assert(adapter.unwrapMessage(ShardingEnvelope("entity-1", "hello")) === "hello")
     }
 
     "unwrap ClassicStartEntity message" in {
       val msg = ClassicStartEntity("entity-1")
-      adapter.unwrapMessage(msg) should ===(msg)
+      assert(adapter.unwrapMessage(msg) === msg)
     }
 
     "delegate unwrapMessage to user extractor for user messages" in {
-      adapter.unwrapMessage("entity-1:hello") should ===("hello")
+      assert(adapter.unwrapMessage("entity-1:hello") === "hello")
     }
 
     "return null for unwrapMessage on UpdateDone" in {
-      (adapter.unwrapMessage(RememberEntitiesShardStore.UpdateDone(Set("entity-1"), Set.empty)): Any) should be(null)
+      assert(adapter.unwrapMessage(RememberEntitiesShardStore.UpdateDone(Set("entity-1"), Set.empty)) === null)
     }
 
     "return null for unwrapMessage on RememberedEntities" in {
-      (adapter.unwrapMessage(RememberEntitiesShardStore.RememberedEntities(Set("entity-1"))): Any) should be(null)
+      assert(adapter.unwrapMessage(RememberEntitiesShardStore.RememberedEntities(Set("entity-1"))) === null)
     }
   }
 }
