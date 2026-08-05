@@ -71,7 +71,8 @@ class ExtractorAdapterSpec extends AnyWordSpecLike with Matchers {
 
     "unwrap ClassicStartEntity message" in {
       val msg = ClassicStartEntity("entity-1")
-      assert(adapter.unwrapMessage(msg) === msg)
+      // widen to Any to avoid checkcast to M at the call site (ClassicStartEntity is not actually M)
+      assert((adapter.unwrapMessage(msg): Any) === msg)
     }
 
     "delegate unwrapMessage to user extractor for user messages" in {
