@@ -17,38 +17,38 @@
 
 package org.apache.pekko.cluster.sharding.typed.internal
 
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpecLike
+import scala.annotation.nowarn
 
 import org.apache.pekko
 import pekko.cluster.sharding.ShardRegion.{ StartEntity => ClassicStartEntity }
 import pekko.cluster.sharding.internal.RememberEntitiesShardStore
-import pekko.cluster.sharding.typed.scaladsl.EntityTypeKey
 
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
+
+@nowarn("cat=lint-structural-type")
 class ExtractorAdapterSpec extends AnyWordSpecLike with Matchers {
 
-  val typeKey = EntityTypeKey[String]("test")
-
-  val extractor = new ShardingMessageExtractor[String, String] {
+  private val extractor = new ShardingMessageExtractor[String, String] {
     override def entityId(message: String): String =
       if (message.startsWith("entity-")) message.substring(7, message.indexOf(':'))
       else null
+
     override def shardId(entityId: String): String = entityId.hashCode.abs.toString
+
     override def unwrapMessage(message: String): String = message.substring(message.indexOf(':') + 1)
   }
 
-  val adapter = new ExtractorAdapter(extractor)
+  private val adapter = new ExtractorAdapter(extractor)
 
   "ExtractorAdapter" must {
 
     "extract entity id from ShardingEnvelope" in {
-      val envelope = ShardingEnvelope("entity-1", "hello")
-      adapter.entityId(envelope) should ===("entity-1")
+      adapter.entityId(ShardingEnvelope("entity-1", "hello")) should ===("entity-1")
     }
 
     "extract entity id from ClassicStartEntity" in {
-      val msg = ClassicStartEntity("entity-1")
-      adapter.entityId(msg) should ===("entity-1")
+      adapter.entityId(ClassicStartEntity("entity-1")) should ===("entity-1")
     }
 
     "delegate to user extractor for user messages" in {
@@ -56,18 +56,15 @@ class ExtractorAdapterSpec extends AnyWordSpecLike with Matchers {
     }
 
     "return null for RememberEntitiesShardStore.UpdateDone" in {
-      val msg = RememberEntitiesShardStore.UpdateDone(Set("entity-1"), Set.empty)
-      adapter.entityId(msg) should be(null)
+      adapter.entityId(RememberEntitiesShardStore.UpdateDone(Set("entity-1"), Set.empty)) should be(null)
     }
 
     "return null for RememberEntitiesShardStore.RememberedEntities" in {
-      val msg = RememberEntitiesShardStore.RememberedEntities(Set("entity-1", "entity-2"))
-      adapter.entityId(msg) should be(null)
+      adapter.entityId(RememberEntitiesShardStore.RememberedEntities(Set("entity-1", "entity-2"))) should be(null)
     }
 
     "unwrap ShardingEnvelope message" in {
-      val envelope = ShardingEnvelope("entity-1", "hello")
-      adapter.unwrapMessage(envelope) should ===("hello")
+      adapter.unwrapMessage(ShardingEnvelope("entity-1", "hello")) should ===("hello")
     }
 
     "unwrap ClassicStartEntity message" in {
@@ -79,14 +76,12 @@ class ExtractorAdapterSpec extends AnyWordSpecLike with Matchers {
       adapter.unwrapMessage("entity-1:hello") should ===("hello")
     }
 
-    "return null.unwrapMessage for UpdateDone" in {
-      val msg = RememberEntitiesShardStore.UpdateDone(Set("entity-1"), Set.empty)
-      adapter.unwrapMessage(msg) should be(null)
+    "return null for unwrapMessage on UpdateDone" in {
+      (adapter.unwrapMessage(RememberEntitiesShardStore.UpdateDone(Set("entity-1"), Set.empty)): Any) should be(null)
     }
 
-    "return null.unwrapMessage for RememberedEntities" in {
-      val msg = RememberEntitiesShardStore.RememberedEntities(Set("entity-1"))
-      adapter.unwrapMessage(msg) should be(null)
+    "return null for unwrapMessage on RememberedEntities" in {
+      (adapter.unwrapMessage(RememberEntitiesShardStore.RememberedEntities(Set("entity-1"))): Any) should be(null)
     }
   }
 }
