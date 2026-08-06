@@ -62,12 +62,3 @@ jobs:
             -Dmultinode.Xmx256M \
             -Dmultinode.XX:+AlwaysActAsServerClassMachine \
             clean test
-
-      - name: Test Reports
-        # Makes it easier to spot failures instead of looking at the logs.
-        if: ${{ failure() }}
-        uses: scacap/action-surefire-report@c38a2d74b9840ae8950a4387ae02b637421d0f39 # v1.13.0
-        with:
-          report_paths: '**/target/test-reports/TEST-*.xml'
-          fail_if_no_tests: false
-          skip_publishing: true
