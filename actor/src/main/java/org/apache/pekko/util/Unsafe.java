@@ -20,6 +20,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 /** INTERNAL API */
+@SuppressWarnings("deprecation")
 @InternalApi
 public final class Unsafe {
   public static final sun.misc.Unsafe instance;
