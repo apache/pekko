@@ -41,6 +41,7 @@ import pekko.cluster.sharding.ShardCoordinator
 import pekko.cluster.sharding.ShardCoordinator.ShardAllocationStrategy
 import pekko.cluster.sharding.ShardRegion
 import pekko.cluster.sharding.ShardRegion.{ StartEntity => ClassicStartEntity }
+import pekko.cluster.sharding.internal.RememberEntitiesShardStore
 import pekko.cluster.sharding.typed.scaladsl.EntityContext
 import pekko.cluster.typed.Cluster
 import pekko.event.Logging
@@ -57,14 +58,18 @@ import pekko.util.JavaDurationConverters._
  * INTERNAL API
  * Extracts entityId and unwraps ShardingEnvelope and StartEntity messages.
  * Other messages are delegated to the given `ShardingMessageExtractor`.
+ * Internal messages from the remember-entities store are filtered out
+ * and should never reach the user-supplied extractor.
  */
 @InternalApi private[pekko] class ExtractorAdapter[E, M](delegate: ShardingMessageExtractor[E, M])
     extends ShardingMessageExtractor[Any, M] {
   override def entityId(message: Any): String = {
     message match {
-      case ShardingEnvelope(entityId, _) => entityId // also covers ClassicStartEntity in ShardingEnvelope
-      case ClassicStartEntity(entityId)  => entityId
-      case msg                           => delegate.entityId(msg.asInstanceOf[E])
+      case ShardingEnvelope(entityId, _)                    => entityId // also covers ClassicStartEntity in ShardingEnvelope
+      case ClassicStartEntity(entityId)                     => entityId
+      case _: RememberEntitiesShardStore.UpdateDone         => null
+      case _: RememberEntitiesShardStore.RememberedEntities => null
+      case msg                                              => delegate.entityId(msg.asInstanceOf[E])
     }
   }
 
@@ -78,7 +83,9 @@ import pekko.util.JavaDurationConverters._
       case msg: ClassicStartEntity =>
         // not really of type M, but erased and StartEntity is only handled internally, not delivered to the entity
         msg.asInstanceOf[M]
-      case msg =>
+      case _: RememberEntitiesShardStore.UpdateDone         => null.asInstanceOf[M]
+      case _: RememberEntitiesShardStore.RememberedEntities => null.asInstanceOf[M]
+      case msg                                              =>
         delegate.unwrapMessage(msg.asInstanceOf[E])
     }
   }
