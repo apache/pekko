@@ -28,7 +28,7 @@ import pekko.cluster.sharding.typed.ShardingMessageExtractor
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 
-@nowarn("cat=lint-structural-type")
+@nowarn
 class ExtractorAdapterSpec extends AnyWordSpecLike with Matchers {
 
   private val extractor = new ShardingMessageExtractor[String, String] {
