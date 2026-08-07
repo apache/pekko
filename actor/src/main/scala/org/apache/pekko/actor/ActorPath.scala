@@ -167,7 +167,7 @@ object ActorPath {
  * references are compared the unique id of the actor is not taken into account
  * when comparing actor paths.
  */
-@nowarn("msg=@SerialVersionUID has no effect on traits")
+@nowarn("msg=@SerialVersionUID (has no effect|does nothing) on traits")
 @SerialVersionUID(1L)
 sealed trait ActorPath extends Comparable[ActorPath] with Serializable {
 

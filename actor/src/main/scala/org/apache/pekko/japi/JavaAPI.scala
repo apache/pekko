@@ -104,7 +104,7 @@ object Pair {
  *
  * This class is kept for compatibility, but for future API's please prefer [[pekko.japi.function.Creator]].
  */
-@nowarn("msg=@SerialVersionUID has no effect")
+@nowarn("msg=@SerialVersionUID (has no effect|does nothing)")
 @SerialVersionUID(1L)
 @FunctionalInterface
 @deprecated("Will be removed in favor of pekko.japi.function.Creator in Pekko 2.0.0", "1.2.0")
