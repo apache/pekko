@@ -30,7 +30,7 @@ object Dependencies {
 
   val junitVersion = "4.13.2"
   val junit5Version = "5.13.4"
-  val slf4jVersion = "2.0.17"
+  val slf4jVersion = "2.0.18"
   // check agrona version when updating this
   val aeronVersion = "1.45.2"
   // needs to be inline with the aeron version, check
@@ -45,7 +45,7 @@ object Dependencies {
 
   val scala212Version = "2.12.21"
   val scala213Version = "2.13.18"
-  val scala3Version = "3.3.7"
+  val scala3Version = "3.3.8"
   val allScalaVersions = Seq(scala213Version, scala212Version, scala3Version)
 
   val reactiveStreamsVersion = "1.0.4"
