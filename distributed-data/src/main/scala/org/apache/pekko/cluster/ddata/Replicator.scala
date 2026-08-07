@@ -2639,7 +2639,7 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
 
   import context.dispatcher
   private val sendToSecondarySchedule = context.system.scheduler.scheduleOnce(timeout / 5, self, SendToSecondary)
-  private val timeoutSchedule = context.system.scheduler.scheduleOnce(timeout, self, ReceiveTimeout)
+  private val timeoutSchedule = context.system.scheduler.scheduleOnce(timeout, self, ReceiveTimeout(timeout))
 
   var remaining = nodes.iterator.map(_.address).toSet
 
@@ -2801,7 +2801,7 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
         }
       }
       secondaryNodes.foreach { replica(_) ! writeMsg }
-    case ReceiveTimeout =>
+    case _: ReceiveTimeout =>
       reply(isTimeout = true)
   }
 
@@ -2920,7 +2920,7 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
         reply(ok = true)
     case SendToSecondary =>
       secondaryNodes.foreach { replica(_) ! readMsg }
-    case ReceiveTimeout => reply(ok = false)
+    case _: ReceiveTimeout => reply(ok = false)
   }
 
   def reply(ok: Boolean): Unit =
@@ -2947,7 +2947,7 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
     case _: ReadResult =>
       // collect late replies
       remaining -= sender().path.address
-    case SendToSecondary =>
-    case ReceiveTimeout  =>
+    case SendToSecondary   =>
+    case _: ReceiveTimeout =>
   }
 }

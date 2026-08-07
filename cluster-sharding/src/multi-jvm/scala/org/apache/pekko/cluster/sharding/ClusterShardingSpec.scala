@@ -70,11 +70,11 @@ object ClusterShardingSpec {
     }
 
     override def receiveCommand: Receive = {
-      case Increment      => persist(CounterChanged(+1))(updateState)
-      case Decrement      => persist(CounterChanged(-1))(updateState)
-      case Get(_)         => sender() ! count
-      case ReceiveTimeout => context.parent ! Passivate(stopMessage = Stop)
-      case Stop           => context.stop(self)
+      case Increment         => persist(CounterChanged(+1))(updateState)
+      case Decrement         => persist(CounterChanged(-1))(updateState)
+      case Get(_)            => sender() ! count
+      case _: ReceiveTimeout => context.parent ! Passivate(stopMessage = Stop)
+      case Stop              => context.stop(self)
     }
   }
   // #counter-actor
@@ -499,7 +499,7 @@ abstract class ClusterShardingSpec(multiNodeConfig: ClusterShardingSpecConfig)
       runOn(second) {
         region ! Get(2)
         expectMsg(3)
-        region ! EntityEnvelope(2, ReceiveTimeout)
+        region ! EntityEnvelope(2, ReceiveTimeout(120.seconds))
         // let the Passivate-Stop roundtrip begin to trigger buffering of subsequent messages
         Thread.sleep(200)
         region ! EntityEnvelope(2, Increment)

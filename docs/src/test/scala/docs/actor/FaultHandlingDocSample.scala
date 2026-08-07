@@ -67,7 +67,7 @@ class Listener extends Actor with ActorLogging {
         context.system.terminate()
       }
 
-    case ReceiveTimeout =>
+    case _: ReceiveTimeout =>
       // No progress within 15 seconds, ServiceUnavailable
       log.error("Shutting down due to unavailable service")
       context.system.terminate()

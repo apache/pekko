@@ -73,7 +73,7 @@ private[pekko] trait ReceiveTimeout { this: ActorCell =>
 
   private def rescheduleReceiveTimeout(data: State, timeout: FiniteDuration): Unit = {
     data.task.cancel() // Cancel any ongoing future
-    data.task = system.scheduler.scheduleOnce(timeout, self, pekko.actor.ReceiveTimeout)(this.dispatcher)
+    data.task = system.scheduler.scheduleOnce(timeout, self, pekko.actor.ReceiveTimeout(timeout))(this.dispatcher)
     data.version += 1
   }
 

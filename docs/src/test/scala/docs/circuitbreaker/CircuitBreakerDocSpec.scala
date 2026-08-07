@@ -75,7 +75,7 @@ class TellPatternActor(recipient: ActorRef) extends Actor with ActorLogging {
     case err: Throwable => {
       breaker.fail()
     }
-    case ReceiveTimeout => {
+    case _: ReceiveTimeout => {
       breaker.fail()
     }
   }

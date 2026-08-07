@@ -43,7 +43,6 @@ public class JavaAPI {
   public void mustCompile() {
     final Kill kill = Kill.getInstance();
     final PoisonPill pill = PoisonPill.getInstance();
-    final ReceiveTimeout t = ReceiveTimeout.getInstance();
 
     final LocalScope ls = LocalScope.getInstance();
     final NoScopeGiven noscope = NoScopeGiven.getInstance();

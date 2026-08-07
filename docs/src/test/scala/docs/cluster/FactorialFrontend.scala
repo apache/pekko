@@ -46,7 +46,7 @@ class FactorialFrontend(upToN: Int, repeat: Boolean) extends Actor with ActorLog
         if (repeat) sendJobs()
         else context.stop(self)
       }
-    case ReceiveTimeout =>
+    case _: ReceiveTimeout =>
       log.info("Timeout")
       sendJobs()
   }

@@ -595,7 +595,7 @@ object ShardCoordinator {
         shardRegionFrom,
         regions.size)
 
-    timers.startSingleTimer("hand-off-timeout", ReceiveTimeout, handOffTimeout)
+    timers.startSingleTimer("hand-off-timeout", ReceiveTimeout(handOffTimeout), handOffTimeout)
 
     def receive: Receive = {
       case BeginHandOffAck(`shard`) =>
@@ -610,7 +610,7 @@ object ShardCoordinator {
             shard)
           acked(shardRegion)
         }
-      case ReceiveTimeout =>
+      case _: ReceiveTimeout =>
         if (isRebalance)
           log.debug("{}: Rebalance of [{}] from [{}] timed out", typeName, shard, shardRegionFrom)
         else
@@ -632,7 +632,7 @@ object ShardCoordinator {
 
     def stoppingShard: Receive = {
       case ShardStopped(`shard`)                                    => done(ok = true)
-      case ReceiveTimeout                                           => done(ok = false)
+      case _: ReceiveTimeout                                        => done(ok = false)
       case RebalanceWorker.ShardRegionTerminated(`shardRegionFrom`) =>
         log.debug(
           "{}: ShardRegion [{}] terminated while waiting for ShardStopped for shard [{}].",

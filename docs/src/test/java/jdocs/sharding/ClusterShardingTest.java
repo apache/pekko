@@ -218,7 +218,7 @@ public class ClusterShardingTest {
           .match(Get.class, this::receiveGet)
           .matchEquals(CounterOp.INCREMENT, msg -> receiveIncrement())
           .matchEquals(CounterOp.DECREMENT, msg -> receiveDecrement())
-          .matchEquals(ReceiveTimeout.getInstance(), msg -> passivate())
+          .match(ReceiveTimeout.class, msg -> passivate())
           .build();
     }
 

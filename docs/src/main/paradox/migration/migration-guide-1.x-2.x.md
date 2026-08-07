@@ -42,3 +42,9 @@ The Java DSL `SourceWithContext` graph shape now uses `pekko.japi.Pair` instead 
 Java code that passes a `SourceWithContext` directly to `GraphDSL` must use `Pair`-typed stages.
 Code that converts it with `asSource()` already uses `Pair` and requires no changes.
 ([PR3388](https://github.com/apache/pekko/pull/3388))
+
+`ReceiveTimeout` changed from a `case object` singleton to a `final case class` that carries the configured
+timeout duration. Scala pattern matches must use a type pattern (`case timeout: ReceiveTimeout =>`) instead of a
+stable identifier pattern, and the `ReceiveTimeout.getInstance()` method has been removed from the Java API;
+Java users should match on `ReceiveTimeout.class` instead.
+([PR3399](https://github.com/apache/pekko/pull/3399))

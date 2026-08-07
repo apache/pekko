@@ -56,8 +56,8 @@ object ReceiveTimeoutSpec {
         restarting.set(true)
         probe ! "crashing"
         throw TestException("boom bang")
-      case ReceiveTimeout =>
-        probe ! ReceiveTimeout
+      case timeout: ReceiveTimeout =>
+        probe ! timeout
       case other =>
         probe ! other
     }
@@ -94,11 +94,28 @@ class ReceiveTimeoutSpec extends PekkoSpec() {
         context.setReceiveTimeout(500.milliseconds)
 
         def receive = {
-          case ReceiveTimeout => timeoutLatch.open()
+          case _: ReceiveTimeout => timeoutLatch.open()
         }
       }))
 
       Await.ready(timeoutLatch, TestLatch.DefaultTimeout)
+      system.stop(timeoutActor)
+    }
+
+    "carry the configured timeout duration" taggedAs TimingTest in {
+      val probe = TestProbe()
+
+      val timeoutActor = system.actorOf(Props(new Actor {
+        context.setReceiveTimeout(500.milliseconds)
+
+        def receive = {
+          case timeout: ReceiveTimeout => probe.ref ! timeout
+        }
+      }))
+
+      val msg = probe.expectMsgType[ReceiveTimeout]
+      msg.timeout should ===(500.milliseconds)
+      msg.getTimeout should ===(java.time.Duration.ofMillis(500))
       system.stop(timeoutActor)
     }
 
@@ -111,8 +128,8 @@ class ReceiveTimeoutSpec extends PekkoSpec() {
         context.setReceiveTimeout(1.second)
 
         def receive = {
-          case Tick           => processedLatch.countDown()
-          case ReceiveTimeout => timeoutLatch.open()
+          case Tick              => processedLatch.countDown()
+          case _: ReceiveTimeout => timeoutLatch.open()
         }
       }))
 
@@ -132,8 +149,8 @@ class ReceiveTimeoutSpec extends PekkoSpec() {
         context.setReceiveTimeout(500.milliseconds)
 
         def receive = {
-          case Tick           => ()
-          case ReceiveTimeout =>
+          case Tick              => ()
+          case _: ReceiveTimeout =>
             count.incrementAndGet
             timeoutLatch.open()
             context.setReceiveTimeout(Duration.Undefined)
@@ -152,7 +169,7 @@ class ReceiveTimeoutSpec extends PekkoSpec() {
 
       val timeoutActor = system.actorOf(Props(new Actor {
         def receive = {
-          case ReceiveTimeout => timeoutLatch.open()
+          case _: ReceiveTimeout => timeoutLatch.open()
         }
       }))
 
@@ -167,8 +184,8 @@ class ReceiveTimeoutSpec extends PekkoSpec() {
         context.setReceiveTimeout(1.second)
 
         def receive = {
-          case ReceiveTimeout  => timeoutLatch.open()
-          case TransparentTick =>
+          case _: ReceiveTimeout => timeoutLatch.open()
+          case TransparentTick   =>
         }
       }))
 
@@ -189,7 +206,7 @@ class ReceiveTimeoutSpec extends PekkoSpec() {
         context.setReceiveTimeout(1.second)
 
         def receive = {
-          case ReceiveTimeout =>
+          case _: ReceiveTimeout =>
             self ! TransparentTick
             timeoutLatch.countDown()
           case TransparentTick =>
@@ -210,7 +227,7 @@ class ReceiveTimeoutSpec extends PekkoSpec() {
 
         context.setReceiveTimeout(1.second)
         def receive: Receive = {
-          case ReceiveTimeout =>
+          case _: ReceiveTimeout =>
             timeoutLatch.open()
           case TransparentTick =>
             count.incrementAndGet()
@@ -229,8 +246,8 @@ class ReceiveTimeoutSpec extends PekkoSpec() {
 
       val timeoutActor = system.actorOf(Props(new Actor {
         def receive = {
-          case TransparentTick => context.setReceiveTimeout(500.milliseconds)
-          case ReceiveTimeout  => timeoutLatch.open()
+          case TransparentTick   => context.setReceiveTimeout(500.milliseconds)
+          case _: ReceiveTimeout => timeoutLatch.open()
         }
       }))
 
@@ -247,8 +264,8 @@ class ReceiveTimeoutSpec extends PekkoSpec() {
         context.setReceiveTimeout(500.milliseconds)
 
         def receive = {
-          case TransparentTick => context.setReceiveTimeout(Duration.Inf)
-          case ReceiveTimeout  => timeoutLatch.open()
+          case TransparentTick   => context.setReceiveTimeout(Duration.Inf)
+          case _: ReceiveTimeout => timeoutLatch.open()
         }
       }))
 
@@ -266,8 +283,8 @@ class ReceiveTimeoutSpec extends PekkoSpec() {
         context.setReceiveTimeout(initialTimeout)
 
         def receive: Receive = {
-          case TransparentTick => context.setReceiveTimeout(Duration.Undefined)
-          case ReceiveTimeout  => timeoutLatch.open()
+          case TransparentTick   => context.setReceiveTimeout(Duration.Undefined)
+          case _: ReceiveTimeout => timeoutLatch.open()
         }
       }))
 
@@ -292,7 +309,7 @@ class ReceiveTimeoutSpec extends PekkoSpec() {
             count += 1 // do some work then
             context.setReceiveTimeout(initialTimeout)
 
-          case ReceiveTimeout => probe.ref ! ReceiveTimeout
+          case timeout: ReceiveTimeout => probe.ref ! timeout
         }
       }))
 
@@ -320,7 +337,7 @@ class ReceiveTimeoutSpec extends PekkoSpec() {
       probe.expectMsg("crashing")
       probe.expectMsg("stopping")
       probe.expectMsg("restarting")
-      probe.expectMsg(ReceiveTimeout)
+      probe.expectMsgType[ReceiveTimeout]
     }
 
     "Will cancel receive timeout task if stopped" in {

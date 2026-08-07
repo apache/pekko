@@ -555,7 +555,7 @@ class ActorDocSpec extends PekkoSpec("""
         case "Hello" =>
           // To set in a response to a message
           context.setReceiveTimeout(100.milliseconds)
-        case ReceiveTimeout =>
+        case _: ReceiveTimeout =>
           // To turn it off
           context.setReceiveTimeout(Duration.Undefined)
           throw new RuntimeException("Receive timed out")
