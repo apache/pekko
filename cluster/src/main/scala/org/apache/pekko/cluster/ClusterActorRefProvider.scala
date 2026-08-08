@@ -137,7 +137,7 @@ private[pekko] class ClusterDeployer(_settings: ActorSystem.Settings, _pm: Dynam
 
 }
 
-@nowarn("msg=@SerialVersionUID has no effect")
+@nowarn("msg=@SerialVersionUID (has no effect|does nothing)")
 @SerialVersionUID(1L)
 abstract class ClusterScope extends Scope
 
