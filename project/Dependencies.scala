@@ -21,7 +21,7 @@ object Dependencies {
   object Protobuf {
     // https://protobuf.dev/support/version-support/
     // protobuf-java 4.x corresponds with protoc 26.x-33.x
-    val protobufJavaVersion = "4.33.5"
+    val protobufJavaVersion = "4.33.6"
     val protocVersion = "33.0"
   }
 
@@ -32,15 +32,15 @@ object Dependencies {
   val junit5Version = "5.13.4"
   val slf4jVersion = "2.0.17"
   // check agrona version when updating this
-  val aeronVersion = "1.45.1"
+  val aeronVersion = "1.45.2"
   // needs to be inline with the aeron version, check
   // https://github.com/real-logic/aeron/blob/1.x.y/build.gradle
   val agronaVersion = "1.22.0"
-  val nettyVersion = "4.2.10.Final"
+  val nettyVersion = "4.2.17.Final"
   val logbackVersion = "1.3.15"
 
   val jacksonAnnotationsVersion = "2.21"
-  val jacksonCoreVersion = "2.21.2"
+  val jacksonCoreVersion = "2.21.5"
   val jacksonDatabindVersion = jacksonCoreVersion
 
   val scala212Version = "2.12.21"
@@ -63,7 +63,7 @@ object Dependencies {
   object Compile {
     // Compile
 
-    val config = "com.typesafe" % "config" % "1.4.6"
+    val config = "com.typesafe" % "config" % "1.4.9"
     val `netty-transport` = "io.netty" % "netty-transport" % nettyVersion
     val `netty-handler` = "io.netty" % "netty-handler" % nettyVersion
 
