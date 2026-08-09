@@ -50,8 +50,9 @@ class LeaseHealthCheck(system: ActorSystem, leaseProviderName: String) extends (
 
   @volatile private var healthCheckPassed = false
 
-  private val leaseName = s"lease-${UUID.randomUUID().toString}"
-  private val ownerName = s"owner-${UUID.randomUUID().toString}"
+  private val randomUUIDString = UUID.randomUUID().toString
+  private val leaseName = s"lease-$randomUUIDString"
+  private val ownerName = s"owner-$randomUUIDString"
 
   protected val lease: Lease = LeaseProvider(system).getLease(leaseName, leaseProviderName, ownerName)
 
