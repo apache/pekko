@@ -17,75 +17,103 @@
 
 package org.apache.pekko.coordination.lease
 
+import scala.concurrent.Future
+import scala.concurrent.duration._
+
+import org.apache.pekko
+import pekko.coordination.lease.scaladsl.Lease
+import pekko.pattern.AskTimeoutException
+import pekko.testkit.PekkoSpec
+
 import com.typesafe.config.{ Config, ConfigFactory }
-import org.apache.pekko.coordination.lease.scaladsl.Lease
-import org.apache.pekko.pattern.AskTimeoutException
-import org.apache.pekko.testkit.PekkoSpec
-import org.scalatest.BeforeAndAfterAll
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
-
-import scala.concurrent.Future
-import scala.concurrent.duration._
 
 class LeaseHealthCheckSpec
     extends PekkoSpec(LeaseHealthCheckSpec.config)
     with ScalaFutures
     with AnyWordSpecLike
-    with BeforeAndAfterAll
     with Matchers {
+
+  import LeaseHealthCheckSpec._
 
   override implicit val patience: PatienceConfig = PatienceConfig(5.seconds)
 
-  "LeaseHealthCheckSpec" should {
+  private def newTestLease(): MockLease with MockLeaseState =
+    new MockLease(mockLeaseSettings) with MockLeaseState
 
+  private def healthCheckWith(testLease: Lease): LeaseHealthCheck =
+    new LeaseHealthCheck(system, "mock-lease") {
+      override protected val lease: Lease = testLease
+    }
+
+  "LeaseHealthCheckSpec" should {
     "return true and release lease on successful acquisition" in {
-      LeaseHealthCheckSpec.nextAcquire = () => Future.successful(true)
-      LeaseHealthCheckSpec.releaseCalled = false
-      new LeaseHealthCheck(system, "mock-lease").check().futureValue shouldEqual true
-      LeaseHealthCheckSpec.releaseCalled shouldEqual true
+      val lease = newTestLease()
+      lease.nextAcquire = () => Future.successful(true)
+
+      healthCheckWith(lease).check().futureValue shouldEqual true
+      lease.releaseCalled shouldEqual true
     }
 
     "not call acquire again after healthCheckPassed is true" in {
-      LeaseHealthCheckSpec.nextAcquire = () => Future.successful(true)
-      LeaseHealthCheckSpec.acquireCalls = 0
-      val healthcheck = new LeaseHealthCheck(system, "mock-lease")
+      val lease = newTestLease()
+      lease.nextAcquire = () => Future.successful(true)
+
+      val healthcheck = healthCheckWith(lease)
       healthcheck.check().futureValue shouldEqual true
-      LeaseHealthCheckSpec.acquireCalls shouldEqual 1
+      lease.acquireCalls shouldEqual 1
 
       healthcheck.check().futureValue shouldEqual true
-      LeaseHealthCheckSpec.acquireCalls shouldEqual 1
+      lease.acquireCalls shouldEqual 1
     }
 
     "return true on lease conflict" in {
-      LeaseHealthCheckSpec.nextAcquire = () => Future.successful(false)
-      new LeaseHealthCheck(system, "mock-lease").check().futureValue shouldEqual true
+      val lease = newTestLease()
+      lease.nextAcquire = () => Future.successful(false)
+      healthCheckWith(lease).check().futureValue shouldEqual true
     }
 
     "return false on LeaseException" in {
-      LeaseHealthCheckSpec.nextAcquire = () => Future.failed(new LeaseException("API error"))
-      new LeaseHealthCheck(system, "mock-lease").check().futureValue shouldEqual false
+      val lease = newTestLease()
+      lease.nextAcquire = () => Future.failed(new LeaseException("API error"))
+      healthCheckWith(lease).check().futureValue shouldEqual false
     }
 
     "return false on AskTimeoutException" in {
-      LeaseHealthCheckSpec.nextAcquire = () => Future.failed(new AskTimeoutException("timeout"))
-      new LeaseHealthCheck(system, "mock-lease").check().futureValue shouldEqual false
+      val lease = newTestLease()
+      lease.nextAcquire = () => Future.failed(new AskTimeoutException("timeout"))
+      healthCheckWith(lease).check().futureValue shouldEqual false
     }
 
     "return false on generic Exception" in {
-      LeaseHealthCheckSpec.nextAcquire = () => Future.failed(new RuntimeException("generic error"))
-      new LeaseHealthCheck(system, "mock-lease").check().futureValue shouldEqual false
+      val lease = newTestLease()
+      lease.nextAcquire = () => Future.failed(new RuntimeException("generic error"))
+      healthCheckWith(lease).check().futureValue shouldEqual false
     }
   }
 }
 
 object LeaseHealthCheckSpec {
-  @volatile var nextAcquire: () => Future[Boolean] = () => Future.successful(true)
-  @volatile var releaseCalled = false
-  @volatile var acquireCalls = 0
+  val config: Config = ConfigFactory.parseString(s"""
+  mock-lease {
+    lease-class = "${classOf[LeaseHealthCheckSpec.MockLease].getName}"
+    heartbeat-timeout = 100s
+    heartbeat-interval = 1s
+    lease-operation-timeout = 2s
+  }
+  """)
 
-  class MockLease(settings: LeaseSettings) extends Lease(settings) {
+  private val mockLeaseSettings = LeaseSettings(config.getConfig("mock-lease"), "test-lease", "test-owner")
+
+  trait MockLeaseState {
+    @volatile var nextAcquire: () => Future[Boolean] = () => Future.successful(true)
+    @volatile var releaseCalled: Boolean = false
+    @volatile var acquireCalls: Int = 0
+  }
+
+  class MockLease(settings: LeaseSettings) extends Lease(settings) with MockLeaseState {
     override def acquire(): Future[Boolean] = {
       acquireCalls += 1
       nextAcquire()
@@ -97,13 +125,4 @@ object LeaseHealthCheckSpec {
     }
     override def checkLease(): Boolean = true
   }
-
-  val config: Config = ConfigFactory.parseString(s"""
-  mock-lease {
-    lease-class = "${classOf[LeaseHealthCheckSpec.MockLease].getName}"
-    heartbeat-timeout = 100s
-    heartbeat-interval = 1s
-    lease-operation-timeout = 2s
-  }
-  """)
 }
