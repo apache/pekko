@@ -41,6 +41,8 @@ import pekko.pattern.AskTimeoutException
  *
  * Returns false if:
  * - Any exception occurs (LeaseException, AskTimeoutException, etc.)
+ *
+ * @since 2.0.0
  */
 class LeaseHealthCheck(system: ActorSystem, leaseProviderName: String) extends (() => Future[Boolean]) {
 
