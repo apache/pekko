@@ -17,15 +17,17 @@
 
 package org.apache.pekko.coordination.lease
 
-import org.apache.pekko.actor.ActorSystem
-import org.apache.pekko.coordination.lease.scaladsl.{ Lease, LeaseProvider }
-import org.apache.pekko.event.Logging
-import org.apache.pekko.pattern.AskTimeoutException
+import java.util.UUID
 
 import scala.concurrent.{ ExecutionContext, Future }
 import scala.util.{ Failure, Success }
-import java.util.UUID
 import scala.annotation.nowarn
+
+import org.apache.pekko
+import pekko.actor.ActorSystem
+import pekko.coordination.lease.scaladsl.{ Lease, LeaseProvider }
+import pekko.event.Logging
+import pekko.pattern.AskTimeoutException
 
 /**
  * Performs a lease health check by attempting to acquire and immediately release a test lease.
