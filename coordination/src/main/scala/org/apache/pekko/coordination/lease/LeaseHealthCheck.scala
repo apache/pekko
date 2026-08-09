@@ -44,7 +44,7 @@ import pekko.pattern.AskTimeoutException
  */
 class LeaseHealthCheck(system: ActorSystem, leaseProviderName: String) extends (() => Future[Boolean]) {
 
-  implicit val executionContext: ExecutionContext = system.dispatcher
+  private implicit val executionContext: ExecutionContext = system.dispatcher
 
   private val log = Logging(system, classOf[LeaseHealthCheck])
 
