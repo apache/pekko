@@ -14,7 +14,9 @@
 package org.apache.pekko.remote.artery
 
 import java.net.InetAddress
+import java.nio.charset.StandardCharsets
 
+import scala.collection.immutable
 import scala.annotation.nowarn
 import scala.concurrent.duration._
 import scala.jdk.CollectionConverters._
@@ -22,6 +24,7 @@ import scala.jdk.CollectionConverters._
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.io.dns.internal.AsyncDnsResolver
+import pekko.util.ByteString
 import pekko.stream.ActorMaterializerSettings
 import pekko.util.Helpers.ConfigOps
 import pekko.util.Helpers.Requiring
@@ -117,6 +120,24 @@ private[pekko] final class ArterySettings private (config: Config) {
     import config._
 
     val TestMode: Boolean = getBoolean("test-mode")
+    private val tcpMagicList: immutable.Seq[String] = {
+      val list = getStringList("tcp-magic").asScala.toSeq
+      require(list.nonEmpty, "tcp-magic must not be empty")
+      list
+    }
+    val TcpMagic: ByteString = {
+      val first = tcpMagicList.head
+      val bytes = ByteString(first.getBytes(StandardCharsets.UTF_8))
+      require(bytes.length >= 4, s"tcp-magic value [$first] must produce at least 4 UTF-8 bytes, but produced [${bytes.length}] bytes")
+      bytes.take(4)
+    }
+    val TcpMagicValues: Set[ByteString] = {
+      tcpMagicList.map { s =>
+        val bytes = ByteString(s.getBytes(StandardCharsets.UTF_8))
+        require(bytes.length >= 4, s"tcp-magic value [$s] must produce at least 4 UTF-8 bytes, but produced [${bytes.length}] bytes")
+        bytes.take(4)
+      }.toSet
+    }
     val Dispatcher: String = getString("use-dispatcher")
     val ControlStreamDispatcher: String = getString("use-control-stream-dispatcher")
     @nowarn("msg=deprecated")
