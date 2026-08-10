@@ -128,13 +128,15 @@ private[pekko] final class ArterySettings private (config: Config) {
     val TcpMagic: ByteString = {
       val first = tcpMagicList.head
       val bytes = ByteString(first.getBytes(StandardCharsets.UTF_8))
-      require(bytes.length >= 4, s"tcp-magic value [$first] must produce at least 4 UTF-8 bytes, but produced [${bytes.length}] bytes")
+      require(bytes.length >= 4,
+        s"tcp-magic value [$first] must produce at least 4 UTF-8 bytes, but produced [${bytes.length}] bytes")
       bytes.take(4)
     }
     val TcpMagicValues: Set[ByteString] = {
       tcpMagicList.map { s =>
         val bytes = ByteString(s.getBytes(StandardCharsets.UTF_8))
-        require(bytes.length >= 4, s"tcp-magic value [$s] must produce at least 4 UTF-8 bytes, but produced [${bytes.length}] bytes")
+        require(bytes.length >= 4,
+          s"tcp-magic value [$s] must produce at least 4 UTF-8 bytes, but produced [${bytes.length}] bytes")
         bytes.take(4)
       }.toSet
     }

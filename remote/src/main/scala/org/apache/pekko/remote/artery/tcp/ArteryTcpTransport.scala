@@ -188,7 +188,8 @@ private[remote] class ArteryTcpTransport(
               if (controlIdleKillSwitch.isDefined)
                 outboundContext.asInstanceOf[Association].setControlIdleKillSwitch(controlIdleKillSwitch)
 
-              Flow[ByteString].prepend(Source.single(TcpFraming.encodeConnectionHeader(settings.Advanced.TcpMagic, streamId))).via(connectionFlow)
+              Flow[ByteString].prepend(Source.single(TcpFraming.encodeConnectionHeader(settings.Advanced.TcpMagic,
+                streamId))).via(connectionFlow)
             }))
             .mapError {
               case ArteryTransport.ShutdownSignal => ArteryTransport.ShutdownSignal

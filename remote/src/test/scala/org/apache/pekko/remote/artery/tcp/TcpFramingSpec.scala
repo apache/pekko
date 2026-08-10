@@ -66,7 +66,8 @@ class TcpFramingSpec extends PekkoSpec("""
 
     "grab streamId from connection header in single chunk" in {
       val frames =
-        Source(List(TcpFraming.encodeConnectionHeader(magic, 1), frameBytes(1))).via(framingFlow).runWith(Sink.seq).futureValue
+        Source(List(TcpFraming.encodeConnectionHeader(magic, 1), frameBytes(1))).via(framingFlow).runWith(
+          Sink.seq).futureValue
       frames.head.streamId should ===(1)
     }
 
