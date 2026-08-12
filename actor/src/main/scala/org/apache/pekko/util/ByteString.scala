@@ -1455,7 +1455,7 @@ object ByteString {
 
     /** Avoid `iterator` in performance sensitive code, call ops directly on ByteString instead */
     override def iterator: ByteIterator.MultiByteArrayIterator =
-      ByteIterator.MultiByteArrayIterator(bytestrings.to(LazyList).map { _.iterator })
+      ByteIterator.MultiByteArrayIterator(bytestrings.iterator.map(_.iterator).toList)
 
     def ++(that: ByteString): ByteString = {
       if (that.isEmpty) this
@@ -1802,7 +1802,7 @@ object ByteString {
       bytestrings.foreach { bs =>
         var i = 0
         while (i < bs.length) {
-          result(pos) = f(bs(i))
+          result(pos) = f(bs.byteAtUnchecked(i))
           pos += 1
           i += 1
         }
