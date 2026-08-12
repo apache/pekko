@@ -1576,10 +1576,34 @@ object ByteString {
       dropRightWithFullDropsAndRemainig(0, n)
     }
 
-    override def slice(from: Int, until: Int): ByteString =
-      if (from <= 0 && until >= length) this
-      else if (from > length || until <= from) ByteString.empty
-      else drop(from).dropRight(length - until)
+    override def slice(from: Int, until: Int): ByteString = {
+      val lo = math.max(from, 0)
+      val hi = math.min(until, length)
+      if (lo >= hi) ByteString.empty
+      else if (lo == 0 && hi == length) this
+      else {
+        // locate start fragment
+        var fragIdx = 0
+        var fragOff = lo
+        while (fragOff >= bytestrings(fragIdx).length) {
+          fragOff -= bytestrings(fragIdx).length
+          fragIdx += 1
+        }
+        val builder = new VectorBuilder[ByteString1]
+        var remaining = hi - lo
+        var firstOff = fragOff
+        while (remaining > 0) {
+          val frag = bytestrings(fragIdx)
+          val take = math.min(remaining, frag.length - firstOff)
+          builder += (if (firstOff == 0 && take == frag.length) frag
+                      else frag.drop1(firstOff).take1(take))
+          remaining -= take
+          fragIdx += 1
+          firstOff = 0
+        }
+        ByteStrings(builder.result(), hi - lo)
+      }
+    }
 
     override def drop(n: Int): ByteString =
       if (n <= 0) this
