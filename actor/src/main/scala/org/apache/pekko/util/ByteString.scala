@@ -1393,15 +1393,29 @@ object ByteString {
       if (offset + java.lang.Long.BYTES <= firstLen) first.readLongBEUnchecked(offset)
       else if (offset >= firstLen) second.readLongBEUnchecked(offset - firstLen)
       else {
-        SWARUtil.getLongBE(
-          byteAt(offset, firstLen),
-          byteAt(offset + 1, firstLen),
-          byteAt(offset + 2, firstLen),
-          byteAt(offset + 3, firstLen),
-          byteAt(offset + 4, firstLen),
-          byteAt(offset + 5, firstLen),
-          byteAt(offset + 6, firstLen),
-          byteAt(offset + 7, firstLen))
+        // Cross-boundary: build two sub-longs from byteAtUnchecked and combine.
+        // byteAtUnchecked is a single virtual call per byte (no extra branch per byte),
+        // and the Long assembly is pure arithmetic with no per-byte branching.
+        val split = firstLen - offset // bytes in first fragment (1-7)
+        val firstPart = {
+          var i = offset
+          var v = 0L
+          while (i < firstLen) {
+            v = (v << 8) | (first.byteAtUnchecked(i).toLong & 0xFF)
+            i += 1
+          }
+          v << ((8 - split) << 3)
+        }
+        val secondPart = {
+          var j = 0
+          var v = 0L
+          while (j < 8 - split) {
+            v = (v << 8) | (second.byteAtUnchecked(j).toLong & 0xFF)
+            j += 1
+          }
+          v
+        }
+        firstPart | secondPart
       }
     }
 
@@ -1410,15 +1424,30 @@ object ByteString {
       if (offset + java.lang.Long.BYTES <= firstLen) first.readLongLEUnchecked(offset)
       else if (offset >= firstLen) second.readLongLEUnchecked(offset - firstLen)
       else {
-        SWARUtil.getLongLE(
-          byteAt(offset, firstLen),
-          byteAt(offset + 1, firstLen),
-          byteAt(offset + 2, firstLen),
-          byteAt(offset + 3, firstLen),
-          byteAt(offset + 4, firstLen),
-          byteAt(offset + 5, firstLen),
-          byteAt(offset + 6, firstLen),
-          byteAt(offset + 7, firstLen))
+        val split = firstLen - offset
+        val firstPart = {
+          var i = offset
+          var v = 0L
+          var shift = 0
+          while (i < firstLen) {
+            v |= (first.byteAtUnchecked(i).toLong & 0xFF) << shift
+            shift += 8
+            i += 1
+          }
+          v
+        }
+        val secondPart = {
+          var j = 0
+          var v = 0L
+          var shift = split << 3
+          while (j < 8 - split) {
+            v |= (second.byteAtUnchecked(j).toLong & 0xFF) << shift
+            shift += 8
+            j += 1
+          }
+          v
+        }
+        firstPart | secondPart
       }
     }
 
