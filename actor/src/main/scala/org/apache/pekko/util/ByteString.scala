@@ -1439,17 +1439,30 @@ object ByteString {
     if (bytestrings.isEmpty) throw new IllegalArgumentException("bytestrings must not be empty")
     if (bytestrings.head.isEmpty) throw new IllegalArgumentException("bytestrings.head must not be empty")
 
+    // Cumulative start offset of each fragment, used for O(log n) random access via binary search.
+    private val fragmentStartOffsets: Array[Int] = {
+      val arr = new Array[Int](bytestrings.length)
+      var i = 1
+      var acc = bytestrings(0).length
+      while (i < arr.length) {
+        arr(i) = acc
+        acc += bytestrings(i).length
+        i += 1
+      }
+      arr
+    }
+
+    /** Locate the fragment index containing logical offset `idx` using binary search. */
+    private def fragmentIndexFor(idx: Int): Int = {
+      val pos = java.util.Arrays.binarySearch(fragmentStartOffsets, idx)
+      if (pos >= 0) pos else -pos - 2
+    }
+
     def apply(idx: Int): Byte = {
       if (0 <= idx && idx < length) {
-        var pos = 0
-        var seen = 0
-        var frag = bytestrings(pos)
-        while (idx >= seen + frag.length) {
-          seen += frag.length
-          pos += 1
-          frag = bytestrings(pos)
-        }
-        frag(idx - seen)
+        val fragIdx = fragmentIndexFor(idx)
+        val frag = bytestrings(fragIdx)
+        frag(idx - fragmentStartOffsets(fragIdx))
       } else throw new IndexOutOfBoundsException(idx.toString)
     }
 
