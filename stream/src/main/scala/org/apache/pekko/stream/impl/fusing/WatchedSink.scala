@@ -150,7 +150,8 @@ import org.apache.pekko.util.OptionVal
     inner: GraphStageLogic,
     innerStage: GraphStageWithMaterializedValue[? <: Shape, ?],
     terminationPromise: Promise[Done])
-    extends GraphStageLogic(inner.inCount, inner.outCount) {
+    extends GraphStageLogic(inner.inCount, inner.outCount)
+    with InHandler {
 
   private var terminationFailure: Throwable = _
   private var terminationSignalled = false
@@ -162,39 +163,37 @@ import org.apache.pekko.util.OptionVal
   // delegate all port handlers to the wrapped logic
   System.arraycopy(inner.handlers, 0, handlers, 0, handlers.length)
 
-  // wrap the inlet handler to record why the stream terminated
+  // fuse the inlet handler into this logic to record why the stream terminated
   private val innerInHandler = inner.handlers(0).asInstanceOf[InHandler]
-  handlers(0) = new InHandler {
-    override def onPush(): Unit =
-      try innerInHandler.onPush()
-      catch {
-        case NonFatal(e) =>
-          terminationFailure = e
-          throw e
-      }
+  handlers(0) = this
 
-    override def onUpstreamFinish(): Unit = {
-      terminationSignalled = true
-      try innerInHandler.onUpstreamFinish()
-      catch {
-        case NonFatal(e) =>
-          terminationFailure = e
-          throw e
-      }
+  override def onPush(): Unit =
+    try innerInHandler.onPush()
+    catch {
+      case NonFatal(e) =>
+        terminationFailure = e
+        throw e
     }
 
-    override def onUpstreamFailure(ex: Throwable): Unit = {
-      terminationSignalled = true
-      terminationFailure = ex
-      try innerInHandler.onUpstreamFailure(ex)
-      catch {
-        case NonFatal(e) =>
-          terminationFailure = e
-          throw e
-      }
+  override def onUpstreamFinish(): Unit = {
+    terminationSignalled = true
+    try innerInHandler.onUpstreamFinish()
+    catch {
+      case NonFatal(e) =>
+        terminationFailure = e
+        throw e
     }
+  }
 
-    override def toString: String = s"WatchedSink($innerInHandler)"
+  override def onUpstreamFailure(ex: Throwable): Unit = {
+    terminationSignalled = true
+    terminationFailure = ex
+    try innerInHandler.onUpstreamFailure(ex)
+    catch {
+      case NonFatal(e) =>
+        terminationFailure = e
+        throw e
+    }
   }
 
   private[stream] override def interpreter_=(gi: GraphInterpreter): Unit = {
@@ -236,8 +235,8 @@ import org.apache.pekko.util.OptionVal
     if (failure ne null) terminationPromise.tryFailure(failure)
     else
       upstreamFailureFromConnection match {
-        case Some(ex) => terminationPromise.tryFailure(ex)
-        case None =>
+        case OptionVal.Some(ex) => terminationPromise.tryFailure(ex)
+        case _ =>
           if (!terminationSignalled && isAbruptTermination)
             terminationPromise.tryFailure(new AbruptStageTerminationException(this))
           else terminationPromise.trySuccess(Done)
@@ -245,16 +244,16 @@ import org.apache.pekko.util.OptionVal
   }
 
   // If the wrapped stage swapped its inlet handler after materialization, failures no longer pass
-  // through the wrapping handler above; the failure remains visible on the connection slot until
+  // through the fused handler above; the failure remains visible on the connection slot until
   // after this stage has been finalized.
-  private def upstreamFailureFromConnection: Option[Throwable] = {
+  private def upstreamFailureFromConnection: OptionVal[Throwable] = {
     val connection = portToConn(0)
     if (connection ne null)
       connection.slot match {
-        case GraphInterpreter.Failed(ex, _) => Some(ex)
-        case _                              => None
+        case GraphInterpreter.Failed(ex, _) => OptionVal.Some(ex)
+        case _                              => OptionVal.None
       }
-    else None
+    else OptionVal.None
   }
 
   // postStop ran without any side of the inlet connection ever being closed, so no completion,
