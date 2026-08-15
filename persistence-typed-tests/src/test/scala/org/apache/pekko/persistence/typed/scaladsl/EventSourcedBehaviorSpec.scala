@@ -351,9 +351,9 @@ class EventSourcedBehaviorSpec
           emptyState = 0,
           commandHandler = (_, cmd) =>
             cmd match {
-              case Incr             => Effect.persist(Incremented)
-              case PersistFiltered  => Effect.persist(FilteredEvent)
-              case GetVal(replyTo)  =>
+              case Incr            => Effect.persist(Incremented)
+              case PersistFiltered => Effect.persist(FilteredEvent)
+              case GetVal(replyTo) =>
                 Effect.none.thenRun(state => replyTo ! state)
             },
           eventHandler = (state, evt) =>
@@ -371,7 +371,7 @@ class EventSourcedBehaviorSpec
               case FilteredPayload =>
                 throw new IllegalStateException("Unexpected FilteredPayload")
               case e: Evt => EventSeq.single(e)
-              case other =>
+              case other  =>
                 throw new IllegalStateException(s"Unexpected event type $other")
             }
           })
