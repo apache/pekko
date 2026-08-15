@@ -339,6 +339,38 @@ public class PatternsTest {
   }
 
   @Test
+  public void testShortCircuitRetry() throws Exception {
+    AtomicInteger failureCounter = new AtomicInteger();
+
+    final CompletableFuture<Object> ise = new CompletableFuture<>();
+    final CompletableFuture<Object> iae = new CompletableFuture<>();
+    ise.completeExceptionally(new IllegalStateException());
+    iae.completeExceptionally(new IllegalArgumentException());
+
+    CompletionStage<Object> retriedAttempts =
+        Patterns.retry(
+            () -> {
+              if ((failureCounter.getAndIncrement() % 3) < 2) {
+                return ise;
+              } else {
+                return iae;
+              }
+            },
+            (result, ex) -> !(ex instanceof IllegalArgumentException),
+            10,
+            ec);
+
+    try {
+      retriedAttempts.toCompletableFuture().get(3, SECONDS);
+      throw new AssertionError("future should have failed!");
+    } catch (java.util.concurrent.ExecutionException e) {
+      assertEquals(IllegalArgumentException.class, e.getCause().getClass());
+    }
+
+    assertEquals(3, failureCounter.get());
+  }
+
+  @Test
   public void testAfterFailedCallable() throws Exception {
     Callable<CompletionStage<String>> failedCallable =
         () -> CompletableFuture.failedStage(new IllegalStateException("Illegal!"));
