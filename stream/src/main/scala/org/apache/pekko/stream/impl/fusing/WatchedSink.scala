@@ -61,9 +61,8 @@ import org.apache.pekko.util.OptionVal
 
         val watchedStage = new WatchedSinkStage[In, Mat, Mat2](module.stage, suffixSteps, matF)
         val watchedModule = GraphStageModule(module.shape, module.attributes, watchedStage)
-        val newTraversal =
-          (prefixSteps :+ (MaterializeAtomic(watchedModule, outToSlots): Traversal))
-            .foldLeft(EmptyTraversal: Traversal)((traversal, step) => traversal.concat(step))
+        val newTraversal = (prefixSteps :+ (MaterializeAtomic(watchedModule, outToSlots): Traversal))
+          .foldLeft(EmptyTraversal: Traversal)((traversal, step) => traversal.concat(step))
 
         new Sink(builder.copy(traversalSoFar = newTraversal), sink.shape)
       case other =>
@@ -96,7 +95,7 @@ import org.apache.pekko.util.OptionVal
         case Pop                  => stack.removeLast()
         case PushNotUsed          => stack.addLast(NotUsed)
         case transform: Transform => stack.addLast(transform(stack.removeLast()))
-        case compose: Compose =>
+        case compose: Compose     =>
           val second = stack.removeLast()
           val first = stack.removeLast()
           stack.addLast(compose(first, second))
@@ -236,7 +235,7 @@ import org.apache.pekko.util.OptionVal
     else
       upstreamFailureFromConnection match {
         case OptionVal.Some(ex) => terminationPromise.tryFailure(ex)
-        case _ =>
+        case _                  =>
           if (!terminationSignalled && isAbruptTermination)
             terminationPromise.tryFailure(new AbruptStageTerminationException(this))
           else terminationPromise.trySuccess(Done)
