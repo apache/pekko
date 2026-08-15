@@ -131,6 +131,15 @@ object EventSourcedBehaviorSpec {
 
   case object Tick
 
+  sealed trait FilteredCmd extends pekko.testkit.JavaSerializable
+  case object Incr extends FilteredCmd
+  case object PersistFiltered extends FilteredCmd
+  final case class GetFilteredVal(replyTo: ActorRef[Int]) extends FilteredCmd
+
+  sealed trait FilteredEvt extends pekko.testkit.JavaSerializable
+  case object FilteredIncremented extends FilteredEvt
+  case object FilteredEvent extends FilteredEvt
+
   val firstLogging = "first logging"
   val secondLogging = "second logging"
 
@@ -336,42 +345,33 @@ class EventSourcedBehaviorSpec
     }
 
     "exclude FilteredPayload in replay of persisted events" in {
-      sealed trait Cmd
-      case object Incr extends Cmd
-      case object PersistFiltered extends Cmd
-      final case class GetVal(replyTo: ActorRef[Int]) extends Cmd
-
-      sealed trait Evt
-      case object Incremented extends Evt
-      case object FilteredEvent extends Evt
-
-      def behavior(pid: PersistenceId): EventSourcedBehavior[Cmd, Evt, Int] =
-        EventSourcedBehavior[Cmd, Evt, Int](
+      def behavior(pid: PersistenceId): EventSourcedBehavior[FilteredCmd, FilteredEvt, Int] =
+        EventSourcedBehavior[FilteredCmd, FilteredEvt, Int](
           pid,
           emptyState = 0,
           commandHandler = (_, cmd) =>
             cmd match {
-              case Incr            => Effect.persist(Incremented)
-              case PersistFiltered => Effect.persist(FilteredEvent)
-              case GetVal(replyTo) =>
+              case Incr                    => Effect.persist(FilteredIncremented)
+              case PersistFiltered         => Effect.persist(FilteredEvent)
+              case GetFilteredVal(replyTo) =>
                 Effect.none.thenRun(state => replyTo ! state)
             },
           eventHandler = (state, evt) =>
             evt match {
-              case Incremented   => state + 1
-              case FilteredEvent => state
+              case FilteredIncremented => state + 1
+              case FilteredEvent       => state
             })
-          .eventAdapter(new EventAdapter[Evt, Any] {
-            override def toJournal(e: Evt): Any = e match {
+          .eventAdapter(new EventAdapter[FilteredEvt, Any] {
+            override def toJournal(e: FilteredEvt): Any = e match {
               case FilteredEvent => FilteredPayload
               case other         => other
             }
-            override def manifest(event: Evt): String = ""
-            override def fromJournal(p: Any, manifest: String): EventSeq[Evt] = p match {
+            override def manifest(event: FilteredEvt): String = ""
+            override def fromJournal(p: Any, manifest: String): EventSeq[FilteredEvt] = p match {
               case FilteredPayload =>
                 throw new IllegalStateException("Unexpected FilteredPayload")
-              case e: Evt => EventSeq.single(e)
-              case other  =>
+              case e: FilteredEvt => EventSeq.single(e)
+              case other          =>
                 throw new IllegalStateException(s"Unexpected event type $other")
             }
           })
@@ -383,13 +383,13 @@ class EventSourcedBehaviorSpec
       c ! Incr
       c ! PersistFiltered
       c ! Incr
-      c ! GetVal(probe.ref)
+      c ! GetFilteredVal(probe.ref)
       probe.expectMessage(2)
 
       // restart — recovery should skip the FilteredPayload entry
       val c2 = spawn(behavior(pid))
       c2 ! Incr
-      c2 ! GetVal(probe.ref)
+      c2 ! GetFilteredVal(probe.ref)
       probe.expectMessage(3)
     }
 
