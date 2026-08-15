@@ -120,7 +120,7 @@ private[pekko] final class ArterySettings private (config: Config) {
 
     val TestMode: Boolean = getBoolean("test-mode")
     private val tcpMagicList: immutable.Seq[String] = {
-      val list = getStringList("tcp-magic").asScala.toSeq
+      val list = getStringList("tcp-magic").asScala.toIndexedSeq
       require(list.nonEmpty, "tcp-magic must not be empty")
       list
     }

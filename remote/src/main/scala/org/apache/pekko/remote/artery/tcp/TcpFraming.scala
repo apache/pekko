@@ -35,16 +35,16 @@ import pekko.util.ByteString
   val Undefined = Int.MinValue
 
   /**
-   * The default 4-byte magic header for Pekko (PEKK).
+   * The legacy 4-byte magic header from Akka (AKKA).
    * The purpose of the "magic" is to detect and reject weird (accidental) accesses.
    */
-  val DefaultMagic = ByteString('P'.toByte, 'E'.toByte, 'K'.toByte, 'K'.toByte)
+  val DefaultMagic = ByteString('A'.toByte, 'K'.toByte, 'K'.toByte, 'A'.toByte)
 
   /**
-   * The legacy 4-byte magic header from Akka (AKKA).
-   * Used for backward compatibility with Pekko 1.x.
+   * The default 4-byte magic header for Pekko 2.x (PEKK).
+   * The purpose of the "magic" is to detect and reject weird (accidental) accesses.
    */
-  val LegacyMagic = ByteString('A'.toByte, 'K'.toByte, 'K'.toByte, 'A'.toByte)
+  val PekkoMagic = ByteString('P'.toByte, 'E'.toByte, 'K'.toByte, 'K'.toByte)
 
   /**
    * When establishing the connection this header is sent first.
@@ -95,7 +95,7 @@ import pekko.util.ByteString
         else
           throw new FramingException(
             "Stream didn't start with expected magic bytes, " +
-            s"got [${java.util.HexFormat.ofDelimiter(" ").formatHex((receivedMagic ++ reader.remainingData).take(10).toArray)}] " +
+            s"got [${(receivedMagic ++ reader.remainingData).take(10).map("%02x".format(_)).mkString(" ")}] " +
             "Connection is rejected. Probably invalid accidental access.")
       }
     }

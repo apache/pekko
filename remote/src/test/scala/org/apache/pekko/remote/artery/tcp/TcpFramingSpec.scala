@@ -31,7 +31,7 @@ class TcpFramingSpec extends PekkoSpec("""
   import TcpFraming.encodeFrameHeader
 
   private val magic = TcpFraming.DefaultMagic
-  private val acceptedMagic = Set(magic, TcpFraming.LegacyMagic)
+  private val acceptedMagic = Set(magic, TcpFraming.PekkoMagic)
   private val framingFlow = Flow[ByteString].via(new TcpFraming(acceptedMagic))
 
   private val payload5 = ByteString((1 to 5).map(_.toByte).toArray)
@@ -111,8 +111,8 @@ class TcpFramingSpec extends PekkoSpec("""
       frames.size should ===(0)
     }
 
-    "use default PEKK magic" in {
-      TcpFraming.DefaultMagic should ===(ByteString('P'.toByte, 'E'.toByte, 'K'.toByte, 'K'.toByte))
+    "use default AKKA magic" in {
+      TcpFraming.DefaultMagic should ===(ByteString('A'.toByte, 'K'.toByte, 'K'.toByte, 'A'.toByte))
     }
 
     "accept custom magic" in {
@@ -130,9 +130,16 @@ class TcpFramingSpec extends PekkoSpec("""
       fail shouldBe a[FramingException]
     }
 
-    "accept legacy AKKA magic" in {
-      val legacyMagic = TcpFraming.LegacyMagic
+    "accept default AKKA magic" in {
+      val legacyMagic = TcpFraming.DefaultMagic
       val bytes = TcpFraming.encodeConnectionHeader(legacyMagic, 2) ++ frameBytes(1)
+      val frames = Source(List(bytes)).via(framingFlow).runWith(Sink.seq).futureValue
+      frames.head.streamId should ===(2)
+    }
+
+    "accept legacy PEKK magic" in {
+      val magic = TcpFraming.PekkoMagic
+      val bytes = TcpFraming.encodeConnectionHeader(magic, 2) ++ frameBytes(1)
       val frames = Source(List(bytes)).via(framingFlow).runWith(Sink.seq).futureValue
       frames.head.streamId should ===(2)
     }
