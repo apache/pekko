@@ -15,6 +15,7 @@ package org.apache.pekko.persistence.journal.inmem
 
 import scala.collection.immutable
 import scala.concurrent.Future
+import scala.concurrent.duration.Duration
 import scala.util.Try
 import scala.util.control.NonFatal
 
@@ -23,6 +24,7 @@ import pekko.actor.ActorRef
 import pekko.annotation.ApiMayChange
 import pekko.annotation.InternalApi
 import pekko.event.Logging
+import pekko.pattern.after
 import pekko.persistence.AtomicWrite
 import pekko.persistence.JournalProtocol.RecoverySuccess
 import pekko.persistence.PersistentRepr
@@ -30,6 +32,7 @@ import pekko.persistence.journal.{ AsyncWriteJournal, Tagged }
 import pekko.persistence.journal.inmem.InmemJournal.{ MessageWithMeta, ReplayWithMeta }
 import pekko.serialization.SerializationExtension
 import pekko.serialization.Serializers
+import pekko.util.JavaDurationConverters._
 import pekko.util.OptionVal
 
 import com.typesafe.config.Config
@@ -71,9 +74,14 @@ object InmemJournal {
 
   private val log = Logging(context.system, classOf[InmemJournal])
 
+  private val delayWrites = {
+    val key = "delay-writes"
+    if (cfg.hasPath(key)) cfg.getDuration(key).asScala
+    else Duration.Zero
+  }
   private val testSerialization = {
     val key = "test-serialization"
-    if (cfg.hasPath(key)) cfg.getBoolean("test-serialization")
+    if (cfg.hasPath(key)) cfg.getBoolean(key)
     else false
   }
 
@@ -92,7 +100,10 @@ object InmemJournal {
         add(p)
         eventStream.publish(InmemJournal.Write(p.payload, p.persistenceId, p.sequenceNr))
       }
-      Future.successful(Nil) // all good
+      if (delayWrites == Duration.Zero)
+        Future.successful(Nil) // all good
+      else
+        after(delayWrites)(Future.successful(Nil))(context.system)
     } catch {
       case NonFatal(e) =>
         // serialization problem
