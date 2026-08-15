@@ -30,7 +30,9 @@ class TcpFramingSpec extends PekkoSpec("""
   """) with ImplicitSender {
   import TcpFraming.encodeFrameHeader
 
-  private val framingFlow = Flow[ByteString].via(new TcpFraming)
+  private val magic = TcpFraming.DefaultMagic
+  private val acceptedMagic = Set(magic, TcpFraming.LegacyMagic)
+  private val framingFlow = Flow[ByteString].via(new TcpFraming(acceptedMagic))
 
   private val payload5 = ByteString((1 to 5).map(_.toByte).toArray)
 
@@ -57,14 +59,15 @@ class TcpFramingSpec extends PekkoSpec("""
   "TcpFraming stage" must {
 
     "grab streamId from connection header" in {
-      val bytes = TcpFraming.encodeConnectionHeader(2) ++ frameBytes(1)
+      val bytes = TcpFraming.encodeConnectionHeader(magic, 2) ++ frameBytes(1)
       val frames = Source(List(bytes)).via(framingFlow).runWith(Sink.seq).futureValue
       frames.head.streamId should ===(2)
     }
 
     "grab streamId from connection header in single chunk" in {
       val frames =
-        Source(List(TcpFraming.encodeConnectionHeader(1), frameBytes(1))).via(framingFlow).runWith(Sink.seq).futureValue
+        Source(List(TcpFraming.encodeConnectionHeader(magic, 1), frameBytes(1))).via(framingFlow).runWith(
+          Sink.seq).futureValue
       frames.head.streamId should ===(1)
     }
 
@@ -75,7 +78,7 @@ class TcpFramingSpec extends PekkoSpec("""
     }
 
     "include streamId in each frame" in {
-      val bytes = TcpFraming.encodeConnectionHeader(3) ++ frameBytes(3)
+      val bytes = TcpFraming.encodeConnectionHeader(magic, 3) ++ frameBytes(3)
       val frames = Source(List(bytes)).via(framingFlow).runWith(Sink.seq).futureValue
       frames(0).streamId should ===(3)
       frames(1).streamId should ===(3)
@@ -84,7 +87,7 @@ class TcpFramingSpec extends PekkoSpec("""
 
     "parse frames from random chunks" in {
       val numberOfFrames = 100
-      val bytes = TcpFraming.encodeConnectionHeader(3) ++ frameBytes(numberOfFrames)
+      val bytes = TcpFraming.encodeConnectionHeader(magic, 3) ++ frameBytes(numberOfFrames)
       withClue(s"Random chunks seed: $rndSeed") {
         val frames = Source.fromIterator(() => rechunk(bytes)).via(framingFlow).runWith(Sink.seq).futureValue
         frames.size should ===(numberOfFrames)
@@ -99,13 +102,39 @@ class TcpFramingSpec extends PekkoSpec("""
     }
 
     "report truncated frames" in {
-      val bytes = TcpFraming.encodeConnectionHeader(3) ++ frameBytes(3).drop(1)
+      val bytes = TcpFraming.encodeConnectionHeader(magic, 3) ++ frameBytes(3).drop(1)
       Source(List(bytes)).via(framingFlow).runWith(Sink.seq).failed.futureValue shouldBe a[FramingException]
     }
 
     "work with empty stream" in {
       val frames = Source.empty.via(framingFlow).runWith(Sink.seq).futureValue
       frames.size should ===(0)
+    }
+
+    "use default PEKK magic" in {
+      TcpFraming.DefaultMagic should ===(ByteString('P'.toByte, 'E'.toByte, 'K'.toByte, 'K'.toByte))
+    }
+
+    "accept custom magic" in {
+      val customMagic = ByteString('T'.toByte, 'E'.toByte, 'S'.toByte, 'T'.toByte)
+      val customFramingFlow = Flow[ByteString].via(new TcpFraming(Set(customMagic)))
+      val bytes = TcpFraming.encodeConnectionHeader(customMagic, 2) ++ frameBytes(1)
+      val frames = Source(List(bytes)).via(customFramingFlow).runWith(Sink.seq).futureValue
+      frames.head.streamId should ===(2)
+    }
+
+    "reject wrong magic" in {
+      val wrongMagic = ByteString('W'.toByte, 'R'.toByte, 'O'.toByte, 'N'.toByte)
+      val bytes = TcpFraming.encodeConnectionHeader(wrongMagic, 2) ++ frameBytes(1)
+      val fail = Source(List(bytes)).via(framingFlow).runWith(Sink.seq).failed.futureValue
+      fail shouldBe a[FramingException]
+    }
+
+    "accept legacy AKKA magic" in {
+      val legacyMagic = TcpFraming.LegacyMagic
+      val bytes = TcpFraming.encodeConnectionHeader(legacyMagic, 2) ++ frameBytes(1)
+      val frames = Source(List(bytes)).via(framingFlow).runWith(Sink.seq).futureValue
+      frames.head.streamId should ===(2)
     }
 
   }

@@ -153,6 +153,28 @@ officially supported. If you're on a Big Endian processor, such as Sparc, it is 
 
 @@@
 
+### TCP Magic Header
+
+When using the `tcp` or `tls-tcp` transport, a 4-byte "magic header" is sent at the start of each connection.
+This header is used to detect and reject accidental or invalid connections.
+
+The magic header is configured by `pekko.remote.artery.advanced.tcp-magic`, which is an array of allowed values.
+The first value in the array is used when sending (outbound connections). All values are accepted when
+receiving (inbound connections). The default is `["PEKK", "AKKA"]`.
+
+Each value must produce at least 4 UTF-8 bytes; extra bytes are ignored. Non-ASCII characters may occupy
+multiple UTF-8 bytes (2-4 bytes each).
+
+The magic header has evolved across versions:
+
+ * Akka and Pekko up to 1.6.x only support `"AKKA"` as the magic header.
+ * Pekko 1.7.x sends `"AKKA"` but accepts both `"AKKA"` and `"PEKK"`, enabling future upgrades.
+ * Pekko 2.x (and above) sends `"PEKK"` by default but accepts both `"PEKK"` and `"AKKA"`.
+
+Because Pekko 1.7.x+ and 2.x accept both values by default, rolling upgrades between these versions
+do not require changing the `tcp-magic` configuration. Once all nodes are running Pekko 2.x, you may
+remove `"AKKA"` from the array if desired.
+
 ## Canonical address
 
 In order for remoting to work properly, where each system can send messages to any other system on the same network
