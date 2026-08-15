@@ -162,12 +162,13 @@ import org.apache.pekko.util.OptionVal
   // delegate all port handlers to the wrapped logic
   System.arraycopy(inner.handlers, 0, handlers, 0, handlers.length)
 
-  // fuse the inlet handler into this logic to record why the stream terminated
-  private val innerInHandler = inner.handlers(0).asInstanceOf[InHandler]
+  // Fuse the inlet handler into this logic to record why the stream terminated.
+  // Delegate dynamically via inner.handlers(0) so that stages which swap their
+  // inlet handler after materialization (e.g. LazySink.switchTo) are handled correctly.
   handlers(0) = this
 
   override def onPush(): Unit =
-    try innerInHandler.onPush()
+    try inner.handlers(0).asInstanceOf[InHandler].onPush()
     catch {
       case NonFatal(e) =>
         terminationFailure = e
@@ -176,7 +177,7 @@ import org.apache.pekko.util.OptionVal
 
   override def onUpstreamFinish(): Unit = {
     terminationSignalled = true
-    try innerInHandler.onUpstreamFinish()
+    try inner.handlers(0).asInstanceOf[InHandler].onUpstreamFinish()
     catch {
       case NonFatal(e) =>
         terminationFailure = e
@@ -187,7 +188,7 @@ import org.apache.pekko.util.OptionVal
   override def onUpstreamFailure(ex: Throwable): Unit = {
     terminationSignalled = true
     terminationFailure = ex
-    try innerInHandler.onUpstreamFailure(ex)
+    try inner.handlers(0).asInstanceOf[InHandler].onUpstreamFailure(ex)
     catch {
       case NonFatal(e) =>
         terminationFailure = e

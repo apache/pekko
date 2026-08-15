@@ -156,6 +156,17 @@ class SinkWatchTerminationSpec extends StreamSpec {
       whenReady(done.failed) { _ shouldBe ex }
     }
 
+    "complete future when stream completes after the wrapped sink swapped its inlet handler" in {
+      val (p, done) = TestSource[Int]()
+        .toMat(Sink.lazySink(() => Sink.ignore).watchTermination(Keep.right))(Keep.both)
+        .run()
+      p.sendNext(1)
+      p.sendNext(2)
+      p.sendNext(3)
+      p.sendComplete()
+      done.futureValue should ===(Done)
+    }
+
     "fail future when a handler of the wrapped sink throws" in {
       class FailingSink extends GraphStage[SinkShape[Int]] {
         val in = Inlet[Int]("FailingSink.in")
