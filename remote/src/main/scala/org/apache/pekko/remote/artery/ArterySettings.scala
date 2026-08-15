@@ -32,7 +32,6 @@ import pekko.util.Helpers.Requiring
 import pekko.util.Helpers.toRootLowerCase
 import pekko.util.WildcardIndex
 import pekko.util.ccompat.JavaConverters._
-import pekko.io.dns.internal.AsyncDnsResolver
 
 /** INTERNAL API */
 private[pekko] final class ArterySettings private (config: Config) {
