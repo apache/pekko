@@ -281,7 +281,7 @@ private[stream] final class MapAsyncPartitioned[In, Out, Partition](
       }
 
       private def drainQueue(): Unit = {
-        if (buffer.nonEmpty) {
+        if (buffer.nonEmpty && partitionsInProgress.size < parallelism) {
           // Snapshot the buffer because processElement may complete a Future synchronously
           // (the #20217 optimization), which re-enters pushNextIfPossible and either
           // dequeues from the buffer (ordered) or rebuilds it via filter (unordered),
