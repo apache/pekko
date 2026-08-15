@@ -15,7 +15,7 @@ package org.apache.pekko.persistence.journal.inmem
 
 import scala.collection.immutable
 import scala.concurrent.Future
-import scala.concurrent.duration.Duration
+import scala.concurrent.duration._
 import scala.util.Try
 import scala.util.control.NonFatal
 
@@ -32,7 +32,6 @@ import pekko.persistence.journal.{ AsyncWriteJournal, Tagged }
 import pekko.persistence.journal.inmem.InmemJournal.{ MessageWithMeta, ReplayWithMeta }
 import pekko.serialization.SerializationExtension
 import pekko.serialization.Serializers
-import pekko.util.JavaDurationConverters._
 import pekko.util.OptionVal
 
 import com.typesafe.config.Config
@@ -76,7 +75,7 @@ object InmemJournal {
 
   private val delayWrites = {
     val key = "delay-writes"
-    if (cfg.hasPath(key)) cfg.getDuration(key).asScala
+    if (cfg.hasPath(key)) cfg.getDuration(key, MILLISECONDS).millis
     else Duration.Zero
   }
   private val testSerialization = {

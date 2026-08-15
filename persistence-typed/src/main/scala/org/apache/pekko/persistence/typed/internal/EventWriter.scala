@@ -1,18 +1,14 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * license agreements; and to You under the Apache License, version 2.0:
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * This file is part of the Apache Pekko project, which was derived from Akka.
+ */
+
+/*
+ * Copyright (C) 2009-2023 Lightbend Inc. <https://www.lightbend.com>
  */
 
 package org.apache.pekko.persistence.typed.internal
@@ -51,23 +47,24 @@ import pekko.util.Timeout
  */
 @InternalStableApi
 private[pekko] object EventWriterExtension extends ExtensionId[EventWriterExtension] {
-  def createExtension(system: ActorSystem[_]): EventWriterExtension = new EventWriterExtension(system)
+  def createExtension(system: ActorSystem[?]): EventWriterExtension = new EventWriterExtension(system)
 
-  def get(system: ActorSystem[_]): EventWriterExtension = apply(system)
+  def get(system: ActorSystem[?]): EventWriterExtension = apply(system)
 }
 
 /**
  * INTERNAL API
  */
 @InternalStableApi
-private[pekko] class EventWriterExtension(system: ActorSystem[_]) extends Extension {
+private[pekko] class EventWriterExtension(system: ActorSystem[?]) extends Extension {
 
   private val settings = EventWriter.EventWriterSettings(system)
   private val writersPerJournalId = new ConcurrentHashMap[String, ActorRef[EventWriter.Command]]()
 
   def writerForJournal(journalId: Option[String]): ActorRef[EventWriter.Command] =
     writersPerJournalId.computeIfAbsent(
-      journalId.getOrElse(""), { _ =>
+      journalId.getOrElse(""),
+      { _ =>
         system.systemActorOf(
           EventWriter(journalId.getOrElse(""), settings),
           s"EventWriter-${URLEncoder.encode(journalId.getOrElse("default"), "UTF-8")}")
@@ -85,7 +82,7 @@ private[pekko] object EventWriter {
   type Pid = String
 
   object EventWriterSettings {
-    def apply(system: ActorSystem[_]): EventWriterSettings =
+    def apply(system: ActorSystem[?]): EventWriterSettings =
       EventWriterSettings(
         maxBatchSize = system.settings.config.getInt("pekko.persistence.typed.event-writer.max-batch-size"),
         askTimeout = system.settings.config.getDuration("pekko.persistence.typed.event-writer.ask-timeout").asScala)
