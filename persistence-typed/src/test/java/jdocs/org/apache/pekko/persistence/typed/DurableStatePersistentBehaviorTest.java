@@ -105,6 +105,10 @@ public class DurableStatePersistentBehaviorTest {
         }
       }
 
+      public enum Delete implements Command<Void> {
+        INSTANCE
+      }
+
       // #command
 
       // #state
@@ -150,6 +154,7 @@ public class DurableStatePersistentBehaviorTest {
                 (state, command) -> Effect().persist(new State(state.get() + command.value)))
             .onCommand(
                 GetValue.class, (state, command) -> Effect().reply(command.replyTo, state.get()))
+            .onCommand(Delete.class, (state, command) -> Effect().delete())
             .build();
       }
       // #command-handler
