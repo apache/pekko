@@ -288,8 +288,10 @@ public class SinkTest extends StreamTestJupiter {
   }
 
   @Test
-  public void watchTerminationMustRejectCompositeSinks() {
-    assertThrows(
-        IllegalArgumentException.class, () -> Sink.foreach(x -> {}).watchTermination(Keep.right()));
+  public void watchTerminationMustWorkWithCompositeSinks() throws Exception {
+    final CompletionStage<Done> done =
+        Source.range(1, 4)
+            .runWith(Sink.<Integer>foreach(x -> {}).watchTermination(Keep.right()), system);
+    assertEquals(Done.done(), done.toCompletableFuture().get(1, TimeUnit.SECONDS));
   }
 }

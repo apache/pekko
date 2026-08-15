@@ -20,7 +20,7 @@ package org.apache.pekko.stream.impl.fusing
 import scala.concurrent.{ Future, Promise }
 import scala.util.control.NonFatal
 
-import org.apache.pekko.{ Done, NotUsed }
+import org.apache.pekko.Done
 import org.apache.pekko.annotation.InternalApi
 import org.apache.pekko.stream._
 import org.apache.pekko.stream.impl._
@@ -31,45 +31,64 @@ import org.apache.pekko.util.OptionVal
 /**
  * INTERNAL API
  *
- * Implements `Sink.watchTermination`: wraps a sink that consists of a single [[GraphStageWithMaterializedValue]]
- * so that, in addition to the original materialized value, a `Future[Done]` is materialized that only completes
- * after the wrapped sink's `postStop` lifecycle hook has run.
+ * Implements `Sink.watchTermination`: wraps every [[GraphStageWithMaterializedValue]] in the sink's
+ * traversal so that a shared `Future[Done]` is materialized that only completes after all wrapped
+ * stages' `postStop` lifecycle hooks have run.
  */
 @InternalApi private[pekko] object WatchedSink {
 
   def apply[In, Mat, Mat2](sink: Sink[In, Mat], matF: (Mat, Future[Done]) => Mat2): Sink[In, Mat2] = {
     val builder = sink.traversalBuilder
-    // use traversalSoFar rather than traversal, which would additionally wrap island and attribute
-    // steps that the builder keeps separately and re-applies on access
     val steps = Vector.newBuilder[Traversal]
     flatten(builder.traversalSoFar, steps)
     val allSteps = steps.result()
 
-    val moduleIndices = allSteps.indices.filter(i => allSteps(i).isInstanceOf[MaterializeAtomic])
-    if (moduleIndices.size != 1)
-      throw new IllegalArgumentException(
-        s"Sink.watchTermination is only supported for sinks that consist of a single stage, but [$sink] consists " +
-        s"of ${moduleIndices.size} stages. Composite sinks such as those created with Sink.combine or GraphDSL " +
-        s"are not supported.")
-
-    val moduleIndex = moduleIndices.head
-    allSteps(moduleIndex) match {
-      case MaterializeAtomic(module: GraphStageModule[SinkShape[In] @unchecked, Mat @unchecked], outToSlots)
-          if outToSlots.isEmpty =>
-        val prefixSteps = allSteps.take(moduleIndex)
-        val suffixSteps = allSteps.drop(moduleIndex + 1)
-
-        val watchedStage = new WatchedSinkStage[In, Mat, Mat2](module.stage, suffixSteps, matF)
-        val watchedModule = GraphStageModule(module.shape, module.attributes, watchedStage)
-        val newTraversal = (prefixSteps :+ (MaterializeAtomic(watchedModule, outToSlots): Traversal))
-          .foldLeft(EmptyTraversal: Traversal)((traversal, step) => traversal.concat(step))
-
-        new Sink(builder.copy(traversalSoFar = newTraversal), sink.shape)
-      case other =>
-        throw new IllegalArgumentException(
-          s"Sink.watchTermination is only supported for sinks that consist of a single GraphStage, but [$sink] " +
-          s"contains [$other].")
+    val stageCount = allSteps.count {
+      case MaterializeAtomic(_: GraphStageModule[_, _], _) => true
+      case _                                               => false
     }
+
+    if (stageCount == 0)
+      throw new IllegalArgumentException(
+        s"Sink.watchTermination is only supported for sinks that contain at least one GraphStage, but [$sink] " +
+        s"contains none.")
+
+    allSteps.foreach {
+      case MaterializeAtomic(_: GraphStageModule[_, _], _) =>
+      case MaterializeAtomic(other, _)                     =>
+        throw new IllegalArgumentException(
+          s"Sink.watchTermination is only supported for sinks built from GraphStages, but [$sink] " +
+          s"contains [$other].")
+      case _ =>
+    }
+
+    // Per-materialization holder: the traversal walk is sequential, so the first stage
+    // creates the tracker and subsequent stages reuse it within the same materialization.
+    val holder = new TrackerHolder(stageCount)
+
+    val newSteps: Vector[Traversal] = allSteps.map {
+      case MaterializeAtomic(module: GraphStageModule[_, _], outToSlots) =>
+        val reporterStage = new TerminationReporterStage(
+          module.stage.asInstanceOf[GraphStageWithMaterializedValue[Shape, Any]], holder)
+        MaterializeAtomic(
+          GraphStageModule(module.shape, module.attributes,
+            reporterStage.asInstanceOf[GraphStageWithMaterializedValue[Shape, Any]]),
+          outToSlots): Traversal
+      case other => other
+    }
+
+    val matFStep: Traversal =
+      Transform(((mat: Any) => {
+        val t = holder.tracker
+        val result = matF(mat.asInstanceOf[Mat], t.future)
+        holder.reset()
+        result
+      }).asInstanceOf[TraversalBuilder.AnyFunction1])
+
+    val newTraversal = (newSteps :+ matFStep)
+      .foldLeft(EmptyTraversal: Traversal)((traversal, step) => traversal.concat(step))
+
+    new Sink(builder.copy(traversalSoFar = newTraversal), sink.shape)
   }
 
   private def flatten(traversal: Traversal, builder: scala.collection.mutable.Builder[Traversal, Vector[Traversal]])
@@ -80,59 +99,77 @@ import org.apache.pekko.util.OptionVal
       flatten(second, builder)
     case other => builder += other
   }
+}
 
-  /**
-   * Replays the materialized value composition steps that followed the wrapped stage in the original
-   * traversal, transforming the wrapped stage's materialized value into the materialized value the
-   * original sink would have produced.
-   */
-  private[fusing] def runMatProgram(steps: Vector[Traversal], initial: Any): Any = {
-    val stack = new java.util.ArrayDeque[Any](4)
-    stack.addLast(initial)
-    var i = 0
-    while (i < steps.length) {
-      steps(i) match {
-        case Pop                  => stack.removeLast()
-        case PushNotUsed          => stack.addLast(NotUsed)
-        case transform: Transform => stack.addLast(transform(stack.removeLast()))
-        case compose: Compose     =>
-          val second = stack.removeLast()
-          val first = stack.removeLast()
-          stack.addLast(compose(first, second))
-        case other =>
-          throw new IllegalArgumentException(
-            s"Sink.watchTermination encountered an unexpected materialized value composition step [$other]")
-      }
-      i += 1
-    }
-    stack.removeLast()
+/**
+ * INTERNAL API
+ *
+ * Mutable holder that provides a fresh [[TerminationTracker]] per materialization.
+ * The traversal walk is sequential: stages call `tracker` (lazy-creating on first access),
+ * and the trailing Transform step calls `reset()` after capturing the future, so the next
+ * materialization walk starts clean.
+ */
+@InternalApi private[pekko] final class TrackerHolder(stageCount: Int) {
+  private var _tracker: TerminationTracker = _
+
+  def tracker: TerminationTracker = {
+    if (_tracker eq null) _tracker = new TerminationTracker(stageCount)
+    _tracker
   }
+
+  def reset(): Unit = { _tracker = null }
 }
 
 /**
  * INTERNAL API
  */
-@InternalApi private[pekko] final class WatchedSinkStage[-In, Mat, Mat2](
-    inner: GraphStageWithMaterializedValue[SinkShape[In], Mat],
-    trailingMatProgram: Vector[Traversal],
-    matF: (Mat, Future[Done]) => Mat2)
-    extends GraphStageWithMaterializedValue[SinkShape[In], Mat2] {
+@InternalApi private[pekko] final class TerminationTracker(stageCount: Int) {
+  private var remaining = stageCount
+  private var _failure: Throwable = _
+  private var _sawSignal: Boolean = false
+  private var _anyConnectionClosed: Boolean = false
+  private val terminationPromise = Promise[Done]()
 
-  override val shape: SinkShape[In] = inner.shape
+  val future: Future[Done] = terminationPromise.future
 
-  override def createLogicAndMaterializedValue(inheritedAttributes: Attributes): (GraphStageLogic, Mat2) =
+  def stageStopped(failure: Throwable, sawSignal: Boolean, connectionClosed: Boolean, logic: GraphStageLogic): Unit =
+    synchronized {
+      if (failure ne null) _failure = failure
+      if (sawSignal) _sawSignal = true
+      if (connectionClosed) _anyConnectionClosed = true
+      remaining -= 1
+      if (remaining == 0) {
+        if (_failure ne null) terminationPromise.tryFailure(_failure)
+        else if (!_sawSignal && !_anyConnectionClosed)
+          terminationPromise.tryFailure(new AbruptStageTerminationException(logic))
+        else terminationPromise.trySuccess(Done)
+      }
+    }
+}
+
+/**
+ * INTERNAL API
+ */
+@InternalApi private[pekko] final class TerminationReporterStage(
+    inner: GraphStageWithMaterializedValue[Shape, Any],
+    holder: TrackerHolder)
+    extends GraphStageWithMaterializedValue[Shape, Any] {
+
+  override val shape: Shape = inner.shape
+
+  override def createLogicAndMaterializedValue(inheritedAttributes: Attributes): (GraphStageLogic, Any) =
     logicAndMat(inheritedAttributes, null)
 
   private[pekko] override def createLogicAndMaterializedValue(
       inheritedAttributes: Attributes,
-      materializer: Materializer): (GraphStageLogic, Mat2) =
+      materializer: Materializer): (GraphStageLogic, Any) =
     logicAndMat(inheritedAttributes, materializer)
 
-  private def logicAndMat(inheritedAttributes: Attributes, materializer: Materializer): (GraphStageLogic, Mat2) = {
-    val (innerLogic, innerMat) = inner.createLogicAndMaterializedValue(inheritedAttributes, materializer)
-    val terminationPromise = Promise[Done]()
-    val sinkMat = WatchedSink.runMatProgram(trailingMatProgram, innerMat).asInstanceOf[Mat]
-    (new WatchedSinkLogic(innerLogic, inner, terminationPromise), matF(sinkMat, terminationPromise.future))
+  private def logicAndMat(inheritedAttributes: Attributes, materializer: Materializer): (GraphStageLogic, Any) = {
+    val (innerLogic, innerMat) =
+      if (materializer eq null) inner.createLogicAndMaterializedValue(inheritedAttributes)
+      else inner.createLogicAndMaterializedValue(inheritedAttributes, materializer)
+    (new TerminationReporterLogic(innerLogic, inner, holder.tracker), innerMat)
   }
 
   override def toString: String = s"WatchedSink($inner)"
@@ -141,59 +178,57 @@ import org.apache.pekko.util.OptionVal
 /**
  * INTERNAL API
  *
- * A delegating [[GraphStageLogic]] that behaves exactly as the wrapped logic while completing the
- * termination promise only after the wrapped logic's `postStop` has run. The future is failed with
- * the upstream failure when the stream failed, and completed with success otherwise.
+ * Delegates all behavior to the wrapped logic, reporting termination to a shared
+ * [[TerminationTracker]] after the wrapped logic's `postStop` has run.
+ *
+ * Input handlers delegate dynamically via `inner.handlers(idx)` so that stages which swap
+ * handlers after materialization (e.g. LazySink) are handled correctly. The try-catch has
+ * zero JIT cost (exception-table only) and is required to capture failures from leaf stages
+ * whose handler exceptions would not otherwise appear on any connection slot.
  */
-@InternalApi private[pekko] final class WatchedSinkLogic(
+@InternalApi private[pekko] final class TerminationReporterLogic(
     inner: GraphStageLogic,
     innerStage: GraphStageWithMaterializedValue[? <: Shape, ?],
-    terminationPromise: Promise[Done])
-    extends GraphStageLogic(inner.inCount, inner.outCount)
-    with InHandler {
+    tracker: TerminationTracker)
+    extends GraphStageLogic(inner.inCount, inner.outCount) {
 
   private var terminationFailure: Throwable = _
-  private var terminationSignalled = false
+  private var sawTerminationSignal = false
+  private var reported = false
 
-  // Completes the promise even if the interpreter finalizes the wrapped logic directly,
-  // which happens when the wrapped stage terminates itself from an async callback.
-  inner.setTerminationHook(() => completeTermination())
+  // Fires when the interpreter finalizes the inner logic directly (e.g. completeStage from async callback)
+  inner.setTerminationHook(() => reportTermination())
 
-  // delegate all port handlers to the wrapped logic
   System.arraycopy(inner.handlers, 0, handlers, 0, handlers.length)
 
-  // Fuse the inlet handler into this logic to record why the stream terminated.
-  // Delegate dynamically via inner.handlers(0) so that stages which swap their
-  // inlet handler after materialization (e.g. LazySink.switchTo) are handled correctly.
-  handlers(0) = this
+  private var i = 0
+  while (i < inCount) {
+    val idx = i
+    handlers(idx) = new InHandler {
+      override def onPush(): Unit =
+        try inner.handlers(idx).asInstanceOf[InHandler].onPush()
+        catch {
+          case NonFatal(e) => terminationFailure = e; throw e
+        }
 
-  override def onPush(): Unit =
-    try inner.handlers(0).asInstanceOf[InHandler].onPush()
-    catch {
-      case NonFatal(e) =>
-        terminationFailure = e
-        throw e
-    }
+      override def onUpstreamFinish(): Unit = {
+        sawTerminationSignal = true
+        try inner.handlers(idx).asInstanceOf[InHandler].onUpstreamFinish()
+        catch {
+          case NonFatal(e) => terminationFailure = e; throw e
+        }
+      }
 
-  override def onUpstreamFinish(): Unit = {
-    terminationSignalled = true
-    try inner.handlers(0).asInstanceOf[InHandler].onUpstreamFinish()
-    catch {
-      case NonFatal(e) =>
-        terminationFailure = e
-        throw e
+      override def onUpstreamFailure(ex: Throwable): Unit = {
+        sawTerminationSignal = true
+        if (terminationFailure eq null) terminationFailure = ex
+        try inner.handlers(idx).asInstanceOf[InHandler].onUpstreamFailure(ex)
+        catch {
+          case NonFatal(e) => terminationFailure = e; throw e
+        }
+      }
     }
-  }
-
-  override def onUpstreamFailure(ex: Throwable): Unit = {
-    terminationSignalled = true
-    terminationFailure = ex
-    try inner.handlers(0).asInstanceOf[InHandler].onUpstreamFailure(ex)
-    catch {
-      case NonFatal(e) =>
-        terminationFailure = e
-        throw e
-    }
+    i += 1
   }
 
   private[stream] override def interpreter_=(gi: GraphInterpreter): Unit = {
@@ -205,7 +240,6 @@ import org.apache.pekko.util.OptionVal
     inner.stageId = stageId
     inner.attributes = attributes
     inner.originalStage = OptionVal.Some(innerStage)
-    // mirror the port wiring so that the wrapped logic can interact with the interpreter
     System.arraycopy(portToConn, 0, inner.portToConn, 0, portToConn.length)
     inner.beforePreStart()
   }
@@ -213,54 +247,40 @@ import org.apache.pekko.util.OptionVal
   override def preStart(): Unit =
     try inner.preStart()
     catch {
-      case NonFatal(e) =>
-        terminationFailure = e
-        throw e
+      case NonFatal(e) => terminationFailure = e; throw e
     }
 
   override def postStop(): Unit = {
     try inner.postStop()
-    finally completeTermination()
+    finally reportTermination()
   }
 
-  protected[stream] override def afterPostStop(): Unit = {
-    inner.afterPostStop()
-    completeTermination()
-  }
+  protected[stream] override def afterPostStop(): Unit = inner.afterPostStop()
 
-  // completeTermination may be invoked more than once (from postStop, afterPostStop and the
-  // termination hook), the promise only completes on the first invocation
-  private def completeTermination(): Unit = {
-    val failure = terminationFailure
-    if (failure ne null) terminationPromise.tryFailure(failure)
-    else
-      upstreamFailureFromConnection match {
-        case OptionVal.Some(ex) => terminationPromise.tryFailure(ex)
-        case _                  =>
-          if (!terminationSignalled && isAbruptTermination)
-            terminationPromise.tryFailure(new AbruptStageTerminationException(this))
-          else terminationPromise.trySuccess(Done)
+  private def reportTermination(): Unit = {
+    if (!reported) {
+      reported = true
+      var connectionFailure: Throwable = null
+      var connectionClosed = false
+      var j = 0
+      while (j < portToConn.length) {
+        val connection = portToConn(j)
+        if (connection ne null) {
+          connection.slot match {
+            case GraphInterpreter.Failed(ex, _)    => if (connectionFailure eq null) connectionFailure = ex
+            case GraphInterpreter.Cancelled(cause) =>
+              if ((connectionFailure eq null) && !cause.isInstanceOf[SubscriptionWithCancelException.NonFailureCancellation])
+                connectionFailure = cause
+            case _ =>
+          }
+          if ((connection.portState & (GraphInterpreter.InClosed | GraphInterpreter.OutClosed)) != 0)
+            connectionClosed = true
+        }
+        j += 1
       }
-  }
-
-  // If the wrapped stage swapped its inlet handler after materialization, failures no longer pass
-  // through the fused handler above; the failure remains visible on the connection slot until
-  // after this stage has been finalized.
-  private def upstreamFailureFromConnection: OptionVal[Throwable] = {
-    val connection = portToConn(0)
-    if (connection ne null)
-      connection.slot match {
-        case GraphInterpreter.Failed(ex, _) => OptionVal.Some(ex)
-        case _                              => OptionVal.None
-      }
-    else OptionVal.None
-  }
-
-  // postStop ran without any side of the inlet connection ever being closed, so no completion,
-  // failure or cancellation signal reached the wrapped sink
-  private def isAbruptTermination: Boolean = {
-    val connection = portToConn(0)
-    (connection ne null) && (connection.portState & (GraphInterpreter.InClosed | GraphInterpreter.OutClosed)) == 0
+      val failure = if (terminationFailure ne null) terminationFailure else connectionFailure
+      tracker.stageStopped(failure, sawTerminationSignal, connectionClosed, this)
+    }
   }
 
   override def toString: String = s"WatchedSink($inner)"

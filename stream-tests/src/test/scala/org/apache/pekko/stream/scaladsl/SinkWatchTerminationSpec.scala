@@ -100,18 +100,94 @@ class SinkWatchTerminationSpec extends StreamSpec {
       done.failed.futureValue shouldBe an[AbruptTerminationException]
     }
 
-    "reject composite sinks consisting of multiple stages" in {
-      val ex = intercept[IllegalArgumentException] {
-        Sink.foreach[Int](println).watchTermination(Keep.right)
-      }
-      ex.getMessage should include("single stage")
+    "complete future for a composite sink built with Sink.foreach" in {
+      val done = Source(1 to 4).runWith(Sink.foreach[Int](_ => ()).watchTermination(Keep.right))
+      done.futureValue should ===(Done)
     }
 
-    "reject sinks created with Sink.combine" in {
+    "complete future for a composite sink built with Sink.combine" in {
       val combined = Sink.combine(Sink.ignore, Sink.ignore)(Broadcast[Int](_))
-      intercept[IllegalArgumentException] {
-        combined.watchTermination(Keep.right)
+      val done = Source(1 to 4).runWith(combined.watchTermination(Keep.right))
+      done.futureValue should ===(Done)
+    }
+
+    "complete future for a composite sink built with GraphDSL" in {
+      val composite = Sink.fromGraph(GraphDSL.create() { implicit b =>
+        import GraphDSL.Implicits._
+        val bcast = b.add(Broadcast[Int](2))
+        val s1 = b.add(Sink.ignore)
+        val s2 = b.add(Sink.ignore)
+        bcast.out(0) ~> s1
+        bcast.out(1) ~> s2
+        SinkShape(bcast.in)
+      })
+      val done = Source(1 to 4).runWith(composite.watchTermination(Keep.right))
+      done.futureValue should ===(Done)
+    }
+
+    "fail future when upstream fails on a composite sink" in {
+      val ex = new RuntimeException("composite fail") with NoStackTrace
+      val combined = Sink.combine(Sink.ignore, Sink.ignore)(Broadcast[Int](_))
+      val (p, done) = TestSource[Int]().toMat(combined.watchTermination(Keep.right))(Keep.both).run()
+      p.sendNext(1)
+      p.sendError(ex)
+      whenReady(done.failed) { _ shouldBe ex }
+    }
+
+    "complete future only after all stages' postStop have run in a composite sink" in {
+      val events = new ConcurrentLinkedQueue[String]()
+
+      class SignalingSink(name: String) extends GraphStage[SinkShape[Int]] {
+        val in = Inlet[Int](s"$name.in")
+        override val shape: SinkShape[Int] = SinkShape(in)
+
+        override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =
+          new GraphStageLogic(shape) with InHandler {
+            override def preStart(): Unit = pull(in)
+            override def onPush(): Unit = pull(in)
+            override def postStop(): Unit = events.add(name)
+            setHandler(in, this)
+          }
       }
+
+      val composite = Sink.fromGraph(GraphDSL.create() { implicit b =>
+        import GraphDSL.Implicits._
+        val bcast = b.add(Broadcast[Int](2))
+        val s1 = b.add(new SignalingSink("s1"))
+        val s2 = b.add(new SignalingSink("s2"))
+        bcast.out(0) ~> s1
+        bcast.out(1) ~> s2
+        SinkShape(bcast.in)
+      })
+
+      val done = Source(1 to 4).runWith(composite.watchTermination(Keep.right))
+      done.onComplete(_ => events.add("futureCompleted"))(ExecutionContext.parasitic)
+      done.futureValue should ===(Done)
+      val list = events.asScala.toList
+      list.last should ===("futureCompleted")
+      list.filterNot(_ == "futureCompleted").toSet should ===(Set("s1", "s2"))
+    }
+
+    "keep the original materialized value of a composite sink" in {
+      val composite = Sink.fromGraph(GraphDSL.createGraph(Sink.queue[Int]()) { implicit b => queue =>
+        import GraphDSL.Implicits._
+        val bcast = b.add(Broadcast[Int](2))
+        bcast.out(0) ~> queue
+        bcast.out(1) ~> Sink.ignore
+        SinkShape(bcast.in)
+      })
+      val (queue, done) = Source(1 to 4).runWith(composite.watchTermination(Keep.both))
+      queue.pull().futureValue should ===(Some(1))
+      queue.cancel()
+      done.futureValue should ===(Done)
+    }
+
+    "fail future when a fully fused composite stream abruptly terminated" in {
+      val mat = Materializer(system)
+      val combined = Sink.combine(Sink.ignore, Sink.ignore)(Broadcast[Int](_))
+      val done = Source.maybe[Int].toMat(combined.watchTermination(Keep.right))(Keep.right).run()(mat)
+      mat.shutdown()
+      done.failed.futureValue shouldBe an[AbruptStageTerminationException]
     }
 
     "work with Sink.queue" in {
@@ -207,6 +283,15 @@ class SinkWatchTerminationSpec extends StreamSpec {
     "work with a sink behind an async island" in {
       val done = Source(1 to 4).runWith(Sink.ignore.async.watchTermination(Keep.right))
       done.futureValue should ===(Done)
+    }
+
+    "produce independent futures when the same blueprint is materialized multiple times" in {
+      val watched = Sink.ignore.watchTermination(Keep.right)
+      val done1 = Source(1 to 4).runWith(watched)
+      val done2 = Source(5 to 8).runWith(watched)
+      done1.futureValue should ===(Done)
+      done2.futureValue should ===(Done)
+      (done1 should not).be(done2)
     }
   }
 }
