@@ -146,6 +146,24 @@ which has a completely different protocol, a rolling update is not supported.
 
 Rolling update is not supported when @ref:[changing the remoting transport](../remoting-artery.md#selecting-a-transport).
 
+### Changing TCP magic header
+
+The TCP magic header (`pekko.remote.artery.advanced.tcp-magic`) is used to validate connections between nodes.
+It is an array of allowed values. The first value is used when sending (outbound connections); all values
+are accepted when receiving (inbound connections).
+
+The magic header has evolved across versions:
+
+ * Akka and Pekko up to 1.6.x only support `"AKKA"` as the magic header.
+ * Pekko 1.7.x sends `"AKKA"` but accepts both `"AKKA"` and `"PEKK"`, enabling future upgrades.
+ * Pekko 2.x (and above) sends `"PEKK"` by default but accepts both `"PEKK"` and `"AKKA"`.
+
+Because Pekko 1.7.x+ and 2.x accept both values by default, rolling upgrades between these versions
+do not require changing the `tcp-magic` configuration. Upgrading from Pekko 1.6.x or earlier to 2.x
+directly is also supported since the 2.x default accepts `"AKKA"`.
+
+If you remove `"AKKA"` from the array, nodes running older versions will be unable to connect.
+
 ### Migrating from Classic Sharding to Typed Sharding
 
 If you have been using classic sharding it is possible to do a rolling update to typed sharding using a 3 step procedure.
