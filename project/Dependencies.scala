@@ -73,7 +73,7 @@ object Dependencies {
 
     val sigar = "org.fusesource" % "sigar" % "1.6.4"
 
-    val jctools = "org.jctools" % "jctools-core" % "4.0.6"
+    val jctools = "org.jctools" % "jctools-core" % "4.0.7"
 
     // reactive streams
     val reactiveStreams = "org.reactivestreams" % "reactive-streams" % reactiveStreamsVersion
