@@ -113,7 +113,10 @@ public class RuntimeDurableStateStoreTest {
           .forAnyState()
           .onCommand(Save.class, this::onSave)
           .onCommand(ShowMeWhatYouGot.class, this::onShow)
-          .onCommand(Delete.class, (state, cmd) -> Effect().<String>delete().thenRun(() -> cmd.replyTo.tell(Done.getInstance())))
+          .onCommand(
+              Delete.class,
+              (state, cmd) ->
+                  Effect().<String>delete().thenRun(() -> cmd.replyTo.tell(Done.getInstance())))
           .onCommand(Stop.class, (state, cmd) -> Effect().stop())
           .build();
     }
