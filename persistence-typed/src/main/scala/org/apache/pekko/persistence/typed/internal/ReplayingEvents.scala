@@ -138,7 +138,9 @@ private[pekko] final class ReplayingEvents[C, E, S](
         case ReplayedMessage(repr) =>
           var eventForErrorReporting: OptionVal[Any] = OptionVal.None
           try {
-            val eventSeq = setup.eventAdapter.fromJournal(repr.payload, repr.manifest)
+            val eventSeq =
+              if (repr.payload == FilteredPayload) EmptyEventSeq
+              else setup.eventAdapter.fromJournal(repr.payload, repr.manifest)
             def handleEvent(event: E): Unit = {
               eventForErrorReporting = OptionVal.Some(event)
               state = state.copy(seqNr = repr.sequenceNr, eventsReplayed = state.eventsReplayed + 1)

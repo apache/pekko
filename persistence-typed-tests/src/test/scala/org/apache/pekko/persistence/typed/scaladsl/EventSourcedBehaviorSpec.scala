@@ -46,6 +46,9 @@ import pekko.persistence.query.Sequence
 import pekko.persistence.snapshot.SnapshotStore
 import pekko.persistence.testkit.PersistenceTestKitPlugin
 import pekko.persistence.testkit.query.scaladsl.PersistenceTestKitReadJournal
+import pekko.persistence.FilteredPayload
+import pekko.persistence.typed.EventAdapter
+import pekko.persistence.typed.EventSeq
 import pekko.persistence.typed.PersistenceId
 import pekko.persistence.typed.RecoveryCompleted
 import pekko.persistence.typed.SnapshotCompleted
@@ -330,6 +333,64 @@ class EventSourcedBehaviorSpec
       c2 ! Increment
       c2 ! GetValue(probe.ref)
       probe.expectMessage(State(4, Vector(0, 1, 2, 3)))
+    }
+
+    "exclude FilteredPayload in replay of persisted events" in {
+      sealed trait Cmd
+      case object Incr extends Cmd
+      case object PersistFiltered extends Cmd
+      final case class GetVal(replyTo: ActorRef[Int]) extends Cmd
+
+      sealed trait Evt
+      case object Incremented extends Evt
+      case object FilteredEvent extends Evt
+
+      def behavior(pid: PersistenceId): EventSourcedBehavior[Cmd, Evt, Int] =
+        EventSourcedBehavior[Cmd, Evt, Int](
+          pid,
+          emptyState = 0,
+          commandHandler = (_, cmd) =>
+            cmd match {
+              case Incr             => Effect.persist(Incremented)
+              case PersistFiltered  => Effect.persist(FilteredEvent)
+              case GetVal(replyTo)  =>
+                Effect.none.thenRun(state => replyTo ! state)
+            },
+          eventHandler = (state, evt) =>
+            evt match {
+              case Incremented   => state + 1
+              case FilteredEvent => state
+            })
+          .eventAdapter(new EventAdapter[Evt, Any] {
+            override def toJournal(e: Evt): Any = e match {
+              case FilteredEvent => FilteredPayload
+              case other         => other
+            }
+            override def manifest(event: Evt): String = ""
+            override def fromJournal(p: Any, manifest: String): EventSeq[Evt] = p match {
+              case FilteredPayload =>
+                throw new IllegalStateException("Unexpected FilteredPayload")
+              case e: Evt => EventSeq.single(e)
+              case other =>
+                throw new IllegalStateException(s"Unexpected event type $other")
+            }
+          })
+
+      val pid = nextPid()
+      val c = spawn(behavior(pid))
+      val probe = TestProbe[Int]()
+
+      c ! Incr
+      c ! PersistFiltered
+      c ! Incr
+      c ! GetVal(probe.ref)
+      probe.expectMessage(2)
+
+      // restart — recovery should skip the FilteredPayload entry
+      val c2 = spawn(behavior(pid))
+      c2 ! Incr
+      c2 ! GetVal(probe.ref)
+      probe.expectMessage(3)
     }
 
     "handle Terminated signal" in {
