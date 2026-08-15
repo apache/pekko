@@ -82,6 +82,14 @@ public class RuntimeDurableStateStoreTest {
     INSTANCE
   }
 
+  static final class Delete implements Command {
+    final ActorRef<Done> replyTo;
+
+    Delete(ActorRef<Done> replyTo) {
+      this.replyTo = replyTo;
+    }
+  }
+
   static final class Actor extends DurableStateBehavior<Command, String> {
     private final String store;
 
@@ -105,6 +113,7 @@ public class RuntimeDurableStateStoreTest {
           .forAnyState()
           .onCommand(Save.class, this::onSave)
           .onCommand(ShowMeWhatYouGot.class, this::onShow)
+          .onCommand(Delete.class, (state, cmd) -> Effect().<String>delete().thenRun(() -> cmd.replyTo.tell(Done.getInstance())))
           .onCommand(Stop.class, (state, cmd) -> Effect().stop())
           .build();
     }
@@ -145,6 +154,31 @@ public class RuntimeDurableStateStoreTest {
 
     assertStore("store1", "s1m1");
     assertStore("store2", "s2m1");
+  }
+
+  @Test
+  public void deleteState() throws Exception {
+    TestProbe<Done> probe = testKit.createTestProbe();
+
+    ActorRef<Command> s1 = testKit.spawn(Actor.create("id1", "store1"));
+    s1.tell(new Save("s1m1", probe.ref()));
+    probe.receiveMessage();
+    assertStore("store1", "s1m1");
+
+    s1.tell(new Delete(probe.ref()));
+    probe.receiveMessage();
+    assertStoreDeleted("store1");
+  }
+
+  private void assertStoreDeleted(String store) throws Exception {
+    @SuppressWarnings("unchecked")
+    DurableStateUpdateStore<String> durableStateStore =
+        DurableStateStoreRegistry.get(testKit.system())
+            .getDurableStateStoreFor(
+                DurableStateUpdateStore.class, store + ".state", config(store));
+    GetObjectResult<String> result =
+        durableStateStore.getObject("id1").toCompletableFuture().get(3, TimeUnit.SECONDS);
+    assertEquals(Optional.empty(), result.value());
   }
 
   private void assertStore(String store, String expectedState) throws Exception {
