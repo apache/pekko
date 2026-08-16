@@ -27,7 +27,7 @@ Users should pick one of the built in extensions.
 
 @@@
 
-Pekko DNS is a pluggable way to interact with DNS. Implementations much implement `org.apache.pekko.io.DnsProvider` and provide a configuration
+Pekko DNS is a pluggable way to interact with DNS. Implementations must implement `org.apache.pekko.io.DnsProvider` and provide a configuration
 block that specifies the implementation via `provider-object`.
 
 @@@ note { title="DNS via Pekko Discovery" }
@@ -41,7 +41,7 @@ To select which `DnsProvider` to use set `pekko.io.dns.resolver` to the location
 There are currently two implementations:
 
 * `inet-address` - Based on the JDK's `InetAddress`. Using this will be subject to both the JVM's DNS cache and its built in one.
-* `async-dns` - A native implemention of the DNS protocol that does not use any JDK classes or caches.
+* `async-dns` - A native implementation of the DNS protocol that does not use any JDK classes or caches.
 
 `inet-address` is the default implementation as it pre-dates `async-dns`, `async-dns` will likely become the default in the next major release.
 
@@ -53,18 +53,7 @@ Scala
 Java
 :  @@snip [DnsCompileOnlyDocTest.java](/docs/src/test/java/jdocs/actor/io/dns/DnsCompileOnlyDocTest.java) { #resolve }
 
-Alternatively the `IO(Dns)` actor can be interacted with directly. However this exposes the different protocols of the DNS provider.
-`inet-adddress` uses `Dns.Resolve` and `Dns.Resolved` where as the `async-dns` uses `DnsProtocol.Resolve` and `DnsProtocol.Resolved`. 
-The reason for the difference is `inet-address` predates `async-dns` and `async-dns` exposes additional information such as SRV records 
-and it wasn't possible to evolve the original API in a backward compatible way.
-
-Inet-Address API:
-
-Scala
-:  @@snip [IODocSpec.scala](/docs/src/test/scala/docs/actor/io/dns/DnsCompileOnlyDocSpec.scala) { #actor-api-inet-address }
-
-Java
-:  @@snip [DnsCompileOnlyDocTest.java](/docs/src/test/java/jdocs/actor/io/dns/DnsCompileOnlyDocTest.java) { #actor-api-inet-address }
+Alternatively the `IO(Dns)` actor can be interacted with directly. `async-dns` protocol uses `DnsProtocol.Resolve` and `DnsProtocol.Resolved`. 
 
 Async-DNS API:
 

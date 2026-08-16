@@ -227,22 +227,22 @@ of 4 and 5 nodes the side with 5 nodes will survive and the other 4 nodes will b
 in the 5 node cluster, no more failures can be handled, because the remaining cluster size would be
 less than 5. In the case of another failure in that 5 node cluster all nodes will be downed.
 
-Therefore it is important that you join new nodes when old nodes have been removed.
+Therefore, it is important that you join new nodes when old nodes have been removed.
 
 Another consequence of this is that if there are unreachable nodes when starting up the cluster,
 before reaching this limit, the cluster may shut itself down immediately. This is not an issue
 if you start all nodes at approximately the same time or use the `pekko.cluster.min-nr-of-members`
-to define required number of members before the leader changes member status of 'Joining' members to 'Up'
+to define required number of members before the leader changes member status of 'Joining' members to 'Up'.
 You can tune the timeout after which downing decisions are made using the `stable-after` setting.
 
 You should not add more members to the cluster than **quorum-size * 2 - 1**. A warning is logged
-if this recommendation is violated. If the exceeded cluster size remains when a SBR decision is
+if this recommendation is violated. If the exceeded cluster size remains when an SBR decision is
 needed it will down all nodes because otherwise there is a risk that both sides may down each
 other and thereby form two separate clusters.
 
-For rolling updates it's best to leave the cluster gracefully via
+For rolling updates, it's best to leave the cluster gracefully via
 @ref:[Coordinated Shutdown](coordinated-shutdown.md) (SIGTERM).
-For successful leaving SBR will not be used (no downing) but if there is an unreachability problem
+For successful leaving, SBR will not be used (no downing) but if there is an unreachability problem
 at the same time as the rolling update is in progress there could be an SBR decision. To avoid that
 the total number of members limit is not exceeded during the rolling update it's recommended to
 leave and fully remove one node before adding a new one, when using `static-quorum`.
@@ -380,7 +380,7 @@ See also configuration and additional dependency in [Kubernetes Lease]($pekko.do
 
 ## Indirectly connected nodes
 
-In a malfunctional network there can be situations where nodes are observed as unreachable via some network
+In a malfunctioning network there can be situations where nodes are observed as unreachable via some network
 links but they are still indirectly connected via other nodes, i.e. it's not a clean network partition (or node crash).
 
 When this situation is detected the Split Brain Resolvers will keep fully connected nodes and down all the indirectly
@@ -453,7 +453,7 @@ You would like to configure this to a short duration to have quick failover, but
 risk of having multiple singleton/sharded instances running at the same time and it may take a different
 amount of time to act on the decision (dissemination of the down/removal). The duration is by default
 the same as the `stable-after` property (see @ref:[Stable after](#stable-after) above). It is recommended to
-leave this value as is, but it can also be separately overriden with the `pekko.cluster.down-removal-margin` property.
+leave this value as is, but it can also be separately overridden with the `pekko.cluster.down-removal-margin` property.
 
 Another concern for setting this `stable-after`/`pekko.cluster.down-removal-margin` is dealing with JVM pauses e.g.
 garbage collection. When a node is unresponsive it is not known if it is due to a pause, overload, a crash or a 
