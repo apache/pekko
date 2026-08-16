@@ -191,7 +191,8 @@ private[remote] class ArteryTcpTransport(
               if (controlIdleKillSwitch.isDefined)
                 outboundContext.asInstanceOf[Association].setControlIdleKillSwitch(controlIdleKillSwitch)
 
-              Flow[ByteString].prepend(Source.single(TcpFraming.encodeConnectionHeader(streamId))).via(connectionFlow)
+              Flow[ByteString].prepend(Source.single(TcpFraming.encodeConnectionHeader(settings.Advanced.TcpMagic,
+                streamId))).via(connectionFlow)
             }))
             .mapError {
               case ArteryTransport.ShutdownSignal => ArteryTransport.ShutdownSignal
@@ -357,7 +358,7 @@ private[remote] class ArteryTcpTransport(
       Flow[ByteString]
         .via(inboundKillSwitch.flow)
         // must create new FlightRecorder event sink for each connection because they can't be shared
-        .via(new TcpFraming(flightRecorder))
+        .via(new TcpFraming(settings.Advanced.TcpMagicValues, flightRecorder))
         .alsoTo(inboundStream)
         .filter(_ => false) // don't send back anything in this TCP socket
         .map(_ => ByteString.empty) // make it a Flow[ByteString] again

@@ -35,10 +35,16 @@ import pekko.util.ByteString
   val Undefined = Int.MinValue
 
   /**
-   * The first 4 bytes of a new connection must be these `0x64 0x75 0x75 0x64` (AKKA).
+   * The legacy 4-byte magic header from Akka (AKKA).
    * The purpose of the "magic" is to detect and reject weird (accidental) accesses.
    */
-  val Magic = ByteString('A'.toByte, 'K'.toByte, 'K'.toByte, 'A'.toByte)
+  val DefaultMagic = ByteString('A'.toByte, 'K'.toByte, 'K'.toByte, 'A'.toByte)
+
+  /**
+   * The default 4-byte magic header for Pekko 2.x (PEKK).
+   * The purpose of the "magic" is to detect and reject weird (accidental) accesses.
+   */
+  val PekkoMagic = ByteString('P'.toByte, 'E'.toByte, 'K'.toByte, 'K'.toByte)
 
   /**
    * When establishing the connection this header is sent first.
@@ -46,12 +52,12 @@ import pekko.util.ByteString
    * inbound streams.
    *
    * The purpose of the "magic" is to detect and reject weird (accidental) accesses.
-   * The magic 4 bytes are `0x64 0x75 0x75 0x64` (AKKA).
+   * The magic 4 bytes are configurable via `pekko.remote.artery.advanced.tcp-magic`.
    *
-   * The streamId` is encoded as 1 byte.
+   * The `streamId` is encoded as 1 byte.
    */
-  def encodeConnectionHeader(streamId: Int): ByteString =
-    Magic ++ ByteString.fromArrayUnsafe(Array(streamId.toByte))
+  def encodeConnectionHeader(magic: ByteString, streamId: Int): ByteString =
+    magic ++ ByteString.fromArrayUnsafe(Array(streamId.toByte))
 
   /**
    * Each frame starts with the frame header that contains the length
@@ -69,8 +75,12 @@ import pekko.util.ByteString
 /**
  * INTERNAL API
  */
-@InternalApi private[pekko] class TcpFraming(flightRecorder: RemotingFlightRecorder = NoOpRemotingFlightRecorder)
+@InternalApi private[pekko] class TcpFraming(
+    acceptedMagic: Set[ByteString] = Set(TcpFraming.DefaultMagic),
+    flightRecorder: RemotingFlightRecorder = NoOpRemotingFlightRecorder)
     extends ByteStringParser[EnvelopeBuffer] {
+
+  private val magicLength = acceptedMagic.head.length
 
   override def createLogic(inheritedAttributes: Attributes): GraphStageLogic = new ParsingLogic {
 
@@ -79,13 +89,13 @@ import pekko.util.ByteString
 
     case object ReadMagic extends Step {
       override def parse(reader: ByteReader): ParseResult[EnvelopeBuffer] = {
-        val magic = reader.take(TcpFraming.Magic.length)
-        if (magic == TcpFraming.Magic)
+        val receivedMagic = reader.take(magicLength)
+        if (acceptedMagic.contains(receivedMagic))
           ParseResult(None, ReadStreamId)
         else
           throw new FramingException(
             "Stream didn't start with expected magic bytes, " +
-            s"got [${(magic ++ reader.remainingData).take(10).map("%02x".format(_)).mkString(" ")}] " +
+            s"got [${(receivedMagic ++ reader.remainingData).take(10).map("%02x".format(_)).mkString(" ")}] " +
             "Connection is rejected. Probably invalid accidental access.")
       }
     }
