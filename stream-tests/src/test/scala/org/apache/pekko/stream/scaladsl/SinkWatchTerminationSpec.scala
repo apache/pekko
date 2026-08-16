@@ -17,9 +17,10 @@
 
 package org.apache.pekko.stream.scaladsl
 
-import java.util.concurrent.ConcurrentLinkedQueue
+import java.util.concurrent.{ ConcurrentLinkedQueue, CyclicBarrier }
 
-import scala.concurrent.{ ExecutionContext, Promise }
+import scala.concurrent.{ Await, ExecutionContext, Future, Promise }
+import scala.concurrent.duration._
 import scala.jdk.CollectionConverters._
 import scala.util.control.NoStackTrace
 
@@ -292,6 +293,28 @@ class SinkWatchTerminationSpec extends StreamSpec {
       done1.futureValue should ===(Done)
       done2.futureValue should ===(Done)
       (done1 should not).be(done2)
+    }
+
+    "produce independent futures when the same blueprint is materialized concurrently" in {
+      implicit val ec: ExecutionContext = system.dispatcher
+      val watched = Sink.ignore.watchTermination(Keep.right)
+      // Regression test: Sink blueprints must be safely re-materializable from concurrent threads.
+      // A prior implementation shared a single mutable tracker field across all materializations of
+      // the same blueprint, which raced when two threads materialized it at the same time and could
+      // hang one of the resulting futures forever.
+      for (_ <- 1 to 500) {
+        val barrier = new CyclicBarrier(2)
+        val f1 = Future {
+          barrier.await()
+          Source(1 to 3).runWith(watched)
+        }.flatMap(identity)
+        val f2 = Future {
+          barrier.await()
+          Source(4 to 6).runWith(watched)
+        }.flatMap(identity)
+        Await.result(f1, 5.seconds) should ===(Done)
+        Await.result(f2, 5.seconds) should ===(Done)
+      }
     }
   }
 }

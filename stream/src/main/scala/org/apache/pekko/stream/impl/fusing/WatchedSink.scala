@@ -44,7 +44,7 @@ import org.apache.pekko.util.OptionVal
     val allSteps = steps.result()
 
     val stageCount = allSteps.count {
-      case MaterializeAtomic(_: GraphStageModule[_, _], _) => true
+      case MaterializeAtomic(_: GraphStageModule[?, ?], _) => true
       case _                                               => false
     }
 
@@ -54,7 +54,7 @@ import org.apache.pekko.util.OptionVal
         s"contains none.")
 
     allSteps.foreach {
-      case MaterializeAtomic(_: GraphStageModule[_, _], _) =>
+      case MaterializeAtomic(_: GraphStageModule[?, ?], _) =>
       case MaterializeAtomic(other, _)                     =>
         throw new IllegalArgumentException(
           s"Sink.watchTermination is only supported for sinks built from GraphStages, but [$sink] " +
@@ -67,7 +67,7 @@ import org.apache.pekko.util.OptionVal
     val holder = new TrackerHolder(stageCount)
 
     val newSteps: Vector[Traversal] = allSteps.map {
-      case MaterializeAtomic(module: GraphStageModule[_, _], outToSlots) =>
+      case MaterializeAtomic(module: GraphStageModule[?, ?], outToSlots) =>
         val reporterStage = new TerminationReporterStage(
           module.stage.asInstanceOf[GraphStageWithMaterializedValue[Shape, Any]], holder)
         MaterializeAtomic(
@@ -79,11 +79,11 @@ import org.apache.pekko.util.OptionVal
 
     val matFStep: Traversal =
       Transform(((mat: Any) => {
-        val t = holder.tracker
-        val result = matF(mat.asInstanceOf[Mat], t.future)
-        holder.reset()
-        result
-      }).asInstanceOf[TraversalBuilder.AnyFunction1])
+            val t = holder.tracker
+            val result = matF(mat.asInstanceOf[Mat], t.future)
+            holder.reset()
+            result
+          }).asInstanceOf[TraversalBuilder.AnyFunction1])
 
     val newTraversal = (newSteps :+ matFStep)
       .foldLeft(EmptyTraversal: Traversal)((traversal, step) => traversal.concat(step))
@@ -104,20 +104,30 @@ import org.apache.pekko.util.OptionVal
 /**
  * INTERNAL API
  *
- * Mutable holder that provides a fresh [[TerminationTracker]] per materialization.
- * The traversal walk is sequential: stages call `tracker` (lazy-creating on first access),
- * and the trailing Transform step calls `reset()` after capturing the future, so the next
- * materialization walk starts clean.
+ * Provides a fresh [[TerminationTracker]] per materialization. A single [[TrackerHolder]] instance is
+ * shared by every materialization of the same `Sink` blueprint (it is captured once, when
+ * `Sink.watchTermination` builds the traversal), so it must tolerate concurrent materializations of that
+ * blueprint from different threads, which is a supported usage pattern for stream blueprints.
+ *
+ * The traversal walk for a single materialization is always sequential and confined to the thread that
+ * calls `materialize`/`run`/`runWith`: stages call `tracker` (lazy-creating on first access on that thread),
+ * and the trailing Transform step calls `reset()` after capturing the future. A plain mutable field would
+ * therefore race across concurrent materializations; using a [[ThreadLocal]] instead scopes the tracker to
+ * the materializing thread so concurrent materializations never observe each other's state.
  */
 @InternalApi private[pekko] final class TrackerHolder(stageCount: Int) {
-  private var _tracker: TerminationTracker = _
+  private val threadLocalTracker = new ThreadLocal[TerminationTracker]
 
   def tracker: TerminationTracker = {
-    if (_tracker eq null) _tracker = new TerminationTracker(stageCount)
-    _tracker
+    var t = threadLocalTracker.get()
+    if (t eq null) {
+      t = new TerminationTracker(stageCount)
+      threadLocalTracker.set(t)
+    }
+    t
   }
 
-  def reset(): Unit = { _tracker = null }
+  def reset(): Unit = threadLocalTracker.remove()
 }
 
 /**
@@ -269,7 +279,8 @@ import org.apache.pekko.util.OptionVal
           connection.slot match {
             case GraphInterpreter.Failed(ex, _)    => if (connectionFailure eq null) connectionFailure = ex
             case GraphInterpreter.Cancelled(cause) =>
-              if ((connectionFailure eq null) && !cause.isInstanceOf[SubscriptionWithCancelException.NonFailureCancellation])
+              if ((connectionFailure eq null) &&
+                !cause.isInstanceOf[SubscriptionWithCancelException.NonFailureCancellation])
                 connectionFailure = cause
             case _ =>
           }
