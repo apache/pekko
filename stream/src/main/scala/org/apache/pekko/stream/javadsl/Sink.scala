@@ -659,6 +659,27 @@ final class Sink[In, Mat](delegate: scaladsl.Sink[In, Mat]) extends Graph[SinkSh
   }
 
   /**
+   * Wraps this sink so that in addition to the original materialized value a `CompletionStage<Done>` is
+   * materialized that completes when this sink has fully terminated: it completes with success after this sink's
+   * `postStop` lifecycle hook has run, or fails with the upstream failure when the stream failed. Unlike
+   * [[Flow.watchTermination]], which only observes termination before the sink, this allows waiting for any
+   * cleanup or final commits performed by the sink itself.
+   *
+   * Only sinks that consist of a single `GraphStage` are supported, for example `Sink.ignore`, `Sink.head`,
+   * `Sink.queue` or sinks created from custom graph stages. Composite sinks consisting of multiple stages,
+   * such as `Sink.foreach`, `Sink.fold` or sinks created with `Sink.combine` or `GraphDSL`, are not supported
+   * and throw an [[IllegalArgumentException]].
+   *
+   * It is recommended to use the internally optimized `Keep.left` and `Keep.right` combiners
+   * where appropriate instead of manually writing functions that pass through one of the values.
+   *
+   * @since 2.0.0
+   */
+  def watchTermination[M](
+      matF: function.Function2[Mat @uncheckedVariance, CompletionStage[Done], M]): Sink[In @uncheckedVariance, M] =
+    new Sink(delegate.watchTermination((left, right) => matF(left, right.asJava)))
+
+  /**
    * Replace the attributes of this [[Sink]] with the given ones. If this Sink is a composite
    * of multiple graphs, new attributes on the composite will be less specific than attributes
    * set directly on the individual graphs of the composite.
