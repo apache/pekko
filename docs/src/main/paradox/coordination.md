@@ -80,7 +80,7 @@ Leases can be used for @ref[Split Brain Resolver](split-brain-resolver.md#lease)
 
 ## Lease implementations
 
-* [Kubernetes API]($pekko.doc.dns$/docs/pekko-management/current/kubernetes-lease.html)
+* @extref:[Kubernetes API](pekko-management:kubernetes-lease.html)
 
 ## Implementing a lease
 

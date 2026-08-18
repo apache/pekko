@@ -40,9 +40,8 @@ A Pekko Persistence journal and snapshot store for use with R2DBC-compatible dat
 
 ## Apache Pekko Management
 
-* [Pekko Management]($pekko.doc.dns$/docs/pekko-management/current/) provides a central HTTP endpoint for Pekko management extensions.
-* [Pekko Cluster Bootstrap]($pekko.doc.dns$/docs/pekko-management/current/bootstrap/) helps bootstrapping a Pekko cluster using Pekko Discovery.
-* [Pekko Management Cluster HTTP]($pekko.doc.dns$/docs/pekko-management/current/cluster-http-management.html) provides HTTP endpoints for introspecting and managing Pekko clusters.
-* [Pekko Discovery for Kubernetes, Consul, Marathon, and AWS]($pekko.doc.dns$/docs/pekko-management/current/discovery/)
-* [Kubernetes Lease]($pekko.doc.dns$/docs/pekko-management/current/kubernetes-lease.html)
-
+* @extref:[Pekko Management](pekko-management:) provides a central HTTP endpoint for Pekko management extensions.
+* @extref:[Pekko Cluster Bootstrap](pekko-management:bootstrap/) helps bootstrapping a Pekko cluster using Pekko Discovery.
+* @extref:[Pekko Management Cluster HTTP](pekko-management:cluster-http-management.html) provides HTTP endpoints for introspecting and managing Pekko clusters.
+* @extref:[Pekko Discovery for Kubernetes, Consul, Marathon, and AWS](pekko-management:discovery/)
+* @extref:[Kubernetes Lease](pekko-management:kubernetes-lease.html)
