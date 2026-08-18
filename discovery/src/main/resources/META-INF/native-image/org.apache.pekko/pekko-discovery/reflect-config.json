@@ -1,0 +1,43 @@
+[
+  {
+    "name": "org.apache.pekko.discovery.config.ConfigServiceDiscovery",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "org.apache.pekko.actor.ExtendedActorSystem"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.discovery.aggregate.AggregateServiceDiscovery",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "org.apache.pekko.actor.ExtendedActorSystem"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.discovery.dns.DnsServiceDiscovery",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "org.apache.pekko.actor.ExtendedActorSystem"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.discovery.Discovery$",
+    "fields": [
+      {
+        "name": "MODULE$"
+      }
+    ]
+  }
+]
