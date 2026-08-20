@@ -83,7 +83,7 @@ jobs:
           fetch-depth: 0
           fetch-tags: true
           persist-credentials: false
-          ref: 1.6.x
+          ref: 1.7.x
 
       - name: Setup Java 11
         uses: actions/setup-java@v5
@@ -135,7 +135,7 @@ jobs:
           fetch-depth: 0
           fetch-tags: true
           persist-credentials: false
-          ref: 1.6.x
+          ref: 1.7.x
 
       - name: Setup Java ${{ matrix.javaVersion }}
         uses: actions/setup-java@v5
