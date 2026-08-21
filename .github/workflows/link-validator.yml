@@ -54,4 +54,4 @@ jobs:
           sbt -Dpekko.genjavadoc.enabled=true "Javaunidoc/doc; Compile/unidoc; docs/paradox"
 
       - name: Run Link Validator
-        run: cs launch net.runne::site-link-validator:0.2.4 -- scripts/link-validator.conf
+        run: cs launch net.runne::site-link-validator:0.3.0 -- scripts/link-validator.conf $GITHUB_STEP_SUMMARY
