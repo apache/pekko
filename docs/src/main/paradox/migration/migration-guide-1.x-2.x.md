@@ -29,22 +29,19 @@ Java API users may find that they have more deprecations to deal with because th
 were a few mistakes in the Java API where Scala classes leaked into some of the Java API methods.
 
 ## Additional Breaking Changes in Pekko 2.x
-
-An example is in the Scala DSL for Flow and Source, the `watchTermination` function call no longer needs an empty param
+* In the Scala DSL for Flow and Source, the `watchTermination` function call no longer needs an empty param
 list before a second param list. Instead of `watchTermination(){ ... }`, you now must use `watchTermination{ ... }`.
 ([PR2378](https://github.com/apache/pekko/pull/2378))
-
-In the Java API, `FSMTransitionHandlerBuilder.build` and `FSMTransitionHandlerBuilder.state` now use
+* In the Java API, `FSMTransitionHandlerBuilder.build` and `FSMTransitionHandlerBuilder.state` now use
 `pekko.japi.Pair` instead of `scala.Tuple2`. Java users need to update their code to use `Pair` instead of `Tuple2`.
 ([PR3378](https://github.com/apache/pekko/pull/3378))
-
-The Java DSL `SourceWithContext` graph shape now uses `pekko.japi.Pair` instead of `scala.Tuple2`.
+* The Java DSL `SourceWithContext` graph shape now uses `pekko.japi.Pair` instead of `scala.Tuple2`.
 Java code that passes a `SourceWithContext` directly to `GraphDSL` must use `Pair`-typed stages.
 Code that converts it with `asSource()` already uses `Pair` and requires no changes.
 ([PR3388](https://github.com/apache/pekko/pull/3388))
-
-`ReceiveTimeout` changed from a `case object` singleton to a `final case class` that carries the configured
+* `ReceiveTimeout` changed from a `case object` singleton to a `final case class` that carries the configured
 timeout duration. Scala pattern matches must use a type pattern (`case timeout: ReceiveTimeout =>`) instead of a
 stable identifier pattern, and the `ReceiveTimeout.getInstance()` method has been removed from the Java API;
 Java users should match on `ReceiveTimeout.class` instead.
 ([PR3399](https://github.com/apache/pekko/pull/3399))
+* In pekko-remote Artery comms, PEKK is now the default magic. ([PR3425](https://github.com/apache/pekko/pull/3425))
