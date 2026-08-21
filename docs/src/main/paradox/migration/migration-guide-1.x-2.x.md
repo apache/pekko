@@ -44,4 +44,7 @@ timeout duration. Scala pattern matches must use a type pattern (`case timeout: 
 stable identifier pattern, and the `ReceiveTimeout.getInstance()` method has been removed from the Java API;
 Java users should match on `ReceiveTimeout.class` instead.
 ([PR3399](https://github.com/apache/pekko/pull/3399))
-* In pekko-remote Artery comms, PEKK is now the default magic. ([PR3425](https://github.com/apache/pekko/pull/3425))
+* In pekko-remote Artery comms, `"PEKK"` is now the default magic header
+(`pekko.remote.artery.advanced.tcp-magic`). See
+@ref:[Changing TCP magic header](../additional/rolling-updates.md#changing-tcp-magic-header) for what this means for
+rolling updates. ([PR3425](https://github.com/apache/pekko/pull/3425))

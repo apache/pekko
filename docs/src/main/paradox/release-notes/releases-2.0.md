@@ -13,7 +13,8 @@ See the [GitHub Milestone for 2.0.0-M4](https://github.com/apache/pekko/mileston
 
 * Added many Akka changes that have recently become Apache Licensed (up to Akka 2.8.4).
 * Some more deprecated code has been removed but the changes are significantly smaller in this area than in 2.0.0-M1.
-* Switch to PEKK as the default magic in pekko-remote Artery comms ([PR3245](https://github.com/apache/pekko/pull/3425))
+* Switch to PEKK as the default magic header in pekko-remote Artery comms ([PR3425](https://github.com/apache/pekko/pull/3425)).
+  See the @ref:[Migration Guide](../migration/migration-guide-1.x-2.x.md).
 
 ## 2.0.0-M3
 
