@@ -2,6 +2,20 @@
 
 Apache Pekko 2.0.x releases support Java 17 and above.
 
+## 2.0.0-M4
+
+This is milestone release and is aimed at testing this new major version
+by early adopters. This is experimental. This release should not be used in production.
+
+See the [GitHub Milestone for 2.0.0-M4](https://github.com/apache/pekko/milestone/31?closed=1) for a fuller list of changes.
+
+### Main changes
+
+* Added many Akka changes that have recently become Apache Licensed (up to Akka 2.8.4).
+* Some more deprecated code has been removed but the changes are significantly smaller in this area than in 2.0.0-M1.
+* Switch to PEKK as the default magic header in pekko-remote Artery comms ([PR3425](https://github.com/apache/pekko/pull/3425)).
+  See the @ref:[Migration Guide](../migration/migration-guide-1.x-2.x.md).
+
 ## 2.0.0-M3
 
 This is milestone release and is aimed at testing this new major version
