@@ -344,6 +344,7 @@ object GraphStageLogic {
 
     private final val SchedStateIdle: Int = 0
     private final val SchedStateScheduled: Int = 1
+    private final val SchedStateStopped: Int = 2
 
     /**
      * Lazy-path dispatch: producers enqueue into a Vyukov MPSC queue and elect a single drain via
@@ -375,7 +376,7 @@ object GraphStageLogic {
         handler: Any => Unit,
         drainBatchSize: Int)
         extends AbstractNodeQueue[(ActorRef, Any)]
-        with (Any => Unit) {
+        with GraphInterpreter.EventLimitHandler {
 
       // IDLE/SCHEDULED election state. VarHandle avoids per-instance AtomicInteger.
       @volatile var state: Int = SchedStateIdle
@@ -388,12 +389,13 @@ object GraphStageLogic {
       private def casState(expect: Int, update: Int): Boolean =
         LazyDispatch.stateHandle.compareAndSet(this, expect, update)
 
+      private var waitingForInterpreter = false
+
       // null msg = drain signal from onAsyncInput; non-null = (ActorRef, Any) tuple from FunctionRef.
       override def apply(msg: Any): Unit =
-        if (msg == null) drain()
-        else {
+        if (msg != null) {
           val pair = msg.asInstanceOf[(ActorRef, Any)]
-          if (!interpreter.isStageCompleted(logic)) {
+          if (!interpreter.isStageCompleted(logic) && getState() != SchedStateStopped) {
             add(pair)
             if (getState() == SchedStateIdle && casState(SchedStateIdle, SchedStateScheduled)) {
               if (interpreter.isStageCompleted(logic)) setState(SchedStateIdle)
@@ -404,36 +406,92 @@ object GraphStageLogic {
 
       private def scheduleDrain(): Unit =
         // 1 AsyncInput + 1 Envelope per drain batch (amortized across up to drainBatchSize tells).
-        // `this` serves as the drain callback (Any => Unit); onAsyncInput calls apply(null).
+        // `this` serves as both the producer callback and the event-limit-aware drain callback.
         interpreter.onAsyncInput(logic, null, NoPromise, this)
 
-      private def drain(): Unit = {
-        val limit = drainBatchSize
-        var processed = 0
-        while (processed < limit) {
-          if (interpreter.isStageCompleted(logic)) {
-            while (poll() ne null) ()
-            setState(SchedStateIdle)
-            return
+      override def apply(event: Any, eventLimit: Int): Int = {
+        require(event == null, "LazyDispatch drain event must be null")
+        drain(eventLimit)
+      }
+
+      override def isWaitingForInterpreter: Boolean = waitingForInterpreter
+
+      override def onInterpreterIdle(): Unit = {
+        waitingForInterpreter = false
+        if (interpreter.isStageCompleted(logic)) stopDispatch()
+        else publishIdleOrSchedule()
+      }
+
+      private def drain(eventLimit: Int): Int = {
+        var eventsRemaining = eventLimit
+        waitingForInterpreter = false
+        try {
+          // BoundaryEvents can overtake a shell resume when the shell-specific limit is reached. Finish any
+          // previously queued interpreter work before dispatching another StageActor message.
+          if (interpreter.isSuspended) {
+            eventsRemaining = interpreter.execute(eventsRemaining)
+            if (interpreter.isSuspended) {
+              waitingForInterpreter = true
+              return eventsRemaining
+            }
           }
-          val item = poll()
-          if (item eq null) {
-            setState(SchedStateIdle)
-            // Recheck race: a producer may have added between `poll == null` and the IDLE publish above.
-            if (!isEmpty && casState(SchedStateIdle, SchedStateScheduled))
-              scheduleDrain()
-            return
+
+          val limit = drainBatchSize
+          var processed = 0
+          // The AsyncInput itself accounts for the first callback. Even when it consumed the last actor quota,
+          // dispatch one message and defer any interpreter work it creates to the next shell resume.
+          while (processed < limit && (eventsRemaining > 0 || processed == 0)) {
+            if (interpreter.isStageCompleted(logic)) {
+              stopDispatch()
+              return eventsRemaining
+            }
+            val item = poll()
+            if (item eq null) {
+              publishIdleOrSchedule()
+              return eventsRemaining
+            }
+
+            // execute() changes activeStage while propagating the element. Set it explicitly for every
+            // StageActor callback; never restore a logic that execute() may have finalized and released.
+            interpreter.activeStage = logic
+            handler(item)
+            // Most StageActor callbacks only update local stage state. Avoid entering execute() unless the
+            // callback actually enqueued interpreter work; demand-producing callbacks still drain that work
+            // before another message is dispatched.
+            if (interpreter.isSuspended) eventsRemaining = interpreter.execute(eventsRemaining)
+            processed += 1
+
+            if (interpreter.isStageCompleted(logic)) {
+              stopDispatch()
+              return eventsRemaining
+            }
+            if (interpreter.isSuspended) {
+              waitingForInterpreter = true
+              return eventsRemaining
+            }
           }
-          handler(item)
-          processed += 1
+
+          publishIdleOrSchedule()
+          eventsRemaining
+        } catch {
+          case ex: Throwable =>
+            stopDispatch()
+            throw ex
         }
-        // The last handler(item) may have completed the stage; check before re-scheduling.
-        if (interpreter.isStageCompleted(logic)) {
-          while (poll() ne null) ()
+      }
+
+      private def publishIdleOrSchedule(): Unit = {
+        if (isEmpty) {
           setState(SchedStateIdle)
-          return
-        }
-        scheduleDrain()
+          // Recheck race: a producer may have added between observing empty and publishing IDLE above.
+          if (!isEmpty && casState(SchedStateIdle, SchedStateScheduled)) scheduleDrain()
+        } else scheduleDrain()
+      }
+
+      private def stopDispatch(): Unit = {
+        waitingForInterpreter = false
+        setState(SchedStateStopped)
+        while (poll() ne null) ()
       }
     }
 

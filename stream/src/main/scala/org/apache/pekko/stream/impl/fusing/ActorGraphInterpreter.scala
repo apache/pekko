@@ -629,12 +629,17 @@ import org.reactivestreams.Subscription
     @InternalStableApi
     override def execute(eventLimit: Int): Int = {
       if (!shell.waitingForShutdown) {
-        shell.interpreter.runAsyncInput(logic, evt, promise, handler)
-        if (eventLimit == 1 && shell.interpreter.isSuspended) {
-          shell.flushOutputs()
-          shell.sendResume(true)
-          0
-        } else shell.runBatch(eventLimit - 1)
+        handler match {
+          case eventLimitHandler: GraphInterpreter.EventLimitHandler =>
+            shell.runEventLimitHandler(logic, evt, promise, eventLimitHandler, eventLimit)
+          case _ =>
+            shell.interpreter.runAsyncInput(logic, evt, promise, handler)
+            if (eventLimit == 1 && shell.interpreter.isSuspended) {
+              shell.flushOutputs()
+              shell.sendResume(true)
+              0
+            } else shell.runBatch(eventLimit - 1)
+        }
       } else {
         eventLimit
       }
@@ -719,6 +724,7 @@ import org.reactivestreams.Subscription
   // TODO: Better heuristic here
   private val abortLimit = shellEventLimit * 2
   private var resumeScheduled = false
+  private var waitingEventLimitHandlers: util.ArrayDeque[GraphInterpreter.EventLimitHandler] = _
 
   def isInitialized: Boolean = self != null
   def init(
@@ -798,27 +804,65 @@ import org.reactivestreams.Subscription
     else enqueueToShortCircuit(resume)
   }
 
-  def runBatch(actorEventLimit: Int): Int = {
+  def runEventLimitHandler(
+      logic: GraphStageLogic,
+      evt: Any,
+      promise: Promise[Done],
+      handler: GraphInterpreter.EventLimitHandler,
+      actorEventLimit: Int): Int = {
     try {
-      val usingShellLimit = shellEventLimit < actorEventLimit
-      val remainingQuota = interpreter.execute(Math.min(actorEventLimit, shellEventLimit))
-      flushOutputs()
-      if (interpreter.isCompleted) {
-        // Cannot stop right away if not completely subscribed
-        if (canShutDown) interpreterCompleted = true
-        else {
-          waitingForShutdown = true
-          val subscriptionTimeout = attributes.mandatoryAttribute[ActorAttributes.StreamSubscriptionTimeout].timeout
-          mat.scheduleOnce(subscriptionTimeout, () => self ! new Abort(GraphInterpreterShell.this))
-        }
-      } else if (interpreter.isSuspended && !resumeScheduled) sendResume(!usingShellLimit)
+      val actorLimitAfterAsyncInput = actorEventLimit - 1
+      val interpreterLimit = Math.min(actorLimitAfterAsyncInput, shellEventLimit)
+      val handlerRemaining = interpreter.runAsyncInput(logic, evt, promise, handler, interpreterLimit)
+      val remaining = interpreter.execute(handlerRemaining)
 
-      if (usingShellLimit) actorEventLimit - shellEventLimit + remainingQuota else remainingQuota
+      if (handler.isWaitingForInterpreter) {
+        if (interpreter.isSuspended) {
+          if (waitingEventLimitHandlers eq null)
+            waitingEventLimitHandlers = new util.ArrayDeque[GraphInterpreter.EventLimitHandler]()
+          waitingEventLimitHandlers.addLast(handler)
+        } else handler.onInterpreterIdle()
+      }
+
+      finishBatch(actorLimitAfterAsyncInput - interpreterLimit + remaining)
     } catch {
       case NonFatal(e) =>
         tryAbort(e)
         actorEventLimit - 1
     }
+  }
+
+  def runBatch(actorEventLimit: Int): Int = {
+    try {
+      val interpreterLimit = Math.min(actorEventLimit, shellEventLimit)
+      val remaining = interpreter.execute(interpreterLimit)
+      finishBatch(actorEventLimit - interpreterLimit + remaining)
+    } catch {
+      case NonFatal(e) =>
+        tryAbort(e)
+        actorEventLimit - 1
+    }
+  }
+
+  private def finishBatch(remainingQuota: Int): Int = {
+    flushOutputs()
+    if (interpreter.isCompleted) {
+      // Cannot stop right away if not completely subscribed
+      if (canShutDown) interpreterCompleted = true
+      else {
+        waitingForShutdown = true
+        val subscriptionTimeout = attributes.mandatoryAttribute[ActorAttributes.StreamSubscriptionTimeout].timeout
+        mat.scheduleOnce(subscriptionTimeout, () => self ! new Abort(GraphInterpreterShell.this))
+      }
+    } else if (interpreter.isSuspended && !resumeScheduled) sendResume(remainingQuota == 0)
+
+    if (!interpreter.isSuspended && (waitingEventLimitHandlers ne null)) {
+      val handlers = waitingEventLimitHandlers
+      waitingEventLimitHandlers = null
+      while (!handlers.isEmpty) handlers.removeFirst().onInterpreterIdle()
+    }
+
+    remainingQuota
   }
 
   private def flushOutputs(): Unit = {
