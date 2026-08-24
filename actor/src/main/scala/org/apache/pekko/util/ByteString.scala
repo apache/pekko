@@ -916,6 +916,18 @@ object ByteString {
 
   private[pekko] object ByteStrings extends Companion {
 
+    /**
+     * INTERNAL API: immutable (fragment index, start, end) triple, published as a single
+     * reference so concurrent readers never see a half-updated mapping.
+     */
+    private[ByteString] final class FragmentHint(val idx: Int, val start: Int, val end: Int)
+
+    /**
+     * Sentinel meaning "nothing resolved yet". `idx = -1` makes the forward-resume path in
+     * `byteAtUnchecked` start at fragment 0 with a zero base offset, i.e. a full scan.
+     */
+    private[ByteString] val InitialHint = new FragmentHint(-1, 0, 0)
+
     def apply(bytestrings: Vector[ByteString1]): ByteString =
       apply(bytestrings, bytestrings.foldLeft(0)(_ + _.length))
 
@@ -1484,18 +1496,42 @@ object ByteString {
     if (bytestrings.isEmpty) throw new IllegalArgumentException("bytestrings must not be empty")
     if (bytestrings.head.isEmpty) throw new IllegalArgumentException("bytestrings.head must not be empty")
 
-    def apply(idx: Int): Byte = {
-      if (0 <= idx && idx < length) {
+    def apply(idx: Int): Byte =
+      if (0 <= idx && idx < length) byteAtUnchecked(idx)
+      else throw new IndexOutOfBoundsException(idx.toString)
+
+    // Remembers the fragment resolved by the last byteAtUnchecked call, so sequential access --
+    // the dominant pattern -- stays on the same fragment or steps to the next one instead of
+    // rescanning the fragment vector from index 0 for every byte.
+    //
+    // The triple is held in one immutable object and published by a single reference write, so a
+    // concurrent reader can never observe the start of one fragment paired with the index of
+    // another (three separate int fields could tear that way). The field is deliberately not
+    // volatile: it is only a hint, and a reader that misses another thread's update just rescans.
+    // ByteString is immutable, so a resolved mapping never becomes wrong.
+    private[this] var fragmentHint: ByteStrings.FragmentHint = ByteStrings.InitialHint
+
+    private[pekko] override def byteAtUnchecked(offset: Int): Byte = {
+      val hint = fragmentHint // one read; the three values below are mutually consistent
+      if (offset >= hint.start && offset < hint.end) {
+        bytestrings(hint.idx).byteAtUnchecked(offset - hint.start)
+      } else {
+        // resume from the remembered fragment when moving forward, else rescan from the start
         var pos = 0
         var seen = 0
+        if (offset >= hint.end && hint.idx + 1 < bytestrings.length) {
+          pos = hint.idx + 1
+          seen = hint.end
+        }
         var frag = bytestrings(pos)
-        while (idx >= seen + frag.length) {
+        while (offset >= seen + frag.length) {
           seen += frag.length
           pos += 1
           frag = bytestrings(pos)
         }
-        frag(idx - seen)
-      } else throw new IndexOutOfBoundsException(idx.toString)
+        fragmentHint = new ByteStrings.FragmentHint(pos, seen, seen + frag.length)
+        frag.byteAtUnchecked(offset - seen)
+      }
     }
 
     private[pekko] override def compareBytesTo(that: ByteString, thatOffset: Int): Boolean =

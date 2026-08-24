@@ -27,10 +27,10 @@ class ByteString_equals_Benchmark {
 
   private def bytes(n: Int): Array[Byte] = Array.tabulate[Byte](n)(i => (i % 251).toByte)
 
-  private def fragmented(fragments: Int, fragmentSize: Int): ByteString =
-    (0 until fragments).foldLeft(ByteString.empty) { (acc, i) =>
-      acc ++ ByteString(Array.tabulate[Byte](fragmentSize)(j => ((i * fragmentSize + j) % 251).toByte))
-    }
+  private def fragmented(fragments: Int, fragmentSize: Int): ByteString = (0 until fragments).foldLeft(
+    ByteString.empty) { (acc, i) =>
+    acc ++ ByteString(Array.tabulate[Byte](fragmentSize)(j => ((i * fragmentSize + j) % 251).toByte))
+  }
 
   // compacted, single backing array
   val flatA: ByteString = ByteString(bytes(64 * 1024)).compact
