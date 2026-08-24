@@ -1761,9 +1761,9 @@ class ByteStringSpec extends AnyWordSpec with Matchers with Checkers {
       if (n >= 4) {
         val q = n / 4
         result ::= "four fragments" -> (ByteString(bytes.slice(0, q)) ++ ByteString(bytes.slice(q, 2 * q)) ++
-          ByteString(bytes.slice(2 * q, 3 * q)) ++ ByteString(bytes.slice(3 * q, n)))
+        ByteString(bytes.slice(2 * q, 3 * q)) ++ ByteString(bytes.slice(3 * q, n)))
         result ::= "uneven fragments" -> (ByteString(bytes.slice(0, 1)) ++ ByteString(bytes.slice(1, 3)) ++
-          ByteString(bytes.slice(3, n)))
+        ByteString(bytes.slice(3, n)))
       }
       result
     }
