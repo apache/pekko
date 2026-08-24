@@ -472,6 +472,15 @@ object ByteString {
       toCopy
     }
 
+    override def copyToArray(srcOffset: Int, dest: Array[Byte], destOffset: Int, len: Int): Int = {
+      val toCopy = copyableBytes(srcOffset, dest.length, destOffset, len)
+      if (toCopy > 0) System.arraycopy(bytes, srcOffset, dest, destOffset, toCopy)
+      toCopy
+    }
+
+    private[pekko] override def decodeStringUnchecked(charset: Charset, offset: Int, len: Int): String =
+      new String(bytes, offset, len, charset)
+
     override def toArrayUnsafe(): Array[Byte] = bytes
 
     override def asInputStream: InputStream = new UnsynchronizedByteArrayInputStream(bytes)
@@ -870,6 +879,15 @@ object ByteString {
       }
       toCopy
     }
+
+    override def copyToArray(srcOffset: Int, dest: Array[Byte], destOffset: Int, len: Int): Int = {
+      val toCopy = copyableBytes(srcOffset, dest.length, destOffset, len)
+      if (toCopy > 0) System.arraycopy(bytes, startIndex + srcOffset, dest, destOffset, toCopy)
+      toCopy
+    }
+
+    private[pekko] override def decodeStringUnchecked(charset: Charset, offset: Int, len: Int): String =
+      new String(bytes, startIndex + offset, len, charset)
 
     protected def writeReplace(): AnyRef = new SerializationProxy(this)
 
@@ -1307,6 +1325,32 @@ object ByteString {
       totalToCopy
     }
 
+    override def copyToArray(srcOffset: Int, dest: Array[Byte], destOffset: Int, len: Int): Int = {
+      val toCopy = copyableBytes(srcOffset, dest.length, destOffset, len)
+      if (toCopy <= 0) 0
+      else {
+        val firstLength = first.length
+        var copied = 0
+        if (srcOffset < firstLength) {
+          copied = first.copyToArray(srcOffset, dest, destOffset, toCopy)
+        }
+        if (copied < toCopy) {
+          val secondOffset = math.max(0, srcOffset - firstLength)
+          second.copyToArray(secondOffset, dest, destOffset + copied, toCopy - copied)
+        }
+        toCopy
+      }
+    }
+
+    private[pekko] override def decodeStringUnchecked(charset: Charset, offset: Int, len: Int): String = {
+      // A range that stays on one side decodes straight from that fragment's backing array, with
+      // no intermediate array; only a range straddling the two needs the bytes gathered first.
+      val firstLength = first.length
+      if (offset >= firstLength) second.decodeStringUnchecked(charset, offset - firstLength, len)
+      else if (len <= firstLength - offset) first.decodeStringUnchecked(charset, offset, len)
+      else super.decodeStringUnchecked(charset, offset, len)
+    }
+
     override def foreach[@specialized U](f: Byte => U): Unit = {
       first.foreach(f)
       second.foreach(f)
@@ -1517,10 +1561,29 @@ object ByteString {
         if (offset >= hintStart && offset - hintStart < frag.length)
           return frag.byteAtUnchecked(offset - hintStart)
       }
-      resolveAndRead(offset, hintIdx, hintStart)
+      val located = resolveFragment(offset, hintIdx, hintStart)
+      bytestrings((located >>> 32).toInt).byteAtUnchecked(offset - located.toInt)
     }
 
-    private def resolveAndRead(offset: Int, hintIdx: Int, hintStart: Int): Byte = {
+    /**
+     * Locates the fragment containing `offset`, consulting and updating the hint. Returns the
+     * fragment index in the high 32 bits and its start offset in the low 32, in the same packing
+     * the hint uses. `offset` must be within this ByteString.
+     */
+    private def locateFragment(offset: Int): Long = {
+      val hint = fragmentHint // single read: index and start below are mutually consistent
+      val hintIdx = (hint >>> 32).toInt
+      val hintStart = hint.toInt
+      if (hintIdx >= 0 && offset >= hintStart && offset - hintStart < bytestrings(hintIdx).length) hint
+      else resolveFragment(offset, hintIdx, hintStart)
+    }
+
+    /**
+     * Scans for the fragment containing `offset` and records it as the hint. `hintIdx` and
+     * `hintStart` are a previously read hint that missed, used to resume the scan from that
+     * fragment rather than from the start.
+     */
+    private def resolveFragment(offset: Int, hintIdx: Int, hintStart: Int): Long = {
       var pos = 0
       var seen = 0
       if (hintIdx >= 0) {
@@ -1537,8 +1600,9 @@ object ByteString {
         pos += 1
         frag = bytestrings(pos)
       }
-      fragmentHint = (pos.toLong << 32) | (seen.toLong & 0xFFFFFFFFL)
-      frag.byteAtUnchecked(offset - seen)
+      val located = (pos.toLong << 32) | (seen.toLong & 0xFFFFFFFFL)
+      fragmentHint = located
+      located
     }
 
     private[pekko] override def compareBytesTo(that: ByteString, thatOffset: Int): Boolean =
@@ -1986,6 +2050,41 @@ object ByteString {
         }
       }
       ByteString1C(result)
+    }
+
+    override def copyToArray(srcOffset: Int, dest: Array[Byte], destOffset: Int, len: Int): Int = {
+      val toCopy = copyableBytes(srcOffset, dest.length, destOffset, len)
+      if (toCopy <= 0) 0
+      else {
+        // Locate the fragment holding srcOffset through the same hint byteAtUnchecked uses, so a
+        // caller walking forward through a rope does not rescan the fragment vector on every call,
+        // then copy whole runs out of consecutive fragments. Indexing rather than iterating keeps
+        // this allocation free.
+        val located = locateFragment(srcOffset)
+        var fragIdx = (located >>> 32).toInt
+        var fragOffset = srcOffset - located.toInt
+        var copied = 0
+        while (copied < toCopy) {
+          val frag = bytestrings(fragIdx)
+          val fromFrag = math.min(toCopy - copied, frag.length - fragOffset)
+          frag.copyToArray(fragOffset, dest, destOffset + copied, fromFrag)
+          copied += fromFrag
+          fragIdx += 1
+          fragOffset = 0
+        }
+        toCopy
+      }
+    }
+
+    private[pekko] override def decodeStringUnchecked(charset: Charset, offset: Int, len: Int): String = {
+      // A range lying inside a single fragment -- the common case when a caller decodes a small
+      // field out of a large rope -- decodes straight from that fragment's backing array, with no
+      // intermediate array. Ranges spanning fragments fall back to gathering the bytes first.
+      val located = locateFragment(offset)
+      val frag = bytestrings((located >>> 32).toInt)
+      val fragOffset = offset - located.toInt
+      if (len <= frag.length - fragOffset) frag.decodeStringUnchecked(charset, fragOffset, len)
+      else super.decodeStringUnchecked(charset, offset, len)
     }
 
     override def copyToArray[B >: Byte](dest: Array[B], start: Int, len: Int): Int = {
@@ -2576,6 +2675,45 @@ object ByteString {
     throw new UnsupportedOperationException("Method copyToArray is not implemented in ByteString")
 
   /**
+   * Copies `len` bytes of this ByteString, starting at `srcOffset`, into `dest` starting at
+   * `destOffset`.
+   *
+   * `copyToArray(dest, destOffset, len)` can only copy from the start of this ByteString, so
+   * copying from an offset otherwise requires slicing first, which allocates. This overload
+   * copies directly out of the backing array(s).
+   *
+   * Out of range values are clamped: the number of bytes copied is the largest value that fits in
+   * both this ByteString from `srcOffset` and `dest` from `destOffset`, and is never negative.
+   *
+   * @param srcOffset  the index in this ByteString to start copying from
+   * @param dest       the array to copy into
+   * @param destOffset the index in `dest` to start copying to
+   * @param len        the maximum number of bytes to copy
+   * @return the number of bytes actually copied
+   * @since 2.0.0
+   */
+  def copyToArray(srcOffset: Int, dest: Array[Byte], destOffset: Int, len: Int): Int = {
+    val toCopy = copyableBytes(srcOffset, dest.length, destOffset, len)
+    if (toCopy <= 0) 0
+    else {
+      var i = 0
+      while (i < toCopy) {
+        dest(destOffset + i) = byteAtUnchecked(srcOffset + i)
+        i += 1
+      }
+      toCopy
+    }
+  }
+
+  /**
+   * INTERNAL API: the number of bytes `copyToArray(srcOffset, dest, destOffset, len)` may copy,
+   * clamped to what is available in this ByteString and what fits in the destination.
+   */
+  private[pekko] final def copyableBytes(srcOffset: Int, destLength: Int, destOffset: Int, len: Int): Int =
+    if (srcOffset < 0 || destOffset < 0 || len <= 0 || srcOffset >= length) 0
+    else math.max(0, math.min(math.min(len, length - srcOffset), destLength - destOffset))
+
+  /**
    * Unsafe API: Use only in situations you are completely confident that this is what
    * you need, and that you understand the implications documented below.
    *
@@ -2697,6 +2835,38 @@ object ByteString {
    * Avoids Charset.forName lookup in String internals, thus is preferable to `decodeString(charset: String)`.
    */
   def decodeString(charset: Charset): String
+
+  /**
+   * Decodes the bytes in `[from, until)` using the given charset.
+   *
+   * Equivalent to `slice(from, until).decodeString(charset)` but without allocating the
+   * intermediate ByteString, which matters for parsers that repeatedly decode small ranges of a
+   * larger buffer.
+   *
+   * The range is clamped to the bounds of this ByteString, so an empty or inverted range decodes
+   * to the empty string rather than throwing.
+   *
+   * @param charset the charset to decode with
+   * @param from    the index to start decoding at, inclusive
+   * @param until   the index to stop decoding at, exclusive
+   * @since 2.0.0
+   */
+  def decodeString(charset: Charset, from: Int, until: Int): String = {
+    val start = math.max(0, from)
+    val end = math.min(length, until)
+    if (start >= end) ""
+    else decodeStringUnchecked(charset, start, end - start)
+  }
+
+  /**
+   * INTERNAL API: decode `len` bytes starting at `offset`, with the range already validated.
+   * Overridden by the array-backed layouts so no intermediate ByteString or array is allocated.
+   */
+  private[pekko] def decodeStringUnchecked(charset: Charset, offset: Int, len: Int): String = {
+    val bytes = new Array[Byte](len)
+    copyToArray(offset, bytes, 0, len)
+    new String(bytes, charset)
+  }
 
   /**
    * Returns a ByteString which is the binary representation of this ByteString
