@@ -99,10 +99,15 @@ import pekko.util.ByteString
   }
 }
 private[internal] object TcpDnsClient {
-  def encodeLength(length: Int): ByteString =
-    ByteString((length / 256).toByte, length.toByte)
 
-  def decodeLength(data: ByteString): Int = ((data(0).toInt + 256) % 256) * 256 + ((data(1) + 256) % 256)
+  /**
+   * DNS over TCP prefixes each message with its length as a two byte big endian value
+   * (RFC 1035 section 4.2.2).
+   */
+  def encodeLength(length: Int): ByteString =
+    ByteString(((length >> 8) & 0xFF).toByte, (length & 0xFF).toByte)
+
+  def decodeLength(data: ByteString): Int = ((data(0) & 0xFF) << 8) | (data(1) & 0xFF)
 
   def throwFailure(message: String, cause: Option[Throwable]): Unit =
     cause match {
