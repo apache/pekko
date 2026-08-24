@@ -416,6 +416,9 @@ object ByteString {
      * INTERNAL API: compare `len` bytes from this ByteString starting at `haystackOffset`
      * against `needle[needleOffset..needleOffset+len)`.
      */
+    private[pekko] override def compareBytesTo(that: ByteString, thatOffset: Int): Boolean =
+      that.matchesAt(thatOffset, bytes, 0, length)
+
     private[pekko] override def matchesAt(
         haystackOffset: Int, needle: Array[Byte], needleOffset: Int, len: Int): Boolean = {
       var hIdx = haystackOffset
@@ -832,6 +835,18 @@ object ByteString {
      * INTERNAL API: compare `len` bytes from this ByteString starting at logical `haystackOffset`
      * against `needle[needleOffset..needleOffset+len)`.
      */
+    private[pekko] override def compareBytesTo(that: ByteString, thatOffset: Int): Boolean =
+      that.matchesAt(thatOffset, bytes, startIndex, length)
+
+    /**
+     * INTERNAL API: compares `len` bytes of this fragment starting at `thisOffset` against
+     * `other` starting at `otherOffset`. Both sides are single arrays, so this goes straight to
+     * the SWAR-based `matchesAt` with no fragment lookup.
+     */
+    private[pekko] def matchesFragmentAt(
+        thisOffset: Int, other: ByteString1, otherOffset: Int, len: Int): Boolean =
+      other.matchesAt(otherOffset, bytes, startIndex + thisOffset, len)
+
     private[pekko] override def matchesAt(
         haystackOffset: Int, needle: Array[Byte], needleOffset: Int, len: Int): Boolean = {
       var hIdx = startIndex + haystackOffset
@@ -900,6 +915,7 @@ object ByteString {
   }
 
   private[pekko] object ByteStrings extends Companion {
+
     def apply(bytestrings: Vector[ByteString1]): ByteString =
       apply(bytestrings, bytestrings.foldLeft(0)(_ + _.length))
 
@@ -1482,6 +1498,72 @@ object ByteString {
       } else throw new IndexOutOfBoundsException(idx.toString)
     }
 
+    private[pekko] override def compareBytesTo(that: ByteString, thatOffset: Int): Boolean =
+      that match {
+        case bss: ByteStrings if thatOffset == 0 =>
+          // both sides fragmented: walk them with independent cursors so neither side has to
+          // re-locate a fragment by scanning from the start
+          compareFragmented(bss)
+        case _ =>
+          var offset = thatOffset
+          var i = 0
+          while (i < bytestrings.length) {
+            val frag = bytestrings(i)
+            if (!frag.compareBytesTo(that, offset)) return false
+            offset += frag.length
+            i += 1
+          }
+          true
+      }
+
+    /** Compares two equally-sized fragmented ByteStrings in a single pass over both. */
+    private def compareFragmented(that: ByteStrings): Boolean = {
+      val mine = this.bytestrings
+      val theirs = that.bytestrings
+      var i = 0
+      var j = 0
+      var iOff = 0
+      var jOff = 0
+      while (i < mine.length) {
+        val a = mine(i)
+        val b = theirs(j)
+        val toCmp = math.min(a.length - iOff, b.length - jOff)
+        if (!a.matchesFragmentAt(iOff, b, jOff, toCmp)) return false
+        iOff += toCmp
+        jOff += toCmp
+        if (iOff == a.length) { i += 1; iOff = 0 }
+        if (jOff == b.length) { j += 1; jOff = 0 }
+      }
+      true
+    }
+
+    /**
+     * Compares against `needle` by walking the fragments covering
+     * `[haystackOffset, haystackOffset + len)`, so each contiguous run uses the fragment's own
+     * SWAR-based `matchesAt` instead of the inherited per-byte fallback.
+     */
+    private[pekko] override def matchesAt(
+        haystackOffset: Int, needle: Array[Byte], needleOffset: Int, len: Int): Boolean = {
+      if (len == 0) return true
+      var fragIdx = 0
+      var fragOffset = haystackOffset
+      while (fragIdx < bytestrings.length && fragOffset >= bytestrings(fragIdx).length) {
+        fragOffset -= bytestrings(fragIdx).length
+        fragIdx += 1
+      }
+      var nIdx = needleOffset
+      val end = needleOffset + len
+      while (nIdx < end) {
+        val frag = bytestrings(fragIdx)
+        val toCmp = math.min(end - nIdx, frag.length - fragOffset)
+        if (!frag.matchesAt(fragOffset, needle, nIdx, toCmp)) return false
+        nIdx += toCmp
+        fragIdx += 1
+        fragOffset = 0
+      }
+      true
+    }
+
     /** Avoid `iterator` in performance sensitive code, call ops directly on ByteString instead */
     override def iterator: ByteIterator.MultiByteArrayIterator =
       ByteIterator.MultiByteArrayIterator(bytestrings.iterator.map(_.iterator).toList)
@@ -1943,6 +2025,54 @@ object ByteString {
 
   // Cache the hash code since ByteString is immutable
   override lazy val hashCode: Int = super.hashCode()
+
+  /**
+   * Compares this ByteString to another for equality.
+   *
+   * The inherited `Seq` implementation compares element by element through `iterator`, boxing
+   * every `Byte`. This override compares the underlying byte arrays directly, reusing the
+   * SWAR-based [[matchesAt]] so that fragmented ByteStrings are compared without being compacted.
+   *
+   * Equality with other `Seq[Byte]` implementations is preserved by falling back to the inherited
+   * implementation for non-ByteString arguments.
+   */
+  override def equals(other: Any): Boolean = other match {
+    case that: ByteString => (this eq that) || (this.length == that.length && sameBytesAs(that))
+    case _                => super.equals(other)
+  }
+
+  /**
+   * INTERNAL API: compares the bytes of two ByteStrings already known to have the same length.
+   *
+   * Drives the comparison from whichever side is a single compacted array so [[matchesAt]] can
+   * compare 8 bytes at a time; otherwise delegates to [[compareBytesTo]], which walks fragments
+   * in place rather than compacting either side.
+   */
+  private def sameBytesAs(that: ByteString): Boolean =
+    if (length == 0) true
+    else
+      that match {
+        case b: ByteString.ByteString1C => this.matchesAt(0, b.toArrayUnsafe(), 0, length)
+        case _                          =>
+          this match {
+            case b: ByteString.ByteString1C => that.matchesAt(0, b.toArrayUnsafe(), 0, length)
+            case _                          => that.compareBytesTo(this, 0)
+          }
+      }
+
+  /**
+   * INTERNAL API: compares all `length` bytes of this ByteString against `that` starting at
+   * `thatOffset`. Overridden by the concrete layouts so each contiguous run is compared with
+   * [[matchesAt]] instead of byte by byte.
+   */
+  private[pekko] def compareBytesTo(that: ByteString, thatOffset: Int): Boolean = {
+    var i = 0
+    while (i < length) {
+      if (byteAtUnchecked(i) != that.byteAtUnchecked(thatOffset + i)) return false
+      i += 1
+    }
+    true
+  }
 
   // override protected[this] def newBuilder: ByteStringBuilder = ByteString.newBuilder
 
