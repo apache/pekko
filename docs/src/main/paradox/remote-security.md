@@ -121,6 +121,58 @@ You have a few choices how to set up certificates and hostname verification:
     * If keys/certificates are stolen, only the same node can access the cluster (unless DNS is tampered with as well).
       You can revoke single certificates.
 
+### Custom post-handshake session verification
+
+After every successful TLS handshake, Pekko calls back into the configured `SSLEngineProvider` to allow additional
+verification of the session:
+
+```
+def verifyClientSession(hostname: String, session: SSLSession): Option[Throwable]
+def verifyServerSession(hostname: String, session: SSLSession): Option[Throwable]
+```
+
+Returning `None` accepts the session. Returning `Some(cause)` rejects it and the connection is failed with that cause.
+`verifyClientSession` is called on the side that initiated the connection, `verifyServerSession` on the side that
+accepted it.
+
+The default `ConfigSSLEngineProvider` accepts every session that completed the handshake, because the certificate chain
+has already been validated against the configured trust-store, and `hostname-verification` covers the usual case of
+checking that you reached the host you expected. Prefer `hostname-verification=on` over a custom verifier whenever the
+peer hostnames are known up front.
+
+A verifier is useful for authorization checks the trust-store cannot express. A common example is a shared internal CA:
+every node in the organisation holds a certificate signed by the same CA, so the trust-store accepts all of them, but
+only a subset should be allowed into this particular cluster. Subclass `ConfigSSLEngineProvider` and inspect the peer
+certificate:
+
+@@snip [SSLEngineProviderDocSpec.scala](/docs/src/test/scala/docs/remoting/SSLEngineProviderDocSpec.scala) { #ssl-engine-provider-session-verification }
+
+The provider is selected by class name, and the constructor taking a single `ActorSystem` is the one Pekko uses:
+
+```
+pekko.remote.artery {
+  transport = tls-tcp
+  ssl.ssl-engine-provider = "docs.remoting.ClusterScopedSSLEngineProvider"
+}
+```
+
+Requiring mutual authentication is what makes these checks meaningful on the accepting side. With
+`require-mutual-authentication = on` (the default) the accepting side requests a certificate from the connecting peer,
+so the peer certificates are available in `verifyServerSession`. If mutual authentication is disabled, the connecting
+peer presents no certificate and `getPeerCertificates` throws `SSLPeerUnverifiedException`.
+
+@@@ note
+
+Both methods are invoked on every handshake, so keep them cheap and non-blocking. Inspect only the already-parsed
+`SSLSession`; do not perform I/O such as CRL or OCSP lookups inline.
+
+@@@
+
+The built-in `RotatingKeysSSLEngineProvider` uses this same mechanism: it deliberately does not use
+`hostname-verification`, and instead verifies after the handshake that the peer certificate shares at least one subject
+name (CN or SAN) with its own certificate. See
+@ref:[mTLS with rotated certificates in Kubernetes](#mtls-with-rotated-certificates-in-kubernetes).
+
 See also a description of the settings in the @ref:[Remote Configuration](remoting-artery.md#remote-configuration-artery)
 section.
 
