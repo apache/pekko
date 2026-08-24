@@ -20,7 +20,6 @@ import java.nio.channels.{ FileChannel, SocketChannel }
 import java.nio.channels.SelectionKey._
 import java.nio.file.Path
 
-import scala.annotation.nowarn
 import scala.annotation.tailrec
 import scala.collection.immutable
 import scala.concurrent.duration._
@@ -219,11 +218,10 @@ private[io] abstract class TcpConnection(val tcp: TcpExt, val channel: SocketCha
   // AUXILIARIES and IMPLEMENTATION
 
   /** used in subclasses to start the common machinery above once a channel is connected */
-  @nowarn("msg=deprecated")
   def completeConnect(
       registration: ChannelRegistration,
       commander: ActorRef,
-      options: immutable.Traversable[SocketOption]): Unit = {
+      options: immutable.Iterable[SocketOption]): Unit = {
     this.registration = Some(registration)
 
     // Turn off Nagle's algorithm by default

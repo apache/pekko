@@ -13,8 +13,7 @@
 
 package org.apache.pekko.io.dns.internal
 
-import scala.annotation.nowarn
-import scala.collection.GenTraversableOnce
+import scala.collection.IterableOnce
 import scala.collection.immutable.Seq
 import scala.util.{ Failure, Success, Try }
 
@@ -166,8 +165,7 @@ private[internal] object Message {
     }
 
     import scala.language.implicitConversions
-    @nowarn("msg=deprecated")
-    implicit def flattener[T](tried: Try[T]): GenTraversableOnce[T] =
+    implicit def flattener[T](tried: Try[T]): IterableOnce[T] =
       if (flags.isTruncated) tried.toOption
       else
         tried match {
