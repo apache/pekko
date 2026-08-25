@@ -18,7 +18,6 @@ import java.net.InetSocketAddress
 import java.net.Socket
 import java.nio.file.{ Path, Paths }
 
-import scala.annotation.nowarn
 import scala.collection.immutable
 import scala.concurrent.duration._
 import scala.jdk.CollectionConverters._
@@ -131,11 +130,10 @@ object Tcp extends ExtensionId[TcpExt] with ExtensionIdProvider {
    * @param localAddress optionally specifies a specific address to bind to
    * @param options Please refer to the `Tcp.SO` object for a list of all supported options.
    */
-  @nowarn("msg=deprecated")
   final case class Connect(
       remoteAddress: InetSocketAddress,
       localAddress: Option[InetSocketAddress] = None,
-      options: immutable.Traversable[SocketOption] = Nil,
+      options: immutable.Iterable[SocketOption] = Nil,
       timeout: Option[FiniteDuration] = None,
       pullMode: Boolean = false)
       extends Command
@@ -159,12 +157,11 @@ object Tcp extends ExtensionId[TcpExt] with ExtensionIdProvider {
    *
    * @param options Please refer to the `Tcp.SO` object for a list of all supported options.
    */
-  @nowarn("msg=deprecated")
   final case class Bind(
       handler: ActorRef,
       localAddress: InetSocketAddress,
       backlog: Int = 100,
-      options: immutable.Traversable[SocketOption] = Nil,
+      options: immutable.Iterable[SocketOption] = Nil,
       pullMode: Boolean = false)
       extends Command
 

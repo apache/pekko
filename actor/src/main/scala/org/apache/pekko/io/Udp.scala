@@ -16,7 +16,6 @@ package org.apache.pekko.io
 import java.net.DatagramSocket
 import java.net.InetSocketAddress
 
-import scala.annotation.nowarn
 import scala.collection.immutable
 
 import org.apache.pekko
@@ -111,11 +110,10 @@ object Udp extends ExtensionId[UdpExt] with ExtensionIdProvider {
    * The listener actor for the newly bound port will reply with a [[Bound]]
    * message, or the manager will reply with a [[CommandFailed]] message.
    */
-  @nowarn("msg=deprecated")
   final case class Bind(
       handler: ActorRef,
       localAddress: InetSocketAddress,
-      options: immutable.Traversable[SocketOption] = Nil)
+      options: immutable.Iterable[SocketOption] = Nil)
       extends Command
 
   /**
@@ -135,8 +133,7 @@ object Udp extends ExtensionId[UdpExt] with ExtensionIdProvider {
    * The “simple sender” will not stop itself, you will have to send it a [[pekko.actor.PoisonPill]]
    * when you want to close the socket.
    */
-  @nowarn("msg=deprecated")
-  case class SimpleSender(options: immutable.Traversable[SocketOption] = Nil) extends Command
+  case class SimpleSender(options: immutable.Iterable[SocketOption] = Nil) extends Command
   object SimpleSender extends SimpleSender(Nil)
 
   /**

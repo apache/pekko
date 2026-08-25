@@ -16,7 +16,6 @@ package org.apache.pekko.io
 import java.lang.{ Iterable => JIterable }
 import java.net.InetSocketAddress
 
-import scala.annotation.nowarn
 import scala.collection.immutable
 
 import org.apache.pekko
@@ -104,12 +103,11 @@ object UdpConnected extends ExtensionId[UdpConnectedExt] with ExtensionIdProvide
    * which is restricted to sending to and receiving from the given `remoteAddress`.
    * All received datagrams will be sent to the designated `handler` actor.
    */
-  @nowarn("msg=deprecated")
   final case class Connect(
       handler: ActorRef,
       remoteAddress: InetSocketAddress,
       localAddress: Option[InetSocketAddress] = None,
-      options: immutable.Traversable[SocketOption] = Nil)
+      options: immutable.Iterable[SocketOption] = Nil)
       extends Command
 
   /**

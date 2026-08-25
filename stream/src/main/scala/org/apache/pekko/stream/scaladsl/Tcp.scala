@@ -140,8 +140,7 @@ final class Tcp(system: ExtendedActorSystem) extends pekko.actor.Extension {
       interface: String,
       port: Int,
       backlog: Int = defaultBacklog,
-      @nowarn // Traversable deprecated in 2.13
-      options: immutable.Traversable[SocketOption] = Nil,
+      options: immutable.Iterable[SocketOption] = Nil,
       halfClose: Boolean = false,
       idleTimeout: Duration = Duration.Inf): Source[IncomingConnection, Future[ServerBinding]] =
     Source.fromGraph(
@@ -182,8 +181,7 @@ final class Tcp(system: ExtendedActorSystem) extends pekko.actor.Extension {
       interface: String,
       port: Int,
       backlog: Int = defaultBacklog,
-      @nowarn // Traversable deprecated in 2.13
-      options: immutable.Traversable[SocketOption] = Nil,
+      options: immutable.Iterable[SocketOption] = Nil,
       halfClose: Boolean = false,
       idleTimeout: Duration = Duration.Inf)(implicit m: Materializer): Future[ServerBinding] = {
     bind(interface, port, backlog, options, halfClose, idleTimeout)
@@ -216,8 +214,7 @@ final class Tcp(system: ExtendedActorSystem) extends pekko.actor.Extension {
   def outgoingConnection(
       remoteAddress: InetSocketAddress,
       localAddress: Option[InetSocketAddress] = None,
-      @nowarn // Traversable deprecated in 2.13
-      options: immutable.Traversable[SocketOption] = Nil,
+      options: immutable.Iterable[SocketOption] = Nil,
       halfClose: Boolean = true,
       connectTimeout: Duration = Duration.Inf,
       idleTimeout: Duration = Duration.Inf): Flow[ByteString, ByteString, Future[OutgoingConnection]] = {
