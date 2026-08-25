@@ -2409,6 +2409,62 @@ class ByteStringSpec extends AnyWordSpec with Matchers with Checkers {
       (ByteString1(Array[Byte](1, 2, 3), 0, Int.MinValue) should be).theSameInstanceAs(ByteString1.empty)
     }
 
+    "ByteStringBuilder.result hands over a mostly used temp buffer without copying" in {
+      val builder = ByteString.newBuilder
+      builder.sizeHint(64)
+      val data = Array.tabulate[Byte](40)(i => i.toByte)
+      builder.putBytes(data)
+      val result = builder.result()
+      result should ===(ByteString(data))
+      // the 64 byte buffer is wrapped rather than copied, so the result covers only part of its array
+      result.isCompact should ===(false)
+    }
+
+    "ByteStringBuilder.result hands over an exactly filled temp buffer without copying" in {
+      val builder = ByteString.newBuilder
+      builder.sizeHint(64)
+      val data = Array.tabulate[Byte](64)(i => i.toByte)
+      builder.putBytes(data)
+      val result = builder.result()
+      result should ===(ByteString(data))
+      result.isCompact should ===(true)
+    }
+
+    "ByteStringBuilder.result copies when only a small part of the temp buffer is used" in {
+      val builder = ByteString.newBuilder
+      builder.sizeHint(64)
+      val data = Array.tabulate[Byte](10)(i => i.toByte)
+      builder.putBytes(data)
+      val result = builder.result()
+      result should ===(ByteString(data))
+      // a small result must not retain the much larger buffer
+      result.isCompact should ===(true)
+      result.toArrayUnsafe().length should ===(10)
+    }
+
+    "ByteStringBuilder.result is not affected by later writes to the builder" in {
+      val builder = ByteString.newBuilder
+      builder.sizeHint(64)
+      val data = Array.fill[Byte](40)(1)
+      builder.putBytes(data)
+      val first = builder.result()
+      builder.clear()
+      builder.putBytes(Array.fill[Byte](40)(2))
+      val second = builder.result()
+      first should ===(ByteString(data))
+      second should ===(ByteString(Array.fill[Byte](40)(2)))
+    }
+
+    "ByteStringBuilder.result returns the written bytes for any fill level of the temp buffer" in {
+      for (n <- 0 to 200) {
+        val builder = ByteString.newBuilder
+        builder.sizeHint(128)
+        val data = Array.tabulate[Byte](n)(i => (i % 128).toByte)
+        builder.putBytes(data)
+        builder.result() should ===(ByteString(data))
+      }
+    }
+
     "ByteStringBuilder.sizeHint does not shrink existing capacity" in {
       val builder = ByteString.newBuilder
       builder.sizeHint(100)

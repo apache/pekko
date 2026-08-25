@@ -2853,6 +2853,27 @@ final class ByteStringBuilder extends Builder[Byte, ByteString] {
     }
   }
 
+  /**
+   * Like `clearTemp` but for the final flush done by `result()`, where the temporary buffer does not
+   * have to be kept around for further writes. When most of the buffer holds data, it is handed over
+   * to the resulting `ByteString` instead of being copied; the reference to it is dropped here so that
+   * a later write to this builder allocates a fresh buffer rather than mutating the handed over bytes.
+   * When only a small part of the buffer is used it is still copied, so that a small result does not
+   * retain a much larger array.
+   */
+  private def clearTempForResult(): Unit = {
+    if (_tempLength > 0) {
+      if (_tempLength > (_tempCapacity >> 1)) {
+        _builder += ByteString1(_temp, 0, _tempLength)
+        _temp = null
+        _tempCapacity = 0
+      } else {
+        _builder += ByteString1(java.util.Arrays.copyOf(_temp, _tempLength))
+      }
+      _tempLength = 0
+    }
+  }
+
   private def resizeTemp(size: Int): Unit = {
     val newtemp = if (_temp eq null) new Array[Byte](size) else java.util.Arrays.copyOf(_temp, size)
     _temp = newtemp
@@ -3090,7 +3111,7 @@ final class ByteStringBuilder extends Builder[Byte, ByteString] {
   def result(): ByteString =
     if (_length == 0) ByteString.empty
     else {
-      clearTemp()
+      clearTempForResult()
       val bytestrings = _builder.result()
       if (bytestrings.size == 1)
         bytestrings.head
