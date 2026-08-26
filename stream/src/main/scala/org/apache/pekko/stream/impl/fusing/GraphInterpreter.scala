@@ -586,7 +586,18 @@ import pekko.stream.stage._
     }
   }
 
+  /**
+   * <p>
+   *   Opentelemetry Java Instrumentation relies on this method so avoid changing it. The agent makes the
+   *   context of the in-flight element current here, which is how server context reaches user code running
+   *   inside a stream stage. It is matched by name only, and the method is private, so a rename or an
+   *   inlining silently disables context propagation.
+   *   See https://github.com/apache/pekko/issues/3472
+   * </p>
+   */
+  // see https://github.com/open-telemetry/opentelemetry-java-instrumentation/blob/6f9ca5672ce84edbbe36ce0e14386c31d68f479f/instrumentation/pekko/pekko-http-1.0/javaagent/src/main/java/io/opentelemetry/javaagent/instrumentation/pekkohttp/v1_0/server/GraphInterpreterInstrumentation.java
   @InternalStableApi
+  @noinline // Not inlined so that the agent can match the method in the bytecode
   private def processPush(connection: Connection): Unit = {
     if (Debug)
       println(

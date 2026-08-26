@@ -497,7 +497,17 @@ private[pekko] trait SystemMessageQueue {
  */
 private[pekko] trait DefaultSystemMessageQueue { self: Mailbox =>
 
+  /**
+   * <p>
+   *   Opentelemetry Java Instrumentation relies on this method so avoid changing it. The agent attaches the
+   *   context that is current at enqueue time to the system message here, and
+   *   `ActorCell.systemInvoke` makes it current again while the message is handled.
+   *   See https://github.com/apache/pekko/issues/3472
+   * </p>
+   */
+  // see https://github.com/open-telemetry/opentelemetry-java-instrumentation/blob/6f9ca5672ce84edbbe36ce0e14386c31d68f479f/instrumentation/pekko/pekko-actor-1.0/javaagent/src/main/java/io/opentelemetry/javaagent/instrumentation/pekkoactor/v1_0/PekkoDefaultSystemMessageQueueInstrumentation.java
   @tailrec
+  @noinline // Not inlined so that the agent can match the method in the bytecode
   final def systemEnqueue(receiver: ActorRef, message: SystemMessage): Unit = {
     assert(message.unlinked)
     if (Mailbox.debug) println("" + receiver + " having enqueued " + message)
