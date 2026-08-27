@@ -84,7 +84,7 @@ class ConfigSSLEngineProvider(protected val log: MarkerLoggingAdapter, private v
   if (SSLHostnameVerification)
     log.debug("TLS/SSL hostname verification is enabled.")
   else
-    log.info(
+    log.warning(
       LogMarker.Security,
       "TLS/SSL hostname verification is disabled. " +
       "Set pekko.remote.classic.netty.ssl.security.hostname-verification=on to enable.")
