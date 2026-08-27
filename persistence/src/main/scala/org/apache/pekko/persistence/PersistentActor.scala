@@ -492,4 +492,20 @@ abstract class AbstractPersistentActor extends AbstractActor with AbstractPersis
 /**
  * Java API: Combination of [[AbstractPersistentActor]] and [[pekko.actor.AbstractActorWithTimers]].
  */
-abstract class AbstractPersistentActorWithTimers extends AbstractActor with Timers with AbstractPersistentActorLike
+abstract class AbstractPersistentActorWithTimers extends AbstractActor with Timers with AbstractPersistentActorLike {
+
+  // The methods below are overridden solely so that this class carries real (non-synthetic) overrides
+  // for the members that both `Timers` and `Eventsourced` implement. Scala 3 emits the mixin forwarders
+  // as ACC_BRIDGE/ACC_SYNTHETIC methods, which javac ignores when resolving inherited members, so a Java
+  // subclass would otherwise fail to compile with "inherits unrelated defaults". The bodies just delegate
+  // to `super`, which resolves exactly like the forwarders they replace.
+
+  override protected[pekko] def aroundReceive(receive: Actor.Receive, msg: Any): Unit =
+    super.aroundReceive(receive, msg)
+
+  override protected[pekko] def aroundPreRestart(reason: Throwable, message: Option[Any]): Unit =
+    super.aroundPreRestart(reason, message)
+
+  override protected[pekko] def aroundPostStop(): Unit =
+    super.aroundPostStop()
+}

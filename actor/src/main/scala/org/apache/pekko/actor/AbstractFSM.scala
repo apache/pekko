@@ -572,4 +572,15 @@ abstract class AbstractLoggingFSM[S, D] extends AbstractFSM[S, D] with LoggingFS
  *
  * Finite State Machine actor abstract base class with Stash support.
  */
-abstract class AbstractFSMWithStash[S, D] extends AbstractFSM[S, D] with Stash
+abstract class AbstractFSMWithStash[S, D] extends AbstractFSM[S, D] with Stash {
+
+  // Overridden solely so that this class carries a real (non-synthetic) override of the member that
+  // both `FSM` and `UnrestrictedStash` implement. Scala 3 emits the mixin forwarder as an
+  // ACC_BRIDGE/ACC_SYNTHETIC method, which javac ignores when resolving inherited members, so a Java
+  // subclass would otherwise fail to compile with "inherits unrelated defaults". The body just
+  // delegates to `super`, which resolves exactly like the forwarder it replaces.
+
+  // No `@throws(classOf[Exception])` here: `FSM.postStop` declares no checked exceptions, so a wider
+  // throws clause would not be a valid override for javac.
+  override def postStop(): Unit = super.postStop()
+}
