@@ -16,7 +16,7 @@
 *(maintainer)* — stated by a Pekko maintainer in review of this document.
 *(inferred)* — reasoned from code or config defaults, **not yet confirmed**; each has a matching question in §14.
 
-**Draft confidence:** 41 documented / 26 maintainer / 10 inferred. The documented share is unusually high because Pekko's own remoting and serialization docs already state much of the trust model explicitly. The §5a default rulings — previously the largest inferred block — are now answered by the §5b posture statement and §14 Q1 to Q5. What remains inferred is concentrated in the negative claims in §5 (§14 Q7) and the module in/out split (§14 Q6).
+**Draft confidence:** 41 documented / 29 maintainer / 10 inferred. The documented share is unusually high because Pekko's own remoting and serialization docs already state much of the trust model explicitly. The §5a default rulings — previously the largest inferred block — are now answered by the §5b posture statement and §14 Q1 to Q5. What remains inferred is concentrated in the residual negative claims in §5 (§14 Q7), each of which now carries a code citation, and the module in/out split (§14 Q6).
 
 ## §1 Overview
 
@@ -112,11 +112,11 @@ A finding must meet its family's precondition to be in-model:
 
 These are negative claims, rarely written down anywhere, and therefore the highest-value confirmation targets in §14 *(all inferred — §14 Q7)*:
 
-- Installs no signal handlers and spawns no child processes.
+- Installs no signal handlers and spawns no child processes — no `sun.misc.Signal`/`SignalHandler`, `Runtime.exec` or `ProcessBuilder` in the main sources. It does register **one JVM shutdown hook**, via `CoordinatedShutdown` (`actor/.../actor/CoordinatedShutdown.scala:381`).
 - Opens no listening socket of its own accord. Remoting binds when configured; `org.apache.pekko.io.Tcp`/`Udp` (in `pekko-actor`) and `stream.scaladsl.Tcp` (in `pekko-stream`) bind only on an explicit application call. Pekko never binds a port the application did not ask for.
-- Reads configuration from the classpath and supplied `Config`; does not read arbitrary environment variables of its own accord.
-- Writes to logging via SLF4J as configured; does not write to stdout/stderr directly in normal operation.
-- Does not mutate process-global state (locale, default `SecurityManager`, system properties) at initialization.
+- **Reads environment variables during configuration startup, but never modifies them** *(maintainer — §14 Q7)*. Pekko itself calls neither `System.getenv` nor `sys.env` anywhere in the main sources; environment values reach it only through HOCON `${?VAR}` substitution when `ConfigFactory.load` resolves the configuration (`actor/.../actor/ActorSystem.scala:281`). That path is deliberate and documented — it is how the docs tell operators to supply passwords (§10.8).
+- Writes to logging via the configured logger. One exception: `StandardOutLogger` prints to stdout with `println` (`actor/.../event/Logging.scala:1024` onward). It carries the very early startup log, before the configured loggers are running, and is bounded by `pekko.stdout-loglevel`, which defaults to `WARNING`.
+- Does not mutate process-global state at initialization — no `System.setProperty`, `Locale.setDefault` or `TimeZone.setDefault` in the main sources.
 
 ---
 
@@ -310,7 +310,7 @@ Feed this section to scanners and AI triage as a suppression list.
 
 Each states a **proposed answer**. Confirming or correcting is enough; no need to write prose.
 
-Q1 to Q6 are **answered**, all retained in place so that cross-references elsewhere in this document continue to resolve. The remaining questions are open.
+Q1 to Q6 and Q8 are **answered**, and Q7 partly, all retained in place so that cross-references elsewhere in this document continue to resolve. The remaining questions are open.
 
 **Q1 — The plaintext transport default. ANSWERED *(maintainer)*.**
 `transport` ships `tcp`, so a stock cluster has no peer authentication. **Answer:** the default is a compatibility choice under §5b, not a security claim. Reports route as follows:
@@ -340,9 +340,17 @@ This is a trust statement about the **store**, not a licence for the plugin SPI:
 - **`kubernetes/` — answered *(maintainer)*.** It is test-cluster provisioning tooling — four files (`setup.sh`, `create-cluster-gke.sh`, `test-node-base.yaml`, `.gitignore`), not a build module. It is correctly out of scope with the build and docs sources. Kubernetes *functionality* — discovery, bootstrap, lease — is not in this repository at all: it lives in **Apache Pekko Management**. That is a different repository, not a different security process: reports are made and triaged exactly as they are for core, per §3.
 - The rest of the in/out split shown in §2 remains the ASF Security team's proposal *(inferred)*.
 
-**Q7 — The negative claims in §5.** These are inferred and hard to cite. Are any wrong — does Pekko open sockets, read env vars, or mutate process-global state in ways an integrator would not expect?
+**Q7 — The negative claims in §5. PARTLY ANSWERED.**
 
-**Q8 — Resource guarantees.** Is unbounded memory or CPU growth driven by a remote peer's message volume/size a **bug** or accepted given §7's trusted-peer stance? Ideally a categorical line: *"super-linear in message size is a bug; constant-factor is not"*, or *"no resource guarantee is made against an associated peer"*.
+- **Environment variables — answered *(maintainer)*.** Pekko reads them as part of configuration startup and does not modify them. §5 now states the mechanism.
+- **Sockets — answered.** The original claim was wrong and is corrected in §2, §5 and §6: `pekko-actor` ships `org.apache.pekko.io.Tcp`/`Udp` and `pekko-stream` ships `Tcp`, `TLS` and `FileIO`, all of which bind or open only on an explicit application call.
+- **Signal handlers, child processes, stdout, process-global state — still open**, but each claim in §5 now carries the citation, or the exception, that a reviewer needs in order to confirm it. Two are narrower than first written: a JVM shutdown hook is registered by `CoordinatedShutdown`, and `StandardOutLogger` does print to stdout during early startup.
+
+**Q8 — Resource guarantees. ANSWERED *(maintainer)*.** **Answer:** **super-linear in message size is a bug; constant-factor is not.** Memory or CPU that grows super-linearly in the size of an inbound message is a defect and is `VALID`; a constant-factor overhead proportional to the message is expected and is not.
+
+Two notes on applying this line:
+- Artery already bounds message size by configuration — `maximum-frame-size` defaults to 256 KiB and `maximum-large-frame-size` to 2 MiB (`remote/src/main/resources/reference.conf`) — so the input to the rule is bounded on the remoting path.
+- The rule is stated in terms of **size**. Exhaustion driven by message **volume** from an associated peer is not covered by it and remains subject to §7, under which such a peer is trusted.
 
 **Q9 — Byzantine generalisation.** §7 concludes there is **no** Byzantine-peer model anywhere, generalising from remoting to cluster, sharding, singleton and `distributed-data`. Does that hold for all of them, or does any subsystem claim resilience against a misbehaving member?
 
