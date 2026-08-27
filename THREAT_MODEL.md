@@ -16,7 +16,7 @@
 *(maintainer)* — stated by a Pekko maintainer in review of this document.
 *(inferred)* — reasoned from code or config defaults, **not yet confirmed**; each has a matching question in §14.
 
-**Draft confidence:** 41 documented / 29 maintainer / 10 inferred. The documented share is unusually high because Pekko's own remoting and serialization docs already state much of the trust model explicitly. The §5a default rulings — previously the largest inferred block — are now answered by the §5b posture statement and §14 Q1 to Q5. What remains inferred is concentrated in the residual negative claims in §5 (§14 Q7), each of which now carries a code citation, and the module in/out split (§14 Q6).
+**Draft confidence:** 41 documented / 32 maintainer / 9 inferred. The documented share is unusually high because Pekko's own remoting and serialization docs already state much of the trust model explicitly. The §5a default rulings — previously the largest inferred block — are now answered by the §5b posture statement and §14 Q1 to Q5. What remains inferred is concentrated in the residual negative claims in §5 (§14 Q7), each of which now carries a code citation, and the module in/out split (§14 Q6).
 
 ## §1 Overview
 
@@ -188,7 +188,7 @@ For a toolkit whose surface is a wire protocol, the useful table is keyed by **m
 
 **Explicitly out of scope:**
 
-- **An associated peer behaving arbitrarily.** There is no Byzantine-peer model. The documentation is direct: *"you'll have to trust all cluster nodes the same in a Pekko cluster anyway"* *(documented)*, and *"as soon as an actor system can connect to another remotely, it may in principle send any possible message to any actor contained within that remote system"* *(documented)*. **A finding whose precondition is "a cluster member misbehaves" is out of model** — there is no honest-majority threshold to state, because the model has no notion of a dishonest member. *(inferred that this generalises to all cluster protocols — §14 Q9)*
+- **An associated peer behaving arbitrarily.** There is no Byzantine-peer model. The documentation is direct: *"you'll have to trust all cluster nodes the same in a Pekko cluster anyway"* *(documented)*, and *"as soon as an actor system can connect to another remotely, it may in principle send any possible message to any actor contained within that remote system"* *(documented)*. **A finding whose precondition is "a cluster member misbehaves" is out of model** — there is no honest-majority threshold to state, because the model has no notion of a dishonest member. This generalises to every cluster protocol — cluster membership, sharding, singleton and `distributed-data` alike: **Pekko makes no guarantee of being able to recognise a compromised node.** Failure detection is heartbeat-based (`remote/.../PhiAccrualFailureDetector.scala`), so it identifies members that stop responding, not members that respond dishonestly; a compromised node that keeps heartbeating is indistinguishable from a healthy one. *(maintainer — §14 Q9)*
 - **An attacker holding any certificate from the cluster's PKI tree.** Documented as equivalent to cluster access *(documented)*.
 - **An attacker with code execution in the embedding JVM.** Already inside the trust boundary.
 - **Side-channel observers.** Pekko makes no timing or memory-access guarantees. *(inferred — §14 Q11)*
@@ -216,7 +216,7 @@ For a toolkit whose surface is a wire protocol, the useful table is keyed by **m
 - **No peer authentication by default.** With the default `transport = tcp` there is no shared secret, no certificate, and no handshake credential. Any host that can reach the port and speak Artery can attempt association. *(maintainer — §14 Q1; §5b)*
 - **No confidentiality or integrity on the wire by default.** Same cause. *(maintainer — §14 Q1; §5b)*
 - **No intra-cluster authorization.** Once associated, a peer may address any actor in the system. There is no per-actor, per-message, or per-peer permission model. *(documented)*
-- **No Byzantine fault tolerance.** See §7. Cluster protocols assume members are honest; there is no threshold below which arbitrary member behaviour is tolerated. *(documented — `remote-security.md`)*
+- **No Byzantine fault tolerance, and no compromised-node detection.** See §7. Cluster protocols assume members are honest; there is no threshold below which arbitrary member behaviour is tolerated *(documented — `remote-security.md`)*, and Pekko offers no mechanism that would identify a member as compromised in the first place *(maintainer — §14 Q9)*.
 - **No bound on blast radius from one compromised node.** Documented explicitly for the PKI case *(documented)*.
 - **No protection once Java serialization is enabled.** Turning it on re-exposes the full JVM deserialization surface; the docs place this squarely on the operator. *(documented)*
 
@@ -310,7 +310,7 @@ Feed this section to scanners and AI triage as a suppression list.
 
 Each states a **proposed answer**. Confirming or correcting is enough; no need to write prose.
 
-Q1 to Q6 and Q8 are **answered**, and Q7 partly, all retained in place so that cross-references elsewhere in this document continue to resolve. The remaining questions are open.
+Q1 to Q6, Q8 and Q9 are **answered**, and Q7 partly, all retained in place so that cross-references elsewhere in this document continue to resolve. The remaining questions are open.
 
 **Q1 — The plaintext transport default. ANSWERED *(maintainer)*.**
 `transport` ships `tcp`, so a stock cluster has no peer authentication. **Answer:** the default is a compatibility choice under §5b, not a security claim. Reports route as follows:
@@ -352,7 +352,9 @@ Two notes on applying this line:
 - Artery already bounds message size by configuration — `maximum-frame-size` defaults to 256 KiB and `maximum-large-frame-size` to 2 MiB (`remote/src/main/resources/reference.conf`) — so the input to the rule is bounded on the remoting path.
 - The rule is stated in terms of **size**. Exhaustion driven by message **volume** from an associated peer is not covered by it and remains subject to §7, under which such a peer is trusted.
 
-**Q9 — Byzantine generalisation.** §7 concludes there is **no** Byzantine-peer model anywhere, generalising from remoting to cluster, sharding, singleton and `distributed-data`. Does that hold for all of them, or does any subsystem claim resilience against a misbehaving member?
+**Q9 — Byzantine generalisation. ANSWERED *(maintainer)*.** **Answer:** it holds for all of them. No subsystem — cluster membership, sharding, singleton or `distributed-data` — claims resilience against a misbehaving member, and Pekko has no guarantee of being able to recognise a compromised node at all. Failure detection is heartbeat-based and answers "is this member responding?", not "is this member honest".
+
+Consequently a finding whose precondition is "a cluster member misbehaves" is `OUT-OF-MODEL: adversary-not-in-scope`, and so is one that assumes Pekko should have detected the compromise.
 
 **Q10 — Coexistence (meta).** `docs/src/main/paradox/security/index.md` currently lists security documentation. *Proposed:* this document becomes canonical for **scope**, that page stays canonical for **reporting process**, and it gains a link here. Agree?
 
