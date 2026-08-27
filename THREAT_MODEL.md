@@ -1,6 +1,6 @@
 # Apache Pekko — Threat Model
 
-**Status:** DRAFT — awaiting Pekko PMC review. Not yet maintainer-ratified.
+**Status:** Reviewed by the Apache Pekko PMC, 2026-08-27. The thirteen questions this document was drafted around are answered in §14 and carry *(maintainer)* provenance; the residual module in/out split noted in §2 and Q6 is the one open item.
 
 | | |
 | --- | --- |
@@ -16,7 +16,7 @@
 *(maintainer)* — stated by a Pekko maintainer in review of this document.
 *(inferred)* — reasoned from code or config defaults, **not yet confirmed**; each has a matching question in §14.
 
-**Draft confidence:** 43 documented / 48 maintainer / 3 inferred. The documented share is unusually high because Pekko's own remoting and serialization docs already state much of the trust model explicitly. The §5a default rulings — previously the largest inferred block — are now answered by the §5b posture statement and §14 Q1 to Q5. What remains inferred is the residual module in/out split (§14 Q6).
+**Provenance mix:** 43 documented / 48 maintainer / 3 inferred. The documented share is unusually high because Pekko's own remoting and serialization docs already state much of the trust model explicitly. The §5a default rulings — previously the largest inferred block — are now answered by the §5b posture statement and §14 Q1 to Q5. What remains inferred is the residual module in/out split (§14 Q6).
 
 ## §1 Overview
 
