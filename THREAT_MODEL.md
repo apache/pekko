@@ -16,7 +16,7 @@
 *(maintainer)* — stated by a Pekko maintainer in review of this document.
 *(inferred)* — reasoned from code or config defaults, **not yet confirmed**; each has a matching question in §14.
 
-**Draft confidence:** 41 documented / 12 maintainer / 9 inferred. The documented share is unusually high because Pekko's own remoting and serialization docs already state much of the trust model explicitly. The §5a default rulings — previously the largest inferred block — are now answered by the §5b posture statement and §14 Q1, Q3 and Q4. What remains inferred is concentrated in the negative claims in §5 (§14 Q7) and the module in/out split (§14 Q6).
+**Draft confidence:** 41 documented / 16 maintainer / 9 inferred. The documented share is unusually high because Pekko's own remoting and serialization docs already state much of the trust model explicitly. The §5a default rulings — previously the largest inferred block — are now answered by the §5b posture statement and §14 Q1 to Q4. What remains inferred is concentrated in the negative claims in §5 (§14 Q7) and the module in/out split (§14 Q6).
 
 ## §1 Overview
 
@@ -123,7 +123,7 @@ Pekko's security posture is set almost entirely by configuration. **Every row be
 
 | Setting | Default | Effect | Maintainer stance |
 | --- | --- | --- | --- |
-| `pekko.actor.allow-java-serialization` | `off` | On, exposes the JVM deserialization attack surface to any message payload. Docs: *"highly discouraged to enable in production"* *(documented — `serialization.md`)* | Secure default. Enabling it is a documented deviation — see §14 Q2 |
+| `pekko.actor.allow-java-serialization` | `off` | On, exposes the JVM deserialization attack surface to any message payload. Docs: *"highly discouraged to enable in production"* *(documented — `serialization.md`)* | Secure default. Enabling it transfers gadget-chain defence to the operator — §5b, §14 Q2 *(maintainer)* |
 | `pekko.remote.artery.transport` | `tcp` | **Plaintext.** No peer authentication and no confidentiality on the wire. `tls-tcp` opts into TLS | Compatibility default — §5b, §14 Q1 *(maintainer)* |
 | `pekko.remote.artery.ssl.config-ssl-engine.require-mutual-authentication` | `on` | Both ends present certificates *(documented)* | Secure default |
 | `…ssl.config-ssl-engine.hostname-verification` | `off` | Off, a valid cert from the trusted PKI authenticates regardless of which host presents it. Docs *recommend* `on` but ship `off` *(documented)* | Compatibility default, warned at runtime — §5b, §14 Q3 *(maintainer)* |
@@ -229,7 +229,7 @@ These are the assumptions integrators most often bring with them, and each is wr
 
 ### Well-known attack classes left to the caller
 
-- **JVM deserialization gadget chains** — mitigated by P1 only so long as Java serialization stays off, and only for payloads Pekko itself deserializes; application-level serializers are the application's problem.
+- **JVM deserialization gadget chains** — mitigated by P1 only so long as Java serialization stays off, and only for payloads Pekko itself deserializes; application-level serializers are the application's problem. Pekko integrates **no** serialization filter: `JavaSerializer.fromBinary` performs an unfiltered `ObjectInputStream.readObject` (`actor/.../serialization/Serializer.scala`). An operator who enables Java serialization must supply the allow list themselves through the JVM — `-Djdk.serialFilter` or a process-wide `ObjectInputFilter` — and owns that entirely *(maintainer — §14 Q2)*.
 - **Resource-exhaustion via message volume or size** — see §14 Q8.
 - **DNS / service-discovery spoofing** — `discovery` trusts the resolver it is configured with.
 - **Storage-layer tampering** on persistence journals — see §14 Q5.
@@ -242,7 +242,7 @@ The operator or embedding application must:
 
 1. **Keep remoting off untrusted networks.** Firewall the remoting port to the adjacent network. This is the assumption the whole model rests on *(documented)*.
 2. **Enable `tls-tcp` if the network is not sufficiently trusted**, and set `hostname-verification = on` unless hostnames are genuinely dynamic *(documented)*.
-3. **Leave `allow-java-serialization = off`.** If it must be enabled for legacy compatibility, treat the deployment as having no deserialization protection *(documented)*.
+3. **Leave `allow-java-serialization = off`.** If it must be enabled for legacy compatibility, treat the deployment as having no deserialization protection *(documented)*, and **maintain your own gadget-chain allow list** via `-Djdk.serialFilter` or a process-wide `ObjectInputFilter`. Pekko supplies no filter of its own, and findings that require the flag to be on are out of model *(maintainer — §14 Q2)*.
 4. **Treat `SECURITY`-marked log entries from the Java serializer as attack indicators**, not noise *(documented)*.
 5. **Scope the PKI tree to the cluster.** Any certificate it issues is cluster access *(documented)*.
 6. **Consider `untrusted-mode = on` and `enable-allow-list = on`** where peers are less than fully trusted — understanding both are hardening, not boundaries.
@@ -306,7 +306,7 @@ Feed this section to scanners and AI triage as a suppression list.
 
 Each states a **proposed answer**. Confirming or correcting is enough; no need to write prose.
 
-Q1, Q3 and Q4 are **answered** and retained in place so that cross-references elsewhere in this document continue to resolve. The remaining questions are open.
+Q1 to Q4 are **answered** and retained in place so that cross-references elsewhere in this document continue to resolve. The remaining questions are open.
 
 **Q1 — The plaintext transport default. ANSWERED *(maintainer)*.**
 `transport` ships `tcp`, so a stock cluster has no peer authentication. **Answer:** the default is a compatibility choice under §5b, not a security claim. Reports route as follows:
@@ -314,7 +314,11 @@ Q1, Q3 and Q4 are **answered** and retained in place so that cross-references el
 - "an unauthenticated peer can associate", assuming internet exposure → `BY-DESIGN: property-disclaimed`; §9 disclaims peer authentication by default. (The draft proposed `OUT-OF-MODEL: adversary-not-in-scope`, which does not fit: §13 defines that disposition as requiring an associated peer, a PKI-tree certificate, or in-JVM execution, and §7 lists the unassociated network attacker as **in scope**.)
 - harm reachable **pre-association** from an adjacent-network host → `VALID`.
 
-**Q2 — `allow-java-serialization`.** *Proposed:* enabling it is a documented deviation, so any deserialization finding requiring it is `OUT-OF-MODEL: non-default-build`. Confirm?
+**Q2 — `allow-java-serialization`. ANSWERED *(maintainer)*.** Enabling it is not recommended. **Answer:** any finding that requires `allow-java-serialization = on` to manifest is `OUT-OF-MODEL: non-default-build`, including gadget-chain deserialization. An operator who enables it takes on gadget-chain defence **entirely**: Pekko integrates no serialization filter, so the only lever is the JVM's own — `-Djdk.serialFilter`, or an `ObjectInputFilter` installed process-wide. Maintaining that allow list is the operator's responsibility, not Pekko's.
+
+Two things this does **not** dispose of, per §5b.4:
+- A serious defect in Pekko's own serialization implementation is in scope and may warrant a CVE, whatever the flag is set to.
+- Java deserialization occurring **despite** `allow-java-serialization = off` violates §8 P1 and is `VALID`, Critical.
 
 **Q3 — `hostname-verification = off`. ANSWERED *(maintainer)*.** **Answer:** a compatibility default under §5b, deliberate rather than legacy, supporting deployments where hostnames are dynamic and not known up front. Pekko additionally warns at runtime under `LogMarker.Security` whenever TLS is enabled and verification is off, on both transports (`artery/tcp/ConfigSSLEngineProvider.scala`, `transport/netty/SSLEngineProvider.scala`), so the operator is told at startup. A report that "any PKI cert authenticates as any node" is `BY-DESIGN: property-disclaimed` per §9; a report that the default should be `on` is `BY-DESIGN: default-configuration`.
 
