@@ -246,12 +246,16 @@ The operator or embedding application must:
 1. **Keep remoting off untrusted networks.** Firewall the remoting port to the adjacent network. This is the assumption the whole model rests on *(documented)*.
 2. **Enable `tls-tcp` if the network is not sufficiently trusted**, and set `hostname-verification = on` unless hostnames are genuinely dynamic *(documented)*.
 3. **Leave `allow-java-serialization = off`.** If it must be enabled for legacy compatibility, treat the deployment as having no deserialization protection *(documented)*, and **maintain your own gadget-chain allow list** via `-Djdk.serialFilter` or a process-wide `ObjectInputFilter`. Pekko supplies no filter of its own, and findings that require the flag to be on are out of model *(maintainer — §14 Q2)*.
-4. **Treat `SECURITY`-marked log entries from the Java serializer as attack indicators**, not noise *(documented)*.
+4. **Treat `SECURITY`-marked log entries as security signals**, not noise. The disabled Java serializer marks rejected attempts this way *(documented)*; the TLS providers use the same marker to report a disabled hostname verification and the use of default keystore passwords *(`ConfigSSLEngineProvider`)*.
 5. **Scope the PKI tree to the cluster.** Any certificate it issues is cluster access *(documented)*.
 6. **Consider `untrusted-mode = on` and `enable-allow-list = on`** where peers are less than fully trusted — understanding both are hardening, not boundaries.
 7. **Never place mutually-distrusting tenants in one cluster** *(documented)*.
-8. **Supply passwords by environment substitution, not literals in config files** *(documented)*.
+8. **Supply passwords by environment substitution, not literals in config files** *(documented)*, and **replace the shipped defaults**. Both SSL blocks ship `key-store-password`, `key-password` and `trust-store-password` as `"changeme"` (`reference.conf:701`, `:1205`); Pekko warns under the `SECURITY` marker if they survive into a running system.
 9. **Secure the persistence store.** Pekko trusts journal and snapshot contents on replay and does not validate them as potentially hostile, so access control and integrity for the database or store are the administrator's responsibility *(maintainer — §14 Q5)*.
+10. **Protect the key material itself.** §10.5 scopes what a certificate grants; this is the file-level counterpart. Keystores, truststores and PEM material are operator-supplied and trusted by §6 — Pekko validates neither their provenance nor their permissions.
+11. **Keep message-content logging off in production.** `log-received-messages` and `log-sent-messages` (`reference.conf:862`, `:866`, and `:393`, `:397` for classic) and `pekko.actor.debug.receive` (`actor/.../reference.conf:787`) all write message contents to the log, and `pekko.log-config-on-start` (`:50`) writes the resolved configuration — which, per §10.8, is where secrets pulled in by environment substitution end up. All four default to `off`; turning any on moves payloads or credentials into the logging system, whose protection is the operator's.
+12. **Understand that transport encryption exists only on `tls-tcp`.** Neither `tcp` nor `aeron-udp` offers an encryption option *(documented — `remote-security.md`)*, so on those transports network isolation is not one control among several, it is the only one.
+13. **Trust, or secure, the discovery mechanism.** `discovery` accepts whatever its configured resolver returns (§6); Pekko does not authenticate DNS or service-registry responses.
 
 ---
 
