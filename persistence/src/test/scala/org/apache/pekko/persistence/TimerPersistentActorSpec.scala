@@ -113,6 +113,12 @@ class TimerPersistentActorSpec extends PersistenceSpec(ConfigFactory.parseString
       expectMsg("msg2")
     }
 
+    "not discard timer msg due to stashing for a Java subclass of AbstractPersistentActorWithTimers" in {
+      val pa = system.actorOf(Props(classOf[JavaTimerPersistentActor], "p4"))
+      pa ! "msg4"
+      expectMsg("msg4")
+    }
+
     "reject wrong order of traits, PersistentActor with Timer" in {
       if (TraitOrder.canBeChecked) {
         val pa = system.actorOf(Props[WrongOrder]())
