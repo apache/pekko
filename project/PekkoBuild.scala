@@ -212,8 +212,11 @@ object PekkoBuild {
         "-XX:MaxGCPauseMillis=300",
         // nio direct memory limit for artery/aeron (probably)
         "-XX:MaxDirectMemorySize=256m",
-        // faster random source
-        "-Djava.security.egd=file:/dev/./urandom")
+        // Non-blocking seed source. Keep the plain path: `/dev/./urandom` does
+        // not match SunEntries.URL_DEV_URANDOM, which switches the default
+        // SecureRandom away from NativePRNG (to DRBG, or SHA1PRNG on JDK 8),
+        // so CI would stop exercising the algorithm users get.
+        "-Djava.security.egd=file:/dev/urandom")
 
       defaults ++
       CliOptions.runningOnCi
