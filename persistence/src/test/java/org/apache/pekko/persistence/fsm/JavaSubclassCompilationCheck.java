@@ -22,11 +22,16 @@ package org.apache.pekko.persistence.fsm;
  *
  * <p>See {@code org.apache.pekko.actor.JavaSubclassCompilationCheck} for why declaring the subclass
  * is the whole test. {@link AbstractPersistentLoggingFSM} has no other Java subclass in the build.
+ *
+ * <p>The class under guard is deprecated, so the subclass is marked deprecated too: javac's test
+ * configuration runs with `-Werror`, and a use of deprecated API inside a deprecated element does
+ * not warn. This mirrors {@code AbstractPersistentFSMTest}.
  */
 public final class JavaSubclassCompilationCheck {
 
   private JavaSubclassCompilationCheck() {}
 
+  @Deprecated
   abstract static class PersistentLoggingFSM
       extends AbstractPersistentLoggingFSM<PersistentFSM.FSMState, String, String> {}
 }
