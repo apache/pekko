@@ -5,7 +5,7 @@
 | | |
 | --- | --- |
 | **Project** | Apache Pekko (core toolkit) |
-| **Written against** | commit `a054f9ce`, `main` |
+| **Written against** | commit `90b02d60`, `main` |
 | **Date** | 2026-08-27 |
 | **Authors** | ASF Security team, at the request of the Pekko PMC |
 | **Version binding** | This model is versioned alongside the project. A report against Pekko version *N* is triaged against the model as it stood at *N*, not at `main`. |
@@ -16,7 +16,9 @@
 *(maintainer)* — stated by a Pekko maintainer in review of this document.
 *(inferred)* — reasoned from code or config defaults, **not yet confirmed**; each has a matching question in §14.
 
-**Draft confidence:** 40 documented / 0 maintainer / 14 inferred. The documented share is unusually high because Pekko's own remoting and serialization docs already state much of the trust model explicitly. What remains inferred is concentrated in two places: the negative claims in §5, and the §5a default rulings — which are the answers that most change the model. Both are §14.
+**Draft confidence:** 42 documented / 0 maintainer / 14 inferred. The documented share is unusually high because Pekko's own remoting and serialization docs already state much of the trust model explicitly. What remains inferred is concentrated in two places: the negative claims in §5, and the §5a default rulings — which are the answers that most change the model. Both are §14.
+
+## §1 Overview
 
 Apache Pekko is a Scala/Java toolkit for building concurrent, distributed and resilient message-driven applications. Its unit of computation is the actor: an object with private state that communicates only by asynchronous message passing. Pekko extends that model across machines — an `ActorSystem` can address actors on remote nodes as if they were local, and a cluster of such systems provides membership, sharding, singletons and replicated data. That transparency is the source of most of this document: **the network is not incidental to Pekko, it is part of the programming model**, and the security consequences follow from where the toolkit assumes that network sits.
 
@@ -37,18 +39,20 @@ Three caller roles matter, and they are not equally trusted:
 | Family | Modules | Entry point | Leaves the process? | In model |
 | --- | --- | --- | --- | --- |
 | Actor core | `actor`, `actor-typed`, `slf4j`, `coordination` | `ActorSystem`, `ActorRef` | no | **yes** |
+| Classic IO | `actor` (`org.apache.pekko.io`) | `IO(Tcp)`, `IO(Udp)`, `IO(Dns)` | **network — if the application binds** | **yes** |
 | Remoting | `remote` | Artery transport (`tcp` / `tls-tcp` / `aeron-udp`) | **network** | **yes — primary surface** |
 | Cluster | `cluster`, `cluster-typed`, `cluster-tools`, `cluster-sharding*`, `cluster-metrics` | gossip, membership, sharding | **network** (via remoting) | **yes** |
 | Replicated data | `distributed-data` | CRDT replication | **network** (via remoting) | **yes** |
 | Serialization | `serialization-jackson`, `serialization-jackson3` | `Serializer` SPI | deserializes network bytes | **yes — critical** |
-| Streams | `stream`, `stream-typed` | `Source`/`Flow`/`Sink` | only via connectors the app supplies | **yes** |
+| Wire encoding | `protobuf-v3` | shaded protobuf runtime | parses remoting and cluster wire bytes | **yes** |
+| Streams | `stream`, `stream-typed` | `Source`/`Flow`/`Sink`; `Tcp`, `TLS`, `FileIO`, `Framing` | **network / filesystem — if the application uses those connectors** | **yes** |
 | Persistence | `persistence`, `persistence-typed`, `persistence-query`, `persistence-shared` | journal / snapshot plugin SPI | **storage backend** | **yes**, boundary at the SPI |
 | PKI | `pki` | PEM/keystore parsing | **reads files** | **yes** |
 | Discovery | `discovery` | service-discovery SPI | **network / DNS** | **yes** |
 | OSGi | `osgi` | bundle activator | classloading | **yes** |
 | Test kits | `*-testkit`, `multi-node-testkit`, `*-tests`, `persistence-tck`, `stream-tests-tck` | — | — | **no** — §3 |
 | Benchmarks | `bench-jmh` | — | — | **no** — §3 |
-| Build / docs | `docs`, `project`, `scripts`, `legal`, `kubernetes` | — | — | **no** — §3 |
+| Build / docs | `docs`, `project`, `scripts`, `legal`, `kubernetes`, `plugins`, `bill-of-materials`, `scala-nightly` | — | — | **no** — §3 |
 
 *(inferred — the in/out split is the ASF Security team's proposal; see §14 Q6)*
 
@@ -87,7 +91,7 @@ A finding must meet its family's precondition to be in-model:
 - **Remoting** — reachable from bytes arriving on the Artery transport, *and* the report must state whether it assumes the network-isolation assumption above is intact. A finding that requires an attacker already on the cluster network is judged under §7, not automatically valid.
 - **Serialization** — reachable from a message payload deserialized by a **configured, enabled** serializer. Findings reachable only when `allow-java-serialization = on` are judged under §5a.
 - **Cluster / distributed-data** — reachable from gossip or replication traffic originating at an **associated peer**. Per §7 such a peer is trusted, so these are typically out of model unless the finding shows a pre-association reach.
-- **Actor core / streams** — reachable from data the embedding application passes in. Trusted by default; a finding must show the data crosses an application boundary that Pekko itself defines.
+- **Actor core / streams** — reachable from data the embedding application passes in. Trusted by default; a finding must show the data crosses an application boundary that Pekko itself defines. **Exception:** where the application binds `io.Tcp`/`io.Udp` or `stream.Tcp`/`stream.TLS`, the bytes arriving on that socket are attacker-controlled, and a parsing or framing defect reachable from them is in model.
 - **Persistence** — reachable from journal or snapshot contents. See §6 on the storage-trust question.
 - **PKI** — reachable from PEM/keystore material. Operator-supplied and trusted; see §14 Q5.
 
@@ -106,7 +110,7 @@ A finding must meet its family's precondition to be in-model:
 These are negative claims, rarely written down anywhere, and therefore the highest-value confirmation targets in §14 *(all inferred — §14 Q7)*:
 
 - Installs no signal handlers and spawns no child processes.
-- Opens no listening socket unless remoting is explicitly configured — the actor core alone is purely in-process.
+- Opens no listening socket of its own accord. Remoting binds when configured; `org.apache.pekko.io.Tcp`/`Udp` (in `pekko-actor`) and `stream.scaladsl.Tcp` (in `pekko-stream`) bind only on an explicit application call. Pekko never binds a port the application did not ask for.
 - Reads configuration from the classpath and supplied `Config`; does not read arbitrary environment variables of its own accord.
 - Writes to logging via SLF4J as configured; does not write to stdout/stderr directly in normal operation.
 - Does not mutate process-global state (locale, default `SecurityManager`, system properties) at initialization.
@@ -126,7 +130,10 @@ Pekko's security posture is set almost entirely by configuration. **Every row be
 | `pekko.remote.artery.untrusted-mode` | `off` | On, blocks inbound system messages, `PossiblyHarmful` messages, remote deployment, remote DeathWatch, and actor selections outside `trusted-selection-paths` *(documented)* | **UNRESOLVED — §14 Q4** |
 | `pekko.remote.artery.trusted-selection-paths` | `[]` | Allow-list of actor paths that may receive selections under untrusted mode *(documented)* | Follows Q4 |
 | `pekko.remote.deployment.enable-allow-list` | `off` | On, restricts which actor classes a peer may remote-deploy *(documented — `remoting.md`)* | **UNRESOLVED — §14 Q4** |
-| `pekko.actor.serialize-messages` / `serialize-creators` | `off` | Testing aids that force serialization round-trips. Not security controls | Not a security knob *(inferred — §14 Q13)* |
+| `pekko.remote.classic.untrusted-mode` | `off` | Classic-remoting equivalent of the artery flag *(reference.conf:381)* | Follows Q4 |
+| `pekko.remote.classic.trusted-selection-paths` | `[]` | As above *(reference.conf:387)* | Follows Q4 |
+| `pekko.remote.classic.netty.tcp.enable-ssl` | `false` | Classic's default transport is plaintext netty TCP *(reference.conf:582)* | Follows Q1 |
+| `pekko.actor.serialize-messages` / `serialize-creators` | `off` | Testing aids that force serialization round-trips. Not security controls. Docs: *"this is only intended for testing"* *(documented — `actor/src/main/resources/reference.conf`)* | Not a security knob |
 
 ---
 
@@ -146,6 +153,10 @@ For a toolkit whose surface is a wire protocol, the useful table is keyed by **m
 | Persistence | Journal / snapshot contents on replay | Depends on backend trust — **§14 Q5** | App/operator: secure the store |
 | `pki` | PEM / keystore files | **No** — operator-supplied, trusted | Operator: protect key material |
 | `discovery` | Service-discovery responses (DNS, K8s API) | **Potentially** — depends on the resolver | Operator: trust the discovery mechanism |
+| `io.Tcp` / `io.Udp` | Bytes on an application-bound socket | **Yes** | App: it chose to bind, and owns what it exposes |
+| `stream.Tcp` / `stream.TLS` | Bytes on an application-bound stream server | **Yes** | App: as above. Pekko: framing must not break on hostile input |
+| `Framing` / `JsonFraming` | Delimited or length-prefixed frames | **Yes** where fed from a network source | Pekko: bounded by the caller's `maximumFrameLength` |
+| `stream.FileIO` | File contents at an application-supplied path | Depends on the path | App |
 | Config | `application.conf`, system properties | **No** — trusted, part of the deployment | Operator |
 
 **Size and rate.** Artery imposes frame-size limits and the failure detector bounds how long an unresponsive peer is tolerated. Whether these are *security* controls or tuning parameters is §14 Q8.
@@ -178,7 +189,7 @@ For a toolkit whose surface is a wire protocol, the useful table is keyed by **m
 | P4 | With `enable-allow-list = on`, only listed actor classes may be remote-deployed onto this node | An unlisted class deployed | High | *(documented — `remoting.md`)* |
 | P5 | With `untrusted-mode = on`, inbound system messages, `PossiblyHarmful` messages, remote deployment, remote DeathWatch and non-allow-listed actor selections are **dropped and logged** | Any of these taking effect despite the flag | High | *(documented — `remote-security.md`)* |
 | P6 | With `transport = tls-tcp`, TLS is applied and **mutual authentication is on by default** — the server side also requests and verifies the client's certificate | Association completing without peer certificate verification | **Critical** | *(documented — `remote-security.md`)* |
-| P7 | Certificate rotation is supported for mTLS in Kubernetes without cluster restart | Rotation causing association failure or silent downgrade | Medium | *(documented — `remote-security.md`)* |
+| P7 | Certificate rotation is supported for mTLS in Kubernetes without cluster restart | Rotation causing association failure or silent downgrade | Medium | *(documented — `remote-security.md`; **2.0+ only**, absent from the released 1.x docs — [snapshot](https://pekko.apache.org/docs/pekko/snapshot/remote-security.html#mtls-with-rotated-certificates-in-kubernetes))* |
 
 **Note the shape of this list:** P4, P5 and P6 are all *conditional on a non-default setting*. Under stock configuration, the properties Pekko actively provides at the network boundary are P1, P2 and P3 — the rest of the posture is delegated to the operator via §10. This is a deliberate design, but it is the single most important thing for a triager to understand.
 
@@ -199,7 +210,7 @@ These are the assumptions integrators most often bring with them, and each is wr
 
 - **Untrusted mode is not a security boundary.** *"Untrusted mode does not give full protection against attacks by itself. It makes it slightly harder to perform malicious or unintended actions"* *(documented — `remote-security.md`)*. It is hardening. Treating it as a substitute for network isolation is a §11 misuse.
 - **`PossiblyHarmful` is a marker, not an authorization mechanism.** It is a compile-time trait that untrusted mode consults. It confers no protection when untrusted mode is off.
-- **A service mesh is not a substitute for remoting security.** *"Encryption and authentication via a service mesh is not a replacement for Pekko Cluster remoting security"* — Pekko's peer-to-peer addressing has requirements a mesh does not satisfy *(documented — `remote-security.md`)*.
+- **A service mesh is not a substitute for remoting security.** *"Encryption and authentication via a service mesh is not a replacement for Pekko Cluster remoting security"* — Pekko's peer-to-peer addressing has requirements a mesh does not satisfy *(documented — `remote-security.md`; **2.0+ only**, absent from the released 1.x docs — [snapshot](https://pekko.apache.org/docs/pekko/snapshot/general/remoting.html#service-mesh))*.
 - **TLS mutual authentication does not give per-node identity guarantees by default**, because `hostname-verification` ships `off` — any cert from the trusted PKI authenticates as any node. *(documented + config default)*
 - **The actor boundary is not a security boundary.** Message-passing isolation is a concurrency property, not a confidentiality one.
 
@@ -313,10 +324,12 @@ is the ordinary path application data takes. Confirm the split?
 local clocks. *Proposed:* Pekko makes no claim against adversarial clock manipulation on
 a cluster member — consistent with §7, since such a member is trusted anyway. Confirm?
 
-**Q13 — `serialize-messages` / `serialize-creators`.** *Proposed:* these are testing aids
-that force serialization round-trips to catch non-serializable messages early, with no
-security role, so they do not belong in the §5a security envelope at all. Confirm — or
-does either have a security-relevant effect worth stating?
+**Q13 — Classic remoting's place in the supported surface.** Classic remoting is
+deprecated but still shipped and still CI-gated (the "Pekko Classic Remoting Tests" job).
+It carries its own `untrusted-mode`, `trusted-selection-paths` and netty SSL settings,
+now listed in §5a. *Proposed:* deprecation is not desupport, so classic stays **in model**
+and its knobs follow the same Q1/Q4 rulings as their artery equivalents. Confirm — or is
+classic remoting `OUT-OF-MODEL: unsupported-component` per §3?
 
 ---
 
@@ -342,4 +355,5 @@ Proof that nothing the project already asserts has been dropped or weakened.
 | `SECURITY`-marked log entries indicate prevented attacks | `serialization.md` | §8 P2, §10.4 |
 | Remote deployment is not remote code loading | `remoting.md` | §8 P3, §11a |
 | Remote deployment allow list restricts deployable classes | `remoting.md` | §5a, §8 P4 |
-| Report vulnerabilities to the private security list per ASF guidelines | `security/index.md` | `SECURITY.md`, §1 |
+| `serialize-messages` / `serialize-creators` are "only intended for testing" | `actor` `reference.conf` | §5a |
+| Report vulnerabilities privately per ASF guidelines; coordinate disclosure with upstream maintainers | `security/index.md` | `SECURITY.md`, §1 |

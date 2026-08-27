@@ -13,8 +13,12 @@ Apache Pekko does not operate a separate project security list; reports go to
 the foundation-wide address above, which routes to the Pekko PMC.
 
 Please follow the [guidelines laid down by the Apache Security
-team](https://www.apache.org/security/). The Pekko PMC will coordinate
-responsible disclosure with affected upstream maintainers where needed.
+team](https://www.apache.org/security/).
+
+Ideally, any issues affecting Apache Pekko and its predecessor project should
+be reported to the Apache Pekko team first. The Pekko PMC will coordinate
+responsible disclosure with the affected upstream maintainers when needed, so a
+cross-project issue does not need to be filed twice.
 
 To receive security announcements, subscribe to the [Apache Announce Mailing
 List](https://lists.apache.org/list.html?announce@apache.org).
@@ -45,6 +49,6 @@ Two points catch most reporters:
 ## Further Security Documentation
 
 - [Apache Pekko security announcements](https://pekko.apache.org/docs/pekko/current/security/)
-- [Remote Security](https://pekko.apache.org/docs/pekko/current/remote-security.html)
+- [Remote Security](https://pekko.apache.org/docs/pekko/current/remoting-artery.html#remote-security)
 - [Java Serialization](https://pekko.apache.org/docs/pekko/current/serialization.html#java-serialization)
 - [Remote deployment allow list](https://pekko.apache.org/docs/pekko/current/remoting.html#remote-deployment-allow-list)
