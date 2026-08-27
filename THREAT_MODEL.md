@@ -16,7 +16,7 @@
 *(maintainer)* — stated by a Pekko maintainer in review of this document.
 *(inferred)* — reasoned from code or config defaults, **not yet confirmed**; each has a matching question in §14.
 
-**Draft confidence:** 43 documented / 44 maintainer / 3 inferred. The documented share is unusually high because Pekko's own remoting and serialization docs already state much of the trust model explicitly. The §5a default rulings — previously the largest inferred block — are now answered by the §5b posture statement and §14 Q1 to Q5. What remains inferred is the residual module in/out split (§14 Q6).
+**Draft confidence:** 43 documented / 48 maintainer / 3 inferred. The documented share is unusually high because Pekko's own remoting and serialization docs already state much of the trust model explicitly. The §5a default rulings — previously the largest inferred block — are now answered by the §5b posture statement and §14 Q1 to Q5. What remains inferred is the residual module in/out split (§14 Q6).
 
 ## §1 Overview
 
@@ -40,7 +40,7 @@ Three caller roles matter, and they are not equally trusted:
 | --- | --- | --- | --- | --- |
 | Actor core | `actor`, `actor-typed`, `slf4j`, `coordination` | `ActorSystem`, `ActorRef` | no | **yes** |
 | Classic IO | `actor` (`org.apache.pekko.io`) | `IO(Tcp)`, `IO(Udp)`, `IO(Dns)` | **network — if the application binds** | **yes** |
-| Remoting | `remote` | Artery transport (`tcp` / `tls-tcp` / `aeron-udp`) | **network** | **yes — primary surface** |
+| Remoting | `remote` | Artery transport (`tcp` / `tls-tcp` / `aeron-udp`); classic remoting (netty), deprecated but supported *(maintainer — §14 Q13)* | **network** | **yes — primary surface** |
 | Cluster | `cluster`, `cluster-typed`, `cluster-tools`, `cluster-sharding*`, `cluster-metrics` | gossip, membership, sharding | **network** (via remoting) | **yes** |
 | Replicated data | `distributed-data` | CRDT replication | **network** (via remoting) | **yes** |
 | Serialization | `serialization-jackson`, `serialization-jackson3` | `Serializer` SPI | deserializes network bytes | **yes — critical** |
@@ -133,9 +133,9 @@ Pekko's security posture is set almost entirely by configuration. **Every row be
 | `pekko.remote.artery.untrusted-mode` | `off` | On, blocks inbound system messages, `PossiblyHarmful` messages, remote deployment, remote DeathWatch, and actor selections outside `trusted-selection-paths` *(documented)* | Hardening; adoption is the operator's call — §5b, §14 Q4 *(maintainer)* |
 | `pekko.remote.artery.trusted-selection-paths` | `[]` | Allow-list of actor paths that may receive selections under untrusted mode *(documented)* | Follows Q4 |
 | `pekko.remote.deployment.enable-allow-list` | `off` | On, restricts which actor classes a peer may remote-deploy *(documented — `remoting.md`)* | Hardening; adoption is the operator's call — §5b, §14 Q4 *(maintainer)* |
-| `pekko.remote.classic.untrusted-mode` | `off` | Classic-remoting equivalent of the artery flag *(reference.conf:381)* | Follows Q4 |
+| `pekko.remote.classic.untrusted-mode` | `off` | Classic-remoting equivalent of the artery flag *(reference.conf:381)* | Follows Q4 *(maintainer — §14 Q13)* |
 | `pekko.remote.classic.trusted-selection-paths` | `[]` | As above *(reference.conf:387)* | Follows Q4 |
-| `pekko.remote.classic.netty.tcp.enable-ssl` | `false` | Classic's default transport is plaintext netty TCP *(reference.conf:582)* | Follows Q1 |
+| `pekko.remote.classic.netty.tcp.enable-ssl` | `false` | Classic's default transport is plaintext netty TCP *(reference.conf:582)* | Follows Q1 *(maintainer — §14 Q13)* |
 | `pekko.actor.serialize-messages` / `serialize-creators` | `off` | Testing aids that force serialization round-trips. Not security controls. Docs: *"this is only intended for testing"* *(documented — `actor/src/main/resources/reference.conf`)* | Not a security knob |
 
 ---
@@ -306,11 +306,9 @@ Feed this section to scanners and AI triage as a suppression list.
 
 ---
 
-## §14 Open questions for the maintainers
+## §14 Maintainer rulings (formerly open questions)
 
-Each states a **proposed answer**. Confirming or correcting is enough; no need to write prose.
-
-Q1 to Q12 are **answered**, retained in place so that cross-references elsewhere in this document continue to resolve. Q13 remains open.
+**All thirteen questions are answered.** They are retained in place, with their answers, so that cross-references elsewhere in this document continue to resolve and the reasoning behind each ruling stays visible. What remains inferred is noted in §2 and Q6: the residual module in/out split.
 
 **Q1 — The plaintext transport default. ANSWERED *(maintainer)*.**
 `transport` ships `tcp`, so a stock cluster has no peer authentication. **Answer:** the default is a compatibility choice under §5b, not a security claim. Reports route as follows:
@@ -385,12 +383,9 @@ The other two link to this document rather than restating it, so a change in sco
 
 **Disposition.** Pekko makes no claim against adversarial clock manipulation on a cluster member: such a member is misbehaving, and Q9 places it out of model. A report that LWW data diverges under clock skew is `BY-DESIGN: property-disclaimed` — the constraint is stated on the type itself.
 
-**Q13 — Classic remoting's place in the supported surface.** Classic remoting is
-deprecated but still shipped and still CI-gated (the "Pekko Classic Remoting Tests" job).
-It carries its own `untrusted-mode`, `trusted-selection-paths` and netty SSL settings,
-now listed in §5a. *Proposed:* deprecation is not desupport, so classic stays **in model**
-and its knobs follow the same Q1/Q4 rulings as their artery equivalents. Confirm — or is
-classic remoting `OUT-OF-MODEL: unsupported-component` per §3?
+**Q13 — Classic remoting's place in the supported surface. ANSWERED *(maintainer)*.** **Answer:** classic remoting is still **supported**. Deprecation is not desupport: security reports against it are accepted on exactly the same terms as artery. Configuration is the operator's, per §5b — its defaults are compatibility choices and a request to tighten one is a change request. Bugs in the implementation will be looked at, per §5b.4.
+
+Its settings in §5a therefore follow the same rulings as their artery equivalents: `pekko.remote.classic.untrusted-mode` and `trusted-selection-paths` follow Q4, and `netty.tcp.enable-ssl` follows Q1.
 
 ---
 
