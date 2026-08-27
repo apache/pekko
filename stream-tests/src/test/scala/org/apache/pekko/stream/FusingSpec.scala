@@ -13,7 +13,7 @@
 
 package org.apache.pekko.stream
 
-import scala.concurrent.{ duration, Await, Promise }
+import scala.concurrent.{ duration, Await, Future, Promise }
 
 import duration._
 
@@ -23,7 +23,7 @@ import pekko.stream.QueueOfferResult
 import pekko.stream.impl.UnfoldResourceSource
 import pekko.stream.impl.fusing.GraphInterpreter
 import pekko.stream.scaladsl._
-import pekko.stream.stage.GraphStage
+import pekko.stream.stage.{ GraphStage, GraphStageLogic, GraphStageWithMaterializedValue, OutHandler }
 import pekko.stream.testkit.TestPublisher
 import pekko.stream.testkit.StreamSpec
 import pekko.stream.testkit.Utils.TE
@@ -247,6 +247,168 @@ class FusingSpec extends StreamSpec {
         .request(5)
         .expectNext(1, 2)
         .expectError(ex)
+    }
+
+    // Regression tests for https://github.com/apache/pekko/issues/3459
+    // Matches the UDP connector pattern: getStageActor receives messages from an external
+    // actor, pushes only when isAvailable(out) is true, drops otherwise.
+    def externalActorSource(
+        dropped: java.util.concurrent.atomic.AtomicInteger,
+        ready: Promise[Done],
+        beforePush: GraphStageLogic => Unit = (_: GraphStageLogic) => ()): Source[Int, Future[pekko.actor.ActorRef]] = {
+      val stageActorPromise = Promise[pekko.actor.ActorRef]()
+      Source.fromGraph(new GraphStageWithMaterializedValue[SourceShape[Int], Future[pekko.actor.ActorRef]] {
+        val out = Outlet[Int]("external.out")
+        override val shape = SourceShape(out)
+        override def createLogicAndMaterializedValue(
+            inheritedAttributes: Attributes): (GraphStageLogic, Future[pekko.actor.ActorRef]) = {
+          val logic = new GraphStageLogic(shape) {
+            override def preStart(): Unit =
+              stageActorPromise.success(getStageActor {
+                case (_, elem: Int) =>
+                  beforePush(this)
+                  if (isAvailable(out)) push(out, elem)
+                  else dropped.incrementAndGet()
+                case _ => // ignore non-Int messages
+              }.ref)
+            setHandler(out,
+              new OutHandler {
+                // Let tests wait until initial demand reaches the source port before sending a burst.
+                override def onPull(): Unit = ready.trySuccess(Done)
+              })
+          }
+          (logic, stageActorPromise.future)
+        }
+      })
+    }
+
+    def sendBurst(
+        stageActorFuture: Future[pekko.actor.ActorRef],
+        ready: Promise[Done],
+        downstream: pekko.stream.testkit.TestSubscriber.Probe[Int],
+        elementCount: Int): Unit = {
+      downstream.request(elementCount)
+      val stageActor = Await.result(stageActorFuture, 3.seconds)
+      Await.result(ready.future, 3.seconds)
+      (1 to elementCount).foreach(stageActor ! _)
+      within(5.seconds) {
+        downstream.expectNextN(elementCount.toLong)
+      }
+      downstream.cancel()
+    }
+
+    "replenish demand per-element for external async sources across an async boundary" in {
+      val elementCount = 100
+      val dropped = new java.util.concurrent.atomic.AtomicInteger(0)
+      val ready = Promise[Done]()
+
+      val (stageActorFuture, downstream) = externalActorSource(dropped, ready)
+        .async
+        .addAttributes(asyncBoundaryInputBuffer)
+        .toMat(TestSink[Int]())(Keep.both)
+        .run()
+
+      sendBurst(stageActorFuture, ready, downstream, elementCount)
+      dropped.get() should ===(0)
+    }
+
+    "replenish demand independently of fused topology depth" in {
+      val elementCount = 8
+      val dropped = new java.util.concurrent.atomic.AtomicInteger(0)
+      val ready = Promise[Done]()
+      val deepSource = (1 to 256).foldLeft(externalActorSource(dropped, ready)) {
+        case (source, _) => source.map(identity)
+      }
+
+      val (stageActorFuture, downstream) = deepSource
+        .async
+        .addAttributes(asyncBoundaryInputBuffer)
+        .toMat(TestSink[Int]())(Keep.both)
+        .run()
+
+      sendBurst(stageActorFuture, ready, downstream, elementCount)
+      dropped.get() should ===(0)
+    }
+
+    "replenish demand when the shell sync processing limit is one" in {
+      val elementCount = 8
+      val dropped = new java.util.concurrent.atomic.AtomicInteger(0)
+      val ready = Promise[Done]()
+      val deepSource = (1 to 32).foldLeft(externalActorSource(dropped, ready)) {
+        case (source, _) => source.map(identity)
+      }
+
+      val (stageActorFuture, downstream) = deepSource
+        .async
+        .addAttributes(ActorAttributes.syncProcessingLimit(1) and asyncBoundaryInputBuffer)
+        .toMat(TestSink[Int]())(Keep.both)
+        .run()
+
+      sendBurst(stageActorFuture, ready, downstream, elementCount)
+      dropped.get() should ===(0)
+    }
+
+    "leave activeStage cleared when a stage actor callback completes its stage" in {
+      val interpreterPromise = Promise[GraphInterpreter]()
+      val stageActorPromise = Promise[pekko.actor.ActorRef]()
+      val ready = Promise[Done]()
+
+      val source =
+        Source.fromGraph(new GraphStageWithMaterializedValue[SourceShape[Int], Future[pekko.actor.ActorRef]] {
+          val out = Outlet[Int]("completion.out")
+          override val shape = SourceShape(out)
+          override def createLogicAndMaterializedValue(
+              inheritedAttributes: Attributes): (GraphStageLogic, Future[pekko.actor.ActorRef]) = {
+            val logic = new GraphStageLogic(shape) {
+              override def preStart(): Unit = {
+                interpreterPromise.success(interpreter)
+                stageActorPromise.success(getStageActor { case _ => completeStage() }.ref)
+              }
+              setHandler(out,
+                new OutHandler {
+                  override def onPull(): Unit = ready.trySuccess(Done)
+                })
+            }
+            (logic, stageActorPromise.future)
+          }
+        })
+
+      val (stageActorFuture, done) = source.toMat(Sink.ignore)(Keep.both).run()
+      Await.result(ready.future, 3.seconds)
+      Await.result(stageActorFuture, 3.seconds) ! "complete"
+      Await.result(done, 3.seconds) should ===(Done)
+      Await.result(interpreterPromise.future, 3.seconds).activeStage should be(null)
+    }
+
+    "stop a lazy stage actor dispatch after its handler fails" in {
+      val failure = TE("stage actor handler failed")
+      val invocations = new java.util.concurrent.atomic.AtomicInteger(0)
+      val entered = new java.util.concurrent.CountDownLatch(1)
+      val release = new java.util.concurrent.CountDownLatch(1)
+      val ready = Promise[Done]()
+      val dropped = new java.util.concurrent.atomic.AtomicInteger(0)
+      val source = externalActorSource(
+        dropped,
+        ready,
+        _ => {
+          invocations.incrementAndGet()
+          entered.countDown()
+          release.await(3, java.util.concurrent.TimeUnit.SECONDS)
+          throw failure
+        })
+
+      val (stageActorFuture, done) = source.toMat(Sink.ignore)(Keep.both).run()
+      Await.result(ready.future, 3.seconds)
+      val stageActor = Await.result(stageActorFuture, 3.seconds)
+      stageActor ! 1
+      try {
+        entered.await(3, java.util.concurrent.TimeUnit.SECONDS) should be(true)
+        (2 to 100).foreach(stageActor ! _)
+      } finally release.countDown()
+
+      Await.result(done.failed, 3.seconds) should ===(failure)
+      invocations.get() should ===(1)
+      dropped.get() should ===(0)
     }
 
     "use multiple actors when there are asynchronous boundaries in the subflows (manual)" in {

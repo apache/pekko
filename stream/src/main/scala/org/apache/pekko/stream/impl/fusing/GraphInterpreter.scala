@@ -61,6 +61,19 @@ import pekko.stream.stage._
   final val KeepGoingMask = 0x3FFFFFF
 
   /**
+   * INTERNAL API
+   *
+   * An async input handler that shares the interpreter event budget of the enclosing shell. The handler returns the
+   * unused part of `eventLimit`. If it has to stop while interpreter events are still pending, the shell invokes
+   * `onInterpreterIdle` after those events have been processed.
+   */
+  @InternalApi private[stream] trait EventLimitHandler extends (Any => Unit) {
+    def apply(event: Any, eventLimit: Int): Int
+    def isWaitingForInterpreter: Boolean
+    def onInterpreterIdle(): Unit
+  }
+
+  /**
    * Marker object that indicates that a port holds no element since it was already grabbed. The port is still pullable,
    * but there is no more element to grab.
    */
@@ -592,6 +605,41 @@ import pekko.stream.stage._
         afterStageHasRun(logic)
       } finally currentInterpreterHolder(0) = previousInterpreter
     }
+
+  /** INTERNAL API */
+  @InternalApi private[stream] def runAsyncInput(
+      logic: GraphStageLogic,
+      evt: Any,
+      promise: Promise[Done],
+      handler: EventLimitHandler,
+      eventLimit: Int): Int = {
+    var eventsRemaining = eventLimit
+    if (!isStageCompleted(logic)) {
+      if (GraphInterpreter.Debug) println(s"$Name ASYNC $evt ($handler) [$logic]")
+      val currentInterpreterHolder = _currentInterpreter.get()
+      val previousInterpreter = currentInterpreterHolder(0)
+      currentInterpreterHolder(0) = this
+      try {
+        activeStage = logic
+        try {
+          eventsRemaining = handler(evt, eventLimit)
+          if (promise ne GraphStageLogic.NoPromise) {
+            promise.success(Done)
+            logic.onFeedbackDispatched(promise)
+          }
+        } catch {
+          case NonFatal(ex) =>
+            if (promise ne GraphStageLogic.NoPromise) {
+              promise.failure(ex)
+              logic.onFeedbackDispatched(promise)
+            }
+            logic.failStage(ex)
+        }
+        afterStageHasRun(logic)
+      } finally currentInterpreterHolder(0) = previousInterpreter
+    }
+    eventsRemaining
+  }
 
   // Decodes and processes a single event for the given connection
   @InternalStableApi
