@@ -17,19 +17,19 @@
 
 package org.apache.pekko.actor;
 
-import org.apache.pekko.testkit.PekkoJUnitJupiterActorSystemResource;
+import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
 import org.apache.pekko.testkit.PekkoSpec;
 import org.apache.pekko.testkit.TestProbe;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.RegisterExtension;
+import org.junit.ClassRule;
+import org.junit.Test;
+import org.scalatestplus.junit.JUnitSuite;
 
 /**
  * Subclassing {@link AbstractFSMWithStash} from Java has to keep compiling: both {@code FSM} and
  * {@code UnrestrictedStash} implement {@code postStop}, and javac rejects a subclass unless the
  * Scala base class carries a real (non-synthetic) override for it.
  */
-@SuppressWarnings("unchecked")
-public class AbstractFSMWithStashActorTest {
+public class AbstractFSMWithStashActorTest extends JUnitSuite {
 
   public static class MyFSM extends AbstractFSMWithStash<String, String> {
 
@@ -63,10 +63,9 @@ public class AbstractFSMWithStashActorTest {
     }
   }
 
-  @RegisterExtension
-  static PekkoJUnitJupiterActorSystemResource actorSystemResource =
-      new PekkoJUnitJupiterActorSystemResource(
-          "AbstractFSMWithStashActorTest", PekkoSpec.testConf());
+  @ClassRule
+  public static PekkoJUnitActorSystemResource actorSystemResource =
+      new PekkoJUnitActorSystemResource("AbstractFSMWithStashActorTest", PekkoSpec.testConf());
 
   private final ActorSystem system = actorSystemResource.getSystem();
 
