@@ -175,7 +175,7 @@ For a toolkit whose surface is a wire protocol, the useful table is keyed by **m
 | `stream.FileIO` | File contents at an application-supplied path | Depends on the path | App |
 | Config | `application.conf`, system properties | **No** — trusted, part of the deployment | Operator |
 
-**Size and rate.** Artery imposes frame-size limits and the failure detector bounds how long an unresponsive peer is tolerated. Whether these are *security* controls or tuning parameters is §14 Q8.
+**Size and rate.** Artery imposes frame-size limits and the failure detector bounds how long an unresponsive peer is tolerated. These are tuning parameters, not security controls *(maintainer — §14 Q8)*.
 
 ---
 
@@ -233,7 +233,7 @@ These are the assumptions integrators most often bring with them, and each is wr
 ### Well-known attack classes left to the caller
 
 - **JVM deserialization gadget chains** — mitigated by P1 only so long as Java serialization stays off, and only for payloads Pekko itself deserializes; application-level serializers are the application's problem. Pekko integrates **no** serialization filter: `JavaSerializer.fromBinary` performs an unfiltered `ObjectInputStream.readObject` (`actor/.../serialization/Serializer.scala`). An operator who enables Java serialization must supply the allow list themselves through the JVM — `-Djdk.serialFilter` or a process-wide `ObjectInputFilter` — and owns that entirely *(maintainer — §14 Q2)*.
-- **Resource-exhaustion via message volume or size** — see §14 Q8.
+- **Resource-exhaustion via message volume or size** — CPU cost is not in itself a security concern, and volume from an associated peer is out of model. Only disproportionate cost, where work explodes relative to a single input, is a defect. See §14 Q8.
 - **DNS / service-discovery spoofing** — `discovery` trusts the resolver it is configured with.
 - **Storage-layer tampering** on persistence journals and snapshot stores — the store is trusted, and securing it belongs to whoever administers it *(maintainer — §14 Q5)*.
 
@@ -350,11 +350,14 @@ This is a trust statement about the **store**, not a licence for the plugin SPI:
 - **stdout/stderr — *(maintainer)*.** Logging goes to the configured logger. `StandardOutLogger` prints to stdout during early startup, bounded by `pekko.stdout-loglevel` (default `WARNING`), disclosed in §5.
 - **Process-global state — *(maintainer)*.** Not mutated at initialization: no `System.setProperty`, `Locale.setDefault` or `TimeZone.setDefault`.
 
-**Q8 — Resource guarantees. ANSWERED *(maintainer)*.** **Answer:** **super-linear in message size is a bug; constant-factor is not.** Memory or CPU that grows super-linearly in the size of an inbound message is a defect and is `VALID`; a constant-factor overhead proportional to the message is expected and is not.
+**Q8 — Resource guarantees. ANSWERED *(maintainer)*.** **CPU cost is not in itself a security concern.** A report that Pekko does more work than a reporter expected, or that load from a peer degrades throughput, is a performance issue and is handled as one — not a vulnerability. Constant-factor overhead proportional to a message is expected and is never a finding.
 
-Two notes on applying this line:
-- Artery already bounds message size by configuration — `maximum-frame-size` defaults to 256 KiB and `maximum-large-frame-size` to 2 MiB (`remote/src/main/resources/reference.conf`) — so the input to the rule is bounded on the remoting path.
-- The rule is stated in terms of **size**. Exhaustion driven by message **volume** from an associated peer is not covered by it and remains subject to §7, under which such a peer is trusted.
+The exception is an input that is **completely out of the ordinary**: one crafted so that cost explodes disproportionately to it — an algorithmic-complexity path where work grows super-linearly in the size or structure of a single message. That is a defect per §5b.4, and where it is reachable from an adversary §7 admits, it is `VALID`.
+
+The test is **disproportionate cost**, not the appearance of the input; an input that looks out of the ordinary is the usual sign of such a path rather than a separate condition to meet. Two notes on applying it:
+
+- Artery already bounds message size by configuration — `maximum-frame-size` defaults to 256 KiB and `maximum-large-frame-size` to 2 MiB (`remote/src/main/resources/reference.conf`) — so the input is bounded on the remoting path.
+- Exhaustion driven by message **volume** from an associated peer is not covered, and remains subject to §7, under which such a peer is trusted.
 
 **Q9 — Byzantine generalisation. ANSWERED *(maintainer)*.** **Answer:** it holds for all of them. No subsystem — cluster membership, sharding, singleton or `distributed-data` — claims resilience against a misbehaving member, and Pekko has no guarantee of being able to recognise a compromised node at all. Failure detection is heartbeat-based and answers "is this member responding?", not "is this member honest".
 
