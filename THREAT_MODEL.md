@@ -16,7 +16,7 @@
 *(maintainer)* — stated by a Pekko maintainer in review of this document.
 *(inferred)* — reasoned from code or config defaults, **not yet confirmed**; each has a matching question in §14.
 
-**Draft confidence:** 41 documented / 16 maintainer / 9 inferred. The documented share is unusually high because Pekko's own remoting and serialization docs already state much of the trust model explicitly. The §5a default rulings — previously the largest inferred block — are now answered by the §5b posture statement and §14 Q1 to Q4. What remains inferred is concentrated in the negative claims in §5 (§14 Q7) and the module in/out split (§14 Q6).
+**Draft confidence:** 41 documented / 21 maintainer / 9 inferred. The documented share is unusually high because Pekko's own remoting and serialization docs already state much of the trust model explicitly. The §5a default rulings — previously the largest inferred block — are now answered by the §5b posture statement and §14 Q1 to Q5. What remains inferred is concentrated in the negative claims in §5 (§14 Q7) and the module in/out split (§14 Q6).
 
 ## §1 Overview
 
@@ -92,8 +92,8 @@ A finding must meet its family's precondition to be in-model:
 - **Serialization** — reachable from a message payload deserialized by a **configured, enabled** serializer. Findings reachable only when `allow-java-serialization = on` are judged under §5a.
 - **Cluster / distributed-data** — reachable from gossip or replication traffic originating at an **associated peer**. Per §7 such a peer is trusted, so these are typically out of model unless the finding shows a pre-association reach.
 - **Actor core / streams** — reachable from data the embedding application passes in. Trusted by default; a finding must show the data crosses an application boundary that Pekko itself defines.
-- **Persistence** — reachable from journal or snapshot contents. See §6 on the storage-trust question.
-- **PKI** — reachable from PEM/keystore material. Operator-supplied and trusted; see §14 Q5.
+- **Persistence** — reachable from journal or snapshot contents. The store is trusted *(maintainer — §14 Q5)*, so a finding requiring write access to it is out of model; a defect in Pekko's replay handling is not.
+- **PKI** — reachable from PEM/keystore material. Operator-supplied and trusted per §6.
 
 ---
 
@@ -163,7 +163,7 @@ For a toolkit whose surface is a wire protocol, the useful table is keyed by **m
 | Artery transport | Remote-deployment `Props` | **Yes**, same condition | Operator: `enable-allow-list` |
 | Cluster | Gossip / membership state | From an **associated** peer — trusted per §7 | — |
 | `distributed-data` | Replicated CRDT deltas | From an associated peer — trusted per §7 | — |
-| Persistence | Journal / snapshot contents on replay | Depends on backend trust — **§14 Q5** | App/operator: secure the store |
+| Persistence | Journal / snapshot contents on replay | **No** — the store is trusted *(maintainer — §14 Q5)* | Operator/DBA: secure the store |
 | `pki` | PEM / keystore files | **No** — operator-supplied, trusted | Operator: protect key material |
 | `discovery` | Service-discovery responses (DNS, K8s API) | **Potentially** — depends on the resolver | Operator: trust the discovery mechanism |
 | `io.Tcp` / `io.Udp` | Bytes on an application-bound socket | **Potentially** — depends where the application exposes it | App: it chose to bind, defines the protocol, and owns what it exposes |
@@ -232,7 +232,7 @@ These are the assumptions integrators most often bring with them, and each is wr
 - **JVM deserialization gadget chains** — mitigated by P1 only so long as Java serialization stays off, and only for payloads Pekko itself deserializes; application-level serializers are the application's problem. Pekko integrates **no** serialization filter: `JavaSerializer.fromBinary` performs an unfiltered `ObjectInputStream.readObject` (`actor/.../serialization/Serializer.scala`). An operator who enables Java serialization must supply the allow list themselves through the JVM — `-Djdk.serialFilter` or a process-wide `ObjectInputFilter` — and owns that entirely *(maintainer — §14 Q2)*.
 - **Resource-exhaustion via message volume or size** — see §14 Q8.
 - **DNS / service-discovery spoofing** — `discovery` trusts the resolver it is configured with.
-- **Storage-layer tampering** on persistence journals — see §14 Q5.
+- **Storage-layer tampering** on persistence journals and snapshot stores — the store is trusted, and securing it belongs to whoever administers it *(maintainer — §14 Q5)*.
 
 ---
 
@@ -248,6 +248,7 @@ The operator or embedding application must:
 6. **Consider `untrusted-mode = on` and `enable-allow-list = on`** where peers are less than fully trusted — understanding both are hardening, not boundaries.
 7. **Never place mutually-distrusting tenants in one cluster** *(documented)*.
 8. **Supply passwords by environment substitution, not literals in config files** *(documented)*.
+9. **Secure the persistence store.** Pekko trusts journal and snapshot contents on replay and does not validate them as potentially hostile, so access control and integrity for the database or store are the administrator's responsibility *(maintainer — §14 Q5)*.
 
 ---
 
@@ -291,7 +292,7 @@ Feed this section to scanners and AI triage as a suppression list.
 | --- | --- | --- |
 | `VALID` | Violates a §8 property via an in-scope adversary and input | §6, §7, §8 |
 | `VALID-HARDENING` | No §8 property violated, but the API makes a §11 misuse easy enough to warrant hardening. No CVE by default | §11 |
-| `OUT-OF-MODEL: trusted-input` | Requires control of an input §6 marks trusted (config, PEM material, application-supplied data) | §6 |
+| `OUT-OF-MODEL: trusted-input` | Requires control of an input §6 marks trusted (config, PEM material, journal and snapshot contents, application-supplied data) | §6 |
 | `OUT-OF-MODEL: adversary-not-in-scope` | Requires an associated peer to misbehave, a PKI-tree certificate, or in-JVM code execution | §7 |
 | `OUT-OF-MODEL: unsupported-component` | Lands in a §3 module | §3 |
 | `OUT-OF-MODEL: non-default-build` | Only manifests under a non-default §5a setting — most often `allow-java-serialization = on` | §5a |
@@ -306,7 +307,7 @@ Feed this section to scanners and AI triage as a suppression list.
 
 Each states a **proposed answer**. Confirming or correcting is enough; no need to write prose.
 
-Q1 to Q4 are **answered** and retained in place so that cross-references elsewhere in this document continue to resolve. The remaining questions are open.
+Q1 to Q5 are **answered** and retained in place so that cross-references elsewhere in this document continue to resolve. The remaining questions are open.
 
 **Q1 — The plaintext transport default. ANSWERED *(maintainer)*.**
 `transport` ships `tcp`, so a stock cluster has no peer authentication. **Answer:** the default is a compatibility choice under §5b, not a security claim. Reports route as follows:
@@ -326,7 +327,9 @@ Two things this does **not** dispose of, per §5b.4:
 
 A **bypass of either once enabled** is a separate matter and is **not** covered by that. It violates §8 P5 or P4 respectively, so it is `VALID` at the severity §8 assigns, per §5b.4. The draft proposed `VALID-HARDENING` for this case, which §13 defines as *"No §8 property violated"* — that cannot apply to a bypass of a control §8 credits.
 
-**Q5 — Persistence backend trust.** *Proposed:* journal and snapshot stores are **trusted**; an attacker who can write to the journal is out of model. Confirm — or should replay treat stored bytes as untrusted?
+**Q5 — Persistence backend trust. ANSWERED *(maintainer)*.** **Answer:** journal and snapshot stores are **trusted**. Securing the database or persistence store is the responsibility of whoever administers it, and Pekko does not treat persisted values as potentially compromised on replay. A finding whose precondition is an attacker who can write to the journal or snapshot store is `OUT-OF-MODEL: trusted-input`.
+
+This is a trust statement about the **store**, not a licence for the plugin SPI: a defect in Pekko's own replay handling is in scope per §5b.4.
 
 **Q6 — Module in/out split (§2 table).** *Proposed:* the split shown. Two specific checks: is `kubernetes/` deployment tooling or supported code, and should `osgi` stay in model given its classloading surface?
 
