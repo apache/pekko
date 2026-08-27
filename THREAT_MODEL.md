@@ -360,13 +360,11 @@ Consequently a finding whose precondition is "a cluster member misbehaves" is `O
 
 | Document | Canonical for | Reached by |
 | --- | --- | --- |
-| `docs/src/main/paradox/security/index.md` | Security announcements; the reporting process as published | Readers of the documentation site |
-| [`SECURITY.md`](SECURITY.md) | The reporting policy as GitHub presents it | Anyone arriving via the repository |
+| [`SECURITY.md`](SECURITY.md) | **The reporting policy.** The strongest and canonical statement of how to report and what the project undertakes | Anyone arriving via the repository, and every other document |
 | `THREAT_MODEL.md` (this document) | **Scope** — what is and is not a vulnerability, and how a report is triaged | Reporters, triagers, scanning tools |
+| `docs/src/main/paradox/security/index.md` | Security announcements, and the documentation-site index of security material | Readers of the documentation site |
 
-The other two link to this document rather than restating it, so a change in scope is made in one place. Neither attempts to state scope itself.
-
-**Maintenance note.** The reporting wording is currently duplicated between `SECURITY.md` and `security/index.md`, and the two have drifted apart once already. Until one is reduced to a pointer to the other, a change to either must be made to both.
+Every other document **links** to `SECURITY.md` for the reporting policy and to this document for scope, rather than restating either. A change to the policy is therefore made in one place. Where another document currently carries a reporting statement that `SECURITY.md` does not, that statement is referred to the maintainers for a decision before it is either promoted into `SECURITY.md` or dropped — it is not silently migrated.
 
 **Q11 — The §3/§7 boundary non-goals. ANSWERED *(maintainer)*.** Confirmed:
 
