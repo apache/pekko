@@ -16,7 +16,7 @@
 *(maintainer)* — stated by a Pekko maintainer in review of this document.
 *(inferred)* — reasoned from code or config defaults, **not yet confirmed**; each has a matching question in §14.
 
-**Draft confidence:** 42 documented / 0 maintainer / 14 inferred. The documented share is unusually high because Pekko's own remoting and serialization docs already state much of the trust model explicitly. What remains inferred is concentrated in two places: the negative claims in §5, and the §5a default rulings — which are the answers that most change the model. Both are §14.
+**Draft confidence:** 41 documented / 12 maintainer / 9 inferred. The documented share is unusually high because Pekko's own remoting and serialization docs already state much of the trust model explicitly. The §5a default rulings — previously the largest inferred block — are now answered by the §5b posture statement and §14 Q1, Q3 and Q4. What remains inferred is concentrated in the negative claims in §5 (§14 Q7) and the module in/out split (§14 Q6).
 
 ## §1 Overview
 
@@ -61,7 +61,7 @@ Three caller roles matter, and they are not equally trusted:
 ## §3 Out of scope (explicit non-goals)
 
 - **Test kits, benchmarks, build tooling and documentation sources.** These ship in the repository but are not part of the security-supported surface. A finding in `bench-jmh` or any `*-tests` module is `OUT-OF-MODEL: unsupported-component`. *(inferred — §14 Q6)*
-- **Pekko is not a sandbox.** Actors are not an isolation boundary. Any code running in the JVM can reach any actor's state by ordinary means; the actor model is a concurrency discipline, not a security control. *(inferred — §14 Q4)*
+- **Pekko is not a sandbox.** Actors are not an isolation boundary. Any code running in the JVM can reach any actor's state by ordinary means; the actor model is a concurrency discipline, not a security control. *(maintainer — §14 Q4)*
 - **Pekko is not an authorization framework.** It carries no notion of a principal, role, or permission on a message. Application-level authorization is the embedding application's job. *(inferred — §14 Q11)*
 - **A Pekko cluster is not a multi-tenancy boundary.** The documentation is explicit that *"you'll have to trust all cluster nodes the same in a Pekko cluster anyway"* *(documented — `remote-security.md`)*. Separating mutually-distrusting tenants across nodes of one cluster is not a supported deployment.
 - **Attackers who already control the embedding process** are out of scope — they have already won. *(inferred — §14 Q11)*
@@ -124,16 +124,29 @@ Pekko's security posture is set almost entirely by configuration. **Every row be
 | Setting | Default | Effect | Maintainer stance |
 | --- | --- | --- | --- |
 | `pekko.actor.allow-java-serialization` | `off` | On, exposes the JVM deserialization attack surface to any message payload. Docs: *"highly discouraged to enable in production"* *(documented — `serialization.md`)* | Secure default. Enabling it is a documented deviation — see §14 Q2 |
-| `pekko.remote.artery.transport` | `tcp` | **Plaintext.** No peer authentication and no confidentiality on the wire. `tls-tcp` opts into TLS | **UNRESOLVED — §14 Q1** |
+| `pekko.remote.artery.transport` | `tcp` | **Plaintext.** No peer authentication and no confidentiality on the wire. `tls-tcp` opts into TLS | Compatibility default — §5b, §14 Q1 *(maintainer)* |
 | `pekko.remote.artery.ssl.config-ssl-engine.require-mutual-authentication` | `on` | Both ends present certificates *(documented)* | Secure default |
-| `…ssl.config-ssl-engine.hostname-verification` | `off` | Off, a valid cert from the trusted PKI authenticates regardless of which host presents it. Docs *recommend* `on` but ship `off` *(documented)* | **UNRESOLVED — §14 Q3** |
-| `pekko.remote.artery.untrusted-mode` | `off` | On, blocks inbound system messages, `PossiblyHarmful` messages, remote deployment, remote DeathWatch, and actor selections outside `trusted-selection-paths` *(documented)* | **UNRESOLVED — §14 Q4** |
+| `…ssl.config-ssl-engine.hostname-verification` | `off` | Off, a valid cert from the trusted PKI authenticates regardless of which host presents it. Docs *recommend* `on` but ship `off` *(documented)* | Compatibility default, warned at runtime — §5b, §14 Q3 *(maintainer)* |
+| `pekko.remote.artery.untrusted-mode` | `off` | On, blocks inbound system messages, `PossiblyHarmful` messages, remote deployment, remote DeathWatch, and actor selections outside `trusted-selection-paths` *(documented)* | Hardening; adoption is the operator's call — §5b, §14 Q4 *(maintainer)* |
 | `pekko.remote.artery.trusted-selection-paths` | `[]` | Allow-list of actor paths that may receive selections under untrusted mode *(documented)* | Follows Q4 |
-| `pekko.remote.deployment.enable-allow-list` | `off` | On, restricts which actor classes a peer may remote-deploy *(documented — `remoting.md`)* | **UNRESOLVED — §14 Q4** |
+| `pekko.remote.deployment.enable-allow-list` | `off` | On, restricts which actor classes a peer may remote-deploy *(documented — `remoting.md`)* | Hardening; adoption is the operator's call — §5b, §14 Q4 *(maintainer)* |
 | `pekko.remote.classic.untrusted-mode` | `off` | Classic-remoting equivalent of the artery flag *(reference.conf:381)* | Follows Q4 |
 | `pekko.remote.classic.trusted-selection-paths` | `[]` | As above *(reference.conf:387)* | Follows Q4 |
 | `pekko.remote.classic.netty.tcp.enable-ssl` | `false` | Classic's default transport is plaintext netty TCP *(reference.conf:582)* | Follows Q1 |
 | `pekko.actor.serialize-messages` / `serialize-creators` | `off` | Testing aids that force serialization round-trips. Not security controls. Docs: *"this is only intended for testing"* *(documented — `actor/src/main/resources/reference.conf`)* | Not a security knob |
+
+---
+
+## §5b Security posture: hardening, not secure-by-default
+
+Pekko is a long-lived toolkit whose deployment base is inherited from Akka. Its configuration defaults are chosen for compatibility with those deployments, in which operators have already been tasked with securing the network Pekko runs on and controlling who may reach and message a deployed system. Changing a default to a more restrictive value breaks those deployments on upgrade, sometimes without a clear signal as to why.
+
+Pekko therefore takes the following position *(maintainer)*:
+
+1. **Defaults are compatibility choices, not security claims.** §5a lists every setting whose default affects the security envelope; §10 lists what the operator must do as a result. Read together they are the contract: Pekko states what it does not provide, and states what it expects of the operator instead.
+2. **A report that a default should be more restrictive is not a vulnerability report.** It is a change request, and is closed as `BY-DESIGN: default-configuration` (§13).
+3. **Proposals to change a default are welcome, and belong on the development list.** The PMC will weigh them in good faith on their merits — the compatibility cost, whether a migration path exists, and whether a major version is in flight. Defaults can and do change; they change through project discussion, not as the remediation of a security report.
+4. **If an implementation is wrong, Pekko fixes it.** Where a control does not do what it is documented to do once enabled, that is a defect, in scope, at the severity §8 assigns. This posture governs which value ships as the default — never whether the mechanism works.
 
 ---
 
@@ -167,7 +180,7 @@ For a toolkit whose surface is a wire protocol, the useful table is keyed by **m
 
 **In scope:**
 
-- **An unassociated network attacker** who can reach the remoting port — in a deployment where the operator's isolation assumption has held, this attacker should not exist; where it does, the relevant question is whether they can achieve anything **before** association completes. Pre-association reachability is the sharpest in-model attack surface. *(inferred — §14 Q1)*
+- **An unassociated network attacker** who can reach the remoting port — in a deployment where the operator's isolation assumption has held, this attacker should not exist; where it does, the relevant question is whether they can achieve anything **before** association completes. Pre-association reachability is the sharpest in-model attack surface. *(maintainer — §14 Q1)*
 - **An attacker supplying message content** to an otherwise legitimate peer — e.g. data that originates at the application's own untrusted edge and is forwarded into an actor message. *(inferred — §14 Q11)*
 
 **Explicitly out of scope:**
@@ -197,8 +210,8 @@ For a toolkit whose surface is a wire protocol, the useful table is keyed by **m
 
 ## §9 Security properties Pekko does **not** provide
 
-- **No peer authentication by default.** With the default `transport = tcp` there is no shared secret, no certificate, and no handshake credential. Any host that can reach the port and speak Artery can attempt association. *(inferred from config defaults — §14 Q1)*
-- **No confidentiality or integrity on the wire by default.** Same cause. *(inferred — §14 Q1)*
+- **No peer authentication by default.** With the default `transport = tcp` there is no shared secret, no certificate, and no handshake credential. Any host that can reach the port and speak Artery can attempt association. *(maintainer — §14 Q1; §5b)*
+- **No confidentiality or integrity on the wire by default.** Same cause. *(maintainer — §14 Q1; §5b)*
 - **No intra-cluster authorization.** Once associated, a peer may address any actor in the system. There is no per-actor, per-message, or per-peer permission model. *(documented)*
 - **No Byzantine fault tolerance.** See §7. Cluster protocols assume members are honest; there is no threshold below which arbitrary member behaviour is tolerated. *(documented — `remote-security.md`)*
 - **No bound on blast radius from one compromised node.** Documented explicitly for the PKI case *(documented)*.
@@ -254,9 +267,9 @@ The operator or embedding application must:
 Feed this section to scanners and AI triage as a suppression list.
 
 - **"Remote deployment permits arbitrary class instantiation."** Remote deployment is *not* remote code loading — the class must already be on the target's classpath *(P3, documented)*. Absent a way to introduce a class, this is not RCE.
-- **"Remoting transport defaults to plaintext."** Correct, and by design under the §4 network-isolation assumption. In-model only if the finding shows harm *within* an isolated network — pending §14 Q1.
+- **"Remoting transport defaults to plaintext."** Correct, and by design under the §4 network-isolation assumption. In-model only if the finding shows harm reachable **pre-association**; a request to change the default is `BY-DESIGN: default-configuration` per §5b.
 - **"`PoisonPill` can be sent remotely to shut down a system."** Documented behaviour, gated by `untrusted-mode` *(documented — `remote-security.md`)*.
-- **"`hostname-verification` is disabled by default."** Known and documented, with the trade-off spelled out for dynamic-hostname deployments — pending §14 Q3.
+- **"`hostname-verification` is disabled by default."** Known and documented, with the trade-off spelled out for dynamic-hostname deployments, and warned at runtime under `LogMarker.Security`. A request to change the default is `BY-DESIGN: default-configuration` per §5b.
 - **Findings in `*-tests`, `*-testkit`, `bench-jmh`, `docs`** — `OUT-OF-MODEL: unsupported-component` per §3.
 - **"SHA1PRNG with `/dev/urandom` reuses the seed."** Documented trade-off, deliberately recommended to avoid blocking *(documented)*.
 
@@ -283,6 +296,7 @@ Feed this section to scanners and AI triage as a suppression list.
 | `OUT-OF-MODEL: unsupported-component` | Lands in a §3 module | §3 |
 | `OUT-OF-MODEL: non-default-build` | Only manifests under a non-default §5a setting — most often `allow-java-serialization = on` | §5a |
 | `BY-DESIGN: property-disclaimed` | Concerns a §9 property Pekko explicitly does not provide | §9 |
+| `BY-DESIGN: default-configuration` | Asks that a §5a default be changed to a more restrictive value. Not a vulnerability; §5b.3 invites the proposal on the development list | §5b |
 | `KNOWN-NON-FINDING` | Matches a §11a pattern | §11a |
 | `MODEL-GAP` | Routable to none of the above — triggers §12 | §12 |
 
@@ -292,14 +306,21 @@ Feed this section to scanners and AI triage as a suppression list.
 
 Each states a **proposed answer**. Confirming or correcting is enough; no need to write prose.
 
-**Q1 — The plaintext-default ruling (highest value; reshapes §7, §9, §11a, §13).**
-`transport` ships `tcp`, so a stock cluster has no peer authentication. *Proposed:* the default is the supported production posture **only under the documented network-isolation assumption**, so a report of "unauthenticated peer can associate" is `OUT-OF-MODEL: adversary-not-in-scope` when it assumes internet exposure, but `VALID` if it shows harm reachable **pre-association** from an adjacent-network host. Correct?
+Q1, Q3 and Q4 are **answered** and retained in place so that cross-references elsewhere in this document continue to resolve. The remaining questions are open.
+
+**Q1 — The plaintext transport default. ANSWERED *(maintainer)*.**
+`transport` ships `tcp`, so a stock cluster has no peer authentication. **Answer:** the default is a compatibility choice under §5b, not a security claim. Reports route as follows:
+- "the default should be `tls-tcp`" → `BY-DESIGN: default-configuration`; §5b.3 invites the proposal on the development list.
+- "an unauthenticated peer can associate", assuming internet exposure → `BY-DESIGN: property-disclaimed`; §9 disclaims peer authentication by default. (The draft proposed `OUT-OF-MODEL: adversary-not-in-scope`, which does not fit: §13 defines that disposition as requiring an associated peer, a PKI-tree certificate, or in-JVM execution, and §7 lists the unassociated network attacker as **in scope**.)
+- harm reachable **pre-association** from an adjacent-network host → `VALID`.
 
 **Q2 — `allow-java-serialization`.** *Proposed:* enabling it is a documented deviation, so any deserialization finding requiring it is `OUT-OF-MODEL: non-default-build`. Confirm?
 
-**Q3 — `hostname-verification = off`.** *Proposed:* deliberate, to support dynamic-hostname deployments; a report that "any PKI cert authenticates as any node" is `BY-DESIGN: property-disclaimed` per §9. Confirm — or is `on` the intended posture and the default simply legacy?
+**Q3 — `hostname-verification = off`. ANSWERED *(maintainer)*.** **Answer:** a compatibility default under §5b, deliberate rather than legacy, supporting deployments where hostnames are dynamic and not known up front. Pekko additionally warns at runtime under `LogMarker.Security` whenever TLS is enabled and verification is off, on both transports (`artery/tcp/ConfigSSLEngineProvider.scala`, `transport/netty/SSLEngineProvider.scala`), so the operator is told at startup. A report that "any PKI cert authenticates as any node" is `BY-DESIGN: property-disclaimed` per §9; a report that the default should be `on` is `BY-DESIGN: default-configuration`.
 
-**Q4 — Are `untrusted-mode` and `enable-allow-list` security boundaries or hardening?** *Proposed:* **hardening**, per the documented *"does not give full protection"*. So a bypass of either is `VALID-HARDENING`, not a CVE-class break. Confirm?
+**Q4 — Are `untrusted-mode` and `enable-allow-list` security boundaries or hardening? ANSWERED *(maintainer)*.** **Answer:** both are **hardening** features, per the documented *"does not give full protection"*, and shipping them `off` is a §5b compatibility choice — adoption is the operator's decision. A request that either default to `on` is `BY-DESIGN: default-configuration`.
+
+A **bypass of either once enabled** is a separate matter and is **not** covered by that. It violates §8 P5 or P4 respectively, so it is `VALID` at the severity §8 assigns, per §5b.4. The draft proposed `VALID-HARDENING` for this case, which §13 defines as *"No §8 property violated"* — that cannot apply to a bypass of a control §8 credits.
 
 **Q5 — Persistence backend trust.** *Proposed:* journal and snapshot stores are **trusted**; an attacker who can write to the journal is out of model. Confirm — or should replay treat stored bytes as untrusted?
 
