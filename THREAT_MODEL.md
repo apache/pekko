@@ -16,7 +16,7 @@
 *(maintainer)* — stated by a Pekko maintainer in review of this document.
 *(inferred)* — reasoned from code or config defaults, **not yet confirmed**; each has a matching question in §14.
 
-**Draft confidence:** 41 documented / 43 maintainer / 4 inferred. The documented share is unusually high because Pekko's own remoting and serialization docs already state much of the trust model explicitly. The §5a default rulings — previously the largest inferred block — are now answered by the §5b posture statement and §14 Q1 to Q5. What remains inferred is the residual module in/out split (§14 Q6) and the clock assumption (§14 Q12).
+**Draft confidence:** 43 documented / 44 maintainer / 3 inferred. The documented share is unusually high because Pekko's own remoting and serialization docs already state much of the trust model explicitly. The §5a default rulings — previously the largest inferred block — are now answered by the §5b posture statement and §14 Q1 to Q5. What remains inferred is the residual module in/out split (§14 Q6).
 
 ## §1 Overview
 
@@ -105,7 +105,7 @@ A finding must meet its family's precondition to be in-model:
 - **Runtime.** A conformant JVM. Pekko does not defend against a hostile JVM, a hostile classpath, or an attacker with local code execution in the same process. *(maintainer — §14 Q11)*
 - **Network adjacency.** *"Best practice is that Pekko remoting nodes should only be accessible from the adjacent network."* *(documented — `remote-security.md`)*
 - **PKI scope.** Where TLS is used, every certificate issued by the same internal PKI tree is equivalent: *"there is still a risk that an attacker can gain access to a valid certificate by compromising any node with certificates issued by the same internal PKI tree."* *(documented — `remote-security.md`)*
-- **Clock.** The failure detector and gossip convergence depend on reasonably-behaved local clocks. Pekko does not defend against adversarial clock manipulation on a cluster node. *(inferred — §14 Q12)*
+- **Clock.** Failure detection and gossip do **not** depend on other nodes' clocks: the failure detector reads only the local clock, and gossip ordering uses logical `VectorClock` counters. The exception is `LWWRegister`/`LWWMap`, which merge by wall-clock timestamp and therefore assume reasonably synchronised clocks across writers *(documented — `LWWRegister` scaladoc)*. Pekko does not defend against adversarial clock manipulation on a cluster node *(maintainer — §14 Q12; see Q9)*.
 - **Entropy.** On Linux with SHA1PRNG, the docs recommend `-Djava.security.egd=file:/dev/urandom` to avoid blocking, noting it *"is NOT as secure because it reuses the seed."* *(documented — `remote-security.md`)*
 
 ### What Pekko does not do to its host
@@ -310,7 +310,7 @@ Feed this section to scanners and AI triage as a suppression list.
 
 Each states a **proposed answer**. Confirming or correcting is enough; no need to write prose.
 
-Q1 to Q11 are **answered**, retained in place so that cross-references elsewhere in this document continue to resolve. Q12 and Q13 remain open.
+Q1 to Q12 are **answered**, retained in place so that cross-references elsewhere in this document continue to resolve. Q13 remains open.
 
 **Q1 — The plaintext transport default. ANSWERED *(maintainer)*.**
 `transport` ships `tcp`, so a stock cluster has no peer authentication. **Answer:** the default is a compatibility choice under §5b, not a security claim. Reports route as follows:
@@ -376,9 +376,14 @@ The other two link to this document rather than restating it, so a change in sco
 - Out of the adversary model: an attacker with code execution in the embedding JVM, a hostile classpath, and side-channel observers — Pekko makes no timing or memory-access guarantees of its own. TLS is delegated to the JDK's JSSE, whose own guarantees are unaffected by this disclaimer.
 - **In** the adversary model: attacker-influenced *message content* arriving by the ordinary path, since that is how application data travels. This covers defects in **Pekko's own handling** of that content — a serializer, codec or framing defect reachable from a well-formed message is `VALID` per §5b.4. It does not extend to the application's interpretation of the content, which is the application's responsibility per §6.
 
-**Q12 — Clock assumptions.** The failure detector and gossip convergence depend on
-local clocks. *Proposed:* Pekko makes no claim against adversarial clock manipulation on
-a cluster member — consistent with §7, since such a member is trusted anyway. Confirm?
+**Q12 — Clock assumptions. ANSWERED.** **Pekko has no code that validates or cross-checks another node's clock**, and almost nothing that reads one. Verified:
+
+- **Failure detection uses the local clock only.** `PhiAccrualFailureDetector` records arrival times through its own `clock()` (`remote/.../FailureDetector.scala:60`, used at `PhiAccrualFailureDetector.scala:144` and `:188`). No remote timestamp enters it, so a peer misreporting its clock cannot influence reachability.
+- **The heartbeat timestamp is the sender's own, round-tripped.** `Heartbeat` carries `System.nanoTime()` taken by the sender (`cluster/.../ClusterHeartbeat.scala:130`); the receiver echoes it back verbatim in `HeartbeatRsp` (`:58`); the original sender subtracts it from its own clock (`:251`). No node ever interprets another node's clock value, and the result feeds only a debug log guarded by `verboseHeartbeat` — a peer echoing a false value changes nothing else.
+- **Gossip ordering is logical, not wall-clock.** `VectorClock` is a per-node counter incremented on update (`cluster/.../VectorClock.scala:90-92`).
+- **One exception, and it is documented.** `LWWRegister` and `LWWMap` in `distributed-data` default to `System.currentTimeMillis()` and merge by highest timestamp, so they *do* compare wall-clock values written on different nodes. The class states the constraint: *"Merge takes the register with highest timestamp. Note that this relies on synchronized clocks. `LWWRegister` should only be used when the choice of value is not important for concurrent updates occurring within the clock skew"* *(documented — `LWWRegister` scaladoc)*. A custom `Clock`, or a single-writer pattern such as a Cluster Singleton, is the documented alternative.
+
+**Disposition.** Pekko makes no claim against adversarial clock manipulation on a cluster member: such a member is misbehaving, and Q9 places it out of model. A report that LWW data diverges under clock skew is `BY-DESIGN: property-disclaimed` — the constraint is stated on the type itself.
 
 **Q13 — Classic remoting's place in the supported surface.** Classic remoting is
 deprecated but still shipped and still CI-gated (the "Pekko Classic Remoting Tests" job).
