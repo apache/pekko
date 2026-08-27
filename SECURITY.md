@@ -16,11 +16,6 @@ Please follow the [guidelines laid down by the Apache Security
 team](https://www.apache.org/security/). The Pekko PMC will coordinate
 responsible disclosure with affected upstream maintainers where needed.
 
-Ideally, any issues affecting Apache Pekko and its predecessor project should
-be reported to the Apache Pekko team first. The Pekko PMC will coordinate
-responsible disclosure with the affected upstream maintainers when needed, so a
-cross-project issue does not need to be filed twice.
-
 To receive security announcements, subscribe to the [Apache Announce Mailing
 List](https://lists.apache.org/list.html?announce@apache.org).
 
