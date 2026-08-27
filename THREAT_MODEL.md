@@ -16,7 +16,7 @@
 *(maintainer)* — stated by a Pekko maintainer in review of this document.
 *(inferred)* — reasoned from code or config defaults, **not yet confirmed**; each has a matching question in §14.
 
-**Draft confidence:** 41 documented / 32 maintainer / 9 inferred. The documented share is unusually high because Pekko's own remoting and serialization docs already state much of the trust model explicitly. The §5a default rulings — previously the largest inferred block — are now answered by the §5b posture statement and §14 Q1 to Q5. What remains inferred is concentrated in the residual negative claims in §5 (§14 Q7), each of which now carries a code citation, and the module in/out split (§14 Q6).
+**Draft confidence:** 41 documented / 43 maintainer / 4 inferred. The documented share is unusually high because Pekko's own remoting and serialization docs already state much of the trust model explicitly. The §5a default rulings — previously the largest inferred block — are now answered by the §5b posture statement and §14 Q1 to Q5. What remains inferred is the residual module in/out split (§14 Q6) and the clock assumption (§14 Q12).
 
 ## §1 Overview
 
@@ -62,9 +62,9 @@ Three caller roles matter, and they are not equally trusted:
 
 - **Test kits, benchmarks, build tooling and documentation sources.** These ship in the repository but are not part of the security-supported surface. A finding in `bench-jmh` or any `*-tests` module is `OUT-OF-MODEL: unsupported-component`. *(inferred — §14 Q6)*
 - **Pekko is not a sandbox.** Actors are not an isolation boundary. Any code running in the JVM can reach any actor's state by ordinary means; the actor model is a concurrency discipline, not a security control. *(maintainer — §14 Q4)*
-- **Pekko is not an authorization framework.** It carries no notion of a principal, role, or permission on a message. Application-level authorization is the embedding application's job. *(inferred — §14 Q11)*
+- **Pekko is not an authorization framework.** It carries no notion of a principal, role, or permission on a message. Application-level authorization is the embedding application's job. *(maintainer — §14 Q11)*
 - **A Pekko cluster is not a multi-tenancy boundary.** The documentation is explicit that *"you'll have to trust all cluster nodes the same in a Pekko cluster anyway"* *(documented — `remote-security.md`)*. Separating mutually-distrusting tenants across nodes of one cluster is not a supported deployment.
-- **Attackers who already control the embedding process** are out of scope — they have already won. *(inferred — §14 Q11)*
+- **Attackers who already control the embedding process** are out of scope — they have already won. *(maintainer — §14 Q11)*
 - **This document describes the `apache/pekko` core toolkit.** Its technical content — the §2 component families, the §5a defaults, the §8 properties — is about that codebase. Other Apache Pekko deliverables (Pekko Management, Pekko HTTP, Pekko gRPC, Pekko Connectors, Pekko Projection, the persistence plugins) ship from their own repositories, and this model does not enumerate their surfaces.
 
     That is a limit on **coverage, not on standing**. Reporting and triage are identical across all Pekko repositories: the same address (see [`SECURITY.md`](SECURITY.md)), the same PMC, and the same posture — an implementation defect is Pekko's to fix, while a request to change a default is a change request under §5b, not a vulnerability. A finding in another Pekko repository is **not** `OUT-OF-MODEL: unsupported-component`; that disposition is for the §3 components above, not for code that simply lives elsewhere. *(maintainer — §14 Q6)*
@@ -102,7 +102,7 @@ A finding must meet its family's precondition to be in-model:
 
 ## §5 Assumptions about the environment
 
-- **Runtime.** A conformant JVM. Pekko does not defend against a hostile JVM, a hostile classpath, or an attacker with local code execution in the same process. *(inferred — §14 Q11)*
+- **Runtime.** A conformant JVM. Pekko does not defend against a hostile JVM, a hostile classpath, or an attacker with local code execution in the same process. *(maintainer — §14 Q11)*
 - **Network adjacency.** *"Best practice is that Pekko remoting nodes should only be accessible from the adjacent network."* *(documented — `remote-security.md`)*
 - **PKI scope.** Where TLS is used, every certificate issued by the same internal PKI tree is equivalent: *"there is still a risk that an attacker can gain access to a valid certificate by compromising any node with certificates issued by the same internal PKI tree."* *(documented — `remote-security.md`)*
 - **Clock.** The failure detector and gossip convergence depend on reasonably-behaved local clocks. Pekko does not defend against adversarial clock manipulation on a cluster node. *(inferred — §14 Q12)*
@@ -110,7 +110,7 @@ A finding must meet its family's precondition to be in-model:
 
 ### What Pekko does not do to its host
 
-These are negative claims, rarely written down anywhere, and therefore the highest-value confirmation targets in §14 *(all inferred — §14 Q7)*:
+These are negative claims, rarely written down anywhere. Each is confirmed and carries the citation, or the exception, behind it *(maintainer — §14 Q7)*:
 
 - Installs no signal handlers and spawns no child processes — no `sun.misc.Signal`/`SignalHandler`, `Runtime.exec` or `ProcessBuilder` in the main sources. It does register **one JVM shutdown hook**, via `CoordinatedShutdown` (`actor/.../actor/CoordinatedShutdown.scala:381`).
 - Opens no listening socket of its own accord. Remoting binds when configured; `org.apache.pekko.io.Tcp`/`Udp` (in `pekko-actor`) and `stream.scaladsl.Tcp` (in `pekko-stream`) bind only on an explicit application call. Pekko never binds a port the application did not ask for.
@@ -184,14 +184,14 @@ For a toolkit whose surface is a wire protocol, the useful table is keyed by **m
 **In scope:**
 
 - **An unassociated network attacker** who can reach the remoting port — in a deployment where the operator's isolation assumption has held, this attacker should not exist; where it does, the relevant question is whether they can achieve anything **before** association completes. Pre-association reachability is the sharpest in-model attack surface. *(maintainer — §14 Q1)*
-- **An attacker supplying message content** to an otherwise legitimate peer — e.g. data that originates at the application's own untrusted edge and is forwarded into an actor message. *(inferred — §14 Q11)*
+- **An attacker supplying message content** to an otherwise legitimate peer — e.g. data that originates at the application's own untrusted edge and is forwarded into an actor message. *(maintainer — §14 Q11)*
 
 **Explicitly out of scope:**
 
 - **An associated peer behaving arbitrarily.** There is no Byzantine-peer model. The documentation is direct: *"you'll have to trust all cluster nodes the same in a Pekko cluster anyway"* *(documented)*, and *"as soon as an actor system can connect to another remotely, it may in principle send any possible message to any actor contained within that remote system"* *(documented)*. **A finding whose precondition is "a cluster member misbehaves" is out of model** — there is no honest-majority threshold to state, because the model has no notion of a dishonest member. This generalises to every cluster protocol — cluster membership, sharding, singleton and `distributed-data` alike: **Pekko makes no guarantee of being able to recognise a compromised node.** Failure detection is heartbeat-based (`remote/.../PhiAccrualFailureDetector.scala`), so it identifies members that stop responding, not members that respond dishonestly; a compromised node that keeps heartbeating is indistinguishable from a healthy one. *(maintainer — §14 Q9)*
 - **An attacker holding any certificate from the cluster's PKI tree.** Documented as equivalent to cluster access *(documented)*.
 - **An attacker with code execution in the embedding JVM.** Already inside the trust boundary.
-- **Side-channel observers.** Pekko makes no timing or memory-access guarantees. *(inferred — §14 Q11)*
+- **Side-channel observers.** Pekko makes no timing or memory-access guarantees. *(maintainer — §14 Q11)*
 
 ---
 
@@ -310,7 +310,7 @@ Feed this section to scanners and AI triage as a suppression list.
 
 Each states a **proposed answer**. Confirming or correcting is enough; no need to write prose.
 
-Q1 to Q6, Q8 and Q9 are **answered**, and Q7 partly, all retained in place so that cross-references elsewhere in this document continue to resolve. The remaining questions are open.
+Q1 to Q11 are **answered**, retained in place so that cross-references elsewhere in this document continue to resolve. Q12 and Q13 remain open.
 
 **Q1 — The plaintext transport default. ANSWERED *(maintainer)*.**
 `transport` ships `tcp`, so a stock cluster has no peer authentication. **Answer:** the default is a compatibility choice under §5b, not a security claim. Reports route as follows:
@@ -340,11 +340,13 @@ This is a trust statement about the **store**, not a licence for the plugin SPI:
 - **`kubernetes/` — answered *(maintainer)*.** It is test-cluster provisioning tooling — four files (`setup.sh`, `create-cluster-gke.sh`, `test-node-base.yaml`, `.gitignore`), not a build module. It is correctly out of scope with the build and docs sources. Kubernetes *functionality* — discovery, bootstrap, lease — is not in this repository at all: it lives in **Apache Pekko Management**. That is a different repository, not a different security process: reports are made and triaged exactly as they are for core, per §3.
 - The rest of the in/out split shown in §2 remains the ASF Security team's proposal *(inferred)*.
 
-**Q7 — The negative claims in §5. PARTLY ANSWERED.**
+**Q7 — The negative claims in §5. ANSWERED.**
 
-- **Environment variables — answered *(maintainer)*.** Pekko reads them as part of configuration startup and does not modify them. §5 now states the mechanism.
+- **Environment variables — *(maintainer)*.** Read during configuration startup, never modified. §5 states the mechanism.
 - **Sockets — answered.** The original claim was wrong and is corrected in §2, §5 and §6: `pekko-actor` ships `org.apache.pekko.io.Tcp`/`Udp` and `pekko-stream` ships `Tcp`, `TLS` and `FileIO`, all of which bind or open only on an explicit application call.
-- **Signal handlers, child processes, stdout, process-global state — still open**, but each claim in §5 now carries the citation, or the exception, that a reviewer needs in order to confirm it. Two are narrower than first written: a JVM shutdown hook is registered by `CoordinatedShutdown`, and `StandardOutLogger` does print to stdout during early startup.
+- **Signal handlers and child processes — *(maintainer)*.** None: no `sun.misc.Signal`, `SignalHandler`, `Runtime.exec` or `ProcessBuilder` in the main sources. One JVM shutdown hook is registered by `CoordinatedShutdown`, disclosed in §5; a shutdown hook is not a signal handler.
+- **stdout/stderr — *(maintainer)*.** Logging goes to the configured logger. `StandardOutLogger` prints to stdout during early startup, bounded by `pekko.stdout-loglevel` (default `WARNING`), disclosed in §5.
+- **Process-global state — *(maintainer)*.** Not mutated at initialization: no `System.setProperty`, `Locale.setDefault` or `TimeZone.setDefault`.
 
 **Q8 — Resource guarantees. ANSWERED *(maintainer)*.** **Answer:** **super-linear in message size is a bug; constant-factor is not.** Memory or CPU that grows super-linearly in the size of an inbound message is a defect and is `VALID`; a constant-factor overhead proportional to the message is expected and is not.
 
@@ -356,14 +358,23 @@ Two notes on applying this line:
 
 Consequently a finding whose precondition is "a cluster member misbehaves" is `OUT-OF-MODEL: adversary-not-in-scope`, and so is one that assumes Pekko should have detected the compromise.
 
-**Q10 — Coexistence (meta).** `docs/src/main/paradox/security/index.md` currently lists security documentation. *Proposed:* this document becomes canonical for **scope**, that page stays canonical for **reporting process**, and it gains a link here. Agree?
+**Q10 — Coexistence. ANSWERED *(maintainer)*.** Three documents carry security information, each canonical for one thing:
 
-**Q11 — The §3/§7 boundary non-goals.** *Proposed:* Pekko is not a sandbox, not an
-authorization framework, and the following are out of the adversary model — an attacker
-with code execution in the embedding JVM, a hostile classpath, and side-channel
-observers (no timing or memory-access guarantees). Conversely, an attacker who supplies
-*message content* that reaches an actor via a legitimate peer **is** in scope, since that
-is the ordinary path application data takes. Confirm the split?
+| Document | Canonical for | Reached by |
+| --- | --- | --- |
+| `docs/src/main/paradox/security/index.md` | Security announcements; the reporting process as published | Readers of the documentation site |
+| [`SECURITY.md`](SECURITY.md) | The reporting policy as GitHub presents it | Anyone arriving via the repository |
+| `THREAT_MODEL.md` (this document) | **Scope** — what is and is not a vulnerability, and how a report is triaged | Reporters, triagers, scanning tools |
+
+The other two link to this document rather than restating it, so a change in scope is made in one place. Neither attempts to state scope itself.
+
+**Maintenance note.** The reporting wording is currently duplicated between `SECURITY.md` and `security/index.md`, and the two have drifted apart once already. Until one is reduced to a pointer to the other, a change to either must be made to both.
+
+**Q11 — The §3/§7 boundary non-goals. ANSWERED *(maintainer)*.** Confirmed:
+
+- Pekko is **not a sandbox** and **not an authorization framework** (§3).
+- Out of the adversary model: an attacker with code execution in the embedding JVM, a hostile classpath, and side-channel observers — Pekko makes no timing or memory-access guarantees of its own. TLS is delegated to the JDK's JSSE, whose own guarantees are unaffected by this disclaimer.
+- **In** the adversary model: attacker-influenced *message content* arriving by the ordinary path, since that is how application data travels. This covers defects in **Pekko's own handling** of that content — a serializer, codec or framing defect reachable from a well-formed message is `VALID` per §5b.4. It does not extend to the application's interpretation of the content, which is the application's responsibility per §6.
 
 **Q12 — Clock assumptions.** The failure detector and gossip convergence depend on
 local clocks. *Proposed:* Pekko makes no claim against adversarial clock manipulation on
