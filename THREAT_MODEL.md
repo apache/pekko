@@ -16,7 +16,7 @@
 *(maintainer)* — stated by a Pekko maintainer in review of this document.
 *(inferred)* — reasoned from code or config defaults, **not yet confirmed**; each has a matching question in §14.
 
-**Draft confidence:** 41 documented / 21 maintainer / 9 inferred. The documented share is unusually high because Pekko's own remoting and serialization docs already state much of the trust model explicitly. The §5a default rulings — previously the largest inferred block — are now answered by the §5b posture statement and §14 Q1 to Q5. What remains inferred is concentrated in the negative claims in §5 (§14 Q7) and the module in/out split (§14 Q6).
+**Draft confidence:** 41 documented / 23 maintainer / 10 inferred. The documented share is unusually high because Pekko's own remoting and serialization docs already state much of the trust model explicitly. The §5a default rulings — previously the largest inferred block — are now answered by the §5b posture statement and §14 Q1 to Q5. What remains inferred is concentrated in the negative claims in §5 (§14 Q7) and the module in/out split (§14 Q6).
 
 ## §1 Overview
 
@@ -49,12 +49,12 @@ Three caller roles matter, and they are not equally trusted:
 | Persistence | `persistence`, `persistence-typed`, `persistence-query`, `persistence-shared` | journal / snapshot plugin SPI | **storage backend** | **yes**, boundary at the SPI |
 | PKI | `pki` | PEM/keystore parsing | **reads files** | **yes** |
 | Discovery | `discovery` | service-discovery SPI | **network / DNS** | **yes** |
-| OSGi | `osgi` | bundle activator | classloading | **yes** |
+| OSGi | `osgi` | bundle activator | classloading | **yes** *(maintainer — §14 Q6)* |
 | Test kits | `*-testkit`, `multi-node-testkit`, `*-tests`, `persistence-tck`, `stream-tests-tck` | — | — | **no** — §3 |
 | Benchmarks | `bench-jmh` | — | — | **no** — §3 |
 | Build / docs | `docs`, `project`, `scripts`, `legal`, `kubernetes`, `plugins`, `bill-of-materials`, `scala-nightly` | — | — | **no** — §3 |
 
-*(inferred — the in/out split is the ASF Security team's proposal; see §14 Q6)*
+*(inferred — the in/out split is the ASF Security team's proposal, except `osgi`, which is confirmed in model; see §14 Q6)*
 
 ---
 
@@ -281,7 +281,7 @@ Feed this section to scanners and AI triage as a suppression list.
 - A change to any §5a **default**, particularly `transport`, `untrusted-mode`, or `allow-java-serialization`.
 - A new transport, or a new wire protocol at the remoting layer.
 - Any per-peer or per-actor authorization mechanism — that would create an intra-cluster trust boundary this model says does not exist.
-- Promotion of a §3 module into the supported surface.
+- Promotion of a §3 module into the supported surface, or **removal of a module from it** — `osgi` is a candidate for removal (§14 Q6), and dropping it would move findings there to `OUT-OF-MODEL: unsupported-component`.
 - **A report that cannot be routed to exactly one §13 disposition.** That is evidence of a model gap; the correct response is to revise this document, not to make an ad-hoc call.
 
 ---
@@ -307,7 +307,7 @@ Feed this section to scanners and AI triage as a suppression list.
 
 Each states a **proposed answer**. Confirming or correcting is enough; no need to write prose.
 
-Q1 to Q5 are **answered** and retained in place so that cross-references elsewhere in this document continue to resolve. The remaining questions are open.
+Q1 to Q5 are **answered** and Q6 is partly answered, all retained in place so that cross-references elsewhere in this document continue to resolve. The remaining questions are open.
 
 **Q1 — The plaintext transport default. ANSWERED *(maintainer)*.**
 `transport` ships `tcp`, so a stock cluster has no peer authentication. **Answer:** the default is a compatibility choice under §5b, not a security claim. Reports route as follows:
@@ -331,7 +331,11 @@ A **bypass of either once enabled** is a separate matter and is **not** covered 
 
 This is a trust statement about the **store**, not a licence for the plugin SPI: a defect in Pekko's own replay handling is in scope per §5b.4.
 
-**Q6 — Module in/out split (§2 table).** *Proposed:* the split shown. Two specific checks: is `kubernetes/` deployment tooling or supported code, and should `osgi` stay in model given its classloading surface?
+**Q6 — Module in/out split (§2 table). PARTLY ANSWERED.**
+
+- **`osgi` — answered *(maintainer)*.** It stays **in model**: security reports against it are accepted. It is a barely used feature, and the project may in future remove it rather than carry the maintenance overhead — but while it ships it is supported, and a finding in it is not `OUT-OF-MODEL: unsupported-component`. If it is removed, §12 applies.
+- **`kubernetes/` — still open.** Is it deployment tooling, or supported code? The §2 table currently places it out of scope with the build and docs sources.
+- The rest of the in/out split shown in §2 remains the ASF Security team's proposal *(inferred)*.
 
 **Q7 — The negative claims in §5.** These are inferred and hard to cite. Are any wrong — does Pekko open sockets, read env vars, or mutate process-global state in ways an integrator would not expect?
 
