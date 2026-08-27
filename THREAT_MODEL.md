@@ -16,7 +16,7 @@
 *(maintainer)* — stated by a Pekko maintainer in review of this document.
 *(inferred)* — reasoned from code or config defaults, **not yet confirmed**; each has a matching question in §14.
 
-**Draft confidence:** 41 documented / 23 maintainer / 10 inferred. The documented share is unusually high because Pekko's own remoting and serialization docs already state much of the trust model explicitly. The §5a default rulings — previously the largest inferred block — are now answered by the §5b posture statement and §14 Q1 to Q5. What remains inferred is concentrated in the negative claims in §5 (§14 Q7) and the module in/out split (§14 Q6).
+**Draft confidence:** 41 documented / 26 maintainer / 10 inferred. The documented share is unusually high because Pekko's own remoting and serialization docs already state much of the trust model explicitly. The §5a default rulings — previously the largest inferred block — are now answered by the §5b posture statement and §14 Q1 to Q5. What remains inferred is concentrated in the negative claims in §5 (§14 Q7) and the module in/out split (§14 Q6).
 
 ## §1 Overview
 
@@ -52,7 +52,7 @@ Three caller roles matter, and they are not equally trusted:
 | OSGi | `osgi` | bundle activator | classloading | **yes** *(maintainer — §14 Q6)* |
 | Test kits | `*-testkit`, `multi-node-testkit`, `*-tests`, `persistence-tck`, `stream-tests-tck` | — | — | **no** — §3 |
 | Benchmarks | `bench-jmh` | — | — | **no** — §3 |
-| Build / docs | `docs`, `project`, `scripts`, `legal`, `kubernetes`, `plugins`, `bill-of-materials`, `scala-nightly` | — | — | **no** — §3 |
+| Build / docs | `docs`, `project`, `scripts`, `legal`, `kubernetes` (test-cluster provisioning scripts), `plugins`, `bill-of-materials`, `scala-nightly` | — | — | **no** — §3 |
 
 *(inferred — the in/out split is the ASF Security team's proposal, except `osgi`, which is confirmed in model; see §14 Q6)*
 
@@ -65,6 +65,7 @@ Three caller roles matter, and they are not equally trusted:
 - **Pekko is not an authorization framework.** It carries no notion of a principal, role, or permission on a message. Application-level authorization is the embedding application's job. *(inferred — §14 Q11)*
 - **A Pekko cluster is not a multi-tenancy boundary.** The documentation is explicit that *"you'll have to trust all cluster nodes the same in a Pekko cluster anyway"* *(documented — `remote-security.md`)*. Separating mutually-distrusting tenants across nodes of one cluster is not a supported deployment.
 - **Attackers who already control the embedding process** are out of scope — they have already won. *(inferred — §14 Q11)*
+- **Add-on modules are separate deliverables.** This document covers the `apache/pekko` core toolkit. Apache Pekko Management, Pekko HTTP, Pekko gRPC, Pekko Connectors, Pekko Projection and the persistence plugins each ship from their own repository and are outside its scope — a finding in one of them is `OUT-OF-MODEL: unsupported-component` *for this model*, which is a routing statement and not a dismissal. Such reports are accepted, go to the same address (see [`SECURITY.md`](SECURITY.md)), and are triaged on the same terms: an implementation defect is Pekko's to fix, while a request to change a default is a change request under §5b, not a vulnerability. *(maintainer — §14 Q6)*
 
 ---
 
@@ -307,7 +308,7 @@ Feed this section to scanners and AI triage as a suppression list.
 
 Each states a **proposed answer**. Confirming or correcting is enough; no need to write prose.
 
-Q1 to Q5 are **answered** and Q6 is partly answered, all retained in place so that cross-references elsewhere in this document continue to resolve. The remaining questions are open.
+Q1 to Q6 are **answered**, all retained in place so that cross-references elsewhere in this document continue to resolve. The remaining questions are open.
 
 **Q1 — The plaintext transport default. ANSWERED *(maintainer)*.**
 `transport` ships `tcp`, so a stock cluster has no peer authentication. **Answer:** the default is a compatibility choice under §5b, not a security claim. Reports route as follows:
@@ -331,10 +332,10 @@ A **bypass of either once enabled** is a separate matter and is **not** covered 
 
 This is a trust statement about the **store**, not a licence for the plugin SPI: a defect in Pekko's own replay handling is in scope per §5b.4.
 
-**Q6 — Module in/out split (§2 table). PARTLY ANSWERED.**
+**Q6 — Module in/out split (§2 table). ANSWERED *(maintainer)*, except the residual split noted below.**
 
 - **`osgi` — answered *(maintainer)*.** It stays **in model**: security reports against it are accepted. It is a barely used feature, and the project may in future remove it rather than carry the maintenance overhead — but while it ships it is supported, and a finding in it is not `OUT-OF-MODEL: unsupported-component`. If it is removed, §12 applies.
-- **`kubernetes/` — still open.** Is it deployment tooling, or supported code? The §2 table currently places it out of scope with the build and docs sources.
+- **`kubernetes/` — answered *(maintainer)*.** It is test-cluster provisioning tooling — four files (`setup.sh`, `create-cluster-gke.sh`, `test-node-base.yaml`, `.gitignore`), not a build module. It is correctly out of scope with the build and docs sources. Kubernetes *functionality* — discovery, bootstrap, lease — is not in this repository at all: it lives in **Apache Pekko Management**, a separate deliverable, and is therefore outside this document's scope per §3. Reports against it are accepted on the same terms stated there.
 - The rest of the in/out split shown in §2 remains the ASF Security team's proposal *(inferred)*.
 
 **Q7 — The negative claims in §5.** These are inferred and hard to cite. Are any wrong — does Pekko open sockets, read env vars, or mutate process-global state in ways an integrator would not expect?
