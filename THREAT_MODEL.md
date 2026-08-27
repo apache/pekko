@@ -91,7 +91,7 @@ A finding must meet its family's precondition to be in-model:
 - **Remoting** — reachable from bytes arriving on the Artery transport, *and* the report must state whether it assumes the network-isolation assumption above is intact. A finding that requires an attacker already on the cluster network is judged under §7, not automatically valid.
 - **Serialization** — reachable from a message payload deserialized by a **configured, enabled** serializer. Findings reachable only when `allow-java-serialization = on` are judged under §5a.
 - **Cluster / distributed-data** — reachable from gossip or replication traffic originating at an **associated peer**. Per §7 such a peer is trusted, so these are typically out of model unless the finding shows a pre-association reach.
-- **Actor core / streams** — reachable from data the embedding application passes in. Trusted by default; a finding must show the data crosses an application boundary that Pekko itself defines. **Exception:** where the application binds `io.Tcp`/`io.Udp` or `stream.Tcp`/`stream.TLS`, the bytes arriving on that socket are attacker-controlled, and a parsing or framing defect reachable from them is in model.
+- **Actor core / streams** — reachable from data the embedding application passes in. Trusted by default; a finding must show the data crosses an application boundary that Pekko itself defines.
 - **Persistence** — reachable from journal or snapshot contents. See §6 on the storage-trust question.
 - **PKI** — reachable from PEM/keystore material. Operator-supplied and trusted; see §14 Q5.
 
@@ -153,9 +153,9 @@ For a toolkit whose surface is a wire protocol, the useful table is keyed by **m
 | Persistence | Journal / snapshot contents on replay | Depends on backend trust — **§14 Q5** | App/operator: secure the store |
 | `pki` | PEM / keystore files | **No** — operator-supplied, trusted | Operator: protect key material |
 | `discovery` | Service-discovery responses (DNS, K8s API) | **Potentially** — depends on the resolver | Operator: trust the discovery mechanism |
-| `io.Tcp` / `io.Udp` | Bytes on an application-bound socket | **Yes** | App: it chose to bind, and owns what it exposes |
-| `stream.Tcp` / `stream.TLS` | Bytes on an application-bound stream server | **Yes** | App: as above. Pekko: framing must not break on hostile input |
-| `Framing` / `JsonFraming` | Delimited or length-prefixed frames | **Yes** where fed from a network source | Pekko: bounded by the caller's `maximumFrameLength` |
+| `io.Tcp` / `io.Udp` | Bytes on an application-bound socket | **Potentially** — depends where the application exposes it | App: it chose to bind, defines the protocol, and owns what it exposes |
+| `stream.Tcp` / `stream.TLS` | Bytes on an application-bound stream server | **Potentially** — as above | App: as above. TLS itself is delegated to the JDK's JSSE |
+| `Framing` / `JsonFraming` | Delimited or length-prefixed frames | **Potentially** where fed from a network source | App: supplies `maximumFrameLength`, which bounds frame size |
 | `stream.FileIO` | File contents at an application-supplied path | Depends on the path | App |
 | Config | `application.conf`, system properties | **No** — trusted, part of the deployment | Operator |
 
