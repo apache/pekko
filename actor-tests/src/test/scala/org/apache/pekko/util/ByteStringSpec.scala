@@ -1744,6 +1744,204 @@ class ByteStringSpec extends AnyWordSpec with Matchers with Checkers {
     }
   }
 
+  "ByteString equality" must {
+    // Builds the same content in every internal representation: compacted (ByteString1C),
+    // a slice of a larger array (ByteString1), a two-fragment pair (ByteString2) and a
+    // many-fragment rope (ByteStrings). equals must not depend on which one it is handed.
+    def allRepresentations(bytes: Array[Byte]): List[(String, ByteString)] = {
+      val n = bytes.length
+      val whole = ByteString(bytes)
+      var result = List("compact" -> whole.compact, "whole" -> whole)
+      if (n >= 1) {
+        val padded = ByteString(Array[Byte](0x7F, 0x7F)) ++ whole ++ ByteString(Array[Byte](0x7F))
+        result ::= "sliced" -> padded.drop(2).dropRight(1)
+        result ::= "per-byte rope" -> bytes.map(b => ByteString(Array(b))).reduce(_ ++ _)
+      }
+      if (n >= 2) result ::= "two fragments" -> (ByteString(bytes.take(1)) ++ ByteString(bytes.drop(1)))
+      if (n >= 4) {
+        val q = n / 4
+        result ::= "four fragments" -> (ByteString(bytes.slice(0, q)) ++ ByteString(bytes.slice(q, 2 * q)) ++
+        ByteString(bytes.slice(2 * q, 3 * q)) ++ ByteString(bytes.slice(3 * q, n)))
+        result ::= "uneven fragments" -> (ByteString(bytes.slice(0, 1)) ++ ByteString(bytes.slice(1, 3)) ++
+        ByteString(bytes.slice(3, n)))
+      }
+      result
+    }
+
+    val sizes = List(0, 1, 2, 3, 7, 8, 9, 15, 16, 17, 31, 32, 33, 64, 127, 128, 1000)
+
+    def sample(n: Int): Array[Byte] = Array.tabulate[Byte](n)(i => ((i * 31 + 7) % 251).toByte)
+
+    "hold between all internal representations of the same content" in {
+      for {
+        n <- sizes
+        bytes = sample(n)
+        (leftName, left) <- allRepresentations(bytes)
+        (rightName, right) <- allRepresentations(bytes)
+      } withClue(s"size $n, $leftName vs $rightName: ") {
+        left should ===(right)
+        right should ===(left)
+      }
+    }
+
+    "agree with hashCode for all internal representations" in {
+      for {
+        n <- sizes
+        bytes = sample(n)
+        (leftName, left) <- allRepresentations(bytes)
+        (rightName, right) <- allRepresentations(bytes)
+      } withClue(s"size $n, $leftName vs $rightName: ") {
+        left.hashCode should ===(right.hashCode)
+      }
+    }
+
+    "distinguish content that differs in the first byte" in {
+      for (n <- sizes if n > 0) {
+        val bytes = sample(n)
+        val differing = bytes.clone()
+        differing(0) = (differing(0) ^ 0xFF).toByte
+        for {
+          (leftName, left) <- allRepresentations(bytes)
+          (rightName, right) <- allRepresentations(differing)
+        } withClue(s"size $n, $leftName vs $rightName: ") {
+          left should !==(right)
+          right should !==(left)
+        }
+      }
+    }
+
+    "distinguish content that differs in the last byte" in {
+      for (n <- sizes if n > 0) {
+        val bytes = sample(n)
+        val differing = bytes.clone()
+        differing(n - 1) = (differing(n - 1) ^ 0xFF).toByte
+        for {
+          (leftName, left) <- allRepresentations(bytes)
+          (rightName, right) <- allRepresentations(differing)
+        } withClue(s"size $n, $leftName vs $rightName: ") {
+          left should !==(right)
+        }
+      }
+    }
+
+    "distinguish content of different lengths" in {
+      for (n <- sizes) {
+        val bytes = sample(n)
+        val longer = ByteString(bytes :+ 1.toByte)
+        for ((name, bs) <- allRepresentations(bytes)) withClue(s"size $n, $name: ") {
+          bs should !==(longer)
+          longer should !==(bs)
+        }
+      }
+    }
+
+    "hold against other Seq[Byte] implementations" in {
+      for {
+        n <- sizes
+        bytes = sample(n)
+        (name, bs) <- allRepresentations(bytes)
+      } withClue(s"size $n, $name: ") {
+        bs should ===(bytes.toVector)
+        bytes.toVector should ===(bs)
+        bs should ===(bytes.toList)
+        bs.hashCode should ===(bytes.toVector.hashCode)
+      }
+    }
+
+    "not consider a ByteString equal to a non-Seq value" in {
+      val bs = ByteString(sample(8))
+      bs.equals("not a ByteString") should ===(false)
+      bs.equals(null) should ===(false)
+      bs.equals(42) should ===(false)
+    }
+
+    "let equal ByteStrings of different representations share a Set entry" in {
+      for (n <- sizes if n > 0) {
+        val representations = allRepresentations(sample(n)).map(_._2)
+        withClue(s"size $n: ")(representations.toSet should have size 1)
+      }
+    }
+  }
+
+  "ByteStrings.byteAtUnchecked" must {
+    // byteAtUnchecked memoises the fragment resolved by the previous call, so these exercise
+    // forward, backward and random access as well as the transitions between them.
+    val fragmentLengths = List(1, 5, 2, 8, 1, 16, 3)
+    val expected: Array[Byte] = {
+      var next = 0
+      fragmentLengths.flatMap { len =>
+        val chunk = Array.tabulate[Byte](len)(i => (next + i).toByte)
+        next += len
+        chunk
+      }.toArray
+    }
+    val rope: ByteString = fragmentLengths
+      .foldLeft((ByteString.empty, 0)) { case ((acc, offset), len) =>
+        (acc ++ ByteString(expected.slice(offset, offset + len)), offset + len)
+      }
+      ._1
+
+    "return the right byte when read forwards" in {
+      for (i <- expected.indices) withClue(s"index $i: ")(rope(i) should ===(expected(i)))
+    }
+
+    "return the right byte when read backwards" in {
+      for (i <- expected.indices.reverse) withClue(s"index $i: ")(rope(i) should ===(expected(i)))
+    }
+
+    "return the right byte for repeated reads of the same index" in {
+      for (i <- expected.indices) {
+        rope(i) should ===(expected(i))
+        rope(i) should ===(expected(i))
+      }
+    }
+
+    "return the right byte when alternating between the ends" in {
+      val last = expected.length - 1
+      for (i <- 0 to last / 2) {
+        rope(i) should ===(expected(i))
+        rope(last - i) should ===(expected(last - i))
+      }
+    }
+
+    "produce the same bytes as toArray and the iterator" in {
+      rope.toArray should ===(expected)
+      rope.iterator.toArray should ===(expected)
+    }
+
+    "still reject out of range indices" in {
+      an[IndexOutOfBoundsException] should be thrownBy rope(-1)
+      an[IndexOutOfBoundsException] should be thrownBy rope(expected.length)
+    }
+
+    "return the right byte when read concurrently from several threads" in {
+      // The memoised fragment is shared mutable state read without synchronisation, so a torn
+      // or stale value must never produce a wrong byte.
+      val threads = 8
+      val readsPerThread = 20000
+      val mismatches = new java.util.concurrent.atomic.AtomicInteger(0)
+      val workers = (0 until threads).map { t =>
+        val thread = new Thread(() => {
+          val random = new scala.util.Random(t)
+          var read = 0
+          while (read < readsPerThread) {
+            val i = t % 3 match {
+              case 0 => random.nextInt(expected.length)
+              case 1 => read % expected.length
+              case _ => expected.length - 1 - (read % expected.length)
+            }
+            if (rope(i) != expected(i)) mismatches.incrementAndGet()
+            read += 1
+          }
+        })
+        thread.start()
+        thread
+      }
+      workers.foreach(_.join())
+      mismatches.get should ===(0)
+    }
+  }
+
   "A ByteString" must {
     "have correct size" when {
       "concatenating" in { check((a: ByteString, b: ByteString) => (a ++ b).size == a.size + b.size) }
