@@ -16,7 +16,7 @@
 *(maintainer)* — stated by a Pekko maintainer in review of this document.
 *(inferred)* — reasoned from code or config defaults, **not yet confirmed**; each has a matching question in §14.
 
-**Provenance mix:** 43 documented / 48 maintainer / 3 inferred. The documented share is unusually high because Pekko's own remoting and serialization docs already state much of the trust model explicitly. The §5a default rulings — previously the largest inferred block — are now answered by the §5b posture statement and §14 Q1 to Q5. What remains inferred is the residual module in/out split (§14 Q6).
+**Provenance mix:** 43 documented / 48 maintainer / 3 inferred. The §5a default rulings — previously the largest inferred block — are now answered by the §5b posture statement and §14 Q1 to Q5. What remains inferred is the residual module in/out split (§14 Q6).
 
 ## §1 Overview
 
@@ -112,7 +112,7 @@ A finding must meet its family's precondition to be in-model:
 
 These are negative claims, rarely written down anywhere. Each is confirmed and carries the citation, or the exception, behind it *(maintainer — §14 Q7)*:
 
-- Installs no signal handlers and spawns no child processes — no `sun.misc.Signal`/`SignalHandler`, `Runtime.exec` or `ProcessBuilder` in the main sources. It does register **one JVM shutdown hook**, via `CoordinatedShutdown` (`actor/.../actor/CoordinatedShutdown.scala:381`).
+- Installs no signal handlers and spawns no child processes — no `sun.misc.Signal`/`SignalHandler`, `Runtime.exec` or `ProcessBuilder` in the main sources. It does register **two JVM shutdown hooks**: one via `CoordinatedShutdown` (`actor/.../actor/CoordinatedShutdown.scala:381`), and one in remoting (`remote/.../artery/ArteryTransport.scala:392`) registered on transport start. The second is conditional on `pekko.jvm-shutdown-hooks`, which `actor/src/main/resources/reference.conf:98` ships as `on`, so both are present under default configuration on any node running Artery. *(maintainer — corrected in review, samueleresca 2026-08-27)*
 - Opens no listening socket of its own accord. Remoting binds when configured; `org.apache.pekko.io.Tcp`/`Udp` (in `pekko-actor`) and `stream.scaladsl.Tcp` (in `pekko-stream`) bind only on an explicit application call. Pekko never binds a port the application did not ask for.
 - **Reads environment variables during configuration startup, but never modifies them** *(maintainer — §14 Q7)*. Pekko itself calls neither `System.getenv` nor `sys.env` anywhere in the main sources; environment values reach it only through HOCON `${?VAR}` substitution when `ConfigFactory.load` resolves the configuration (`actor/.../actor/ActorSystem.scala:281`). That path is deliberate and documented — it is how the docs tell operators to supply passwords (§10.8).
 - Writes to logging via the configured logger. One exception: `StandardOutLogger` prints to stdout with `println` (`actor/.../event/Logging.scala:1024` onward). It carries the very early startup log, before the configured loggers are running, and is bounded by `pekko.stdout-loglevel`, which defaults to `WARNING`.
@@ -346,7 +346,7 @@ This is a trust statement about the **store**, not a licence for the plugin SPI:
 
 - **Environment variables — *(maintainer)*.** Read during configuration startup, never modified. §5 states the mechanism.
 - **Sockets — answered.** The original claim was wrong and is corrected in §2, §5 and §6: `pekko-actor` ships `org.apache.pekko.io.Tcp`/`Udp` and `pekko-stream` ships `Tcp`, `TLS` and `FileIO`, all of which bind or open only on an explicit application call.
-- **Signal handlers and child processes — *(maintainer)*.** None: no `sun.misc.Signal`, `SignalHandler`, `Runtime.exec` or `ProcessBuilder` in the main sources. One JVM shutdown hook is registered by `CoordinatedShutdown`, disclosed in §5; a shutdown hook is not a signal handler.
+- **Signal handlers and child processes — *(maintainer)*.** None: no `sun.misc.Signal`, `SignalHandler`, `Runtime.exec` or `ProcessBuilder` in the main sources. **Two** JVM shutdown hooks are registered — `CoordinatedShutdown` and, when `pekko.jvm-shutdown-hooks` is on (the shipped default), Artery's transport — both disclosed in §5; a shutdown hook is not a signal handler.
 - **stdout/stderr — *(maintainer)*.** Logging goes to the configured logger. `StandardOutLogger` prints to stdout during early startup, bounded by `pekko.stdout-loglevel` (default `WARNING`), disclosed in §5.
 - **Process-global state — *(maintainer)*.** Not mutated at initialization: no `System.setProperty`, `Locale.setDefault` or `TimeZone.setDefault`.
 
