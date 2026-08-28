@@ -73,6 +73,16 @@ private[remote] class DefaultMessageDispatcher(
 
   private val remoteDaemon = provider.remoteDaemon
 
+  /**
+   * <p>
+   *   Opentelemetry Java Instrumentation relies on this method so avoid changing it. The agent makes the
+   *   received context current while the message is delivered. `EndpointReader.dispatchMessage` reads like
+   *   the natural hook but is inlined away by the compiler, so this is the method that is matched.
+   *   See https://github.com/apache/pekko/issues/3472
+   * </p>
+   */
+  // see https://github.com/open-telemetry/opentelemetry-java-instrumentation/pull/19823
+  @noinline // Not inlined so that the agent can match the method in the bytecode
   override def dispatch(
       recipient: InternalActorRef,
       recipientAddress: Address,
@@ -943,6 +953,16 @@ private[remote] class EndpointWriter(
       trySendPureAck()
   }
 
+  /**
+   * <p>
+   *   Opentelemetry Java Instrumentation relies on this method so avoid changing it. The agent restores the
+   *   context captured by `EndpointManager.Send` while the message is serialized, which can happen much
+   *   later than the send when the endpoint buffers.
+   *   See https://github.com/apache/pekko/issues/3472
+   * </p>
+   */
+  // see https://github.com/open-telemetry/opentelemetry-java-instrumentation/pull/19823
+  @noinline // Not inlined so that the agent can match the method in the bytecode
   def writeSend(s: Send): Boolean =
     try {
       handle match {

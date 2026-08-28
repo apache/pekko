@@ -52,6 +52,16 @@ abstract class RemoteInstrument {
    * MUST be >=1 and <32.
    *
    * Values between 1 and 7 are reserved for Pekko internal use.
+   *
+   * Identifiers known to be taken, listed so that a new implementation can pick a free one without having
+   * to grep other projects for collisions:
+   *
+   *  - 0: Lightbend Telemetry (Cinnamon)
+   *  - 1: Pekko's own `LoggingRemoteInstrument`
+   *  - 8: Kamon
+   *  - 9: Opentelemetry Java Instrumentation
+   *
+   * See https://github.com/apache/pekko/issues/3472
    */
   def identifier: Byte
 
@@ -190,6 +200,16 @@ private[remote] final class RemoteInstruments(
   // does any of the instruments want serialization timing?
   private val serializationTimingEnabled = instruments.exists(_.serializationTimingEnabled)
 
+  /**
+   * <p>
+   *   Opentelemetry Java Instrumentation relies on this method so avoid changing it. A `RemoteInstrument`
+   *   is only handed the message, so the agent uses this method to associate the envelope being serialized
+   *   with the instrument that writes the context metadata.
+   *   See https://github.com/apache/pekko/issues/3472
+   * </p>
+   */
+  // see https://github.com/open-telemetry/opentelemetry-java-instrumentation/pull/19823
+  @noinline // Not inlined so that the agent can match the method in the bytecode
   def serialize(outboundEnvelope: OptionVal[OutboundEnvelope], buffer: ByteBuffer): Unit = {
     if (instruments.nonEmpty && outboundEnvelope.isDefined) {
       val startPos = buffer.position()
@@ -251,6 +271,16 @@ private[remote] final class RemoteInstruments(
     }
   }
 
+  /**
+   * <p>
+   *   Opentelemetry Java Instrumentation relies on this method so avoid changing it. It is the inbound
+   *   counterpart of `serialize` and associates the envelope with the instrument that reads the context
+   *   metadata.
+   *   See https://github.com/apache/pekko/issues/3472
+   * </p>
+   */
+  // see https://github.com/open-telemetry/opentelemetry-java-instrumentation/pull/19823
+  @noinline // Not inlined so that the agent can match the method in the bytecode
   def deserialize(inboundEnvelope: InboundEnvelope): Unit = {
     if (inboundEnvelope.flag(EnvelopeBuffer.MetadataPresentFlag)) {
       inboundEnvelope.envelopeBuffer.byteBuffer.position(EnvelopeBuffer.MetadataContainerAndLiteralSectionOffset)
@@ -408,7 +438,17 @@ private[remote] object RemoteInstruments {
   def getKey(kl: Int): Byte = (kl >>> 26).toByte
   def getLength(kl: Int): Int = kl & lengthMask
 
+  /**
+   * <p>
+   *   Opentelemetry Java Instrumentation relies on this method so avoid changing it. The agent appends its
+   *   own `RemoteInstrument` to the returned vector, which is what lets it propagate context without users
+   *   having to add it to `pekko.remote.artery.advanced.instruments`.
+   *   See https://github.com/apache/pekko/issues/3472
+   * </p>
+   */
+  // see https://github.com/open-telemetry/opentelemetry-java-instrumentation/pull/19823
   @InternalStableApi
+  @noinline // Not inlined so that the agent can match the method in the bytecode
   def create(system: ExtendedActorSystem, @nowarn("msg=never used") log: LoggingAdapter): Vector[RemoteInstrument] = {
     val c = system.settings.config
     val path = "pekko.remote.artery.advanced.instruments"
