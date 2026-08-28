@@ -510,8 +510,15 @@ See also a description of the settings in the @ref:[Remote Configuration](remoti
 
 @@@ note
 
-When using SHA1PRNG on Linux it's recommended specify `-Djava.security.egd=file:/dev/urandom` as argument
-to the JVM to prevent blocking. It is NOT as secure because it reuses the seed.
+`random-number-generator` defaults to the platform `SecureRandom`, which is the recommended
+setting. `SHA1PRNG` is a legacy algorithm: it draws a single seed at startup and never reseeds,
+where the platform default mixes fresh kernel randomness into every request.
+
+On Linux the seed comes from `securerandom.source` (`file:/dev/random` by default), overridable
+with `-Djava.security.egd`. On older kernels `/dev/random` could block on hosts with little
+entropy, which is the origin of the frequently suggested
+`-Djava.security.egd=file:/dev/urandom`; current kernels do not block once the pool is seeded
+at boot.
 
 @@@
 
