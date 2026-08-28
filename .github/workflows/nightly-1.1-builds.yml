@@ -48,7 +48,7 @@ jobs:
           DEVELOCITY_ACCESS_KEY: ${{ secrets.DEVELOCITY_ACCESS_KEY }}
         run: |-
           sbt \
-            -Djava.security.egd=file:/dev/./urandom \
+            -Djava.security.egd=file:/dev/urandom \
             -Dpekko.test.sigar=true \
             -Dpekko.cluster.assert=on \
             -Dpekko.test.timefactor=2 \
@@ -105,7 +105,7 @@ jobs:
         # note that this is not running any multi-jvm tests because multi-in-test=false
         run: |-
           sbt \
-          -Djava.security.egd=file:/dev/./urandom \
+          -Djava.security.egd=file:/dev/urandom \
           -Dpekko.remote.artery.enabled=off \
           -Dpekko.test.timefactor=2 \
           -Dpekko.actor.testkit.typed.timefactor=2 \

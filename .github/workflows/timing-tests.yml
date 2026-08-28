@@ -50,7 +50,7 @@ jobs:
           DEVELOCITY_ACCESS_KEY: ${{ secrets.DEVELOCITY_ACCESS_KEY }}
         run: |-
           sbt \
-            -Djava.security.egd=file:/dev/./urandom \
+            -Djava.security.egd=file:/dev/urandom \
             -Dpekko.cluster.assert=on \
             -Dpekko.test.timefactor=2 \
             -Dpekko.actor.testkit.typed.timefactor=2 \
