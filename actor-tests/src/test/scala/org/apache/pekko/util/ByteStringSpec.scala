@@ -1744,6 +1744,185 @@ class ByteStringSpec extends AnyWordSpec with Matchers with Checkers {
     }
   }
 
+  "ByteString.copyToArray with a source offset" must {
+    // Same content in every internal representation, so the new overload is exercised against
+    // the compacted, sliced, two-fragment and multi-fragment layouts.
+    def representations(bytes: Array[Byte]): List[(String, ByteString)] = {
+      val n = bytes.length
+      val whole = ByteString(bytes)
+      var result = List("compact" -> whole.compact, "whole" -> whole)
+      if (n >= 1) {
+        val padded = ByteString(Array[Byte](0x7F, 0x7F)) ++ whole ++ ByteString(Array[Byte](0x7F))
+        result ::= "sliced" -> padded.drop(2).dropRight(1)
+        result ::= "per-byte rope" -> bytes.map(b => ByteString(Array(b))).reduce(_ ++ _)
+      }
+      if (n >= 2) result ::= "two fragments" -> (ByteString(bytes.take(1)) ++ ByteString(bytes.drop(1)))
+      if (n >= 4) {
+        val q = n / 4
+        result ::= "four fragments" -> (ByteString(bytes.slice(0, q)) ++ ByteString(bytes.slice(q, 2 * q)) ++
+        ByteString(bytes.slice(2 * q, 3 * q)) ++ ByteString(bytes.slice(3 * q, n)))
+      }
+      result
+    }
+
+    def sample(n: Int): Array[Byte] = Array.tabulate[Byte](n)(i => ((i * 31 + 7) % 251).toByte)
+
+    "copy the same bytes as slice(...).copyToArray, for every offset and length" in {
+      for (n <- List(0, 1, 2, 3, 8, 16, 17, 64)) {
+        val bytes = sample(n)
+        for {
+          (name, bs) <- representations(bytes)
+          srcOffset <- -1 to n
+          destOffset <- List(0, 1, 3)
+          len <- List(0, 1, 3, n, n + 5)
+        } withClue(s"size $n, $name, srcOffset $srcOffset, destOffset $destOffset, len $len: ") {
+          val destSize = n + 8
+          val actual = Array.fill[Byte](destSize)(0x7F.toByte)
+          val expected = Array.fill[Byte](destSize)(0x7F.toByte)
+          val expectedCopied =
+            if (srcOffset < 0 || len <= 0 || srcOffset >= n) 0
+            else math.max(0, math.min(math.min(len, n - srcOffset), destSize - destOffset))
+          if (expectedCopied > 0) System.arraycopy(bytes, srcOffset, expected, destOffset, expectedCopied)
+
+          bs.copyToArray(srcOffset, actual, destOffset, len) should ===(expectedCopied)
+          actual should ===(expected)
+        }
+      }
+    }
+
+    "clamp out of range arguments instead of throwing" in {
+      val bs = ByteString(sample(8))
+      val dest = new Array[Byte](8)
+      bs.copyToArray(-1, dest, 0, 4) should ===(0)
+      bs.copyToArray(0, dest, -1, 4) should ===(0)
+      bs.copyToArray(8, dest, 0, 4) should ===(0)
+      bs.copyToArray(100, dest, 0, 4) should ===(0)
+      bs.copyToArray(0, dest, 0, 0) should ===(0)
+      bs.copyToArray(0, dest, 0, -1) should ===(0)
+      bs.copyToArray(0, dest, 8, 4) should ===(0)
+    }
+
+    "not write past the end of the destination" in {
+      val bs = ByteString(sample(64))
+      val dest = Array.fill[Byte](10)(0x7F.toByte)
+      bs.copyToArray(0, dest, 6, 64) should ===(4)
+      dest.take(6) should ===(Array.fill[Byte](6)(0x7F.toByte))
+    }
+
+    "leave an empty ByteString as a no-op" in {
+      val dest = Array.fill[Byte](4)(0x7F.toByte)
+      ByteString.empty.copyToArray(0, dest, 0, 4) should ===(0)
+      dest should ===(Array.fill[Byte](4)(0x7F.toByte))
+    }
+
+    // A fragmented ByteString locates the starting fragment through a cached hint, which is only
+    // a shortcut when the next call lands on or after the remembered fragment. These walk a rope
+    // forwards, backwards and in a scattered order so the hit, resume-forward and rescan paths
+    // are all taken, and each result is checked against the same copy made from the flat bytes.
+    "copy correctly under repeated access on a fragmented ByteString" in {
+      val bytes = sample(200)
+      val rope = (0 until 200 by 7).map(i => ByteString(bytes.slice(i, math.min(i + 7, 200)))).reduce(_ ++ _)
+      val forwards = 0 until 200 by 3
+      val orders =
+        List("forwards" -> forwards, "backwards" -> forwards.reverse,
+          "scattered" -> forwards.sortBy(i => (i * 71) % 97))
+      for {
+        (orderName, offsets) <- orders
+        len <- List(1, 5, 20)
+        srcOffset <- offsets
+      } withClue(s"$orderName, srcOffset $srcOffset, len $len: ") {
+        val actual = Array.fill[Byte](len)(0x7F.toByte)
+        val expected = Array.fill[Byte](len)(0x7F.toByte)
+        val copied = math.min(len, 200 - srcOffset)
+        System.arraycopy(bytes, srcOffset, expected, 0, copied)
+
+        rope.copyToArray(srcOffset, actual, 0, len) should ===(copied)
+        actual should ===(expected)
+      }
+    }
+  }
+
+  "ByteString.decodeString over a range" must {
+    def representations(bytes: Array[Byte]): List[(String, ByteString)] = {
+      val n = bytes.length
+      val whole = ByteString(bytes)
+      var result = List("compact" -> whole.compact, "whole" -> whole)
+      if (n >= 1) {
+        val padded = ByteString(Array[Byte](0x7F, 0x7F)) ++ whole ++ ByteString(Array[Byte](0x7F))
+        result ::= "sliced" -> padded.drop(2).dropRight(1)
+        result ::= "per-byte rope" -> bytes.map(b => ByteString(Array(b))).reduce(_ ++ _)
+      }
+      if (n >= 2) result ::= "two fragments" -> (ByteString(bytes.take(1)) ++ ByteString(bytes.drop(1)))
+      result
+    }
+
+    val texts = List("", "a", "hello world", "Content-Type: application/json", "héllo wörld", "\u00e9\u00e8\u00ea")
+
+    "decode the same string as slice(...).decodeString" in {
+      for (text <- texts) {
+        val bytes = text.getBytes(StandardCharsets.UTF_8)
+        val n = bytes.length
+        for {
+          (name, bs) <- representations(bytes)
+          from <- -1 to n
+          until <- -1 to n + 1
+        } withClue(s"[$text], $name, from $from, until $until: ") {
+          val start = math.max(0, from)
+          val end = math.min(n, until)
+          val expected = if (start >= end) "" else new String(bytes, start, end - start, StandardCharsets.UTF_8)
+          bs.decodeString(StandardCharsets.UTF_8, from, until) should ===(expected)
+          bs.decodeString(StandardCharsets.UTF_8, from, until) should ===(bs.slice(start, end).decodeString(
+            StandardCharsets.UTF_8))
+        }
+      }
+    }
+
+    "return the empty string for an empty or inverted range" in {
+      val bs = ByteString("hello".getBytes(StandardCharsets.UTF_8))
+      bs.decodeString(StandardCharsets.UTF_8, 2, 2) should ===("")
+      bs.decodeString(StandardCharsets.UTF_8, 3, 1) should ===("")
+      bs.decodeString(StandardCharsets.UTF_8, 10, 20) should ===("")
+      bs.decodeString(StandardCharsets.UTF_8, -5, -1) should ===("")
+      ByteString.empty.decodeString(StandardCharsets.UTF_8, 0, 1) should ===("")
+    }
+
+    "clamp a range that runs past the end" in {
+      val bs = ByteString("hello".getBytes(StandardCharsets.UTF_8))
+      bs.decodeString(StandardCharsets.UTF_8, 3, 99) should ===("lo")
+      bs.decodeString(StandardCharsets.UTF_8, -3, 2) should ===("he")
+    }
+
+    "decode a multi-byte character that spans two fragments" in {
+      // 'é' is two bytes in UTF-8; split the ByteString between them
+      val bytes = "aéb".getBytes(StandardCharsets.UTF_8)
+      val split = ByteString(bytes.take(2)) ++ ByteString(bytes.drop(2))
+      split.decodeString(StandardCharsets.UTF_8, 0, bytes.length) should ===("aéb")
+      split.decodeString(StandardCharsets.UTF_8, 1, 3) should ===("é")
+    }
+
+    // A range that stays inside one fragment is decoded from that fragment's array directly,
+    // while one that straddles fragments has to gather the bytes first. Walk every range of a
+    // rope whose fragment boundaries fall inside multi-byte characters, so both paths are taken
+    // and are checked against decoding the same range out of the flat bytes.
+    "decode every range of a fragmented ByteString, within and across fragments" in {
+      val text = "Content-Type: application/json; charset=utf-8 \u00e9\u00e8\u00ea \u4f60\u597d"
+      val bytes = text.getBytes(StandardCharsets.UTF_8)
+      val n = bytes.length
+      for (fragSize <- List(1, 2, 3, 5, 16)) {
+        val rope = (0 until n by fragSize)
+          .map(i => ByteString(bytes.slice(i, math.min(i + fragSize, n))))
+          .reduce(_ ++ _)
+        for {
+          from <- 0 to n
+          until <- from to n
+        } withClue(s"fragSize $fragSize, from $from, until $until: ") {
+          rope.decodeString(StandardCharsets.UTF_8, from, until) should ===(
+            new String(bytes, from, until - from, StandardCharsets.UTF_8))
+        }
+      }
+    }
+  }
+
   "ByteString equality" must {
     // Builds the same content in every internal representation: compacted (ByteString1C),
     // a slice of a larger array (ByteString1), a two-fragment pair (ByteString2) and a
