@@ -28,6 +28,38 @@ import pekko.testkit.{ EventFilter, ImplicitSender, PekkoSpec, TestProbe }
 class TcpDnsClientSpec extends PekkoSpec with ImplicitSender {
   import TcpDnsClient._
 
+  "The TCP DNS length prefix" should {
+    // RFC 1035 section 4.2.2: each message is prefixed by its length as two big endian bytes.
+
+    "round trip every representable length" in {
+      for (length <- 0 to 65535) withClue(s"length $length: ") {
+        val encoded = encodeLength(length)
+        encoded.length should ===(2)
+        decodeLength(encoded) should ===(length)
+      }
+    }
+
+    "encode the length as two big endian bytes" in {
+      encodeLength(0) should ===(pekko.util.ByteString(0, 0))
+      encodeLength(1) should ===(pekko.util.ByteString(0, 1))
+      encodeLength(255) should ===(pekko.util.ByteString(0, 255.toByte))
+      encodeLength(256) should ===(pekko.util.ByteString(1, 0))
+      encodeLength(65535) should ===(pekko.util.ByteString(255.toByte, 255.toByte))
+    }
+
+    "decode lengths whose bytes have the high bit set" in {
+      // the bytes are unsigned on the wire; a naive signed conversion gets these wrong
+      decodeLength(pekko.util.ByteString(0, 255.toByte)) should ===(255)
+      decodeLength(pekko.util.ByteString(255.toByte, 0)) should ===(65280)
+      decodeLength(pekko.util.ByteString(255.toByte, 255.toByte)) should ===(65535)
+      decodeLength(pekko.util.ByteString(128.toByte, 128.toByte)) should ===(32896)
+    }
+
+    "ignore any bytes after the two byte prefix" in {
+      decodeLength(pekko.util.ByteString(1, 2, 3, 4, 5)) should ===(258)
+    }
+  }
+
   "The async TCP DNS client" should {
     val exampleRequestMessage =
       Message(42, MessageFlags(), questions = Seq(Question("pekko.io", RecordType.A, RecordClass.IN)))
