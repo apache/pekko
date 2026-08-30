@@ -206,7 +206,11 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
       serializer match {
         case s2: SerializerWithStringManifest => s2.fromBinary(bytes, manifest)
         case s1                               =>
-          if (manifest == "")
+          if (manifest == "" || !s1.includeManifest)
+            // A conforming peer only sends a manifest for a serializer that asks for one
+            // (see `Serializers.manifestFor`), and a serializer with `includeManifest = false`
+            // ignores the type hint anyway. Resolving a class named by the wire that will not
+            // be used only exposes class loading to whoever wrote the message.
             s1.fromBinary(bytes, None)
           else {
             val cache = manifestCache.get
