@@ -355,7 +355,8 @@ private[remote] class ArteryTcpTransport(
       Flow[ByteString]
         .via(inboundKillSwitch.flow)
         // must create new FlightRecorder event sink for each connection because they can't be shared
-        .via(new TcpFraming(settings.Advanced.TcpMagicValues, flightRecorder))
+        .via(new TcpFraming(settings.Advanced.TcpMagicValues, flightRecorder,
+          settings.Advanced.MaximumFrameSize, settings.Advanced.MaximumLargeFrameSize))
         .alsoTo(inboundStream)
         .filter(_ => false) // don't send back anything in this TCP socket
         .map(_ => ByteString.empty) // make it a Flow[ByteString] again

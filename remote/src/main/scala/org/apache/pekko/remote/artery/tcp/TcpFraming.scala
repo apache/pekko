@@ -79,7 +79,9 @@ import pekko.util.ByteString
  */
 @InternalApi private[pekko] class TcpFraming(
     acceptedMagic: immutable.Seq[ByteString] = List(TcpFraming.DefaultMagic),
-    flightRecorder: RemotingFlightRecorder = NoOpRemotingFlightRecorder)
+    flightRecorder: RemotingFlightRecorder = NoOpRemotingFlightRecorder,
+    maximumFrameSize: Int = Int.MaxValue,
+    maximumLargeFrameSize: Int = Int.MaxValue)
     extends ByteStringParser[EnvelopeBuffer] {
 
   private val magicLength = acceptedMagic.head.length
@@ -102,15 +104,31 @@ import pekko.util.ByteString
       }
     }
     case object ReadStreamId extends Step {
-      override def parse(reader: ByteReader): ParseResult[EnvelopeBuffer] =
-        ParseResult(None, ReadFrame(reader.readByte()))
+      override def parse(reader: ByteReader): ParseResult[EnvelopeBuffer] = {
+        val streamId = reader.readByte()
+        // A connection carries a single stream for its lifetime; the large-message
+        // stream is allowed bigger frames than the control and ordinary streams.
+        val maxFrameSize =
+          if (streamId == ArteryTransport.LargeStreamId) maximumLargeFrameSize else maximumFrameSize
+        ParseResult(None, ReadFrame(streamId, maxFrameSize))
+      }
     }
-    case class ReadFrame(streamId: Int) extends Step {
+    case class ReadFrame(streamId: Int, maxFrameSize: Int) extends Step {
       override def onTruncation(): Unit =
         failStage(new FramingException("Stream finished but there was a truncated final frame in the buffer"))
 
       override def parse(reader: ByteReader): ParseResult[EnvelopeBuffer] = {
         val frameLength = reader.readIntLE()
+        // frameLength is read from the wire before any data is buffered; reject an
+        // out-of-range value here so a peer cannot drive a huge allocation (which
+        // would be a fatal OutOfMemoryError on the shared inbound stream) by
+        // declaring an oversized or negative frame. FramingException tears down
+        // only this connection.
+        if (frameLength < 0 || frameLength > maxFrameSize)
+          throw new FramingException(
+            s"Frame length [$frameLength] for stream [$streamId] is out of range, " +
+            s"must be between 0 and the maximum frame size [$maxFrameSize]. " +
+            "Connection is rejected.")
         val buffer = createBuffer(reader.take(frameLength))
         ParseResult(Some(buffer), this)
       }

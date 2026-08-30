@@ -33,6 +33,9 @@ class TcpFramingSpec extends PekkoSpec("""
   private val magic = TcpFraming.DefaultMagic
   private val acceptedMagic = List(magic, TcpFraming.LegacyMagic)
   private val framingFlow = Flow[ByteString].via(new TcpFraming(acceptedMagic))
+  private val maxFrameSize = 256 * 1024
+  private val boundedFramingFlow =
+    Flow[ByteString].via(new TcpFraming(acceptedMagic, maximumFrameSize = maxFrameSize))
 
   private val payload5 = ByteString((1 to 5).map(_.toByte).toArray)
 
@@ -99,6 +102,25 @@ class TcpFramingSpec extends PekkoSpec("""
           frame.streamId should ===(3)
         }
       }
+    }
+
+    "reject a frame that exceeds the maximum frame size" in {
+      val bytes = TcpFraming.encodeConnectionHeader(magic, 2) ++ encodeFrameHeader(maxFrameSize + 1)
+      val fail = Source(List(bytes)).via(boundedFramingFlow).runWith(Sink.seq).failed.futureValue
+      fail shouldBe a[FramingException]
+    }
+
+    "reject a frame with a negative declared length" in {
+      val bytes = TcpFraming.encodeConnectionHeader(magic, 2) ++ encodeFrameHeader(-1)
+      val fail = Source(List(bytes)).via(boundedFramingFlow).runWith(Sink.seq).failed.futureValue
+      fail shouldBe a[FramingException]
+    }
+
+    "accept a frame at exactly the maximum frame size" in {
+      val payload = ByteString(Array.fill(maxFrameSize)(7.toByte))
+      val bytes = TcpFraming.encodeConnectionHeader(magic, 2) ++ encodeFrameHeader(maxFrameSize) ++ payload
+      val frames = Source(List(bytes)).via(boundedFramingFlow).runWith(Sink.seq).futureValue
+      frames.head.byteBuffer.limit() should ===(maxFrameSize)
     }
 
     "report truncated frames" in {
