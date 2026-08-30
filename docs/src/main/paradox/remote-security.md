@@ -53,8 +53,8 @@ pekko.remote.artery {
 Always use [substitution from environment variables](https://github.com/lightbend/config#optional-system-or-env-variable-overrides)
 for passwords. Don't define real passwords in config files.
 
-According to [RFC 7525](https://www.rfc-editor.org/rfc/rfc7525.html), the recommended algorithms to use with TLS 1.2
-are:
+According to [RFC 9325](https://www.rfc-editor.org/rfc/rfc9325.html) (which obsoletes RFC 7525), the recommended
+algorithms to use with TLS 1.2 are:
 
  * TLS_DHE_RSA_WITH_AES_128_GCM_SHA256
  * TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
@@ -73,7 +73,7 @@ system.
 Since Pekko remoting is inherently @ref:[peer-to-peer](general/remoting.md#symmetric-communication), both the key-store
 and trust-store need to be configured on each remoting node participating in the cluster.
 
-The official [Java Secure Socket Extension documentation](https://docs.oracle.com/javase/8/docs/technotes/guides/security/jsse/JSSERefGuide.html)
+The official [Java Secure Socket Extension documentation](https://docs.oracle.com/en/java/javase/25/security/java-secure-socket-extension-jsse-reference-guide.html)
 as well as the [Oracle documentation on creating KeyStore and TrustStores](https://docs.oracle.com/cd/E19509-01/820-3503/6nf1il6er/index.html)
 are both great resources to research when setting up security on the JVM. Please consult those resources when
 troubleshooting and configuring SSL.
