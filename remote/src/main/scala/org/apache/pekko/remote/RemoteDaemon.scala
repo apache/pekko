@@ -17,6 +17,7 @@ import java.util.concurrent.ConcurrentHashMap
 
 import scala.annotation.tailrec
 import scala.collection.immutable
+import scala.jdk.CollectionConverters._
 import scala.util.control.NonFatal
 
 import org.apache.pekko
@@ -42,10 +43,13 @@ import pekko.actor.Identify
 import pekko.actor.SelectChildName
 import pekko.actor.SelectChildPattern
 import pekko.actor.SelectParent
+import pekko.annotation.InternalApi
 import pekko.dispatch.sysmsg.{ DeathWatchNotification, SystemMessage, Watch }
 import pekko.dispatch.sysmsg.Unwatch
 import pekko.event.{ AddressTerminatedTopic, LogMarker, MarkerLoggingAdapter }
 import pekko.util.Switch
+
+import com.typesafe.config.Config
 
 /**
  * INTERNAL API
@@ -83,13 +87,8 @@ private[pekko] class RemoteSystemDaemon(
 
   private val parent2children = new ConcurrentHashMap[ActorRef, Set[ActorRef]]
 
-  private val allowListEnabled = system.settings.config.getBoolean("pekko.remote.deployment.enable-allow-list")
-  private val remoteDeploymentAllowList: immutable.Set[String] = {
-    import scala.jdk.CollectionConverters._
-    if (allowListEnabled)
-      system.settings.config.getStringList("pekko.remote.deployment.allowed-actor-classes").asScala.toSet
-    else Set.empty
-  }
+  private val allowList = RemoteDeploymentAllowList(system.settings.config)
+  private def allowListEnabled = allowList.enabled
 
   @tailrec private def addChildParentNeedsWatch(parent: ActorRef, child: ActorRef): Boolean =
     parent2children.get(parent) match {
@@ -176,12 +175,11 @@ private[pekko] class RemoteSystemDaemon(
               log.debug("does not accept deployments (untrusted) for [{}]", path) // TODO add security marker?
 
             case DaemonMsgCreate(props, deploy, path, supervisor) if allowListEnabled =>
-              val name = props.clazz.getCanonicalName
-              if (remoteDeploymentAllowList.contains(name))
+              if (allowList.isAllowed(props.clazz))
                 doCreateActor(message, props, deploy, path, supervisor)
               else {
                 val ex =
-                  new NotAllowedClassRemoteDeploymentAttemptException(props.actorClass(), remoteDeploymentAllowList)
+                  new NotAllowedClassRemoteDeploymentAttemptException(props.actorClass(), allowList.allowedClassNames)
                 log.error(
                   LogMarker.Security,
                   ex,
@@ -282,6 +280,38 @@ private[pekko] class RemoteSystemDaemon(
     if (!hasChildren) terminator.tell(TerminationHookDone, this)
   }
 
+}
+
+/**
+ * INTERNAL API
+ *
+ * The remote deployment allow list, shared by `RemoteSystemDaemon` and
+ * `DaemonMsgCreateSerializer` so that both read the same configuration and apply the
+ * same class-name comparison.
+ */
+@InternalApi
+private[pekko] object RemoteDeploymentAllowList {
+  final val EnableAllowListPath = "pekko.remote.deployment.enable-allow-list"
+  final val AllowedActorClassesPath = "pekko.remote.deployment.allowed-actor-classes"
+
+  def apply(config: Config): RemoteDeploymentAllowList = {
+    val enabled = config.getBoolean(EnableAllowListPath)
+    val allowed =
+      if (enabled) config.getStringList(AllowedActorClassesPath).asScala.toSet
+      else immutable.Set.empty[String]
+    new RemoteDeploymentAllowList(enabled, allowed)
+  }
+}
+
+/** INTERNAL API */
+@InternalApi
+private[pekko] final class RemoteDeploymentAllowList(
+    val enabled: Boolean,
+    val allowedClassNames: immutable.Set[String]) {
+
+  /** True when the allow list is disabled, or the class is listed on it. */
+  def isAllowed(actorClass: Class[?]): Boolean =
+    !enabled || allowedClassNames.contains(actorClass.getCanonicalName)
 }
 
 /** INTERNAL API */
