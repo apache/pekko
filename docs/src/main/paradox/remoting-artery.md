@@ -43,9 +43,10 @@ The Aeron dependency needs to be explicitly added if using the `aeron-udp` trans
   version2="$aeron_version$"
 }
 
-@@@ note { title="Java 17" }
+@@@ note
 
-When using Aeron with Java 17 you have to add JVM flag `--add-opens=java.base/sun.nio.ch=ALL-UNNAMED`.
+Aeron requires the JVM flag `--add-opens=java.base/sun.nio.ch=ALL-UNNAMED` on the JDK 17+ runtimes required by
+this Pekko version.
 
 @@@
 
@@ -754,8 +755,9 @@ Any space used in the mount will count towards your container's memory usage.
 
 ### Flight Recorder
 
-When running on JDK 11 Artery specific flight recording is available through the [Java Flight Recorder (JFR)](https://openjdk.java.net/jeps/328).
-The flight recorder is automatically enabled by detecting JDK 11 but can be disabled if needed by setting `pekko.java-flight-recorder.enabled = false`.
+Artery specific flight recording is available through the [Java Flight Recorder (JFR)](https://openjdk.java.net/jeps/328),
+which is included in all JDK versions supported by Pekko. It is automatically enabled but can be disabled if needed
+by setting `pekko.java-flight-recorder.enabled = false`.
 
 Low overhead Artery specific events are emitted by default when JFR is enabled, higher overhead events needs a custom settings template and are not enabled automatically with the `profiling` JFR template.
 To enable those create a copy of the `profiling` template and enable all `Pekko` sub category events, for example through the JMC GUI. 

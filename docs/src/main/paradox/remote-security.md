@@ -65,7 +65,7 @@ For TLS 1.3, these are good options:
 
  * TLS_AES_128_GCM_SHA256
  * TLS_AES_256_GCM_SHA384
- * TLS_CHACHA20_POLY1305_SHA256 (may not be supported on Java 8 runtimes)
+ * TLS_CHACHA20_POLY1305_SHA256
 
 You should always check the latest information about security and algorithm recommendations before configuring your
 system.
