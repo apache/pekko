@@ -154,6 +154,13 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
   val log: LoggingAdapter = _log
   private val manifestCache = new AtomicReference[Map[String, Option[Class[?]]]](Map.empty[String, Option[Class[?]]])
 
+  /**
+   * INTERNAL API: maximum nesting depth for a payload that encloses another serialized payload.
+   */
+  @InternalApi
+  private[pekko] val maxNestingDepth: Int =
+    system.settings.config.getInt("pekko.actor.serialization-max-nesting-depth")
+
   /** INTERNAL API */
   @InternalApi private[pekko] def serializationInformation: Serialization.Information =
     system.provider.serializationInformation
@@ -203,31 +210,33 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
     }
 
     withTransportInformation { () =>
-      serializer match {
-        case s2: SerializerWithStringManifest => s2.fromBinary(bytes, manifest)
-        case s1                               =>
-          if (manifest == "" || !s1.includeManifest)
-            // A conforming peer only sends a manifest for a serializer that asks for one
-            // (see `Serializers.manifestFor`), and a serializer with `includeManifest = false`
-            // ignores the type hint anyway. Resolving a class named by the wire that will not
-            // be used only exposes class loading to whoever wrote the message.
-            s1.fromBinary(bytes, None)
-          else {
-            val cache = manifestCache.get
-            cache.get(manifest) match {
-              case Some(cachedClassManifest) => s1.fromBinary(bytes, cachedClassManifest)
-              case None                      =>
-                system.dynamicAccess.getClassFor[AnyRef](manifest) match {
-                  case Success(classManifest) =>
-                    val classManifestOption: Option[Class[?]] = Some(classManifest)
-                    updateCache(cache, manifest, classManifestOption)
-                    s1.fromBinary(bytes, classManifestOption)
-                  case Failure(_) =>
-                    throw new NotSerializableException(
-                      s"Cannot find manifest class [$manifest] for serializer with id [${serializer.identifier}].")
-                }
+      NestedDeserialization.atNextLevel(maxNestingDepth) {
+        serializer match {
+          case s2: SerializerWithStringManifest => s2.fromBinary(bytes, manifest)
+          case s1                               =>
+            if (manifest == "" || !s1.includeManifest)
+              // A conforming peer only sends a manifest for a serializer that asks for one
+              // (see `Serializers.manifestFor`), and a serializer with `includeManifest = false`
+              // ignores the type hint anyway. Resolving a class named by the wire that will not
+              // be used only exposes class loading to whoever wrote the message.
+              s1.fromBinary(bytes, None)
+            else {
+              val cache = manifestCache.get
+              cache.get(manifest) match {
+                case Some(cachedClassManifest) => s1.fromBinary(bytes, cachedClassManifest)
+                case None                      =>
+                  system.dynamicAccess.getClassFor[AnyRef](manifest) match {
+                    case Success(classManifest) =>
+                      val classManifestOption: Option[Class[?]] = Some(classManifest)
+                      updateCache(cache, manifest, classManifestOption)
+                      s1.fromBinary(bytes, classManifestOption)
+                    case Failure(_) =>
+                      throw new NotSerializableException(
+                        s"Cannot find manifest class [$manifest] for serializer with id [${serializer.identifier}].")
+                  }
+              }
             }
-          }
+        }
       }
     }
   }

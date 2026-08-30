@@ -24,6 +24,7 @@ import pekko.remote.ContainerFormats
 import pekko.serialization.{ SerializationExtension, Serializers }
 import pekko.serialization.ByteBufferSerializer
 import pekko.serialization.DisabledJavaSerializer
+import pekko.serialization.NestedDeserialization
 import pekko.serialization.Serialization
 import pekko.serialization.SerializerWithStringManifest
 
@@ -93,15 +94,20 @@ private[pekko] object WrappedPayloadSupport {
 
   def deserializePayload(payload: ContainerFormats.Payload, serialization: Serialization): Any = {
     val manifest = if (payload.hasMessageManifest) payload.getMessageManifest.toStringUtf8 else ""
+    // A payload may enclose another payload; bound how deep that can go. The level is counted
+    // where a serializer is actually invoked: the two branches below call one directly and count
+    // it here, while the third delegates to `Serialization`, which counts it itself.
+    val max = serialization.maxNestingDepth
     serialization.serializerByIdentity(payload.getSerializerId) match {
       case serializer: ByteBufferSerializer =>
         // may avoid one copy of the serialized payload if the proto byte is the right kind and the
         // underlying payload serializer handles byte buffers
         val buffer = payload.getEnclosedMessage.asReadOnlyByteBuffer()
         buffer.order(ByteOrder.LITTLE_ENDIAN)
-        serializer.fromBinary(buffer, manifest)
+        NestedDeserialization.atNextLevel(max)(serializer.fromBinary(buffer, manifest))
       case serializer: SerializerWithStringManifest =>
-        serializer.fromBinary(payload.getEnclosedMessage.toByteArray, manifest)
+        NestedDeserialization.atNextLevel(max)(
+          serializer.fromBinary(payload.getEnclosedMessage.toByteArray, manifest))
       case _ =>
         // only old class based manifest serializers?
         serialization.deserialize(payload.getEnclosedMessage.toByteArray, payload.getSerializerId, manifest).get
