@@ -20,9 +20,12 @@ import util.{ Failure, Success }
 
 import org.apache.pekko
 import pekko.actor.{ Deploy, ExtendedActorSystem, NoScopeGiven, Props, Scope }
+import pekko.event.{ LogMarker, Logging }
 import pekko.protobufv3.internal.ByteString
 import pekko.remote.ByteStringUtils
 import pekko.remote.DaemonMsgCreate
+import pekko.remote.NotAllowedClassRemoteDeploymentAttemptException
+import pekko.remote.RemoteDeploymentAllowList
 import pekko.remote.WireFormats.{ DaemonMsgCreateData, DeployData, PropsData }
 import pekko.routing.{ NoRouter, RouterConfig }
 import pekko.serialization.{ BaseSerializer, SerializationExtension, SerializerWithStringManifest }
@@ -43,6 +46,9 @@ private[pekko] final class DaemonMsgCreateSerializer(val system: ExtendedActorSy
   import ProtobufSerializer.serializeActorRef
 
   private lazy val serialization = SerializationExtension(system)
+  private lazy val log = Logging.withMarker(system, classOf[DaemonMsgCreateSerializer])
+
+  private val allowList = RemoteDeploymentAllowList(system.settings.config)
 
   override val includeManifest: Boolean = false
 
@@ -174,6 +180,12 @@ private[pekko] final class DaemonMsgCreateSerializer(val system: ExtendedActorSy
       import scala.jdk.CollectionConverters._
       val protoProps = proto.getProps
       val actorClass = system.dynamicAccess.getClassFor[AnyRef](protoProps.getClazz).get
+      // Check the allow list before deserializing the constructor arguments below. Those
+      // arguments are peer-supplied and are deserialized with peer-chosen serializer ids and
+      // manifests, so for a class the allow list would reject that work is attack surface
+      // taken on for a deployment that will be refused anyway. `RemoteSystemDaemon` performs
+      // the same check when it handles the message; this one only makes it earlier.
+      checkAllowedActorClass(actorClass)
       val args: Vector[AnyRef] =
         // message from a newer node always contains serializer ids and possibly a string manifest for each position
         if (protoProps.getSerializerIdsCount > 0) {
@@ -205,6 +217,20 @@ private[pekko] final class DaemonMsgCreateSerializer(val system: ExtendedActorSy
       path = proto.getPath,
       supervisor = deserializeActorRef(system, proto.getSupervisor))
   }
+
+  private def checkAllowedActorClass(actorClass: Class[?]): Unit =
+    if (!allowList.isAllowed(actorClass)) {
+      val ex = new NotAllowedClassRemoteDeploymentAttemptException(actorClass, allowList.allowedClassNames)
+      // Logged at error with the exception, matching `RemoteSystemDaemon`, so that the
+      // security signal is the same wherever the deployment is refused.
+      log.error(
+        LogMarker.Security,
+        ex,
+        "Received command to create remote Actor, but class [{}] is not allow-listed! " +
+        "Rejected before deserializing the constructor arguments.",
+        actorClass.getName)
+      throw ex
+    }
 
   private def serialize(any: Any): (Int, Boolean, String, Array[Byte]) = {
     val m = any.asInstanceOf[AnyRef]
