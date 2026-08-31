@@ -377,7 +377,11 @@ class FusingSpec extends StreamSpec {
       Await.result(ready.future, 3.seconds)
       Await.result(stageActorFuture, 3.seconds) ! "complete"
       Await.result(done, 3.seconds) should ===(Done)
-      Await.result(interpreterPromise.future, 3.seconds).activeStage should be(null)
+      val completedInterpreter = Await.result(interpreterPromise.future, 3.seconds)
+      // `done` completes from within the downstream sink's own processing, so the interpreter
+      // may still be finalizing that stage (and briefly hold it as `activeStage`) when this
+      // thread wakes. Poll until it has settled rather than reading once and racing the clear.
+      awaitAssert(completedInterpreter.activeStage should be(null))
     }
 
     "stop a lazy stage actor dispatch after its handler fails" in {
