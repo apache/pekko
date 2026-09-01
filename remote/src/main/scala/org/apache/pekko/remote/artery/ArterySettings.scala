@@ -131,13 +131,15 @@ private[pekko] final class ArterySettings private (config: Config) {
         s"tcp-magic value [$first] must produce at least 4 UTF-8 bytes, but produced [${bytes.length}] bytes")
       bytes.take(4)
     }
-    val TcpMagicValues: Set[ByteString] = {
+    // A Seq rather than a Set: a Set hashes its members, and hashing a ByteString walks all its
+    // bytes, where comparing this handful of 4-byte values is a couple of cheap equality checks.
+    val TcpMagicValues: immutable.Seq[ByteString] = {
       tcpMagicList.map { s =>
         val bytes = ByteString(s.getBytes(StandardCharsets.UTF_8))
         require(bytes.length >= 4,
           s"tcp-magic value [$s] must produce at least 4 UTF-8 bytes, but produced [${bytes.length}] bytes")
         bytes.take(4)
-      }.toSet
+      }.distinct.toList
     }
     val Dispatcher: String = getString("use-dispatcher")
     val ControlStreamDispatcher: String = getString("use-control-stream-dispatcher")

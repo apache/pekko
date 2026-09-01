@@ -31,7 +31,7 @@ class TcpFramingSpec extends PekkoSpec("""
   import TcpFraming.encodeFrameHeader
 
   private val magic = TcpFraming.DefaultMagic
-  private val acceptedMagic = Set(magic, TcpFraming.PekkoMagic)
+  private val acceptedMagic = List(magic, TcpFraming.PekkoMagic)
   private val framingFlow = Flow[ByteString].via(new TcpFraming(acceptedMagic))
 
   private val payload5 = ByteString((1 to 5).map(_.toByte).toArray)
@@ -117,7 +117,7 @@ class TcpFramingSpec extends PekkoSpec("""
 
     "accept custom magic" in {
       val customMagic = ByteString('T'.toByte, 'E'.toByte, 'S'.toByte, 'T'.toByte)
-      val customFramingFlow = Flow[ByteString].via(new TcpFraming(Set(customMagic)))
+      val customFramingFlow = Flow[ByteString].via(new TcpFraming(List(customMagic)))
       val bytes = TcpFraming.encodeConnectionHeader(customMagic, 2) ++ frameBytes(1)
       val frames = Source(List(bytes)).via(customFramingFlow).runWith(Sink.seq).futureValue
       frames.head.streamId should ===(2)
