@@ -182,13 +182,34 @@ private[pekko] final class ArteryMessageSerializer(val system: ExtendedActorSyst
       create: (UniqueAddress, CompressionTable[T]) => U): U = {
     val protoAdv = ArteryControlFormats.CompressionTableAdvertisement.parseFrom(bytes)
 
+    // the two lists are parallel; `zip` on its own would drop the tail of the longer one and
+    // build a table the sender did not advertise, which is then acknowledged as accepted
+    if (protoAdv.getKeysCount != protoAdv.getValuesCount)
+      throw new NotSerializableException(
+        s"Compression table advertisement carries [${protoAdv.getKeysCount}] keys and " +
+        s"[${protoAdv.getValuesCount}] values, which must match")
+
     val kvs =
       protoAdv.getKeysList.asScala
         .map(keyDeserializer)
         .zip(protoAdv.getValuesList.asScala.asInstanceOf[Iterable[Int]] /* to avoid having to call toInt explicitly */ )
 
-    val table = CompressionTable[T](protoAdv.getOriginUid, protoAdv.getTableVersion.byteValue, kvs.toMap)
+    val table =
+      CompressionTable[T](protoAdv.getOriginUid, tableVersion(protoAdv.getTableVersion), kvs.toMap)
     create(deserializeUniqueAddress(protoAdv.getFrom), table)
+  }
+
+  /**
+   * A compression table version is a `Byte` on both sides, so a value that does not survive the
+   * narrowing is not one any peer advertised. Narrowing it silently would make versions 256
+   * apart indistinguishable, and the version is echoed back to the sender in an ack.
+   */
+  private def tableVersion(version: Int): Byte = {
+    if (version < Byte.MinValue || version > Byte.MaxValue)
+      throw new NotSerializableException(
+        s"Compression table version [$version] is outside the range " +
+        s"[${Byte.MinValue}, ${Byte.MaxValue}] that a table version can hold")
+    version.toByte
   }
 
   def serializeCompressionTableAdvertisementAck(from: UniqueAddress, version: Int): MessageLite =
@@ -201,7 +222,7 @@ private[pekko] final class ArteryMessageSerializer(val system: ExtendedActorSyst
       bytes: Array[Byte],
       create: (UniqueAddress, Byte) => AnyRef): AnyRef = {
     val msg = ArteryControlFormats.CompressionTableAdvertisementAck.parseFrom(bytes)
-    create(deserializeUniqueAddress(msg.getFrom), msg.getVersion.toByte)
+    create(deserializeUniqueAddress(msg.getFrom), tableVersion(msg.getVersion))
   }
 
   def serializeSystemMessageEnvelope(

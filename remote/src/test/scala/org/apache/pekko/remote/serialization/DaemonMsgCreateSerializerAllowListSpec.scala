@@ -17,6 +17,7 @@
 
 package org.apache.pekko.remote.serialization
 
+import java.io.NotSerializableException
 import java.nio.charset.StandardCharsets.UTF_8
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -27,6 +28,7 @@ import pekko.actor.Actor
 import pekko.actor.Deploy
 import pekko.actor.Props
 import pekko.remote.DaemonMsgCreate
+import pekko.remote.WireFormats
 import pekko.remote.NotAllowedClassRemoteDeploymentAttemptException
 import pekko.serialization.SerializationExtension
 import pekko.serialization.SerializerWithStringManifest
@@ -87,6 +89,45 @@ class DaemonMsgCreateSerializerAllowListSpec
       supervisor = supervisor)
 
   "DaemonMsgCreateSerializer with the remote deployment allow list enabled" must {
+
+    "reject props whose repeated fields disagree in length" in {
+      val msg = daemonMsgCreate(classOf[AllowedActor])
+      val serializer = ser.findSerializerFor(msg)
+      val proto = WireFormats.DaemonMsgCreateData.parseFrom(serializer.toBinary(msg))
+      proto.getProps.getSerializerIdsCount should ===(1)
+
+      // one more serializer id than there are args, manifests and hasManifest entries; the loop
+      // is driven by the serializer id count, so this used to index past the end of the others
+      val tampered = proto.toBuilder
+        .setProps(proto.getProps.toBuilder.addSerializerIds(0))
+        .build()
+        .toByteArray
+
+      intercept[NotSerializableException] {
+        serializer.fromBinary(tampered, None)
+      }.getMessage should include("same length")
+    }
+
+    "reject old format props whose args and manifests disagree in length" in {
+      val msg = daemonMsgCreate(classOf[AllowedActor])
+      val serializer = ser.findSerializerFor(msg)
+      val proto = WireFormats.DaemonMsgCreateData.parseFrom(serializer.toBinary(msg))
+
+      // no serializer ids selects the pre-2.4 branch, where args and manifests were zipped and a
+      // longer manifest list was silently dropped
+      val tampered = proto.toBuilder
+        .setProps(
+          proto.getProps.toBuilder
+            .clearSerializerIds()
+            .clearHasManifest()
+            .addManifests(classOf[String].getName))
+        .build()
+        .toByteArray
+
+      intercept[NotSerializableException] {
+        serializer.fromBinary(tampered, None)
+      }.getMessage should include("same length")
+    }
 
     "deserialize a DaemonMsgCreate for an allow-listed class" in {
       val bytes = ser.serialize(daemonMsgCreate(classOf[AllowedActor])).get
