@@ -24,12 +24,11 @@ import org.scalatest.wordspec.AnyWordSpec
 
 class GlobSpec extends AnyWordSpec with Matchers with TimeLimits {
 
-  private def allStrings(alphabet: Seq[Char], maxLength: Int): Seq[String] =
-    (0 to maxLength).flatMap { n =>
-      (1 to n).foldLeft(Seq("")) { (acc, _) =>
-        acc.flatMap(s => alphabet.map(s + _))
-      }
+  private def allStrings(alphabet: Seq[Char], maxLength: Int): Seq[String] = (0 to maxLength).flatMap { n =>
+    (1 to n).foldLeft(Seq("")) { (acc, _) =>
+      acc.flatMap(s => alphabet.map(s + _))
     }
+  }
 
   "Glob" must {
 
