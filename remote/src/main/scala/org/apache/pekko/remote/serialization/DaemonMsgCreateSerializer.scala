@@ -13,6 +13,8 @@
 
 package org.apache.pekko.remote.serialization
 
+import java.io.NotSerializableException
+
 import scala.collection.immutable
 import scala.jdk.CollectionConverters._
 
@@ -189,6 +191,14 @@ private[pekko] final class DaemonMsgCreateSerializer(val system: ExtendedActorSy
       val args: Vector[AnyRef] =
         // message from a newer node always contains serializer ids and possibly a string manifest for each position
         if (protoProps.getSerializerIdsCount > 0) {
+          // `toBinary` writes args, manifests, serializer ids and hasManifest one entry at a time,
+          // so the four are parallel. Indexing them by the serializer id count alone would raise
+          // IndexOutOfBoundsException on a message where they are not.
+          requireSameLength(
+            protoProps.getSerializerIdsCount,
+            "args" -> protoProps.getArgsCount,
+            "manifests" -> protoProps.getManifestsCount,
+            "hasManifest" -> protoProps.getHasManifestCount)
           for {
             idx <- (0 until protoProps.getSerializerIdsCount).toVector
           } yield {
@@ -202,6 +212,7 @@ private[pekko] final class DaemonMsgCreateSerializer(val system: ExtendedActorSy
         } else {
           // message from an older node, which only provides data and class name
           // and never any serializer ids
+          requireSameLength(protoProps.getArgsCount, "manifests" -> protoProps.getManifestsCount)
           proto.getProps.getArgsList.asScala
             .zip(proto.getProps.getManifestsList.asScala)
             .iterator
@@ -217,6 +228,20 @@ private[pekko] final class DaemonMsgCreateSerializer(val system: ExtendedActorSy
       path = proto.getPath,
       supervisor = deserializeActorRef(system, proto.getSupervisor))
   }
+
+  /**
+   * The repeated fields of `PropsData` are parallel arrays; a message whose lengths disagree is
+   * one no `toBinary` produced. Reject it as a serialization failure rather than indexing past
+   * the end of the shorter one.
+   */
+  private def requireSameLength(expected: Int, counts: (String, Int)*): Unit =
+    counts.foreach {
+      case (name, count) =>
+        if (count != expected)
+          throw new NotSerializableException(
+            s"DaemonMsgCreate has [$expected] constructor arguments but [$count] $name; " +
+            "the repeated fields must all be the same length")
+    }
 
   private def checkAllowedActorClass(actorClass: Class[?]): Unit =
     if (!allowList.isAllowed(actorClass)) {
