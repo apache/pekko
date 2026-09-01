@@ -123,6 +123,24 @@ class ProtobufSerializerSpec extends PekkoSpec(s"""
       }
     }
 
+    "reject an interface manifest rather than failing on its missing superclass" in {
+      // getSuperclass is null for an interface, and the manifest class comes off the wire.
+      // This used to raise NullPointerException from the allow list check instead of the
+      // IllegalArgumentException that refusing the class is supposed to produce.
+      val originalSerializer = ser.serializerFor(classOf[MyMessage])
+      intercept[IllegalArgumentException] {
+        ser.deserialize(Array[Byte](), originalSerializer.identifier, classOf[Runnable].getName).get
+      }.getMessage should include("allow list")
+    }
+
+    "reject java.lang.Object as a manifest" in {
+      // Object.getSuperclass is null too
+      val originalSerializer = ser.serializerFor(classOf[MyMessage])
+      intercept[IllegalArgumentException] {
+        ser.deserialize(Array[Byte](), originalSerializer.identifier, classOf[Object].getName).get
+      }.getMessage should include("allow list")
+    }
+
     "allow deserialization of classes in configured allowed classes" in {
       val originalSerializer = ser.serializerFor(classOf[MyMessage])
 
