@@ -49,7 +49,8 @@ class WireConfigSpec extends PekkoSpec {
 
     "parse what a serializer writes" in {
       // every serializer renders config with ConfigRenderOptions.concise
-      val rendered = ConfigFactory.parseString("pekko.cluster.roles = [a, b]").root.render(ConfigRenderOptions.concise())
+      val rendered =
+        ConfigFactory.parseString("pekko.cluster.roles = [a, b]").root.render(ConfigRenderOptions.concise())
       WireConfig.parseString(rendered).getStringList("pekko.cluster.roles").asScala.toList should ===(List("a", "b"))
     }
 
