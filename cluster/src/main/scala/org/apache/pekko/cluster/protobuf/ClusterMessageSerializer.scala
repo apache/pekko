@@ -13,7 +13,7 @@
 
 package org.apache.pekko.cluster.protobuf
 
-import java.io.ByteArrayOutputStream
+import java.io.{ ByteArrayOutputStream, NotSerializableException }
 import java.util.zip.{ GZIPInputStream, GZIPOutputStream }
 
 import scala.collection.immutable
@@ -389,6 +389,20 @@ final class ClusterMessageSerializer(val system: ExtendedActorSystem)
     case _       => throw new IllegalArgumentException(s"Unknown $unknown [$value] in cluster message")
   }
 
+  /**
+   * Gossip interns addresses, roles, hashes and app versions into tables and refers to them by
+   * index. Every index `gossipToProto` writes is in range, so one that is not came from a
+   * message no `toBinary` produced; resolve it as a serialization failure rather than letting
+   * `Vector.apply` raise IndexOutOfBoundsException. For a GossipEnvelope this matters more than
+   * usual, because the parse is deferred and runs on the cluster daemon rather than on a
+   * deserialization thread.
+   */
+  private def lookup[T](mapping: immutable.Seq[T], index: Int, what: String): T =
+    if (index < 0 || index >= mapping.size)
+      throw new NotSerializableException(
+        s"Cluster message refers to $what index [$index], but only [${mapping.size}] were sent")
+    else mapping(index)
+
   private def joinToProto(node: UniqueAddress, roles: Set[String], appVersion: Version): cm.Join =
     cm.Join
       .newBuilder()
@@ -548,10 +562,10 @@ final class ClusterMessageSerializer(val system: ExtendedActorSystem)
       val recordBuilder = new immutable.VectorBuilder[Reachability.Record]
       val versionsBuilder = Map.newBuilder[UniqueAddress, Long]
       for (o <- observerReachability) {
-        val observer = addressMapping(o.getAddressIndex)
+        val observer = lookup(addressMapping, o.getAddressIndex, "address")
         versionsBuilder += ((observer, o.getVersion))
         for (s <- o.getSubjectReachabilityList.asScala) {
-          val subject = addressMapping(s.getAddressIndex)
+          val subject = lookup(addressMapping, s.getAddressIndex, "address")
           val record =
             Reachability.Record(observer, subject, reachabilityStatusFromInt(s.getStatus.getNumber), s.getVersion)
           recordBuilder += record
@@ -563,11 +577,13 @@ final class ClusterMessageSerializer(val system: ExtendedActorSystem)
 
     def memberFromProto(member: cm.Member) =
       new Member(
-        addressMapping(member.getAddressIndex),
+        lookup(addressMapping, member.getAddressIndex, "address"),
         member.getUpNumber,
         memberStatusFromInt(member.getStatus.getNumber),
         rolesFromProto(member.getRolesIndexesList.asScala.toSeq),
-        if (appVersionMapping.isEmpty) Version.Zero else appVersionMapping(member.getAppVersionIndex))
+        // an older node sends no app versions at all, which is not the same as an index it did not send
+        if (appVersionMapping.isEmpty) Version.Zero
+        else lookup(appVersionMapping, member.getAppVersionIndex, "app version"))
 
     def rolesFromProto(roleIndexes: Seq[Integer]): Set[String] = {
       var containsDc = false
@@ -575,7 +591,7 @@ final class ClusterMessageSerializer(val system: ExtendedActorSystem)
 
       for {
         roleIndex <- roleIndexes
-        role = roleMapping(roleIndex)
+        role = lookup(roleMapping, roleIndex, "role")
       } {
         if (role.startsWith(ClusterSettings.DcRolePrefix)) containsDc = true
         roles += role
@@ -586,14 +602,14 @@ final class ClusterMessageSerializer(val system: ExtendedActorSystem)
     }
 
     def tombstoneFromProto(tombstone: cm.Tombstone): (UniqueAddress, Long) =
-      (addressMapping(tombstone.getAddressIndex), tombstone.getTimestamp)
+      (lookup(addressMapping, tombstone.getAddressIndex, "address"), tombstone.getTimestamp)
 
     val members: immutable.SortedSet[Member] =
       gossip.getMembersList.asScala.iterator.map(memberFromProto).to(immutable.SortedSet)
 
     val reachability = reachabilityFromProto(gossip.getOverview.getObserverReachabilityList.asScala)
     val seen: Set[UniqueAddress] =
-      gossip.getOverview.getSeenList.asScala.iterator.map(addressMapping(_)).to(immutable.Set)
+      gossip.getOverview.getSeenList.asScala.iterator.map(lookup(addressMapping, _, "address")).to(immutable.Set)
     val overview = GossipOverview(seen, reachability)
     val tombstones: Map[UniqueAddress, Long] = gossip.getTombstonesList.asScala.iterator.map(tombstoneFromProto).toMap
 
@@ -602,7 +618,7 @@ final class ClusterMessageSerializer(val system: ExtendedActorSystem)
 
   private def vectorClockFromProto(version: cm.VectorClock, hashMapping: immutable.Seq[String]) = {
     VectorClock(scala.collection.immutable.TreeMap.from(version.getVersionsList.asScala.iterator.map(v =>
-      (VectorClock.Node.fromHash(hashMapping(v.getHashIndex)), v.getTimestamp))))
+      (VectorClock.Node.fromHash(lookup(hashMapping, v.getHashIndex, "hash")), v.getTimestamp))))
   }
 
   private def gossipEnvelopeFromProto(envelope: cm.GossipEnvelope): GossipEnvelope = {
