@@ -1545,6 +1545,10 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
     new AtomicReference(ConcurrentHashMap.newKeySet())
 
   private var _stageActor: StageActor = _
+
+  // INTERNAL API: fired from afterPostStop, used to observe termination of wrapped logics
+  private var terminationHook: () => Unit = _
+
   final def stageActor: StageActor = _stageActor match {
     case null => throw StageActorRefNotInitializedException()
     case ref  => ref
@@ -1664,7 +1668,17 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
       callbacks.forEach((t: Promise[Done]) => t.tryFailure(exception))
     }
     cleanUpSubstreams(OptionVal.None)
+    if (terminationHook ne null) terminationHook()
   }
+
+  /**
+   * INTERNAL API
+   *
+   * Registers a hook that is invoked after this logic's `postStop` has run and its internal
+   * cleanups have completed.
+   */
+  @InternalApi
+  private[stream] def setTerminationHook(hook: () => Unit): Unit = terminationHook = hook
 
   /** Called from interpreter thread by GraphInterpreter.runAsyncInput */
   private[stream] def onFeedbackDispatched(promise: Promise[Done]): Unit = {
