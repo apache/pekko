@@ -64,8 +64,20 @@ class ByteString_byteAtUnchecked_Benchmark {
   manyFragments_sequential  thrpt    3   54838.759 ±   29275.476  ops/s
 
   Sequential access is roughly 84x faster. Random access is unchanged (the hint never hits) and
-  reverse access does not benefit either, since each step lands before the remembered fragment
-  and falls back to a scan from the start -- both stay within the noise of the previous numbers.
+  reverse access did not benefit at that point, since each step landed before the remembered
+  fragment and fell back to a scan from the start -- both stayed within the noise of the
+  previous numbers.
+
+  After resolveFragment also resumes backward from the remembered fragment (same short run,
+  same wide error bars):
+
+  manyFragments_reverse     thrpt    3    386.052 ±  550.638  ops/s   (before, on this machine)
+  manyFragments_reverse     thrpt    3  39969.362 ± 49806.718 ops/s   (after)
+  manyFragments_sequential  thrpt    3  43415.035 ± 45223.244 ops/s   (before, on this machine)
+  manyFragments_sequential  thrpt    3  44624.286 ± 42770.609 ops/s   (after)
+
+  Reverse access is roughly 100x faster and on par with sequential; sequential is unchanged
+  within the noise.
    */
 
   private val randomIndices: Array[Int] = {
