@@ -632,6 +632,30 @@ class JacksonJsonSerializerSpec extends JacksonSerializerSpec("jackson-json") {
       }
       ex.getMessage should include("max-decompressed-size")
     }
+
+    "apply no gzip decompression limit when max-decompressed-size is -1" in withSystem("""
+        pekko.serialization.jackson3.jackson-json.compression {
+          algorithm = gzip
+          compress-larger-than = 0 KiB
+          max-decompressed-size = -1
+        }
+      """) { sys =>
+      val msg = SimpleCommand("0" * (8 * 1024))
+      JacksonSerializer.isGZipped(serializeToBinary(msg, sys)) should ===(true)
+      checkSerialization(msg, sys)
+    }
+
+    "apply no lz4 decompression limit when max-decompressed-size is -1" in withSystem("""
+        pekko.serialization.jackson3.jackson-json.compression {
+          algorithm = lz4
+          compress-larger-than = 0 KiB
+          max-decompressed-size = -1
+        }
+      """) { sys =>
+      val msg = SimpleCommand("0" * (8 * 1024))
+      JacksonSerializer.isLZ4(serializeToBinary(msg, sys)) should ===(true)
+      checkSerialization(msg, sys)
+    }
   }
 
   "JacksonJsonSerializer without type in manifest" should {

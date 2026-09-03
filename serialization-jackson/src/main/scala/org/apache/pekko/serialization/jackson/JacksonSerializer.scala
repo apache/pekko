@@ -207,7 +207,12 @@ import pekko.util.OptionVal
           """"off" or "gzip"""")
     }
   }
-  private val maxDecompressedSize: Long = conf.getBytes("compression.max-decompressed-size")
+  // negative means no limit; getBytes refuses negative numbers, so read those first
+  private val maxDecompressedSize: Long =
+    conf.getString("compression.max-decompressed-size").toLongOption match {
+      case Some(n) if n < 0 => n
+      case _                => conf.getBytes("compression.max-decompressed-size")
+    }
   private val migrations: Map[String, JacksonMigration] = {
     import scala.jdk.CollectionConverters._
     conf.getConfig("migrations").root.unwrapped.asScala.toMap.map {
@@ -544,7 +549,10 @@ import pekko.util.OptionVal
           // meta.length is the decompressed size declared on the wire; a small
           // message can declare a huge (or negative) size and drive a large
           // allocation, so bound it before decompressing.
-          if (meta.length < 0 || meta.length > maxDecompressedSize)
+          if (meta.length < 0)
+            throw new IllegalArgumentException(
+              s"Compressed message declares a negative decompressed size [${meta.length}] bytes")
+          if (maxDecompressedSize >= 0 && meta.length > maxDecompressedSize)
             throw new IllegalArgumentException(
               s"Compressed message declares decompressed size [${meta.length}] bytes, which exceeds the maximum " +
               s"of [$maxDecompressedSize] bytes (pekko.serialization.jackson.compression.max-decompressed-size)")
@@ -556,7 +564,7 @@ import pekko.util.OptionVal
   }
 
   // gunzip with a bound on the decompressed size, so a small gzip payload cannot
-  // inflate without limit (a "zip bomb").
+  // inflate without limit (a "zip bomb"). A negative maximum applies no bound.
   private def gunzip(in: GZIPInputStream): Array[Byte] = {
     val out = new ByteArrayOutputStream()
     val buffer = new Array[Byte](BufferSize)
@@ -564,7 +572,7 @@ import pekko.util.OptionVal
     var n = in.read(buffer)
     while (n != -1) {
       total += n
-      if (total > maxDecompressedSize)
+      if (maxDecompressedSize >= 0 && total > maxDecompressedSize)
         throw new IllegalArgumentException(
           s"Decompressed message exceeds the maximum of [$maxDecompressedSize] bytes " +
           "(pekko.serialization.jackson.compression.max-decompressed-size)")
