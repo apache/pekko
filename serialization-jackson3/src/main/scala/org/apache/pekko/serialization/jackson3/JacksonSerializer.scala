@@ -208,12 +208,16 @@ import pekko.util.OptionVal
           """"off" or "gzip"""")
     }
   }
-  // negative means no limit; getBytes refuses negative numbers, so read those first
-  private val maxDecompressedSize: Long =
-    conf.getString("compression.max-decompressed-size").toLongOption match {
-      case Some(n) if n < 0 => n
-      case _                => conf.getBytes("compression.max-decompressed-size")
-    }
+  // "unlimited" or a negative number means no limit; getBytes refuses both, so read them first
+  private val maxDecompressedSize: Long = {
+    val raw = conf.getString("compression.max-decompressed-size")
+    if (raw == "unlimited") -1L
+    else
+      raw.toLongOption match {
+        case Some(n) if n < 0 => n
+        case _                => conf.getBytes("compression.max-decompressed-size")
+      }
+  }
   private val migrations: Map[String, JacksonMigration] = {
     import scala.jdk.CollectionConverters._
     conf.getConfig("migrations").root.unwrapped.asScala.toMap.map {
