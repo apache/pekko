@@ -14,6 +14,7 @@
 package org.apache.pekko.serialization.jackson3
 
 import java.lang
+import java.io.NotSerializableException
 import java.nio.charset.StandardCharsets
 import java.time.{ Duration, Instant, LocalDateTime }
 import java.time.temporal.ChronoUnit
@@ -801,6 +802,9 @@ abstract class JacksonSerializerSpec(serializerName: String)
     serialization(sys).deserialize(blob, serializerId, manifest).get
   }
 
+  // referenced by name only: mentioning the object in code would initialize it
+  val NotAllowedCaseObjectName = "org.apache.pekko.serialization.jackson3.NotAllowedCaseObject$"
+
   def serializerFor(obj: AnyRef, sys: ActorSystem = system): JacksonSerializer =
     serialization(sys).findSerializerFor(obj) match {
       case serializer: JacksonSerializer => serializer
@@ -1254,6 +1258,50 @@ abstract class JacksonSerializerSpec(serializerName: String)
           serializer.fromBinary(blob, classOf[Status.Success].getName)
         }.getMessage.toLowerCase should include("allowed-class-prefix")
       }
+    }
+
+    "not allow deserialization of a case object that is not in serialization-bindings" in {
+      withTransportInformation() { () =>
+        val msg = SimpleCommand("ok")
+        val serializer = serializerFor(msg)
+        val blob = serializer.toBinary(msg)
+        intercept[IllegalArgumentException] {
+          // maliciously changing manifest to a case object
+          serializer.fromBinary(blob, NotAllowedCaseObjectName)
+        }.getMessage.toLowerCase should include("allowed-class-prefix")
+      }
+    }
+
+    "not initialize a case object class it goes on to reject" in {
+      withTransportInformation() { () =>
+        val msg = SimpleCommand("ok")
+        val serializer = serializerFor(msg)
+        val blob = serializer.toBinary(msg)
+        CaseObjectInitializationProbe.initialized should ===(false)
+        intercept[IllegalArgumentException] {
+          serializer.fromBinary(blob, NotAllowedCaseObjectName)
+        }
+        // reading MODULE$ would have run the object's body
+        CaseObjectInitializationProbe.initialized should ===(false)
+      }
+    }
+
+    "reject a manifest whose version is not a number" in {
+      withTransportInformation() { () =>
+        val msg = SimpleCommand("ok")
+        val serializer = serializerFor(msg)
+        val blob = serializer.toBinary(msg)
+        intercept[NotSerializableException] {
+          serializer.fromBinary(blob, classOf[SimpleCommand].getName + "#not-a-number")
+        }.getMessage should include("numeric version")
+      }
+    }
+
+    "not underflow on a payload that is only as long as the LZ4 magic" in {
+      // the LZ4 header is the magic plus a 4 byte length, so 4 bytes cannot be an LZ4 payload
+      JacksonSerializer.isLZ4(Array(0x87, 0xD9, 0x6D, 0xF6).map(_.toByte)) should ===(false)
+      JacksonSerializer.isLZ4(JacksonSerializer.LZ4Meta(Array.emptyByteArray).prependTo(Array.emptyByteArray)) should
+      ===(true)
     }
 
     "not allow serialization-bindings of open-ended types" in {
