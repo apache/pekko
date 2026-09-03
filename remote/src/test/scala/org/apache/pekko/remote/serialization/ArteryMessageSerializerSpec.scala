@@ -19,7 +19,7 @@ import org.apache.pekko
 import pekko.actor._
 import pekko.remote.artery.Flush
 import pekko.remote.artery.FlushAck
-import pekko.remote.{ RemoteWatcher, UniqueAddress }
+import pekko.remote.{ ArteryControlFormats, RemoteWatcher, UniqueAddress }
 import pekko.remote.artery.{ ActorSystemTerminating, ActorSystemTerminatingAck, Quarantined, SystemMessageDelivery }
 import pekko.remote.artery.OutboundHandshake.{ HandshakeReq, HandshakeRsp }
 import pekko.remote.artery.compress.CompressionProtocol.{
@@ -73,6 +73,30 @@ class ArteryMessageSerializerSpec extends PekkoSpec {
     }
 
     "not support UniqueAddresses without host/port set" in pending
+
+    "reject a compression table advertisement with more entries than the configured maximum" in {
+      val serializer = new ArteryMessageSerializer(system.asInstanceOf[ExtendedActorSystem])
+      val max = system.settings.config.getInt("pekko.remote.artery.advanced.compression.actor-refs.max")
+
+      def advertisement(entries: Int): Array[Byte] = {
+        val builder = ArteryControlFormats.CompressionTableAdvertisement.newBuilder
+          .setFrom(serializer.serializeUniqueAddress(uniqueAddress()))
+          .setOriginUid(17L)
+          .setTableVersion(1)
+        (0 until entries).foreach { i =>
+          builder.addKeys(s"pekko://sys@host:1234/user/a$i")
+          builder.addValues(i)
+        }
+        builder.build().toByteArray
+      }
+
+      // a table of exactly the configured size is what a peer legitimately advertises
+      serializer.fromBinary(advertisement(max), "f") shouldBe a[ActorRefCompressionAdvertisement]
+
+      intercept[NotSerializableException] {
+        serializer.fromBinary(advertisement(max + 1), "f")
+      }.getMessage should include(s"more than the configured maximum of [$max]")
+    }
 
     "reject invalid manifest" in {
       intercept[IllegalArgumentException] {

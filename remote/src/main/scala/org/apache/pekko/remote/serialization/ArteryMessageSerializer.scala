@@ -27,6 +27,7 @@ import pekko.remote.artery.compress.CompressionProtocol._
 import pekko.serialization.{ BaseSerializer, Serialization, SerializationExtension, SerializerWithStringManifest }
 import pekko.remote.artery.Flush
 import pekko.remote.artery.FlushAck
+import pekko.util.Helpers.toRootLowerCase
 
 /** INTERNAL API */
 private[pekko] object ArteryMessageSerializer {
@@ -59,6 +60,18 @@ private[pekko] final class ArteryMessageSerializer(val system: ExtendedActorSyst
   import ArteryMessageSerializer._
 
   private lazy val serialization = SerializationExtension(system)
+
+  // `pekko.remote.artery.advanced.compression.<table>.max` bounds the number of entries the
+  // sending side puts in a table, and is normally the same setting across a cluster. Parsed the
+  // same way ArterySettings parses it, without building the whole settings object here.
+  private def compressionMax(table: String): Int = {
+    val path = s"pekko.remote.artery.advanced.compression.$table.max"
+    if (toRootLowerCase(system.settings.config.getString(path)) == "off") 0
+    else system.settings.config.getInt(path)
+  }
+
+  private val maxActorRefCompressionEntries: Int = compressionMax("actor-refs")
+  private val maxClassManifestCompressionEntries: Int = compressionMax("manifests")
 
   override def manifest(o: AnyRef): String = o match { // most frequent ones first
     case _: SystemMessageDelivery.SystemMessageEnvelope                  => SystemMessageEnvelopeManifest
@@ -123,7 +136,11 @@ private[pekko] final class ArteryMessageSerializer(val system: ExtendedActorSyst
       case ActorRefCompressionAdvertisementAckManifest =>
         deserializeCompressionTableAdvertisementAck(bytes, ActorRefCompressionAdvertisementAck.apply)
       case ClassManifestCompressionAdvertisementManifest =>
-        deserializeCompressionAdvertisement(bytes, identity, ClassManifestCompressionAdvertisement.apply)
+        deserializeCompressionAdvertisement(
+          bytes,
+          identity,
+          maxClassManifestCompressionEntries,
+          ClassManifestCompressionAdvertisement.apply)
       case ClassManifestCompressionAdvertisementAckManifest =>
         deserializeCompressionTableAdvertisementAck(bytes, ClassManifestCompressionAdvertisementAck.apply)
       case ArteryHeartbeatManifest    => RemoteWatcher.ArteryHeartbeat
@@ -158,7 +175,11 @@ private[pekko] final class ArteryMessageSerializer(val system: ExtendedActorSyst
     serializeCompressionAdvertisement(adv)(serializeActorRef)
 
   def deserializeActorRefCompressionAdvertisement(bytes: Array[Byte]): ActorRefCompressionAdvertisement =
-    deserializeCompressionAdvertisement(bytes, deserializeActorRef, ActorRefCompressionAdvertisement.apply)
+    deserializeCompressionAdvertisement(
+      bytes,
+      deserializeActorRef,
+      maxActorRefCompressionEntries,
+      ActorRefCompressionAdvertisement.apply)
 
   def serializeCompressionAdvertisement[T](adv: CompressionAdvertisement[T])(
       keySerializer: T => String): ArteryControlFormats.CompressionTableAdvertisement = {
@@ -179,8 +200,18 @@ private[pekko] final class ArteryMessageSerializer(val system: ExtendedActorSyst
   def deserializeCompressionAdvertisement[T, U](
       bytes: Array[Byte],
       keyDeserializer: String => T,
+      maxEntries: Int,
       create: (UniqueAddress, CompressionTable[T]) => U): U = {
     val protoAdv = ArteryControlFormats.CompressionTableAdvertisement.parseFrom(bytes)
+
+    // Every key is resolved, and for actor refs that means parsing a path and populating the
+    // resolve cache, so a message with far more entries than a table can hold is work out of
+    // proportion to its size. `maxEntries` is 0 when compression is switched off here, and then
+    // there is no configured number to check against.
+    if (maxEntries > 0 && protoAdv.getKeysCount > maxEntries)
+      throw new NotSerializableException(
+        s"Compression table advertisement carries [${protoAdv.getKeysCount}] entries, more than " +
+        s"the configured maximum of [$maxEntries]")
 
     val kvs =
       protoAdv.getKeysList.asScala
