@@ -38,6 +38,8 @@ import org.apache.pekko.annotation.InternalApi
 @InternalApi
 private[pekko] object NestedDeserialization {
 
+  // a one-element Array[Int] serves as a mutable int holder, so incrementing the
+  // depth does not box the way a ThreadLocal[Int] would on every get/set
   private val depth = new ThreadLocal[Array[Int]] {
     override def initialValue(): Array[Int] = new Array[Int](1)
   }
