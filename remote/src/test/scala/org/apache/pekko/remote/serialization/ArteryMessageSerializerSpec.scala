@@ -17,7 +17,7 @@ import java.io.NotSerializableException
 
 import org.apache.pekko
 import pekko.actor._
-import pekko.remote.{ RemoteWatcher, UniqueAddress }
+import pekko.remote.{ ArteryControlFormats, RemoteWatcher, UniqueAddress }
 import pekko.remote.artery.{ ActorSystemTerminating, ActorSystemTerminatingAck, Quarantined, SystemMessageDelivery }
 import pekko.remote.artery.Flush
 import pekko.remote.artery.FlushAck
@@ -73,6 +73,58 @@ class ArteryMessageSerializerSpec extends PekkoSpec {
     }
 
     "not support UniqueAddresses without host/port set" in pending
+
+    "reject a compression table advertisement whose keys and values disagree in length" in {
+      val serializer = new ArteryMessageSerializer(system.asInstanceOf[ExtendedActorSystem])
+      val bytes = ArteryControlFormats.CompressionTableAdvertisement.newBuilder
+        .setFrom(serializer.serializeUniqueAddress(uniqueAddress()))
+        .setOriginUid(17L)
+        .setTableVersion(1)
+        .addKeys("a")
+        .addKeys("b")
+        .addValues(0)
+        .build()
+        .toByteArray
+
+      intercept[NotSerializableException] {
+        serializer.fromBinary(bytes, "h") // ClassManifestCompressionAdvertisement
+      }.getMessage should include("must match")
+    }
+
+    "reject a compression table version that does not fit in a byte" in {
+      val serializer = new ArteryMessageSerializer(system.asInstanceOf[ExtendedActorSystem])
+
+      // the version is a Byte on both sides, so 128 is not a version any peer advertised;
+      // narrowing it silently would make it indistinguishable from -128
+      val advertisement = ArteryControlFormats.CompressionTableAdvertisement.newBuilder
+        .setFrom(serializer.serializeUniqueAddress(uniqueAddress()))
+        .setOriginUid(17L)
+        .setTableVersion(128)
+        .build()
+        .toByteArray
+      intercept[NotSerializableException] {
+        serializer.fromBinary(advertisement, "h")
+      }.getMessage should include("outside the range")
+
+      val ack = ArteryControlFormats.CompressionTableAdvertisementAck.newBuilder
+        .setFrom(serializer.serializeUniqueAddress(uniqueAddress()))
+        .setVersion(128)
+        .build()
+        .toByteArray
+      intercept[NotSerializableException] {
+        serializer.fromBinary(ack, "i") // ClassManifestCompressionAdvertisementAck
+      }.getMessage should include("outside the range")
+    }
+
+    "accept the whole byte range of compression table versions" in {
+      val serializer = new ArteryMessageSerializer(system.asInstanceOf[ExtendedActorSystem])
+      Seq[Byte](Byte.MinValue, -1, 0, 1, Byte.MaxValue).foreach { version =>
+        withClue(s"version $version: ") {
+          val msg = ClassManifestCompressionAdvertisementAck(uniqueAddress(), version)
+          serializer.fromBinary(serializer.toBinary(msg), serializer.manifest(msg)) should ===(msg)
+        }
+      }
+    }
 
     "reject invalid manifest" in {
       intercept[IllegalArgumentException] {
