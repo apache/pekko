@@ -36,6 +36,12 @@ class TcpFramingSpec extends PekkoSpec("""
   private val maxFrameSize = 256 * 1024
   private val boundedFramingFlow =
     Flow[ByteString].via(new TcpFraming(acceptedMagic, maximumFrameSize = maxFrameSize))
+  private val maxLargeFrameSize = maxFrameSize * 2
+  private val perStreamBoundedFramingFlow =
+    Flow[ByteString].via(new TcpFraming(
+      acceptedMagic,
+      maximumFrameSize = maxFrameSize,
+      maximumLargeFrameSize = maxLargeFrameSize))
 
   private val payload5 = ByteString((1 to 5).map(_.toByte).toArray)
 
@@ -121,6 +127,28 @@ class TcpFramingSpec extends PekkoSpec("""
       val bytes = TcpFraming.encodeConnectionHeader(magic, 2) ++ encodeFrameHeader(maxFrameSize) ++ payload
       val frames = Source(List(bytes)).via(boundedFramingFlow).runWith(Sink.seq).futureValue
       frames.head.byteBuffer.limit() should ===(maxFrameSize)
+    }
+
+    "accept, on the large-message stream, a frame over the ordinary maximum but within the large maximum" in {
+      val length = maxFrameSize + 1
+      val payload = ByteString(Array.fill(length)(7.toByte))
+      val bytes = TcpFraming.encodeConnectionHeader(magic, ArteryTransport.LargeStreamId) ++
+        encodeFrameHeader(length) ++ payload
+      val frames = Source(List(bytes)).via(perStreamBoundedFramingFlow).runWith(Sink.seq).futureValue
+      frames.head.byteBuffer.limit() should ===(length)
+      frames.head.streamId should ===(ArteryTransport.LargeStreamId)
+    }
+
+    "reject, on the ordinary stream, a frame over the ordinary maximum even though it is within the large maximum" in {
+      // the payload is included, at full length, so this can only fail via the max-frame-size check -
+      // not via truncation - and so genuinely proves the ordinary stream is bounded by maximumFrameSize,
+      // not the larger maximumLargeFrameSize that only applies to ArteryTransport.LargeStreamId
+      val length = maxFrameSize + 1
+      val payload = ByteString(Array.fill(length)(7.toByte))
+      val bytes = TcpFraming.encodeConnectionHeader(magic, ArteryTransport.OrdinaryStreamId) ++
+        encodeFrameHeader(length) ++ payload
+      val fail = Source(List(bytes)).via(perStreamBoundedFramingFlow).runWith(Sink.seq).failed.futureValue
+      fail shouldBe a[FramingException]
     }
 
     "report truncated frames" in {
