@@ -30,7 +30,13 @@ import pekko.remote._
 import pekko.remote.WireFormats.AddressData
 import pekko.remote.routing.RemoteRouterConfig
 import pekko.routing._
-import pekko.serialization.{ BaseSerializer, Serialization, SerializationExtension, SerializerWithStringManifest }
+import pekko.serialization.{
+  BaseSerializer,
+  Serialization,
+  SerializationExtension,
+  SerializerWithStringManifest,
+  WireConfig
+}
 
 import com.typesafe.config.{ Config, ConfigFactory, ConfigRenderOptions }
 
@@ -546,7 +552,7 @@ class MiscMessageSerializer(val system: ExtendedActorSystem) extends SerializerW
 
   private def deserializeConfig(bytes: Array[Byte]): Config = {
     if (bytes.isEmpty) EmptyConfig
-    else ConfigFactory.parseString(new String(bytes, StandardCharsets.UTF_8))
+    else WireConfig.parseString(new String(bytes, StandardCharsets.UTF_8))
   }
 
   private def deserializeFromConfig(bytes: Array[Byte]): FromConfig =
