@@ -36,15 +36,19 @@ import pekko.io.UnsynchronizedByteArrayInputStream
 
   /**
    * The configured `pekko.serialization.max-decompressed-size`, in bytes.
-   * Negative means no limit; `getBytes` refuses negative values, so those are
-   * read before interpreting the value as a size.
+   * `unlimited` or a negative number means no limit; `getBytes` refuses both,
+   * so they are read before interpreting the value as a size.
    */
   def maxDecompressedSize(system: ActorSystem): Long = {
     val path = "pekko.serialization.max-decompressed-size"
     val config = system.settings.config
-    config.getString(path).toLongOption match {
-      case Some(n) if n < 0 => n
-      case _                => config.getBytes(path)
+    config.getString(path) match {
+      case "unlimited" => -1L
+      case raw         =>
+        raw.toLongOption match {
+          case Some(n) if n < 0 => n
+          case _                => config.getBytes(path)
+        }
     }
   }
 

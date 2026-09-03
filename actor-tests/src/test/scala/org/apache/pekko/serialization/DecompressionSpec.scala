@@ -90,5 +90,15 @@ class DecompressionSpec extends PekkoSpec {
       try Decompression.maxDecompressedSize(sys) should ===(16L * 1024)
       finally shutdown(sys)
     }
+
+    "read a configured -1 as unlimited" in {
+      val sys = ActorSystem(
+        "DecompressionSpec-negative",
+        ConfigFactory
+          .parseString("pekko.serialization.max-decompressed-size = -1")
+          .withFallback(system.settings.config))
+      try Decompression.maxDecompressedSize(sys) should ===(-1L)
+      finally shutdown(sys)
+    }
   }
 }
