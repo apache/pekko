@@ -20,7 +20,11 @@ package org.apache.pekko.serialization
 import java.io.{ ByteArrayOutputStream, NotSerializableException }
 import java.util.zip.GZIPOutputStream
 
-import org.apache.pekko.testkit.PekkoSpec
+import com.typesafe.config.ConfigFactory
+
+import org.apache.pekko
+import pekko.actor.ActorSystem
+import pekko.testkit.PekkoSpec
 
 class DecompressionSpec extends PekkoSpec {
 
@@ -67,8 +71,24 @@ class DecompressionSpec extends PekkoSpec {
       }
     }
 
-    "read the maximum from configuration" in {
-      Decompression.maxDecompressedSize(system) should ===(256L * 1024 * 1024)
+    "apply no limit when the maximum is negative" in {
+      // the same payload the boundary tests reject at 1 KiB
+      val payload = new Array[Byte](1025)
+      Decompression.gunzip(gzip(payload), maxDecompressedSize = -1).length should ===(1025)
+    }
+
+    "read the maximum from configuration, unlimited by default" in {
+      Decompression.maxDecompressedSize(system) should ===(-1L)
+    }
+
+    "read a configured maximum as a size" in {
+      val sys = ActorSystem(
+        "DecompressionSpec-configured",
+        ConfigFactory
+          .parseString("pekko.serialization.max-decompressed-size = 16 KiB")
+          .withFallback(system.settings.config))
+      try Decompression.maxDecompressedSize(sys) should ===(16L * 1024)
+      finally shutdown(sys)
     }
   }
 }

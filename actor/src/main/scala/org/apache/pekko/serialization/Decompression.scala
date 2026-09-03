@@ -36,13 +36,22 @@ import pekko.io.UnsynchronizedByteArrayInputStream
 
   /**
    * The configured `pekko.serialization.max-decompressed-size`, in bytes.
+   * Negative means no limit; `getBytes` refuses negative values, so those are
+   * read before interpreting the value as a size.
    */
-  def maxDecompressedSize(system: ActorSystem): Long =
-    system.settings.config.getBytes("pekko.serialization.max-decompressed-size")
+  def maxDecompressedSize(system: ActorSystem): Long = {
+    val path = "pekko.serialization.max-decompressed-size"
+    val config = system.settings.config
+    config.getString(path).toLongOption match {
+      case Some(n) if n < 0 => n
+      case _                => config.getBytes(path)
+    }
+  }
 
   /**
    * Gunzip `bytes`, failing with a `NotSerializableException` as soon as more than
-   * `maxDecompressedSize` bytes have been produced.
+   * `maxDecompressedSize` bytes have been produced. A negative `maxDecompressedSize`
+   * applies no limit.
    */
   def gunzip(bytes: Array[Byte], maxDecompressedSize: Long): Array[Byte] = {
     val in = new GZIPInputStream(new UnsynchronizedByteArrayInputStream(bytes))
@@ -53,7 +62,7 @@ import pekko.io.UnsynchronizedByteArrayInputStream
       var n = in.read(buffer)
       while (n != -1) {
         total += n
-        if (total > maxDecompressedSize)
+        if (maxDecompressedSize >= 0 && total > maxDecompressedSize)
           throw new NotSerializableException(
             s"Compressed message expands to more than the maximum decompressed size of " +
             s"[$maxDecompressedSize] bytes. " +
