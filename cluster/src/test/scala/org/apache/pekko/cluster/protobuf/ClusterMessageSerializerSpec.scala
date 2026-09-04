@@ -14,6 +14,8 @@
 package org.apache.pekko.cluster.protobuf
 
 import java.io.NotSerializableException
+import java.nio.charset.StandardCharsets
+import java.nio.file.Files
 
 import collection.immutable.SortedSet
 
