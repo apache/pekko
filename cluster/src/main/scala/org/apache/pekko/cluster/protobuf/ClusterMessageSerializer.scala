@@ -314,7 +314,7 @@ final class ClusterMessageSerializer(val system: ExtendedActorSystem)
   private def deserializeInitJoin(bytes: Array[Byte]): InternalClusterAction.InitJoin = {
     val m = cm.InitJoin.parseFrom(bytes)
     if (m.hasCurrentConfig)
-      InternalClusterAction.InitJoin(ConfigFactory.parseString(m.getCurrentConfig))
+      InternalClusterAction.InitJoin(WireConfig.parseString(m.getCurrentConfig))
     else
       InternalClusterAction.InitJoin(ConfigFactory.empty)
   }
@@ -325,7 +325,7 @@ final class ClusterMessageSerializer(val system: ExtendedActorSystem)
       val configCheck =
         i.getConfigCheck.getType match {
           case cm.ConfigCheck.Type.CompatibleConfig =>
-            CompatibleConfig(ConfigFactory.parseString(i.getConfigCheck.getClusterConfig))
+            CompatibleConfig(WireConfig.parseString(i.getConfigCheck.getClusterConfig))
           case cm.ConfigCheck.Type.IncompatibleConfig => IncompatibleConfig
           case cm.ConfigCheck.Type.UncheckedConfig    => UncheckedConfig
         }

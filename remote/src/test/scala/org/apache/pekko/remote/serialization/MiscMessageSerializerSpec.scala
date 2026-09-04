@@ -14,6 +14,8 @@
 package org.apache.pekko.remote.serialization
 
 import java.io.NotSerializableException
+import java.nio.charset.StandardCharsets
+import java.nio.file.Files
 import java.util.Optional
 import java.util.concurrent.TimeoutException
 
@@ -21,7 +23,7 @@ import scala.annotation.nowarn
 import scala.concurrent.duration._
 import scala.util.control.NoStackTrace
 
-import com.typesafe.config.ConfigFactory
+import com.typesafe.config.{ Config, ConfigFactory }
 import org.apache.pekko
 import pekko.{ Done, NotUsed }
 import pekko.actor._
@@ -155,6 +157,23 @@ class MiscMessageSerializerSpec extends PekkoSpec(MiscMessageSerializerSpec.test
         s"serialize and de-serialize $scenario" in {
           verifySerialization(item)
         }
+    }
+
+    "not resolve includes in a serialized Config" in {
+      // Config is written with ConfigRenderOptions.concise, which is JSON and cannot carry an
+      // include, so refusing to resolve one loses nothing. An include that did resolve would
+      // read a local file or issue an outbound request while deserializing a peer's message.
+      val secretFile = Files.createTempFile("misc-message-serializer-spec", ".conf")
+      try {
+        Files.write(secretFile, """secret = "leaked"""".getBytes(StandardCharsets.UTF_8))
+        val serializer = new MiscMessageSerializer(system.asInstanceOf[ExtendedActorSystem])
+        val hocon = s"""include file("${secretFile.toAbsolutePath}")
+          a = 1"""
+
+        val config = serializer.fromBinary(hocon.getBytes(StandardCharsets.UTF_8), "CF").asInstanceOf[Config]
+        config.hasPath("secret") should ===(false)
+        config.getInt("a") should ===(1)
+      } finally Files.deleteIfExists(secretFile)
     }
 
     "reject invalid manifest" in {
