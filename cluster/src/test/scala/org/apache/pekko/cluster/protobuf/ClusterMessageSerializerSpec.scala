@@ -13,6 +13,9 @@
 
 package org.apache.pekko.cluster.protobuf
 
+import java.nio.charset.StandardCharsets
+import java.nio.file.Files
+
 import collection.immutable.SortedSet
 
 import scala.annotation.nowarn
@@ -22,6 +25,7 @@ import org.apache.pekko
 import pekko.actor.{ Address, ExtendedActorSystem }
 import pekko.cluster._
 import pekko.cluster.InternalClusterAction.CompatibleConfig
+import pekko.cluster.protobuf.msg.{ ClusterMessages => cm }
 import pekko.cluster.routing.{ ClusterRouterPool, ClusterRouterPoolSettings }
 import pekko.routing.RoundRobinPool
 import pekko.testkit.PekkoSpec
@@ -181,6 +185,37 @@ class ClusterMessageSerializerSpec extends PekkoSpec("pekko.actor.provider = clu
       val env = roundtrip(GossipEnvelope(a1.uniqueAddress, d1.uniqueAddress, Gossip(SortedSet(a1, d1))))
       env.gossip.members.head.roles should be(Set(ClusterSettings.DcRolePrefix + "default"))
       env.gossip.members.tail.head.roles should be(Set("r1", ClusterSettings.DcRolePrefix + "foo"))
+    }
+
+    "not resolve includes in the config of a join message" in {
+      // The joining node renders its config with ConfigRenderOptions.concise, which is JSON and
+      // cannot carry an include, so nothing legitimate is lost by refusing to resolve one. An
+      // include that did resolve would read a local file or issue an outbound request while
+      // deserializing a message from a node that has not joined yet.
+      val secretFile = Files.createTempFile("cluster-message-serializer-spec", ".conf")
+      try {
+        Files.write(secretFile, """secret = "leaked"""".getBytes(StandardCharsets.UTF_8))
+        val hocon = s"""include file("${secretFile.toAbsolutePath}")
+          pekko.cluster.roles = []"""
+
+        val initJoin = serializer
+          .fromBinary(cm.InitJoin.newBuilder().setCurrentConfig(hocon).build().toByteArray, "IJ")
+          .asInstanceOf[InternalClusterAction.InitJoin]
+        initJoin.configOfJoiningNode.hasPath("secret") should ===(false)
+
+        val ackBytes = cm.InitJoinAck
+          .newBuilder()
+          .setAddress(serializer.addressToProto(Address("pekko", "system", "some.host.org", 4711)))
+          .setConfigCheck(
+            cm.ConfigCheck
+              .newBuilder()
+              .setType(cm.ConfigCheck.Type.CompatibleConfig)
+              .setClusterConfig(hocon))
+          .build()
+          .toByteArray
+        val ack = serializer.fromBinary(ackBytes, "IJA").asInstanceOf[InternalClusterAction.InitJoinAck]
+        ack.configCheck.asInstanceOf[CompatibleConfig].clusterConfig.hasPath("secret") should ===(false)
+      } finally Files.deleteIfExists(secretFile)
     }
 
     "add a default data center role to internal join action if none is present" in {
