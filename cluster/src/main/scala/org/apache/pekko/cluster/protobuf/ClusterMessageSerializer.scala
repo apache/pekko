@@ -14,8 +14,7 @@
 package org.apache.pekko.cluster.protobuf
 
 import java.io.ByteArrayOutputStream
-import java.util.zip.{ GZIPInputStream, GZIPOutputStream }
-import scala.annotation.tailrec
+import java.util.zip.GZIPOutputStream
 import scala.collection.immutable
 import scala.concurrent.duration.Deadline
 import scala.annotation.nowarn
@@ -27,7 +26,6 @@ import pekko.cluster._
 import pekko.cluster.InternalClusterAction._
 import pekko.cluster.protobuf.msg.{ ClusterMessages => cm }
 import pekko.cluster.routing.{ ClusterRouterPool, ClusterRouterPoolSettings }
-import pekko.io.UnsynchronizedByteArrayInputStream
 import pekko.protobufv3.internal.MessageLite
 import pekko.remote.ByteStringUtils
 import pekko.routing.Pool
@@ -85,6 +83,7 @@ final class ClusterMessageSerializer(val system: ExtendedActorSystem)
     with BaseSerializer {
   import ClusterMessageSerializer._
   private lazy val serialization = SerializationExtension(system)
+  private val maxDecompressedSize: Long = Decompression.maxDecompressedSize(system)
 
   // must be lazy because serializer is initialized from Cluster extension constructor
   private lazy val GossipTimeToLive = Cluster(system).settings.GossipTimeToLive
@@ -166,20 +165,7 @@ final class ClusterMessageSerializer(val system: ExtendedActorSystem)
   }
 
   def decompress(bytes: Array[Byte]): Array[Byte] = {
-    val in = new GZIPInputStream(new UnsynchronizedByteArrayInputStream(bytes))
-    val out = new ByteArrayOutputStream()
-    val buffer = new Array[Byte](BufferSize)
-
-    @tailrec def readChunk(): Unit = in.read(buffer) match {
-      case -1 => ()
-      case n  =>
-        out.write(buffer, 0, n)
-        readChunk()
-    }
-
-    try readChunk()
-    finally in.close()
-    out.toByteArray
+    Decompression.gunzip(bytes, maxDecompressedSize)
   }
 
   private def heartbeatToProtoByteArray(hb: ClusterHeartbeatSender.Heartbeat): Array[Byte] = {

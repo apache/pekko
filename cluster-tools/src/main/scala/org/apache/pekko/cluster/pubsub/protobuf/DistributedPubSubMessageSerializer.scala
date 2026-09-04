@@ -15,9 +15,7 @@ package org.apache.pekko.cluster.pubsub.protobuf
 
 import java.io.ByteArrayOutputStream
 import java.io.NotSerializableException
-import java.util.zip.GZIPInputStream
 import java.util.zip.GZIPOutputStream
-import scala.annotation.tailrec
 import scala.collection.immutable.TreeMap
 import org.apache.pekko
 import pekko.actor.{ Address, ExtendedActorSystem }
@@ -25,7 +23,6 @@ import pekko.actor.ActorRef
 import pekko.cluster.pubsub.DistributedPubSubMediator._
 import pekko.cluster.pubsub.DistributedPubSubMediator.Internal._
 import pekko.cluster.pubsub.protobuf.msg.{ DistributedPubSubMessages => dm }
-import pekko.io.UnsynchronizedByteArrayInputStream
 import pekko.protobufv3.internal.{ ByteString, MessageLite }
 import pekko.remote.ByteStringUtils
 import pekko.serialization._
@@ -41,6 +38,7 @@ private[pekko] class DistributedPubSubMessageSerializer(val system: ExtendedActo
     with BaseSerializer {
 
   private lazy val serialization = SerializationExtension(system)
+  private val maxDecompressedSize: Long = Decompression.maxDecompressedSize(system)
 
   private final val BufferSize = 1024 * 4
 
@@ -98,20 +96,7 @@ private[pekko] class DistributedPubSubMessageSerializer(val system: ExtendedActo
   }
 
   private def decompress(bytes: Array[Byte]): Array[Byte] = {
-    val in = new GZIPInputStream(new UnsynchronizedByteArrayInputStream(bytes))
-    val out = new ByteArrayOutputStream()
-    val buffer = new Array[Byte](BufferSize)
-
-    @tailrec def readChunk(): Unit = in.read(buffer) match {
-      case -1 => ()
-      case n  =>
-        out.write(buffer, 0, n)
-        readChunk()
-    }
-
-    try readChunk()
-    finally in.close()
-    out.toByteArray
+    Decompression.gunzip(bytes, maxDecompressedSize)
   }
 
   private def addressToProto(address: Address): dm.Address.Builder = address match {
