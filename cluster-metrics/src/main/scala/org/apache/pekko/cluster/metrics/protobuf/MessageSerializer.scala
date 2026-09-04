@@ -15,7 +15,7 @@ package org.apache.pekko.cluster.metrics.protobuf
 
 import java.{ lang => jl }
 import java.io.{ ByteArrayOutputStream, NotSerializableException, ObjectOutputStream }
-import java.util.zip.{ GZIPInputStream, GZIPOutputStream }
+import java.util.zip.GZIPOutputStream
 
 import scala.collection.immutable
 import scala.jdk.CollectionConverters._
@@ -28,7 +28,13 @@ import pekko.dispatch.Dispatchers
 import pekko.io.UnsynchronizedByteArrayInputStream
 import pekko.protobufv3.internal.MessageLite
 import pekko.remote.ByteStringUtils
-import pekko.serialization.{ BaseSerializer, SerializationExtension, SerializerWithStringManifest, Serializers }
+import pekko.serialization.{
+  BaseSerializer,
+  Decompression,
+  SerializationExtension,
+  SerializerWithStringManifest,
+  Serializers
+}
 
 /**
  * Protobuf serializer for `ClusterMetricsMessage` types.
@@ -45,6 +51,7 @@ class MessageSerializer(val system: ExtendedActorSystem) extends SerializerWithS
   private val SystemLoadAverageMetricsSelectorManifest = "f"
 
   private lazy val serialization = SerializationExtension(system)
+  private val maxDecompressedSize: Long = Decompression.maxDecompressedSize(system)
 
   override def manifest(obj: AnyRef): String = obj match {
     case _: MetricsGossipEnvelope         => MetricsGossipEnvelopeManifest
@@ -77,11 +84,7 @@ class MessageSerializer(val system: ExtendedActorSystem) extends SerializerWithS
   }
 
   def decompress(bytes: Array[Byte]): Array[Byte] = {
-    val in = new GZIPInputStream(new UnsynchronizedByteArrayInputStream(bytes))
-    val out = new ByteArrayOutputStream()
-    try in.transferTo(out)
-    finally in.close()
-    out.toByteArray
+    Decompression.gunzip(bytes, maxDecompressedSize)
   }
 
   override def fromBinary(bytes: Array[Byte], manifest: String): AnyRef = manifest match {
