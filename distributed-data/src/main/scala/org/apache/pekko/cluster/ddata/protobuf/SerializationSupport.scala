@@ -14,9 +14,7 @@
 package org.apache.pekko.cluster.ddata.protobuf
 
 import java.io.ByteArrayOutputStream
-import java.util.zip.GZIPInputStream
 import java.util.zip.GZIPOutputStream
-import scala.annotation.tailrec
 import scala.collection.immutable.TreeMap
 import org.apache.pekko
 import pekko.actor.ActorRef
@@ -25,7 +23,6 @@ import pekko.actor.ExtendedActorSystem
 import pekko.cluster.UniqueAddress
 import pekko.cluster.ddata.VersionVector
 import pekko.cluster.ddata.protobuf.msg.{ ReplicatorMessages => dm }
-import pekko.io.UnsynchronizedByteArrayInputStream
 import pekko.protobufv3.internal.ByteString
 import pekko.protobufv3.internal.MessageLite
 import pekko.remote.ByteStringUtils
@@ -75,22 +72,11 @@ trait SerializationSupport {
     bos.toByteArray
   }
 
-  def decompress(bytes: Array[Byte]): Array[Byte] = {
-    val in = new GZIPInputStream(new UnsynchronizedByteArrayInputStream(bytes))
-    val out = new ByteArrayOutputStream()
-    val buffer = new Array[Byte](BufferSize)
-
-    @tailrec def readChunk(): Unit = in.read(buffer) match {
-      case -1 => ()
-      case n  =>
-        out.write(buffer, 0, n)
-        readChunk()
-    }
-
-    try readChunk()
-    finally in.close()
-    out.toByteArray
-  }
+  def decompress(bytes: Array[Byte]): Array[Byte] =
+    // `system` is a constructor parameter of the serializers mixing this in, so it is not yet
+    // assigned when trait fields initialize; read the maximum per call rather than adding a
+    // field to this public trait. The lookup is negligible next to the decompression itself.
+    Decompression.gunzip(bytes, Decompression.maxDecompressedSize(system))
 
   def addressToProto(address: Address): dm.Address.Builder = address match {
     case Address(_, _, Some(host), Some(port)) =>
