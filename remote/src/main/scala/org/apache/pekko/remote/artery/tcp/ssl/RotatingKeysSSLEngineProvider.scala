@@ -112,11 +112,11 @@ final class RotatingKeysSSLEngineProvider(val config: Config, protected val log:
 
   // Construct the cached instance
   private def constructContext(): ConfiguredContext = {
-    val (privateKey, cert, cacert) = readFiles()
+    val (privateKey, cert, cacerts) = readFiles()
     try {
       val keyManagers: Array[KeyManager] =
-        PemManagersProvider.buildKeyManagers(privateKey, cert, cacert, SSLKeystorePassword)
-      val trustManagers: Array[TrustManager] = PemManagersProvider.buildTrustManagers(cacert)
+        PemManagersProvider.buildKeyManagers(privateKey, cert, cacerts, SSLKeystorePassword)
+      val trustManagers: Array[TrustManager] = PemManagersProvider.buildTrustManagers(cacerts)
 
       val sessionVerifier = new PeerSubjectVerifier(cert)
 
@@ -133,12 +133,17 @@ final class RotatingKeysSSLEngineProvider(val config: Config, protected val log:
     }
   }
 
-  private def readFiles(): (PrivateKey, X509Certificate, Certificate) = {
+  private def readFiles(): (PrivateKey, X509Certificate, Seq[Certificate]) = {
     try {
-      val cacert: Certificate = PemManagersProvider.loadCertificate(SSLCACertFile)
+      // the CA file may bundle several certificates, all of them are trusted
+      val cacerts: Seq[Certificate] = PemManagersProvider.loadCertificates(SSLCACertFile)
+      if (cacerts.isEmpty)
+        throw new SslTransportException(
+          s"Server SSL connection could not be established because no certificate was found in [$SSLCACertFile]",
+          null)
       val cert: X509Certificate = PemManagersProvider.loadCertificate(SSLCertFile).asInstanceOf[X509Certificate]
       val privateKey: PrivateKey = PemManagersProvider.loadPrivateKey(SSLKeyFile)
-      (privateKey, cert, cacert)
+      (privateKey, cert, cacerts)
     } catch {
       case e: FileNotFoundException =>
         throw new SslTransportException(
