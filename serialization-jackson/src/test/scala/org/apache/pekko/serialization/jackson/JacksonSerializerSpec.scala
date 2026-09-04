@@ -650,6 +650,76 @@ class JacksonJsonSerializerSpec extends JacksonSerializerSpec("jackson-json") {
       check(SimpleCommand("Bob"), false)
       check(new SimpleCommandNotCaseClass("Bob"), false)
     }
+
+    "reject a gzip payload that decompresses beyond max-decompressed-size" in withSystem("""
+        pekko.serialization.jackson.jackson-json.compression {
+          algorithm = gzip
+          compress-larger-than = 0 KiB
+          max-decompressed-size = 1 KiB
+        }
+      """) { sys =>
+      val msg = SimpleCommand("0" * (8 * 1024))
+      val serializer = serializerFor(msg, sys)
+      val blob = serializeToBinary(msg, sys)
+      JacksonSerializer.isGZipped(blob) should ===(true)
+      val ex = intercept[IllegalArgumentException] {
+        deserializeFromBinary(blob, serializer.identifier, serializer.manifest(msg), sys)
+      }
+      ex.getMessage should include("max-decompressed-size")
+    }
+
+    "reject an lz4 payload that declares a size beyond max-decompressed-size" in withSystem("""
+        pekko.serialization.jackson.jackson-json.compression {
+          algorithm = lz4
+          compress-larger-than = 0 KiB
+          max-decompressed-size = 1 KiB
+        }
+      """) { sys =>
+      val msg = SimpleCommand("0" * (8 * 1024))
+      val serializer = serializerFor(msg, sys)
+      val blob = serializeToBinary(msg, sys)
+      JacksonSerializer.isLZ4(blob) should ===(true)
+      val ex = intercept[IllegalArgumentException] {
+        deserializeFromBinary(blob, serializer.identifier, serializer.manifest(msg), sys)
+      }
+      ex.getMessage should include("max-decompressed-size")
+    }
+
+    "apply no gzip decompression limit when max-decompressed-size is -1" in withSystem("""
+        pekko.serialization.jackson.jackson-json.compression {
+          algorithm = gzip
+          compress-larger-than = 0 KiB
+          max-decompressed-size = -1
+        }
+      """) { sys =>
+      val msg = SimpleCommand("0" * (8 * 1024))
+      JacksonSerializer.isGZipped(serializeToBinary(msg, sys)) should ===(true)
+      checkSerialization(msg, sys)
+    }
+
+    "apply no lz4 decompression limit when max-decompressed-size is -1" in withSystem("""
+        pekko.serialization.jackson.jackson-json.compression {
+          algorithm = lz4
+          compress-larger-than = 0 KiB
+          max-decompressed-size = -1
+        }
+      """) { sys =>
+      val msg = SimpleCommand("0" * (8 * 1024))
+      JacksonSerializer.isLZ4(serializeToBinary(msg, sys)) should ===(true)
+      checkSerialization(msg, sys)
+    }
+
+    "apply no decompression limit when max-decompressed-size is unlimited" in withSystem("""
+        pekko.serialization.jackson.jackson-json.compression {
+          algorithm = gzip
+          compress-larger-than = 0 KiB
+          max-decompressed-size = unlimited
+        }
+      """) { sys =>
+      val msg = SimpleCommand("0" * (8 * 1024))
+      JacksonSerializer.isGZipped(serializeToBinary(msg, sys)) should ===(true)
+      checkSerialization(msg, sys)
+    }
   }
 
   "JacksonJsonSerializer without type in manifest" should {

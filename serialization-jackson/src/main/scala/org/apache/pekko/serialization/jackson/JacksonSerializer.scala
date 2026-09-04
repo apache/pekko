@@ -208,6 +208,19 @@ import pekko.util.OptionVal
           """"off" or "gzip"""")
     }
   }
+  // "unlimited" or a negative number means no limit; getBytes refuses both, so read them
+  // first. Not toLongOption, which Scala 2.12 does not have.
+  private val maxDecompressedSize: Long = {
+    val raw = conf.getString("compression.max-decompressed-size")
+    if (raw == "unlimited") -1L
+    else
+      try {
+        val n = raw.toLong
+        if (n < 0) n else conf.getBytes("compression.max-decompressed-size")
+      } catch {
+        case _: NumberFormatException => conf.getBytes("compression.max-decompressed-size")
+      }
+  }
   private val migrations: Map[String, JacksonMigration] = {
     import pekko.util.ccompat.JavaConverters._
     conf.getConfig("migrations").root.unwrapped.asScala.toMap.map {
@@ -557,27 +570,45 @@ import pekko.util.OptionVal
   def decompress(bytes: Array[Byte]): Array[Byte] = {
     if (isGZipped(bytes)) {
       val in = new GZIPInputStream(new UnsynchronizedByteArrayInputStream(bytes))
-      val out = new ByteArrayOutputStream()
-      val buffer = new Array[Byte](BufferSize)
-
-      @tailrec def readChunk(): Unit = in.read(buffer) match {
-        case -1 => ()
-        case n  =>
-          out.write(buffer, 0, n)
-          readChunk()
-      }
-
-      try readChunk()
+      try gunzip(in)
       finally in.close()
-      out.toByteArray
     } else {
       LZ4Meta.get(bytes) match {
         case OptionVal.Some(meta) =>
+          // meta.length is the decompressed size declared on the wire; a small
+          // message can declare a huge (or negative) size and drive a large
+          // allocation, so bound it before decompressing.
+          if (meta.length < 0)
+            throw new IllegalArgumentException(
+              s"Compressed message declares a negative decompressed size [${meta.length}] bytes")
+          if (maxDecompressedSize >= 0 && meta.length > maxDecompressedSize)
+            throw new IllegalArgumentException(
+              s"Compressed message declares decompressed size [${meta.length}] bytes, which exceeds the maximum " +
+              s"of [$maxDecompressedSize] bytes (pekko.serialization.jackson.compression.max-decompressed-size)")
           val srcLen = bytes.length - meta.offset
           lz4Decompressor.decompress(bytes, meta.offset, srcLen, meta.length)
         case _ => bytes
       }
     }
+  }
+
+  // gunzip with a bound on the decompressed size, so a small gzip payload cannot
+  // inflate without limit (a "zip bomb"). A negative maximum applies no bound.
+  private def gunzip(in: GZIPInputStream): Array[Byte] = {
+    val out = new ByteArrayOutputStream()
+    val buffer = new Array[Byte](BufferSize)
+    var total = 0L
+    var n = in.read(buffer)
+    while (n != -1) {
+      total += n
+      if (maxDecompressedSize >= 0 && total > maxDecompressedSize)
+        throw new IllegalArgumentException(
+          s"Decompressed message exceeds the maximum of [$maxDecompressedSize] bytes " +
+          "(pekko.serialization.jackson.compression.max-decompressed-size)")
+      out.write(buffer, 0, n)
+      n = in.read(buffer)
+    }
+    out.toByteArray
   }
 
 }
