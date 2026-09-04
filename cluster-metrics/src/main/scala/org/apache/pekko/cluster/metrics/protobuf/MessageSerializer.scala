@@ -15,8 +15,7 @@ package org.apache.pekko.cluster.metrics.protobuf
 
 import java.{ lang => jl }
 import java.io.{ ByteArrayOutputStream, NotSerializableException, ObjectOutputStream }
-import java.util.zip.{ GZIPInputStream, GZIPOutputStream }
-import scala.annotation.tailrec
+import java.util.zip.GZIPOutputStream
 import scala.collection.immutable
 import org.apache.pekko
 import pekko.actor.{ Address, ExtendedActorSystem }
@@ -26,7 +25,13 @@ import pekko.dispatch.Dispatchers
 import pekko.io.UnsynchronizedByteArrayInputStream
 import pekko.protobufv3.internal.MessageLite
 import pekko.remote.ByteStringUtils
-import pekko.serialization.{ BaseSerializer, SerializationExtension, SerializerWithStringManifest, Serializers }
+import pekko.serialization.{
+  BaseSerializer,
+  Decompression,
+  SerializationExtension,
+  SerializerWithStringManifest,
+  Serializers
+}
 import pekko.util.ccompat._
 import pekko.util.ccompat.JavaConverters._
 
@@ -46,6 +51,7 @@ class MessageSerializer(val system: ExtendedActorSystem) extends SerializerWithS
   private val SystemLoadAverageMetricsSelectorManifest = "f"
 
   private lazy val serialization = SerializationExtension(system)
+  private val maxDecompressedSize: Long = Decompression.maxDecompressedSize(system)
 
   override def manifest(obj: AnyRef): String = obj match {
     case _: MetricsGossipEnvelope         => MetricsGossipEnvelopeManifest
@@ -78,20 +84,7 @@ class MessageSerializer(val system: ExtendedActorSystem) extends SerializerWithS
   }
 
   def decompress(bytes: Array[Byte]): Array[Byte] = {
-    val in = new GZIPInputStream(new UnsynchronizedByteArrayInputStream(bytes))
-    val out = new ByteArrayOutputStream()
-    val buffer = new Array[Byte](BufferSize)
-
-    @tailrec def readChunk(): Unit = in.read(buffer) match {
-      case -1 => ()
-      case n  =>
-        out.write(buffer, 0, n)
-        readChunk()
-    }
-
-    try readChunk()
-    finally in.close()
-    out.toByteArray
+    Decompression.gunzip(bytes, maxDecompressedSize)
   }
 
   override def fromBinary(bytes: Array[Byte], manifest: String): AnyRef = manifest match {
