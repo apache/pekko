@@ -13,6 +13,7 @@
 
 package org.apache.pekko.cluster.protobuf
 
+import java.io.NotSerializableException
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 
@@ -27,6 +28,7 @@ import pekko.cluster._
 import pekko.cluster.InternalClusterAction.CompatibleConfig
 import pekko.cluster.protobuf.msg.{ ClusterMessages => cm }
 import pekko.cluster.routing.{ ClusterRouterPool, ClusterRouterPoolSettings }
+import pekko.remote.ByteStringUtils
 import pekko.routing.RoundRobinPool
 import pekko.testkit.PekkoSpec
 import pekko.util.Version
@@ -179,6 +181,79 @@ class ClusterMessageSerializerSpec extends PekkoSpec("pekko.actor.provider = clu
       checkDeserializationWithManifest(
         InternalClusterAction.Welcome(uniqueAddress, g2),
         ClusterMessageSerializer.OldWelcomeManifest)
+    }
+
+    "reject gossip that refers to a lookup table entry it did not send" in {
+      // Gossip interns addresses, roles, hashes and app versions and refers to them by index.
+      // Every index gossipToProto writes is in range, so an out of range one is a message no
+      // toBinary produced; it must not surface as IndexOutOfBoundsException.
+      val node1 = VectorClock.Node("node1")
+      val gossip = (Gossip(SortedSet(a1, b1)) :+ node1).seen(a1.uniqueAddress)
+      val welcome = InternalClusterAction.Welcome(a1.uniqueAddress, gossip)
+      val proto = cm.Welcome.parseFrom(serializer.decompress(serializer.toBinary(welcome)))
+
+      def rejects(tamper: cm.Gossip.Builder => Unit): String = {
+        val g = proto.getGossip.toBuilder
+        tamper(g)
+        val bytes = serializer.compress(proto.toBuilder.setGossip(g).build())
+        intercept[NotSerializableException](serializer.fromBinary(bytes, "W")).getMessage
+      }
+
+      // an address index one past the end of allAddresses
+      rejects(_.setMembers(0, proto.getGossip.getMembers(0).toBuilder.setAddressIndex(99))) should include(
+        "address index [99]")
+      // a negative index
+      rejects(_.setMembers(0, proto.getGossip.getMembers(0).toBuilder.setAddressIndex(-1))) should include(
+        "address index [-1]")
+      // a role index out of range
+      rejects(_.setMembers(0, proto.getGossip.getMembers(0).toBuilder.setRolesIndexes(0, 99))) should include(
+        "role index [99]")
+      // a seen entry pointing nowhere
+      rejects(_.setOverview(proto.getGossip.getOverview.toBuilder.setSeen(0, 99))) should include("address index [99]")
+      // a vector clock hash index pointing nowhere
+      rejects(
+        _.setVersion(
+          proto.getGossip.getVersion.toBuilder
+            .setVersions(0, proto.getGossip.getVersion.getVersions(0).toBuilder.setHashIndex(99)))) should include(
+        "hash index [99]")
+    }
+
+    "reject a gossip status that refers to a hash it did not send" in {
+      val node1 = VectorClock.Node("node1")
+      val gossip = Gossip(SortedSet(a1)) :+ node1
+      val status = GossipStatus(a1.uniqueAddress, gossip.version, gossip.seenDigest)
+      val proto = cm.GossipStatus.parseFrom(serializer.toBinary(status))
+
+      val tampered = proto.toBuilder
+        .setVersion(proto.getVersion.toBuilder.setVersions(0,
+          proto.getVersion.getVersions(0).toBuilder.setHashIndex(7)))
+        .build()
+        .toByteArray
+
+      intercept[NotSerializableException] {
+        serializer.fromBinary(tampered, "GS")
+      }.getMessage should include("hash index [7]")
+    }
+
+    "reject a gossip envelope with a bad index when the gossip is read" in {
+      // GossipEnvelope defers the parse, so the failure surfaces from `gossip` rather than from
+      // fromBinary - on the cluster daemon's thread rather than a deserialization thread.
+      val gossip = Gossip(SortedSet(a1, b1))
+      val envelope = GossipEnvelope(a1.uniqueAddress, b1.uniqueAddress, gossip)
+      val proto = cm.GossipEnvelope.parseFrom(serializer.toBinary(envelope))
+      val inner = cm.Gossip.parseFrom(serializer.decompress(proto.getSerializedGossip.toByteArray))
+      val tamperedInner =
+        inner.toBuilder.setMembers(0, inner.getMembers(0).toBuilder.setAddressIndex(99)).build()
+
+      val bytes = proto.toBuilder
+        .setSerializedGossip(ByteStringUtils.toProtoByteStringUnsafe(serializer.compress(tamperedInner)))
+        .build()
+        .toByteArray
+
+      val msg = serializer.fromBinary(bytes, "GE").asInstanceOf[GossipEnvelope]
+      intercept[NotSerializableException] {
+        msg.gossip
+      }.getMessage should include("address index [99]")
     }
 
     "add a default data center role to gossip if none is present" in {
