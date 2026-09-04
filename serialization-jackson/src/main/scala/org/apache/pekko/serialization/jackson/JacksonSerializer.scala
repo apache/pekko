@@ -119,7 +119,8 @@ import pekko.util.OptionVal
     }
 
     def get(buffer: ByteBuffer): OptionVal[LZ4Meta] = {
-      if (buffer.remaining() < 4) {
+      // the header is the magic plus the declared length, so 8 bytes are read below
+      if (buffer.remaining() < 8) {
         OptionVal.None
       } else if (buffer.getInt() != LZ4_MAGIC) {
         OptionVal.None
@@ -346,14 +347,23 @@ import pekko.util.OptionVal
       checkAllowedClassName(className)
 
     if (isCaseObject(className)) {
+      // `getObjectFor` reads the MODULE$ field, which initializes the class. Resolve the class
+      // with `getClassFor` first, which does not initialize, and run the allow list check on it,
+      // so a manifest naming a class this serializer would reject cannot run that class's
+      // initializer on the way to being rejected.
+      val clazz = system.dynamicAccess.getClassFor[AnyRef](className) match {
+        case Success(c) => c
+        case Failure(_) =>
+          throw new NotSerializableException(
+            s"Cannot find manifest case object [$className] for serializer [${getClass.getName}].")
+      }
+      checkAllowedClass(clazz)
       val result = system.dynamicAccess.getObjectFor[AnyRef](className) match {
         case Success(obj) => obj
         case Failure(_)   =>
           throw new NotSerializableException(
             s"Cannot find manifest case object [$className] for serializer [${getClass.getName}].")
       }
-      val clazz = result.getClass
-      checkAllowedClass(clazz)
       // no migrations for case objects, since no json tree
       logFromBinaryDuration(bytes, bytes, startTime, clazz)
       result
@@ -458,8 +468,11 @@ import pekko.util.OptionVal
    * That is also possible when changing a binding from a JacksonSerializer to another serializer (e.g. protobuf)
    * and still bind with the same class (interface).
    */
-  private def isInAllowList(clazz: Class[_]): Boolean = {
-    isBoundToJacksonSerializer(clazz) || hasAllowedClassPrefix(clazz.getName)
+  private def isInAllowList(clazz: Class[?]): Boolean = {
+    // The prefix check comes first because it cannot throw: `isBoundToJacksonSerializer` calls
+    // `serializerFor`, which raises (and fills in the stack trace of) a NotSerializableException
+    // for an unbound class, and this runs on every `fromBinary`.
+    hasAllowedClassPrefix(clazz.getName) || isBoundToJacksonSerializer(clazz)
   }
 
   private def isBoundToJacksonSerializer(clazz: Class[_]): Boolean = {
@@ -508,7 +521,16 @@ import pekko.util.OptionVal
 
   private def parseManifest(manifest: String) = {
     val i = manifest.lastIndexOf('#')
-    val fromVersion = if (i == -1) 1 else manifest.substring(i + 1).toInt
+    val fromVersion =
+      if (i == -1) 1
+      else
+        // not toIntOption, which Scala 2.12 does not have
+        try manifest.substring(i + 1).toInt
+        catch {
+          case _: NumberFormatException =>
+            throw new NotSerializableException(
+              s"Manifest [$manifest] for serializer [${getClass.getName}] does not end with a numeric version.")
+        }
     val manifestClassName = if (i == -1) manifest else manifest.substring(0, i)
     (fromVersion, manifestClassName)
   }
