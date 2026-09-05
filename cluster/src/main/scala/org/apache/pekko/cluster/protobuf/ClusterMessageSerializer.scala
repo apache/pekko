@@ -40,22 +40,6 @@ import com.typesafe.config.{ Config, ConfigFactory, ConfigRenderOptions }
  */
 @InternalApi
 private[pekko] object ClusterMessageSerializer {
-  // Kept for one version iteration from Akka 2.6.4 to allow rolling migration to short manifests
-  // can be removed in Akka 2.6.6 or later.
-  val OldJoinManifest = s"org.apache.pekko.cluster.InternalClusterAction$$Join"
-  val OldWelcomeManifest = s"org.apache.pekko.cluster.InternalClusterAction$$Welcome"
-  val OldLeaveManifest = s"org.apache.pekko.cluster.ClusterUserAction$$Leave"
-  val OldDownManifest = s"org.apache.pekko.cluster.ClusterUserAction$$Down"
-  val OldInitJoinManifest = s"org.apache.pekko.cluster.InternalClusterAction$$InitJoin$$"
-  val OldInitJoinAckManifest = s"org.apache.pekko.cluster.InternalClusterAction$$InitJoinAck"
-  val OldInitJoinNackManifest = s"org.apache.pekko.cluster.InternalClusterAction$$InitJoinNack"
-  val HeartBeatManifestPre2523 = s"org.apache.pekko.cluster.ClusterHeartbeatSender$$Heartbeat"
-  val HeartBeatRspManifest2523 = s"org.apache.pekko.cluster.ClusterHeartbeatSender$$HeartbeatRsp"
-  val OldExitingConfirmedManifest = s"org.apache.pekko.cluster.InternalClusterAction$$ExitingConfirmed"
-  val OldGossipStatusManifest = "org.apache.pekko.cluster.GossipStatus"
-  val OldGossipEnvelopeManifest = "org.apache.pekko.cluster.GossipEnvelope"
-  val OldClusterRouterPoolManifest = "org.apache.pekko.cluster.routing.ClusterRouterPool"
-
   // is handled on the deserializing side in Akka 2.6.2 and then on the serializing side in Akka 2.6.3
   val JoinManifest = "J"
   val WelcomeManifest = "W"
@@ -139,21 +123,7 @@ final class ClusterMessageSerializer(val system: ExtendedActorSystem)
     case DownManifest              => deserializeDown(bytes)
     case ExitingConfirmedManifest  => deserializeExitingConfirmed(bytes)
     case ClusterRouterPoolManifest => deserializeClusterRouterPool(bytes)
-    // needs to stay in Akka 2.6.5 to be able to talk to an Akka 2.5.{3,4} node during rolling upgrade
-    case HeartBeatManifestPre2523     => deserializeHeartBeatAsAddress(bytes)
-    case HeartBeatRspManifest2523     => deserializeHeartBeatRspAsUniqueAddress(bytes)
-    case OldGossipStatusManifest      => deserializeGossipStatus(bytes)
-    case OldGossipEnvelopeManifest    => deserializeGossipEnvelope(bytes)
-    case OldInitJoinManifest          => deserializeInitJoin(bytes)
-    case OldInitJoinAckManifest       => deserializeInitJoinAck(bytes)
-    case OldInitJoinNackManifest      => deserializeInitJoinNack(bytes)
-    case OldJoinManifest              => deserializeJoin(bytes)
-    case OldWelcomeManifest           => deserializeWelcome(bytes)
-    case OldLeaveManifest             => deserializeLeave(bytes)
-    case OldDownManifest              => deserializeDown(bytes)
-    case OldExitingConfirmedManifest  => deserializeExitingConfirmed(bytes)
-    case OldClusterRouterPoolManifest => deserializeClusterRouterPool(bytes)
-    case _                            => throw new IllegalArgumentException(s"Unknown manifest [$manifest]")
+    case _                         => throw new IllegalArgumentException(s"Unknown manifest [$manifest]")
   }
 
   def compress(msg: MessageLite): Array[Byte] = {
@@ -321,14 +291,6 @@ final class ClusterMessageSerializer(val system: ExtendedActorSystem)
 
   private def deserializeExitingConfirmed(bytes: Array[Byte]): InternalClusterAction.ExitingConfirmed = {
     InternalClusterAction.ExitingConfirmed(uniqueAddressFromBinary(bytes))
-  }
-
-  private def deserializeHeartBeatRspAsUniqueAddress(bytes: Array[Byte]): ClusterHeartbeatSender.HeartbeatRsp = {
-    ClusterHeartbeatSender.HeartbeatRsp(uniqueAddressFromBinary(bytes), -1, -1)
-  }
-
-  private def deserializeHeartBeatAsAddress(bytes: Array[Byte]): ClusterHeartbeatSender.Heartbeat = {
-    ClusterHeartbeatSender.Heartbeat(addressFromBinary(bytes), -1, -1)
   }
 
   def deserializeHeartBeat(bytes: Array[Byte]): ClusterHeartbeatSender.Heartbeat = {
