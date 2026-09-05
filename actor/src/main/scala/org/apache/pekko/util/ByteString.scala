@@ -1540,8 +1540,8 @@ object ByteString {
       else throw new IndexOutOfBoundsException(idx.toString)
 
     // Remembers the fragment resolved by the last byteAtUnchecked call, so sequential access --
-    // the dominant pattern -- stays on the same fragment or steps to the next one instead of
-    // rescanning the fragment vector from index 0 for every byte.
+    // the dominant pattern -- stays on the same fragment or steps to the neighbouring one, in
+    // either direction, instead of rescanning the fragment vector from index 0 for every byte.
     //
     // Packed into a single long so the triple is read and written atomically: the fragment index
     // in the high 32 bits and its start offset in the low 32. A reader can therefore never pair
@@ -1581,12 +1581,27 @@ object ByteString {
     /**
      * Scans for the fragment containing `offset` and records it as the hint. `hintIdx` and
      * `hintStart` are a previously read hint that missed, used to resume the scan from that
-     * fragment rather than from the start.
+     * fragment -- forward or backward, whichever side of it `offset` is on -- rather than
+     * from the start.
      */
     private def resolveFragment(offset: Int, hintIdx: Int, hintStart: Int): Long = {
       var pos = 0
       var seen = 0
       if (hintIdx >= 0) {
+        if (offset < hintStart) {
+          // moving backward before the remembered fragment: walk back from it. `offset >= 0`
+          // and fragment 0 starts at 0, so the walk stops at fragment 0 at the latest, and it
+          // is never longer than the scan from fragment 0 it replaces.
+          pos = hintIdx
+          seen = hintStart
+          while (offset < seen) {
+            pos -= 1
+            seen -= bytestrings(pos).length
+          }
+          val located = (pos.toLong << 32) | (seen.toLong & 0xFFFFFFFFL)
+          fragmentHint = located
+          return located
+        }
         val hintEnd = hintStart + bytestrings(hintIdx).length
         if (offset >= hintEnd && hintIdx + 1 < bytestrings.length) {
           // moving forward past the remembered fragment: resume the scan from it
