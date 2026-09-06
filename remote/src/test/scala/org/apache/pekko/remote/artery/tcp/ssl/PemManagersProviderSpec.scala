@@ -84,6 +84,26 @@ class PemManagersProviderSpec extends AnyWordSpec with Matchers {
         cacerts.head.asInstanceOf[X509Certificate].getSubjectX500Principal)
     }
 
+    "present the CA certificate that signed the node certificate, not merely one with a matching subject" in {
+      val pk = PemManagersProvider.loadPrivateKey(resourcePath("ssl/node.example.com.pem"))
+      val cert =
+        PemManagersProvider.loadCertificate(resourcePath("ssl/node.example.com.crt")).asInstanceOf[X509Certificate]
+      // a CA rotation that keeps the distinguished name: both CA certificates share a subject,
+      // only the first one signed the node certificate
+      val cacerts = PemManagersProvider.loadCertificates(resourcePath("ssl/exampleca-rotated-bundle.crt"))
+      cacerts.size must be(2)
+      cacerts.map(_.asInstanceOf[X509Certificate].getSubjectX500Principal).distinct.size must be(1)
+
+      val keyManager = PemManagersProvider.buildKeyManagers(pk, cert, cacerts).head.asInstanceOf[X509KeyManager]
+      val aliases = Option(keyManager.getClientAliases(pk.getAlgorithm, null)).getOrElse(Array.empty[String])
+      aliases must not be empty
+
+      val chain = keyManager.getCertificateChain(aliases.head)
+      chain.length must be(2)
+      chain(0) must be(cert)
+      chain(1) must be(cacerts.head)
+    }
+
   }
 
   private def withFiles(keyFile: String, certFile: String, caCertFile: String)(

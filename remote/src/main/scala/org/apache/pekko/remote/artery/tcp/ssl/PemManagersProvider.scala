@@ -19,11 +19,11 @@ import java.nio.file.Files
 import java.security.{ KeyStore, PrivateKey }
 import java.security.cert.{ Certificate, CertificateFactory, X509Certificate }
 import javax.net.ssl.{ KeyManager, KeyManagerFactory, TrustManager, TrustManagerFactory }
-import javax.security.auth.x500.X500Principal
 
 import scala.annotation.tailrec
 import scala.concurrent.blocking
 import scala.jdk.CollectionConverters._
+import scala.util.control.NonFatal
 
 import org.apache.pekko
 import pekko.annotation.InternalApi
@@ -90,7 +90,9 @@ private[ssl] object PemManagersProvider {
    */
   @InternalApi
   private[ssl] def loadCertificate(filename: String): Certificate = blocking {
-    certFactory.generateCertificate(Files.newInputStream(new File(filename).toPath))
+    val stream = Files.newInputStream(new File(filename).toPath)
+    try certFactory.generateCertificate(stream)
+    finally stream.close()
   }
 
   /**
@@ -115,24 +117,36 @@ private[ssl] object PemManagersProvider {
    * to the root. Certificates in `cacerts` that are not part of that chain (an unrelated root
    * kept around for a CA rotation, say) are trusted but not sent to the peer.
    *
-   * Falls back to sending all of `cacerts` when none of them matches the issuer of `cert`, which
-   * keeps the behaviour of a single, non-matching CA certificate unchanged.
+   * Sends `cert` on its own when none of `cacerts` issued it.
    */
   private def buildCertificateChain(cert: X509Certificate, cacerts: Seq[Certificate]): Array[Certificate] = {
-    val bySubject: Map[X500Principal, X509Certificate] =
-      cacerts.collect { case x509: X509Certificate => x509.getSubjectX500Principal -> x509 }.toMap
+    val candidates: Seq[X509Certificate] = cacerts.collect { case x509: X509Certificate => x509 }
+
+    // A rotation that keeps the distinguished name leaves two CA certificates with the same
+    // subject in the bundle, and a self-signed root is even its own issuer by subject, so the
+    // signature and not the subject alone decides which certificate issued which.
+    def issuerOf(subject: X509Certificate, chain: List[Certificate]): Option[X509Certificate] =
+      candidates.find { candidate =>
+        candidate.getSubjectX500Principal == subject.getIssuerX500Principal &&
+        candidate != subject && !chain.contains(candidate) && signedBy(subject, candidate)
+      }
 
     @tailrec
     def issuersOf(current: X509Certificate, acc: List[Certificate]): List[Certificate] =
-      bySubject.get(current.getIssuerX500Principal) match {
-        // a self-signed certificate is its own issuer, so stop once the chain repeats itself
-        case Some(issuer) if issuer != current && !acc.contains(issuer) => issuersOf(issuer, issuer :: acc)
-        case _                                                          => acc
+      issuerOf(current, acc) match {
+        case Some(issuer) => issuersOf(issuer, issuer :: acc)
+        case None         => acc
       }
 
-    val issuers = issuersOf(cert, Nil).reverse
-    if (issuers.isEmpty) (cert +: cacerts).toArray
-    else (cert +: issuers).toArray
+    (cert +: issuersOf(cert, Nil).reverse).toArray
   }
+
+  private def signedBy(subject: X509Certificate, issuer: X509Certificate): Boolean =
+    try {
+      subject.verify(issuer.getPublicKey)
+      true
+    } catch {
+      case NonFatal(_) => false
+    }
 
 }
