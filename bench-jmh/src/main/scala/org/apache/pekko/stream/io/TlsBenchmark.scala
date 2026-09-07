@@ -198,11 +198,16 @@ object TlsBenchmark {
   def initSslContext(protocol: String): SSLContext = {
     val password = "changeme"
 
+    // KeyStore.load does not close the stream it is given
     val keyStore = KeyStore.getInstance(KeyStore.getDefaultType)
-    keyStore.load(getClass.getResourceAsStream("/keystore"), password.toCharArray)
+    val keyStoreStream = getClass.getResourceAsStream("/keystore")
+    try keyStore.load(keyStoreStream, password.toCharArray)
+    finally if (keyStoreStream ne null) keyStoreStream.close()
 
     val trustStore = KeyStore.getInstance(KeyStore.getDefaultType)
-    trustStore.load(getClass.getResourceAsStream("/truststore"), password.toCharArray)
+    val trustStoreStream = getClass.getResourceAsStream("/truststore")
+    try trustStore.load(trustStoreStream, password.toCharArray)
+    finally if (trustStoreStream ne null) trustStoreStream.close()
 
     val keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm)
     keyManagerFactory.init(keyStore, password.toCharArray)

@@ -25,3 +25,6 @@ createExampleRSAKeySet "rsa-client" "clientAuth" "DNS:rsa-client.example.com,DNS
 ## a certificate valid for both server and client (peer-to-peer)
 ## with RSA keys
 ./gen-artery-nodes.example.com.sh
+
+## the multi-certificate `ca-cert-file` samples, built on top of the certificates above
+./gen-ca-bundles.sh

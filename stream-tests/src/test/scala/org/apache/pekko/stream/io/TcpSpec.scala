@@ -962,7 +962,10 @@ class TcpSpec extends StreamSpec("""
 
       // trust store and keys in one keystore
       val keyStore = KeyStore.getInstance("PKCS12")
-      keyStore.load(getClass.getResourceAsStream("/tcp-spec-keystore.p12"), password)
+      // KeyStore.load does not close the stream it is given
+      val keyStoreStream = getClass.getResourceAsStream("/tcp-spec-keystore.p12")
+      try keyStore.load(keyStoreStream, password)
+      finally if (keyStoreStream ne null) keyStoreStream.close()
 
       val trustManagerFactory = TrustManagerFactory.getInstance("SunX509")
       trustManagerFactory.init(keyStore)
