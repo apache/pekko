@@ -181,7 +181,10 @@ class ProtobufSerializer(val system: ExtendedActorSystem) extends BaseSerializer
    * and still bind with the same class (interface).
    */
   private def isInAllowList(clazz: Class[?]): Boolean = {
-    isBoundToProtobufSerializer(clazz) || isInAllowListClassName(clazz)
+    // The name check comes first because it cannot throw: `isBoundToProtobufSerializer` calls
+    // `serializerFor`, which raises (and fills in the stack trace of) a NotSerializableException
+    // for a class that is not bound.
+    isInAllowListClassName(clazz) || isBoundToProtobufSerializer(clazz)
   }
 
   private def isBoundToProtobufSerializer(clazz: Class[?]): Boolean = {
@@ -194,8 +197,10 @@ class ProtobufSerializer(val system: ExtendedActorSystem) extends BaseSerializer
   }
 
   private def isInAllowListClassName(clazz: Class[?]): Boolean = {
+    // getSuperclass is null for an interface, for Object and for a primitive, and the manifest
+    // class comes off the wire, so it can be any of those
     allowedClassNames(clazz.getName) ||
-    allowedClassNames(clazz.getSuperclass.getName) ||
+    ((clazz.getSuperclass ne null) && allowedClassNames(clazz.getSuperclass.getName)) ||
     clazz.getInterfaces.exists(c => allowedClassNames(c.getName))
   }
 }
