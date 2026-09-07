@@ -1543,19 +1543,22 @@ object ByteString {
     // the dominant pattern -- stays on the same fragment or steps to the neighbouring one, in
     // either direction, instead of rescanning the fragment vector from index 0 for every byte.
     //
-    // Packed into a single long -- the fragment index in the high 32 bits, its start offset in
-    // the low 32 -- so the two travel together instead of in separate int fields a reader could
-    // pair across two different updates. JLS 17.7 still permits a non-volatile long to be read
-    // as two 32-bit halves, so a reader must treat the pair as advisory rather than assume it is
-    // internally consistent; `resolveFragment` checks the backward walk it drives for that.
-    // The end offset is not stored; it is recomputed as start + fragment.length, which is a
-    // cheap array read. The field is deliberately not volatile: it is only a hint, so a reader
+    // Packed into a single long -- the fragment index in the high 32 bits, its start offset in the
+    // low 32 -- and volatile so that the two always come from the same write. JLS 17.7 lets a
+    // non-volatile 64-bit field be read as two 32-bit halves, which would pair the index of one
+    // fragment with the start of another; the fast path below tests that pair against the wrong
+    // fragment's length and can pass, returning a byte from the wrong fragment.
+    //
+    // Volatile is for that atomicity, not for ordering: the value remains only a hint, so a reader
     // that misses another thread's update simply rescans, and ByteString is immutable, so a
-    // resolved mapping never becomes wrong.
-    private[this] var fragmentHint: Long = ByteStrings.NoHint
+    // resolved mapping never becomes wrong. Reads are the hot path; the write happens only when a
+    // lookup misses, which is once per fragment crossed rather than once per byte.
+    //
+    // The end offset is not stored; it is recomputed as start + fragment.length, a cheap array read.
+    @volatile private[this] var fragmentHint: Long = ByteStrings.NoHint
 
     private[pekko] override def byteAtUnchecked(offset: Int): Byte = {
-      val hint = fragmentHint // single read: index and start below are mutually consistent
+      val hint = fragmentHint // single read: index and start below come from the same write
       val hintIdx = (hint >>> 32).toInt
       val hintStart = hint.toInt
       if (hintIdx >= 0) {
@@ -1573,7 +1576,7 @@ object ByteString {
      * the hint uses. `offset` must be within this ByteString.
      */
     private def locateFragment(offset: Int): Long = {
-      val hint = fragmentHint // single read: index and start below are mutually consistent
+      val hint = fragmentHint // single read: index and start below come from the same write
       val hintIdx = (hint >>> 32).toInt
       val hintStart = hint.toInt
       if (hintIdx >= 0 && offset >= hintStart && offset - hintStart < bytestrings(hintIdx).length) hint
@@ -1591,34 +1594,23 @@ object ByteString {
       var seen = 0
       if (hintIdx >= 0) {
         if (offset < hintStart) {
-          // Moving backward before the remembered fragment: walk back from it, keeping `seen` at
-          // the start of fragment `pos`, so the walk stops at the fragment holding `offset`. That
-          // is at most `hintIdx` steps -- the same O(fragments) bound per call as the scan from
-          // fragment 0 it replaces, though not always fewer steps than it: a hint near the end
-          // paired with an offset near the start walks further than a from-zero scan would. No
-          // distance heuristic guards against that, because it is the random-access pattern that
-          // neither strategy serves, while backward *sequential* access -- what this branch is
-          // for -- costs one step whatever the fragment count.
-          //
-          // `pos > 0` and the consistency check are not redundant: a torn read of `fragmentHint`
-          // (see above) can pair `hintIdx` with the `hintStart` of a different fragment, and an
-          // unbounded walk would then step `pos` off the front of the vector. On a consistent
-          // pair the walk always ends with `offset >= seen`, since fragment 0 starts at 0 and
-          // `offset >= 0`; anything else means the hint was torn, so fall through to the scan
-          // from the start rather than trust it.
+          // Moving backward before the remembered fragment: walk back from it, keeping `seen` at the
+          // start of fragment `pos`. The hint pair is atomic (see above), so `seen` is a real
+          // fragment start; fragment 0 starts at 0 and `offset >= 0`, so the walk stops at fragment
+          // 0 at the latest. At most `hintIdx` steps -- the same O(fragments) bound per call as the
+          // from-zero scan it replaces, but not always fewer steps than it, since a far-end hint
+          // with a near-zero offset walks the whole way back. That case is random access, which
+          // neither strategy serves; backward sequential access, the case this is for, costs one
+          // step. Hence no distance heuristic.
           pos = hintIdx
           seen = hintStart
-          while (pos > 0 && offset < seen) {
+          while (offset < seen) {
             pos -= 1
             seen -= bytestrings(pos).length
           }
-          if (offset >= seen) {
-            val located = (pos.toLong << 32) | (seen.toLong & 0xFFFFFFFFL)
-            fragmentHint = located
-            return located
-          }
-          pos = 0
-          seen = 0
+          val located = (pos.toLong << 32) | (seen.toLong & 0xFFFFFFFFL)
+          fragmentHint = located
+          return located
         } else {
           val hintEnd = hintStart + bytestrings(hintIdx).length
           if (offset >= hintEnd && hintIdx + 1 < bytestrings.length) {

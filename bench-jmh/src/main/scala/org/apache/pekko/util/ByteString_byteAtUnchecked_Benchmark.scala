@@ -78,6 +78,23 @@ class ByteString_byteAtUnchecked_Benchmark {
 
   Reverse access is roughly 100x faster and on par with sequential; sequential is unchanged
   within the noise.
+
+  Making the hint volatile, so that its index and start cannot be read as two halves of
+  different writes (JLS 17.7), costs nothing measurable outside the one-byte-fragment
+  sequential case. Paired run toggling only the `@volatile` keyword, -f2 -wi 5 -i 5, with
+  manyFragments_map -- which walks the fragments directly and never consults the hint -- as
+  an in-run control:
+
+                            plain long                    volatile
+  manyFragments_map          143209.374 ± 8645.210         139763.871 ± 9327.740  ops/s
+  manyFragments_random          911.739 ±   76.206            901.787 ±  154.965  ops/s
+  manyFragments_reverse       43961.948 ± 9780.313          42858.330 ±  949.351  ops/s
+  manyFragments_sequential    48989.773 ± 6972.720          41100.395 ± 3682.974  ops/s
+
+  Random and reverse move by about as much as the control (~2%); only sequential shows a
+  possible cost, and its intervals barely separate. These 1024 one-byte fragments are the
+  worst case for it, since the hint is then written on every single access -- at realistic
+  fragment sizes the write is amortised over the whole fragment.
    */
 
   private val randomIndices: Array[Int] = {
