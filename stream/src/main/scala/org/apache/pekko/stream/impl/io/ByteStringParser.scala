@@ -215,7 +215,8 @@ import pekko.util.ByteString
 
     def readByte(): Int =
       if (off < input.length) {
-        val x = input(off)
+        // bounds already checked above, and off never goes backwards, so skip the check in apply
+        val x = input.byteAtUnchecked(off)
         off += 1
         x & 0xFF
       } else throw NeedMoreData
