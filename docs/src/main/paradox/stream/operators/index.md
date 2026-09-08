@@ -165,6 +165,7 @@ depending on being backpressured by downstream or not.
 |Source/Flow|<a name="foldwhile"></a>@ref[foldWhile](Source-or-Flow/foldWhile.md)|Start with current value `zero` and then apply the current and next value to the given function. When upstream completes or the predicate `p` returns `false`, the current value is emitted downstream.|
 |Source/Flow|<a name="frommaterializer"></a>@ref[fromMaterializer](Source-or-Flow/fromMaterializer.md)|Defer the creation of a `Source/Flow` until materialization and access `Materializer` and `Attributes`|
 |Flow|<a name="futureflow"></a>@ref[futureFlow](Flow/futureFlow.md)|Streams the elements through the given future flow once it successfully completes.|
+|Source/Flow|<a name="gather"></a>@ref[gather](Source-or-Flow/gather.md)|Transform each input element into zero or more output elements with a stateful gatherer.|
 |Source/Flow|<a name="grouped"></a>@ref[grouped](Source-or-Flow/grouped.md)|Accumulate incoming events until the specified number of elements have been accumulated and then pass the collection of elements downstream.|
 |Source/Flow|<a name="groupedadjacentby"></a>@ref[groupedAdjacentBy](Source-or-Flow/groupedAdjacentBy.md)|Partitions this stream into chunks by a delimiter function.|
 |Source/Flow|<a name="groupedadjacentbyweighted"></a>@ref[groupedAdjacentByWeighted](Source-or-Flow/groupedAdjacentByWeighted.md)|Partitions this stream into chunks by a delimiter function and a weight limit.|
@@ -498,6 +499,7 @@ For more background see the @ref[Error Handling in Streams](../stream-error.md) 
 * [futureFlow](Flow/futureFlow.md)
 * [futureSink](Sink/futureSink.md)
 * [futureSource](Source/futureSource.md)
+* [gather](Source-or-Flow/gather.md)
 * [groupBy](Source-or-Flow/groupBy.md)
 * [grouped](Source-or-Flow/grouped.md)
 * [groupedAdjacentBy](Source-or-Flow/groupedAdjacentBy.md)
