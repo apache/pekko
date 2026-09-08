@@ -1,0 +1,54 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+# Pre-existing incompatibilities with 1.0.0 that only started being reported
+# once sbt-mima-plugin was upgraded from 1.1.6 to 1.2.0. They all stem from
+# changes already on this branch for 2.0.0 (removed deprecated methods,
+# reworked internal APIs, dropped legacy serialization manifests), so they are
+# excluded here rather than reverted.
+
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.impl.PhasedFusingActorMaterializer.schedulePeriodically")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.impl.SubFusingActorMaterializerImpl.schedulePeriodically")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.impl.TlsModulePhase.tlsActor")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.impl.TlsModulePhase.tlsActor_=")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.impl.fusing.Collect.NotApplied")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.impl.fusing.Collect.createLogic")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.impl.fusing.DropWhile.createLogic")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.impl.fusing.Fold.copy")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.impl.fusing.Fold.this")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.impl.fusing.LimitWeighted.createLogic")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.impl.fusing.Split.after")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.impl.fusing.Split.substreamCancelStrategy")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.impl.fusing.Split.this")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.impl.fusing.Split.when")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.impl.fusing.StatefulMapConcat.f")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.impl.streamref.SourceRefStageImpl.this")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.scaladsl.MergeHub.this")
+ProblemFilters.exclude[IncompatibleClassSignatureProblem]("org.apache.pekko.stream.impl.UnfoldResourceSource")
+ProblemFilters.exclude[IncompatibleClassSignatureProblem]("org.apache.pekko.stream.impl.UnfoldResourceSourceAsync")
+ProblemFilters.exclude[IncompatibleClassSignatureProblem]("org.apache.pekko.stream.javadsl.SourceWithContext")
+ProblemFilters.exclude[IncompatibleMethTypeProblem]("org.apache.pekko.stream.impl.io.TLSActor.props")
+ProblemFilters.exclude[IncompatibleMethTypeProblem]("org.apache.pekko.stream.impl.io.TLSActor.this")
+ProblemFilters.exclude[IncompatibleResultTypeProblem]("org.apache.pekko.stream.impl.fusing.Fold.copy$default$2")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.stream.impl.UnfoldResourceSource.this")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.stream.impl.UnfoldResourceSourceAsync.this")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.stream.impl.fusing.Fold.unapply")
+ProblemFilters.exclude[MissingTypesProblem]("org.apache.pekko.stream.impl.ExtendedActorMaterializer")
+ProblemFilters.exclude[MissingTypesProblem]("org.apache.pekko.stream.impl.PhasedFusingActorMaterializer")
+
+# Scala 3 only
+ProblemFilters.exclude[IncompatibleResultTypeProblem]("org.apache.pekko.stream.impl.fusing.Fold._2")
