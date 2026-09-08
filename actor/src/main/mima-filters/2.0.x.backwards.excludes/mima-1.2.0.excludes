@@ -1,0 +1,48 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+# Pre-existing incompatibilities with 1.0.0 that only started being reported
+# once sbt-mima-plugin was upgraded from 1.1.6 to 1.2.0. They all stem from
+# changes already on this branch for 2.0.0 (removed deprecated methods,
+# reworked internal APIs, dropped legacy serialization manifests), so they are
+# excluded here rather than reverted.
+
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.actor.AbstractProps.create")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.actor.ActorSystem#Settings.EnableAdditionalSerializationBindings")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.actor.dungeon.ReceiveTimeout.cancelReceiveTimeoutIfNeeded")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.actor.dungeon.ReceiveTimeout.checkReceiveTimeoutIfNeeded")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.actor.dungeon.ReceiveTimeout.emptyReceiveTimeoutData")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.io.dns.internal.AsyncDnsResolver.ec")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.io.dns.internal.AsyncDnsResolver.timeout")
+ProblemFilters.exclude[FinalMethodProblem]("org.apache.pekko.dispatch.MonitorableThreadFactory#PekkoForkJoinWorkerThread.blockOn")
+ProblemFilters.exclude[IncompatibleMethTypeProblem]("org.apache.pekko.actor.ActorCell.become")
+ProblemFilters.exclude[IncompatibleMethTypeProblem]("org.apache.pekko.actor.ActorCell.checkReceiveTimeoutIfNeeded")
+ProblemFilters.exclude[IncompatibleMethTypeProblem]("org.apache.pekko.actor.CreatorConsumer.this")
+ProblemFilters.exclude[IncompatibleMethTypeProblem]("org.apache.pekko.io.UdpSender.this")
+ProblemFilters.exclude[IncompatibleMethTypeProblem]("org.apache.pekko.io.dns.IdGenerator#EnhancedDoubleHashGenerator.this")
+ProblemFilters.exclude[IncompatibleMethTypeProblem]("org.apache.pekko.io.dns.IdGenerator.random")
+ProblemFilters.exclude[IncompatibleResultTypeProblem]("org.apache.pekko.actor.ActorCell.cancelReceiveTimeoutIfNeeded")
+ProblemFilters.exclude[MissingTypesProblem]("org.apache.pekko.actor.ActorRefWithCell")
+ProblemFilters.exclude[MissingTypesProblem]("org.apache.pekko.actor.InternalActorRef")
+ProblemFilters.exclude[MissingTypesProblem]("org.apache.pekko.actor.LocalActorRef")
+ProblemFilters.exclude[MissingTypesProblem]("org.apache.pekko.actor.Nobody$")
+ProblemFilters.exclude[MissingTypesProblem]("org.apache.pekko.actor.VirtualPathContainer")
+ProblemFilters.exclude[ReversedMissingMethodProblem]("org.apache.pekko.actor.dungeon.ReceiveTimeout.org$apache$pekko$actor$dungeon$ReceiveTimeout$$receiveTimeoutData")
+ProblemFilters.exclude[ReversedMissingMethodProblem]("org.apache.pekko.actor.dungeon.ReceiveTimeout.org$apache$pekko$actor$dungeon$ReceiveTimeout$$receiveTimeoutData_=")
+
+# Scala 3 only
+ProblemFilters.exclude[IncompatibleResultTypeProblem]("org.apache.pekko.util.ByteString#ByteStrings.readFromInputStream")
