@@ -13,11 +13,7 @@
 
 package org.apache.pekko.stream.tck
 
-import scala.concurrent.Await
-import scala.concurrent.duration._
-
 import org.apache.pekko
-import pekko.stream.impl.EmptyPublisher
 import pekko.stream.scaladsl.Sink
 import pekko.stream.scaladsl.Source
 
@@ -26,12 +22,6 @@ import org.reactivestreams.Publisher
 class SplitWhenTest extends PekkoPublisherVerification[Int] {
 
   def createPublisher(elements: Long): Publisher[Int] =
-    if (elements == 0) EmptyPublisher[Int]
-    else {
-      val futureSource =
-        Source(iterable(elements)).splitWhen(_ => false).prefixAndTail(0).map(_._2).concatSubstreams.runWith(Sink.head)
-      val source = Await.result(futureSource, 3.seconds)
-      source.runWith(Sink.asPublisher(false))
-    }
+    Source(iterable(elements)).splitWhen(_ => false).concatSubstreams.runWith(Sink.asPublisher(false))
 
 }
