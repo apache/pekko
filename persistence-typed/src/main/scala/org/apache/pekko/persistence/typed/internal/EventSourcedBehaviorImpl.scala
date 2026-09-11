@@ -162,7 +162,7 @@ private[pekko] final case class EventSourcedBehaviorImpl[Command, Event, State](
         internalLogger().debug("Save snapshot successful, snapshot metadata [{}].", meta)
       case (_, SnapshotFailed(meta, failure)) =>
         internalLogger()
-          .error(s"Save snapshot failed, snapshot metadata [$meta] due to: ${failure.getMessage}", failure)
+          .error("Save snapshot failed, snapshot metadata [{}] due to: {}", meta, failure.getMessage, failure)
       case (_, DeleteSnapshotsCompleted(DeletionTarget.Individual(meta))) =>
         internalLogger().debug("Persistent snapshot [{}] deleted successfully.", meta)
       case (_, DeleteSnapshotsCompleted(DeletionTarget.Criteria(criteria))) =>

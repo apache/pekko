@@ -39,10 +39,9 @@ final class LogCapturingExtension extends InvocationInterceptor {
     val testMethodName = invocationContext.getExecutable.getName
 
     try {
-      myLogger.info(s"Logging started for test [${testClassName}: ${testMethodName}]")
+      myLogger.info("Logging started for test [{}: {}]", testClassName, testMethodName)
       invocation.proceed
-      myLogger.info(
-        s"Logging finished for test [${testClassName}: ${testMethodName}] that was successful")
+      myLogger.info("Logging finished for test [{}: {}] that was successful", testClassName, testMethodName)
     } catch {
       case NonFatal(e) =>
         println(

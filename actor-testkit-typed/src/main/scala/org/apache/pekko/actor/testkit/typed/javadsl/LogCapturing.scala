@@ -56,10 +56,12 @@ final class LogCapturing extends TestRule {
     new Statement {
       override def evaluate(): Unit = {
         try {
-          myLogger.info(s"Logging started for test [${description.getClassName}: ${description.getMethodName}]")
+          myLogger.info("Logging started for test [{}: {}]", description.getClassName, description.getMethodName)
           base.evaluate()
           myLogger.info(
-            s"Logging finished for test [${description.getClassName}: ${description.getMethodName}] that was successful")
+            "Logging finished for test [{}: {}] that was successful",
+            description.getClassName,
+            description.getMethodName)
         } catch {
           case NonFatal(e) =>
             println(
