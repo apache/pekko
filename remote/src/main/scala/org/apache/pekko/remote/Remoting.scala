@@ -325,6 +325,16 @@ private[remote] object EndpointManager {
   final case class Listen(addressesPromise: Promise[Seq[(PekkoProtocolTransport, Address)]]) extends RemotingCommand
   case object StartupFinished extends RemotingCommand
   case object ShutdownAndFlush extends RemotingCommand
+
+  /**
+   * <p>
+   *   Opentelemetry Java Instrumentation relies on this class so avoid changing it. The agent captures the
+   *   sender's context in the constructor and carries it over in the four-argument `copy`, which is the one
+   *   used to add a sequence number.
+   *   See https://github.com/apache/pekko/issues/3472
+   * </p>
+   */
+  // see https://github.com/open-telemetry/opentelemetry-java-instrumentation/pull/19823
   @InternalStableApi
   final case class Send(
       message: Any,

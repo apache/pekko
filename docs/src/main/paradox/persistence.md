@@ -862,9 +862,10 @@ in your Pekko configuration. Also note that for the LevelDB Java port, you will 
   version="0.9"
 }
 
-@@@ note { title="Java 17" }
+@@@ note
 
-When using LevelDB with Java 17 you have to add JVM flag `--add-opens=java.base/java.nio=ALL-UNNAMED`.
+LevelDB requires the JVM flag `--add-opens=java.base/java.nio=ALL-UNNAMED` on the JDK 17+ runtimes required by
+this Pekko version.
 
 @@@
 

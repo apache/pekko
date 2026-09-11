@@ -22,20 +22,20 @@ object Dependencies {
     // https://protobuf.dev/support/version-support/
     // The protoc version can be inferred from the Protobuf Java minor version number.
     // Example: Protobuf Java version 3.25.x uses protoc version 25.x.
-    val protobufJavaVersion = "4.36.0"
-    val protocVersion = "35.0"
+    val protobufJavaVersion = "4.36.1"
+    val protocVersion = "36.0"
   }
 
   val junitVersion = "4.13.2"
   val junit6Version = "6.1.3"
-  val slf4jVersion = "2.0.18"
+  val slf4jVersion = "2.0.19"
   // also update agrona version when updating aeron:
-  val aeronVersion = "1.52.2"
+  val aeronVersion = "1.53.0"
   // Use the major+minor agrona versions matching aeron at
   // https://github.com/aeron-io/aeron/blob/1.x.y/gradle/libs.versions.toml
   // (remember to also update the scala-steward pin)
-  val agronaVersion = "2.4.1"
-  val nettyVersion = "4.2.17.Final"
+  val agronaVersion = "2.5.0"
+  val nettyVersion = "4.2.18.Final"
   val logbackVersion = "1.6.3"
 
   val jacksonAnnotationsVersion = "2.22"
@@ -44,7 +44,7 @@ object Dependencies {
 
   val scala213Version = "2.13.18"
   val scala3Version = "3.3.9-RC1"
-  val scala3NextVersion = "3.8.4"
+  val scala3NextVersion = "3.9.0"
   val publishedScalaVersions = Seq(scala213Version, scala3Version)
 
   val reactiveStreamsVersion = "1.0.4"
@@ -165,8 +165,8 @@ object Dependencies {
         "com.fasterxml.jackson.datatype" % "jackson-datatype-guava" % jacksonVersion2 % Test)
 
       // metrics, measurements, perf testing
-      val metrics = "io.dropwizard.metrics" % "metrics-core" % "4.2.39" % Test
-      val metricsJvm = "io.dropwizard.metrics" % "metrics-jvm" % "4.2.39" % Test
+      val metrics = "io.dropwizard.metrics" % "metrics-core" % "4.2.40" % Test
+      val metricsJvm = "io.dropwizard.metrics" % "metrics-jvm" % "4.2.40" % Test
       val latencyUtils = "org.latencyutils" % "LatencyUtils" % "2.0.3" % Test
       val hdrHistogram = "org.hdrhistogram" % "HdrHistogram" % "2.2.2" % Test
       val metricsAll = Seq(metrics, metricsJvm, latencyUtils, hdrHistogram)

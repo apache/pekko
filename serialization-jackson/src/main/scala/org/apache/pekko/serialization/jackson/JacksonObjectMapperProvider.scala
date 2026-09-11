@@ -82,6 +82,11 @@ object JacksonObjectMapperProvider extends ExtensionId[JacksonObjectMapperProvid
       baseConf
   }
 
+  // "unlimited" is accepted as a synonym for -1 in the constraints that treat -1 as no limit
+  private def getLongOrUnlimited(config: Config, path: String): Long =
+    if (config.getString(path) == "unlimited") -1L
+    else config.getLong(path)
+
   private def createJsonFactory(
       bindingName: String,
       objectMapperFactory: JacksonObjectMapperFactory,
@@ -93,8 +98,8 @@ object JacksonObjectMapperProvider extends ExtensionId[JacksonObjectMapperProvid
       .maxNumberLength(config.getInt("read.max-number-length"))
       .maxStringLength(config.getInt("read.max-string-length"))
       .maxNameLength(config.getInt("read.max-name-length"))
-      .maxDocumentLength(config.getLong("read.max-document-length"))
-      .maxTokenCount(config.getLong("read.max-token-count"))
+      .maxDocumentLength(getLongOrUnlimited(config, "read.max-document-length"))
+      .maxTokenCount(getLongOrUnlimited(config, "read.max-token-count"))
       .build()
 
     val streamWriteConstraints = StreamWriteConstraints.builder()

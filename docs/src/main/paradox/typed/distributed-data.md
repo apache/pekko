@@ -679,9 +679,10 @@ possible to replace that with another implementation by implementing the actor p
 `org.apache.pekko.cluster.ddata.DurableStore` and defining the `pekko.cluster.distributed-data.durable.store-actor-class`
 property for the new implementation.
 
-@@@ note { title="Java 17" }
+@@@ note
 
-When using LMDB with Java 17 you have to add JVM flags `--add-opens=java.base/sun.nio.ch=ALL-UNNAMED --add-opens=java.base/java.nio=ALL-UNNAMED`.
+LMDB requires the JVM flags `--add-opens=java.base/sun.nio.ch=ALL-UNNAMED --add-opens=java.base/java.nio=ALL-UNNAMED`
+on the JDK 17+ runtimes required by this Pekko version.
 
 @@@
 

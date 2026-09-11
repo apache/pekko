@@ -132,6 +132,15 @@ class LightArrayRevolverScheduler(config: Config, log: LoggingAdapter, threadFac
     super.scheduleWithFixedDelay(initialDelay, delay)(runnable)
   }
 
+  /**
+   * <p>
+   *   Opentelemetry Java Instrumentation relies on this method so avoid changing it. The agent replaces the
+   *   `runnable` argument with a wrapper that carries the scheduling context into every run.
+   *   See https://github.com/apache/pekko/issues/3472
+   * </p>
+   */
+  // see https://github.com/open-telemetry/opentelemetry-java-instrumentation/blob/6f9ca5672ce84edbbe36ce0e14386c31d68f479f/instrumentation/pekko/pekko-actor-1.0/javaagent/src/main/java/io/opentelemetry/javaagent/instrumentation/pekkoactor/v1_0/PekkoScheduleInstrumentation.java
+  @noinline // Not inlined so that the agent can match the method in the bytecode
   override protected def schedule(initialDelay: FiniteDuration, delay: FiniteDuration, runnable: Runnable)(
       implicit executor: ExecutionContext): Cancellable = {
     checkPeriod(delay)
@@ -161,6 +170,15 @@ class LightArrayRevolverScheduler(config: Config, log: LoggingAdapter, threadFac
     }
   }
 
+  /**
+   * <p>
+   *   Opentelemetry Java Instrumentation relies on this method so avoid changing it. The agent replaces the
+   *   `runnable` argument with a wrapper that carries the scheduling context into the run.
+   *   See https://github.com/apache/pekko/issues/3472
+   * </p>
+   */
+  // see https://github.com/open-telemetry/opentelemetry-java-instrumentation/blob/6f9ca5672ce84edbbe36ce0e14386c31d68f479f/instrumentation/pekko/pekko-actor-1.0/javaagent/src/main/java/io/opentelemetry/javaagent/instrumentation/pekkoactor/v1_0/PekkoScheduleInstrumentation.java
+  @noinline // Not inlined so that the agent can match the method in the bytecode
   override def scheduleOnce(delay: FiniteDuration, runnable: Runnable)(
       implicit executor: ExecutionContext): Cancellable =
     try schedule(executor, runnable, roundUp(delay))

@@ -476,7 +476,17 @@ private[pekko] class ActorCell(
   /*
    * MESSAGE PROCESSING
    */
+  /**
+   * <p>
+   *   Opentelemetry Java Instrumentation relies on this method so avoid changing it. The agent makes the
+   *   context that `DefaultSystemMessageQueue.systemEnqueue` attached to the system
+   *   message current again while the message is handled.
+   *   See https://github.com/apache/pekko/issues/3472
+   * </p>
+   */
+  // see https://github.com/open-telemetry/opentelemetry-java-instrumentation/blob/6f9ca5672ce84edbbe36ce0e14386c31d68f479f/instrumentation/pekko/pekko-actor-1.0/javaagent/src/main/java/io/opentelemetry/javaagent/instrumentation/pekkoactor/v1_0/PekkoActorCellInstrumentation.java
   // Memory consistency is handled by the Mailbox (reading mailbox status then processing messages, then writing mailbox status
+  @noinline // Not inlined so that the agent can match the method in the bytecode
   final def systemInvoke(message: SystemMessage): Unit = {
     /*
      * When recreate/suspend/resume are received while restarting (i.e. between
@@ -544,7 +554,17 @@ private[pekko] class ActorCell(
     invokeAll(new EarliestFirstSystemMessageList(message), calculateState)
   }
 
+  /**
+   * <p>
+   *   Opentelemetry Java Instrumentation relies on this method so avoid changing it. The agent makes the
+   *   context that `Dispatcher.dispatch` attached to the `Envelope` current again while
+   *   the message is handled.
+   *   See https://github.com/apache/pekko/issues/3472
+   * </p>
+   */
+  // see https://github.com/open-telemetry/opentelemetry-java-instrumentation/blob/6f9ca5672ce84edbbe36ce0e14386c31d68f479f/instrumentation/pekko/pekko-actor-1.0/javaagent/src/main/java/io/opentelemetry/javaagent/instrumentation/pekkoactor/v1_0/PekkoActorCellInstrumentation.java
   // Memory consistency is handled by the Mailbox (reading mailbox status then processing messages, then writing mailbox status
+  @noinline // Not inlined so that the agent can match the method in the bytecode
   final def invoke(messageHandle: Envelope): Unit = {
     val msg = messageHandle.message
     val timeoutBeforeReceive = cancelReceiveTimeoutIfNeeded(msg)

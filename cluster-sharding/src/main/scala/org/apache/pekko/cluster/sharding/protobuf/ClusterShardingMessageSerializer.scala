@@ -15,7 +15,6 @@ package org.apache.pekko.cluster.sharding.protobuf
 
 import java.io.ByteArrayOutputStream
 import java.io.NotSerializableException
-import java.util.zip.GZIPInputStream
 import java.util.zip.GZIPOutputStream
 
 import scala.collection.immutable
@@ -37,9 +36,9 @@ import pekko.cluster.sharding.internal.EventSourcedRememberEntitiesShardStore.{ 
 import pekko.cluster.sharding.internal.EventSourcedRememberEntitiesShardStore.{ State => EntityState }
 import pekko.cluster.sharding.protobuf.msg.{ ClusterShardingMessages => sm }
 import pekko.cluster.sharding.protobuf.msg.ClusterShardingMessages
-import pekko.io.UnsynchronizedByteArrayInputStream
 import pekko.protobufv3.internal.MessageLite
 import pekko.serialization.BaseSerializer
+import pekko.serialization.Decompression
 import pekko.serialization.Serialization
 import pekko.serialization.SerializerWithStringManifest
 
@@ -54,6 +53,7 @@ private[pekko] class ClusterShardingMessageSerializer(val system: ExtendedActorS
   import ShardCoordinator.Internal._
 
   private final val BufferSize = 1024 * 4
+  private val maxDecompressedSize: Long = Decompression.maxDecompressedSize(system)
 
   private val CoordinatorStateManifest = "AA"
   private val ShardRegionRegisteredManifest = "AB"
@@ -641,11 +641,7 @@ private[pekko] class ClusterShardingMessageSerializer(val system: ExtendedActorS
   }
 
   private def decompress(bytes: Array[Byte]): Array[Byte] = {
-    val in = new GZIPInputStream(new UnsynchronizedByteArrayInputStream(bytes))
-    val out = new ByteArrayOutputStream()
-    try in.transferTo(out)
-    finally in.close()
-    out.toByteArray
+    Decompression.gunzip(bytes, maxDecompressedSize)
   }
 
 }

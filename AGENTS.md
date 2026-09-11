@@ -225,3 +225,9 @@ Fixes #1234, Refs #1234, or None - <short context>
 - Never omit `References`.
 - Use `Refs #...`, `Fixes #...`, or `None - <short context>`.
 - Do not add `Co-authored-by` or AI-assistant trailers to commits or PR descriptions.
+
+## Security
+
+- Read [`SECURITY.md`](SECURITY.md) before reporting or acting on a security issue.
+- Classify security findings against the threat model it links,
+  [`THREAT_MODEL.md`](THREAT_MODEL.md); §11a lists recurring false positives.

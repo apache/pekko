@@ -67,7 +67,16 @@ class Dispatcher(
 
   /**
    * INTERNAL API
+   *
+   * <p>
+   *   Opentelemetry Java Instrumentation relies on this method so avoid changing it. The agent attaches the
+   *   context that is current at send time to the [[Envelope]] here, and
+   *   `ActorCell.invoke` makes it current again while the message is handled.
+   *   See https://github.com/apache/pekko/issues/3472
+   * </p>
    */
+  // see https://github.com/open-telemetry/opentelemetry-java-instrumentation/blob/6f9ca5672ce84edbbe36ce0e14386c31d68f479f/instrumentation/pekko/pekko-actor-1.0/javaagent/src/main/java/io/opentelemetry/javaagent/instrumentation/pekkoactor/v1_0/PekkoDispatcherInstrumentation.java
+  @noinline // Not inlined so that the agent can match the method in the bytecode
   protected[pekko] def dispatch(receiver: ActorCell, invocation: Envelope): Unit = {
     val mbox = receiver.mailbox
     mbox.enqueue(receiver.self, invocation)

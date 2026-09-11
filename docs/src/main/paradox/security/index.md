@@ -10,7 +10,9 @@ This mailing list also has announcements of releases for Apache projects.
 
 ## Reporting Vulnerabilities
 
-We strongly encourage people to report such problems to our private security mailing list first, before disclosing them in a public forum.
+We strongly encourage people to report such problems privately to the Apache Security team at
+`security@apache.org` first, before disclosing them in a public forum. Apache Pekko does not
+operate a separate project security list.
 
 Please follow the [guidelines](https://www.apache.org/security/) laid down by the Apache Security team.
 
@@ -23,3 +25,5 @@ first. We will coordinate responsible disclosure with the affected upstream main
  * @ref:[Java Serialization](../serialization.md#java-serialization)
  * @ref:[Remote deployment allow list](../remoting.md#remote-deployment-allow-list)
  * @ref:[Remote Security](../remote-security.md)
+ * [Security Policy](https://github.com/apache/pekko/blob/main/SECURITY.md)
+ * [Threat Model](https://github.com/apache/pekko/blob/main/THREAT_MODEL.md)

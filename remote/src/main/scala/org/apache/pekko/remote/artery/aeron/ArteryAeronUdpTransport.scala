@@ -481,9 +481,9 @@ private[remote] class ArteryAeronUdpTransport(_system: ExtendedActorSystem, _pro
     import java.nio.channels.DatagramChannel
 
     val socket = DatagramChannel.open().socket()
-    socket.bind(new InetSocketAddress(hostname, 0))
-    val port = socket.getLocalPort
-    socket.close()
-    port
+    try {
+      socket.bind(new InetSocketAddress(hostname, 0))
+      socket.getLocalPort
+    } finally socket.close()
   }
 }

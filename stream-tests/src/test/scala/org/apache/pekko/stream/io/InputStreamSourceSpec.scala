@@ -14,7 +14,7 @@
 package org.apache.pekko.stream.io
 
 import java.io.{ ByteArrayInputStream, InputStream }
-import java.util.concurrent.CountDownLatch
+import java.util.concurrent.{ CountDownLatch, TimeUnit }
 
 import scala.annotation.nowarn
 import scala.util.Success
@@ -121,6 +121,24 @@ class InputStreamSourceSpec extends StreamSpec(UnboundedMailboxConfig) {
       c.expectSubscription()
       mat.shutdown()
       f.failed.futureValue shouldBe an[AbruptStageTerminationException]
+    }
+
+    "close the input stream on actor materializer shutdown" in {
+      val mat = ActorMaterializer()
+      val closed = new CountDownLatch(1)
+      val source = StreamConverters.fromInputStream(() =>
+        new InputStream {
+          override def read(): Int = -1
+          override def close(): Unit = closed.countDown()
+        })
+      val pubSink = Sink.asPublisher[ByteString](false)
+      val (f, neverPub) = source.toMat(pubSink)(Keep.both).run()(mat)
+      val c = TestSubscriber.manualProbe[ByteString]()
+      neverPub.subscribe(c)
+      c.expectSubscription()
+      mat.shutdown()
+      f.failed.futureValue shouldBe an[AbruptStageTerminationException]
+      closed.await(3, TimeUnit.SECONDS) shouldBe true
     }
 
     "emit as soon as read" in {

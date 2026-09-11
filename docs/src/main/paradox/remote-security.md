@@ -53,8 +53,8 @@ pekko.remote.artery {
 Always use [substitution from environment variables](https://github.com/lightbend/config#optional-system-or-env-variable-overrides)
 for passwords. Don't define real passwords in config files.
 
-According to [RFC 7525](https://www.rfc-editor.org/rfc/rfc7525.html), the recommended algorithms to use with TLS 1.2
-are:
+According to [RFC 9325](https://www.rfc-editor.org/rfc/rfc9325.html) (which obsoletes RFC 7525), the recommended
+algorithms to use with TLS 1.2 are:
 
  * TLS_DHE_RSA_WITH_AES_128_GCM_SHA256
  * TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
@@ -65,7 +65,7 @@ For TLS 1.3, these are good options:
 
  * TLS_AES_128_GCM_SHA256
  * TLS_AES_256_GCM_SHA384
- * TLS_CHACHA20_POLY1305_SHA256 (may not be supported on Java 8 runtimes)
+ * TLS_CHACHA20_POLY1305_SHA256
 
 You should always check the latest information about security and algorithm recommendations before configuring your
 system.
@@ -73,7 +73,7 @@ system.
 Since Pekko remoting is inherently @ref:[peer-to-peer](general/remoting.md#symmetric-communication), both the key-store
 and trust-store need to be configured on each remoting node participating in the cluster.
 
-The official [Java Secure Socket Extension documentation](https://docs.oracle.com/javase/8/docs/technotes/guides/security/jsse/JSSERefGuide.html)
+The official [Java Secure Socket Extension documentation](https://docs.oracle.com/en/java/javase/25/security/java-secure-socket-extension-jsse-reference-guide.html)
 as well as the [Oracle documentation on creating KeyStore and TrustStores](https://docs.oracle.com/cd/E19509-01/820-3503/6nf1il6er/index.html)
 are both great resources to research when setting up security on the JVM. Please consult those resources when
 troubleshooting and configuring SSL.
@@ -121,13 +121,72 @@ You have a few choices how to set up certificates and hostname verification:
     * If keys/certificates are stolen, only the same node can access the cluster (unless DNS is tampered with as well).
       You can revoke single certificates.
 
+### Custom post-handshake session verification
+
+After every successful TLS handshake, Pekko calls back into the configured `SSLEngineProvider` to allow additional
+verification of the session:
+
+```
+def verifyClientSession(hostname: String, session: SSLSession): Option[Throwable]
+def verifyServerSession(hostname: String, session: SSLSession): Option[Throwable]
+```
+
+Returning `None` accepts the session. Returning `Some(cause)` rejects it and the connection is failed with that cause.
+`verifyClientSession` is called on the side that initiated the connection, `verifyServerSession` on the side that
+accepted it.
+
+The default `ConfigSSLEngineProvider` accepts every session that completed the handshake, because the certificate chain
+has already been validated against the configured trust-store, and `hostname-verification` covers the usual case of
+checking that you reached the host you expected. Prefer `hostname-verification=on` over a custom verifier whenever the
+peer hostnames are known up front.
+
+A verifier is useful for authorization checks the trust-store cannot express. A common example is a shared internal CA:
+every node in the organisation holds a certificate signed by the same CA, so the trust-store accepts all of them, but
+only a subset should be allowed into this particular cluster. Subclass `ConfigSSLEngineProvider` and inspect the peer
+certificate:
+
+@@snip [SSLEngineProviderDocSpec.scala](/docs/src/test/scala/docs/remoting/SSLEngineProviderDocSpec.scala) { #ssl-engine-provider-session-verification }
+
+The provider is selected by class name, and the constructor taking a single `ActorSystem` is the one Pekko uses:
+
+```
+pekko.remote.artery {
+  transport = tls-tcp
+  ssl.ssl-engine-provider = "docs.remoting.ClusterScopedSSLEngineProvider"
+}
+```
+
+Requiring mutual authentication is what makes these checks meaningful on the accepting side. With
+`require-mutual-authentication = on` (the default) the accepting side requests a certificate from the connecting peer,
+so the peer certificates are available in `verifyServerSession`. If mutual authentication is disabled, the connecting
+peer presents no certificate and `getPeerCertificates` throws `SSLPeerUnverifiedException`.
+
+@@@ note
+
+Both methods are invoked on every handshake, so keep them cheap and non-blocking. Inspect only the already-parsed
+`SSLSession`; do not perform I/O such as CRL or OCSP lookups inline.
+
+@@@
+
+The built-in `RotatingKeysSSLEngineProvider` uses this same mechanism: it deliberately does not use
+`hostname-verification`, and instead verifies after the handshake that the peer certificate shares at least one subject
+name (CN or SAN) with its own certificate. See
+@ref:[mTLS with rotated certificates in Kubernetes](#mtls-with-rotated-certificates-in-kubernetes).
+
 See also a description of the settings in the @ref:[Remote Configuration](remoting-artery.md#remote-configuration-artery)
 section.
 
 @@@ note
 
-When using SHA1PRNG on Linux it's recommended to specify `-Djava.security.egd=file:/dev/urandom` as argument
-to the JVM to prevent blocking. It is NOT as secure because it reuses the seed.
+`random-number-generator` defaults to the platform `SecureRandom`, which is the recommended
+setting. `SHA1PRNG` is a legacy algorithm: it draws a single seed at startup and never reseeds,
+where the platform default mixes fresh kernel randomness into every request.
+
+On Linux the seed comes from `securerandom.source` (`file:/dev/random` by default), overridable
+with `-Djava.security.egd`. On older kernels `/dev/random` could block on hosts with little
+entropy, which is the origin of the frequently suggested
+`-Djava.security.egd=file:/dev/urandom`; current kernels do not block once the pool is seeded
+at boot.
 
 @@@
 

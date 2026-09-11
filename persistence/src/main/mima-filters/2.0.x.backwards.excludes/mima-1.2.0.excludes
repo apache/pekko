@@ -1,0 +1,49 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+# Pre-existing incompatibilities with 1.0.0 that only started being reported
+# once sbt-mima-plugin was upgraded from 1.1.6 to 1.2.0. They all stem from
+# changes already on this branch for 2.0.0 (removed deprecated methods,
+# reworked internal APIs, dropped legacy serialization manifests), so they are
+# excluded here rather than reverted.
+
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.persistence.AbstractPersistentActorLike.defer")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.persistence.AbstractPersistentActorLike.deferAsync")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.persistence.AbstractPersistentActorLike.persist")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.persistence.AbstractPersistentActorLike.persistAll")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.persistence.AbstractPersistentActorLike.persistAllAsync")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.persistence.AbstractPersistentActorLike.persistAsync")
+ProblemFilters.exclude[IncompatibleResultTypeProblem]("org.apache.pekko.persistence.journal.japi.AsyncRecoveryPlugin.doAsyncReadHighestSequenceNr")
+ProblemFilters.exclude[IncompatibleResultTypeProblem]("org.apache.pekko.persistence.journal.japi.AsyncRecoveryPlugin.doAsyncReplayMessages")
+ProblemFilters.exclude[IncompatibleResultTypeProblem]("org.apache.pekko.persistence.journal.japi.AsyncWritePlugin.doAsyncDeleteMessagesTo")
+ProblemFilters.exclude[IncompatibleResultTypeProblem]("org.apache.pekko.persistence.journal.japi.AsyncWritePlugin.doAsyncWriteMessages")
+ProblemFilters.exclude[IncompatibleResultTypeProblem]("org.apache.pekko.persistence.snapshot.japi.SnapshotStorePlugin.doDeleteAsync")
+ProblemFilters.exclude[IncompatibleResultTypeProblem]("org.apache.pekko.persistence.snapshot.japi.SnapshotStorePlugin.doLoadAsync")
+ProblemFilters.exclude[IncompatibleResultTypeProblem]("org.apache.pekko.persistence.snapshot.japi.SnapshotStorePlugin.doSaveAsync")
+ProblemFilters.exclude[MissingTypesProblem]("org.apache.pekko.persistence.AbstractPersistentActorLike")
+ProblemFilters.exclude[MissingTypesProblem]("org.apache.pekko.persistence.Eventsourced")
+ProblemFilters.exclude[ReversedMissingMethodProblem]("org.apache.pekko.persistence.journal.japi.AsyncRecoveryPlugin.doAsyncReadHighestSequenceNr")
+ProblemFilters.exclude[ReversedMissingMethodProblem]("org.apache.pekko.persistence.journal.japi.AsyncRecoveryPlugin.doAsyncReplayMessages")
+ProblemFilters.exclude[ReversedMissingMethodProblem]("org.apache.pekko.persistence.journal.japi.AsyncWritePlugin.doAsyncDeleteMessagesTo")
+ProblemFilters.exclude[ReversedMissingMethodProblem]("org.apache.pekko.persistence.journal.japi.AsyncWritePlugin.doAsyncWriteMessages")
+ProblemFilters.exclude[ReversedMissingMethodProblem]("org.apache.pekko.persistence.snapshot.japi.SnapshotStorePlugin.doDeleteAsync")
+ProblemFilters.exclude[ReversedMissingMethodProblem]("org.apache.pekko.persistence.snapshot.japi.SnapshotStorePlugin.doLoadAsync")
+ProblemFilters.exclude[ReversedMissingMethodProblem]("org.apache.pekko.persistence.snapshot.japi.SnapshotStorePlugin.doSaveAsync")
+
+# Scala 3 only
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.persistence.journal.inmem.InmemMessages.messages")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.persistence.journal.inmem.InmemMessages.messages_=")

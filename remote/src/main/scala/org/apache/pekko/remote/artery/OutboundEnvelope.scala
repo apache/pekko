@@ -71,15 +71,42 @@ private[remote] final class ReusableOutboundEnvelope extends OutboundEnvelope {
     this
   }
 
+  /**
+   * <p>
+   *   Opentelemetry Java Instrumentation relies on this method so avoid changing it. The agent carries the
+   *   captured context over to the copy.
+   *   See https://github.com/apache/pekko/issues/3472
+   * </p>
+   */
+  // see https://github.com/open-telemetry/opentelemetry-java-instrumentation/pull/19823
+  @noinline // Not inlined so that the agent can match the method in the bytecode
   def copy(): OutboundEnvelope =
     (new ReusableOutboundEnvelope).init(_recipient, _message, _sender)
 
+  /**
+   * <p>
+   *   Opentelemetry Java Instrumentation relies on this method so avoid changing it. Envelopes are pooled,
+   *   so the agent clears the previous context here to stop it leaking into the next use.
+   *   See https://github.com/apache/pekko/issues/3472
+   * </p>
+   */
+  // see https://github.com/open-telemetry/opentelemetry-java-instrumentation/pull/19823
+  @noinline // Not inlined so that the agent can match the method in the bytecode
   def clear(): Unit = {
     _recipient = OptionVal.None
     _message = null
     _sender = OptionVal.None
   }
 
+  /**
+   * <p>
+   *   Opentelemetry Java Instrumentation relies on this method so avoid changing it. The agent captures the
+   *   sender's context here, and the arity is part of the match.
+   *   See https://github.com/apache/pekko/issues/3472
+   * </p>
+   */
+  // see https://github.com/open-telemetry/opentelemetry-java-instrumentation/pull/19823
+  @noinline // Not inlined so that the agent can match the method in the bytecode
   def init(recipient: OptionVal[RemoteActorRef], message: AnyRef, sender: OptionVal[ActorRef]): OutboundEnvelope = {
     _recipient = recipient
     _message = message
