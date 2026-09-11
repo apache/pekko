@@ -230,7 +230,7 @@ private[pekko] object Running {
         sideEffects: immutable.Seq[SideEffect[S]] = Nil): (Behavior[InternalProtocol], Boolean) = {
       if (setup.internalLogger.isDebugEnabled && !effect.isInstanceOf[CompositeEffect[?]])
         setup.internalLogger.debugN(
-          s"Handled command [{}], resulting effect: [{}], side effects: [{}]",
+          "Handled command [{}], resulting effect: [{}], side effects: [{}]",
           msg.getClass.getName,
           effect,
           sideEffects.size)

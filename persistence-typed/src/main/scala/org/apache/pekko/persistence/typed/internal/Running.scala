@@ -667,7 +667,7 @@ private[pekko] object Running {
         sideEffects: immutable.Seq[SideEffect[S]] = Nil): (Behavior[InternalProtocol], Boolean) = {
       if (setup.internalLogger.isDebugEnabled && !effect.isInstanceOf[CompositeEffect[?, ?]])
         setup.internalLogger.debugN(
-          s"Handled command [{}], resulting effect: [{}], side effects: [{}]",
+          "Handled command [{}], resulting effect: [{}], side effects: [{}]",
           msg.getClass.getName,
           effect,
           sideEffects.size)
@@ -919,7 +919,7 @@ private[pekko] object Running {
     def onSaveSnapshotResponse(response: SnapshotProtocol.Response): Unit = {
       val signal = response match {
         case SaveSnapshotSuccess(meta) =>
-          setup.internalLogger.debug(s"Persistent snapshot [{}] saved successfully", meta)
+          setup.internalLogger.debug("Persistent snapshot [{}] saved successfully", meta)
           if (snapshotReason == SnapshotWithRetention) {
             // deletion of old events and snapshots are triggered by the SaveSnapshotSuccess
             setup.retention match {

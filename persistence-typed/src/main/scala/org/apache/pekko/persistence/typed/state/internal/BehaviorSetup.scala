@@ -108,11 +108,11 @@ private[pekko] final class BehaviorSetup[C, S](
     } catch {
       case NonFatal(ex) =>
         if (catchAndLog) {
-          internalLogger.error(s"Error while processing signal [$signal]: $ex", ex)
+          internalLogger.error("Error while processing signal [{}]", signal, ex)
           true
         } else {
           if (internalLogger.isDebugEnabled)
-            internalLogger.debug(s"Error while processing signal [$signal]: $ex", ex)
+            internalLogger.debug("Error while processing signal [{}]", signal, ex)
           throw ex
         }
     }
