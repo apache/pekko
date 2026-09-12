@@ -17,8 +17,6 @@ package tcp
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 
-import scala.collection.immutable
-
 import org.apache.pekko
 import pekko.annotation.InternalApi
 import pekko.stream.Attributes
@@ -78,7 +76,7 @@ import pekko.util.ByteString
  * INTERNAL API
  */
 @InternalApi private[pekko] class TcpFraming(
-    acceptedMagic: immutable.Seq[ByteString] = List(TcpFraming.DefaultMagic),
+    acceptedMagic: Seq[ByteString] = List(TcpFraming.DefaultMagic),
     flightRecorder: RemotingFlightRecorder = NoOpRemotingFlightRecorder,
     maximumFrameSize: Int = Int.MaxValue,
     maximumLargeFrameSize: Int = Int.MaxValue)

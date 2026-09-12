@@ -15,7 +15,6 @@ package org.apache.pekko.cluster.sharding.typed
 
 import java.util.{ Set => JSet }
 
-import scala.collection.immutable
 import scala.jdk.CollectionConverters._
 import scala.reflect.ClassTag
 
@@ -152,7 +151,7 @@ object ReplicatedEntityProvider {
  * @tparam M The type of messages the replicated entity accepts
  */
 final class ReplicatedEntityProvider[M] private (
-    val replicas: immutable.Seq[(ReplicatedEntity[M], String)],
+    val replicas: Seq[(ReplicatedEntity[M], String)],
     val directReplication: Boolean) {
 
   /**

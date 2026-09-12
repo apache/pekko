@@ -15,7 +15,6 @@ package org.apache.pekko.persistence.typed.state.internal
 
 import scala.annotation.nowarn
 import scala.annotation.tailrec
-import scala.collection.immutable
 
 import org.apache.pekko
 import pekko.actor.UnhandledMessage
@@ -201,7 +200,7 @@ private[pekko] object Running {
     private def handlePersist(
         newState: S,
         cmd: Any,
-        sideEffects: immutable.Seq[SideEffect[S]]): (Behavior[InternalProtocol], Boolean) = {
+        sideEffects: Seq[SideEffect[S]]): (Behavior[InternalProtocol], Boolean) = {
       _currentRevision = state.revision + 1
 
       val stateAfterApply = state.applyState(setup, newState)
@@ -215,7 +214,7 @@ private[pekko] object Running {
 
     private def handleDelete(
         cmd: Any,
-        sideEffects: immutable.Seq[SideEffect[S]]): (Behavior[InternalProtocol], Boolean) = {
+        sideEffects: Seq[SideEffect[S]]): (Behavior[InternalProtocol], Boolean) = {
       _currentRevision = state.revision + 1
 
       val nextState = internalDelete(setup.context, cmd, state)
@@ -227,7 +226,7 @@ private[pekko] object Running {
         msg: Any,
         state: RunningState[S, C],
         effect: Effect[S],
-        sideEffects: immutable.Seq[SideEffect[S]] = Nil): (Behavior[InternalProtocol], Boolean) = {
+        sideEffects: Seq[SideEffect[S]] = Nil): (Behavior[InternalProtocol], Boolean) = {
       if (setup.internalLogger.isDebugEnabled && !effect.isInstanceOf[CompositeEffect[?]])
         setup.internalLogger.debugN(
           "Handled command [{}], resulting effect: [{}], side effects: [{}]",
@@ -278,7 +277,7 @@ private[pekko] object Running {
   def persistingState(
       state: RunningState[S, C],
       visibleState: RunningState[S, C], // previous state until write success
-      sideEffects: immutable.Seq[SideEffect[S]]): Behavior[InternalProtocol] = {
+      sideEffects: Seq[SideEffect[S]]): Behavior[InternalProtocol] = {
     setup.setMdcPhase(PersistenceMdc.PersistingState)
     new PersistingState(state, visibleState, sideEffects)
   }
@@ -287,7 +286,7 @@ private[pekko] object Running {
   @InternalApi private[pekko] class PersistingState(
       var state: RunningState[S, C],
       var visibleState: RunningState[S, C], // previous state until write success
-      var sideEffects: immutable.Seq[SideEffect[S]],
+      var sideEffects: Seq[SideEffect[S]],
       persistStartTime: Long = System.nanoTime())
       extends AbstractBehavior[InternalProtocol](setup.context)
       with WithRevisionAccessible {
@@ -372,7 +371,7 @@ private[pekko] object Running {
 
   // ===============================================
 
-  def applySideEffects(effects: immutable.Seq[SideEffect[S]], state: RunningState[S, C]): Behavior[InternalProtocol] = {
+  def applySideEffects(effects: Seq[SideEffect[S]], state: RunningState[S, C]): Behavior[InternalProtocol] = {
     var behavior: Behavior[InternalProtocol] = new HandlingCommands(state)
     val it = effects.iterator
 

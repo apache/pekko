@@ -20,7 +20,7 @@ import java.util.concurrent.TimeoutException
 
 import scala.annotation.nowarn
 import scala.collection.immutable
-import scala.collection.immutable.{ HashMap, Seq }
+import scala.collection.immutable.HashMap
 import scala.concurrent.{ Await, Future, Promise }
 import scala.concurrent.duration._
 import scala.util.{ Failure, Success }
@@ -688,7 +688,7 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
 
   val accepting: Receive = {
     case ManagementCommand(cmd) =>
-      val allStatuses: immutable.Seq[Future[Boolean]] =
+      val allStatuses: Seq[Future[Boolean]] =
         transportMapping.values.iterator.map(transport => transport.managementCommand(cmd)).to(immutable.IndexedSeq)
       Future.foldLeft(allStatuses)(true)(_ && _).map(ManagementCommandAck.apply).pipeTo(sender())
 

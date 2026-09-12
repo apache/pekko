@@ -19,7 +19,6 @@ import java.net.Inet6Address
 import java.security.Security
 import java.util.concurrent.TimeUnit
 
-import scala.collection.immutable
 import scala.concurrent.duration._
 import scala.util.{ Failure, Success, Try }
 
@@ -128,7 +127,7 @@ class InetAddressDnsResolver(cache: SimpleDnsCache, config: Config) extends Acto
             answer
           } catch {
             case _: UnknownHostException =>
-              val answer = DnsProtocol.Resolved(name, immutable.Seq.empty)
+              val answer = DnsProtocol.Resolved(name, Seq.empty)
               if (negativeCachePolicy != Never)
                 cache.put((name, ip), answer, negativeCachePolicy)
               answer
@@ -139,9 +138,9 @@ class InetAddressDnsResolver(cache: SimpleDnsCache, config: Config) extends Acto
 
   private def addressToRecords(
       name: String,
-      addresses: immutable.Seq[InetAddress],
+      addresses: Seq[InetAddress],
       ipv4: Boolean,
-      ipv6: Boolean): immutable.Seq[ResourceRecord] = {
+      ipv6: Boolean): Seq[ResourceRecord] = {
     addresses.collect {
       case a: Inet4Address if ipv4 => ARecord(name, Ttl.toTll(positiveCachePolicy), a)
       case a: Inet6Address if ipv6 => AAAARecord(name, Ttl.toTll(positiveCachePolicy), a)

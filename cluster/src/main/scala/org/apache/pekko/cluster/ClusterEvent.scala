@@ -447,7 +447,7 @@ object ClusterEvent {
   @InternalApi
   private[cluster] def diffUnreachable(
       oldState: MembershipState,
-      newState: MembershipState): immutable.Seq[UnreachableMember] =
+      newState: MembershipState): Seq[UnreachableMember] =
     if (newState eq oldState) Nil
     else {
       val newGossip = newState.latestGossip
@@ -466,7 +466,7 @@ object ClusterEvent {
   @InternalApi
   private[cluster] def diffReachable(
       oldState: MembershipState,
-      newState: MembershipState): immutable.Seq[ReachableMember] =
+      newState: MembershipState): Seq[ReachableMember] =
     if (newState eq oldState) Nil
     else {
       val newGossip = newState.latestGossip
@@ -499,7 +499,7 @@ object ClusterEvent {
   @InternalApi
   private[cluster] def diffUnreachableDataCenter(
       oldState: MembershipState,
-      newState: MembershipState): immutable.Seq[UnreachableDataCenter] = {
+      newState: MembershipState): Seq[UnreachableDataCenter] = {
     if (newState eq oldState) Nil
     else {
       val otherDcs = (oldState.latestGossip.allDataCenters
@@ -518,7 +518,7 @@ object ClusterEvent {
   @InternalApi
   private[cluster] def diffReachableDataCenter(
       oldState: MembershipState,
-      newState: MembershipState): immutable.Seq[ReachableDataCenter] = {
+      newState: MembershipState): Seq[ReachableDataCenter] = {
     if (newState eq oldState) Nil
     else {
       val otherDcs = (oldState.latestGossip.allDataCenters
@@ -537,7 +537,7 @@ object ClusterEvent {
   @InternalApi
   private[cluster] def diffMemberEvents(
       oldState: MembershipState,
-      newState: MembershipState): immutable.Seq[MemberEvent] =
+      newState: MembershipState): Seq[MemberEvent] =
     if (newState eq oldState) Nil
     else {
       val oldGossip = oldState.latestGossip
@@ -573,7 +573,7 @@ object ClusterEvent {
   @InternalApi
   private[cluster] def diffLeader(
       oldState: MembershipState,
-      newState: MembershipState): immutable.Seq[LeaderChanged] = {
+      newState: MembershipState): Seq[LeaderChanged] = {
     val newLeader = newState.leader
     if (newLeader != oldState.leader) List(LeaderChanged(newLeader.map(_.address)))
     else Nil
@@ -595,7 +595,7 @@ object ClusterEvent {
    * INTERNAL API
    */
   @InternalApi
-  private[cluster] def diffSeen(oldState: MembershipState, newState: MembershipState): immutable.Seq[SeenChanged] =
+  private[cluster] def diffSeen(oldState: MembershipState, newState: MembershipState): Seq[SeenChanged] =
     if (oldState eq newState) Nil
     else {
       val newConvergence = newState.convergence(Set.empty)
@@ -611,7 +611,7 @@ object ClusterEvent {
   @InternalApi
   private[cluster] def diffReachability(
       oldState: MembershipState,
-      newState: MembershipState): immutable.Seq[ReachabilityChanged] =
+      newState: MembershipState): Seq[ReachabilityChanged] =
     if (newState.overview.reachability eq oldState.overview.reachability) Nil
     else List(ReachabilityChanged(newState.overview.reachability))
 
@@ -621,7 +621,7 @@ object ClusterEvent {
   @InternalApi
   private[cluster] def diffTombstones(
       oldState: MembershipState,
-      newState: MembershipState): immutable.Seq[MemberTombstonesChanged] =
+      newState: MembershipState): Seq[MemberTombstonesChanged] =
     if (newState.latestGossip.tombstones == oldState.latestGossip.tombstones) Nil
     else MemberTombstonesChanged(newState.latestGossip.tombstones.keySet) :: Nil
 

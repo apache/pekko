@@ -13,7 +13,6 @@
 
 package org.apache.pekko.persistence.testkit.scaladsl
 
-import scala.collection.immutable
 import scala.concurrent.duration.FiniteDuration
 import scala.util.Try
 
@@ -311,12 +310,12 @@ private[testkit] trait PersistenceTestKitOps[S, P]
   /**
    * Persist `snapshots` into storage in order.
    */
-  def persistForRecovery(persistenceId: String, events: immutable.Seq[Any]): Unit
+  def persistForRecovery(persistenceId: String, events: Seq[Any]): Unit
 
   /**
    * Retrieve all snapshots saved in storage by persistence id.
    */
-  def persistedInStorage(persistenceId: String): immutable.Seq[Any]
+  def persistedInStorage(persistenceId: String): Seq[Any]
 
 }
 
@@ -382,7 +381,7 @@ class SnapshotTestKit(system: ActorSystem)
   /**
    * Persist `elems` pairs of (snapshot metadata, snapshot payload) into storage.
    */
-  def persistForRecovery(persistenceId: String, elems: immutable.Seq[(SnapshotMeta, Any)]): Unit =
+  def persistForRecovery(persistenceId: String, elems: Seq[(SnapshotMeta, Any)]): Unit =
     elems.foreach {
       case (m, p) =>
         storage.add(persistenceId, (SnapshotMetadata(persistenceId, m.sequenceNr, m.timestamp), p))
@@ -393,12 +392,12 @@ class SnapshotTestKit(system: ActorSystem)
    * Persist a pair of (snapshot metadata, snapshot payload) into storage.
    */
   def persistForRecovery(persistenceId: String, elem: (SnapshotMeta, Any)): Unit =
-    persistForRecovery(persistenceId, immutable.Seq(elem))
+    persistForRecovery(persistenceId, Seq(elem))
 
   /**
    * Retrieve snapshots and their metadata from storage by persistence id.
    */
-  def persistedInStorage(persistenceId: String): immutable.Seq[(SnapshotMeta, Any)] =
+  def persistedInStorage(persistenceId: String): Seq[(SnapshotMeta, Any)] =
     storage
       .read(persistenceId)
       .map(_.map(m => (SnapshotMeta(m._1.sequenceNr, m._1.timestamp), m._2)))
@@ -510,12 +509,12 @@ class PersistenceTestKit(system: ActorSystem)
   override def failNextNDeletes(persistenceId: String, n: Int, cause: Throwable): Unit =
     failNextNOpsCond((pid, op) => pid == persistenceId && op.isInstanceOf[DeleteEvents], n, cause)
 
-  def persistForRecovery(persistenceId: String, events: immutable.Seq[Any]): Unit = {
+  def persistForRecovery(persistenceId: String, events: Seq[Any]): Unit = {
     storage.addAny(persistenceId, events)
     addToIndex(persistenceId, events.size)
   }
 
-  def persistedInStorage(persistenceId: String): immutable.Seq[Any] =
+  def persistedInStorage(persistenceId: String): Seq[Any] =
     storage.read(persistenceId).getOrElse(List.empty).map(reprToAny)
 
   override private[testkit] def reprToAny(repr: PersistentRepr): Any = repr.payload match {

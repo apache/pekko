@@ -20,7 +20,6 @@ package org.apache.pekko.stream.impl
 import java.util.concurrent.atomic.{ AtomicBoolean, AtomicReference }
 
 import scala.annotation.tailrec
-import scala.collection.immutable
 import scala.util.control.NoStackTrace
 
 import org.apache.pekko
@@ -192,7 +191,7 @@ import org.reactivestreams.{ Publisher, Subscriber }
     extends Publisher[T] {
   import ReactiveStreamsCompliance._
 
-  private val pendingSubscribers = new AtomicReference[immutable.Seq[Subscriber[? >: T]]](Nil)
+  private val pendingSubscribers = new AtomicReference[Seq[Subscriber[? >: T]]](Nil)
   private val shutdownStarted = new AtomicBoolean(false)
 
   @volatile private var shutdownReason: Option[Throwable] = None
@@ -210,8 +209,8 @@ import org.reactivestreams.{ Publisher, Subscriber }
     doSubscribe()
   }
 
-  def takePendingSubscribers(): immutable.Seq[Subscriber[? >: T]] = {
-    @tailrec def swapPendingSubscribers(): immutable.Seq[Subscriber[? >: T]] = {
+  def takePendingSubscribers(): Seq[Subscriber[? >: T]] = {
+    @tailrec def swapPendingSubscribers(): Seq[Subscriber[? >: T]] = {
       val current = pendingSubscribers.get()
       if (current eq null) Nil
       else if (pendingSubscribers.compareAndSet(current, Nil)) current.reverse

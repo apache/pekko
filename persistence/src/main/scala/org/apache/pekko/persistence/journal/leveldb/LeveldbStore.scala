@@ -15,7 +15,6 @@ package org.apache.pekko.persistence.journal.leveldb
 
 import java.io.File
 
-import scala.collection.immutable
 import scala.collection.mutable
 import scala.concurrent.Future
 import scala.jdk.CollectionConverters._
@@ -84,7 +83,7 @@ private[persistence] trait LeveldbStore
 
   import Key._
 
-  def asyncWriteMessages(messages: immutable.Seq[AtomicWrite]): Future[immutable.Seq[Try[Unit]]] = {
+  def asyncWriteMessages(messages: Seq[AtomicWrite]): Future[Seq[Try[Unit]]] = {
     var persistenceIds = Set.empty[String]
     var allTags = Set.empty[String]
 

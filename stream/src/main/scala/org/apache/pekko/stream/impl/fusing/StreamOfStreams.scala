@@ -267,10 +267,10 @@ import pekko.util.OptionVal
  * INTERNAL API
  */
 @InternalApi private[pekko] final class PrefixAndTail[T](val n: Int)
-    extends GraphStage[FlowShape[T, (immutable.Seq[T], Source[T, NotUsed])]] {
+    extends GraphStage[FlowShape[T, (Seq[T], Source[T, NotUsed])]] {
   val in: Inlet[T] = Inlet("PrefixAndTail.in")
-  val out: Outlet[(immutable.Seq[T], Source[T, NotUsed])] = Outlet("PrefixAndTail.out")
-  override val shape: FlowShape[T, (immutable.Seq[T], Source[T, NotUsed])] = FlowShape(in, out)
+  val out: Outlet[(Seq[T], Source[T, NotUsed])] = Outlet("PrefixAndTail.out")
+  override val shape: FlowShape[T, (Seq[T], Source[T, NotUsed])] = FlowShape(in, out)
 
   override def initialAttributes = DefaultAttributes.prefixAndTail
 

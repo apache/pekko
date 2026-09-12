@@ -24,7 +24,6 @@ import java.nio.file.Files
 import java.util.Random
 
 import scala.annotation.tailrec
-import scala.collection.immutable
 import scala.concurrent.duration._
 import scala.util.Try
 import scala.util.control.NonFatal
@@ -962,7 +961,7 @@ class TcpConnectionSpec extends PekkoSpec("""
 
     def createConnectionActor(
         serverAddress: InetSocketAddress = serverAddress,
-        options: immutable.Seq[SocketOption] = Nil,
+        options: Seq[SocketOption] = Nil,
         timeout: Option[FiniteDuration] = None,
         pullMode: Boolean = false): TestActorRef[TcpOutgoingConnection] = {
       val ref = createConnectionActorWithoutRegistration(serverAddress, options, timeout, pullMode)
@@ -981,7 +980,7 @@ class TcpConnectionSpec extends PekkoSpec("""
 
     def createConnectionActorWithoutRegistration(
         serverAddress: InetSocketAddress = serverAddress,
-        options: immutable.Seq[SocketOption] = Nil,
+        options: Seq[SocketOption] = Nil,
         timeout: Option[FiniteDuration] = None,
         pullMode: Boolean = false): TestActorRef[TcpOutgoingConnection] =
       TestActorRef(

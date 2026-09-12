@@ -175,7 +175,7 @@ object Simulator {
   sealed trait Event
   final case class Accessed(regionId: RegionId, shardId: ShardId, entityId: EntityId) extends Event
   final case class Activated(regionId: RegionId, shardId: ShardId, entityId: EntityId) extends Event
-  final case class Passivated(regionId: RegionId, shardId: ShardId, entityIds: immutable.Seq[EntityId]) extends Event
+  final case class Passivated(regionId: RegionId, shardId: ShardId, entityIds: Seq[EntityId]) extends Event
 
   def simulate(simulation: Simulation)(implicit system: ActorSystem): Future[ShardingStats] =
     if (simulation.strategyCreator.requiresPreprocessing) runWithPreprocessing(simulation) else run(simulation)
@@ -261,14 +261,14 @@ object Simulator {
   final class ShardState(regionId: RegionId, shardId: ShardId, strategy: SimulatedStrategy) {
     private val activeEntities = mutable.Set.empty[EntityId]
 
-    def updated(activeShards: Int): immutable.Seq[Event] = {
+    def updated(activeShards: Int): Seq[Event] = {
       val passivateEntities = strategy.shardsUpdated(activeShards)
       passivateEntities.foreach(activeEntities.remove)
       if (passivateEntities.isEmpty) Nil
       else List(Passivated(regionId, shardId, passivateEntities))
     }
 
-    def accessed(entityId: EntityId): immutable.Seq[Event] = {
+    def accessed(entityId: EntityId): Seq[Event] = {
       val changes = if (activeEntities.contains(entityId)) {
         strategy.entityTouched(entityId)
         Nil
@@ -286,13 +286,13 @@ object Simulator {
   }
 
   sealed trait SimulatedStrategy {
-    def shardsUpdated(activeShards: Int): immutable.Seq[EntityId]
-    def entityTouched(id: EntityId): immutable.Seq[EntityId]
+    def shardsUpdated(activeShards: Int): Seq[EntityId]
+    def entityTouched(id: EntityId): Seq[EntityId]
   }
 
   final class PassivationStrategy(strategy: EntityPassivationStrategy) extends SimulatedStrategy {
-    override def shardsUpdated(activeShards: Int): immutable.Seq[EntityId] = strategy.shardsUpdated(activeShards)
-    override def entityTouched(id: EntityId): immutable.Seq[EntityId] = strategy.entityTouched(id)
+    override def shardsUpdated(activeShards: Int): Seq[EntityId] = strategy.shardsUpdated(activeShards)
+    override def entityTouched(id: EntityId): Seq[EntityId] = strategy.entityTouched(id)
   }
 
   sealed trait StrategyCreator {
@@ -308,7 +308,7 @@ object Simulator {
 
   final class LeastRecentlyUsedStrategyCreator(
       perRegionLimit: Int,
-      segmented: immutable.Seq[Double],
+      segmented: Seq[Double],
       clock: () => Clock)
       extends PassivationStrategyCreator {
     override def create(shardId: ShardId): SimulatedStrategy =
@@ -445,12 +445,12 @@ object Simulator {
     private val nextAccess = mutable.TreeMap.empty[AccessTime, EntityId]
     private var never: AccessTime = Int.MaxValue
 
-    override def shardsUpdated(activeShards: Int): immutable.Seq[EntityId] = {
+    override def shardsUpdated(activeShards: Int): Seq[EntityId] = {
       perShardLimit = perRegionLimit / activeShards
       passivateExcessEntities()
     }
 
-    override def entityTouched(id: EntityId): immutable.Seq[EntityId] = {
+    override def entityTouched(id: EntityId): Seq[EntityId] = {
       nextAccess -= recorder.previousAccess(id)
       recorder.nextAccess(id) match {
         case OptionVal.Some(access) =>
@@ -462,7 +462,7 @@ object Simulator {
       passivateExcessEntities()
     }
 
-    private def passivateExcessEntities(): immutable.Seq[EntityId] = {
+    private def passivateExcessEntities(): Seq[EntityId] = {
       val passivated = mutable.ListBuffer.empty[EntityId]
       while (nextAccess.size > perShardLimit) {
         nextAccess.remove(nextAccess.lastKey).foreach(passivated.+=)

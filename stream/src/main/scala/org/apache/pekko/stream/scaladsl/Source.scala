@@ -408,7 +408,7 @@ object Source {
    * Iterator, but every Subscriber directly attached to the Publisher of this
    * stream will see an individual flow of elements (always starting from the
    * beginning) regardless of when they subscribed.
-   * @see [[apply(immutable.Seq)]]
+   * @see [[apply(Seq)]]
    */
   @inline def apply[T](iterable: immutable.Iterable[T]): Source[T, NotUsed] = {
     // unknown size is -1
@@ -434,7 +434,7 @@ object Source {
    * @see [[apply(immutable.Iterable)]]
    * @since 2.0.0
    */
-  @inline def apply[T](seq: immutable.Seq[T]): Source[T, NotUsed] = {
+  @inline def apply[T](seq: Seq[T]): Source[T, NotUsed] = {
     // unknown size is -1
     (seq.knownSize: @switch) match {
       case 0 => empty[T]
@@ -816,11 +816,11 @@ object Source {
    * Combines several sources with fan-in strategy like [[Merge]] or [[Concat]] into a single [[Source]].
    * @since 1.1.0
    */
-  def combine[T, U, M](sources: immutable.Seq[Graph[SourceShape[T], M]])(
-      fanInStrategy: Int => Graph[UniformFanInShape[T, U], NotUsed]): Source[U, immutable.Seq[M]] =
+  def combine[T, U, M](sources: Seq[Graph[SourceShape[T], M]])(
+      fanInStrategy: Int => Graph[UniformFanInShape[T, U], NotUsed]): Source[U, Seq[M]] =
     sources match {
-      case immutable.Seq()       => Source.empty.mapMaterializedValue(_ => Nil)
-      case immutable.Seq(source) =>
+      case Seq()       => Source.empty.mapMaterializedValue(_ => Nil)
+      case Seq(source) =>
         // Single-source optimization: bypass the fan-in strategy if and only if the strategy
         // is type-preserving (T == U), marked by the TypePreservingFanIn trait.
         //
@@ -885,8 +885,8 @@ object Source {
   /**
    * Combine the elements of multiple streams into a stream of sequences.
    */
-  def zipN[T](sources: immutable.Seq[Source[T, ?]]): Source[immutable.Seq[T], NotUsed] =
-    zipWithN(ConstantFun.scalaIdentityFunction[immutable.Seq[T]])(sources).addAttributes(DefaultAttributes.zipN)
+  def zipN[T](sources: Seq[Source[T, ?]]): Source[Seq[T], NotUsed] =
+    zipWithN(ConstantFun.scalaIdentityFunction[Seq[T]])(sources).addAttributes(DefaultAttributes.zipN)
 
   /**
    * Combine the elements of multiple streams into a stream of sequences using a combiner function.
@@ -897,12 +897,12 @@ object Source {
    * the stream fails. If the supervision decision is [[pekko.stream.Supervision.Resume]] or
    * [[pekko.stream.Supervision.Restart]] the zipped element is dropped and the stream continues.
    */
-  def zipWithN[T, O](zipper: immutable.Seq[T] => O)(sources: immutable.Seq[Source[T, ?]]): Source[O, NotUsed] = {
+  def zipWithN[T, O](zipper: Seq[T] => O)(sources: Seq[Source[T, ?]]): Source[O, NotUsed] = {
     val source = sources match {
-      case immutable.Seq()       => empty[O]
-      case immutable.Seq(source) => source.map(t => zipper(immutable.Seq(t))).mapMaterializedValue(_ => NotUsed)
-      case s1 +: s2 +: ss        => combine(s1, s2, ss: _*)(ZipWithN(zipper))
-      case _                     => throw new IllegalArgumentException() // just to please compiler completeness check
+      case Seq()          => empty[O]
+      case Seq(source)    => source.map(t => zipper(Seq(t))).mapMaterializedValue(_ => NotUsed)
+      case s1 +: s2 +: ss => combine(s1, s2, ss: _*)(ZipWithN(zipper))
+      case _              => throw new IllegalArgumentException() // just to please compiler completeness check
     }
 
     source.addAttributes(DefaultAttributes.zipWithN)
@@ -1139,12 +1139,12 @@ object Source {
    * '''Cancels when''' downstream cancels
    */
   def mergePrioritizedN[T](
-      sourcesAndPriorities: immutable.Seq[(Source[T, ?], Int)],
+      sourcesAndPriorities: Seq[(Source[T, ?], Int)],
       eagerComplete: Boolean): Source[T, NotUsed] = {
     sourcesAndPriorities match {
-      case immutable.Seq()            => Source.empty
-      case immutable.Seq((source, _)) => source.mapMaterializedValue(_ => NotUsed)
-      case sourcesAndPriorities       =>
+      case Seq()                => Source.empty
+      case Seq((source, _))     => source.mapMaterializedValue(_ => NotUsed)
+      case sourcesAndPriorities =>
         val (sources, priorities) = sourcesAndPriorities.unzip
         combine(sources.head, sources(1), sources.drop(2): _*)(_ => MergePrioritized(priorities, eagerComplete))
     }

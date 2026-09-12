@@ -13,7 +13,6 @@
 
 package org.apache.pekko.cluster.sharding.passivation.simulator
 
-import scala.collection.immutable
 import scala.jdk.CollectionConverters._
 
 import org.apache.pekko
@@ -22,7 +21,7 @@ import pekko.util.Helpers.toRootLowerCase
 
 import com.typesafe.config.Config
 
-final case class SimulatorSettings(runs: immutable.Seq[SimulatorSettings.RunSettings], printDetailedStats: Boolean)
+final case class SimulatorSettings(runs: Seq[SimulatorSettings.RunSettings], printDetailedStats: Boolean)
 
 object SimulatorSettings {
   def apply(testConfig: Config): SimulatorSettings = {
@@ -57,7 +56,7 @@ object SimulatorSettings {
 
   object StrategySettings {
     final case class Optimal(perRegionLimit: Int) extends StrategySettings
-    final case class LeastRecentlyUsed(perRegionLimit: Int, segmented: immutable.Seq[Double]) extends StrategySettings
+    final case class LeastRecentlyUsed(perRegionLimit: Int, segmented: Seq[Double]) extends StrategySettings
     final case class MostRecentlyUsed(perRegionLimit: Int) extends StrategySettings
     final case class LeastFrequentlyUsed(perRegionLimit: Int, dynamicAging: Boolean) extends StrategySettings
     case object NoStrategy extends StrategySettings

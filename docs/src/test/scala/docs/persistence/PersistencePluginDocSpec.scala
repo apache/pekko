@@ -13,7 +13,6 @@
 
 package docs.persistence
 
-import scala.collection.immutable
 import scala.concurrent.Future
 import scala.concurrent.duration._
 import scala.util.Try
@@ -164,7 +163,7 @@ trait SharedLeveldbPluginDocSpec {
 
 class MyJournal extends AsyncWriteJournal {
   // #sync-journal-plugin-api
-  def asyncWriteMessages(messages: immutable.Seq[AtomicWrite]): Future[immutable.Seq[Try[Unit]]] =
+  def asyncWriteMessages(messages: Seq[AtomicWrite]): Future[Seq[Try[Unit]]] =
     Future.fromTry(Try {
       // blocking call here
       ???

@@ -15,7 +15,7 @@ package org.apache.pekko.persistence.journal
 
 import java.util.concurrent.atomic.AtomicLong
 
-import scala.collection.{ immutable, mutable }
+import scala.collection.mutable
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 import scala.concurrent.duration._
@@ -446,7 +446,7 @@ trait AsyncWriteJournal extends Actor with WriteJournalBase with AsyncRecovery {
    * failure.
    *
    * The journal can also signal that it rejects individual messages (`AtomicWrite`) by
-   * the returned `immutable.Seq[Try[Unit]]`. It is possible but not mandatory to reduce
+   * the returned `Seq[Try[Unit]]`. It is possible but not mandatory to reduce
    * number of allocations by returning `Future.successful(Nil)` for the happy path,
    * i.e. when no messages are rejected. Otherwise the returned `Seq` must have as many elements
    * as the input `messages` `Seq`. Each `Try` element signals if the corresponding
@@ -481,7 +481,7 @@ trait AsyncWriteJournal extends Actor with WriteJournalBase with AsyncRecovery {
    *
    * This call is protected with a circuit-breaker.
    */
-  def asyncWriteMessages(messages: immutable.Seq[AtomicWrite]): Future[immutable.Seq[Try[Unit]]]
+  def asyncWriteMessages(messages: Seq[AtomicWrite]): Future[Seq[Try[Unit]]]
 
   /**
    * Plugin API: asynchronously deletes all persistent messages up to `toSequenceNr`

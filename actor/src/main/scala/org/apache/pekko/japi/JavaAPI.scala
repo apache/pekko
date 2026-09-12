@@ -109,24 +109,24 @@ object Util {
   def classTag[T](clazz: Class[T]): ClassTag[T] = ClassTag(clazz)
 
   /**
-   * Returns an immutable.Seq representing the provided array of Classes,
+   * Returns an Seq representing the provided array of Classes,
    * an overloading of the generic immutableSeq in Util, to accommodate for erasure.
    */
-  def immutableSeq(arr: Array[Class[?]]): immutable.Seq[Class[?]] = immutableSeq[Class[?]](arr)
+  def immutableSeq(arr: Array[Class[?]]): Seq[Class[?]] = immutableSeq[Class[?]](arr)
 
   /**
    * Turns an array into an immutable Scala sequence (by copying it).
    */
-  def immutableSeq[T](arr: Array[T]): immutable.Seq[T] =
+  def immutableSeq[T](arr: Array[T]): Seq[T] =
     if ((arr ne null) && arr.length > 0) arr.toIndexedSeq else Nil
 
   /**
    * Turns a [[java.lang.Iterable]] into an immutable Scala sequence (by copying it).
    */
-  def immutableSeq[T](iterable: java.lang.Iterable[T]): immutable.Seq[T] =
+  def immutableSeq[T](iterable: java.lang.Iterable[T]): Seq[T] =
     iterable match {
-      case imm: immutable.Seq[?] => imm.asInstanceOf[immutable.Seq[T]]
-      case other                 =>
+      case imm: Seq[?] => imm.asInstanceOf[Seq[T]]
+      case other       =>
         val i = other.iterator()
         if (i.hasNext) {
           val builder = new immutable.VectorBuilder[T]
@@ -137,7 +137,7 @@ object Util {
         } else EmptyImmutableSeq
     }
 
-  def immutableSingletonSeq[T](value: T): immutable.Seq[T] = value :: Nil
+  def immutableSingletonSeq[T](value: T): Seq[T] = value :: Nil
 
   def javaArrayList[T](seq: Seq[T]): java.util.List[T] = {
     val size = seq.size

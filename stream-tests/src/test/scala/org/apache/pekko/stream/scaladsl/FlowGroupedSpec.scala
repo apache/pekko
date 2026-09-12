@@ -15,8 +15,6 @@ package org.apache.pekko.stream.scaladsl
 
 import java.util.concurrent.ThreadLocalRandom.{ current => random }
 
-import scala.collection.immutable
-
 import org.apache.pekko
 import pekko.stream.testkit.ScriptedTest
 import pekko.stream.testkit.StreamSpec
@@ -27,8 +25,8 @@ class FlowGroupedSpec extends StreamSpec("""
 
   "A Grouped" must {
 
-    def randomSeq(n: Int) = immutable.Seq.fill(n)(random.nextInt())
-    def randomTest(n: Int) = { val s = randomSeq(n); s -> immutable.Seq(s) }
+    def randomSeq(n: Int) = Seq.fill(n)(random.nextInt())
+    def randomTest(n: Int) = { val s = randomSeq(n); s -> Seq(s) }
 
     "group evenly" in {
       val testLen = random.nextInt(1, 16)

@@ -14,7 +14,6 @@
 package org.apache.pekko.io.dns.internal
 
 import scala.collection.IterableOnce
-import scala.collection.immutable.Seq
 import scala.util.{ Failure, Success, Try }
 
 import org.apache.pekko
