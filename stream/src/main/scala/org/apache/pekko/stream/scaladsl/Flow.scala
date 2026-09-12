@@ -15,7 +15,6 @@ package org.apache.pekko.stream.scaladsl
 
 import scala.annotation.implicitNotFound
 import scala.annotation.unchecked.uncheckedVariance
-import scala.collection.immutable
 import scala.concurrent.Future
 import scala.concurrent.duration.FiniteDuration
 import scala.reflect.ClassTag

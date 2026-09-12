@@ -17,7 +17,6 @@ import java.util.concurrent.TimeUnit.NANOSECONDS
 
 import scala.annotation.nowarn
 import scala.annotation.tailrec
-import scala.collection.immutable
 import scala.collection.immutable.VectorBuilder
 import scala.concurrent.Future
 import scala.concurrent.duration.{ FiniteDuration, _ }

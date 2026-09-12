@@ -20,7 +20,6 @@ import java.util.concurrent.CompletionStage
 import scala.annotation.nowarn
 import scala.annotation.unchecked.uncheckedVariance
 import scala.annotation.varargs
-import scala.collection.immutable
 import scala.concurrent.ExecutionContext
 import scala.jdk.DurationConverters._
 import scala.jdk.FutureConverters._
