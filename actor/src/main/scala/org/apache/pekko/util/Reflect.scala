@@ -18,7 +18,6 @@ import java.lang.invoke.{ MethodHandle, MethodHandles, MethodType }
 import java.lang.reflect.{ Constructor, InvocationTargetException, Modifier, ParameterizedType, Type }
 
 import scala.annotation.tailrec
-import scala.collection.immutable
 import scala.util.control.NonFatal
 
 import org.apache.pekko
@@ -76,7 +75,7 @@ private[pekko] object Reflect {
    * INTERNAL API
    * Calls findConstructor and invokes it with the given arguments.
    */
-  private[pekko] def instantiate[T](clazz: Class[T], args: immutable.Seq[Any]): T = {
+  private[pekko] def instantiate[T](clazz: Class[T], args: Seq[Any]): T = {
     val constructor = findConstructor(clazz, args)
     ensureInitialized(clazz)
     instantiate(constructorInvoker(constructor), argumentArray(args))
@@ -86,7 +85,7 @@ private[pekko] object Reflect {
    * INTERNAL API
    * Invokes the constructor with the given arguments.
    */
-  private[pekko] def instantiate[T](constructor: MethodHandle, args: immutable.Seq[Any]): T = {
+  private[pekko] def instantiate[T](constructor: MethodHandle, args: Seq[Any]): T = {
     ensureInitialized(constructor.`type`().returnType())
     instantiate(constructorInvoker(constructor), argumentArray(args))
   }
@@ -126,7 +125,7 @@ private[pekko] object Reflect {
       .asType(genericConstructorType)
 
   /** INTERNAL API */
-  private[pekko] def argumentArray(args: immutable.Seq[Any]): Array[AnyRef] =
+  private[pekko] def argumentArray(args: Seq[Any]): Array[AnyRef] =
     args.iterator.map(_.asInstanceOf[AnyRef]).toArray
 
   /**
@@ -134,7 +133,7 @@ private[pekko] object Reflect {
    * Implements a primitive form of overload resolution a.k.a. finding the
    * right constructor.
    */
-  private[pekko] def findConstructor[T](clazz: Class[T], args: immutable.Seq[Any]): MethodHandle = {
+  private[pekko] def findConstructor[T](clazz: Class[T], args: Seq[Any]): MethodHandle = {
     def error(msg: String): Nothing = {
       val argClasses = args.map(safeGetClass).mkString(", ")
       throw new IllegalArgumentException(s"$msg found on $clazz for arguments [$argClasses]")
@@ -145,7 +144,7 @@ private[pekko] object Reflect {
     findConstructorHandle(clazz, selectedConstructorType)
   }
 
-  private def findConstructorMethodTypeFromClassMetadata[T](clazz: Class[T], args: immutable.Seq[Any])
+  private def findConstructorMethodTypeFromClassMetadata[T](clazz: Class[T], args: Seq[Any])
       : Option[MethodType] = {
     def matches(parameterTypes: Array[Class[?]]): Boolean =
       parameterTypes.length == args.length &&

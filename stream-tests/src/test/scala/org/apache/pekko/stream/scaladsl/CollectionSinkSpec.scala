@@ -31,15 +31,15 @@ class CollectionSinkSpec extends StreamSpec("""
     "using Seq as Collection" must {
       "return a Seq[T] from a Source" in {
         val input = 1 to 6
-        val future: Future[immutable.Seq[Int]] = Source(input).runWith(Sink.collection)
-        val result: immutable.Seq[Int] = Await.result(future, remainingOrDefault)
+        val future: Future[Seq[Int]] = Source(input).runWith(Sink.collection)
+        val result: Seq[Int] = Await.result(future, remainingOrDefault)
         result should be(input.toSeq)
       }
 
       "return an empty Seq[T] from an empty Source" in {
-        val input: immutable.Seq[Int] = Nil
-        val future: Future[immutable.Seq[Int]] = Source.fromIterator(() => input.iterator).runWith(Sink.collection)
-        val result: immutable.Seq[Int] = Await.result(future, remainingOrDefault)
+        val input: Seq[Int] = Nil
+        val future: Future[Seq[Int]] = Source.fromIterator(() => input.iterator).runWith(Sink.collection)
+        val result: Seq[Int] = Await.result(future, remainingOrDefault)
         result should be(input)
       }
 

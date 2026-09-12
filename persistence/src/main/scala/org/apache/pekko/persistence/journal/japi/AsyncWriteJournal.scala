@@ -32,7 +32,7 @@ import pekko.util.ConstantFun.scalaAnyToUnit
 abstract class AsyncWriteJournal extends AsyncRecovery with SAsyncWriteJournal with AsyncWritePlugin {
   import SAsyncWriteJournal.successUnit
 
-  final def asyncWriteMessages(messages: immutable.Seq[AtomicWrite]): Future[immutable.Seq[Try[Unit]]] =
+  final def asyncWriteMessages(messages: Seq[AtomicWrite]): Future[Seq[Try[Unit]]] =
     doAsyncWriteMessages(messages.asJava).asScala.map { results =>
       results.asScala.iterator
         .map { r =>

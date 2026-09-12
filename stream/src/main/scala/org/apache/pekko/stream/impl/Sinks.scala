@@ -139,7 +139,7 @@ import org.reactivestreams.Subscriber
  * INTERNAL API
  */
 @InternalApi private[pekko] final class TakeLastStage[T](n: Int)
-    extends GraphStageWithMaterializedValue[SinkShape[T], Future[immutable.Seq[T]]] {
+    extends GraphStageWithMaterializedValue[SinkShape[T], Future[Seq[T]]] {
   if (n <= 0)
     throw new IllegalArgumentException("requirement failed: n must be greater than 0")
 
@@ -148,7 +148,7 @@ import org.reactivestreams.Subscriber
   override val shape: SinkShape[T] = SinkShape.of(in)
 
   override def createLogicAndMaterializedValue(inheritedAttributes: Attributes) = {
-    val p: Promise[immutable.Seq[T]] = Promise()
+    val p: Promise[Seq[T]] = Promise()
     (new GraphStageLogic(shape) with InHandler {
         private val buffer = mutable.Queue.empty[T]
         private var count = 0

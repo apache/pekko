@@ -13,7 +13,6 @@
 
 package org.apache.pekko.stream.scaladsl
 
-import scala.collection.immutable
 import scala.concurrent.Await
 import scala.concurrent.Future
 import scala.concurrent.duration._
@@ -30,8 +29,8 @@ object GraphOpsIntegrationSpec {
 
     case class ShufflePorts[In, Out](in1: Inlet[In], in2: Inlet[In], out1: Outlet[Out], out2: Outlet[Out])
         extends Shape {
-      override def inlets: immutable.Seq[Inlet[?]] = List(in1, in2)
-      override def outlets: immutable.Seq[Outlet[?]] = List(out1, out2)
+      override def inlets: Seq[Inlet[?]] = List(in1, in2)
+      override def outlets: Seq[Outlet[?]] = List(out1, out2)
 
       override def deepCopy() = ShufflePorts(in1.carbonCopy(), in2.carbonCopy(), out1.carbonCopy(), out2.carbonCopy())
     }
@@ -219,9 +218,8 @@ class GraphOpsIntegrationSpec extends StreamSpec("""
       implicit val ex = system.dispatcher
 
       // #graph-from-list
-      val sinks = immutable
-        .Seq("a", "b", "c")
-        .map(prefix => Flow[String].filter(str => str.startsWith(prefix)).toMat(Sink.head[String])(Keep.right))
+      val sinks = Seq("a", "b", "c").map(prefix =>
+        Flow[String].filter(str => str.startsWith(prefix)).toMat(Sink.head[String])(Keep.right))
 
       val g: RunnableGraph[Seq[Future[String]]] = RunnableGraph.fromGraph(GraphDSL.create(sinks) {
         implicit b => sinkList =>
@@ -248,9 +246,9 @@ class GraphOpsIntegrationSpec extends StreamSpec("""
     "be possible to use with generated components if list has no tail" in {
       implicit val ex = system.dispatcher
 
-      val sinks = immutable.Seq(Sink.seq[Int])
+      val sinks = Seq(Sink.seq[Int])
 
-      val g: RunnableGraph[Seq[Future[immutable.Seq[Int]]]] = RunnableGraph.fromGraph(GraphDSL.create(sinks) {
+      val g: RunnableGraph[Seq[Future[Seq[Int]]]] = RunnableGraph.fromGraph(GraphDSL.create(sinks) {
         implicit b => sinkList =>
           import GraphDSL.Implicits._
           val broadcast = b.add(Broadcast[Int](sinkList.size))
@@ -261,9 +259,9 @@ class GraphOpsIntegrationSpec extends StreamSpec("""
           ClosedShape
       })
 
-      val matList: Seq[Future[immutable.Seq[Int]]] = g.run()
+      val matList: Seq[Future[Seq[Int]]] = g.run()
 
-      val result: Seq[immutable.Seq[Int]] = Await.result(Future.sequence(matList), 3.seconds)
+      val result: Seq[Seq[Int]] = Await.result(Future.sequence(matList), 3.seconds)
 
       result.size shouldBe 1
       result.foreach(_ shouldBe List(1, 2, 3))

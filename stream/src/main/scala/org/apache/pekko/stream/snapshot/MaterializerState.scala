@@ -13,7 +13,6 @@
 
 package org.apache.pekko.stream.snapshot
 
-import scala.collection.immutable
 import scala.concurrent.{ ExecutionContext, Future }
 import scala.concurrent.duration._
 
@@ -42,7 +41,7 @@ object MaterializerState {
    * Dump stream snapshots of all streams of the default system materializer.
    */
   @ApiMayChange
-  def streamSnapshots(system: ActorSystem): Future[immutable.Seq[StreamSnapshot]] = {
+  def streamSnapshots(system: ActorSystem): Future[Seq[StreamSnapshot]] = {
     SystemMaterializer(system).materializer match {
       case impl: PhasedFusingActorMaterializer =>
         requestFromSupervisor(impl.supervisor)(impl.system.dispatchers.internalDispatcher)
@@ -54,7 +53,7 @@ object MaterializerState {
    * Dump stream snapshots of all streams of the given materializer.
    */
   @ApiMayChange
-  def streamSnapshots(mat: Materializer): Future[immutable.Seq[StreamSnapshot]] = {
+  def streamSnapshots(mat: Materializer): Future[Seq[StreamSnapshot]] = {
     mat match {
       case impl: PhasedFusingActorMaterializer =>
         requestFromSupervisor(impl.supervisor)(impl.system.dispatchers.internalDispatcher)
@@ -65,7 +64,7 @@ object MaterializerState {
   /** INTERNAL API */
   @InternalApi
   private[pekko] def requestFromSupervisor(supervisor: ActorRef)(
-      implicit ec: ExecutionContext): Future[immutable.Seq[StreamSnapshot]] = {
+      implicit ec: ExecutionContext): Future[Seq[StreamSnapshot]] = {
     // Arbitrary timeout: operation should always be quick, when it times out it will be because the materializer stopped
     implicit val timeout: Timeout = 10.seconds
     supervisor
@@ -111,7 +110,7 @@ sealed trait StreamSnapshot {
  */
 @DoNotInherit @ApiMayChange
 sealed trait InterpreterSnapshot {
-  def logics: immutable.Seq[LogicSnapshot]
+  def logics: Seq[LogicSnapshot]
 }
 
 /**
@@ -131,12 +130,12 @@ sealed trait RunningInterpreter extends InterpreterSnapshot {
   /**
    * Each of the materialized graph stage logics running inside the interpreter
    */
-  def logics: immutable.Seq[LogicSnapshot]
+  def logics: Seq[LogicSnapshot]
 
   /**
    * Each connection between logics in the interpreter
    */
-  def connections: immutable.Seq[ConnectionSnapshot]
+  def connections: Seq[ConnectionSnapshot]
 
   /**
    * Total number of non-stopped logics in the interpreter
@@ -146,7 +145,7 @@ sealed trait RunningInterpreter extends InterpreterSnapshot {
   /**
    * All logics that has completed and is no longer executing
    */
-  def stoppedLogics: immutable.Seq[LogicSnapshot]
+  def stoppedLogics: Seq[LogicSnapshot]
 }
 
 /**
@@ -194,7 +193,7 @@ final private[pekko] case class StreamSnapshotImpl(
  * INTERNAL API
  */
 @InternalApi
-private[pekko] final case class UninitializedInterpreterImpl(logics: immutable.Seq[LogicSnapshot])
+private[pekko] final case class UninitializedInterpreterImpl(logics: Seq[LogicSnapshot])
     extends UninitializedInterpreter
 
 /**
@@ -202,11 +201,11 @@ private[pekko] final case class UninitializedInterpreterImpl(logics: immutable.S
  */
 @InternalApi
 private[pekko] final case class RunningInterpreterImpl(
-    logics: immutable.Seq[LogicSnapshot],
-    connections: immutable.Seq[ConnectionSnapshot],
+    logics: Seq[LogicSnapshot],
+    connections: Seq[ConnectionSnapshot],
     queueStatus: String,
     runningLogicsCount: Int,
-    stoppedLogics: immutable.Seq[LogicSnapshot])
+    stoppedLogics: Seq[LogicSnapshot])
     extends RunningInterpreter
     with HideImpl
 

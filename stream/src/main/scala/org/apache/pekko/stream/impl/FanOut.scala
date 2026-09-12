@@ -14,7 +14,6 @@
 package org.apache.pekko.stream.impl
 
 import scala.annotation.nowarn
-import scala.collection.immutable
 
 import org.apache.pekko
 import pekko.actor._
@@ -48,7 +47,7 @@ import org.reactivestreams.Subscription
     override def createSubscription(): Subscription = new SubstreamSubscription(actor, id)
   }
 
-  final case class ExposedPublishers(publishers: immutable.Seq[ActorPublisher[Any]])
+  final case class ExposedPublishers(publishers: Seq[ActorPublisher[Any]])
       extends DeadLetterSuppression
       with NoSerializationVerificationNeeded
 

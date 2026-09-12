@@ -13,7 +13,6 @@
 
 package org.apache.pekko.persistence.testkit.scaladsl
 
-import scala.collection.immutable
 import scala.reflect.ClassTag
 
 import org.apache.pekko
@@ -138,7 +137,7 @@ object EventSourcedBehaviorTestKit {
      * In many cases only one event is emitted and then it's more convenient to use [[CommandResult.event]]
      * or [[CommandResult.eventOfType]].
      */
-    def events: immutable.Seq[Event]
+    def events: Seq[Event]
 
     /**
      * `true` if no events were emitted by the command.

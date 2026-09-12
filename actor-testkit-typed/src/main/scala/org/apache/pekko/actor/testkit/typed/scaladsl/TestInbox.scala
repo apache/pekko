@@ -15,8 +15,6 @@ package org.apache.pekko.actor.testkit.typed.scaladsl
 
 import java.util.concurrent.ThreadLocalRandom
 
-import scala.collection.immutable
-
 import org.apache.pekko
 import pekko.Done
 import pekko.actor.{ Address, RootActorPath }
@@ -68,9 +66,9 @@ trait TestInbox[T] {
   /**
    * Collect all messages in the inbox and clear it out
    */
-  def receiveAll(): immutable.Seq[T] = internalReceiveAll()
+  def receiveAll(): Seq[T] = internalReceiveAll()
 
-  protected def internalReceiveAll(): immutable.Seq[T]
+  protected def internalReceiveAll(): Seq[T]
 
   def hasMessages: Boolean
 

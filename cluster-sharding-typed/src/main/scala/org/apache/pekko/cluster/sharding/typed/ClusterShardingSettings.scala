@@ -13,7 +13,6 @@
 
 package org.apache.pekko.cluster.sharding.typed
 
-import scala.collection.immutable
 import scala.concurrent.duration._
 import scala.jdk.DurationConverters._
 
@@ -328,16 +327,16 @@ object ClusterShardingSettings {
             settings.proportions)
       }
 
-      final class SegmentedSettings(val levels: Int, val proportions: immutable.Seq[Double]) {
+      final class SegmentedSettings(val levels: Int, val proportions: Seq[Double]) {
 
         def withLevels(levels: Int): SegmentedSettings = copy(levels = levels)
 
-        def withProportions(proportions: immutable.Seq[Double]): SegmentedSettings = copy(proportions = proportions)
+        def withProportions(proportions: Seq[Double]): SegmentedSettings = copy(proportions = proportions)
 
         def withProportions(proportions: java.util.List[java.lang.Double]): SegmentedSettings =
           copy(proportions = immutableSeq(proportions).map(_.toDouble))
 
-        private def copy(levels: Int = levels, proportions: immutable.Seq[Double] = proportions): SegmentedSettings =
+        private def copy(levels: Int = levels, proportions: Seq[Double] = proportions): SegmentedSettings =
           new SegmentedSettings(levels, proportions)
       }
     }
@@ -349,7 +348,7 @@ object ClusterShardingSettings {
       def withSegmented(levels: Int): LeastRecentlyUsedSettings =
         copy(segmentedSettings = Some(new SegmentedSettings(levels, Nil)))
 
-      def withSegmented(proportions: immutable.Seq[Double]): LeastRecentlyUsedSettings =
+      def withSegmented(proportions: Seq[Double]): LeastRecentlyUsedSettings =
         copy(segmentedSettings = Some(new SegmentedSettings(proportions.size, proportions)))
 
       def withSegmentedProportions(proportions: java.util.List[java.lang.Double]): LeastRecentlyUsedSettings =

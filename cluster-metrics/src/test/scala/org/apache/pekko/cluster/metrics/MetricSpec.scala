@@ -27,34 +27,27 @@ import pekko.testkit.PekkoSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
-@nowarn
 class MetricNumericConverterSpec extends AnyWordSpec with Matchers with MetricNumericConverter {
 
   "MetricNumericConverter" must {
 
     "convert" in {
-      convertNumber(0).isLeft should ===(true)
-      convertNumber(1).left.get should ===(1)
-      convertNumber(1L).isLeft should ===(true)
-      convertNumber(0.0).isRight should ===(true)
+      convertNumber(0) should ===(Left(0L))
+      convertNumber(1) should ===(Left(1L))
+      convertNumber(1L) should ===(Left(1L))
+      convertNumber(0.0) should ===(Right(0.0))
     }
 
     "convert java.math.BigInteger and java.math.BigDecimal" in {
-      convertNumber(java.math.BigInteger.valueOf(42)).isLeft should ===(true)
-      convertNumber(java.math.BigInteger.valueOf(42)).left.get should ===(42L)
-      convertNumber(new java.math.BigDecimal("3.14")).isRight should ===(true)
-      convertNumber(new java.math.BigDecimal("3.14")).right.get should ===(3.14 +- 0.0001)
+      convertNumber(java.math.BigInteger.valueOf(42)) should ===(Left(42L))
+      convertNumber(new java.math.BigDecimal("3.14")).toOption.get should ===(3.14 +- 0.0001)
     }
 
     "convert any Number subtype" in {
-      convertNumber(42.toShort).isLeft should ===(true)
-      convertNumber(42.toShort).left.get should ===(42L)
-      convertNumber(7.toByte).isLeft should ===(true)
-      convertNumber(7.toByte).left.get should ===(7L)
-      convertNumber(new java.util.concurrent.atomic.AtomicInteger(99)).isLeft should ===(true)
-      convertNumber(new java.util.concurrent.atomic.AtomicInteger(99)).left.get should ===(99L)
-      convertNumber(new java.util.concurrent.atomic.AtomicLong(1234L)).isLeft should ===(true)
-      convertNumber(new java.util.concurrent.atomic.AtomicLong(1234L)).left.get should ===(1234L)
+      convertNumber(42.toShort) should ===(Left(42L))
+      convertNumber(7.toByte) should ===(Left(7L))
+      convertNumber(new java.util.concurrent.atomic.AtomicInteger(99)) should ===(Left(99L))
+      convertNumber(new java.util.concurrent.atomic.AtomicLong(1234L)) should ===(Left(1234L))
     }
 
     "define a metric with java.math.BigInteger and java.math.BigDecimal values" in {

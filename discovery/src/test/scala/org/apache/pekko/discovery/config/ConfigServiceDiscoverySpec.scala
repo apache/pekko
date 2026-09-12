@@ -13,7 +13,6 @@
 
 package org.apache.pekko.discovery.config
 
-import scala.collection.immutable
 import scala.concurrent.duration._
 
 import org.apache.pekko
@@ -77,19 +76,19 @@ class ConfigServiceDiscoverySpec
     "load from config" in {
       val result = discovery.lookup("service1", 100.millis).futureValue
       result.serviceName shouldEqual "service1"
-      result.addresses shouldEqual immutable.Seq(
+      result.addresses shouldEqual Seq(
         ResolvedTarget(host = "cat", port = Some(1233), address = None),
         ResolvedTarget(host = "dog", port = None, address = None))
     }
     "return no resolved targets if no endpoints" in {
       val result = discovery.lookup("service2.domain.com", 100.millis).futureValue
       result.serviceName shouldEqual "service2.domain.com"
-      result.addresses shouldEqual immutable.Seq.empty
+      result.addresses shouldEqual Seq.empty
     }
     "return no resolved targets if not in config" in {
       val result = discovery.lookup("dontexist", 100.millis).futureValue
       result.serviceName shouldEqual "dontexist"
-      result.addresses shouldEqual immutable.Seq.empty
+      result.addresses shouldEqual Seq.empty
     }
   }
 }

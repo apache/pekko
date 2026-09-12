@@ -16,7 +16,6 @@ package org.apache.pekko.stream.impl
 import java.util.concurrent.atomic.AtomicBoolean
 
 import scala.annotation.nowarn
-import scala.collection.immutable
 import scala.concurrent.ExecutionContextExecutor
 import scala.concurrent.duration._
 
@@ -208,7 +207,7 @@ private[pekko] class SubFusingActorMaterializerImpl(
       with NoSerializationVerificationNeeded
 
   final case class GetChildrenSnapshots(timeout: FiniteDuration)
-  final case class ChildrenSnapshots(seq: immutable.Seq[StreamSnapshot])
+  final case class ChildrenSnapshots(seq: Seq[StreamSnapshot])
       extends DeadLetterSuppression
       with NoSerializationVerificationNeeded
   private final case class CollectorCompleted(ref: ActorRef)

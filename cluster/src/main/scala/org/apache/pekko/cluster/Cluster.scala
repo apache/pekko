@@ -19,7 +19,6 @@ import java.util.concurrent.ThreadFactory
 import java.util.concurrent.atomic.AtomicBoolean
 
 import scala.annotation.varargs
-import scala.collection.immutable
 import scala.concurrent.{ Await, ExecutionContext }
 import scala.concurrent.Future
 import scala.concurrent.duration._
@@ -184,8 +183,7 @@ class Cluster(val system: ExtendedActorSystem) extends Extension {
       system.dynamicAccess
         .createInstanceFor[Scheduler](
           system.settings.SchedulerClass,
-          immutable
-            .Seq(classOf[Config] -> cfg, classOf[LoggingAdapter] -> log, classOf[ThreadFactory] -> threadFactory))
+          Seq(classOf[Config] -> cfg, classOf[LoggingAdapter] -> log, classOf[ThreadFactory] -> threadFactory))
         .get
     } else {
       // delegate to system.scheduler, but don't close over system
@@ -357,7 +355,7 @@ class Cluster(val system: ExtendedActorSystem) extends Extension {
    * When it has successfully joined it must be restarted to be able to join another
    * cluster or to join the same cluster again.
    */
-  def joinSeedNodes(seedNodes: immutable.Seq[Address]): Unit = {
+  def joinSeedNodes(seedNodes: Seq[Address]): Unit = {
     seedNodes.foreach(_.checkHostCharacters())
     clusterCore ! InternalClusterAction.JoinSeedNodes(seedNodes.toVector.map(fillLocal))
   }

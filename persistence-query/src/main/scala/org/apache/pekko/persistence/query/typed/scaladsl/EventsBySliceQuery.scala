@@ -13,8 +13,6 @@
 
 package org.apache.pekko.persistence.query.typed.scaladsl
 
-import scala.collection.immutable
-
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.annotation.ApiMayChange
@@ -70,6 +68,6 @@ trait EventsBySliceQuery extends ReadJournal {
 
   def sliceForPersistenceId(persistenceId: String): Int
 
-  def sliceRanges(numberOfRanges: Int): immutable.Seq[Range]
+  def sliceRanges(numberOfRanges: Int): Seq[Range]
 
 }

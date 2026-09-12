@@ -544,7 +544,7 @@ object Source {
       fanInStrategy: function.Function[java.lang.Integer, ? <: Graph[UniformFanInShape[T, U], NotUsed]])
       : Source[U, NotUsed] = {
     import scala.jdk.CollectionConverters._
-    val seq = if (rest ne null) rest.asScala.map(_.asScala).toSeq else immutable.Seq()
+    val seq = if (rest ne null) rest.asScala.map(_.asScala).toSeq else Seq()
     new Source(scaladsl.Source.combine(first.asScala, second.asScala, seq: _*)(num => fanInStrategy.apply(num)))
   }
 
@@ -574,7 +574,7 @@ object Source {
       case source: Source[T @unchecked, M @unchecked] => source.asScala
       case other                                      => other
     }
-    else immutable.Seq()
+    else Seq()
     new Source(scaladsl.Source.combine(seq)(size => fanInStrategy(size)).mapMaterializedValue(_.asJava))
   }
 
@@ -583,7 +583,7 @@ object Source {
    */
   def zipN[T](@Nullable sources: java.util.List[Source[T, ? <: Any]]): Source[java.util.List[T], NotUsed] = {
     import scala.jdk.CollectionConverters._
-    val seq = if (sources ne null) sources.asScala.map(_.asScala).toSeq else immutable.Seq()
+    val seq = if (sources ne null) sources.asScala.map(_.asScala).toSeq else Seq()
     new Source(scaladsl.Source.zipN(seq).map(_.asJava))
   }
 
@@ -600,7 +600,7 @@ object Source {
       zipper: function.Function[java.util.List[T], O],
       @Nullable sources: java.util.List[Source[T, ? <: Any]]): Source[O, NotUsed] = {
     import scala.jdk.CollectionConverters._
-    val seq = if (sources ne null) sources.asScala.map(_.asScala).toSeq else immutable.Seq()
+    val seq = if (sources ne null) sources.asScala.map(_.asScala).toSeq else Seq()
     new Source(scaladsl.Source.zipWithN[T, O](seq => zipper.apply(seq.asJava))(seq))
   }
 
@@ -865,7 +865,7 @@ object Source {
       if (sourcesAndPriorities ne null)
         sourcesAndPriorities.asScala.map(pair => (pair.first.asScala, pair.second.intValue())).toSeq
       else
-        immutable.Seq()
+        Seq()
     new Source(scaladsl.Source.mergePrioritizedN(seq, eagerComplete))
   }
 }
@@ -1694,7 +1694,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
       case source: Source[Out @unchecked, ?] => source.asScala
       case other                             => other
     }
-    else immutable.Seq()
+    else Seq()
     new Source(delegate.interleaveAll(seq, segmentSize, eagerClose))
   }
 
@@ -1775,7 +1775,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
       case source: Source[Out @unchecked, ?] => source.asScala
       case other                             => other
     }
-    else immutable.Seq()
+    else Seq()
     new Source(delegate.mergeAll(seq, eagerComplete))
   }
 

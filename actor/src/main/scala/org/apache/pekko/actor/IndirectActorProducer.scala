@@ -14,7 +14,6 @@
 package org.apache.pekko.actor
 
 import scala.annotation.nowarn
-import scala.collection.immutable
 
 import org.apache.pekko
 import pekko.japi.function.Creator
@@ -52,7 +51,7 @@ private[pekko] object IndirectActorProducer {
   val CreatorConsumerClass = classOf[CreatorConsumer]
   val TypedCreatorFunctionConsumerClass = classOf[TypedCreatorFunctionConsumer]
   @nowarn
-  def apply(clazz: Class[?], args: immutable.Seq[Any]): IndirectActorProducer = {
+  def apply(clazz: Class[?], args: Seq[Any]): IndirectActorProducer = {
     if (classOf[IndirectActorProducer].isAssignableFrom(clazz)) {
       def get1stArg[T]: T = args.head.asInstanceOf[T]
       def get2ndArg[T]: T = args.tail.head.asInstanceOf[T]
@@ -103,7 +102,7 @@ private[pekko] class TypedCreatorFunctionConsumer(clz: Class[? <: Actor], creato
 /**
  * INTERNAL API
  */
-private[pekko] class ArgsReflectConstructor(clz: Class[? <: Actor], args: immutable.Seq[Any])
+private[pekko] class ArgsReflectConstructor(clz: Class[? <: Actor], args: Seq[Any])
     extends IndirectActorProducer {
   private val constructor = Reflect.constructorInvoker(Reflect.findConstructor(clz, args))
   private val arguments = Reflect.argumentArray(args)

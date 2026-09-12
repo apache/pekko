@@ -15,7 +15,6 @@ package org.apache.pekko.actor.testkit.typed.javadsl
 
 import java.util.concurrent.ThreadLocalRandom
 
-import scala.collection.immutable
 import scala.jdk.CollectionConverters._
 
 import org.apache.pekko
@@ -71,7 +70,7 @@ abstract class TestInbox[T] {
    */
   def getAllReceived(): java.util.List[T] = internalReceiveAll().asJava
 
-  protected def internalReceiveAll(): immutable.Seq[T]
+  protected def internalReceiveAll(): Seq[T]
 
   def hasMessages: Boolean
 

@@ -18,7 +18,6 @@ import java.util.concurrent.{ CompletableFuture, CompletionStage }
 import java.util.stream.Collector
 
 import scala.annotation.unchecked.uncheckedVariance
-import scala.collection.immutable
 import scala.concurrent.ExecutionContext
 import scala.jdk.FutureConverters._
 import scala.jdk.OptionConverters._
@@ -441,7 +440,7 @@ object Sink {
       fanOutStrategy: function.Function[java.lang.Integer, Graph[UniformFanOutShape[T, U], NotUsed]])
       : Sink[T, NotUsed] = {
     import scala.jdk.CollectionConverters._
-    val seq = if (rest ne null) rest.asScala.map(_.asScala).toSeq else immutable.Seq()
+    val seq = if (rest ne null) rest.asScala.map(_.asScala).toSeq else Seq()
     new Sink(scaladsl.Sink.combine(output1.asScala, output2.asScala, seq: _*)(num => fanOutStrategy.apply(num)))
   }
 
@@ -472,7 +471,7 @@ object Sink {
       case sink: Sink[U @unchecked, M @unchecked] => sink.asScala
       case other                                  => other
     }
-    else immutable.Seq()
+    else Seq()
     import scala.jdk.CollectionConverters._
     new Sink(scaladsl.Sink.combine(seq)(size => fanOutStrategy(size)).mapMaterializedValue(_.asJava))
   }

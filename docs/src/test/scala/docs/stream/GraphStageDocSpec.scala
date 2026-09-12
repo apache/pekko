@@ -522,7 +522,7 @@ class GraphStageDocSpec extends PekkoSpec {
               override def onUpstreamFinish(): Unit = {
                 if (buffer.nonEmpty) {
                   // emit the rest if possible
-                  emitMultiple(out, buffer.toIterator)
+                  emitMultiple(out, buffer.iterator)
                 }
                 completeStage()
               }

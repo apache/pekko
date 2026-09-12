@@ -37,7 +37,7 @@ class GraphMergeSortedSpec extends TwoStreamsSetup with ScalaCheckPropertyChecks
   }
 
   implicit def noShrink[T]: Shrink[T] =
-    Shrink[T](_ => Stream.empty) // do not shrink failures, it only destroys evidence
+    Shrink.withLazyList[T](_ => LazyList.empty) // do not shrink failures, it only destroys evidence
 
   "MergeSorted" must {
 

@@ -14,7 +14,6 @@
 package org.apache.pekko.actor
 
 import scala.annotation.varargs
-import scala.collection.immutable
 import scala.reflect.ClassTag
 
 import org.apache.pekko
@@ -121,7 +120,7 @@ object Props extends AbstractProps {
  * }}}
  */
 @SerialVersionUID(2L)
-final case class Props(deploy: Deploy, clazz: Class[?], args: immutable.Seq[Any]) {
+final case class Props(deploy: Deploy, clazz: Class[?], args: Seq[Any]) {
 
   Props.validate(clazz)
 

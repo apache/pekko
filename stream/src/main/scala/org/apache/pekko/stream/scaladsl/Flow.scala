@@ -1837,7 +1837,7 @@ trait FlowOps[+Out, +Mat] {
    *
    * '''Cancels when''' downstream cancels
    */
-  def grouped(n: Int): Repr[immutable.Seq[Out]] =
+  def grouped(n: Int): Repr[Seq[Out]] =
     via(GroupedWeighted[Out](n, ConstantFun.oneLong).withAttributes(DefaultAttributes.grouped))
 
   /**
@@ -1856,7 +1856,7 @@ trait FlowOps[+Out, +Mat] {
    *
    * '''Cancels when''' downstream cancels
    */
-  def groupedWeighted(minWeight: Long)(costFn: Out => Long): Repr[immutable.Seq[Out]] =
+  def groupedWeighted(minWeight: Long)(costFn: Out => Long): Repr[Seq[Out]] =
     via(GroupedWeighted[Out](minWeight, costFn))
 
   /**
@@ -1878,7 +1878,7 @@ trait FlowOps[+Out, +Mat] {
    *
    * @since 1.2.0
    */
-  def groupedAdjacentBy[T](f: Out => T): Repr[immutable.Seq[Out]] =
+  def groupedAdjacentBy[T](f: Out => T): Repr[Seq[Out]] =
     via(GroupedAdjacentByWeighted(f, Long.MaxValue, ConstantFun.oneLong))
 
   /**
@@ -1901,7 +1901,7 @@ trait FlowOps[+Out, +Mat] {
    *
    * @since 1.2.0
    */
-  def groupedAdjacentByWeighted[T](f: Out => T, maxWeight: Long)(costFn: Out => Long): Repr[immutable.Seq[Out]] =
+  def groupedAdjacentByWeighted[T](f: Out => T, maxWeight: Long)(costFn: Out => Long): Repr[Seq[Out]] =
     via(GroupedAdjacentByWeighted(f, maxWeight, costFn))
 
   /**
@@ -1968,7 +1968,7 @@ trait FlowOps[+Out, +Mat] {
    *
    * '''Cancels when''' downstream cancels
    */
-  def sliding(n: Int, step: Int = 1): Repr[immutable.Seq[Out]] = via(Sliding(n, step))
+  def sliding(n: Int, step: Int = 1): Repr[Seq[Out]] = via(Sliding(n, step))
 
   /**
    * Similar to `fold` but is not a terminal operation,
@@ -2205,7 +2205,7 @@ trait FlowOps[+Out, +Mat] {
    *
    * '''Cancels when''' downstream completes
    */
-  def groupedWithin(n: Int, d: FiniteDuration): Repr[immutable.Seq[Out]] =
+  def groupedWithin(n: Int, d: FiniteDuration): Repr[Seq[Out]] =
     via(
       new GroupedWeightedWithin[Out](Long.MaxValue, n, ConstantFun.zeroLong, d)
         .withAttributes(DefaultAttributes.groupedWithin))
@@ -2232,7 +2232,7 @@ trait FlowOps[+Out, +Mat] {
    *
    * '''Cancels when''' downstream completes
    */
-  def groupedWeightedWithin(maxWeight: Long, d: FiniteDuration)(costFn: Out => Long): Repr[immutable.Seq[Out]] =
+  def groupedWeightedWithin(maxWeight: Long, d: FiniteDuration)(costFn: Out => Long): Repr[Seq[Out]] =
     via(new GroupedWeightedWithin[Out](maxWeight, Int.MaxValue, costFn, d))
 
   /**
@@ -2259,7 +2259,7 @@ trait FlowOps[+Out, +Mat] {
    * '''Cancels when''' downstream completes
    */
   def groupedWeightedWithin(maxWeight: Long, maxNumber: Int, d: FiniteDuration)(
-      costFn: Out => Long): Repr[immutable.Seq[Out]] =
+      costFn: Out => Long): Repr[Seq[Out]] =
     via(new GroupedWeightedWithin[Out](maxWeight, maxNumber, costFn, d))
 
   /**
@@ -2636,7 +2636,7 @@ trait FlowOps[+Out, +Mat] {
    *
    * '''Cancels when''' downstream cancels or substream cancels
    */
-  def prefixAndTail[U >: Out](n: Int): Repr[(immutable.Seq[Out], Source[U, NotUsed])] =
+  def prefixAndTail[U >: Out](n: Int): Repr[(Seq[Out], Source[U, NotUsed])] =
     via(new PrefixAndTail[Out](n))
 
   /**
@@ -2661,7 +2661,7 @@ trait FlowOps[+Out, +Mat] {
    *  @param n the number of elements to accumulate before materializing the downstream flow.
    *  @param f a function that produces the downstream flow based on the upstream's prefix.
    */
-  def flatMapPrefix[Out2, Mat2](n: Int)(f: immutable.Seq[Out] => Flow[Out, Out2, Mat2]): Repr[Out2] = {
+  def flatMapPrefix[Out2, Mat2](n: Int)(f: Seq[Out] => Flow[Out, Out2, Mat2]): Repr[Out2] = {
     via(new FlatMapPrefix(n, f))
   }
 
@@ -3469,7 +3469,7 @@ trait FlowOps[+Out, +Mat] {
    * '''Cancels when''' downstream cancels
    */
   def interleaveAll[U >: Out](
-      those: immutable.Seq[Graph[SourceShape[U], ?]],
+      those: Seq[Graph[SourceShape[U], ?]],
       segmentSize: Int,
       eagerClose: Boolean): Repr[U] = those match {
     case those if those.isEmpty => this.asInstanceOf[Repr[U]]
@@ -3519,7 +3519,7 @@ trait FlowOps[+Out, +Mat] {
    *
    * '''Cancels when''' downstream cancels
    */
-  def mergeAll[U >: Out](those: immutable.Seq[Graph[SourceShape[U], ?]], eagerComplete: Boolean): Repr[U] =
+  def mergeAll[U >: Out](those: Seq[Graph[SourceShape[U], ?]], eagerComplete: Boolean): Repr[U] =
     those match {
       case those if those.isEmpty => this.asInstanceOf[Repr[U]]
       case _                      =>
@@ -3542,12 +3542,12 @@ trait FlowOps[+Out, +Mat] {
    *
    * '''Completes when''' all upstreams complete (eagerClose=false) or one upstream completes (eagerClose=true)
    */
-  def mergeLatest[U >: Out, M](that: Graph[SourceShape[U], M], eagerComplete: Boolean = false): Repr[immutable.Seq[U]] =
+  def mergeLatest[U >: Out, M](that: Graph[SourceShape[U], M], eagerComplete: Boolean = false): Repr[Seq[U]] =
     via(mergeLatestGraph(that, eagerComplete))
 
   protected def mergeLatestGraph[U >: Out, M](
       that: Graph[SourceShape[U], M],
-      eagerComplete: Boolean): Graph[FlowShape[Out @uncheckedVariance, immutable.Seq[U]], M] =
+      eagerComplete: Boolean): Graph[FlowShape[Out @uncheckedVariance, Seq[U]], M] =
     GraphDSL.createGraph(that) { implicit b => r =>
       val merge = b.add(MergeLatest[U](2, eagerComplete))
       r ~> merge.in(1)
@@ -4168,7 +4168,7 @@ trait FlowOpsMat[+Out, +Mat] extends FlowOps[Out, Mat] {
    * mat version of [[#flatMapPrefix]], this method gives access to a future materialized value of the downstream flow.
    * see [[#flatMapPrefix]] for details.
    */
-  def flatMapPrefixMat[Out2, Mat2, Mat3](n: Int)(f: immutable.Seq[Out] => Flow[Out, Out2, Mat2])(
+  def flatMapPrefixMat[Out2, Mat2, Mat3](n: Int)(f: Seq[Out] => Flow[Out, Out2, Mat2])(
       matF: (Mat, Future[Mat2]) => Mat3): ReprMat[Out2, Mat3] = {
     viaMat(new FlatMapPrefix(n, f))(matF)
   }
@@ -4320,7 +4320,7 @@ trait FlowOpsMat[+Out, +Mat] extends FlowOps[Out, Mat] {
    * where appropriate instead of manually writing functions that pass through one of the values.
    */
   def mergeLatestMat[U >: Out, Mat2, Mat3](that: Graph[SourceShape[U], Mat2], eagerClose: Boolean)(
-      matF: (Mat, Mat2) => Mat3): ReprMat[immutable.Seq[U], Mat3] =
+      matF: (Mat, Mat2) => Mat3): ReprMat[Seq[U], Mat3] =
     viaMat(mergeLatestGraph(that, eagerClose))(matF)
 
   /**

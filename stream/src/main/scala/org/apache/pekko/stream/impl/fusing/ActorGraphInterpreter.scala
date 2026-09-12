@@ -18,7 +18,6 @@ import java.util.concurrent.TimeoutException
 import java.util.concurrent.atomic.AtomicReference
 
 import scala.annotation.tailrec
-import scala.collection.immutable
 import scala.concurrent.Promise
 import scala.util.control.NonFatal
 
@@ -367,7 +366,7 @@ import org.reactivestreams.Subscription
     // SubscribePending message. The AtomicReference is set to null by the shutdown method, which is
     // called by the actor from postStop. Pending (unregistered) subscription attempts are denied by
     // the shutdown method. Subscription attempts after shutdown can be denied immediately.
-    private val pendingSubscribers = new AtomicReference[immutable.Seq[Subscriber[Any]]](Nil)
+    private val pendingSubscribers = new AtomicReference[Seq[Subscriber[Any]]](Nil)
 
     protected val wakeUpMsg: Any = new SubscribePending(boundary)
 
@@ -389,7 +388,7 @@ import org.reactivestreams.Subscription
       doSubscribe()
     }
 
-    def takePendingSubscribers(): immutable.Seq[Subscriber[Any]] = {
+    def takePendingSubscribers(): Seq[Subscriber[Any]] = {
       val pending = pendingSubscribers.getAndSet(Nil)
       if (pending eq null) Nil else pending.reverse
     }

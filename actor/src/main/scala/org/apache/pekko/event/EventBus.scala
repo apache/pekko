@@ -195,12 +195,12 @@ trait SubchannelClassification { this: EventBus =>
     //       since it is only called from new functionality in EventStreamUnsubscriber
     cache.values.exists { _ contains subscriber }
 
-  private def removeFromCache(changes: immutable.Seq[(Classifier, Set[Subscriber])]): Unit =
+  private def removeFromCache(changes: Seq[(Classifier, Set[Subscriber])]): Unit =
     cache = changes.foldLeft(cache) {
       case (m, (c, cs)) => m.updated(c, m.getOrElse(c, Set.empty[Subscriber]).diff(cs))
     }
 
-  private def addToCache(changes: immutable.Seq[(Classifier, Set[Subscriber])]): Unit =
+  private def addToCache(changes: Seq[(Classifier, Set[Subscriber])]): Unit =
     cache = changes.foldLeft(cache) {
       case (m, (c, cs)) => m.updated(c, m.getOrElse(c, Set.empty[Subscriber]).union(cs))
     }

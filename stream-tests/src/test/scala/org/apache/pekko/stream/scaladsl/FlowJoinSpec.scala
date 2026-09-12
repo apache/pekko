@@ -13,8 +13,6 @@
 
 package org.apache.pekko.stream.scaladsl
 
-import scala.collection.immutable
-
 import org.apache.pekko
 import pekko.stream.FlowShape
 import pekko.stream.OverflowStrategy
@@ -98,7 +96,7 @@ class FlowJoinSpec extends StreamSpec("""
     }
 
     "allow for zip cycle" in {
-      val source = Source(immutable.Seq("traveler1", "traveler2"))
+      val source = Source(Seq("traveler1", "traveler2"))
 
       val flow = Flow.fromGraph(GraphDSL.createGraph(TestSink[(String, String)]()) { implicit b => sink =>
         import GraphDSL.Implicits._

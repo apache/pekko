@@ -246,7 +246,7 @@ object SupervisorStrategy extends SupervisorStrategyLowPriorityImplicits {
    * Implicit conversion from `Seq` of Throwables to a `Decider`.
    * This maps the given Throwables to restarts, otherwise escalates.
    */
-  implicit def seqThrowable2Decider(trapExit: immutable.Seq[Class[? <: Throwable]]): Decider = makeDecider(trapExit)
+  implicit def seqThrowable2Decider(trapExit: Seq[Class[? <: Throwable]]): Decider = makeDecider(trapExit)
 
   type Decider = PartialFunction[Throwable, Directive]
   type JDecider = pekko.japi.function.Function[Throwable, Directive]
@@ -256,7 +256,7 @@ object SupervisorStrategy extends SupervisorStrategyLowPriorityImplicits {
    * Decider builder which just checks whether one of
    * the given Throwables matches the cause and restarts, otherwise escalates.
    */
-  def makeDecider(trapExit: immutable.Seq[Class[? <: Throwable]]): Decider = {
+  def makeDecider(trapExit: Seq[Class[? <: Throwable]]): Decider = {
     case x => if (trapExit.exists(_.isInstance(x))) Restart else Escalate
   }
 
@@ -289,7 +289,7 @@ object SupervisorStrategy extends SupervisorStrategyLowPriorityImplicits {
    *
    * INTERNAL API
    */
-  private[pekko] def sort(in: Iterable[CauseDirective]): immutable.Seq[CauseDirective] =
+  private[pekko] def sort(in: Iterable[CauseDirective]): Seq[CauseDirective] =
     in.foldLeft(new ArrayBuffer[CauseDirective](in.size)) { (buf, ca) =>
       buf.indexWhere(_._1.isAssignableFrom(ca._1)) match {
         case -1 => buf.append(ca)
@@ -461,7 +461,7 @@ abstract class SupervisorStrategy {
  *   if the limit is exceeded the child actor is stopped
  * @param withinTimeRange duration of the time window for maxNrOfRetries, Duration.Inf means no window
  * @param decider mapping from Throwable to [[pekko.actor.SupervisorStrategy.Directive]], you can also use a
- *   [[scala.collection.immutable.Seq]] of Throwables which maps the given Throwables to restarts, otherwise escalates.
+ *   [[Seq]] of Throwables which maps the given Throwables to restarts, otherwise escalates.
  * @param loggingEnabled the strategy logs the failure if this is enabled (true), by default it is enabled
  */
 case class AllForOneStrategy(
@@ -576,7 +576,7 @@ case class AllForOneStrategy(
  *  if the duration is infinite. If the limit is exceeded the child actor is stopped
  * @param withinTimeRange duration of the time window for maxNrOfRetries, Duration.Inf means no window
  * @param decider mapping from Throwable to [[pekko.actor.SupervisorStrategy.Directive]], you can also use a
- *   [[scala.collection.immutable.Seq]] of Throwables which maps the given Throwables to restarts, otherwise escalates.
+ *   [[Seq]] of Throwables which maps the given Throwables to restarts, otherwise escalates.
  * @param loggingEnabled the strategy logs the failure if this is enabled (true), by default it is enabled
  */
 case class OneForOneStrategy(

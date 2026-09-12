@@ -15,8 +15,6 @@ package org.apache.pekko.persistence.testkit.internal
 
 import java.util.concurrent.atomic.AtomicReference
 
-import scala.collection.immutable
-
 import org.apache.pekko
 import pekko.annotation.InternalApi
 import pekko.persistence.testkit.ProcessingPolicy
@@ -94,7 +92,7 @@ sealed trait InMemStorage[K, R] extends InternalReprSupport[R] {
   /**
    * Adds elements ordered by seqnum, sets new seqnum as max(old, max(newElemsSeqNums)))
    */
-  def add(key: K, elems: immutable.Seq[R]): Unit =
+  def add(key: K, elems: Seq[R]): Unit =
     updateOrSetNew(key, v => v ++ elems)
 
   /**
@@ -141,7 +139,7 @@ sealed trait InMemStorage[K, R] extends InternalReprSupport[R] {
   /**
    * Reads elems within the range of seqnums.
    */
-  def read(key: K, fromInclusive: Long, toInclusive: Long, maxNumber: Long): immutable.Seq[R] = lock.synchronized {
+  def read(key: K, fromInclusive: Long, toInclusive: Long, maxNumber: Long): Seq[R] = lock.synchronized {
     read(key)
       .getOrElse(Vector.empty)
       .dropWhile(reprToSeqNum(_) < fromInclusive)
@@ -167,9 +165,9 @@ sealed trait InMemStorage[K, R] extends InternalReprSupport[R] {
     eventsMap.keys.foreach(removePreservingSeqNumber)
   }
 
-  def keys(): immutable.Seq[K] = eventsMap.keys.toList
+  def keys(): Seq[K] = eventsMap.keys.toList
 
-  private def getLastSeqNumber(elems: immutable.Seq[R]): Long =
+  private def getLastSeqNumber(elems: Seq[R]): Long =
     elems.lastOption.map(reprToSeqNum).getOrElse(0L)
 
 }

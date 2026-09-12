@@ -14,7 +14,6 @@
 package org.apache.pekko.stream
 
 import scala.annotation.unchecked.uncheckedVariance
-import scala.collection.immutable
 import scala.jdk.CollectionConverters._
 
 import org.apache.pekko
@@ -169,7 +168,7 @@ final class Outlet[T] private (val s: String) extends OutPort {
    * `inlets` and `outlets` can be `Vector` or `List` so this method
    * checks the size of 1 in an optimized way.
    */
-  def hasOnePort(ports: immutable.Seq[?]): Boolean = {
+  def hasOnePort(ports: Seq[?]): Boolean = {
     ports.nonEmpty &&
     (ports match {
       case l: List[?] => l.tail.isEmpty // assuming List is most common
@@ -189,12 +188,12 @@ abstract class Shape {
   /**
    * Scala API: get a list of all input ports
    */
-  def inlets: immutable.Seq[Inlet[?]]
+  def inlets: Seq[Inlet[?]]
 
   /**
    * Scala API: get a list of all output ports
    */
-  def outlets: immutable.Seq[Outlet[?]]
+  def outlets: Seq[Outlet[?]]
 
   /**
    * Create a copy of this Shape object, returning the same type as the
@@ -255,8 +254,8 @@ abstract class AbstractShape extends Shape {
    */
   def allOutlets: java.util.List[Outlet[?]]
 
-  final override lazy val inlets: immutable.Seq[Inlet[?]] = allInlets.asScala.toList
-  final override lazy val outlets: immutable.Seq[Outlet[?]] = allOutlets.asScala.toList
+  final override lazy val inlets: Seq[Inlet[?]] = allInlets.asScala.toList
+  final override lazy val outlets: Seq[Outlet[?]] = allOutlets.asScala.toList
 
   final override def getInlets = allInlets
   final override def getOutlets = allOutlets
@@ -269,8 +268,8 @@ abstract class AbstractShape extends Shape {
  */
 @DoNotInherit sealed abstract class ClosedShape extends Shape
 object ClosedShape extends ClosedShape {
-  override val inlets: immutable.Seq[Inlet[?]] = EmptyImmutableSeq
-  override val outlets: immutable.Seq[Outlet[?]] = EmptyImmutableSeq
+  override val inlets: Seq[Inlet[?]] = EmptyImmutableSeq
+  override val outlets: Seq[Outlet[?]] = EmptyImmutableSeq
   override def deepCopy() = this
 
   /**
@@ -287,7 +286,7 @@ object ClosedShape extends ClosedShape {
  * implementation of the [[Graph]] builders and typically replaced by a more
  * meaningful type of Shape when the building is finished.
  */
-case class AmorphousShape(inlets: immutable.Seq[Inlet[?]], outlets: immutable.Seq[Outlet[?]]) extends Shape {
+case class AmorphousShape(inlets: Seq[Inlet[?]], outlets: Seq[Outlet[?]]) extends Shape {
   override def deepCopy() = AmorphousShape(inlets.map(_.carbonCopy()), outlets.map(_.carbonCopy()))
 }
 
@@ -296,8 +295,8 @@ case class AmorphousShape(inlets: immutable.Seq[Inlet[?]], outlets: immutable.Se
  * of data.
  */
 final case class SourceShape[+T](out: Outlet[T @uncheckedVariance]) extends Shape {
-  override val inlets: immutable.Seq[Inlet[?]] = EmptyImmutableSeq
-  override val outlets: immutable.Seq[Outlet[?]] = out :: Nil
+  override val inlets: Seq[Inlet[?]] = EmptyImmutableSeq
+  override val outlets: Seq[Outlet[?]] = out :: Nil
 
   override def deepCopy(): SourceShape[T] = SourceShape(out.carbonCopy())
 }
@@ -314,8 +313,8 @@ object SourceShape {
  * course).
  */
 final case class FlowShape[-I, +O](in: Inlet[I @uncheckedVariance], out: Outlet[O @uncheckedVariance]) extends Shape {
-  override val inlets: immutable.Seq[Inlet[?]] = in :: Nil
-  override val outlets: immutable.Seq[Outlet[?]] = out :: Nil
+  override val inlets: Seq[Inlet[?]] = in :: Nil
+  override val outlets: Seq[Outlet[?]] = out :: Nil
 
   override def deepCopy(): FlowShape[I, O] = FlowShape(in.carbonCopy(), out.carbonCopy())
 }
@@ -330,8 +329,8 @@ object FlowShape {
  * A Sink [[Shape]] has exactly one input and no outputs, it models a data sink.
  */
 final case class SinkShape[-T](in: Inlet[T @uncheckedVariance]) extends Shape {
-  override val inlets: immutable.Seq[Inlet[?]] = in :: Nil
-  override val outlets: immutable.Seq[Outlet[?]] = EmptyImmutableSeq
+  override val inlets: Seq[Inlet[?]] = in :: Nil
+  override val outlets: Seq[Outlet[?]] = EmptyImmutableSeq
 
   override def deepCopy(): SinkShape[T] = SinkShape(in.carbonCopy())
 }
@@ -362,8 +361,8 @@ final case class BidiShape[-In1, +Out1, -In2, +Out2](
     out2: Outlet[Out2 @uncheckedVariance])
     extends Shape {
   // #implementation-details-elided
-  override val inlets: immutable.Seq[Inlet[?]] = in1 :: in2 :: Nil
-  override val outlets: immutable.Seq[Outlet[?]] = out1 :: out2 :: Nil
+  override val inlets: Seq[Inlet[?]] = in1 :: in2 :: Nil
+  override val outlets: Seq[Outlet[?]] = out1 :: out2 :: Nil
 
   /**
    * Java API for creating from a pair of unidirectional flows.

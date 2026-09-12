@@ -1086,7 +1086,7 @@ private[pekko] class ShardRegion(
    *
    * Logs a warning if any of the group timed out.
    *
-   * To check subset unresponsive: {{{ queryShards[T](shards.filterKeys(u.contains), shardQuery) }}}
+   * To check subset unresponsive: {{{ queryShards[T](shards.filter { case (id, _) => u.contains(id) }, shardQuery) }}}
    */
   def queryShards[T: ClassTag](shards: Map[ShardId, ActorRef], msg: Any): Future[ShardsQueryResult[T]] = {
     implicit val timeout: Timeout = settings.shardRegionQueryTimeout

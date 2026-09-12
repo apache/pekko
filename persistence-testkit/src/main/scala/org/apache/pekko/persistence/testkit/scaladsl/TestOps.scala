@@ -220,25 +220,25 @@ private[testkit] trait ExpectOps[U] {
    * Receive for `max` time next `n` events/snapshots that have been persisted in the storage.
    */
   def receivePersisted[A](persistenceId: String, n: Int, max: FiniteDuration)(
-      implicit t: ClassTag[A]): immutable.Seq[A] =
+      implicit t: ClassTag[A]): Seq[A] =
     receivePersisted(persistenceId, n, t.runtimeClass.asInstanceOf[Class[A]], max)
 
   /**
    * Receive next `n` events/snapshots that have been persisted in the storage.
    */
-  def receivePersisted[A](persistenceId: String, n: Int)(implicit t: ClassTag[A]): immutable.Seq[A] =
+  def receivePersisted[A](persistenceId: String, n: Int)(implicit t: ClassTag[A]): Seq[A] =
     receivePersisted(persistenceId, n, t.runtimeClass.asInstanceOf[Class[A]], maxTimeout)
 
   /**
    * Receive next `n` events/snapshots that have been persisted in the storage.
    */
-  def receivePersisted[A](persistenceId: String, n: Int, cla: Class[A]): immutable.Seq[A] =
+  def receivePersisted[A](persistenceId: String, n: Int, cla: Class[A]): Seq[A] =
     receivePersisted(persistenceId, n, cla, maxTimeout)
 
   /**
    * Receive for `max` time next `n` events/snapshots that have been persisted in the storage.
    */
-  def receivePersisted[A](persistenceId: String, n: Int, cla: Class[A], max: FiniteDuration): immutable.Seq[A] = {
+  def receivePersisted[A](persistenceId: String, n: Int, cla: Class[A], max: FiniteDuration): Seq[A] = {
     val nextInd = nextIndex(persistenceId)
     val bt = BoxedType(cla)
     val res =
@@ -259,7 +259,7 @@ private[testkit] trait ExpectOps[U] {
         interval = pollInterval)
 
     setIndex(persistenceId, nextInd + n)
-    res.asInstanceOf[immutable.Seq[A]]
+    res.asInstanceOf[Seq[A]]
   }
 
 }
