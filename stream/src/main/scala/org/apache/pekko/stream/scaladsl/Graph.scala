@@ -1258,7 +1258,7 @@ object ZipN {
  *
  * '''Cancels when''' downstream cancels
  */
-final class ZipN[A](n: Int) extends ZipWithN[A, immutable.Seq[A]](ConstantFun.scalaIdentityFunction)(n) {
+final class ZipN[A](n: Int) extends ZipWithN[A, Seq[A]](ConstantFun.scalaIdentityFunction)(n) {
   override def initialAttributes = DefaultAttributes.zipN
   override def toString = "ZipN"
 }
@@ -1268,7 +1268,7 @@ object ZipWithN {
   /**
    * Create a new `ZipWithN`.
    */
-  def apply[A, O](zipper: immutable.Seq[A] => O)(n: Int) = new ZipWithN[A, O](zipper)(n)
+  def apply[A, O](zipper: Seq[A] => O)(n: Int) = new ZipWithN[A, O](zipper)(n)
 }
 
 /**
@@ -1290,7 +1290,7 @@ object ZipWithN {
  * the stream fails. If the supervision decision is [[pekko.stream.Supervision.Resume]] or
  * [[pekko.stream.Supervision.Restart]] the zipped element is dropped and the stream continues.
  */
-class ZipWithN[A, O](zipper: immutable.Seq[A] => O)(n: Int) extends GraphStage[UniformFanInShape[A, O]] {
+class ZipWithN[A, O](zipper: Seq[A] => O)(n: Int) extends GraphStage[UniformFanInShape[A, O]] {
   override def initialAttributes = DefaultAttributes.zipWithN
   override val shape = new UniformFanInShape[A, O](n)
   def out: Outlet[O] = shape.out
@@ -1686,15 +1686,15 @@ object GraphDSL extends GraphApply {
    * Creates a new [[Graph]] by importing the given graph list `graphs` and passing their [[Shape]]s
    * along with the [[GraphDSL.Builder]] to the given create function.
    */
-  def create[S <: Shape, IS <: Shape, Mat](graphs: immutable.Seq[Graph[IS, Mat]])(
-      buildBlock: GraphDSL.Builder[immutable.Seq[Mat]] => immutable.Seq[IS] => S): Graph[S, immutable.Seq[Mat]] = {
+  def create[S <: Shape, IS <: Shape, Mat](graphs: Seq[Graph[IS, Mat]])(
+      buildBlock: GraphDSL.Builder[Seq[Mat]] => Seq[IS] => S): Graph[S, Seq[Mat]] = {
     require(graphs.nonEmpty, "The input list must have one or more Graph elements")
     val builder = new GraphDSL.Builder
     val toList = (m1: Mat) => Seq(m1)
     val combine = (s: Seq[Mat], m2: Mat) => s :+ m2
     val sListH = builder.add(graphs.head, toList)
     val sListT = graphs.tail.map(g => builder.add(g, combine))
-    val s = buildBlock(builder)(immutable.Seq(sListH) ++ sListT)
+    val s = buildBlock(builder)(Seq(sListH) ++ sListT)
 
     new GenericGraph(s, builder.result(s))
   }

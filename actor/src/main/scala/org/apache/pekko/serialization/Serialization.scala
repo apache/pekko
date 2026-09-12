@@ -20,7 +20,6 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicReference
 
 import scala.annotation.tailrec
-import scala.collection.immutable
 import scala.collection.mutable.ArrayBuffer
 import scala.util.{ DynamicVariable, Failure, Try }
 import scala.util.Success
@@ -307,7 +306,7 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
   def serializerFor(clazz: Class[?]): Serializer =
     serializerMap.get(clazz) match {
       case null => // bindings are ordered from most specific to least specific
-        def unique(possibilities: immutable.Seq[(Class[?], Serializer)]): Boolean =
+        def unique(possibilities: Seq[(Class[?], Serializer)]): Boolean =
           possibilities.size == 1 || {
             val possibility = possibilities.head
             possibilities.forall(_._1.isAssignableFrom(possibility._1)) ||
@@ -318,7 +317,7 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
           bindings.filter {
             case (c, _) => c.isAssignableFrom(clazz)
           } match {
-            case immutable.Seq() =>
+            case Seq() =>
               throw new NotSerializableException(s"No configured serialization-bindings for class [${clazz.getName}]")
             case possibilities =>
               if (unique(possibilities))
@@ -432,7 +431,7 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
   /**
    * Programmatically defined serializers
    */
-  private val serializerDetails: immutable.Seq[SerializerDetails] =
+  private val serializerDetails: Seq[SerializerDetails] =
     (system.settings.setup.get[SerializationSetup] match {
       case None          => Vector.empty
       case Some(setting) => setting.createSerializers(system)
@@ -460,7 +459,7 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
    *  bindings is a Seq of tuple representing the mapping from Class to Serializer.
    *  It is primarily ordered by the most specific classes first, and secondly in the configured order.
    */
-  private[pekko] val bindings: immutable.Seq[ClassSerializer] = {
+  private[pekko] val bindings: Seq[ClassSerializer] = {
     val fromConfig = for {
       (className: String, alias: String) <- settings.SerializationBindings
       if alias != "none" && checkGoogleProtobuf(className)
@@ -508,7 +507,7 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
    * Sort so that subtypes always precede their supertypes, but without
    * obeying any order between unrelated subtypes (insert sort).
    */
-  private def sort(in: Iterable[ClassSerializer]): immutable.Seq[ClassSerializer] =
+  private def sort(in: Iterable[ClassSerializer]): Seq[ClassSerializer] =
     in
       .foldLeft(new ArrayBuffer[ClassSerializer](in.size)) { (buf, ca) =>
         buf.indexWhere(_._1.isAssignableFrom(ca._1)) match {
@@ -517,7 +516,7 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
         }
         buf
       }
-      .to(immutable.Seq)
+      .to(Seq)
 
   /**
    * serializerMap is a Map whose keys is the class that is serializable and values is the serializer

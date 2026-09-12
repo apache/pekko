@@ -16,7 +16,6 @@ package org.apache.pekko.stream.impl
 import java.util.concurrent.atomic.AtomicReference
 
 import scala.annotation.tailrec
-import scala.collection.immutable
 import scala.util.control.NoStackTrace
 
 import org.apache.pekko
@@ -58,7 +57,7 @@ import org.reactivestreams.Subscription
   // SubscribePending message. The AtomicReference is set to null by the shutdown method, which is
   // called by the actor from postStop. Pending (unregistered) subscription attempts are denied by
   // the shutdown method. Subscription attempts after shutdown can be denied immediately.
-  private val pendingSubscribers = new AtomicReference[immutable.Seq[Subscriber[? >: T]]](Nil)
+  private val pendingSubscribers = new AtomicReference[Seq[Subscriber[? >: T]]](Nil)
 
   protected val wakeUpMsg: Any = SubscribePending
 
@@ -79,7 +78,7 @@ import org.reactivestreams.Subscription
     doSubscribe()
   }
 
-  def takePendingSubscribers(): immutable.Seq[Subscriber[? >: T]] = {
+  def takePendingSubscribers(): Seq[Subscriber[? >: T]] = {
     val pending = pendingSubscribers.getAndSet(Nil)
     if (pending eq null) Nil else pending.reverse
   }

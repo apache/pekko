@@ -15,7 +15,6 @@ package org.apache.pekko.persistence.journal
 
 import java.nio.charset.StandardCharsets
 
-import scala.collection.immutable
 import scala.concurrent.duration._
 
 import org.apache.pekko
@@ -140,7 +139,7 @@ abstract class JournalPerfSpec(config: Config)
   def benchActor(replyAfter: Int): ActorRef =
     system.actorOf(Props(classOf[BenchActor], pid, testProbe.ref, replyAfter))
 
-  def feedAndExpectLast(actor: ActorRef, mode: String, cmnds: immutable.Seq[Int]): Unit = {
+  def feedAndExpectLast(actor: ActorRef, mode: String, cmnds: Seq[Int]): Unit = {
     cmnds.foreach { c =>
       actor ! Cmd(mode, c)
     }

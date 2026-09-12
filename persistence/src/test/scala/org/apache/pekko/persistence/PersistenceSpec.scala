@@ -16,7 +16,6 @@ package org.apache.pekko.persistence
 import java.io.File
 import java.util.concurrent.atomic.AtomicInteger
 
-import scala.collection.immutable
 import scala.reflect.ClassTag
 import scala.util.control.NoStackTrace
 
@@ -120,8 +119,8 @@ case object GetState
 trait PersistenceMatchers {
 
   /** Use this matcher to verify in-order execution of independent "streams" of events */
-  final class IndependentlyOrdered(prefixes: immutable.Seq[String]) extends Matcher[immutable.Seq[Any]] {
-    override def apply(_left: immutable.Seq[Any]) = {
+  final class IndependentlyOrdered(prefixes: Seq[String]) extends Matcher[Seq[Any]] {
+    override def apply(_left: Seq[Any]) = {
       val left = _left.map(_.toString)
       val mapped = left.groupBy(l => prefixes.indexWhere(p => l.startsWith(p))) - -1 // ignore other messages
       val results =

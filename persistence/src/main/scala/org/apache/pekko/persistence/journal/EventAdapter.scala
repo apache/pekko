@@ -14,7 +14,6 @@
 package org.apache.pekko.persistence.journal
 
 import scala.annotation.varargs
-import scala.collection.immutable
 
 import org.apache.pekko
 import pekko.annotation.DoNotInherit
@@ -98,7 +97,7 @@ trait ReadEventAdapter {
 
 /** Not for user extension */
 @DoNotInherit sealed abstract class EventSeq {
-  def events: immutable.Seq[Any]
+  def events: Seq[Any]
 }
 object EventSeq {
 
@@ -113,7 +112,7 @@ object EventSeq {
   final def apply(events: Any*): EventSeq = EventsSeq(events.toList)
 }
 final case class SingleEventSeq(event: Any) extends EventSeq { // TODO try to make it a value class, would save allocations
-  override val events: immutable.Seq[Any] = List(event)
+  override val events: Seq[Any] = List(event)
   override def toString = s"SingleEventSeq($event)"
 }
 
@@ -123,7 +122,7 @@ object EmptyEventSeq extends EmptyEventSeq {
   override def events = Nil
 }
 
-final case class EventsSeq[E](events: immutable.Seq[E]) extends EventSeq
+final case class EventsSeq[E](events: Seq[E]) extends EventSeq
 
 /** No-op model adapter which passes through the incoming events as-is. */
 case object IdentityEventAdapter extends EventAdapter {

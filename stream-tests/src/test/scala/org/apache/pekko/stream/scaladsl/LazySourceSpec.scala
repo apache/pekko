@@ -15,7 +15,6 @@ package org.apache.pekko.stream.scaladsl
 
 import java.util.concurrent.atomic.AtomicBoolean
 
-import scala.collection.immutable.Seq
 import scala.concurrent.Future
 import scala.concurrent.Promise
 

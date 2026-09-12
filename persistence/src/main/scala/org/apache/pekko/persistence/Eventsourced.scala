@@ -17,7 +17,6 @@ import java.util.UUID
 import java.util.concurrent.atomic.AtomicInteger
 
 import scala.annotation.nowarn
-import scala.collection.immutable
 import scala.concurrent.duration.FiniteDuration
 import scala.util.control.NonFatal
 
@@ -421,7 +420,7 @@ private[persistence] trait Eventsourced
    * Internal API
    */
   @InternalApi
-  final private[pekko] def internalPersistAll[A](events: immutable.Seq[A])(handler: A => Unit): Unit = {
+  final private[pekko] def internalPersistAll[A](events: Seq[A])(handler: A => Unit): Unit = {
     if (recoveryRunning)
       throw new IllegalStateException(
         "Cannot persist during replay. Events can be persisted when receiving RecoveryCompleted or later.")
@@ -469,7 +468,7 @@ private[persistence] trait Eventsourced
    * Internal API
    */
   @InternalApi
-  final private[pekko] def internalPersistAllAsync[A](events: immutable.Seq[A])(handler: A => Unit): Unit = {
+  final private[pekko] def internalPersistAllAsync[A](events: Seq[A])(handler: A => Unit): Unit = {
     if (recoveryRunning)
       throw new IllegalStateException(
         "Cannot persist during replay. Events can be persisted when receiving RecoveryCompleted or later.")

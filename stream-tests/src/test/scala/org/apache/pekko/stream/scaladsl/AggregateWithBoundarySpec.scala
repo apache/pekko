@@ -34,7 +34,7 @@ class AggregateWithBoundarySpec extends StreamSpec {
 
   "split aggregator by size" in {
 
-    val stream = collection.immutable.Seq(1, 2, 3, 4, 5, 6, 7)
+    val stream = Seq(1, 2, 3, 4, 5, 6, 7)
     val groupSize = 3
     val result = Source(stream)
       .aggregateWithBoundary(allocate = () => ListBuffer.empty[Int])(aggregate = (buffer, i) => {
@@ -48,7 +48,7 @@ class AggregateWithBoundarySpec extends StreamSpec {
   }
 
   "split aggregator by size and harvest" in {
-    val stream = collection.immutable.Seq(1, 2, 3, 4, 5, 6, 7)
+    val stream = Seq(1, 2, 3, 4, 5, 6, 7)
     val groupSize = 3
     val result = Source(stream)
       .aggregateWithBoundary(allocate = () => ListBuffer.empty[Int])(
@@ -65,7 +65,7 @@ class AggregateWithBoundarySpec extends StreamSpec {
   }
 
   "split aggregator by custom weight condition" in {
-    val stream = collection.immutable.Seq(1, 2, 3, 4, 5, 6, 7)
+    val stream = Seq(1, 2, 3, 4, 5, 6, 7)
     val weight = 10
 
     val result = Source(stream)

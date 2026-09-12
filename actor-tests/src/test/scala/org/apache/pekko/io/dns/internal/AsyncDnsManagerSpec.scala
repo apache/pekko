@@ -13,8 +13,6 @@
 
 package org.apache.pekko.io.dns.internal
 
-import scala.collection.immutable.Seq
-
 import org.apache.pekko
 import pekko.io.Dns
 import pekko.io.dns.AAAARecord

@@ -17,7 +17,6 @@
 
 package org.apache.pekko.persistence.testkit.query
 
-import scala.collection.immutable.Seq
 import scala.concurrent.duration._
 
 import org.apache.pekko

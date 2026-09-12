@@ -13,7 +13,7 @@
 
 package org.apache.pekko.util
 
-import scala.collection.{ immutable, mutable }
+import scala.collection.mutable
 import scala.concurrent.duration.FiniteDuration
 
 import org.apache.pekko
@@ -94,36 +94,36 @@ private[pekko] final class RecencyList[A] private (clock: Clock) {
 
   def mostToLeastRecent: Iterator[A] = recency.backwardIterator.map(_.value)
 
-  def removeLeastRecent(n: Int): immutable.Seq[A] =
+  def removeLeastRecent(n: Int): Seq[A] =
     if (n == 1) removeLeastRecent() // optimised removal of just 1 node
     else recency.forwardIterator.take(n).map(removeNode).toList
 
-  def removeLeastRecent(n: Int, skip: Int): immutable.Seq[A] =
+  def removeLeastRecent(n: Int, skip: Int): Seq[A] =
     recency.forwardIterator.slice(skip, skip + n).map(removeNode).toList
 
-  def removeLeastRecent(): immutable.Seq[A] = recency.getFirst match {
+  def removeLeastRecent(): Seq[A] = recency.getFirst match {
     case OptionVal.Some(first) => List(removeNode(first))
     case _                     => Nil
   }
 
-  def removeMostRecent(n: Int): immutable.Seq[A] =
+  def removeMostRecent(n: Int): Seq[A] =
     if (n == 1) removeMostRecent() // optimised removal of just 1 node
     else recency.backwardIterator.take(n).map(removeNode).toList
 
-  def removeMostRecent(n: Int, skip: Int): immutable.Seq[A] =
+  def removeMostRecent(n: Int, skip: Int): Seq[A] =
     recency.backwardIterator.slice(skip, skip + n).map(removeNode).toList
 
-  def removeMostRecent(): immutable.Seq[A] = recency.getLast match {
+  def removeMostRecent(): Seq[A] = recency.getLast match {
     case OptionVal.Some(last) => List(removeNode(last))
     case _                    => Nil
   }
 
-  def removeLeastRecentOutside(duration: FiniteDuration): immutable.Seq[A] = {
+  def removeLeastRecentOutside(duration: FiniteDuration): Seq[A] = {
     val min = clock.earlierTime(duration)
     recency.forwardIterator.takeWhile(_.timestamp < min).map(removeNode).toList
   }
 
-  def removeMostRecentWithin(duration: FiniteDuration): immutable.Seq[A] = {
+  def removeMostRecentWithin(duration: FiniteDuration): Seq[A] = {
     val max = clock.earlierTime(duration)
     recency.backwardIterator.takeWhile(_.timestamp > max).map(removeNode).toList
   }

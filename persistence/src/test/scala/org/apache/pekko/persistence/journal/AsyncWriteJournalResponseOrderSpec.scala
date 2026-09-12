@@ -17,7 +17,7 @@
 
 package org.apache.pekko.persistence.journal
 
-import scala.collection.{ immutable, mutable }
+import scala.collection.mutable
 import scala.concurrent.{ ExecutionContext, Future, Promise }
 import scala.util.Try
 
@@ -130,7 +130,7 @@ private object AsyncWriteJournalResponseOrderSpec {
         }
     }
 
-    override def asyncWriteMessages(messages: immutable.Seq[AtomicWrite]): Future[immutable.Seq[Try[Unit]]] = {
+    override def asyncWriteMessages(messages: Seq[AtomicWrite]): Future[Seq[Try[Unit]]] = {
       val responsePromise = Promise[Unit]()
       pendingOps.put(messages.head.persistenceId.toInt, responsePromise)
       responsePromise.future.map(_ => Vector.empty)

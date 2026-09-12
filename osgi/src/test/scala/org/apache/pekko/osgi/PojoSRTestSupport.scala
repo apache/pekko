@@ -19,7 +19,6 @@ import java.util.{ Date, HashMap, ServiceLoader, UUID }
 import java.util.jar.JarInputStream
 
 import scala.annotation.{ nowarn, tailrec }
-import scala.collection.immutable
 import scala.concurrent.duration._
 import scala.jdk.CollectionConverters._
 import scala.reflect.ClassTag
@@ -42,7 +41,7 @@ trait PojoSRTestSupport extends Suite with BeforeAndAfterAll {
    * All bundles being found on the test classpath are automatically installed and started in the PojoSR runtime.
    * Implement this to define the extra bundles that should be available for testing.
    */
-  def testBundles: immutable.Seq[BundleDescriptor]
+  def testBundles: Seq[BundleDescriptor]
 
   val bufferedLoadingErrors = new ByteArrayOutputStream()
 
@@ -106,7 +105,7 @@ trait PojoSRTestSupport extends Suite with BeforeAndAfterAll {
     poll(wait, Deadline.now + MaxWaitDuration)
   }
 
-  protected def buildTestBundles(builders: immutable.Seq[BundleDescriptorBuilder]): immutable.Seq[BundleDescriptor] =
+  protected def buildTestBundles(builders: Seq[BundleDescriptorBuilder]): Seq[BundleDescriptor] =
     builders.map(_.build)
 
   def filterErrors()(block: => Unit): Unit =

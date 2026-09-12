@@ -13,7 +13,6 @@
 
 package org.apache.pekko.persistence.journal.inmem
 
-import scala.collection.immutable
 import scala.concurrent.Future
 import scala.concurrent.duration.Duration
 import scala.jdk.DurationConverters._
@@ -90,7 +89,7 @@ object InmemJournal {
 
   private val eventStream = context.system.eventStream
 
-  override def asyncWriteMessages(messages: immutable.Seq[AtomicWrite]): Future[immutable.Seq[Try[Unit]]] = {
+  override def asyncWriteMessages(messages: Seq[AtomicWrite]): Future[Seq[Try[Unit]]] = {
     try {
       for (w <- messages; p <- w.payload) {
         val payload = p.payload match {
@@ -190,7 +189,7 @@ object InmemJournal {
     case None     => messages
   }
 
-  def read(pid: String, fromSnr: Long, toSnr: Long, max: Long): immutable.Seq[(PersistentRepr, OptionVal[Any])] =
+  def read(pid: String, fromSnr: Long, toSnr: Long, max: Long): Seq[(PersistentRepr, OptionVal[Any])] =
     messages.get(pid) match {
       case Some(ms) => ms.filter(m => m._1.sequenceNr >= fromSnr && m._1.sequenceNr <= toSnr).take(safeLongToInt(max))
       case None     => Nil

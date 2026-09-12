@@ -16,7 +16,6 @@ package org.apache.pekko.persistence.journal
 import java.util
 import java.util.concurrent.ConcurrentHashMap
 
-import scala.collection.immutable
 import scala.collection.mutable.ArrayBuffer
 import scala.reflect.ClassTag
 import scala.util.Try
@@ -32,7 +31,7 @@ import com.typesafe.config.Config
  */
 class EventAdapters(
     map: ConcurrentHashMap[Class[?], EventAdapter],
-    bindings: immutable.Seq[(Class[?], EventAdapter)],
+    bindings: Seq[(Class[?], EventAdapter)],
     log: LoggingAdapter) {
 
   /**
@@ -69,7 +68,7 @@ class EventAdapters(
 /** INTERNAL API */
 private[pekko] object EventAdapters {
   type Name = String
-  type BoundAdapters = immutable.Seq[String]
+  type BoundAdapters = Seq[String]
   type FQN = String
   type ClassHandler = (Class[?], EventAdapter)
 
@@ -102,7 +101,7 @@ private[pekko] object EventAdapters {
 
     // bindings is a Seq of tuple representing the mapping from Class to handler.
     // It is primarily ordered by the most specific classes first, and secondly in the configured order.
-    val bindings: immutable.Seq[ClassHandler] = {
+    val bindings: Seq[ClassHandler] = {
       val bs =
         for ((k: FQN, as: BoundAdapters) <- adapterBindings)
           yield
@@ -135,7 +134,7 @@ private[pekko] object EventAdapters {
   }
 
   /** INTERNAL API */
-  private[pekko] case class CombinedReadEventAdapter(adapters: immutable.Seq[EventAdapter]) extends EventAdapter {
+  private[pekko] case class CombinedReadEventAdapter(adapters: Seq[EventAdapter]) extends EventAdapter {
     private def onlyReadSideException =
       new IllegalStateException("CombinedReadEventAdapter must not be used when writing (creating manifests) events!")
     override def manifest(event: Any): String = throw onlyReadSideException
@@ -161,7 +160,7 @@ private[pekko] object EventAdapters {
    * Sort so that subtypes always precede their supertypes, but without
    * obeying any order between unrelated subtypes (insert sort).
    */
-  private def sort[T](in: Iterable[(Class[?], T)]): immutable.Seq[(Class[?], T)] =
+  private def sort[T](in: Iterable[(Class[?], T)]): Seq[(Class[?], T)] =
     in.foldLeft(new ArrayBuffer[(Class[?], T)](in.size)) { (buf, ca) =>
       buf.indexWhere(_._1.isAssignableFrom(ca._1)) match {
         case -1 => buf.append(ca)
@@ -169,7 +168,7 @@ private[pekko] object EventAdapters {
       }
       buf
     }
-      .to(immutable.Seq)
+      .to(Seq)
 
   private final def configToMap(config: Config, path: String): Map[String, String] = {
     import scala.jdk.CollectionConverters._
@@ -178,7 +177,7 @@ private[pekko] object EventAdapters {
     } else Map.empty
   }
 
-  private final def configToListMap(config: Config, path: String): Map[String, immutable.Seq[String]] = {
+  private final def configToListMap(config: Config, path: String): Map[String, Seq[String]] = {
     import scala.jdk.CollectionConverters._
     if (config.hasPath(path)) {
       config.getConfig(path).root.unwrapped.asScala.toMap.map {

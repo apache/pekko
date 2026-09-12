@@ -2407,7 +2407,7 @@ final class SubSource[Out, Mat](
       case source: Source[Out @unchecked, ?] => source.asScala
       case other                             => other
     }
-    else immutable.Seq()
+    else Seq()
     new SubSource(delegate.mergeAll(seq, eagerComplete))
   }
 
@@ -2467,7 +2467,7 @@ final class SubSource[Out, Mat](
       case source: Source[Out @unchecked, ?] => source.asScala
       case other                             => other
     }
-    else immutable.Seq()
+    else Seq()
     new SubSource(delegate.interleaveAll(seq, segmentSize, eagerClose))
   }
 

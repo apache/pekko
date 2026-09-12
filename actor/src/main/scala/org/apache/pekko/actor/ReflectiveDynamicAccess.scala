@@ -16,7 +16,6 @@ package org.apache.pekko.actor
 import java.lang.invoke.{ MethodHandle, MethodHandles, MethodType, VarHandle }
 import java.util.concurrent.ConcurrentHashMap
 
-import scala.collection.immutable
 import scala.reflect.ClassTag
 import scala.util.Failure
 import scala.util.Try
@@ -47,7 +46,7 @@ class ReflectiveDynamicAccess(val classLoader: ClassLoader) extends DynamicAcces
       if (t.isAssignableFrom(c)) c else throw new ClassCastException(t.toString + " is not assignable from " + c)
     }
 
-  override def createInstanceFor[T: ClassTag](clazz: Class[?], args: immutable.Seq[(Class[?], AnyRef)]): Try[T] =
+  override def createInstanceFor[T: ClassTag](clazz: Class[?], args: Seq[(Class[?], AnyRef)]): Try[T] =
     Try {
       val types = new Array[Class[?]](args.size)
       val values = new Array[AnyRef](args.size)
@@ -67,7 +66,7 @@ class ReflectiveDynamicAccess(val classLoader: ClassLoader) extends DynamicAcces
       else throw new ClassCastException(clazz.getName + " is not a subtype of " + t)
     }
 
-  override def createInstanceFor[T: ClassTag](fqcn: String, args: immutable.Seq[(Class[?], AnyRef)]): Try[T] =
+  override def createInstanceFor[T: ClassTag](fqcn: String, args: Seq[(Class[?], AnyRef)]): Try[T] =
     getClassFor(fqcn).flatMap { c =>
       createInstanceFor(c, args)
     }

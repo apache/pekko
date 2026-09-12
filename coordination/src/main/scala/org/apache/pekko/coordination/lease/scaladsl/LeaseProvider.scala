@@ -15,7 +15,6 @@ package org.apache.pekko.coordination.lease.scaladsl
 
 import java.util.concurrent.ConcurrentHashMap
 
-import scala.collection.immutable
 import scala.reflect.ClassTag
 import scala.util.{ Failure, Success, Try }
 
@@ -108,11 +107,11 @@ final class LeaseProvider(system: ExtendedActorSystem) extends Extension {
     val dynamicAccess = system.dynamicAccess
     dynamicAccess.createInstanceFor[T](
       fqcn,
-      immutable.Seq((classOf[LeaseSettings], leaseSettings), (classOf[ExtendedActorSystem], system))) match {
+      Seq((classOf[LeaseSettings], leaseSettings), (classOf[ExtendedActorSystem], system))) match {
       case s: Success[T] =>
         s
       case Failure(_: NoSuchMethodException) =>
-        dynamicAccess.createInstanceFor[T](fqcn, immutable.Seq((classOf[LeaseSettings], leaseSettings)))
+        dynamicAccess.createInstanceFor[T](fqcn, Seq((classOf[LeaseSettings], leaseSettings)))
       case f: Failure[?] =>
         f
     }

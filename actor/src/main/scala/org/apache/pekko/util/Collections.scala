@@ -28,8 +28,8 @@ private[pekko] object Collections {
   }
 
   implicit class IterableOps[T](val iterable: java.lang.Iterable[T]) extends AnyVal {
-    def collectToImmutableSeq[R](pf: PartialFunction[T, R]): immutable.Seq[R] = {
-      val builder = immutable.Seq.newBuilder[R]
+    def collectToImmutableSeq[R](pf: PartialFunction[T, R]): Seq[R] = {
+      val builder = Seq.newBuilder[R]
       iterable.forEach((t: T) => {
         // 1. `applyOrElse` is faster than (`pf.isDefinedAt` and then `pf.apply`)
         // 2. using reference comparing here instead of pattern matching can generate less and quicker bytecode,
@@ -46,7 +46,7 @@ private[pekko] object Collections {
     }
   }
 
-  case object EmptyImmutableSeq extends immutable.Seq[Nothing] {
+  case object EmptyImmutableSeq extends Seq[Nothing] {
     override final def iterator = Iterator.empty
     override final def apply(idx: Int): Nothing = throw new java.lang.IndexOutOfBoundsException(idx.toString)
     override final def length: Int = 0

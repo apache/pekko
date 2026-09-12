@@ -20,7 +20,6 @@ import java.util.concurrent.LinkedBlockingDeque
 import java.util.function.Supplier
 
 import scala.annotation.tailrec
-import scala.collection.immutable
 import scala.concurrent.duration._
 import scala.jdk.CollectionConverters._
 import scala.jdk.DurationConverters._
@@ -251,10 +250,10 @@ private[pekko] final class TestProbeImpl[M](name: String, system: ActorSystem[?]
     }
   }
 
-  override def receiveMessages(n: Int): immutable.Seq[M] =
+  override def receiveMessages(n: Int): Seq[M] =
     receiveMessages_internal(n, remainingOrDefault)
 
-  override def receiveMessages(n: Int, max: FiniteDuration): immutable.Seq[M] =
+  override def receiveMessages(n: Int, max: FiniteDuration): Seq[M] =
     receiveMessages_internal(n, max.dilated)
 
   override def receiveSeveralMessages(n: Int): JList[M] =
@@ -263,7 +262,7 @@ private[pekko] final class TestProbeImpl[M](name: String, system: ActorSystem[?]
   override def receiveSeveralMessages(n: Int, max: JDuration): JList[M] =
     receiveMessages_internal(n, max.toScala.dilated).asJava
 
-  private def receiveMessages_internal(n: Int, max: FiniteDuration): immutable.Seq[M] = {
+  private def receiveMessages_internal(n: Int, max: FiniteDuration): Seq[M] = {
     val stop = max + now
     for (x <- 1 to n) yield {
       val timeout = stop - now
@@ -275,17 +274,17 @@ private[pekko] final class TestProbeImpl[M](name: String, system: ActorSystem[?]
     }
   }
 
-  override def fishForMessage(max: FiniteDuration, hint: String)(fisher: M => FishingOutcome): immutable.Seq[M] =
+  override def fishForMessage(max: FiniteDuration, hint: String)(fisher: M => FishingOutcome): Seq[M] =
     fishForMessage_internal(max.dilated, hint, fisher)
 
   override def fishForMessagePF(max: FiniteDuration, hint: String)(
-      fisher: PartialFunction[M, FishingOutcome]): immutable.Seq[M] =
+      fisher: PartialFunction[M, FishingOutcome]): Seq[M] =
     fishForMessage(max, hint)(fisher)
 
-  override def fishForMessage(max: FiniteDuration)(fisher: M => FishingOutcome): immutable.Seq[M] =
+  override def fishForMessage(max: FiniteDuration)(fisher: M => FishingOutcome): Seq[M] =
     fishForMessage(max, "")(fisher)
 
-  override def fishForMessagePF(max: FiniteDuration)(fisher: PartialFunction[M, FishingOutcome]): immutable.Seq[M] =
+  override def fishForMessagePF(max: FiniteDuration)(fisher: PartialFunction[M, FishingOutcome]): Seq[M] =
     fishForMessage(max)(fisher)
 
   override def fishForMessage(max: JDuration, fisher: java.util.function.Function[M, FishingOutcome]): JList[M] =

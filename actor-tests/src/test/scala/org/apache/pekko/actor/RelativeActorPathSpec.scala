@@ -16,14 +16,12 @@ package org.apache.pekko.actor
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 
-import scala.collection.immutable
-
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
 class RelativeActorPathSpec extends AnyWordSpec with Matchers {
 
-  def elements(path: String): immutable.Seq[String] = RelativeActorPath.unapply(path).getOrElse(Nil)
+  def elements(path: String): Seq[String] = RelativeActorPath.unapply(path).getOrElse(Nil)
 
   "RelativeActorPath" must {
     "match single name" in {

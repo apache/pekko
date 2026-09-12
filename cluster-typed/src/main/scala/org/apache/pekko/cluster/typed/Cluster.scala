@@ -15,7 +15,6 @@ package org.apache.pekko.cluster.typed
 
 import java.util.concurrent.CompletionStage
 
-import scala.collection.immutable
 import scala.concurrent.Future
 
 import org.apache.pekko
@@ -115,7 +114,7 @@ object Join {
  * When it has successfully joined it must be restarted to be able to join another
  * cluster or to join the same cluster again.
  */
-final case class JoinSeedNodes(seedNodes: immutable.Seq[Address]) extends ClusterCommand {
+final case class JoinSeedNodes(seedNodes: Seq[Address]) extends ClusterCommand {
   seedNodes.foreach(_.checkHostCharacters())
 
   /**

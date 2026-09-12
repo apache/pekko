@@ -14,7 +14,6 @@
 package org.apache.pekko.stream.scaladsl
 
 import scala.annotation.unchecked.uncheckedVariance
-import scala.collection.immutable
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 import scala.concurrent.duration.FiniteDuration
@@ -388,7 +387,7 @@ trait FlowWithContextOps[+Out, +Ctx, +Mat] {
    *
    * @see `FlowOps.grouped`
    */
-  def grouped(n: Int): Repr[immutable.Seq[Out], immutable.Seq[Ctx]] =
+  def grouped(n: Int): Repr[Seq[Out], Seq[Ctx]] =
     via(flow.grouped(n).map { elsWithContext =>
       val (els, ctxs) = elsWithContext.unzip
       (els, ctxs)
@@ -401,7 +400,7 @@ trait FlowWithContextOps[+Out, +Ctx, +Mat] {
    *
    * @see `FlowOps.sliding`
    */
-  def sliding(n: Int, step: Int = 1): Repr[immutable.Seq[Out], immutable.Seq[Ctx]] =
+  def sliding(n: Int, step: Int = 1): Repr[Seq[Out], Seq[Ctx]] =
     via(flow.sliding(n, step).map { elsWithContext =>
       val (els, ctxs) = elsWithContext.unzip
       (els, ctxs)

@@ -18,7 +18,6 @@ import pekko.actor.testkit.typed.scaladsl.TestProbe
 import pekko.actor.typed.scaladsl.Behaviors
 import pekko.actor.typed.{ ActorRef, Behavior }
 
-import scala.collection.immutable
 import scala.concurrent.duration._
 import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
@@ -42,9 +41,9 @@ object FSMDocSpec {
     // #storing-state
     sealed trait Data
     case object Uninitialized extends Data
-    final case class Todo(target: ActorRef[Batch], queue: immutable.Seq[Any]) extends Data
+    final case class Todo(target: ActorRef[Batch], queue: Seq[Any]) extends Data
 
-    final case class Batch(obj: immutable.Seq[Any])
+    final case class Batch(obj: Seq[Any])
     // #storing-state
 
     // #simple-state
@@ -94,12 +93,12 @@ class FSMDocSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike with Log
       buncher ! Buncher.SetTarget(probe.ref)
       buncher ! Buncher.Queue(42)
       buncher ! Buncher.Queue(43)
-      probe.expectMessage(Buncher.Batch(immutable.Seq(42, 43)))
+      probe.expectMessage(Buncher.Batch(Seq(42, 43)))
       buncher ! Buncher.Queue(44)
       buncher ! Buncher.Flush
       buncher ! Buncher.Queue(45)
-      probe.expectMessage(Buncher.Batch(immutable.Seq(44)))
-      probe.expectMessage(Buncher.Batch(immutable.Seq(45)))
+      probe.expectMessage(Buncher.Batch(Seq(44)))
+      probe.expectMessage(Buncher.Batch(Seq(45)))
 
     }
   }

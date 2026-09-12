@@ -13,7 +13,6 @@
 
 package org.apache.pekko.stream.scaladsl
 
-import scala.collection.immutable
 import scala.concurrent.{ Await, Future }
 import scala.concurrent.Promise
 import scala.concurrent.duration._
@@ -319,7 +318,7 @@ class StreamRefsSpec extends PekkoSpec(StreamRefsSpec.config()) {
       remoteActor.tell("give-subscribe-timeout", remoteProbe.ref)
       val remoteSource: SourceRef[String] = remoteProbe.expectMsgType[SourceRef[String]]
       // materialize directly and start consuming, timeout is 500ms
-      val eventualStrings: Future[immutable.Seq[String]] = remoteSource
+      val eventualStrings: Future[Seq[String]] = remoteSource
         .throttle(1, 100.millis, 1, ThrottleMode.Shaping)
         .take(60) // 60 * 100 millis - data flowing for 6 seconds - both 500ms and 5s timeouts should have passed
         .runWith(Sink.seq)

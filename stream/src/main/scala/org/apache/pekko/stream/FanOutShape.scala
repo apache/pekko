@@ -14,7 +14,6 @@
 package org.apache.pekko.stream
 
 import scala.annotation.unchecked.uncheckedVariance
-import scala.collection.immutable
 
 import org.apache.pekko.annotation.DoNotInherit
 
@@ -23,14 +22,14 @@ object FanOutShape {
   /** Not for user extension */
   @DoNotInherit sealed trait Init[I] {
     def inlet: Inlet[I]
-    def outlets: immutable.Seq[Outlet[?]]
+    def outlets: Seq[Outlet[?]]
     def name: String
   }
   final case class Name[I](override val name: String) extends Init[I] {
     override def inlet: Inlet[I] = Inlet(s"$name.in")
-    override def outlets: immutable.Seq[Outlet[?]] = Nil
+    override def outlets: Seq[Outlet[?]] = Nil
   }
-  final case class Ports[I](override val inlet: Inlet[I], override val outlets: immutable.Seq[Outlet[?]])
+  final case class Ports[I](override val inlet: Inlet[I], override val outlets: Seq[Outlet[?]])
       extends Init[I] {
     override def name: String = "FanOut"
   }
@@ -50,8 +49,8 @@ abstract class FanOutShape[-I] private (
   /**
    * Not meant for overriding outside of Apache Pekko.
    */
-  override def outlets: immutable.Seq[Outlet[?]] = _outlets
-  final override def inlets: immutable.Seq[Inlet[I @uncheckedVariance]] = in :: Nil
+  override def outlets: Seq[Outlet[?]] = _outlets
+  final override def inlets: Seq[Inlet[I @uncheckedVariance]] = in :: Nil
 
   /**
    * Performance of subclass `UniformFanOutShape` relies on `_outlets` being a `Vector`, not a `List`.

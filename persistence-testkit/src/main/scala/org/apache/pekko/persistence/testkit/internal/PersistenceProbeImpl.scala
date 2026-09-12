@@ -16,7 +16,6 @@ package org.apache.pekko.persistence.testkit.internal
 import java.util.concurrent.ConcurrentLinkedQueue
 
 import scala.annotation.tailrec
-import scala.collection.immutable
 import scala.collection.mutable.ListBuffer
 import scala.jdk.CollectionConverters._
 import scala.reflect.ClassTag
@@ -139,7 +138,7 @@ private[pekko] object PersistenceProbeImpl {
       }
 
       @tailrec
-      def applyEffects(curEffect: EffectImpl[Event, State], sideEffects: immutable.Seq[SideEffect[State]]): Unit =
+      def applyEffects(curEffect: EffectImpl[Event, State], sideEffects: Seq[SideEffect[State]]): Unit =
         curEffect match {
           case CompositeEffect(eff: EffectImpl[Event, State], se) =>
             applyEffects(eff, se ++ sideEffects)
@@ -181,7 +180,7 @@ private[pekko] object PersistenceProbeImpl {
             Behaviors.stopped
         }
 
-      def sideEffect(sideEffects: immutable.Seq[SideEffect[State]]): Unit =
+      def sideEffect(sideEffects: Seq[SideEffect[State]]): Unit =
         sideEffects.iterator.foreach { effect =>
           effect match {
             case _: Stop.type       => shouldStop = true
@@ -254,7 +253,7 @@ private[pekko] object PersistenceProbeImpl {
       }
 
       @tailrec
-      def applyEffects(curEffect: EffectImpl[State], sideEffects: immutable.Seq[SideEffect[State]]): Unit =
+      def applyEffects(curEffect: EffectImpl[State], sideEffects: Seq[SideEffect[State]]): Unit =
         curEffect match {
           case CompositeEffect(eff: EffectImpl[?], se) =>
             applyEffects(eff.asInstanceOf[EffectImpl[State]], se ++ sideEffects)
@@ -275,7 +274,7 @@ private[pekko] object PersistenceProbeImpl {
             Behaviors.stopped
         }
 
-      def sideEffect(sideEffects: immutable.Seq[SideEffect[State]]): Unit =
+      def sideEffect(sideEffects: Seq[SideEffect[State]]): Unit =
         sideEffects.iterator.foreach { effect =>
           effect match {
             case _: Stop.type       => shouldStop = true

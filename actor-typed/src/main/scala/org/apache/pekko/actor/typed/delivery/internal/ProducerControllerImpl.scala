@@ -16,7 +16,6 @@ package org.apache.pekko.actor.typed.delivery.internal
 import java.util.concurrent.TimeoutException
 
 import scala.annotation.nowarn
-import scala.collection.immutable
 import scala.reflect.ClassTag
 import scala.util.Failure
 import scala.util.Success
@@ -136,7 +135,7 @@ object ProducerControllerImpl {
       replyAfterStore: Map[SeqNr, ActorRef[SeqNr]],
       supportResend: Boolean,
       unconfirmed: Vector[ConsumerController.SequencedMessage[A]],
-      remainingChunks: immutable.Seq[SequencedMessage[A]],
+      remainingChunks: Seq[SequencedMessage[A]],
       storeMessageSentInProgress: SeqNr,
       firstSeqNr: SeqNr,
       producer: ActorRef[ProducerController.RequestNext[A]],
@@ -349,7 +348,7 @@ object ProducerControllerImpl {
       throw new IllegalArgumentException(s"Consumer [$ref] should be local.")
   }
 
-  def createChunks[A](m: A, chunkSize: Int, serialization: Serialization): immutable.Seq[ChunkedMessage] = {
+  def createChunks[A](m: A, chunkSize: Int, serialization: Serialization): Seq[ChunkedMessage] = {
     val mAnyRef = m.asInstanceOf[AnyRef]
     // serialization exceptions are thrown
     val bytes = serialization.serialize(mAnyRef).get
@@ -408,7 +407,7 @@ private class ProducerControllerImpl[A: ClassTag](
     def onMsg(
         seqMsg: SequencedMessage[A],
         newReplyAfterStore: Map[SeqNr, ActorRef[SeqNr]],
-        newRemainingChunks: immutable.Seq[SequencedMessage[A]]): Behavior[InternalCommand] = {
+        newRemainingChunks: Seq[SequencedMessage[A]]): Behavior[InternalCommand] = {
       checkOnMsgRequestedState()
       if (seqMsg.isLastChunk != newRemainingChunks.isEmpty)
         throw new IllegalStateException(
@@ -733,7 +732,7 @@ private class ProducerControllerImpl[A: ClassTag](
       }
     }
 
-    def chunk(m: A, ack: Boolean): immutable.Seq[SequencedMessage[A]] = {
+    def chunk(m: A, ack: Boolean): Seq[SequencedMessage[A]] = {
       val chunkSize = settings.chunkLargeMessagesBytes
       if (chunkSize > 0) {
         val chunkedMessages = createChunks(m, chunkSize, serialization)

@@ -13,7 +13,6 @@
 
 package org.apache.pekko.persistence.journal
 
-import scala.collection.immutable
 import scala.concurrent._
 import scala.concurrent.duration.Duration
 import scala.util.Try
@@ -67,9 +66,9 @@ private[persistence] trait AsyncWriteProxy extends AsyncWriteJournal with Stash 
 
   implicit def timeout: Timeout
 
-  def asyncWriteMessages(messages: immutable.Seq[AtomicWrite]): Future[immutable.Seq[Try[Unit]]] =
+  def asyncWriteMessages(messages: Seq[AtomicWrite]): Future[Seq[Try[Unit]]] =
     store match {
-      case Some(s) => (s ? WriteMessages(messages)).mapTo[immutable.Seq[Try[Unit]]]
+      case Some(s) => (s ? WriteMessages(messages)).mapTo[Seq[Try[Unit]]]
       case None    => storeNotInitialized
     }
 
@@ -117,7 +116,7 @@ private[persistence] object AsyncWriteProxy {
  */
 private[persistence] object AsyncWriteTarget {
   @SerialVersionUID(1L)
-  final case class WriteMessages(messages: immutable.Seq[AtomicWrite])
+  final case class WriteMessages(messages: Seq[AtomicWrite])
 
   @SerialVersionUID(1L)
   final case class DeleteMessagesTo(persistenceId: String, toSequenceNr: Long)

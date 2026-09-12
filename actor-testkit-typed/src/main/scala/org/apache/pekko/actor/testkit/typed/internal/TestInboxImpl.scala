@@ -16,7 +16,6 @@ package org.apache.pekko.actor.testkit.typed.internal
 import java.util.concurrent.ConcurrentLinkedQueue
 
 import scala.annotation.tailrec
-import scala.collection.immutable
 
 import org.apache.pekko
 import pekko.actor.{ ActorPath, Address, RootActorPath }
@@ -51,7 +50,7 @@ private[pekko] final class TestInboxImpl[T](path: ActorPath)
     this
   }
 
-  override protected def internalReceiveAll(): immutable.Seq[T] = {
+  override protected def internalReceiveAll(): Seq[T] = {
     @tailrec def rec(acc: List[T]): List[T] = q.poll() match {
       case null => acc.reverse
       case x    => rec(x :: acc)

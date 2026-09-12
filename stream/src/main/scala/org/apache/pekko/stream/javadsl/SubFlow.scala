@@ -2441,7 +2441,7 @@ final class SubFlow[In, Out, Mat](
       case source: Source[Out @unchecked, ?] => source.asScala
       case other                             => other
     }
-    else immutable.Seq()
+    else Seq()
     new SubFlow(delegate.mergeAll(seq, eagerComplete))
   }
 
@@ -2500,7 +2500,7 @@ final class SubFlow[In, Out, Mat](
       case source: Source[Out @unchecked, ?] => source.asScala
       case other                             => other
     }
-    else immutable.Seq()
+    else Seq()
     new SubFlow(delegate.interleaveAll(seq, segmentSize, eagerClose))
   }
 
