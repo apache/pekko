@@ -6,7 +6,7 @@ Merge multiple sources with priorities.
 
 ## Signature
 
-@apidoc[Source.mergePrioritizedN](Source$) { scala="#mergePrioritizedN[T](sourcesAndPriorities:Seq[(org.apache.pekko.stream.scaladsl.Source[T,_],Int)],eagerComplete:Boolean):org.apache.pekko.stream.scaladsl.Source[T,org.apache.pekko.NotUsed]" java="#mergePrioritized[T](sourcesAndPriorities:java.util.List[Pair[Source[T,_%3C:Any],java.lang.Integer]],eagerComplete:Boolean):javadsl.Source[T,NotUsed]" }
+@apidoc[Source.mergePrioritizedN](Source$) { scala="#mergePrioritizedN[T](sourcesAndPriorities:Seq[(org.apache.pekko.stream.scaladsl.Source[T,_],Int)],eagerComplete:Boolean):org.apache.pekko.stream.scaladsl.Source[T,org.apache.pekko.NotUsed]" java="#mergePrioritizedN(java.util.List,boolean)" }
 
 ## Description
 
