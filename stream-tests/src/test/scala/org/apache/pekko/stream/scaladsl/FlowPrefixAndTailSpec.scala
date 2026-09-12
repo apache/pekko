@@ -14,7 +14,6 @@
 package org.apache.pekko.stream.scaladsl
 
 import scala.annotation.nowarn
-import scala.collection.immutable
 import scala.concurrent.Await
 import scala.concurrent.duration._
 import scala.util.control.NoStackTrace
@@ -33,7 +32,7 @@ class FlowPrefixAndTailSpec extends StreamSpec("""
 
     val testException = new Exception("test") with NoStackTrace
 
-    def newHeadSink = Sink.head[(immutable.Seq[Int], Source[Int, ?])]
+    def newHeadSink = Sink.head[(Seq[Int], Source[Int, ?])]
 
     "work on empty input" in {
       val futureSink = newHeadSink
@@ -61,7 +60,7 @@ class FlowPrefixAndTailSpec extends StreamSpec("""
       val (takes, tail) = Await.result(fut, 3.seconds.dilated)
       takes should be(1 to 5)
 
-      val futureSink2 = Sink.head[immutable.Seq[Int]]
+      val futureSink2 = Sink.head[Seq[Int]]
       val fut2 = tail.grouped(6).runWith(futureSink2)
       Await.result(fut2, 3.seconds.dilated) should be(6 to 10)
     }
@@ -72,7 +71,7 @@ class FlowPrefixAndTailSpec extends StreamSpec("""
       val (takes, tail) = Await.result(fut, 3.seconds.dilated)
       takes should be(Nil)
 
-      val futureSink2 = Sink.head[immutable.Seq[Int]]
+      val futureSink2 = Sink.head[Seq[Int]]
       val fut2 = tail.grouped(11).runWith(futureSink2)
       Await.result(fut2, 3.seconds.dilated) should be(1 to 10)
     }
@@ -83,7 +82,7 @@ class FlowPrefixAndTailSpec extends StreamSpec("""
       val (takes, tail) = Await.result(fut, 3.seconds.dilated)
       takes should be(Nil)
 
-      val futureSink2 = Sink.head[immutable.Seq[Int]]
+      val futureSink2 = Sink.head[Seq[Int]]
       val fut2 = tail.grouped(11).runWith(futureSink2)
       Await.result(fut2, 3.seconds.dilated) should be(1 to 10)
     }
@@ -172,7 +171,7 @@ class FlowPrefixAndTailSpec extends StreamSpec("""
 
     "handle onError when no substream open" in {
       val publisher = TestPublisher.manualProbe[Int]()
-      val subscriber = TestSubscriber.manualProbe[(immutable.Seq[Int], Source[Int, ?])]()
+      val subscriber = TestSubscriber.manualProbe[(Seq[Int], Source[Int, ?])]()
 
       Source.fromPublisher(publisher).prefixAndTail(3).to(Sink.fromSubscriber(subscriber)).run()
 
@@ -190,7 +189,7 @@ class FlowPrefixAndTailSpec extends StreamSpec("""
 
     "handle onError when substream is open" in {
       val publisher = TestPublisher.manualProbe[Int]()
-      val subscriber = TestSubscriber.manualProbe[(immutable.Seq[Int], Source[Int, ?])]()
+      val subscriber = TestSubscriber.manualProbe[(Seq[Int], Source[Int, ?])]()
 
       Source.fromPublisher(publisher).prefixAndTail(1).to(Sink.fromSubscriber(subscriber)).run()
 
@@ -217,7 +216,7 @@ class FlowPrefixAndTailSpec extends StreamSpec("""
 
     "handle master stream cancellation" in {
       val publisher = TestPublisher.manualProbe[Int]()
-      val subscriber = TestSubscriber.manualProbe[(immutable.Seq[Int], Source[Int, ?])]()
+      val subscriber = TestSubscriber.manualProbe[(Seq[Int], Source[Int, ?])]()
 
       Source.fromPublisher(publisher).prefixAndTail(3).to(Sink.fromSubscriber(subscriber)).run()
 
@@ -235,7 +234,7 @@ class FlowPrefixAndTailSpec extends StreamSpec("""
 
     "handle substream cancellation" in {
       val publisher = TestPublisher.manualProbe[Int]()
-      val subscriber = TestSubscriber.manualProbe[(immutable.Seq[Int], Source[Int, ?])]()
+      val subscriber = TestSubscriber.manualProbe[(Seq[Int], Source[Int, ?])]()
 
       Source.fromPublisher(publisher).prefixAndTail(1).to(Sink.fromSubscriber(subscriber)).run()
 
@@ -261,7 +260,7 @@ class FlowPrefixAndTailSpec extends StreamSpec("""
 
     "pass along early cancellation" in {
       val up = TestPublisher.manualProbe[Int]()
-      val down = TestSubscriber.manualProbe[(immutable.Seq[Int], Source[Int, ?])]()
+      val down = TestSubscriber.manualProbe[(Seq[Int], Source[Int, ?])]()
 
       val flowSubscriber = Source.asSubscriber[Int].prefixAndTail(1).to(Sink.fromSubscriber(down)).run()
 

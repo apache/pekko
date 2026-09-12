@@ -13,8 +13,6 @@
 
 package org.apache.pekko.persistence.snapshot
 
-import scala.collection.immutable.Seq
-
 import org.apache.pekko
 import pekko.actor._
 import pekko.persistence._

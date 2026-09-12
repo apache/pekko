@@ -13,7 +13,6 @@
 
 package org.apache.pekko.persistence.journal
 
-import scala.collection.immutable.Seq
 import scala.concurrent.{ Await, Future, Promise }
 import scala.concurrent.duration._
 import scala.util.Try

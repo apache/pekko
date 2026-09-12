@@ -104,12 +104,12 @@ private[persistence] class LocalSnapshotStore(config: Config) extends SnapshotSt
     case _: DeleteSnapshotsFailure     => // ignore
   }
 
-  private def snapshotFiles(metadata: SnapshotMetadata): immutable.Seq[File] = {
+  private def snapshotFiles(metadata: SnapshotMetadata): Seq[File] = {
     snapshotDir().listFiles(new SnapshotSeqNrFilenameFilter(metadata)).toVector
   }
 
   @scala.annotation.tailrec
-  private def load(metadata: immutable.Seq[SnapshotMetadata]): Try[Option[SelectedSnapshot]] =
+  private def load(metadata: Seq[SnapshotMetadata]): Try[Option[SelectedSnapshot]] =
     metadata.lastOption match {
       case None     => Success(None) // no snapshots stored
       case Some(md) =>
@@ -162,7 +162,7 @@ private[persistence] class LocalSnapshotStore(config: Config) extends SnapshotSt
 
   private def snapshotMetadatas(
       persistenceId: String,
-      criteria: SnapshotSelectionCriteria): immutable.Seq[SnapshotMetadata] = {
+      criteria: SnapshotSelectionCriteria): Seq[SnapshotMetadata] = {
     val files = snapshotDir().listFiles(new SnapshotFilenameFilter(persistenceId))
     if (files eq null) Nil // if the dir was removed
     else {

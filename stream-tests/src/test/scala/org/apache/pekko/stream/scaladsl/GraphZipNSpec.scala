@@ -13,7 +13,6 @@
 
 package org.apache.pekko.stream.scaladsl
 
-import scala.collection.immutable
 import scala.concurrent.duration._
 
 import org.apache.pekko
@@ -24,20 +23,20 @@ import pekko.stream.testkit.scaladsl.StreamTestKit._
 class GraphZipNSpec extends TwoStreamsSetup {
   import GraphDSL.Implicits._
 
-  override type Outputs = immutable.Seq[Int]
+  override type Outputs = Seq[Int]
 
   override def fixture(b: GraphDSL.Builder[?]): Fixture = new Fixture {
     val zipN = b.add(ZipN[Int](2))
 
     override def left: Inlet[Int] = zipN.in(0)
     override def right: Inlet[Int] = zipN.in(1)
-    override def out: Outlet[immutable.Seq[Int]] = zipN.out
+    override def out: Outlet[Seq[Int]] = zipN.out
   }
 
   "ZipN" must {
 
     "work in the happy case" in assertAllStagesStopped {
-      val probe = TestSubscriber.manualProbe[immutable.Seq[Int]]()
+      val probe = TestSubscriber.manualProbe[Seq[Int]]()
 
       RunnableGraph
         .fromGraph(GraphDSL.create() { implicit b =>
@@ -55,13 +54,13 @@ class GraphZipNSpec extends TwoStreamsSetup {
       val subscription = probe.expectSubscription()
 
       subscription.request(2)
-      probe.expectNext(immutable.Seq(1, 2))
-      probe.expectNext(immutable.Seq(2, 3))
+      probe.expectNext(Seq(1, 2))
+      probe.expectNext(Seq(2, 3))
 
       subscription.request(1)
-      probe.expectNext(immutable.Seq(3, 4))
+      probe.expectNext(Seq(3, 4))
       subscription.request(1)
-      probe.expectNext(immutable.Seq(4, 5))
+      probe.expectNext(Seq(4, 5))
 
       probe.expectComplete()
     }
@@ -69,7 +68,7 @@ class GraphZipNSpec extends TwoStreamsSetup {
     "complete if one side is available but other already completed" in {
       val upstream1 = TestPublisher.probe[Int]()
       val upstream2 = TestPublisher.probe[Int]()
-      val downstream = TestSubscriber.probe[immutable.Seq[Int]]()
+      val downstream = TestSubscriber.probe[Seq[Int]]()
 
       RunnableGraph
         .fromGraph(GraphDSL.createGraph(Sink.fromSubscriber(downstream)) { implicit b => out =>
@@ -88,7 +87,7 @@ class GraphZipNSpec extends TwoStreamsSetup {
       upstream2.sendNext(2)
       upstream2.sendComplete()
 
-      downstream.requestNext(immutable.Seq(1, 2))
+      downstream.requestNext(Seq(1, 2))
       downstream.expectComplete()
       upstream1.expectCancellation()
     }
@@ -96,7 +95,7 @@ class GraphZipNSpec extends TwoStreamsSetup {
     "complete even if no pending demand" in {
       val upstream1 = TestPublisher.probe[Int]()
       val upstream2 = TestPublisher.probe[Int]()
-      val downstream = TestSubscriber.probe[immutable.Seq[Int]]()
+      val downstream = TestSubscriber.probe[Seq[Int]]()
 
       RunnableGraph
         .fromGraph(GraphDSL.createGraph(Sink.fromSubscriber(downstream)) { implicit b => out =>
@@ -114,7 +113,7 @@ class GraphZipNSpec extends TwoStreamsSetup {
 
       upstream1.sendNext(1)
       upstream2.sendNext(2)
-      downstream.expectNext(immutable.Seq(1, 2))
+      downstream.expectNext(Seq(1, 2))
 
       upstream2.sendComplete()
       downstream.expectComplete()
@@ -124,7 +123,7 @@ class GraphZipNSpec extends TwoStreamsSetup {
     "complete if both sides complete before requested with elements pending" in {
       val upstream1 = TestPublisher.probe[Int]()
       val upstream2 = TestPublisher.probe[Int]()
-      val downstream = TestSubscriber.probe[immutable.Seq[Int]]()
+      val downstream = TestSubscriber.probe[Seq[Int]]()
 
       RunnableGraph
         .fromGraph(GraphDSL.createGraph(Sink.fromSubscriber(downstream)) { implicit b => out =>
@@ -144,14 +143,14 @@ class GraphZipNSpec extends TwoStreamsSetup {
       upstream1.sendComplete()
       upstream2.sendComplete()
 
-      downstream.requestNext(immutable.Seq(1, 2))
+      downstream.requestNext(Seq(1, 2))
       downstream.expectComplete()
     }
 
     "complete if one side complete before requested with elements pending" in {
       val upstream1 = TestPublisher.probe[Int]()
       val upstream2 = TestPublisher.probe[Int]()
-      val downstream = TestSubscriber.probe[immutable.Seq[Int]]()
+      val downstream = TestSubscriber.probe[Seq[Int]]()
 
       RunnableGraph
         .fromGraph(GraphDSL.createGraph(Sink.fromSubscriber(downstream)) { implicit b => out =>
@@ -172,14 +171,14 @@ class GraphZipNSpec extends TwoStreamsSetup {
       upstream1.sendComplete()
       upstream2.sendComplete()
 
-      downstream.requestNext(immutable.Seq(1, 2))
+      downstream.requestNext(Seq(1, 2))
       downstream.expectComplete()
     }
 
     "complete if one side complete before requested with elements pending 2" in {
       val upstream1 = TestPublisher.probe[Int]()
       val upstream2 = TestPublisher.probe[Int]()
-      val downstream = TestSubscriber.probe[immutable.Seq[Int]]()
+      val downstream = TestSubscriber.probe[Seq[Int]]()
 
       RunnableGraph
         .fromGraph(GraphDSL.createGraph(Sink.fromSubscriber(downstream)) { implicit b => out =>
@@ -201,7 +200,7 @@ class GraphZipNSpec extends TwoStreamsSetup {
 
       upstream2.sendNext(2)
       upstream2.sendComplete()
-      downstream.requestNext(immutable.Seq(1, 2))
+      downstream.requestNext(Seq(1, 2))
       downstream.expectComplete()
     }
 

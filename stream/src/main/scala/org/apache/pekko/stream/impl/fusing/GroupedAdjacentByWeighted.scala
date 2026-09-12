@@ -17,7 +17,6 @@
 
 package org.apache.pekko.stream.impl.fusing
 
-import scala.collection.immutable
 import scala.util.control.NonFatal
 
 import org.apache.pekko
@@ -37,16 +36,16 @@ private[pekko] final case class GroupedAdjacentByWeighted[T, R](
     f: T => R,
     maxWeight: Long,
     costFn: T => Long)
-    extends GraphStage[FlowShape[T, immutable.Seq[T]]] {
+    extends GraphStage[FlowShape[T, Seq[T]]] {
 
   require(f != null, "f must not be null")
   require(maxWeight > 0, "maxWeight must be greater than 0")
   require(costFn != null, "costFn must not be null")
 
   private val in = Inlet[T]("GroupedAdjacentByWeighted.in")
-  private val out = Outlet[immutable.Seq[T]]("GroupedAdjacentByWeighted.out")
+  private val out = Outlet[Seq[T]]("GroupedAdjacentByWeighted.out")
 
-  override val shape: FlowShape[T, immutable.Seq[T]] = FlowShape(in, out)
+  override val shape: FlowShape[T, Seq[T]] = FlowShape(in, out)
   override def initialAttributes: Attributes = DefaultAttributes.groupedAdjacentByWeighted
 
   override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =
@@ -56,7 +55,7 @@ private[pekko] final case class GroupedAdjacentByWeighted[T, R](
       // used to track if elements has been added to the current group, zero weight is allowed
       private var hasElements: Boolean = false
       private var currentKey: OptionVal[R] = OptionVal.none
-      private var pendingGroup: OptionVal[immutable.Seq[T]] = OptionVal.none
+      private var pendingGroup: OptionVal[Seq[T]] = OptionVal.none
       private lazy val decider = inheritedAttributes.mandatoryAttribute[SupervisionStrategy].decider
 
       override def onPush(): Unit = {
@@ -139,7 +138,7 @@ private[pekko] final case class GroupedAdjacentByWeighted[T, R](
         currentKey = OptionVal.none
       }
 
-      private def pushOrQueue(group: immutable.Seq[T]): Unit = pendingGroup match {
+      private def pushOrQueue(group: Seq[T]): Unit = pendingGroup match {
         case OptionVal.Some(pending) =>
           push(out, pending)
           pendingGroup = OptionVal.Some(group)

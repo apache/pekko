@@ -17,7 +17,6 @@ import java.util.concurrent.ThreadLocalRandom
 import java.util.concurrent.atomic.AtomicLong
 
 import scala.annotation.nowarn
-import scala.collection.immutable
 import scala.concurrent.Await
 import scala.concurrent.duration._
 import scala.util.control.NoStackTrace
@@ -301,12 +300,12 @@ class FlowSpec extends StreamSpec(ConfigFactory.parseString("""
         Source.fromIterator[Fruit](fruits).splitWhen(_ => true)
       val f3: SubFlow[Fruit, ?, Source[Fruit, NotUsed]#Repr, ?] =
         Source.fromIterator[Fruit](fruits).groupBy(2, _ => true)
-      val f4: Source[(immutable.Seq[Fruit], Source[Fruit, ?]), ?] = Source.fromIterator[Fruit](fruits).prefixAndTail(1)
+      val f4: Source[(Seq[Fruit], Source[Fruit, ?]), ?] = Source.fromIterator[Fruit](fruits).prefixAndTail(1)
       val d1: SubFlow[Fruit, ?, Flow[String, Fruit, NotUsed]#Repr, ?] =
         Flow[String].map(_ => new Apple).splitWhen(_ => true)
       val d2: SubFlow[Fruit, ?, Flow[String, Fruit, NotUsed]#Repr, ?] =
         Flow[String].map(_ => new Apple).groupBy(2, _ => true)
-      val d3: Flow[String, (immutable.Seq[Apple], Source[Fruit, ?]), ?] =
+      val d3: Flow[String, (Seq[Apple], Source[Fruit, ?]), ?] =
         Flow[String].map(_ => new Apple).prefixAndTail(1)
     }
 

@@ -15,7 +15,6 @@ package org.apache.pekko.stream.scaladsl
 
 import java.util.concurrent.ThreadLocalRandom.{ current => random }
 
-import scala.collection.immutable
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
@@ -33,8 +32,8 @@ class FlowScanSpec extends StreamSpec("""
 
   "A Scan" must {
 
-    def scan(s: Source[Int, NotUsed], duration: Duration = remainingOrDefault): immutable.Seq[Int] =
-      Await.result(s.scan(0)(_ + _).runFold(immutable.Seq.empty[Int])(_ :+ _), duration)
+    def scan(s: Source[Int, NotUsed], duration: Duration = remainingOrDefault): Seq[Int] =
+      Await.result(s.scan(0)(_ + _).runFold(Seq.empty[Int])(_ :+ _), duration)
 
     "Scan" in {
       val v = Vector.fill(random.nextInt(100, 1000))(random.nextInt())

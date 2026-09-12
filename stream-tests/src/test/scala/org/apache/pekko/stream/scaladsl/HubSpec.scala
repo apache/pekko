@@ -13,7 +13,6 @@
 
 package org.apache.pekko.stream.scaladsl
 
-import scala.collection.immutable
 import scala.concurrent.{ Await, ExecutionContext, Future, Promise }
 import scala.concurrent.duration._
 
@@ -307,7 +306,7 @@ class HubSpec extends StreamSpec {
     }
 
     "work with different producers separated over time" in {
-      val downstream = TestSubscriber.probe[immutable.Seq[Int]]()
+      val downstream = TestSubscriber.probe[Seq[Int]]()
       val sink = MergeHub.source[Int](16).grouped(100).toMat(Sink.fromSubscriber(downstream))(Keep.left).run()
 
       Source(1 to 100).runWith(sink)

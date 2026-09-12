@@ -13,7 +13,6 @@
 
 package org.apache.pekko.actor.testkit.typed.scaladsl
 
-import scala.collection.immutable
 import scala.concurrent.duration._
 import scala.reflect.ClassTag
 
@@ -179,14 +178,14 @@ object TestProbe {
   /**
    * Same as `receiveMessages(n, remaining)` but using the default timeout as deadline.
    */
-  def receiveMessages(n: Int): immutable.Seq[M]
+  def receiveMessages(n: Int): Seq[M]
 
   /**
    * Receive `n` messages in a row before the given deadline.
    *
    * Note that the timeout is scaled using the configuration entry "pekko.actor.testkit.typed.timefactor".
    */
-  def receiveMessages(n: Int, max: FiniteDuration): immutable.Seq[M]
+  def receiveMessages(n: Int, max: FiniteDuration): Seq[M]
 
   /**
    * Allows for flexible matching of multiple messages within a timeout, the fisher function is fed each incoming
@@ -206,22 +205,22 @@ object TestProbe {
    *            The timeout is scaled using the configuration entry "pekko.actor.testkit.typed.timefactor".
    * @return The messages accepted in the order they arrived
    */
-  def fishForMessage(max: FiniteDuration, hint: String)(fisher: M => FishingOutcome): immutable.Seq[M]
+  def fishForMessage(max: FiniteDuration, hint: String)(fisher: M => FishingOutcome): Seq[M]
 
   /**
    * Same as `fishForMessage` but accepting a partial function and failing for non-matches
    */
-  def fishForMessagePF(max: FiniteDuration, hint: String)(fisher: PartialFunction[M, FishingOutcome]): immutable.Seq[M]
+  def fishForMessagePF(max: FiniteDuration, hint: String)(fisher: PartialFunction[M, FishingOutcome]): Seq[M]
 
   /**
    * Same as the other `fishForMessage` but with no hint
    */
-  def fishForMessage(max: FiniteDuration)(fisher: M => FishingOutcome): immutable.Seq[M]
+  def fishForMessage(max: FiniteDuration)(fisher: M => FishingOutcome): Seq[M]
 
   /**
    * Same as `fishForMessage` but with no hint, accepting a partial function and failing for non-matches
    */
-  def fishForMessagePF(max: FiniteDuration)(fisher: PartialFunction[M, FishingOutcome]): immutable.Seq[M]
+  def fishForMessagePF(max: FiniteDuration)(fisher: PartialFunction[M, FishingOutcome]): Seq[M]
 
   /**
    * Expect the given actor to be stopped or stop within the given timeout or

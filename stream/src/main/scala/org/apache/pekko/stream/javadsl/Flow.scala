@@ -3567,7 +3567,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
       case source: Source[Out @unchecked, ?] => source.asScala
       case other                             => other
     }
-    else immutable.Seq()
+    else Seq()
     new Flow(delegate.interleaveAll(seq, segmentSize, eagerClose))
   }
 
@@ -3650,7 +3650,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
       case source: Source[Out @unchecked, ?] => source.asScala
       case other                             => other
     }
-    else immutable.Seq()
+    else Seq()
     new javadsl.Flow(delegate.mergeAll(seq, eagerComplete))
   }
 

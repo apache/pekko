@@ -16,7 +16,6 @@ package org.apache.pekko.persistence
 import java.util.concurrent.atomic.AtomicInteger
 
 import scala.annotation.nowarn
-import scala.collection.immutable.Seq
 import scala.concurrent.Await
 import scala.concurrent.duration._
 import scala.util.Random

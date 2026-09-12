@@ -355,7 +355,7 @@ final class ClusterMessageSerializer(val system: ExtendedActorSystem)
    * usual, because the parse is deferred and runs on the cluster daemon rather than on a
    * deserialization thread.
    */
-  private def lookup[T](mapping: immutable.Seq[T], index: Int, what: String): T =
+  private def lookup[T](mapping: Seq[T], index: Int, what: String): T =
     if (index < 0 || index >= mapping.size)
       throw new NotSerializableException(
         s"Cluster message refers to $what index [$index], but only [${mapping.size}] were sent")
@@ -574,7 +574,7 @@ final class ClusterMessageSerializer(val system: ExtendedActorSystem)
     Gossip(members, overview, vectorClockFromProto(gossip.getVersion, hashMapping), tombstones)
   }
 
-  private def vectorClockFromProto(version: cm.VectorClock, hashMapping: immutable.Seq[String]) = {
+  private def vectorClockFromProto(version: cm.VectorClock, hashMapping: Seq[String]) = {
     VectorClock(scala.collection.immutable.TreeMap.from(version.getVersionsList.asScala.iterator.map(v =>
       (VectorClock.Node.fromHash(lookup(hashMapping, v.getHashIndex, "hash")), v.getTimestamp))))
   }

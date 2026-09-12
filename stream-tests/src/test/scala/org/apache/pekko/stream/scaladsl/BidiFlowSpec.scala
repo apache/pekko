@@ -16,7 +16,6 @@ package org.apache.pekko.stream.scaladsl
 import java.nio.charset.StandardCharsets
 
 import scala.annotation.nowarn
-import scala.collection.immutable
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
@@ -112,7 +111,7 @@ class BidiFlowSpec extends StreamSpec {
         flow             ~> merge
         FlowShape(flow.in, merge.out)
       })
-      val right = Flow.fromGraph(GraphDSL.createGraph(Sink.head[immutable.Seq[Long]]) { implicit b => sink =>
+      val right = Flow.fromGraph(GraphDSL.createGraph(Sink.head[Seq[Long]]) { implicit b => sink =>
         val flow = b.add(Flow[Long].grouped(10))
         flow ~> sink
         FlowShape(flow.in, b.add(Source.single(ByteString("10"))).out)

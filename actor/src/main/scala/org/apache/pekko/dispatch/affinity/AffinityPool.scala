@@ -21,7 +21,7 @@ import java.util.concurrent.atomic.AtomicReference
 import java.util.concurrent.locks.{ LockSupport, ReentrantLock }
 
 import scala.annotation.{ switch, tailrec }
-import scala.collection.{ immutable, mutable }
+import scala.collection.mutable
 
 import org.apache.pekko
 import pekko.annotation.{ ApiMayChange, InternalApi }
@@ -341,7 +341,7 @@ private[pekko] final class AffinityPoolConfigurator(config: Config, prerequisite
   private val queueSelectorFactoryFQCN = config.getString("queue-selector")
   private val queueSelectorFactory: QueueSelectorFactory =
     prerequisites.dynamicAccess
-      .createInstanceFor[QueueSelectorFactory](queueSelectorFactoryFQCN, immutable.Seq(classOf[Config] -> config))
+      .createInstanceFor[QueueSelectorFactory](queueSelectorFactoryFQCN, Seq(classOf[Config] -> config))
       .recover {
         case _ =>
           throw new IllegalArgumentException(

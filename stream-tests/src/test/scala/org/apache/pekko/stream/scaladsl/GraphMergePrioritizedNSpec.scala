@@ -13,7 +13,6 @@
 
 package org.apache.pekko.stream.scaladsl
 
-import scala.collection.immutable
 import scala.concurrent.duration._
 
 import org.apache.pekko
@@ -138,7 +137,7 @@ class GraphMergePrioritizedNSpec extends StreamSpec {
   }
 
   private def threeSourceMerge[T](
-      sourceAndPriorities: immutable.Seq[(Source[T, NotUsed], Int)],
+      sourceAndPriorities: Seq[(Source[T, NotUsed], Int)],
       probe: ManualProbe[T]) = {
 
     Source

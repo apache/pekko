@@ -15,7 +15,6 @@ package org.apache.pekko.persistence
 
 import java.lang.{ Iterable => JIterable }
 
-import scala.collection.immutable
 import scala.util.control.NoStackTrace
 
 import org.apache.pekko
@@ -215,7 +214,7 @@ trait PersistentActor extends Eventsourced with PersistenceIdentity {
    * @param events events to be persisted
    * @param handler handler for each persisted `events`
    */
-  def persistAll[A](events: immutable.Seq[A])(handler: A => Unit): Unit = {
+  def persistAll[A](events: Seq[A])(handler: A => Unit): Unit = {
     internalPersistAll(events)(handler)
   }
 
@@ -254,7 +253,7 @@ trait PersistentActor extends Eventsourced with PersistenceIdentity {
    * @param events events to be persisted
    * @param handler handler for each persisted `events`
    */
-  def persistAllAsync[A](events: immutable.Seq[A])(handler: A => Unit): Unit = {
+  def persistAllAsync[A](events: Seq[A])(handler: A => Unit): Unit = {
     internalPersistAllAsync(events)(handler)
   }
 

@@ -378,7 +378,7 @@ object ShardCoordinator {
     /**
      * One or more sent to region directly after registration to speed up new shard startup.
      */
-    final case class ShardHomes(homes: Map[ActorRef, immutable.Seq[ShardId]])
+    final case class ShardHomes(homes: Map[ActorRef, Seq[ShardId]])
         extends CoordinatorMessage
         with DeadLetterSuppression
 

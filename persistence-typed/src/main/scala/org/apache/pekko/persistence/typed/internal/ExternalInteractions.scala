@@ -14,7 +14,6 @@
 package org.apache.pekko.persistence.typed.internal
 
 import scala.annotation.nowarn
-import scala.collection.immutable
 
 import org.apache.pekko
 import pekko.actor.ActorRef
@@ -96,7 +95,7 @@ private[pekko] trait JournalInteractions[C, E, S] {
       ctx: ActorContext[?],
       cmd: Any,
       state: Running.RunningState[S, C],
-      events: immutable.Seq[EventToPersist]): Running.RunningState[S, C] = {
+      events: Seq[EventToPersist]): Running.RunningState[S, C] = {
     if (events.nonEmpty) {
       var newState = state
 
@@ -131,7 +130,7 @@ private[pekko] trait JournalInteractions[C, E, S] {
   private[pekko] def onWritesInitiated(
       @nowarn("msg=never used") ctx: ActorContext[?],
       @nowarn("msg=never used") cmd: Any,
-      @nowarn("msg=never used") repr: immutable.Seq[PersistentRepr]): Unit = ()
+      @nowarn("msg=never used") repr: Seq[PersistentRepr]): Unit = ()
 
   protected def replayEvents(fromSeqNr: Long, toSeqNr: Long): Unit = {
     setup.internalLogger.debug2("Replaying events: from: {}, to: {}", fromSeqNr, toSeqNr)

@@ -19,7 +19,6 @@ import java.util.concurrent._
 import java.util.concurrent.atomic.AtomicReference
 
 import scala.annotation.tailrec
-import scala.collection.immutable
 import scala.concurrent.{ Await, ExecutionContext, ExecutionContextExecutor, Future, Promise }
 import scala.concurrent.blocking
 import scala.concurrent.duration.Duration
@@ -433,7 +432,7 @@ object ActorSystem {
 
     final val LogLevel: String = getString("pekko.loglevel")
     final val StdoutLogLevel: String = getString("pekko.stdout-loglevel")
-    final val Loggers: immutable.Seq[String] = immutableSeq(getStringList("pekko.loggers"))
+    final val Loggers: Seq[String] = immutableSeq(getStringList("pekko.loggers"))
     final val LoggersDispatcher: String = getString("pekko.loggers-dispatcher")
     final val LoggingFilter: String = getString("pekko.logging-filter")
     final val LoggerStartTimeout: Timeout = Timeout(config.getMillisDuration("pekko.logger-startup-timeout"))
@@ -1168,7 +1167,7 @@ private[pekko] class ActorSystemImpl(
     dynamicAccess
       .createInstanceFor[Scheduler](
         settings.SchedulerClass,
-        immutable.Seq(
+        Seq(
           classOf[Config] -> settings.config,
           classOf[LoggingAdapter] -> log,
           classOf[ThreadFactory] -> threadFactory.withName(threadFactory.name + "-scheduler")))

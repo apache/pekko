@@ -15,7 +15,6 @@ package org.apache.pekko.actor.testkit.typed.scaladsl
 
 import java.util.concurrent.ThreadLocalRandom
 
-import scala.collection.immutable
 import scala.reflect.ClassTag
 
 import org.apache.pekko
@@ -115,7 +114,7 @@ trait BehaviorTestKit[T] {
    * Requests all the effects. The effects are consumed, subsequent calls will only
    * see new effects.
    */
-  def retrieveAllEffects(): immutable.Seq[Effect]
+  def retrieveAllEffects(): Seq[Effect]
 
   /**
    * Returns if there have been any effects.
@@ -174,7 +173,7 @@ trait BehaviorTestKit[T] {
   /**
    * Returns all the [[CapturedLogEvent]] issued by this behavior(s)
    */
-  def logEntries(): immutable.Seq[CapturedLogEvent]
+  def logEntries(): Seq[CapturedLogEvent]
 
   /**
    * Clear the log entries
