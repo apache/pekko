@@ -6,8 +6,8 @@ Partitions this stream into chunks by a delimiter function.
 
 ## Signature
 
-@apidoc[Source.groupedAdjacentBy](Source) { scala="#groupedAdjacentBy(f:Out=&gt;T):FlowOps.this.Repr[scala.collection.immutable.Seq[Out]]" java="#groupedAdjacentBy(org.apache.pekko.japi.function.Function)" }
-@apidoc[Flow.groupedAdjacentBy](Flow) { scala="#groupedAdjacentBy(f:Out=&gt;T):FlowOps.this.Repr[scala.collection.immutable.Seq[Out]]" java="#groupedAdjacentBy(org.apache.pekko.japi.function.Function)" }
+@apidoc[Source.groupedAdjacentBy](Source) { scala="#groupedAdjacentBy[T](f:Out=&gt;T):FlowOps.this.Repr[Seq[Out]]" java="#groupedAdjacentBy(org.apache.pekko.japi.function.Function)" }
+@apidoc[Flow.groupedAdjacentBy](Flow) { scala="#groupedAdjacentBy[T](f:Out=&gt;T):FlowOps.this.Repr[Seq[Out]]" java="#groupedAdjacentBy(org.apache.pekko.japi.function.Function)" }
 
 
 ## Description
