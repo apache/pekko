@@ -6,8 +6,8 @@ Chunk up this stream into groups of elements received within a time window, or l
 
 ## Signature
 
-@apidoc[Source.groupedWithin](Source) { scala="#groupedWithin(n:Int,d:scala.concurrent.duration.FiniteDuration):FlowOps.this.Repr[scala.collection.immutable.Seq[Out]]" java="#groupedWithin(int,java.time.Duration)" }
-@apidoc[Flow.groupedWithin](Flow) { scala="#groupedWithin(n:Int,d:scala.concurrent.duration.FiniteDuration):FlowOps.this.Repr[scala.collection.immutable.Seq[Out]]" java="#groupedWithin(int,java.time.Duration)" }
+@apidoc[Source.groupedWithin](Source) { scala="#groupedWithin(n:Int,d:scala.concurrent.duration.FiniteDuration):FlowOps.this.Repr[Seq[Out]]" java="#groupedWithin(int,java.time.Duration)" }
+@apidoc[Flow.groupedWithin](Flow) { scala="#groupedWithin(n:Int,d:scala.concurrent.duration.FiniteDuration):FlowOps.this.Repr[Seq[Out]]" java="#groupedWithin(int,java.time.Duration)" }
 
 
 ## Description

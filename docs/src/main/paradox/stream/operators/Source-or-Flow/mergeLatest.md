@@ -6,7 +6,7 @@ Merge multiple sources.
 
 ## Signature
 
-@apidoc[Flow.mergeLatest](Flow) { scala="#mergeLatest[U%3E:Out,M](that:org.apache.pekko.stream.Graph[org.apache.pekko.stream.SourceShape[U],M],eagerComplete:Boolean):FlowOps.this.Repr[scala.collection.immutable.Seq[U]]" java="#mergeLatest(org.apache.pekko.stream.Graph,boolean)" } 
+@apidoc[Flow.mergeLatest](Flow) { scala="#mergeLatest[U%3E:Out,M](that:org.apache.pekko.stream.Graph[org.apache.pekko.stream.SourceShape[U],M],eagerComplete:Boolean):FlowOps.this.Repr[Seq[U]]" java="#mergeLatest(org.apache.pekko.stream.Graph,boolean)" } 
 
 ## Description
 

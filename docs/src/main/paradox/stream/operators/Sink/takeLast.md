@@ -6,12 +6,12 @@ Collect the last `n` values emitted from the stream into a collection.
 
 ## Signature
 
-@apidoc[Sink.takeLast](Sink$) { scala="#takeLast[T](n:Int):org.apache.pekko.stream.scaladsl.Sink[T,scala.concurrent.Future[scala.collection.immutable.Seq[T]]]" java="#takeLast(int)" }
+@apidoc[Sink.takeLast](Sink$) { scala="#takeLast[T](n:Int):org.apache.pekko.stream.scaladsl.Sink[T,scala.concurrent.Future[Seq[T]]]" java="#takeLast(int)" }
 
 
 ## Description
 
-Materializes into a @scala[`Future`] @java[`CompletionStage`] of @scala[`immutable.Seq[T]`] @java[`List<In>`] containing the last `n` collected elements when the stream completes.
+Materializes into a @scala[`Future`] @java[`CompletionStage`] of @scala[`Seq[T]`] @java[`List<In>`] containing the last `n` collected elements when the stream completes.
 If the stream completes before signaling at least n elements, the @scala[`Future`] @java[`CompletionStage`]  will complete with the number
 of elements taken at that point. 
 If the stream never completes, the @scala[`Future`] @java[`CompletionStage`] will never complete.
