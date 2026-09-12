@@ -2088,6 +2088,22 @@ class ByteStringSpec extends AnyWordSpec with Matchers with Checkers {
       rope.iterator.toArray should ===(expected)
     }
 
+    "return the right byte when stepping backward onto fragment boundaries" in {
+      // the backward resume recomputes fragment starts by subtracting lengths, so land exactly
+      // on the first and last byte of every fragment, from a hint planted at the far end
+      val freshRope = fragmentLengths
+        .foldLeft((ByteString.empty, 0)) { case ((acc, offset), len) =>
+          (acc ++ ByteString(expected.slice(offset, offset + len)), offset + len)
+        }
+        ._1
+      val starts = fragmentLengths.scanLeft(0)(_ + _).init
+      val lasts = fragmentLengths.scanLeft(0)(_ + _).tail.map(_ - 1)
+      freshRope(expected.length - 1) should ===(expected(expected.length - 1))
+      for (s <- starts.reverse) withClue(s"fragment start $s: ")(freshRope(s) should ===(expected(s)))
+      freshRope(expected.length - 1) should ===(expected(expected.length - 1))
+      for (e <- lasts.reverse) withClue(s"fragment last byte $e: ")(freshRope(e) should ===(expected(e)))
+    }
+
     "still reject out of range indices" in {
       an[IndexOutOfBoundsException] should be thrownBy rope(-1)
       an[IndexOutOfBoundsException] should be thrownBy rope(expected.length)
