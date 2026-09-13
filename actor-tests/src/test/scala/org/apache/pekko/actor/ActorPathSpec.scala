@@ -16,9 +16,10 @@ package org.apache.pekko.actor
 import java.net.MalformedURLException
 
 import org.scalatest.matchers.should.Matchers
+import org.scalatest.prop.TableDrivenPropertyChecks
 import org.scalatest.wordspec.AnyWordSpec
 
-class ActorPathSpec extends AnyWordSpec with Matchers {
+class ActorPathSpec extends AnyWordSpec with Matchers with TableDrivenPropertyChecks {
 
   "An ActorPath" must {
 
@@ -79,6 +80,57 @@ class ActorPathSpec extends AnyWordSpec with Matchers {
     "validate path elements" in {
       intercept[InvalidActorNameException](ActorPath.validatePathElement("")).getMessage should include(
         "must not be empty")
+    }
+
+    "accept valid path elements" in {
+      val valid = Table(
+        "name",
+        "a",
+        "actor-1",
+        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
+        "-_.*$+:@&=,!~';",
+        "a$" + "b",
+        "%20",
+        "%ff%FF%0a",
+        "a%20b",
+        "x" * 10000)
+      forAll(valid) { name =>
+        ActorPath.isValidPathElement(name) should ===(true)
+        ActorPath.validatePathElement(name)
+      }
+    }
+
+    "reject invalid path elements and report the position" in {
+      def positionOf(name: String): Int =
+        intercept[InvalidActorNameException](ActorPath.validatePathElement(name)).getMessage match {
+          case msg if msg.contains("at position: ") =>
+            msg.split("at position: ")(1).takeWhile(_.isDigit).toInt
+          case msg => fail(s"unexpected message [$msg]")
+        }
+
+      val invalid = Table(
+        ("name", "position"),
+        ("$" + "a", 0), // `$` is reserved for system names at the start
+        ("a b", 1),
+        ("a/b", 1),
+        ("a#b", 1),
+        ("a?b", 1),
+        ("a%", 1), // `%` is only valid as `%XX`
+        ("a%2", 1),
+        ("a%2g", 1),
+        ("a%g2", 1),
+        ("caf\u00e9", 3), // Latin-1 but not ASCII
+        ("na\u00efve-actor", 2),
+        ("\u4e2d\u6587", 0), // outside Latin-1
+        ("actor-\u4e2d", 6),
+        ("actor-\ud83d\ude00", 6), // surrogate pair
+        ("a\u0000b", 1),
+        ("a\u007fb", 1),
+        ("x" * 100 + "\u00e9", 100))
+      forAll(invalid) { (name, position) =>
+        ActorPath.isValidPathElement(name) should ===(false)
+        positionOf(name) should ===(position)
+      }
     }
 
     "create correct toStringWithAddress" in {
