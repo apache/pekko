@@ -14,6 +14,7 @@
 package org.apache.pekko.actor
 import java.lang.{ StringBuilder => JStringBuilder }
 import java.net.MalformedURLException
+import java.nio.charset.StandardCharsets
 
 import scala.annotation.nowarn
 import scala.annotation.tailrec
@@ -79,6 +80,26 @@ object ActorPath {
   private final val ValidPathCode = -1
   private final val EmptyPathCode = -2
 
+  private final val ValidCharFlag: Byte = 1
+  private final val HexCharFlag: Byte = 2
+
+  /**
+   * Lookup table over the 7-bit ASCII range: bit 0 marks a character allowed in a path element,
+   * bit 1 marks a hex digit (for `%XX` escapes). Everything at or above 0x80 is invalid.
+   */
+  private final val PathCharFlags: Array[Byte] = {
+    val flags = new Array[Byte](128)
+    def set(c: Char, flag: Byte): Unit = flags(c) = (flags(c) | flag).toByte
+    ('a' to 'z').foreach(set(_, ValidCharFlag))
+    ('A' to 'Z').foreach(set(_, ValidCharFlag))
+    ('0' to '9').foreach(set(_, ValidCharFlag))
+    ValidSymbols.foreach(set(_, ValidCharFlag))
+    ('a' to 'f').foreach(set(_, HexCharFlag))
+    ('A' to 'F').foreach(set(_, HexCharFlag))
+    ('0' to '9').foreach(set(_, HexCharFlag))
+    flags
+  }
+
   /**
    * Validates the given actor path element and throws an [[InvalidActorNameException]] if invalid.
    * See [[#isValidPathElement]] for a non-throwing version.
@@ -127,29 +148,29 @@ object ActorPath {
   private final def findInvalidPathElementCharPosition(s: String): Int =
     if (s.isEmpty) EmptyPathCode
     else {
-      def isValidChar(c: Char): Boolean =
-        (c >= 'a' && c <= 'z') ||
-        (c >= 'A' && c <= 'Z') ||
-        (c >= '0' && c <= '9') ||
-        (ValidSymbols.indexOf(c) != -1)
+      // Copy the string out once (an intrinsic array copy for Latin-1 strings) and scan the byte
+      // array with a table lookup. This avoids `String.charAt` in the loop, whose Latin-1/UTF-16
+      // coder branch shares one JVM-wide profile and is easily polluted by unrelated non-ASCII
+      // strings. Characters outside Latin-1 are encoded as '?', which is invalid, and characters
+      // in 0x80-0xFF are negative bytes, which are also invalid, so positions are preserved.
+      val bytes = s.getBytes(StandardCharsets.ISO_8859_1)
+      val len = bytes.length
+      val flags = PathCharFlags
 
-      def isHexChar(c: Char): Boolean =
-        (c >= 'a' && c <= 'f') ||
-        (c >= 'A' && c <= 'F') ||
-        (c >= '0' && c <= '9')
+      def flagsAt(pos: Int): Int = {
+        val b = bytes(pos)
+        if (b >= 0) flags(b) else 0
+      }
 
-      val len = s.length
-      def validate(pos: Int): Int =
-        if (pos < len)
-          s.charAt(pos) match {
-            case c if isValidChar(c)                                                                  => validate(pos + 1)
-            case '%' if pos + 2 < len && isHexChar(s.charAt(pos + 1)) && isHexChar(s.charAt(pos + 2)) =>
-              validate(pos + 3)
-            case _ => pos
-          }
-        else ValidPathCode
+      @tailrec def validate(pos: Int): Int =
+        if (pos >= len) ValidPathCode
+        else if ((flagsAt(pos) & ValidCharFlag) != 0) validate(pos + 1)
+        else if (bytes(pos) == '%' && pos + 2 < len &&
+          (flagsAt(pos + 1) & HexCharFlag) != 0 && (flagsAt(pos + 2) & HexCharFlag) != 0)
+          validate(pos + 3)
+        else pos
 
-      if (len > 0 && s.charAt(0) != '$') validate(0) else 0
+      if (bytes(0) != '$') validate(0) else 0
     }
 
   private[pekko] final val emptyActorPath: immutable.Iterable[String] = List("")
