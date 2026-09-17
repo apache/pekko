@@ -224,10 +224,6 @@ BKxhd4sxJzuBMfXTU2qAwLHqLSIYCQzneJIfZuwlHbV/yb9MUD1j4iKKtRb2C6a/
 =0rk3
 -----END PGP PUBLIC KEY BLOCK-----
 
-pub   rsa4096 2025-11-10 [SC]
-      FF57819E1093DB1D873D4E9B54C2289D26FB841D
-uid           [ unknown] Apache Pekko Automated Release Signing <private@pekko.apache.org>
-
 -----BEGIN PGP PUBLIC KEY BLOCK-----
 
 mQINBGkSBiEBEAC0M9OUcoYm5nvY26SOds9DPKgJoz5MBbye+t8Z54CFrSjqIF7t
