@@ -170,7 +170,7 @@ final class SubFlow[In, Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    *
-   * @since 1.3.0
+   * @since 2.0.0
    */
   def mapOption[T](f: function.Function[Out, Optional[T]]): SubFlow[In, T, Mat] =
     new SubFlow(delegate.map(f(_)).collect {
@@ -346,6 +346,52 @@ final class SubFlow[In, Out, Mat](
         resource.close()
         Optional.empty()
       })
+
+  /**
+   * Transform each input element into zero or more output elements without requiring tuple or collection allocations
+   * imposed by the operator API itself.
+   *
+   * A new [[Gatherer]] is created for each materialization and can keep mutable state in fields or via captured variables.
+   * The provided [[GatherCollector]] can emit zero or more output elements for each input element.
+   *
+   * The collector is only valid while the callback is running. Emitted elements MUST NOT be `null`.
+   *
+   * The `onComplete` callback is invoked once whenever the stage terminates or restarts: on upstream completion,
+   * upstream failure, downstream cancellation, abrupt stage termination, or supervision restart.
+   * Elements emitted from `onComplete` are emitted before upstream-failure propagation, completion, or restart,
+   * and are ignored on downstream cancellation and abrupt termination.
+   *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
+   *
+   * '''Emits when''' the gatherer emits an element and downstream is ready to consume it
+   *
+   * '''Backpressures when''' downstream backpressures
+   *
+   * '''Completes when''' upstream completes and the gatherer has emitted all pending elements, including `onComplete`
+   *
+   * '''Cancels when''' downstream cancels
+   *
+   * @since 1.3.0
+   */
+  def gather[T](create: function.Creator[javadsl.Gatherer[Out, T]]): javadsl.SubFlow[In, T, Mat] =
+    new SubFlow(delegate.gather(() =>
+      new scaladsl.Gatherer[Out, T] {
+        private val gatherer = create.create()
+        private var currentCollector: scaladsl.GatherCollector[T] = _
+        private val javaCollector = new javadsl.GatherCollector[T] {
+          override def push(elem: T): Unit = currentCollector.push(elem)
+        }
+
+        override def apply(in: Out, collector: scaladsl.GatherCollector[T]): Unit = {
+          currentCollector = collector
+          gatherer.apply(in, javaCollector)
+        }
+
+        override def onComplete(collector: scaladsl.GatherCollector[T]): Unit = {
+          currentCollector = collector
+          gatherer.onComplete(javaCollector)
+        }
+      }))
 
   /**
    * Transform each input element into an `Iterable` of output elements that is
