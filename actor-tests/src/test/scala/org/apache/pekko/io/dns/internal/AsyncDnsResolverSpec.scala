@@ -446,6 +446,48 @@ class AsyncDnsResolverSpec extends PekkoSpec("""
       asker1.expectMsg(Resolved("cats.com", im.Seq.empty))
       asker2.expectMsg(Resolved("cats.com", im.Seq.empty))
     }
+
+    "clear failed in-flight requests so they can be retried" in new Setup {
+      val firstSender = TestProbe()
+      val secondSender = TestProbe()
+
+      val ipv4Record = ARecord("cats.com", Ttl.fromPositive(1.minute), InetAddress.getByName("127.0.0.1"))
+
+      override val r = resolver(List(dnsClient1.ref), defaultConfig)
+
+      def requestFrom(sendingProbe: TestProbe): Unit =
+        r.tell(Resolve(ipv4Record.name, Ip(ipv4 = true, ipv6 = false)), sendingProbe.ref)
+
+      requestFrom(firstSender)
+      requestFrom(secondSender)
+
+      val firstQuestion = dnsClient1.expectMsgPF() {
+        case q: Question4 if q.name == ipv4Record.name => q
+      }
+      // the second resolve joins the in-flight one, so no second question is sent
+      dnsClient1.expectNoMessage(50.millis)
+      dnsClient1.reply(Failure(new RuntimeException("Nope")))
+
+      firstSender.expectMsgType[Failure]
+      secondSender.expectMsgType[Failure]
+
+      dnsClient1.expectMsgPF() {
+        case DropRequest(dropped) if dropped == firstQuestion =>
+      }
+      dnsClient1.reply(Dropped(firstQuestion.id))
+
+      // if at first you don't succeed...
+      requestFrom(firstSender)
+      requestFrom(secondSender)
+
+      val secondQuestion = dnsClient1.expectMsgPF() {
+        case q: Question4 if q.name == ipv4Record.name => q
+      }
+      dnsClient1.reply(Answer(secondQuestion.id, im.Seq(ipv4Record)))
+
+      firstSender.expectMsg(Resolved(ipv4Record.name, im.Seq(ipv4Record)))
+      secondSender.expectMsg(Resolved(ipv4Record.name, im.Seq(ipv4Record)))
+    }
   }
 
   private def deterministicIds(ids: Short*): IdGenerator = new IdGenerator {
