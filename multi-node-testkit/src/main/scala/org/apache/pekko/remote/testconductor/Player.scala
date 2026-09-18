@@ -18,7 +18,6 @@ import java.util.concurrent.TimeoutException
 import java.util.concurrent.atomic.AtomicReference
 
 import scala.annotation.nowarn
-import scala.collection.immutable
 import scala.concurrent.{ Await, ExecutionContext, Future }
 import scala.concurrent.duration._
 import scala.reflect.classTag
@@ -105,13 +104,13 @@ trait Player { this: TestConductorExt =>
    * Enter the named barriers, one after the other, in the order given. Will
    * throw an exception in case of timeouts or other errors.
    */
-  def enter(name: String*): Unit = enter(Settings.BarrierTimeout, name.to(immutable.Seq))
+  def enter(name: String*): Unit = enter(Settings.BarrierTimeout, name.to(Seq))
 
   /**
    * Enter the named barriers, one after the other, in the order given. Will
    * throw an exception in case of timeouts or other errors.
    */
-  def enter(timeout: Timeout, name: immutable.Seq[String]): Unit = {
+  def enter(timeout: Timeout, name: Seq[String]): Unit = {
     system.log.debug("entering barriers " + name.mkString("(", ", ", ")"))
     val stop = Deadline.now + timeout.duration
     name.foreach { b =>

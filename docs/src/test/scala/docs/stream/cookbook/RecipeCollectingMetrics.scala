@@ -24,7 +24,7 @@ class RecipeCollectingMetrics extends RecipeSpec {
       //      val tickPub = TestPublisher.manualProbe[Tick]()
       //      val reportTicks = Source.fromPublisher(tickPub)
       //      val loadUpdates = Source.fromPublisher(loadPub)
-      //      val futureSink = Sink.head[immutable.Seq[String]]
+      //      val futureSink = Sink.head[Seq[String]]
       //      val sink = Flow[String].grouped(10).to(futureSink)
       //
       //      //#periodic-metrics-collection

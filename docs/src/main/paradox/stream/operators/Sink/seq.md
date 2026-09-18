@@ -6,7 +6,7 @@ Collect values emitted from the stream into a collection.
 
 ## Signature
 
-@apidoc[Sink.seq](Sink$) { scala="#seq[T]:org.apache.pekko.stream.scaladsl.Sink[T,scala.concurrent.Future[scala.collection.immutable.Seq[T]]]" java="#seq()" }
+@apidoc[Sink.seq](Sink$) { scala="#seq[T]:org.apache.pekko.stream.scaladsl.Sink[T,scala.concurrent.Future[Seq[T]]]" java="#seq()" }
 
 
 ## Description

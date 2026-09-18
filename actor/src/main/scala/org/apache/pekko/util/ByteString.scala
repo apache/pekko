@@ -21,8 +21,8 @@ import java.util.Base64
 
 import scala.annotation.{ nowarn, tailrec, varargs }
 import scala.collection.{ immutable, mutable }
-import scala.collection.immutable.{ IndexedSeq, IndexedSeqOps, StrictOptimizedSeqOps, VectorBuilder }
-import scala.collection.mutable.{ Builder, WrappedArray }
+import scala.collection.immutable.{ ArraySeq, IndexedSeq, IndexedSeqOps, StrictOptimizedSeqOps, VectorBuilder }
+import scala.collection.mutable.Builder
 import scala.jdk.CollectionConverters._
 import scala.reflect.ClassTag
 
@@ -161,11 +161,6 @@ object ByteString {
 
   /** Java API */
   def createBuilder: ByteStringBuilder = new ByteStringBuilder
-
-  // implicit val canBuildFrom: CanBuildFrom[TraversableOnce[Byte], Byte, ByteString] =
-  //   new CanBuildFrom[TraversableOnce[Byte], Byte, ByteString] {
-  //     override def apply(ignore: TraversableOnce[Byte]): ByteStringBuilder = new ByteStringBuilder
-  //   }
 
   private[pekko] object ByteString1C extends Companion {
     val empty = new ByteString1C(Array.emptyByteArray)
@@ -3269,9 +3264,11 @@ final class ByteStringBuilder extends Builder[Byte, ByteString] {
 
   override def addAll(xs: IterableOnce[Byte]): this.type = {
     xs match {
-      case bs: ByteString          => addAll(bs)
-      case xs: WrappedArray.ofByte =>
+      case bs: ByteString              => addAll(bs)
+      case xs: mutable.ArraySeq.ofByte =>
         if (xs.nonEmpty) putByteArrayUnsafe(xs.array.clone)
+      case xs: ArraySeq.ofByte =>
+        if (xs.nonEmpty) putByteArrayUnsafe(xs.unsafeArray.clone)
       case seq: (collection.IndexedSeq[Byte] @unchecked) if shouldResizeTempFor(seq.length) =>
         if (seq.nonEmpty) {
           val copied = Array.from(xs)

@@ -20,7 +20,6 @@ import pekko.stream.testkit.scaladsl._
 import scala.util.Random
 import scala.math._
 import scala.concurrent.duration._
-import scala.collection.immutable
 import pekko.testkit.{ PekkoSpec, TestLatch }
 
 import scala.concurrent.Await
@@ -29,7 +28,7 @@ class RateTransformationDocSpec extends PekkoSpec {
 
   "conflate should summarize" in {
     // #conflate-summarize
-    val statsFlow = Flow[Double].conflateWithSeed(immutable.Seq(_))(_ :+ _).map { s =>
+    val statsFlow = Flow[Double].conflateWithSeed(Seq(_))(_ :+ _).map { s =>
       val μ = s.sum / s.size
       val se = s.map(x => pow(x - μ, 2))
       val σ = sqrt(se.sum / se.size)
@@ -51,7 +50,7 @@ class RateTransformationDocSpec extends PekkoSpec {
     // #conflate-sample
     val p = 0.01
     val sampleFlow = Flow[Double]
-      .conflateWithSeed(immutable.Seq(_)) {
+      .conflateWithSeed(Seq(_)) {
         case (acc, elem) if Random.nextDouble() < p => acc :+ elem
         case (acc, _)                               => acc
       }

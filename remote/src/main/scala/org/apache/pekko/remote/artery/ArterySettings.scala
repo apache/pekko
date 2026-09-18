@@ -16,7 +16,6 @@ package org.apache.pekko.remote.artery
 import java.net.InetAddress
 import java.nio.charset.StandardCharsets
 
-import scala.collection.immutable
 import scala.annotation.nowarn
 import scala.concurrent.duration._
 import scala.jdk.CollectionConverters._
@@ -120,7 +119,7 @@ private[pekko] final class ArterySettings private (config: Config) {
     import config._
 
     val TestMode: Boolean = getBoolean("test-mode")
-    private val tcpMagicList: immutable.Seq[String] = {
+    private val tcpMagicList: Seq[String] = {
       val list = getStringList("tcp-magic").asScala.toSeq
       require(list.nonEmpty, "tcp-magic must not be empty")
       list
@@ -134,7 +133,7 @@ private[pekko] final class ArterySettings private (config: Config) {
     }
     // A Seq rather than a Set: a Set hashes its members, and hashing a ByteString walks all its
     // bytes, where comparing this handful of 4-byte values is a couple of cheap equality checks.
-    val TcpMagicValues: immutable.Seq[ByteString] = {
+    val TcpMagicValues: Seq[ByteString] = {
       tcpMagicList.map { s =>
         val bytes = ByteString(s.getBytes(StandardCharsets.UTF_8))
         require(bytes.length >= 4,

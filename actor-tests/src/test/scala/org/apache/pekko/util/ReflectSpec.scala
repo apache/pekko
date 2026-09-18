@@ -18,7 +18,6 @@ import java.lang.reflect.InvocationTargetException
 import java.util.concurrent.TimeoutException
 
 import scala.annotation.nowarn
-import scala.collection.immutable
 
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
@@ -52,46 +51,46 @@ class ReflectSpec extends AnyWordSpec with Matchers {
   "Reflect#findConstructor" must {
 
     "deal with simple 1 matching case" in {
-      Reflect.findConstructor(classOf[One], immutable.Seq(new A))
+      Reflect.findConstructor(classOf[One], Seq(new A))
     }
     "deal with 2-params 1 matching case" in {
-      Reflect.findConstructor(classOf[Two], immutable.Seq(new A, new B))
+      Reflect.findConstructor(classOf[Two], Seq(new A, new B))
     }
     "deal with 2-params where one is `null` 1 matching case" in {
-      Reflect.findConstructor(classOf[Two], immutable.Seq(new A, null))
-      Reflect.findConstructor(classOf[Two], immutable.Seq(null, new B))
+      Reflect.findConstructor(classOf[Two], Seq(new A, null))
+      Reflect.findConstructor(classOf[Two], Seq(null, new B))
     }
     "deal with `null` in 1 matching case" in {
-      val constructor = Reflect.findConstructor(classOf[One], immutable.Seq(null))
+      val constructor = Reflect.findConstructor(classOf[One], Seq(null))
       constructor.invoke(null.asInstanceOf[AnyRef])
     }
     "deal with multiple constructors" in {
-      Reflect.findConstructor(classOf[MultipleOne], immutable.Seq(new A))
-      Reflect.findConstructor(classOf[MultipleOne], immutable.Seq(new B))
-      Reflect.findConstructor(classOf[MultipleOne], immutable.Seq(new A, new B))
+      Reflect.findConstructor(classOf[MultipleOne], Seq(new A))
+      Reflect.findConstructor(classOf[MultipleOne], Seq(new B))
+      Reflect.findConstructor(classOf[MultipleOne], Seq(new A, new B))
     }
     "throw when multiple matching constructors" in {
       intercept[IllegalArgumentException] {
-        Reflect.findConstructor(classOf[MultipleOne], immutable.Seq(null))
+        Reflect.findConstructor(classOf[MultipleOne], Seq(null))
       }
     }
     "use public lookup for public JDK constructors in non-open modules" in {
-      val constructor = Reflect.findConstructor(classOf[TimeoutException], immutable.Seq("err"))
-      val instance = Reflect.instantiate[TimeoutException](constructor, immutable.Seq("err"))
+      val constructor = Reflect.findConstructor(classOf[TimeoutException], Seq("err"))
+      val instance = Reflect.instantiate[TimeoutException](constructor, Seq("err"))
       instance.getMessage should ===("err")
     }
     "not confuse null with an Object argument across lookups" in {
-      Reflect.instantiate(classOf[StringOnly], immutable.Seq(null)).value shouldBe null
+      Reflect.instantiate(classOf[StringOnly], Seq(null)).value shouldBe null
       intercept[IllegalArgumentException] {
-        Reflect.findConstructor(classOf[StringOnly], immutable.Seq(new Object))
+        Reflect.findConstructor(classOf[StringOnly], Seq(new Object))
       }.getMessage should include("no matching constructor")
     }
     "access private constructors when the package is open" in {
-      Reflect.instantiate(classOf[PrivateConstructor], immutable.Seq("private")).value should ===("private")
+      Reflect.instantiate(classOf[PrivateConstructor], Seq("private")).value should ===("private")
     }
     "preserve InvocationTargetException for constructor failures" in {
       val exception = intercept[InvocationTargetException] {
-        Reflect.instantiate(classOf[ThrowingConstructor], immutable.Seq("ignored"))
+        Reflect.instantiate(classOf[ThrowingConstructor], Seq("ignored"))
       }
       exception.getCause shouldBe a[IllegalArgumentException]
       exception.getCause.getMessage should ===("user-bug")
@@ -104,7 +103,7 @@ class ReflectSpec extends AnyWordSpec with Matchers {
     }
     "invoke varargs constructors as fixed arity" in {
       val processBuilder =
-        Reflect.instantiate(classOf[ProcessBuilder], immutable.Seq(Array("echo", "fixed-arity")))
+        Reflect.instantiate(classOf[ProcessBuilder], Seq(Array("echo", "fixed-arity")))
       processBuilder.command().toArray should ===(Array[AnyRef]("echo", "fixed-arity"))
     }
   }

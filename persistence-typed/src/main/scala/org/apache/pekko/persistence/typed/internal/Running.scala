@@ -21,7 +21,6 @@ import java.util.concurrent.atomic.AtomicReference
 
 import scala.annotation.nowarn
 import scala.annotation.tailrec
-import scala.collection.immutable
 
 import org.apache.pekko
 import pekko.actor.UnhandledMessage
@@ -537,7 +536,7 @@ private[pekko] object Running {
     private def handleEventPersist(
         event: E,
         cmd: Any,
-        sideEffects: immutable.Seq[SideEffect[S]]): (Behavior[InternalProtocol], Boolean) = {
+        sideEffects: Seq[SideEffect[S]]): (Behavior[InternalProtocol], Boolean) = {
       try {
         // apply the event before persist so that validation exception is handled before persisting
         // the invalid event, in case such validation is implemented in the event handler.
@@ -593,9 +592,9 @@ private[pekko] object Running {
     }
 
     private def handleEventPersistAll(
-        events: immutable.Seq[E],
+        events: Seq[E],
         cmd: Any,
-        sideEffects: immutable.Seq[SideEffect[S]]): (Behavior[InternalProtocol], Boolean) = {
+        sideEffects: Seq[SideEffect[S]]): (Behavior[InternalProtocol], Boolean) = {
       if (events.nonEmpty) {
         try {
           // apply the event before persist so that validation exception is handled before persisting
@@ -664,7 +663,7 @@ private[pekko] object Running {
         msg: Any,
         state: RunningState[S, C],
         effect: Effect[E, S],
-        sideEffects: immutable.Seq[SideEffect[S]] = Nil): (Behavior[InternalProtocol], Boolean) = {
+        sideEffects: Seq[SideEffect[S]] = Nil): (Behavior[InternalProtocol], Boolean) = {
       if (setup.internalLogger.isDebugEnabled && !effect.isInstanceOf[CompositeEffect[?, ?]])
         setup.internalLogger.debugN(
           "Handled command [{}], resulting effect: [{}], side effects: [{}]",
@@ -723,7 +722,7 @@ private[pekko] object Running {
       numberOfEvents: Int,
       shouldSnapshotAfterPersist: SnapshotAfterPersist,
       shouldPublish: Boolean,
-      sideEffects: immutable.Seq[SideEffect[S]]): Behavior[InternalProtocol] = {
+      sideEffects: Seq[SideEffect[S]]): Behavior[InternalProtocol] = {
     setup.setMdcPhase(PersistenceMdc.PersistingEvents)
     new PersistingEvents(state, visibleState, numberOfEvents, shouldSnapshotAfterPersist, shouldPublish, sideEffects)
   }
@@ -735,7 +734,7 @@ private[pekko] object Running {
       numberOfEvents: Int,
       shouldSnapshotAfterPersist: SnapshotAfterPersist,
       shouldPublish: Boolean,
-      var sideEffects: immutable.Seq[SideEffect[S]],
+      var sideEffects: Seq[SideEffect[S]],
       persistStartTime: Long = System.nanoTime())
       extends AbstractBehavior[InternalProtocol](setup.context)
       with WithSeqNrAccessible {
@@ -900,7 +899,7 @@ private[pekko] object Running {
   /** INTERNAL API */
   @InternalApi private[pekko] class StoringSnapshot(
       state: RunningState[S, C],
-      sideEffects: immutable.Seq[SideEffect[S]],
+      sideEffects: Seq[SideEffect[S]],
       snapshotReason: SnapshotAfterPersist)
       extends AbstractBehavior[InternalProtocol](setup.context)
       with WithSeqNrAccessible {
@@ -1007,7 +1006,7 @@ private[pekko] object Running {
 
   // --------------------------
 
-  def applySideEffects(effects: immutable.Seq[SideEffect[S]], state: RunningState[S, C]): Behavior[InternalProtocol] = {
+  def applySideEffects(effects: Seq[SideEffect[S]], state: RunningState[S, C]): Behavior[InternalProtocol] = {
     var behavior: Behavior[InternalProtocol] = new HandlingCommands(state)
     val it = effects.iterator
 

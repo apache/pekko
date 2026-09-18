@@ -15,7 +15,6 @@ package org.apache.pekko.persistence.testkit
 
 import java.util.{ List => JList }
 
-import scala.collection.immutable
 import scala.jdk.CollectionConverters._
 import scala.util.{ Failure, Success, Try }
 
@@ -36,16 +35,16 @@ private[testkit] trait EventStorage extends TestKitStorage[JournalOperation, Per
   import EventStorage._
 
   def addAny(key: String, elem: Any): Unit =
-    addAny(key, immutable.Seq(elem))
+    addAny(key, Seq(elem))
 
-  def addAny(key: String, elems: immutable.Seq[Any]): Unit =
+  def addAny(key: String, elems: Seq[Any]): Unit =
     // need to use `updateExisting` because `mapAny` reads latest seqnum
     // and therefore must be done at the same time with the update, not before
     updateOrSetNew(key, v => v ++ mapAny(key, elems).toVector)
 
   override def reprToSeqNum(repr: PersistentRepr): Long = repr.sequenceNr
 
-  def add(elems: immutable.Seq[PersistentRepr]): Unit =
+  def add(elems: Seq[PersistentRepr]): Unit =
     elems.groupBy(_.persistenceId).foreach { gr =>
       add(gr._1, gr._2)
     }
@@ -55,7 +54,7 @@ private[testkit] trait EventStorage extends TestKitStorage[JournalOperation, Per
   /**
    * @throws Exception from StorageFailure in the current writing policy
    */
-  def tryAdd(elems: immutable.Seq[PersistentRepr]): Try[Unit] = {
+  def tryAdd(elems: Seq[PersistentRepr]): Try[Unit] = {
     val grouped = elems.groupBy(_.persistenceId)
 
     val processed = grouped.map {
@@ -90,7 +89,7 @@ private[testkit] trait EventStorage extends TestKitStorage[JournalOperation, Per
       persistenceId: String,
       fromSequenceNr: Long,
       toSequenceNr: Long,
-      max: Long): immutable.Seq[PersistentRepr] = {
+      max: Long): Seq[PersistentRepr] = {
     val batch = read(persistenceId, fromSequenceNr, toSequenceNr, max)
     currentPolicy.tryProcess(persistenceId, ReadEvents(batch)) match {
       case ProcessingSuccess  => batch
@@ -99,7 +98,7 @@ private[testkit] trait EventStorage extends TestKitStorage[JournalOperation, Per
     }
   }
 
-  def tryReadByTag(tag: String): immutable.Seq[PersistentRepr] = {
+  def tryReadByTag(tag: String): Seq[PersistentRepr] = {
     val batch = readAll()
       .filter(repr =>
         repr.payload match {
@@ -116,7 +115,7 @@ private[testkit] trait EventStorage extends TestKitStorage[JournalOperation, Per
     }
   }
 
-  def tryRead(processId: String, predicate: PersistentRepr => Boolean): immutable.Seq[PersistentRepr] = {
+  def tryRead(processId: String, predicate: PersistentRepr => Boolean): Seq[PersistentRepr] = {
     import EventStorage.persistentReprOrdering
     val batch = readAll().filter(predicate).toVector.sorted
 
@@ -156,7 +155,7 @@ private[testkit] trait EventStorage extends TestKitStorage[JournalOperation, Per
 
   }
 
-  private def mapAny(key: String, elems: immutable.Seq[Any]): immutable.Seq[PersistentRepr] = {
+  private def mapAny(key: String, elems: Seq[Any]): Seq[PersistentRepr] = {
     val sn = getHighestSeqNumber(key) + 1
     elems.zipWithIndex.map(p => PersistentRepr(p._1, p._2 + sn, key))
   }
@@ -190,7 +189,7 @@ sealed trait JournalOperation
 /**
  * Read from journal operation with events that were read.
  */
-final case class ReadEvents(batch: immutable.Seq[Any]) extends JournalOperation {
+final case class ReadEvents(batch: Seq[Any]) extends JournalOperation {
 
   def getBatch(): JList[Any] = batch.asJava
 
@@ -199,7 +198,7 @@ final case class ReadEvents(batch: immutable.Seq[Any]) extends JournalOperation 
 /**
  * Write in journal operation with events to be written.
  */
-final case class WriteEvents(batch: immutable.Seq[Any]) extends JournalOperation {
+final case class WriteEvents(batch: Seq[Any]) extends JournalOperation {
 
   def getBatch(): JList[Any] = batch.asJava
 

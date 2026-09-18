@@ -13,7 +13,6 @@
 
 package org.apache.pekko.persistence.testkit.internal
 
-import scala.collection.immutable
 import scala.concurrent.Await
 import scala.reflect.ClassTag
 import scala.util.control.NonFatal
@@ -47,7 +46,7 @@ import pekko.stream.scaladsl.Sink
 @InternalApi private[pekko] object EventSourcedBehaviorTestKitImpl {
   final case class CommandResultImpl[Command, Event, State, Reply](
       command: Command,
-      events: immutable.Seq[Event],
+      events: Seq[Event],
       state: State,
       replyOption: Option[Reply])
       extends CommandResultWithReply[Command, Event, State, Reply] {
@@ -187,7 +186,7 @@ import pekko.stream.scaladsl.Sink
     }
   }
 
-  private def getEvents(fromSeqNr: Long): immutable.Seq[Event] = {
+  private def getEvents(fromSeqNr: Long): Seq[Event] = {
     implicit val sys: ActorSystem[?] = system
     val result =
       queries.currentEventsByPersistenceId(persistenceId.id, fromSeqNr, toSequenceNr = Long.MaxValue).runWith(Sink.seq)
@@ -213,7 +212,7 @@ import pekko.stream.scaladsl.Sink
     }
   }
 
-  private def postCommandCheck(newEvents: immutable.Seq[Event], newState: State, reply: Option[Any]): Unit = {
+  private def postCommandCheck(newEvents: Seq[Event], newState: State, reply: Option[Any]): Unit = {
     if (serializationSettings.enabled) {
       if (serializationSettings.verifyEvents) {
         newEvents.foreach(verifySerializationAndThrow(_, "Event"))
@@ -269,7 +268,7 @@ import pekko.stream.scaladsl.Sink
         case _         => throw new IllegalArgumentException("Cannot initialize from state when snapshots are not used.")
       }
     }
-    persistenceTestKit.persistForRecovery(persistenceId.id, collection.immutable.Seq.empty ++ events)
+    persistenceTestKit.persistForRecovery(persistenceId.id, Seq.empty ++ events)
 
     restart()
   }

@@ -14,7 +14,6 @@
 package org.apache.pekko.discovery.aggregate
 
 import scala.annotation.nowarn
-import scala.collection.immutable
 import scala.concurrent.Future
 import scala.concurrent.duration._
 
@@ -38,11 +37,11 @@ class StubbedServiceDiscovery(@nowarn("msg=never used") system: ExtendedActorSys
       Future.successful(
         Resolved(
           query.serviceName,
-          immutable.Seq(ResolvedTarget(host = "stubbed1", port = Some(1234), address = None))))
+          Seq(ResolvedTarget(host = "stubbed1", port = Some(1234), address = None))))
     } else if (query.serviceName == "fail") {
       Future.failed(new RuntimeException("No resolving for you!"))
     } else {
-      Future.successful(Resolved(query.serviceName, immutable.Seq.empty))
+      Future.successful(Resolved(query.serviceName, Seq.empty))
     }
   }
 }
@@ -107,14 +106,14 @@ class AggregateServiceDiscoverySpec
       val results = discovery.lookup("stubbed", 100.millis).futureValue
       results shouldEqual Resolved(
         "stubbed",
-        immutable.Seq(ResolvedTarget(host = "stubbed1", port = Some(1234), address = None)))
+        Seq(ResolvedTarget(host = "stubbed1", port = Some(1234), address = None)))
     }
 
     "move onto the next if no resolved targets" in {
       val results = discovery.lookup("config1", 100.millis).futureValue
       results shouldEqual Resolved(
         "config1",
-        immutable.Seq(
+        Seq(
           ResolvedTarget(host = "cat", port = Some(1233), address = None),
           ResolvedTarget(host = "dog", port = Some(1234), address = None)))
     }
@@ -124,7 +123,7 @@ class AggregateServiceDiscoverySpec
       // Stub fails then result comes from config
       results shouldEqual Resolved(
         "fail",
-        immutable.Seq(ResolvedTarget(host = "from-config", port = None, address = None)))
+        Seq(ResolvedTarget(host = "from-config", port = None, address = None)))
     }
   }
 

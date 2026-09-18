@@ -14,7 +14,6 @@
 package org.apache.pekko.remote
 
 import scala.annotation.nowarn
-import scala.collection.immutable
 import scala.concurrent.duration._
 
 import org.apache.pekko
@@ -193,7 +192,7 @@ final class RemoteSettings(val config: Config) {
     WatchFailureDetectorConfig.getMillisDuration("expected-response-after")
   }.requiring(_ > Duration.Zero, "watch-failure-detector.expected-response-after > 0")
 
-  val Transports: immutable.Seq[(String, immutable.Seq[String], Config)] = transportNames.map { name =>
+  val Transports: Seq[(String, Seq[String], Config)] = transportNames.map { name =>
     val transportConfig = transportConfigFor(name)
     (
       transportConfig.getString("transport-class"),
@@ -229,7 +228,7 @@ final class RemoteSettings(val config: Config) {
     set
   }
 
-  private def transportNames: immutable.Seq[String] =
+  private def transportNames: Seq[String] =
     immutableSeq(getStringList("pekko.remote.classic.enabled-transports"))
 
   private def transportConfigFor(transportName: String): Config = getConfig(transportName)

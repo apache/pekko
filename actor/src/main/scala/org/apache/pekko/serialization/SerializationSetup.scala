@@ -13,7 +13,6 @@
 
 package org.apache.pekko.serialization
 
-import scala.collection.immutable
 import scala.jdk.CollectionConverters._
 
 import org.apache.pekko
@@ -26,7 +25,7 @@ object SerializationSetup {
    * Scala API: Programmatic definition of serializers
    * @param createSerializers create pairs of serializer and the set of classes it should be used for
    */
-  def apply(createSerializers: ExtendedActorSystem => immutable.Seq[SerializerDetails]): SerializationSetup = {
+  def apply(createSerializers: ExtendedActorSystem => Seq[SerializerDetails]): SerializationSetup = {
     new SerializationSetup(createSerializers)
   }
 
@@ -43,7 +42,7 @@ object SerializationSetup {
 /**
  * Setup for the serialization subsystem, constructor is *Internal API*, use factories in [[SerializationSetup]]
  */
-final class SerializationSetup private (val createSerializers: ExtendedActorSystem => immutable.Seq[SerializerDetails])
+final class SerializationSetup private (val createSerializers: ExtendedActorSystem => Seq[SerializerDetails])
     extends Setup
 
 object SerializerDetails {
@@ -55,7 +54,7 @@ object SerializerDetails {
    * @param useFor A set of classes or superclasses to bind to the serializer, selection works just as if
    *               the classes, the alias and the serializer had been in the config.
    */
-  def apply(alias: String, serializer: Serializer, useFor: immutable.Seq[Class[?]]): SerializerDetails =
+  def apply(alias: String, serializer: Serializer, useFor: Seq[Class[?]]): SerializerDetails =
     new SerializerDetails(alias, serializer, useFor)
 
   /**
@@ -77,4 +76,4 @@ object SerializerDetails {
 final class SerializerDetails private (
     val alias: String,
     val serializer: Serializer,
-    val useFor: immutable.Seq[Class[?]])
+    val useFor: Seq[Class[?]])

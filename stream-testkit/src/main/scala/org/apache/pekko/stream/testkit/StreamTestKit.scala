@@ -206,7 +206,7 @@ object TestPublisher {
      */
     def receiveWhile[T](max: Duration = Duration.Undefined,
         idle: Duration = Duration.Inf,
-        messages: Int = Int.MaxValue)(f: PartialFunction[PublisherEvent, T]): immutable.Seq[T] =
+        messages: Int = Int.MaxValue)(f: PartialFunction[PublisherEvent, T]): Seq[T] =
       executeAfterSubscription {
         probe.receiveWhile(max, idle, messages)(f.asInstanceOf[PartialFunction[AnyRef, T]])
       }
@@ -543,8 +543,8 @@ object TestSubscriber {
     /**
      * Expect and return the next `n` stream elements.
      */
-    def expectNextN(n: Long): immutable.Seq[I] = {
-      val b = immutable.Seq.newBuilder[I]
+    def expectNextN(n: Long): Seq[I] = {
+      val b = Seq.newBuilder[I]
       var i = 0
       while (i < n) {
         val next = probe.expectMsgType[OnNext[I]]
@@ -559,7 +559,7 @@ object TestSubscriber {
      * Fluent DSL
      * Expect the given elements to be signalled in order.
      */
-    def expectNextN(all: immutable.Seq[I]): this.type = {
+    def expectNextN(all: Seq[I]): this.type = {
       all.foreach(e => probe.expectMsg(OnNext(e)))
       this
     }
@@ -578,9 +578,9 @@ object TestSubscriber {
      * Fluent DSL
      * Expect the given elements to be signalled in any order.
      */
-    def expectNextUnorderedN(all: immutable.Seq[I]): this.type = {
+    def expectNextUnorderedN(all: Seq[I]): this.type = {
       @annotation.tailrec
-      def expectOneOf(all: immutable.Seq[I]): Unit = all match {
+      def expectOneOf(all: Seq[I]): Unit = all match {
         case Nil =>
         case _   =>
           val next = expectNext()
@@ -875,7 +875,7 @@ object TestSubscriber {
     def receiveWhile[T](
         max: Duration = Duration.Undefined,
         idle: Duration = Duration.Inf,
-        messages: Int = Int.MaxValue)(f: PartialFunction[SubscriberEvent, T]): immutable.Seq[T] =
+        messages: Int = Int.MaxValue)(f: PartialFunction[SubscriberEvent, T]): Seq[T] =
       probe.receiveWhile(max, idle, messages)(f.asInstanceOf[PartialFunction[AnyRef, T]])
 
     /**
@@ -894,7 +894,7 @@ object TestSubscriber {
     /**
      * Drains a given number of messages
      */
-    def receiveWithin(max: FiniteDuration, messages: Int = Int.MaxValue): immutable.Seq[I] =
+    def receiveWithin(max: FiniteDuration, messages: Int = Int.MaxValue): Seq[I] =
       probe
         .receiveWhile(max, max, messages) {
           case OnNext(i) => Some(i.asInstanceOf[I])
@@ -916,11 +916,11 @@ object TestSubscriber {
      *
      * '''Use with caution: Be warned that this may not be a good idea if the stream is infinite or its elements are very large!'''
      */
-    def toStrict(atMost: FiniteDuration): immutable.Seq[I] = {
+    def toStrict(atMost: FiniteDuration): Seq[I] = {
       val deadline = Deadline.now + atMost
-      val b = immutable.Seq.newBuilder[I]
+      val b = Seq.newBuilder[I]
 
-      @tailrec def drain(): immutable.Seq[I] =
+      @tailrec def drain(): Seq[I] =
         this.expectEvent(deadline.timeLeft) match {
           case OnError(ex) =>
             throw new AssertionError(

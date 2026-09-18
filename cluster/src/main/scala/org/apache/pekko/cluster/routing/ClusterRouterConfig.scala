@@ -49,7 +49,7 @@ object ClusterRouterGroupSettings {
   @varargs
   def apply(
       totalInstances: Int,
-      routeesPaths: immutable.Seq[String],
+      routeesPaths: Seq[String],
       allowLocalRoutees: Boolean,
       useRoles: String*): ClusterRouterGroupSettings =
     new ClusterRouterGroupSettings(totalInstances, routeesPaths, allowLocalRoutees, useRoles.toSet)
@@ -65,12 +65,12 @@ object ClusterRouterGroupSettings {
 
   def apply(
       totalInstances: Int,
-      routeesPaths: immutable.Seq[String],
+      routeesPaths: Seq[String],
       allowLocalRoutees: Boolean,
       useRoles: Set[String]): ClusterRouterGroupSettings =
     new ClusterRouterGroupSettings(totalInstances, routeesPaths, allowLocalRoutees, useRoles)
 
-  def unapply(settings: ClusterRouterGroupSettings): Option[(Int, immutable.Seq[String], Boolean, Set[String])] =
+  def unapply(settings: ClusterRouterGroupSettings): Option[(Int, Seq[String], Boolean, Set[String])] =
     Some((settings.totalInstances, settings.routeesPaths, settings.allowLocalRoutees, settings.useRoles))
 }
 
@@ -80,7 +80,7 @@ object ClusterRouterGroupSettings {
 @SerialVersionUID(1L)
 final class ClusterRouterGroupSettings(
     val totalInstances: Int,
-    val routeesPaths: immutable.Seq[String],
+    val routeesPaths: Seq[String],
     val allowLocalRoutees: Boolean,
     val useRoles: Set[String])
     extends Product

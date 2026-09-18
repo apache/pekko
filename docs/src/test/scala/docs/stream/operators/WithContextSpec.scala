@@ -24,10 +24,9 @@ class WithContextSpec extends PekkoSpec {
     import pekko.NotUsed
     import pekko.stream.scaladsl.Source
     import pekko.stream.scaladsl.SourceWithContext
-    import scala.collection.immutable
 
     // values with their contexts as tuples
-    val values: immutable.Seq[(String, Int)] = immutable.Seq("eins" -> 1, "zwei" -> 2, "drei" -> 3)
+    val values: Seq[(String, Int)] = Seq("eins" -> 1, "zwei" -> 2, "drei" -> 3)
 
     // a regular source with the tuples as elements
     val source: Source[(String, Int), NotUsed] = Source(values)
@@ -45,7 +44,7 @@ class WithContextSpec extends PekkoSpec {
     // running the source and asserting the outcome
     import org.apache.pekko.stream.scaladsl.Sink
     val result = mapped.runWith(Sink.seq)
-    result.futureValue should contain theSameElementsInOrderAs immutable.Seq("snie" -> 1, "iewz" -> 2, "ierd" -> 3)
+    result.futureValue should contain theSameElementsInOrderAs Seq("snie" -> 1, "iewz" -> 2, "ierd" -> 3)
     // #asSourceWithContext
   }
 
@@ -81,13 +80,12 @@ class WithContextSpec extends PekkoSpec {
     // running the flow with some sample data and asserting the outcome
     import pekko.stream.scaladsl.Source
     import pekko.stream.scaladsl.Sink
-    import scala.collection.immutable
 
-    val values: immutable.Seq[(String, Int)] = immutable.Seq("eins" -> 1, "zwei" -> 2, "drei" -> 3)
+    val values: Seq[(String, Int)] = Seq("eins" -> 1, "zwei" -> 2, "drei" -> 3)
     val source = Source(values).asSourceWithContext(_._2).map(_._1)
 
     val result = source.via(mapped).runWith(Sink.seq)
-    result.futureValue should contain theSameElementsInOrderAs immutable.Seq("snie" -> 1, "iewz" -> 2, "ierd" -> 3)
+    result.futureValue should contain theSameElementsInOrderAs Seq("snie" -> 1, "iewz" -> 2, "ierd" -> 3)
     // #asFlowWithContext
   }
 
@@ -98,10 +96,9 @@ class WithContextSpec extends PekkoSpec {
     import pekko.stream.scaladsl.Sink
     import pekko.stream.scaladsl.Source
     import pekko.stream.scaladsl.SourceWithContext
-    import scala.collection.immutable
 
-    val values: immutable.Seq[(String, Int)] =
-      immutable.Seq("eins" -> 1, "eins" -> 2, "zwei" -> 3, "drei" -> 4)
+    val values: Seq[(String, Int)] =
+      Seq("eins" -> 1, "eins" -> 2, "zwei" -> 3, "drei" -> 4)
 
     val filtered: SourceWithContext[String, Int, NotUsed] =
       Source(values)
@@ -112,7 +109,7 @@ class WithContextSpec extends PekkoSpec {
         .take(2)
 
     val result = filtered.runWith(Sink.seq)
-    result.futureValue should contain theSameElementsInOrderAs immutable.Seq("EINS" -> 1, "DREI" -> 4)
+    result.futureValue should contain theSameElementsInOrderAs Seq("EINS" -> 1, "DREI" -> 4)
     // #withContextOperators
   }
 }

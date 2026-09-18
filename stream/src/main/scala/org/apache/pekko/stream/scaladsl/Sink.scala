@@ -237,13 +237,13 @@ object Sink {
   }
 
   /**
-   * A `Sink` that materializes into a `Future` of `immutable.Seq[T]` containing the last `n` collected elements.
+   * A `Sink` that materializes into a `Future` of `Seq[T]` containing the last `n` collected elements.
    *
    * If the stream completes before signaling at least n elements, the `Future` will complete with all elements seen so far.
    * If the stream never completes, the `Future` will never complete.
    * If there is a failure signaled in the stream the `Future` will be completed with failure.
    */
-  def takeLast[T](n: Int): Sink[T, Future[immutable.Seq[T]]] =
+  def takeLast[T](n: Int): Sink[T, Future[Seq[T]]] =
     Sink.fromGraph(new TakeLastStage[T](n)).withAttributes(DefaultAttributes.takeLastSink)
 
   /**
@@ -256,7 +256,7 @@ object Sink {
    *
    * See also [[Flow.limit]], [[Flow.limitWeighted]], [[Flow.take]], [[Flow.takeWithin]], `Flow.takeWhile`
    */
-  def seq[T]: Sink[T, Future[immutable.Seq[T]]] = Sink.fromGraph(new SeqStage[T, Vector[T]])
+  def seq[T]: Sink[T, Future[Seq[T]]] = Sink.fromGraph(new SeqStage[T, Vector[T]])
 
   /**
    * A `Sink` that counts all incoming elements until upstream terminates.
@@ -392,11 +392,11 @@ object Sink {
    * The fanoutGraph's outlets size must match the provides sinks'.
    * @since 1.1.0
    */
-  def combine[T, U, M](sinks: immutable.Seq[Graph[SinkShape[U], M]])(
-      fanOutStrategy: Int => Graph[UniformFanOutShape[T, U], NotUsed]): Sink[T, immutable.Seq[M]] =
+  def combine[T, U, M](sinks: Seq[Graph[SinkShape[U], M]])(
+      fanOutStrategy: Int => Graph[UniformFanOutShape[T, U], NotUsed]): Sink[T, Seq[M]] =
     sinks match {
-      case immutable.Seq()     => Sink.cancelled.mapMaterializedValue(_ => Nil)
-      case immutable.Seq(sink) =>
+      case Seq()     => Sink.cancelled.mapMaterializedValue(_ => Nil)
+      case Seq(sink) =>
         // Single-sink optimization: bypass the fan-out strategy if and only if the strategy
         // is type-preserving (T == U), marked by the TypePreservingFanOut trait.
         // For type-transforming strategies, we MUST route through the strategy even for a

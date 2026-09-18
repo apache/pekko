@@ -19,7 +19,6 @@ import java.util.concurrent.locks.ReentrantLock
 
 import scala.annotation.implicitNotFound
 import scala.annotation.nowarn
-import scala.collection.immutable
 import scala.concurrent.Await
 import scala.language.existentials
 import scala.util.control.{ NoStackTrace, NonFatal }
@@ -559,7 +558,7 @@ object Logging {
   }
 
   // these type ascriptions/casts are necessary to avoid CCEs during construction while retaining correct type
-  val AllLogLevels: immutable.Seq[LogLevel] = Vector(ErrorLevel, WarningLevel, InfoLevel, DebugLevel)
+  val AllLogLevels: Seq[LogLevel] = Vector(ErrorLevel, WarningLevel, InfoLevel, DebugLevel)
 
   /**
    * Obtain LoggingAdapter for the given actor system and source object. This

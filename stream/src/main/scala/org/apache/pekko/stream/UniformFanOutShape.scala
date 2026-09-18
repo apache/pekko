@@ -14,7 +14,6 @@
 package org.apache.pekko.stream
 
 import scala.annotation.unchecked.uncheckedVariance
-import scala.collection.immutable
 
 object UniformFanOutShape {
   def apply[I, O](inlet: Inlet[I], outlets: Outlet[O]*): UniformFanOutShape[I, O] =
@@ -33,8 +32,8 @@ class UniformFanOutShape[-I, +O](n: Int, _init: FanOutShape.Init[I @uncheckedVar
     new UniformFanOutShape(n, init)
   override def deepCopy(): UniformFanOutShape[I, O] = super.deepCopy().asInstanceOf[UniformFanOutShape[I, O]]
 
-  final override def outlets: immutable.Seq[Outlet[O @uncheckedVariance]] =
-    super.outlets.asInstanceOf[immutable.Seq[Outlet[O]]]
+  final override def outlets: Seq[Outlet[O @uncheckedVariance]] =
+    super.outlets.asInstanceOf[Seq[Outlet[O]]]
 
   def out(n: Int): Outlet[O @uncheckedVariance] = outlets(n)
 }

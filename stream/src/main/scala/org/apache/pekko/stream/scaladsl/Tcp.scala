@@ -285,7 +285,7 @@ final class Tcp(system: ExtendedActorSystem) extends pekko.actor.Extension {
       remoteAddress: InetSocketAddress,
       createSSLEngine: () => SSLEngine,
       localAddress: Option[InetSocketAddress],
-      options: immutable.Seq[SocketOption],
+      options: Seq[SocketOption],
       connectTimeout: Duration,
       idleTimeout: Duration,
       verifySession: SSLSession => Try[Unit],
@@ -333,7 +333,7 @@ final class Tcp(system: ExtendedActorSystem) extends pekko.actor.Extension {
       port: Int,
       createSSLEngine: () => SSLEngine,
       backlog: Int,
-      options: immutable.Seq[SocketOption],
+      options: Seq[SocketOption],
       idleTimeout: Duration,
       verifySession: SSLSession => Try[Unit],
       closing: TLSClosing): Source[IncomingConnection, Future[ServerBinding]] = {
@@ -387,7 +387,7 @@ final class Tcp(system: ExtendedActorSystem) extends pekko.actor.Extension {
       port: Int,
       createSSLEngine: () => SSLEngine,
       backlog: Int,
-      options: immutable.Seq[SocketOption],
+      options: Seq[SocketOption],
       idleTimeout: Duration,
       verifySession: SSLSession => Try[Unit],
       closing: TLSClosing)(implicit m: Materializer): Future[ServerBinding] = {

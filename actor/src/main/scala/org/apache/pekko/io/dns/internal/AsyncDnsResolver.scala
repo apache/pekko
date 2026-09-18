@@ -16,7 +16,6 @@ package org.apache.pekko.io.dns.internal
 import java.net.{ Inet4Address, Inet6Address, InetAddress, InetSocketAddress }
 
 import scala.annotation.tailrec
-import scala.collection.immutable
 import scala.concurrent.{ ExecutionContextExecutor, Future, Promise }
 import scala.concurrent.ExecutionContext.parasitic
 import scala.util.{ Failure, Success, Try }
@@ -176,7 +175,7 @@ private[pekko] object AsyncDnsResolver {
     isIpv4Address(name) || isIpv6Address(name)
 
   private val Empty =
-    Future.successful(Answer(-1, immutable.Seq.empty[ResourceRecord], immutable.Seq.empty[ResourceRecord]))
+    Future.successful(Answer(-1, Seq.empty[ResourceRecord], Seq.empty[ResourceRecord]))
 
   private[pekko] def failToResolve(name: String, nameServers: List[InetSocketAddress]): ResolveFailedException =
     ResolveFailedException(s"Failed to resolve $name with nameservers $nameServers")
