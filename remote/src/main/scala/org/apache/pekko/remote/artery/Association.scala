@@ -560,8 +560,8 @@ private[remote] class Association(
                 // quarantine state change was performed
                 if (harmless) {
                   log.info(
-                    "Association to [{}] having UID [{}] has been stopped. All " +
-                    "messages to this UID will be delivered to dead letters. Reason: {}",
+                    "Association to [{}] having UID [{}] has been stopped. Harmless quarantine. " +
+                    "All messages to this UID will be delivered to dead letters. Reason: {}",
                     remoteAddress,
                     u,
                     reason)
@@ -585,6 +585,7 @@ private[remote] class Association(
                 send(ClearSystemMessageDelivery(current.incarnation), OptionVal.None, OptionVal.None)
                 if (!harmless) {
                   // try to tell the other system that we have quarantined it
+                  log.info("Sending Quarantined to [{}]", peer)
                   sendControl(Quarantined(localAddress, peer))
                 }
                 setupStopQuarantinedTimer()
