@@ -16,6 +16,7 @@ package org.apache.pekko.stream.scaladsl
 import scala.annotation.nowarn
 import scala.collection.immutable
 import scala.concurrent.Await
+import scala.concurrent.Future
 import scala.concurrent.duration._
 import scala.util.control.NoStackTrace
 
@@ -287,6 +288,60 @@ class FlowPrefixAndTailSpec extends StreamSpec("""
 
       tailPub.subscribe(sub)
       sub.expectSubscriptionAndComplete()
+    }
+
+    "complete promptly on empty tail without waiting for subscription timeout (akka #20008)" in {
+      // Reproduces https://github.com/akka/akka/issues/20008. Default StreamSubscriptionTimeout
+      // is 5 seconds; without the speculative pre-pull in PrefixAndTail this would take
+      // >15 seconds (three discarded empty tails). The test must finish well under that.
+      import system.dispatcher
+      val fut = Source(List("2", "a", "b", "0", "3", "a", "b", "c", "0", "1", "a"))
+        .splitWhen(_.matches("\\d+"))
+        .prefixAndTail(1)
+        .mapAsync(1) {
+          case (Seq("0"), _) =>
+            // Intentionally discard the tail Source for known-empty groups.
+            Future.successful("")
+          case (Seq(_), elements) =>
+            elements.runWith(Sink.seq).map(_.mkString)
+        }
+        .concatSubstreams
+        .runWith(Sink.seq)
+
+      Await.result(fut, 3.seconds.dilated) should ===(Seq("ab", "", "abc", "", "a"))
+    }
+
+    "deliver buffered tail element when tail is materialized after upstream emitted one" in {
+      // Directional test for the speculative pre-pull buffer: after the prefix is emitted,
+      // PrefixAndTail eagerly pulls upstream. If upstream pushes a single element before the
+      // tail Source is materialized, that element must be buffered and delivered as the
+      // first element when the tail finally subscribes (akka #20008).
+      val publisher = TestPublisher.manualProbe[Int]()
+      val subscriber = TestSubscriber.manualProbe[(immutable.Seq[Int], Source[Int, ?])]()
+
+      Source.fromPublisher(publisher).prefixAndTail(1).to(Sink.fromSubscriber(subscriber)).run()
+
+      val upstream = publisher.expectSubscription()
+      val downstream = subscriber.expectSubscription()
+
+      downstream.request(1)
+      upstream.expectRequest()
+      upstream.sendNext(1)
+
+      val (prefix, tail) = subscriber.expectNext()
+      prefix should ===(Seq(1))
+      subscriber.expectComplete()
+
+      // The speculative pre-pull lets the buffered element arrive before the tail is materialized.
+      upstream.sendNext(2)
+      upstream.sendComplete()
+
+      val tailSubscriber = TestSubscriber.manualProbe[Int]()
+      tail.to(Sink.fromSubscriber(tailSubscriber)).run()
+      val tailSub = tailSubscriber.expectSubscription()
+      tailSub.request(10)
+      tailSubscriber.expectNext(2)
+      tailSubscriber.expectComplete()
     }
 
   }
