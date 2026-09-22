@@ -22,7 +22,7 @@ object Dependencies {
     // https://protobuf.dev/support/version-support/
     // The protoc version can be inferred from the Protobuf Java minor version number.
     // Example: Protobuf Java version 3.25.x uses protoc version 25.x.
-    val protobufJavaVersion = "4.36.1"
+    val protobufJavaVersion = "4.36.2"
     val protocVersion = "36.0"
   }
 
@@ -30,17 +30,17 @@ object Dependencies {
   val junit6Version = "6.1.3"
   val slf4jVersion = "2.0.19"
   // also update agrona version when updating aeron:
-  val aeronVersion = "1.53.1"
+  val aeronVersion = "1.53.2"
   // Use the major+minor agrona versions matching aeron at
   // https://github.com/aeron-io/aeron/blob/1.x.y/gradle/libs.versions.toml
   // (remember to also update the scala-steward pin)
-  val agronaVersion = "2.6.0"
+  val agronaVersion = "2.6.1"
   val nettyVersion = "4.2.18.Final"
   val logbackVersion = "1.6.3"
 
   val jacksonAnnotationsVersion = "2.22"
   val jacksonVersion2 = "2.22.3"
-  val jacksonVersion3 = "3.2.2"
+  val jacksonVersion3 = "3.2.3"
 
   val scala213Version = "2.13.18"
   val scala3Version = "3.3.8"
@@ -106,7 +106,7 @@ object Dependencies {
       .excludeAll(ExclusionRule(organization = "org.scala-lang"))
     val jacksonCbor3 = "tools.jackson.dataformat" % "jackson-dataformat-cbor" % jacksonVersion3
 
-    val lz4Java = "at.yawk.lz4" % "lz4-java" % "1.11.2"
+    val lz4Java = "at.yawk.lz4" % "lz4-java" % "1.11.3"
 
     val logback = "ch.qos.logback" % "logback-classic" % logbackVersion
 
