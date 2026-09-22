@@ -17,7 +17,7 @@ addSbtPlugin("ch.epfl.scala" % "sbt-scalafix" % "0.14.8")
 addSbtPlugin("com.github.sbt" % "sbt-osgi" % "0.10.0")
 addSbtPlugin("com.typesafe" % "sbt-mima-plugin" % "1.2.0")
 addSbtPlugin("com.github.sbt" % "sbt-unidoc" % "0.6.1")
-addSbtPlugin("com.thoughtworks.sbt-api-mappings" % "sbt-api-mappings" % "3.0.3")
+addSbtPlugin("com.thoughtworks.sbt-api-mappings" % "sbt-api-mappings" % "3.1.0")
 addSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.8")
 addSbtPlugin("com.github.sbt" % "sbt-boilerplate" % "0.8.1")
 
