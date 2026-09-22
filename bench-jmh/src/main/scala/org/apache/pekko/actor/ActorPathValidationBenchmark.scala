@@ -38,17 +38,19 @@ import org.openjdk.jmh.annotations.Warmup
 `polluted = true` first exercises String.charAt with UTF-16 strings so its Latin-1/UTF-16 coder branch
 profile (collected once, JVM-wide, in String.charAt's own bytecode) sees both coders, as it would in
 any process that ever handles non-ASCII text. charAt-based scanners then get both coders compiled into
-their loop; the byte-table scanner (isValidPathElement) is unaffected:
+their loop; the byte-table scanner (isValidPathElement) is unaffected. For very long names the
+byte-table scanner pays for the getBytes copy and is slower than an unpolluted charAt loop
+(-f 3 -wi 5 -w 2s -i 10 -r 2s):
 
-[info] Benchmark                                                  (polluted)   Mode  Cnt    Score    Error   Units
-[info] ActorPathValidationBenchmark.charAtLoop7000                     false  thrpt    5    0.197 ±  0.028  ops/us
-[info] ActorPathValidationBenchmark.charAtLoop7000                      true  thrpt    5    0.107 ±  0.017  ops/us
-[info] ActorPathValidationBenchmark.charAtLoopActor_1                  false  thrpt    5  100.954 ± 14.868  ops/us
-[info] ActorPathValidationBenchmark.charAtLoopActor_1                   true  thrpt    5   49.306 ±  8.706  ops/us
-[info] ActorPathValidationBenchmark.handLoop7000                       false  thrpt    5    0.176 ±  0.012  ops/us
-[info] ActorPathValidationBenchmark.handLoop7000                        true  thrpt    5    0.142 ±  0.094  ops/us
-[info] ActorPathValidationBenchmark.handLoopActor_1                    false  thrpt    5  138.841 ± 111.054 ops/us
-[info] ActorPathValidationBenchmark.handLoopActor_1                     true  thrpt    5  162.126 ± 281.298 ops/us
+[info] Benchmark                                       (polluted)   Mode  Cnt    Score   Error   Units
+[info] ActorPathValidationBenchmark.charAtLoop7000          false  thrpt   30    0.152 ± 0.003  ops/us
+[info] ActorPathValidationBenchmark.charAtLoop7000           true  thrpt   30    0.086 ± 0.004  ops/us
+[info] ActorPathValidationBenchmark.charAtLoopActor_1       false  thrpt   30  108.294 ± 4.260  ops/us
+[info] ActorPathValidationBenchmark.charAtLoopActor_1        true  thrpt   30   41.834 ± 0.544  ops/us
+[info] ActorPathValidationBenchmark.handLoop7000            false  thrpt   30    0.101 ± 0.014  ops/us
+[info] ActorPathValidationBenchmark.handLoop7000             true  thrpt   30    0.096 ± 0.007  ops/us
+[info] ActorPathValidationBenchmark.handLoopActor_1         false  thrpt   30  160.988 ± 6.836  ops/us
+[info] ActorPathValidationBenchmark.handLoopActor_1          true  thrpt   30  161.953 ± 3.548  ops/us
  */
 @Fork(2)
 @State(JmhScope.Benchmark)
