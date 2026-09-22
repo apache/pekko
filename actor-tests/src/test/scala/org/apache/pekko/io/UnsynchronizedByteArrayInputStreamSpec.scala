@@ -17,8 +17,10 @@
 
 package org.apache.pekko.util
 
-import java.io.{ ByteArrayOutputStream, EOFException }
+import java.io.{ ByteArrayInputStream, ByteArrayOutputStream, EOFException }
 import java.nio.charset.StandardCharsets
+
+import scala.util.{ Random, Try }
 
 import org.apache.pekko
 import pekko.io.UnsynchronizedByteArrayInputStream
@@ -30,6 +32,10 @@ class UnsynchronizedByteArrayInputStreamSpec extends AnyWordSpec with Matchers {
 
   private def bytes(s: String): Array[Byte] = s.getBytes(StandardCharsets.UTF_8)
   private def str(b: Array[Byte]): String = new String(b, StandardCharsets.UTF_8)
+
+  /** Result of an operation, with a failure reduced to its exception class, so two streams can be compared. */
+  private def outcome[A](f: => A): Either[String, A] =
+    Try(f).toEither.left.map(_.getClass.getName)
 
   "UnsynchronizedByteArrayInputStream" must {
     "support mark and reset" in {
@@ -162,6 +168,89 @@ class UnsynchronizedByteArrayInputStreamSpec extends AnyWordSpec with Matchers {
       arr(0) = 'z'.toByte
       stream.read() should ===('z')
       stream.close()
+    }
+    "behave like java.io.ByteArrayInputStream under randomized operation sequences" in {
+      // Differential test: every operation is run against both this stream and a ByteArrayInputStream
+      // constructed identically, and the results (return values, exceptions, buffer contents, available())
+      // must match. The only allowed deviations are the two documented ones:
+      //  - a zero-length read at EOF returns 0 here, ByteArrayInputStream returns -1
+      //  - a negative skip throws IllegalArgumentException here, ByteArrayInputStream returns 0
+      val rnd = new Random(20260922L)
+      for (iteration <- 1 to 500) {
+        val data = new Array[Byte](rnd.nextInt(48))
+        rnd.nextBytes(data)
+        val (stream, reference) =
+          if (rnd.nextBoolean()) (new UnsynchronizedByteArrayInputStream(data), new ByteArrayInputStream(data))
+          else {
+            val off = rnd.nextInt(data.length + 1)
+            val len = rnd.nextInt(data.length - off + 1)
+            (new UnsynchronizedByteArrayInputStream(data, off, len), new ByteArrayInputStream(data, off, len))
+          }
+        for (step <- 1 to 40) {
+          val op = rnd.nextInt(13)
+          withClue(s"iteration $iteration, step $step, op $op: ") {
+            op match {
+              case 0 =>
+                stream.read() should ===(reference.read())
+              case 1 =>
+                val a = new Array[Byte](rnd.nextInt(6))
+                val b = a.clone()
+                val expected = reference.read(b)
+                if (a.length == 0 && expected == -1) stream.read(a) should ===(0) // documented deviation
+                else stream.read(a) should ===(expected)
+                a should ===(b)
+              case 2 =>
+                val a = new Array[Byte](rnd.nextInt(8))
+                val b = a.clone()
+                val off = rnd.nextInt(a.length + 2) - 1 // may be out of bounds
+                val len = rnd.nextInt(a.length + 2) - 1
+                val expected = outcome(reference.read(b, off, len))
+                if (len == 0 && expected == Right(-1)) stream.read(a, off, len) should ===(0) // documented deviation
+                else outcome(stream.read(a, off, len)) should ===(expected)
+                a should ===(b)
+              case 3 =>
+                stream.readAllBytes() should ===(reference.readAllBytes())
+              case 4 =>
+                val len = rnd.nextInt(12) - 1 // may be negative
+                outcome(stream.readNBytes(len).toSeq) should ===(outcome(reference.readNBytes(len).toSeq))
+              case 5 =>
+                val a = new Array[Byte](rnd.nextInt(8))
+                val b = a.clone()
+                val off = rnd.nextInt(a.length + 2) - 1 // may be out of bounds
+                val len = rnd.nextInt(a.length + 2) - 1
+                outcome(stream.readNBytes(a, off, len)) should ===(outcome(reference.readNBytes(b, off, len)))
+                a should ===(b)
+              case 6 =>
+                val n = rnd.nextInt(12).toLong
+                stream.skip(n) should ===(reference.skip(n))
+              case 7 =>
+                val n = rnd.nextInt(6).toLong
+                reference.skip(-n) should ===(0L)
+                if (n == 0) stream.skip(0) should ===(0L)
+                else an[IllegalArgumentException] should be thrownBy stream.skip(-n) // documented deviation
+              case 8 =>
+                val n = rnd.nextInt(12).toLong - 1 // may be negative
+                outcome(stream.skipNBytes(n)) should ===(outcome(reference.skipNBytes(n)))
+              case 9 =>
+                val a = new ByteArrayOutputStream()
+                val b = new ByteArrayOutputStream()
+                stream.transferTo(a) should ===(reference.transferTo(b))
+                a.toByteArray should ===(b.toByteArray)
+              case 10 =>
+                stream.available() should ===(reference.available())
+              case 11 =>
+                stream.mark(rnd.nextInt(4))
+                reference.mark(rnd.nextInt(4))
+              case 12 =>
+                stream.reset()
+                reference.reset()
+            }
+            stream.available() should ===(reference.available())
+          }
+        }
+        stream.close()
+        reference.close()
+      }
     }
   }
 }
