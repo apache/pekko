@@ -133,6 +133,32 @@ class ActorPathSpec extends AnyWordSpec with Matchers with TableDrivenPropertyCh
       }
     }
 
+    "classify every char like the reference predicate" in {
+      // Independent, exhaustive definition of the accepted alphabet, so the table-driven validator
+      // is locked to it for every one of the 65,536 chars (including 0x80-0xFF and surrogates).
+      def isValidChar(c: Char): Boolean =
+        (c >= 'a' && c <= 'z') ||
+        (c >= 'A' && c <= 'Z') ||
+        (c >= '0' && c <= '9') ||
+        "-_.*$+:@&=,!~';".contains(c)
+      def isHexChar(c: Char): Boolean =
+        (c >= 'a' && c <= 'f') ||
+        (c >= 'A' && c <= 'F') ||
+        (c >= '0' && c <= '9')
+
+      var c = 0
+      while (c <= Char.MaxValue) {
+        val ch = c.toChar
+        withClue(f"char U+$c%04X: ") {
+          ActorPath.isValidPathElement(ch.toString) should ===(isValidChar(ch) && ch != '$')
+          ActorPath.isValidPathElement("a" + ch) should ===(isValidChar(ch))
+          ActorPath.isValidPathElement("%" + ch + "0") should ===(isHexChar(ch))
+          ActorPath.isValidPathElement("%0" + ch) should ===(isHexChar(ch))
+        }
+        c += 1
+      }
+    }
+
     "create correct toStringWithAddress" in {
       val local = Address("pekko", "mysys")
       val a = local.copy(host = Some("aaa"), port = Some(7355))
