@@ -17,6 +17,9 @@
 
 package org.apache.pekko.util
 
+import scala.collection.immutable.ArraySeq
+import scala.collection.mutable
+
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
@@ -36,6 +39,20 @@ class ByteStringBuilderScala213PlusSpec extends AnyWordSpec with Matchers {
     "handle addAll with ByteString" in {
       val result: ByteString = ByteString.newBuilder.addAll(ByteString("a")).result()
       result shouldEqual ByteString("a")
+    }
+    "handle addAll with immutable.ArraySeq.ofByte without aliasing the backing array" in {
+      val array = Array[Byte]('a', 'b', 'c')
+      val builder = ByteString.newBuilder.addAll(ArraySeq.unsafeWrapArray(array))
+      array(0) = 'z'
+      builder.result() shouldEqual ByteString("abc")
+      ByteString.newBuilder.addAll(ArraySeq.unsafeWrapArray(Array.emptyByteArray)).result() shouldEqual ByteString.empty
+    }
+    "handle addAll with mutable.ArraySeq.ofByte without aliasing the backing array" in {
+      val array = Array[Byte]('a', 'b', 'c')
+      val builder = ByteString.newBuilder.addAll(mutable.ArraySeq.make(array))
+      array(0) = 'z'
+      builder.result() shouldEqual ByteString("abc")
+      ByteString.newBuilder.addAll(mutable.ArraySeq.make(Array.emptyByteArray)).result() shouldEqual ByteString.empty
     }
   }
 }
