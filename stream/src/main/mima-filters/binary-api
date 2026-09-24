@@ -1,0 +1,39 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+# Definitions that were narrowed to private[pekko] or sealed in 2.0.x but are still public in
+# bytecode. Kept checked so a later removal is still reported against clients compiled
+# against 1.0.x. See https://github.com/scala-garden/mima#keeping-a-definition-checked
+
+BinaryApi.keep[ClassNoLongerCheckedProblem]("org.apache.pekko.stream.ActorMaterializer")
+BinaryApi.keep[ClassNoLongerCheckedProblem]("org.apache.pekko.stream.ActorMaterializer$")
+BinaryApi.keep[MethodNoLongerCheckedProblem]("org.apache.pekko.stream.ActorMaterializerSettings.initialInputBufferSize()Int")
+BinaryApi.keep[MethodNoLongerCheckedProblem]("org.apache.pekko.stream.ActorMaterializerSettings.maxInputBufferSize()Int")
+BinaryApi.keep[MethodNoLongerCheckedProblem]("org.apache.pekko.stream.ActorMaterializerSettings.dispatcher()java.lang.String")
+BinaryApi.keep[MethodNoLongerCheckedProblem]("org.apache.pekko.stream.ActorMaterializerSettings.supervisionDecider()scala.Function1")
+BinaryApi.keep[MethodNoLongerCheckedProblem]("org.apache.pekko.stream.ActorMaterializerSettings.debugLogging()Boolean")
+BinaryApi.keep[MethodNoLongerCheckedProblem]("org.apache.pekko.stream.ActorMaterializerSettings.outputBurstLimit()Int")
+BinaryApi.keep[MethodNoLongerCheckedProblem]("org.apache.pekko.stream.ActorMaterializerSettings.fuzzingMode()Boolean")
+BinaryApi.keep[MethodNoLongerCheckedProblem]("org.apache.pekko.stream.ActorMaterializerSettings.autoFusing()Boolean")
+BinaryApi.keep[MethodNoLongerCheckedProblem]("org.apache.pekko.stream.ActorMaterializerSettings.maxFixedBufferSize()Int")
+BinaryApi.keep[MethodNoLongerCheckedProblem]("org.apache.pekko.stream.ActorMaterializerSettings.syncProcessingLimit()Int")
+BinaryApi.keep[MethodNoLongerCheckedProblem]("org.apache.pekko.stream.ActorMaterializerSettings.blockingIoDispatcher()java.lang.String")
+BinaryApi.keep[MethodNoLongerCheckedProblem]("org.apache.pekko.stream.ActorMaterializerSettings.withDispatcher(java.lang.String)org.apache.pekko.stream.ActorMaterializerSettings")
+BinaryApi.keep[ClassNoLongerCheckedProblem]("org.apache.pekko.stream.ActorMaterializerSettings$")
+BinaryApi.keep[HierarchyNoLongerCheckedProblem]("org.apache.pekko.stream.Attributes$MandatoryAttribute")
+BinaryApi.keep[MethodNoLongerCheckedProblem]("org.apache.pekko.stream.StreamSubscriptionTimeoutSettings.mode()org.apache.pekko.stream.StreamSubscriptionTimeoutTerminationMode")
+BinaryApi.keep[MethodNoLongerCheckedProblem]("org.apache.pekko.stream.StreamSubscriptionTimeoutSettings.timeout()scala.concurrent.duration.FiniteDuration")
