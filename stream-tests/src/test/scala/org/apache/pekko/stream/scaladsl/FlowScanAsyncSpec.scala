@@ -13,7 +13,6 @@
 
 package org.apache.pekko.stream.scaladsl
 
-import scala.collection.immutable
 import scala.concurrent.ExecutionContextExecutor
 import scala.concurrent.Future
 import scala.concurrent.Promise
@@ -215,7 +214,7 @@ class FlowScanAsyncSpec extends StreamSpec with Matchers {
     }
 
     def whenFailedScan(
-        elements: immutable.Seq[Int],
+        elements: Seq[Int],
         zero: Int,
         throwable: Throwable = new Exception("non fatal exception"),
         decider: Supervision.Decider = Supervision.stoppingDecider): Probe[Int] = {
@@ -232,7 +231,7 @@ class FlowScanAsyncSpec extends StreamSpec with Matchers {
     }
 
     def whenEventualFuture(
-        promises: immutable.Seq[Promise[Int]],
+        promises: Seq[Promise[Int]],
         zero: Int,
         decider: Supervision.Decider): (TestPublisher.Probe[Int], TestSubscriber.Probe[Int]) = {
       require(promises.nonEmpty, "must be at least one promise")
@@ -252,7 +251,7 @@ class FlowScanAsyncSpec extends StreamSpec with Matchers {
     }
 
     def whenFailedFuture(
-        elements: immutable.Seq[Int],
+        elements: Seq[Int],
         zero: Int,
         throwable: Throwable = new Exception("non fatal exception"),
         decider: Supervision.Decider = Supervision.stoppingDecider): Probe[Int] = {
@@ -269,7 +268,7 @@ class FlowScanAsyncSpec extends StreamSpec with Matchers {
     }
 
     def whenNullElement(
-        elements: immutable.Seq[String],
+        elements: Seq[String],
         zero: String,
         decider: Supervision.Decider = Supervision.stoppingDecider): Probe[String] = {
       val nullFutureScanFlow: Flow[String, String, ?] = Flow[String].scanAsync(zero) { (_: String, next: String) =>

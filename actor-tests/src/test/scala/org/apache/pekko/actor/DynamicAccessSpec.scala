@@ -13,7 +13,6 @@
 
 package org.apache.pekko.actor
 
-import scala.collection.immutable
 import scala.concurrent.Await
 import scala.concurrent.duration._
 import scala.util.{ Failure, Success, Try }
@@ -97,7 +96,7 @@ class DynamicAccessSpec extends AnyWordSpec with Matchers with BeforeAndAfterAll
     "preserve the target exception from a failing constructor" in {
       val result = dynamicAccess.createInstanceFor[TestClassWithThrowingConstructor](
         classOf[TestClassWithThrowingConstructor],
-        immutable.Seq(classOf[String] -> "ignored"))
+        Seq(classOf[String] -> "ignored"))
       val exception = result.failed.get
       exception shouldBe a[IllegalArgumentException]
       exception.getMessage should ===("user-bug")
@@ -118,7 +117,7 @@ class DynamicAccessSpec extends AnyWordSpec with Matchers with BeforeAndAfterAll
         case s: Success[TestSuperclass]        => s
         case Failure(_: NoSuchMethodException) =>
           dynamicAccess
-            .createInstanceFor[TestSuperclass](fqcn, immutable.Seq((classOf[String], "string ctor argument")))
+            .createInstanceFor[TestSuperclass](fqcn, Seq((classOf[String], "string ctor argument")))
         case f: Failure[?] => f
       }
 

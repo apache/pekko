@@ -13,8 +13,6 @@
 
 package org.apache.pekko.remote.artery
 
-import scala.collection.immutable
-
 import org.apache.pekko
 import pekko.actor._
 import pekko.remote.{ RARP, RemoteScope }
@@ -97,7 +95,7 @@ class RemoteRouterSpec
     shutdown(masterSystem)
   }
 
-  def collectRouteePaths(probe: TestProbe, router: ActorRef, n: Int): immutable.Seq[ActorPath] = {
+  def collectRouteePaths(probe: TestProbe, router: ActorRef, n: Int): Seq[ActorPath] = {
     for (i <- 1 to n) yield {
       val msg = i.toString
       router.tell(msg, probe.ref)

@@ -16,7 +16,6 @@ package org.apache.pekko.actor.testkit.typed.internal
 import java.util
 
 import scala.annotation.tailrec
-import scala.collection.immutable
 import scala.jdk.CollectionConverters._
 import scala.reflect.ClassTag
 import scala.util.control.Exception.Catcher
@@ -104,7 +103,7 @@ private[pekko] final class BehaviorTestKitImpl[T](
 
   override def selfInbox(): TestInboxImpl[T] = context.selfInbox
 
-  override def retrieveAllEffects(): immutable.Seq[Effect] = {
+  override def retrieveAllEffects(): Seq[Effect] = {
     @tailrec def rec(acc: List[Effect]): List[Effect] = context.effectQueue.poll() match {
       case null => acc.reverse
       case x    => rec(x :: acc)
@@ -202,7 +201,7 @@ private[pekko] final class BehaviorTestKitImpl[T](
 
   override def getAllLogEntries(): util.List[CapturedLogEvent] = logEntries().asJava
 
-  override def logEntries(): immutable.Seq[CapturedLogEvent] = context.logEntries
+  override def logEntries(): Seq[CapturedLogEvent] = context.logEntries
 
   override def clearLog(): Unit = context.clearLog()
 

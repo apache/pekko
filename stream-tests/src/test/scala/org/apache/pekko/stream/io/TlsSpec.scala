@@ -19,7 +19,6 @@ import java.security.cert.CertificateException
 import java.util.concurrent.TimeoutException
 import javax.net.ssl._
 
-import scala.collection.immutable
 import scala.concurrent.Await
 import scala.concurrent.{ Future, Promise }
 import scala.concurrent.duration._
@@ -283,7 +282,7 @@ abstract class AbstractTlsSpec(useLegacyActor: Boolean)
         def leftClosing: TLSClosing = IgnoreComplete
         def rightClosing: TLSClosing = IgnoreComplete
 
-        def inputs: immutable.Seq[SslTlsOutbound]
+        def inputs: Seq[SslTlsOutbound]
         def output: ByteString
 
         protected def send(str: String) = SendBytes(ByteString(str))
@@ -325,7 +324,7 @@ abstract class AbstractTlsSpec(useLegacyActor: Boolean)
       }
 
       object CompletedImmediately extends PayloadScenario {
-        override def inputs: immutable.Seq[SslTlsOutbound] = Nil
+        override def inputs: Seq[SslTlsOutbound] = Nil
         override def output = ByteString.empty
 
         override def leftClosing: TLSClosing = EagerClose

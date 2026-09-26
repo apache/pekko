@@ -25,7 +25,6 @@ import pekko.testkit.TestProbe
 
 //#imports-test-probe
 
-import scala.collection.immutable
 import scala.concurrent.Future
 import scala.util.control.NonFatal
 
@@ -137,14 +136,14 @@ class TestKitDocSpec extends PekkoSpec with DefaultTimeout with ImplicitSender {
     // #test-expect
     val hello: String = expectMsg("hello")
     val any: String = expectMsgAnyOf("hello", "world")
-    val all: immutable.Seq[String] = expectMsgAllOf("hello", "world")
+    val all: Seq[String] = expectMsgAllOf("hello", "world")
     val i: Int = expectMsgType[Int]
     expectNoMessage(200.millis)
     // #test-expect
     testActor.tell("receveN-1", ActorRef.noSender)
     testActor.tell("receveN-2", ActorRef.noSender)
     // #test-expect
-    val two: immutable.Seq[AnyRef] = receiveN(2)
+    val two: Seq[AnyRef] = receiveN(2)
     // #test-expect
     assert("hello" == hello)
     assert("hello" == any)

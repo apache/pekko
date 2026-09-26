@@ -27,7 +27,6 @@ import java.util.UUID
 import java.util.logging.FileHandler
 
 import scala.annotation.nowarn
-import scala.collection.immutable
 import scala.concurrent.duration._
 import scala.concurrent.duration.FiniteDuration
 
@@ -517,8 +516,8 @@ class JacksonJsonSerializerSpec extends JacksonSerializerSpec("jackson-json") {
 
         override def overrideConfiguredSerializationFeatures(
             bindingName: String,
-            configuredFeatures: immutable.Seq[(SerializationFeature, Boolean)])
-            : immutable.Seq[(SerializationFeature, Boolean)] = {
+            configuredFeatures: Seq[(SerializationFeature, Boolean)])
+            : Seq[(SerializationFeature, Boolean)] = {
           if (bindingName == "jackson-json")
             configuredFeatures :+ (SerializationFeature.INDENT_OUTPUT -> true)
           else
@@ -527,7 +526,7 @@ class JacksonJsonSerializerSpec extends JacksonSerializerSpec("jackson-json") {
 
         override def overrideConfiguredModules(
             bindingName: String,
-            configuredModules: immutable.Seq[Module]): immutable.Seq[Module] =
+            configuredModules: Seq[Module]): Seq[Module] =
           if (bindingName == "jackson-json")
             configuredModules.filterNot(_.isInstanceOf[JavaTimeModule]) :+ customJavaTimeModule
           else
@@ -535,7 +534,7 @@ class JacksonJsonSerializerSpec extends JacksonSerializerSpec("jackson-json") {
 
         override def overrideConfiguredMapperFeatures(
             bindingName: String,
-            configuredFeatures: immutable.Seq[(MapperFeature, Boolean)]): immutable.Seq[(MapperFeature, Boolean)] =
+            configuredFeatures: Seq[(MapperFeature, Boolean)]): Seq[(MapperFeature, Boolean)] =
           if (bindingName == "jackson-json")
             configuredFeatures :+ (MapperFeature.SORT_PROPERTIES_ALPHABETICALLY -> true)
           else
@@ -543,8 +542,8 @@ class JacksonJsonSerializerSpec extends JacksonSerializerSpec("jackson-json") {
 
         override def overrideConfiguredJsonParserFeatures(
             bindingName: String,
-            configuredFeatures: immutable.Seq[(JsonParser.Feature, Boolean)])
-            : immutable.Seq[(JsonParser.Feature, Boolean)] =
+            configuredFeatures: Seq[(JsonParser.Feature, Boolean)])
+            : Seq[(JsonParser.Feature, Boolean)] =
           if (bindingName == "jackson-json")
             configuredFeatures :+ (JsonParser.Feature.ALLOW_SINGLE_QUOTES -> true)
           else
@@ -552,8 +551,8 @@ class JacksonJsonSerializerSpec extends JacksonSerializerSpec("jackson-json") {
 
         override def overrideConfiguredJsonGeneratorFeatures(
             bindingName: String,
-            configuredFeatures: immutable.Seq[(JsonGenerator.Feature, Boolean)])
-            : immutable.Seq[(JsonGenerator.Feature, Boolean)] =
+            configuredFeatures: Seq[(JsonGenerator.Feature, Boolean)])
+            : Seq[(JsonGenerator.Feature, Boolean)] =
           if (bindingName == "jackson-json")
             configuredFeatures :+ (JsonGenerator.Feature.WRITE_BIGDECIMAL_AS_PLAIN -> true)
           else

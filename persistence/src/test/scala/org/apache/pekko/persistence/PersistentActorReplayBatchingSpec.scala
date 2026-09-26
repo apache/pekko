@@ -17,7 +17,6 @@
 
 package org.apache.pekko.persistence
 
-import scala.collection.immutable
 import scala.concurrent.{ Await, Future, Promise }
 import scala.concurrent.duration._
 import scala.util.Try
@@ -79,7 +78,7 @@ final class RestartingReplayJournal extends AsyncWriteJournal {
   }
 
   override def asyncWriteMessages(
-      messages: immutable.Seq[AtomicWrite]): Future[immutable.Seq[Try[Unit]]] = Future.successful(Nil)
+      messages: Seq[AtomicWrite]): Future[Seq[Try[Unit]]] = Future.successful(Nil)
 
   override def asyncDeleteMessagesTo(persistenceId: String, toSequenceNr: Long): Future[Unit] =
     Future.successful(())

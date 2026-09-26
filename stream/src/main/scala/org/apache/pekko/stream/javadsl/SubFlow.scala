@@ -18,7 +18,6 @@ import java.util.concurrent.CompletionStage
 
 import scala.annotation.unchecked.uncheckedVariance
 import scala.annotation.varargs
-import scala.collection.immutable
 import scala.jdk.CollectionConverters._
 import scala.jdk.DurationConverters._
 import scala.jdk.FutureConverters._
@@ -2441,7 +2440,7 @@ final class SubFlow[In, Out, Mat](
       case source: Source[Out @unchecked, ?] => source.asScala
       case other                             => other
     }
-    else immutable.Seq()
+    else Seq()
     new SubFlow(delegate.mergeAll(seq, eagerComplete))
   }
 
@@ -2500,7 +2499,7 @@ final class SubFlow[In, Out, Mat](
       case source: Source[Out @unchecked, ?] => source.asScala
       case other                             => other
     }
-    else immutable.Seq()
+    else Seq()
     new SubFlow(delegate.interleaveAll(seq, segmentSize, eagerClose))
   }
 

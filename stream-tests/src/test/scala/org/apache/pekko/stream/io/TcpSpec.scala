@@ -84,7 +84,7 @@ class FailingDnsResolver extends DnsProvider {
         request: DnsProtocol.Resolve,
         system: ActorSystem,
         sender: ActorRef): Option[DnsProtocol.Resolved] = {
-      sender ! DnsProtocol.Resolved(request.name, immutable.Seq.empty, immutable.Seq.empty)
+      sender ! DnsProtocol.Resolved(request.name, Seq.empty, Seq.empty)
       None
     }
   }

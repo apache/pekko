@@ -266,7 +266,7 @@ class FlowFutureFlowSpec extends StreamSpec {
       }
 
       "handle closed downstream when flow future is completed after downstream cancel" in {
-        val prFlow = Promise[Flow[Int, Int, Future[collection.immutable.Seq[Int]]]]()
+        val prFlow = Promise[Flow[Int, Int, Future[Seq[Int]]]]()
         val (fNestedFlowMatVal, fSinkCompletion) = src10()
           .viaMat {
             Flow.futureFlow(prFlow.future)
@@ -314,7 +314,7 @@ class FlowFutureFlowSpec extends StreamSpec {
       }
 
       "handle early downstream failure when flow future is late completed" in {
-        val prFlow = Promise[Flow[Int, Int, Future[collection.immutable.Seq[Int]]]]()
+        val prFlow = Promise[Flow[Int, Int, Future[Seq[Int]]]]()
         val (fSeq1, fSeq2) = src10()
           .viaMat {
             Flow.futureFlow(prFlow.future)
@@ -503,7 +503,7 @@ class FlowFutureFlowSpec extends StreamSpec {
 
       "abrupt termination before future completion" in {
         val mat = Materializer(system)
-        val prFlow = Promise[Flow[Int, Int, Future[collection.immutable.Seq[Int]]]]()
+        val prFlow = Promise[Flow[Int, Int, Future[Seq[Int]]]]()
         val (fSeq1, fSeq2) = src10()
           .viaMat {
             Flow.futureFlow(prFlow.future)

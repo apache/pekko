@@ -16,7 +16,6 @@ package org.apache.pekko.stream
 import javax.net.ssl._
 
 import scala.annotation.varargs
-import scala.collection.immutable
 
 import org.apache.pekko
 import pekko.annotation.DoNotInherit
@@ -221,8 +220,8 @@ object TLSProtocol {
    * switches off client authentication.
    */
   case class NegotiateNewSession(
-      enabledCipherSuites: Option[immutable.Seq[String]],
-      enabledProtocols: Option[immutable.Seq[String]],
+      enabledCipherSuites: Option[Seq[String]],
+      enabledProtocols: Option[Seq[String]],
       clientAuth: Option[TLSClientAuth],
       sslParameters: Option[SSLParameters])
       extends SslTlsOutbound {

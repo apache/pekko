@@ -13,8 +13,6 @@
 
 package org.apache.pekko.stream.scaladsl
 
-import scala.collection.immutable
-
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.stream.testkit.StreamSpec
@@ -204,7 +202,7 @@ case class Offset(value: Int)
 
 case class Record(key: String, value: String)
 case class Committed[R](record: R, offset: Int)
-case class MultiRecord(records: immutable.Seq[Record])
+case class MultiRecord(records: Seq[Record])
 
 object Consumer {
   def committableSource(
