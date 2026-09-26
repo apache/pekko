@@ -67,8 +67,6 @@ abstract class DurableStateStoreSpec(config: Config)
 
   override protected def supportsSerialization: CapabilityFlag = CapabilityFlag.on()
 
-  override protected def supportsSoftDelete: CapabilityFlag = CapabilityFlag.off()
-
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     preparePersistenceId(pid)
@@ -197,19 +195,6 @@ abstract class DurableStateStoreSpec(config: Config)
         val result = Await.result(store.getObject(pid), timeout)
         result.value shouldBe Some(value)
         result.revision shouldBe 1L
-      }
-    }
-
-    optional(flag = supportsSoftDelete) {
-      "delete a state via the deprecated deleteObject overload" in {
-        val store = durableStateStore()
-        val value = s"state-${pid}"
-        Await.result(store.upsertObject(pid, 1L, value, "test-tag"), timeout)
-        @nowarn("cat=deprecation")
-        val deleteResult = store.deleteObject(pid)
-        Await.result(deleteResult, timeout)
-        val result = Await.result(store.getObject(pid), timeout)
-        result.value shouldBe None
       }
     }
   }
