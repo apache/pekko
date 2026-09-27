@@ -16,6 +16,7 @@ package org.apache.pekko.event.slf4j
 import java.io.ByteArrayOutputStream
 import java.nio.charset.StandardCharsets
 
+import scala.annotation.nowarn
 import scala.concurrent.duration._
 
 import ch.qos.logback.core.OutputStreamAppender
@@ -85,6 +86,7 @@ object Slf4jLoggerSpec {
 
 }
 
+@nowarn("msg=method add in trait Marker is deprecated")
 class Slf4jLoggerSpec extends PekkoSpec(Slf4jLoggerSpec.config) with BeforeAndAfterEach {
   import Slf4jLoggerSpec._
 
