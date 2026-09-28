@@ -313,6 +313,24 @@ This means that everything that is inside the red bubble will be executed by one
 by another. This scheme can be applied successively, always having one such boundary enclose the previous ones plus all
 operators that have been added since then.
 
+#### Type-check scalability on older JDKs
+
+JDKs affected by [JDK-8180450](https://bugs.openjdk.org/browse/JDK-8180450) can lose multi-core scalability when the
+same concrete class is repeatedly checked against different interfaces. In a stream this can happen when an element
+class implements multiple interfaces and hot, non-inlined operator functions alternately accept those interface types.
+The contention belongs to the concrete element class's JVM secondary-supertype cache; it is not caused merely by a
+fused connection storing elements as `Any` or by a generic `grab[T]`.
+
+The preferred mitigation is to use JDK 21.0.8 or later in the JDK 21 update line, or JDK 23 or later. If an affected
+JDK cannot be upgraded, keep the declared element type through a hot operator chain concrete, or use one stable
+interface view, where practical. Avoid repeatedly changing the same objects between unrelated interface views across
+operator functions that the JIT cannot inline.
+
+The JIT can inline operator functions and eliminate their bridge casts, so this is workload dependent. Before changing
+an application, reproduce the issue with a representative benchmark or use the
+[type-pollution agent](https://github.com/RedHatPerf/type-pollution-agent) to identify concrete classes whose secondary
+supertype cache is actually changing at hot type-check sites.
+
 @@@ warning
 
 Without fusing (i.e. up to version 2.0-M2) each stream operator had an implicit input buffer
