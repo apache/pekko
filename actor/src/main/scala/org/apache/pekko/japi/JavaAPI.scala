@@ -109,7 +109,7 @@ object Util {
   def classTag[T](clazz: Class[T]): ClassTag[T] = ClassTag(clazz)
 
   /**
-   * Returns an Seq representing the provided array of Classes,
+   * Returns an immutable Seq representing the provided array of Classes,
    * an overloading of the generic immutableSeq in Util, to accommodate for erasure.
    */
   def immutableSeq(arr: Array[Class[?]]): Seq[Class[?]] = immutableSeq[Class[?]](arr)
