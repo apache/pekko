@@ -48,10 +48,14 @@ import pekko.stream.impl.Stages.DefaultAttributes
 import pekko.stream.impl.fusing.GraphStages.{ FutureSource, RepeatSource, SimpleLinearGraphStage, SingleSource }
 import pekko.stream.scaladsl.{
   DelayStrategy,
+  GatherCollector,
+  Gatherer,
+  OneToOneGatherer,
   Source,
   StatefulMapConcatAccumulator,
   StatefulMapConcatAccumulatorFactory
 }
+import pekko.stream.javadsl.{ Gatherers => JGatherers }
 import pekko.stream.stage._
 import pekko.util.{ ConstantFun, OptionVal }
 
@@ -2533,6 +2537,325 @@ private[pekko] final class StatefulMap[S, In, Out](create: () => S, f: (S, In) =
     }
 
   override def toString = "StatefulMap"
+}
+
+/**
+ * INTERNAL API
+ */
+@InternalApi
+private[pekko] final class Gather[In, Out](factory: () => Gatherer[In, Out]) extends GraphStage[FlowShape[In, Out]] {
+  require(factory != null, "factory should not be null")
+
+  private val in = Inlet[In]("Gather.in")
+  private val out = Outlet[Out]("Gather.out")
+  override val shape: FlowShape[In, Out] = FlowShape(in, out)
+
+  override def initialAttributes: Attributes = DefaultAttributes.gather and SourceLocation.forLambda(factory)
+
+  override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =
+    new GraphStageLogic(shape) with InHandler with OutHandler {
+      private object FinalAction {
+        final val None = 0
+        final val Complete = 1
+        final val Restart = 2
+        final val Fail = 3
+      }
+
+      private lazy val decider: Decider = inheritedAttributes.mandatoryAttribute[SupervisionStrategy].decider
+      private val contextPropagation = ContextPropagation()
+      private val noopCollector = new GatherCollector[Out] {
+        override def push(elem: Out): Unit = ()
+      }
+      // Hot-path collector: buffers the first push to callbackFirst for exception-rollback safety.
+      // Uses `callbackFirst eq null` as a sentinel instead of a separate boolean flag.
+      // On a second push (multi-output): moves callbackFirst -> pendingFirst and enters multi-mode.
+      private val singleCollector = new GatherCollector[Out] {
+        override def push(elem: Out): Unit = {
+          ReactiveStreamsCompliance.requireNonNullElement(elem)
+          if (hasPendingFirst) {
+            // Already in multi mode: all pushes go directly to overflow queue.
+            if (pendingOverflow eq null)
+              pendingOverflow = new java.util.ArrayDeque[Out]()
+            pendingOverflow.addLast(elem)
+          } else {
+            val cb = callbackFirst
+            if (cb.asInstanceOf[AnyRef] eq null) {
+              callbackFirst = elem
+            } else {
+              // Second output from this gather call: transition to multi mode.
+              pendingFirst = cb
+              hasPendingFirst = true
+              callbackFirst = null.asInstanceOf[Out]
+              multiMode = true
+              if (pendingOverflow eq null)
+                pendingOverflow = new java.util.ArrayDeque[Out]()
+              pendingOverflow.addLast(elem)
+            }
+          }
+        }
+      }
+      // Used only by onPushMulti and invokeOnCompleteAndThen (always queues, never direct).
+      private val pendingCollector = new GatherCollector[Out] {
+        override def push(elem: Out): Unit = enqueuePendingOutput(elem)
+      }
+      // callbackFirst serves as a sentinel: null = "no output buffered this gather call";
+      // non-null = "one output is buffered, not yet pushed to downstream".
+      // This eliminates the separate hasCallbackFirst boolean and its per-element writes.
+      private var callbackFirst: Out = _
+      private var pendingFirst: Out = _
+      private var pendingOverflow: java.util.ArrayDeque[Out] = _
+      private var hasPendingFirst = false
+      private var multiMode = false
+      private var gatherer: Gatherer[In, Out] = _
+      // Hot-path handle for one-to-one mappings. Supports both Scala and Java DSL implementations.
+      private var oneToOneGatherer: AnyRef = _
+      private var finalAction = FinalAction.None
+      private var finalFailure: Throwable = null
+      private var needInvokeOnCompleteCallback = false
+      private var downstreamFinished = false
+
+      override def preStart(): Unit = {
+        restartGatherer()
+        pull(in)
+      }
+
+      override def onPush(): Unit =
+        try {
+          if (oneToOneGatherer ne null) onPushOneToOne()
+          else if (multiMode) onPushMulti()
+          else onPushSingle()
+        } catch {
+          case NonFatal(ex) =>
+            clearPending()
+            if (!downstreamFinished)
+              decider(ex) match {
+                case Supervision.Stop    => invokeOnCompleteAndThen(FinalAction.Fail, ex)
+                case Supervision.Resume  => maybePull()
+                case Supervision.Restart => invokeOnCompleteAndThen(FinalAction.Restart)
+              }
+        }
+
+      override def onPull(): Unit =
+        if (hasPendingFirst) {
+          if (multiMode)
+            pushPendingMulti(shouldResumeContext = needInvokeOnCompleteCallback)
+          else
+            pushPendingSingle(shouldResumeContext = needInvokeOnCompleteCallback)
+        } else maybePull()
+
+      override def onUpstreamFinish(): Unit =
+        if (hasPendingFirst) {
+          if (finalAction != FinalAction.Fail)
+            finalAction = FinalAction.Complete
+        } else invokeOnCompleteAndThen(FinalAction.Complete)
+
+      override def onUpstreamFailure(ex: Throwable): Unit =
+        if (hasPendingFirst) {
+          finalFailure = ex
+          finalAction = FinalAction.Fail
+        } else invokeOnCompleteAndThen(FinalAction.Fail, ex)
+
+      override def onDownstreamFinish(cause: Throwable): Unit = {
+        downstreamFinished = true
+        if (needInvokeOnCompleteCallback) {
+          needInvokeOnCompleteCallback = false
+          gatherer.onComplete(noopCollector)
+        }
+        super.onDownstreamFinish(cause)
+      }
+
+      override def postStop(): Unit = {
+        if (needInvokeOnCompleteCallback)
+          gatherer.onComplete(noopCollector)
+      }
+
+      private def enqueuePendingOutput(elem: Out): Unit = {
+        ReactiveStreamsCompliance.requireNonNullElement(elem)
+        if (hasPendingFirst) {
+          multiMode = true
+          if (pendingOverflow eq null)
+            pendingOverflow = new java.util.ArrayDeque[Out]()
+          pendingOverflow.addLast(elem)
+        } else {
+          pendingFirst = elem
+          hasPendingFirst = true
+        }
+      }
+
+      private def onPushOneToOne(): Unit = {
+        val elem = oneToOneGatherer match {
+          case s: OneToOneGatherer[In, Out] @unchecked            => s.applyOne(grab(in))
+          case j: JGatherers.OneToOneGatherer[In, Out] @unchecked => j.applyOne(grab(in))
+        }
+        ReactiveStreamsCompliance.requireNonNullElement(elem)
+        if (isAvailable(out))
+          push(out, elem)
+        else {
+          pendingFirst = elem
+          hasPendingFirst = true
+          contextPropagation.suspendContext()
+        }
+      }
+
+      // Optimised hot path for the common case (<=1 output per gather call, output available).
+      // The callbackFirst sentinel eliminates the hasCallbackFirst boolean field and its writes.
+      // After a successful push the pull is inlined, removing the maybePull call chain that was
+      // adding extra virtual dispatches per element.
+      private def onPushSingle(): Unit = {
+        gatherer(grab(in), singleCollector)
+        val cb = callbackFirst
+        if (cb.asInstanceOf[AnyRef] ne null) {
+          // Exactly 1 output buffered: clear sentinel, then push.
+          callbackFirst = null.asInstanceOf[Out]
+          if (isAvailable(out)) {
+            push(out, cb)
+            // Inline the common post-push continuation: pull for next element.
+            // finalAction is almost never set on the hot path; keep it in a cold branch.
+            if (finalAction == FinalAction.None) {
+              // grab() cleared hasBeenPulled, so pull(in) is always safe here.
+              if (!isClosed(in)) pull(in)
+            } else
+              afterPushFinalAction()
+          } else {
+            pendingFirst = cb
+            hasPendingFirst = true
+            contextPropagation.suspendContext()
+          }
+        } else if (hasPendingFirst && isAvailable(out)) {
+          // 2+ outputs from this gather call (multi-output case).
+          if (multiMode)
+            pushPendingMulti(shouldResumeContext = false)
+          else
+            pushPendingSingle(shouldResumeContext = false)
+        } else if (hasPendingFirst)
+          contextPropagation.suspendContext()
+        else
+          maybePull() // 0 outputs: pull immediately for the next element
+      }
+
+      private def onPushMulti(): Unit = {
+        gatherer(grab(in), pendingCollector)
+        if (hasPendingFirst && isAvailable(out))
+          pushPendingMulti(shouldResumeContext = false)
+        else if (hasPendingFirst)
+          contextPropagation.suspendContext()
+        else
+          maybePull()
+      }
+
+      // Cold path: handles a deferred final action after an inlined push in onPushSingle.
+      private def afterPushFinalAction(): Unit = {
+        if (downstreamFinished || isClosed(out)) {
+          finalAction = FinalAction.None
+          finalFailure = null
+        } else {
+          val action = finalAction
+          val failure = finalFailure
+          finalAction = FinalAction.None
+          finalFailure = null
+          if (needInvokeOnCompleteCallback) invokeOnCompleteAndThen(action, failure)
+          else execute(action, failure)
+        }
+      }
+
+      private def maybePull(): Unit =
+        if (!isClosed(in) && !hasBeenPulled(in))
+          pull(in)
+
+      private def restartGatherer(): Unit = {
+        val newGatherer = factory()
+        if (newGatherer eq null)
+          throw new IllegalStateException("Gatherer factory must not return null")
+        gatherer = newGatherer
+        oneToOneGatherer = gatherer match {
+          case _: OneToOneGatherer[?, ?]            => gatherer
+          case _: JGatherers.OneToOneGatherer[?, ?] => gatherer
+          case _                                    => null
+        }
+        multiMode = false
+        pendingOverflow = null
+        needInvokeOnCompleteCallback = true
+      }
+
+      private def clearPending(): Unit = {
+        callbackFirst = null.asInstanceOf[Out]
+        pendingFirst = null.asInstanceOf[Out]
+        hasPendingFirst = false
+        if (pendingOverflow ne null)
+          pendingOverflow.clear()
+      }
+
+      private def pushPendingSingle(shouldResumeContext: Boolean): Unit = {
+        if (shouldResumeContext && needInvokeOnCompleteCallback)
+          contextPropagation.resumeContext()
+        val elem = pendingFirst
+        pendingFirst = null.asInstanceOf[Out]
+        hasPendingFirst = false
+        push(out, elem)
+        maybeRunFinalAction()
+      }
+
+      private def pushPendingMulti(shouldResumeContext: Boolean): Unit = {
+        if (shouldResumeContext && needInvokeOnCompleteCallback)
+          contextPropagation.resumeContext()
+        push(out, pendingFirst)
+        if ((pendingOverflow ne null) && !pendingOverflow.isEmpty) {
+          pendingFirst = pendingOverflow.removeFirst()
+          if (needInvokeOnCompleteCallback)
+            contextPropagation.suspendContext()
+        } else {
+          pendingFirst = null.asInstanceOf[Out]
+          hasPendingFirst = false
+          multiMode = false // reset to single-output fast path after draining overflow queue
+          maybeRunFinalAction()
+        }
+      }
+
+      private def maybeRunFinalAction(): Unit = {
+        if (downstreamFinished || isClosed(out)) {
+          finalAction = FinalAction.None
+          finalFailure = null
+        } else if (finalAction == FinalAction.None)
+          maybePull()
+        else {
+          val action = finalAction
+          val failure = finalFailure
+          finalAction = FinalAction.None
+          finalFailure = null
+          if (needInvokeOnCompleteCallback) invokeOnCompleteAndThen(action, failure)
+          else execute(action, failure)
+        }
+      }
+
+      private def invokeOnCompleteAndThen(action: Int, failure: Throwable = null): Unit = {
+        needInvokeOnCompleteCallback = false
+        gatherer.onComplete(pendingCollector)
+        if (hasPendingFirst) {
+          finalAction = action
+          finalFailure = failure
+          if (isAvailable(out))
+            if (multiMode)
+              pushPendingMulti(shouldResumeContext = false)
+            else
+              pushPendingSingle(shouldResumeContext = false)
+        } else
+          execute(action, failure)
+      }
+
+      private def execute(action: Int, failure: Throwable): Unit =
+        action match {
+          case FinalAction.None     => maybePull()
+          case FinalAction.Complete => completeStage()
+          case FinalAction.Fail     => failStage(failure)
+          case FinalAction.Restart  =>
+            restartGatherer()
+            maybePull()
+        }
+
+      setHandlers(in, out, this)
+    }
+
+  override def toString = "Gather"
 }
 
 /**
