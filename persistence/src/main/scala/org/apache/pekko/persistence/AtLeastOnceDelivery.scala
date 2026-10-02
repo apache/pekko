@@ -34,7 +34,7 @@ object AtLeastOnceDelivery {
   @SerialVersionUID(1L)
   case class AtLeastOnceDeliverySnapshot(
       currentDeliveryId: Long,
-      unconfirmedDeliveries: immutable.Seq[UnconfirmedDelivery])
+      unconfirmedDeliveries: Seq[UnconfirmedDelivery])
       extends Message {
 
     /**
@@ -51,7 +51,7 @@ object AtLeastOnceDelivery {
    * @see [[AtLeastOnceDeliveryLike#warnAfterNumberOfUnconfirmedAttempts]]
    */
   @SerialVersionUID(1L)
-  case class UnconfirmedWarning(unconfirmedDeliveries: immutable.Seq[UnconfirmedDelivery]) {
+  case class UnconfirmedWarning(unconfirmedDeliveries: Seq[UnconfirmedDelivery]) {
 
     /**
      * Java API

@@ -13,7 +13,6 @@
 
 package org.apache.pekko.cluster
 
-import scala.collection.immutable
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
@@ -55,7 +54,7 @@ abstract class UnreachableNodeJoinsAgainSpec extends MultiNodeClusterSpec(Unreac
 
   muteMarkingAsUnreachable()
 
-  def allBut(role: RoleName, roles: immutable.Seq[RoleName] = roles): immutable.Seq[RoleName] = {
+  def allBut(role: RoleName, roles: Seq[RoleName] = roles): Seq[RoleName] = {
     roles.filterNot(_ == role)
   }
 

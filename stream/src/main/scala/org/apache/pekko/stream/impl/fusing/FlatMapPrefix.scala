@@ -13,7 +13,6 @@
 
 package org.apache.pekko.stream.impl.fusing
 
-import scala.collection.immutable
 import scala.concurrent.{ Future, Promise }
 import scala.util.control.NonFatal
 
@@ -26,7 +25,7 @@ import pekko.stream.scaladsl.{ Flow, Keep, Source }
 import pekko.stream.stage.{ GraphStageLogic, GraphStageWithMaterializedValue, InHandler, OutHandler }
 import pekko.util.OptionVal
 
-@InternalApi private[pekko] final class FlatMapPrefix[In, Out, M](n: Int, f: immutable.Seq[In] => Flow[In, Out, M])
+@InternalApi private[pekko] final class FlatMapPrefix[In, Out, M](n: Int, f: Seq[In] => Flow[In, Out, M])
     extends GraphStageWithMaterializedValue[FlowShape[In, Out], Future[M]] {
 
   require(n >= 0, s"FlatMapPrefix: n ($n) must be non-negative.")

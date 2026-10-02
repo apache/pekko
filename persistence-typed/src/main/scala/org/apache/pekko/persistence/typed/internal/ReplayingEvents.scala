@@ -14,7 +14,6 @@
 package org.apache.pekko.persistence.typed.internal
 
 import scala.annotation.nowarn
-import scala.collection.immutable
 import scala.concurrent.duration._
 import scala.util.control.NonFatal
 
@@ -325,7 +324,7 @@ private[pekko] final class ReplayingEvents[C, E, S](
         setup.retention match {
           case criteria: SnapshotCountRetentionCriteriaImpl if criteria.snapshotEveryNEvents <= state.eventsReplayed =>
             internalSaveSnapshot(initialRunningState)
-            new running.StoringSnapshot(initialRunningState, immutable.Seq.empty, SnapshotWithoutRetention)
+            new running.StoringSnapshot(initialRunningState, Seq.empty, SnapshotWithoutRetention)
           case _ =>
             tryUnstashOne(new running.HandlingCommands(initialRunningState))
         }

@@ -13,8 +13,6 @@
 
 package org.apache.pekko.persistence.typed.internal
 
-import scala.collection.immutable
-
 import org.apache.pekko
 import pekko.actor.typed.ActorRef
 import pekko.annotation.InternalApi
@@ -29,7 +27,7 @@ private[pekko] abstract class EffectImpl[+Event, State]
     with scaladsl.ReplyEffect[Event, State]
     with scaladsl.EffectBuilder[Event, State] {
   /* All events that will be persisted in this effect */
-  override def events: immutable.Seq[Event] = Nil
+  override def events: Seq[Event] = Nil
 
   override def thenRun(chainedEffect: State => Unit): EffectImpl[Event, State] =
     CompositeEffect(this, new Callback[State](chainedEffect))
@@ -62,10 +60,10 @@ private[pekko] object CompositeEffect {
 @InternalApi
 private[pekko] final case class CompositeEffect[Event, State](
     persistingEffect: scaladsl.EffectBuilder[Event, State],
-    _sideEffects: immutable.Seq[SideEffect[State]])
+    _sideEffects: Seq[SideEffect[State]])
     extends EffectImpl[Event, State] {
 
-  override val events: immutable.Seq[Event] = persistingEffect.events
+  override val events: Seq[Event] = persistingEffect.events
 
   override def toString: String =
     s"CompositeEffect($persistingEffect, sideEffects: ${_sideEffects.size})"
@@ -85,7 +83,7 @@ private[pekko] final case class Persist[Event, State](event: Event) extends Effe
 
 /** INTERNAL API */
 @InternalApi
-private[pekko] final case class PersistAll[Event, State](override val events: immutable.Seq[Event])
+private[pekko] final case class PersistAll[Event, State](override val events: Seq[Event])
     extends EffectImpl[Event, State] {
 
   override def toString: String = s"PersistAll(${events.map(_.getClass.getName).mkString(",")})"

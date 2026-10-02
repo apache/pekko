@@ -13,7 +13,6 @@
 
 package org.apache.pekko.osgi
 
-import scala.collection.immutable
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
@@ -45,7 +44,7 @@ class PingPongActorSystemActivatorTest extends AnyWordSpec with Matchers with Po
 
   import ActorSystemActivatorTest._
 
-  val testBundles: immutable.Seq[BundleDescriptor] = buildTestBundles(
+  val testBundles: Seq[BundleDescriptor] = buildTestBundles(
     List(bundle(TEST_BUNDLE_NAME).withActivator(classOf[PingPongActorSystemActivator])))
 
   "PingPongActorSystemActivator" must {
@@ -78,7 +77,7 @@ class RuntimeNameActorSystemActivatorTest extends AnyWordSpec with Matchers with
 
   import ActorSystemActivatorTest._
 
-  val testBundles: immutable.Seq[BundleDescriptor] =
+  val testBundles: Seq[BundleDescriptor] =
     buildTestBundles(List(bundle(TEST_BUNDLE_NAME).withActivator(classOf[RuntimeNameActorSystemActivator])))
 
   "RuntimeNameActorSystemActivator" must {

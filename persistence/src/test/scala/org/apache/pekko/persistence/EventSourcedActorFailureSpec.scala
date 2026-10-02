@@ -13,7 +13,6 @@
 
 package org.apache.pekko.persistence
 
-import scala.collection.immutable
 import scala.concurrent.Future
 import scala.util.{ Failure, Try }
 import scala.util.control.NoStackTrace
@@ -32,7 +31,7 @@ object EventSourcedActorFailureSpec {
 
   class FailingInmemJournal extends InmemJournal {
 
-    override def asyncWriteMessages(messages: immutable.Seq[AtomicWrite]): Future[immutable.Seq[Try[Unit]]] = {
+    override def asyncWriteMessages(messages: Seq[AtomicWrite]): Future[Seq[Try[Unit]]] = {
       if (isWrong(messages)) throw new SimulatedException("Simulated Store failure")
       else {
         val ser = checkSerializable(messages)
@@ -57,7 +56,7 @@ object EventSourcedActorFailureSpec {
       }
     }
 
-    def isWrong(messages: immutable.Seq[AtomicWrite]): Boolean =
+    def isWrong(messages: Seq[AtomicWrite]): Boolean =
       messages.exists { a =>
         a.payload.exists {
           case PersistentRepr(Evt(s: String), _) => s.contains("wrong")
@@ -65,7 +64,7 @@ object EventSourcedActorFailureSpec {
         }
       }
 
-    def checkSerializable(messages: immutable.Seq[AtomicWrite]): immutable.Seq[Try[Unit]] =
+    def checkSerializable(messages: Seq[AtomicWrite]): Seq[Try[Unit]] =
       messages.collect {
         case a: AtomicWrite =>
           a.payload.collectFirst {

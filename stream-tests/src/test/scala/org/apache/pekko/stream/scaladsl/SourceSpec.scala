@@ -32,7 +32,6 @@ import pekko.stream.testkit.scaladsl.TestSink
 import pekko.testkit.EventFilter
 import pekko.util.ByteString
 
-import scala.collection.immutable
 import scala.concurrent.duration._
 
 @nowarn // tests assigning to typed val
@@ -45,12 +44,12 @@ class SourceSpec extends StreamSpec with DefaultTimeout {
     "produce exactly one element" in {
       implicit val ec = system.dispatcher
       // #source-single
-      val s: Future[immutable.Seq[Int]] = Source.single(1).runWith(Sink.seq)
+      val s: Future[Seq[Int]] = Source.single(1).runWith(Sink.seq)
       s.foreach(list => println(s"Collected elements: $list")) // prints: Collected elements: List(1)
 
       // #source-single
 
-      s.futureValue should ===(immutable.Seq(1))
+      s.futureValue should ===(Seq(1))
 
     }
 
@@ -108,12 +107,12 @@ class SourceSpec extends StreamSpec with DefaultTimeout {
 
   "Composite Source" must {
     "merge from many inputs" in {
-      val probes = immutable.Seq.fill(5)(TestPublisher.manualProbe[Int]())
+      val probes = Seq.fill(5)(TestPublisher.manualProbe[Int]())
       val source = Source.asSubscriber[Int]
       val out = TestSubscriber.manualProbe[Int]()
 
       val s = Source
-        .fromGraph(GraphDSL.createGraph(source, source, source, source, source)(immutable.Seq(_, _, _, _, _)) {
+        .fromGraph(GraphDSL.createGraph(source, source, source, source, source)(Seq(_, _, _, _, _)) {
           implicit b => (i0, i1, i2, i3, i4) =>
             import GraphDSL.Implicits._
             val m = b.add(Merge[Int](5))
@@ -144,7 +143,7 @@ class SourceSpec extends StreamSpec with DefaultTimeout {
     }
 
     "combine from many inputs with simplified API" in {
-      val probes = immutable.Seq.fill(3)(TestPublisher.manualProbe[Int]())
+      val probes = Seq.fill(3)(TestPublisher.manualProbe[Int]())
       val source = for (i <- 0 to 2) yield Source.fromPublisher(probes(i))
       val out = TestSubscriber.manualProbe[Int]()
 
@@ -181,44 +180,44 @@ class SourceSpec extends StreamSpec with DefaultTimeout {
 
     "combine single source with MergeLatest should emit wrapped elements" in {
       Source
-        .combine(immutable.Seq(Source.single(1)))(MergeLatest(_))
+        .combine(Seq(Source.single(1)))(MergeLatest(_))
         .runWith(Sink.seq)
-        .futureValue should ===(immutable.Seq(List(1)))
+        .futureValue should ===(Seq(List(1)))
     }
 
     "combine single source with MergeLatest should emit all wrapped elements" in {
       Source
-        .combine(immutable.Seq(Source(List(1, 2, 3))))(MergeLatest(_))
+        .combine(Seq(Source(List(1, 2, 3))))(MergeLatest(_))
         .runWith(Sink.seq)
-        .futureValue should ===(immutable.Seq(List(1), List(2), List(3)))
+        .futureValue should ===(Seq(List(1), List(2), List(3)))
     }
 
     "combine single source with ZipWithN should apply zipper function" in {
       Source
-        .combine(immutable.Seq(Source(List(1, 2, 3))))(n => ZipWithN[Int, Int](_.sum)(n))
+        .combine(Seq(Source(List(1, 2, 3))))(n => ZipWithN[Int, Int](_.sum)(n))
         .runWith(Sink.seq)
-        .futureValue should ===(immutable.Seq(1, 2, 3))
+        .futureValue should ===(Seq(1, 2, 3))
     }
 
     "combine single source with Merge should still work (type-preserving)" in {
       Source
-        .combine(immutable.Seq(Source.single(1)))(Merge(_))
+        .combine(Seq(Source.single(1)))(Merge(_))
         .runWith(Sink.seq)
-        .futureValue should ===(immutable.Seq(1))
+        .futureValue should ===(Seq(1))
     }
 
     "combine single source with Concat should still work (type-preserving)" in {
       Source
-        .combine(immutable.Seq(Source(List(1, 2, 3))))(Concat(_))
+        .combine(Seq(Source(List(1, 2, 3))))(Concat(_))
         .runWith(Sink.seq)
-        .futureValue should ===(immutable.Seq(1, 2, 3))
+        .futureValue should ===(Seq(1, 2, 3))
     }
 
     "combine single source with Interleave should still work (type-preserving)" in {
       Source
-        .combine(immutable.Seq(Source(List(1, 2, 3))))(Interleave(_, 1))
+        .combine(Seq(Source(List(1, 2, 3))))(Interleave(_, 1))
         .runWith(Sink.seq)
-        .futureValue should ===(immutable.Seq(1, 2, 3))
+        .futureValue should ===(Seq(1, 2, 3))
     }
 
     "combine single source with wrapped Merge (.named) should still work" in {
@@ -227,16 +226,16 @@ class SourceSpec extends StreamSpec with DefaultTimeout {
       // routes through the fan-in graph instead of bypassing — functionally correct,
       // just slightly less optimal.
       Source
-        .combine(immutable.Seq(Source(List(1, 2, 3))))(n => Merge[Int](n).named("my-merge"))
+        .combine(Seq(Source(List(1, 2, 3))))(n => Merge[Int](n).named("my-merge"))
         .runWith(Sink.seq)
-        .futureValue should ===(immutable.Seq(1, 2, 3))
+        .futureValue should ===(Seq(1, 2, 3))
     }
 
     "combine single source with wrapped MergeLatest (.named) should emit wrapped elements" in {
       Source
-        .combine(immutable.Seq(Source(List(1, 2, 3))))(n => MergeLatest[Int](n).named("my-merge-latest"))
+        .combine(Seq(Source(List(1, 2, 3))))(n => MergeLatest[Int](n).named("my-merge-latest"))
         .runWith(Sink.seq)
-        .futureValue should ===(immutable.Seq(List(1), List(2), List(3)))
+        .futureValue should ===(Seq(List(1), List(2), List(3)))
     }
 
     "combine single source with MergeSequence should still work (type-preserving)" in {
@@ -244,37 +243,37 @@ class SourceSpec extends StreamSpec with DefaultTimeout {
       // trait. This means single-source MergeSequence goes through the fan-in strategy (safe
       // default). The test uses 0-based sequences to satisfy MergeSequence's ordering validation.
       Source
-        .combine(immutable.Seq(Source(List(0L, 1L, 2L))))(n => MergeSequence[Long](n)(identity))
+        .combine(Seq(Source(List(0L, 1L, 2L))))(n => MergeSequence[Long](n)(identity))
         .runWith(Sink.seq)
-        .futureValue should ===(immutable.Seq(0L, 1L, 2L))
+        .futureValue should ===(Seq(0L, 1L, 2L))
     }
 
     "combine single source with MergePrioritized should still work (type-preserving)" in {
       Source
-        .combine(immutable.Seq(Source(List(1, 2, 3))))(n => MergePrioritized(Seq.fill(n)(1)))
+        .combine(Seq(Source(List(1, 2, 3))))(n => MergePrioritized(Seq.fill(n)(1)))
         .runWith(Sink.seq)
-        .futureValue should ===(immutable.Seq(1, 2, 3))
+        .futureValue should ===(Seq(1, 2, 3))
     }
 
     "combine single source materialized value should be a singleton list" in {
       val (mat, result) = Source
-        .combine(immutable.Seq(Source.single(1).mapMaterializedValue(_ => "mat-value")))(MergeLatest(_))
+        .combine(Seq(Source.single(1).mapMaterializedValue(_ => "mat-value")))(MergeLatest(_))
         .toMat(Sink.seq)(Keep.both)
         .run()
-      mat should ===(immutable.Seq("mat-value"))
-      result.futureValue should ===(immutable.Seq(List(1)))
+      mat should ===(Seq("mat-value"))
+      result.futureValue should ===(Seq(List(1)))
     }
 
     "combine empty sources list should produce empty source" in {
       val result = Source
-        .combine(immutable.Seq.empty[Source[Int, NotUsed]])(MergeLatest(_))
+        .combine(Seq.empty[Source[Int, NotUsed]])(MergeLatest(_))
         .runWith(Sink.seq)
         .futureValue
-      result should ===(immutable.Seq.empty)
+      result should ===(Seq.empty)
     }
 
     "combine from two inputs with simplified API" in {
-      val probes = immutable.Seq.fill(2)(TestPublisher.manualProbe[Int]())
+      val probes = Seq.fill(2)(TestPublisher.manualProbe[Int]())
       val source = Source.fromPublisher(probes(0)) :: Source.fromPublisher(probes(1)) :: Nil
       val out = TestSubscriber.manualProbe[Int]()
 
@@ -296,10 +295,10 @@ class SourceSpec extends StreamSpec with DefaultTimeout {
     }
 
     "combine using Concat strategy two inputs with simplified API" in {
-      val sources = immutable.Seq(Source(List(1, 2, 3)), Source(List(10, 20, 30)))
+      val sources = Seq(Source(List(1, 2, 3)), Source(List(10, 20, 30)))
 
       Source.combine(sources(0), sources(1))(Concat(_)).runWith(Sink.seq).futureValue should ===(
-        immutable.Seq(1, 2, 3, 10, 20, 30))
+        Seq(1, 2, 3, 10, 20, 30))
     }
 
     "combine using Concat strategy 3 inputs with simplified API" in {
@@ -308,7 +307,7 @@ class SourceSpec extends StreamSpec with DefaultTimeout {
       val others = Source(List("b", "c"))
       Source.combine(first, second, others)(x => Concat[String](x))
         .runWith(Sink.seq)
-        .futureValue should ===(immutable.Seq("a", "b", "c"))
+        .futureValue should ===(Seq("a", "b", "c"))
     }
 
     "combine from two inputs with combinedMat and take a materialized value" in {
@@ -382,7 +381,7 @@ class SourceSpec extends StreamSpec with DefaultTimeout {
         .flatMapConcat(_ => Source.repeat(42))
         .take(3)
         .runWith(Sink.seq)
-        .futureValue should ===(immutable.Seq(42, 42, 42))
+        .futureValue should ===(Seq(42, 42, 42))
     }
 
     "work when recovered through value-presented source fast path" in {
@@ -391,19 +390,19 @@ class SourceSpec extends StreamSpec with DefaultTimeout {
         .recoverWithRetries(1, { case _ => Source.repeat(42) })
         .take(3)
         .runWith(Sink.seq)
-        .futureValue should ===(immutable.Seq(42, 42, 42))
+        .futureValue should ===(Seq(42, 42, 42))
     }
   }
 
   "Range Source" must {
     "emit inclusive and exclusive ranges" in {
-      Source(1 to 4).runWith(Sink.seq).futureValue should ===(immutable.Seq(1, 2, 3, 4))
-      Source(1 until 4).runWith(Sink.seq).futureValue should ===(immutable.Seq(1, 2, 3))
+      Source(1 to 4).runWith(Sink.seq).futureValue should ===(Seq(1, 2, 3, 4))
+      Source(1 until 4).runWith(Sink.seq).futureValue should ===(Seq(1, 2, 3))
     }
 
     "emit stepped and empty ranges" in {
-      Source(5 to 1 by -2).runWith(Sink.seq).futureValue should ===(immutable.Seq(5, 3, 1))
-      Source(1 to 5 by -1).runWith(Sink.seq).futureValue should ===(immutable.Seq.empty)
+      Source(5 to 1 by -2).runWith(Sink.seq).futureValue should ===(Seq(5, 3, 1))
+      Source(1 to 5 by -1).runWith(Sink.seq).futureValue should ===(Seq.empty)
     }
 
     "work when flattened through value-presented source fast path" in {
@@ -411,7 +410,7 @@ class SourceSpec extends StreamSpec with DefaultTimeout {
         .single("range")
         .flatMapConcat(_ => Source(1 to 3))
         .runWith(Sink.seq)
-        .futureValue should ===(immutable.Seq(1, 2, 3))
+        .futureValue should ===(Seq(1, 2, 3))
     }
 
     "work when recovered through value-presented source fast path" in {
@@ -419,7 +418,7 @@ class SourceSpec extends StreamSpec with DefaultTimeout {
         .failed[Int](TE("boom"))
         .recoverWithRetries(1, { case _ => Source(1 to 3) })
         .runWith(Sink.seq)
-        .futureValue should ===(immutable.Seq(1, 2, 3))
+        .futureValue should ===(Seq(1, 2, 3))
     }
   }
 
@@ -475,18 +474,18 @@ class SourceSpec extends StreamSpec with DefaultTimeout {
     "be able to iterate properly" in {
       Source.iterate[Int](0)(_ => true, _ + 1)
         .take(10)
-        .runWith(Sink.seq).futureValue should ===(immutable.Seq(0, 1, 2, 3, 4, 5, 6, 7, 8, 9))
+        .runWith(Sink.seq).futureValue should ===(Seq(0, 1, 2, 3, 4, 5, 6, 7, 8, 9))
     }
 
     "be able to generate an empty sequence" in {
-      Source.iterate[Int](0)(_ => false, _ + 1).runWith(Sink.seq).futureValue should ===(immutable.Seq())
+      Source.iterate[Int](0)(_ => false, _ + 1).runWith(Sink.seq).futureValue should ===(Seq())
     }
   }
 
   "Iterator Source" must {
     "properly iterate" in {
       Source.fromIterator(() => Iterator.iterate(false)(!_)).grouped(10).runWith(Sink.head).futureValue should ===(
-        immutable.Seq(false, true, false, true, false, true, false, true, false, true))
+        Seq(false, true, false, true, false, true, false, true, false, true))
     }
 
     "work when flattened through value-presented source fast path" in {
@@ -494,7 +493,7 @@ class SourceSpec extends StreamSpec with DefaultTimeout {
         .single("iterator")
         .flatMapConcat(_ => Source.fromIterator(() => Iterator(1, 2, 3)))
         .runWith(Sink.seq)
-        .futureValue should ===(immutable.Seq(1, 2, 3))
+        .futureValue should ===(Seq(1, 2, 3))
     }
 
     "work when recovered through value-presented source fast path" in {
@@ -502,19 +501,19 @@ class SourceSpec extends StreamSpec with DefaultTimeout {
         .failed[Int](TE("boom"))
         .recoverWithRetries(1, { case _ => Source.fromIterator(() => Iterator(1, 2, 3)) })
         .runWith(Sink.seq)
-        .futureValue should ===(immutable.Seq(1, 2, 3))
+        .futureValue should ===(Seq(1, 2, 3))
     }
 
     "fail stream when iterator throws" in {
       Source
-        .fromIterator(() => (1 to 1000).toIterator.map(k => if (k < 10) k else throw TE("a")))
+        .fromIterator(() => (1 to 1000).iterator.map(k => if (k < 10) k else throw TE("a")))
         .runWith(Sink.ignore)
         .failed
         .futureValue
         .getClass should ===(classOf[TE])
 
       Source
-        .fromIterator(() => (1 to 1000).toIterator.map(_ => throw TE("b")))
+        .fromIterator(() => (1 to 1000).iterator.map(_ => throw TE("b")))
         .runWith(Sink.ignore)
         .failed
         .futureValue
@@ -534,7 +533,7 @@ class SourceSpec extends StreamSpec with DefaultTimeout {
 
       // using stopping decider with recover
       Source
-        .fromIterator(() => (1 to 5).toIterator.map(k => if (k != 3) k else throw TE("a")))
+        .fromIterator(() => (1 to 5).iterator.map(k => if (k != 3) k else throw TE("a")))
         .withAttributes(ActorAttributes.supervisionStrategy(Supervision.stoppingDecider))
         .recoverWithRetries(1, { case _ => Source.empty })
         .grouped(10)
@@ -543,7 +542,7 @@ class SourceSpec extends StreamSpec with DefaultTimeout {
 
       // failing on every elements, using stopping decider
       Source
-        .fromIterator(() => (1 to 5).toIterator.map(_ => throw TE("b")))
+        .fromIterator(() => (1 to 5).iterator.map(_ => throw TE("b")))
         .withAttributes(ActorAttributes.supervisionStrategy(Supervision.stoppingDecider))
         .grouped(10)
         .runWith(Sink.headOption)
@@ -552,7 +551,7 @@ class SourceSpec extends StreamSpec with DefaultTimeout {
 
       // failing on every elements, using stopping decider and recover
       Source
-        .fromIterator(() => (1 to 5).toIterator.map(_ => throw TE("b")))
+        .fromIterator(() => (1 to 5).iterator.map(_ => throw TE("b")))
         .withAttributes(ActorAttributes.supervisionStrategy(Supervision.stoppingDecider))
         .recoverWithRetries(1, { case _ => Source.empty })
         .grouped(10)
@@ -561,7 +560,7 @@ class SourceSpec extends StreamSpec with DefaultTimeout {
 
       // using resuming decider
       Source
-        .fromIterator(() => (1 to 5).toIterator.map(k => if (k != 3) k else throw TE("a")))
+        .fromIterator(() => (1 to 5).iterator.map(k => if (k != 3) k else throw TE("a")))
         .withAttributes(ActorAttributes.supervisionStrategy(Supervision.resumingDecider))
         .grouped(10)
         .runWith(Sink.head)
@@ -569,7 +568,7 @@ class SourceSpec extends StreamSpec with DefaultTimeout {
 
       // using restarting decider
       Source
-        .fromIterator(() => (1 to 5).toIterator.map(k => if (k != 3) k else throw TE("a")))
+        .fromIterator(() => (1 to 5).iterator.map(k => if (k != 3) k else throw TE("a")))
         .withAttributes(ActorAttributes.supervisionStrategy(Supervision.restartingDecider))
         .grouped(10)
         .runWith(Sink.head)
@@ -577,7 +576,7 @@ class SourceSpec extends StreamSpec with DefaultTimeout {
 
       //  with failing on every elements, using restarting decider
       Source
-        .fromIterator(() => (1 to 5).toIterator.map(_ => throw TE("b")))
+        .fromIterator(() => (1 to 5).iterator.map(_ => throw TE("b")))
         .withAttributes(ActorAttributes.supervisionStrategy(Supervision.restartingDecider))
         .grouped(10)
         .runWith(Sink.headOption)
@@ -590,7 +589,7 @@ class SourceSpec extends StreamSpec with DefaultTimeout {
         .fromIterator[Int](() => throw TE("factory"))
         .withAttributes(ActorAttributes.supervisionStrategy(Supervision.resumingDecider))
         .runWith(Sink.seq)
-        .futureValue should ===(immutable.Seq.empty)
+        .futureValue should ===(Seq.empty)
     }
 
     "restart iterator factory when iterator factory throws and decider restarts" in {
@@ -603,7 +602,7 @@ class SourceSpec extends StreamSpec with DefaultTimeout {
         }
         .withAttributes(ActorAttributes.supervisionStrategy(Supervision.restartingDecider))
         .runWith(Sink.seq)
-        .futureValue should ===(immutable.Seq(1, 2, 3))
+        .futureValue should ===(Seq(1, 2, 3))
       attempts should ===(2)
     }
 
@@ -624,18 +623,18 @@ class SourceSpec extends StreamSpec with DefaultTimeout {
 
   "ZipN Source" must {
     "properly zipN" in {
-      val sources = immutable.Seq(Source(List(1, 2, 3)), Source(List(10, 20, 30)), Source(List(100, 200, 300)))
+      val sources = Seq(Source(List(1, 2, 3)), Source(List(10, 20, 30)), Source(List(100, 200, 300)))
 
       Source.zipN(sources).runWith(Sink.seq).futureValue should ===(
-        immutable.Seq(immutable.Seq(1, 10, 100), immutable.Seq(2, 20, 200), immutable.Seq(3, 30, 300)))
+        Seq(Seq(1, 10, 100), Seq(2, 20, 200), Seq(3, 30, 300)))
     }
   }
 
   "ZipWithN Source" must {
     "properly zipWithN" in {
-      val sources = immutable.Seq(Source(List(1, 2, 3)), Source(List(10, 20, 30)), Source(List(100, 200, 300)))
+      val sources = Seq(Source(List(1, 2, 3)), Source(List(10, 20, 30)), Source(List(100, 200, 300)))
 
-      Source.zipWithN[Int, Int](_.sum)(sources).runWith(Sink.seq).futureValue should ===(immutable.Seq(111, 222, 333))
+      Source.zipWithN[Int, Int](_.sum)(sources).runWith(Sink.seq).futureValue should ===(Seq(111, 222, 333))
     }
   }
 
@@ -688,7 +687,7 @@ class SourceSpec extends StreamSpec with DefaultTimeout {
 
   "A Source.run" must {
     "ignore elements it outputs and only signal the completion of the processing" in {
-      Source.fromIterator(() => (1 to 5).toIterator).map(_ * 10).run().futureValue shouldBe Done
+      Source.fromIterator(() => (1 to 5).iterator).map(_ * 10).run().futureValue shouldBe Done
     }
   }
 

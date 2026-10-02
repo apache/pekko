@@ -16,7 +16,6 @@ package org.apache.pekko.persistence.query.typed.scaladsl
 import java.time.Instant
 
 import scala.annotation.nowarn
-import scala.collection.immutable
 import scala.concurrent.Future
 
 import com.typesafe.config.Config
@@ -89,7 +88,7 @@ final class EventsBySliceFirehoseQuery(system: ExtendedActorSystem, config: Conf
   override def sliceForPersistenceId(persistenceId: String): Int =
     persistenceExt.sliceForPersistenceId(persistenceId)
 
-  override def sliceRanges(numberOfRanges: Int): immutable.Seq[Range] =
+  override def sliceRanges(numberOfRanges: Int): Seq[Range] =
     persistenceExt.sliceRanges(numberOfRanges)
 
   override def timestampOf(persistenceId: String, sequenceNr: Long): Future[Option[Instant]] = {

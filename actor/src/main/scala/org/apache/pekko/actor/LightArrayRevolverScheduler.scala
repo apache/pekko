@@ -19,7 +19,6 @@ import java.util.concurrent.ThreadFactory
 import java.util.concurrent.atomic.{ AtomicLong, AtomicReference }
 
 import scala.annotation.tailrec
-import scala.collection.immutable
 import scala.concurrent.{ Await, ExecutionContext, Future, Promise }
 import scala.concurrent.duration._
 import scala.util.control.NonFatal
@@ -253,9 +252,9 @@ class LightArrayRevolverScheduler(config: Config, log: LoggingAdapter, threadFac
         s"Task scheduled with [${delayNanos.nanos.toSeconds}] seconds delay, " +
         s"which is too far in future, maximum delay is [${(tickNanos * Int.MaxValue).nanos.toSeconds - 1}] seconds")
 
-  private val stopped = new AtomicReference[Promise[immutable.Seq[TimerTask]]]
-  private def stop(): Future[immutable.Seq[TimerTask]] = {
-    val p = Promise[immutable.Seq[TimerTask]]()
+  private val stopped = new AtomicReference[Promise[Seq[TimerTask]]]
+  private def stop(): Future[Seq[TimerTask]] = {
+    val p = Promise[Seq[TimerTask]]()
     if (stopped.compareAndSet(null, p)) {
       // Interrupting the timer thread to make it shut down faster is not good since
       // it could be in the middle of executing the scheduled tasks, which might not
@@ -272,7 +271,7 @@ class LightArrayRevolverScheduler(config: Config, log: LoggingAdapter, threadFac
     val wheel = Array.fill(WheelSize)(new TaskQueue)
     var spareTaskQueue = new TaskQueue
 
-    private def clearAll(): immutable.Seq[TimerTask] = {
+    private def clearAll(): Seq[TimerTask] = {
       @tailrec def collect(q: TaskQueue, acc: Vector[TimerTask]): Vector[TimerTask] = {
         q.poll() match {
           case null => acc

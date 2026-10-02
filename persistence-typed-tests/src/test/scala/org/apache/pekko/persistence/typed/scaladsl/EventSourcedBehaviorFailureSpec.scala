@@ -13,7 +13,6 @@
 
 package org.apache.pekko.persistence.typed.scaladsl
 
-import scala.collection.immutable
 import scala.concurrent.Future
 import scala.concurrent.duration._
 import scala.util.Try
@@ -47,7 +46,7 @@ class ChaosJournal extends InmemJournal {
   var failRecovery = true
   var reject = true
 
-  override def asyncWriteMessages(messages: immutable.Seq[AtomicWrite]): Future[immutable.Seq[Try[Unit]]] = {
+  override def asyncWriteMessages(messages: Seq[AtomicWrite]): Future[Seq[Try[Unit]]] = {
     val pid = messages.head.persistenceId
     counts = counts.updated(pid, counts.getOrElse(pid, 0) + 1)
     if (pid == "fail-first-2" && counts(pid) <= 2) {

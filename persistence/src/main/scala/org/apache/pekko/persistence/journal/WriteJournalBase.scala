@@ -13,8 +13,6 @@
 
 package org.apache.pekko.persistence.journal
 
-import scala.collection.immutable
-
 import org.apache.pekko
 import pekko.actor.Actor
 import pekko.persistence.{ Persistence, PersistentEnvelope, PersistentRepr }
@@ -26,7 +24,7 @@ private[pekko] trait WriteJournalBase {
   val persistence = Persistence(context.system)
   private val eventAdapters = persistence.adaptersFor(self)
 
-  protected def preparePersistentBatch(rb: immutable.Seq[PersistentEnvelope]): immutable.Seq[AtomicWrite] =
+  protected def preparePersistentBatch(rb: Seq[PersistentEnvelope]): Seq[AtomicWrite] =
     rb.collect { // collect instead of flatMap to avoid Some allocations
       case a: AtomicWrite =>
         // don't store sender
@@ -34,7 +32,7 @@ private[pekko] trait WriteJournalBase {
     }
 
   /** INTERNAL API */
-  private[pekko] final def adaptFromJournal(repr: PersistentRepr): immutable.Seq[PersistentRepr] =
+  private[pekko] final def adaptFromJournal(repr: PersistentRepr): Seq[PersistentRepr] =
     eventAdapters.get(repr.payload.getClass).fromJournal(repr.payload, repr.manifest).events.map { adaptedPayload =>
       repr.withPayload(adaptedPayload)
     }

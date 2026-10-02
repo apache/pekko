@@ -27,7 +27,6 @@ import pekko.stream.scaladsl.StreamConverters
 import pekko.testkit.PekkoSpec
 import org.scalatest.concurrent.Futures
 
-import scala.collection.immutable
 import scala.concurrent.Future
 
 class StreamConvertersToJava extends PekkoSpec with Futures {
@@ -47,9 +46,9 @@ class StreamConvertersToJava extends PekkoSpec with Futures {
     // #fromJavaStream
     def factory(): IntStream = IntStream.rangeClosed(0, 9)
     val source: Source[Int, NotUsed] = StreamConverters.fromJavaStream(() => factory()).map(_.intValue())
-    val sink: Sink[Int, Future[immutable.Seq[Int]]] = Sink.seq[Int]
+    val sink: Sink[Int, Future[Seq[Int]]] = Sink.seq[Int]
 
-    val futureInts: Future[immutable.Seq[Int]] = source.toMat(sink)(Keep.right).run()
+    val futureInts: Future[Seq[Int]] = source.toMat(sink)(Keep.right).run()
 
     // #fromJavaStream
     whenReady(futureInts) { ints =>

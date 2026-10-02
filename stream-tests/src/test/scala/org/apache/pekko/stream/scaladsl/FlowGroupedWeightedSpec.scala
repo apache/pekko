@@ -14,7 +14,6 @@
 package org.apache.pekko.stream.scaladsl
 
 import scala.annotation.nowarn
-import scala.collection.immutable
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
@@ -28,7 +27,7 @@ class FlowGroupedWeightedSpec extends StreamSpec("""
 
   "A GroupedWeighted" must {
     "produce no group (empty sink sequence) when source is empty" in {
-      val input = immutable.Seq.empty
+      val input = Seq.empty
       def costFn(@nowarn("msg=never used") e: Int): Long = 999999L // set to an arbitrarily big value
       val future = Source(input).groupedWeighted(1)(costFn).runWith(Sink.seq)
       val result = Await.result(future, remainingOrDefault)
@@ -73,14 +72,14 @@ class FlowGroupedWeightedSpec extends StreamSpec("""
 
     "not emit group when grouped weight is less than minWeight and upstream has not completed" taggedAs TimingTest in {
       val p = TestPublisher.probe[Int]()
-      val c = TestSubscriber.probe[immutable.Seq[Int]]()
+      val c = TestSubscriber.probe[Seq[Int]]()
       // Note that the cost function set to zero here means the stream will accumulate elements until completed
       Source.fromPublisher(p).groupedWeighted(10)(_ => 0L).to(Sink.fromSubscriber(c)).run()
       p.sendNext(1)
       c.expectSubscription().request(1) // create downstream demand so Grouped pulls on upstream
       c.expectNoMessage(50.millis) // message should not be emitted yet
       p.sendComplete() // Force Grouped to emit the small group
-      c.expectNext(50.millis, immutable.Seq(1))
+      c.expectNext(50.millis, Seq(1))
       c.expectComplete()
     }
 
@@ -102,7 +101,7 @@ class FlowGroupedWeightedSpec extends StreamSpec("""
 
     "fail the stage when costFn has a negative result" in {
       val p = TestPublisher.probe[Int]()
-      val c = TestSubscriber.probe[immutable.Seq[Int]]()
+      val c = TestSubscriber.probe[Seq[Int]]()
       Source.fromPublisher(p).groupedWeighted(1)(_ => -1L).to(Sink.fromSubscriber(c)).run()
       c.expectSubscription().request(1) // create downstream demand so Grouped pulls on upstream
       c.expectNoMessage(50.millis) // shouldn't fail until the message is sent

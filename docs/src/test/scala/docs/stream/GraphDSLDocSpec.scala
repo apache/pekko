@@ -19,7 +19,6 @@ import pekko.stream._
 import pekko.stream.scaladsl._
 import pekko.testkit.PekkoSpec
 
-import scala.collection.immutable
 import scala.concurrent.duration._
 import scala.concurrent.{ Await, Future }
 import scala.concurrent.ExecutionContext
@@ -111,9 +110,9 @@ class GraphDSLDocSpec extends PekkoSpec {
 
       // It is important to provide the list of all input and output
       // ports with a stable order. Duplicates are not allowed.
-      override val inlets: immutable.Seq[Inlet[?]] =
+      override val inlets: Seq[Inlet[?]] =
         jobsIn :: priorityJobsIn :: Nil
-      override val outlets: immutable.Seq[Outlet[?]] =
+      override val outlets: Seq[Outlet[?]] =
         resultsOut :: Nil
 
       // A Shape must be able to create a copy of itself. Basically

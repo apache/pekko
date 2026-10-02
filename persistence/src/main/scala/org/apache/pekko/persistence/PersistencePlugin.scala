@@ -86,7 +86,7 @@ private[pekko] abstract class PersistencePlugin[ScalaDsl, JavaDsl, T](system: Ex
     log.debug("Create plugin: {} {}", configPath, pluginClassName)
     val pluginClass = system.dynamicAccess.getClassFor[AnyRef](pluginClassName).get
 
-    def instantiate(args: collection.immutable.Seq[(Class[?], AnyRef)]) =
+    def instantiate(args: Seq[(Class[?], AnyRef)]) =
       system.dynamicAccess.createInstanceFor[T](pluginClass, args)
 
     instantiate(

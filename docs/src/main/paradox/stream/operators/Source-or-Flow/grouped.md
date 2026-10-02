@@ -6,8 +6,8 @@ Accumulate incoming events until the specified number of elements have been accu
 
 ## Signature
 
-@apidoc[Source.grouped](Source) { scala="#grouped(n:Int):FlowOps.this.Repr[scala.collection.immutable.Seq[Out]]" java="#grouped(int)" }
-@apidoc[Flow.grouped](Flow) { scala="#grouped(n:Int):FlowOps.this.Repr[scala.collection.immutable.Seq[Out]]" java="#grouped(int)" }
+@apidoc[Source.grouped](Source) { scala="#grouped(n:Int):FlowOps.this.Repr[Seq[Out]]" java="#grouped(int)" }
+@apidoc[Flow.grouped](Flow) { scala="#grouped(n:Int):FlowOps.this.Repr[Seq[Out]]" java="#grouped(int)" }
 
 
 ## Description

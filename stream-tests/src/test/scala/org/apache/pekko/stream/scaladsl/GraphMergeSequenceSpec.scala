@@ -13,7 +13,6 @@
 
 package org.apache.pekko.stream.scaladsl
 
-import scala.collection.immutable
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
@@ -36,10 +35,10 @@ class GraphMergeSequenceSpec extends TwoStreamsSetup {
 
   }
 
-  private def merge(seqs: immutable.Seq[Long]*): immutable.Seq[Long] =
+  private def merge(seqs: Seq[Long]*): Seq[Long] =
     mergeSources(seqs.map(Source(_)): _*)
 
-  private def mergeSources(sources: Source[Long, NotUsed]*): immutable.Seq[Long] = {
+  private def mergeSources(sources: Source[Long, NotUsed]*): Seq[Long] = {
     val future = Source
       .fromGraph(GraphDSL.create() { implicit builder =>
         import GraphDSL.Implicits._

@@ -13,7 +13,6 @@
 
 package org.apache.pekko.cluster.sharding.internal
 
-import scala.collection.immutable
 import scala.concurrent.duration.FiniteDuration
 
 import org.apache.pekko
@@ -31,10 +30,10 @@ import pekko.util.OptionVal
  */
 @InternalApi
 private[pekko] object EntityPassivationStrategy {
-  type PassivateEntities = immutable.Seq[EntityId]
+  type PassivateEntities = Seq[EntityId]
 
   object PassivateEntities {
-    val none: PassivateEntities = immutable.Seq.empty[EntityId]
+    val none: PassivateEntities = Seq.empty[EntityId]
   }
 
   def apply(settings: ClusterShardingSettings, clock: () => Clock): EntityPassivationStrategy = {
@@ -252,7 +251,7 @@ private[pekko] final class LeastRecentlyUsedEntityPassivationStrategy(
 @InternalApi
 private[pekko] final class SegmentedLeastRecentlyUsedEntityPassivationStrategy(
     initialLimit: Int,
-    proportions: immutable.Seq[Double],
+    proportions: Seq[Double],
     idleCheck: Option[IdleCheck],
     clock: () => Clock)
     extends LimitBasedEntityPassivationStrategy(initialLimit) {
@@ -494,7 +493,7 @@ private[pekko] final class LeastRecentlyUsedReplacementPolicy(initialLimit: Int,
 @InternalApi
 private[pekko] final class SegmentedLeastRecentlyUsedReplacementPolicy(
     initialLimit: Int,
-    proportions: immutable.Seq[Double],
+    proportions: Seq[Double],
     idleEnabled: Boolean,
     clock: () => Clock)
     extends ActiveEntities {
@@ -502,7 +501,7 @@ private[pekko] final class SegmentedLeastRecentlyUsedReplacementPolicy(
   import EntityPassivationStrategy.PassivateEntities
 
   private var limit = initialLimit
-  private def segmentLimits: immutable.Seq[Int] = {
+  private def segmentLimits: Seq[Int] = {
     // assign the first segment with the leftover, to have an accurate total limit
     val higherLimits = proportions.drop(1).map(p => (p * limit).toInt)
     (limit - higherLimits.sum) +: higherLimits

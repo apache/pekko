@@ -19,7 +19,6 @@ import pekko.util.ByteString
 
 //#test-code
 import pekko.actor.Props
-import scala.collection.immutable
 
 object FSMDocSpec {
   // messages and data types
@@ -32,7 +31,7 @@ object FSMDocSpec {
   case object Flush
 
   // sent events
-  final case class Batch(obj: immutable.Seq[Any])
+  final case class Batch(obj: Seq[Any])
   // #simple-events
   // #simple-state
   // states
@@ -42,7 +41,7 @@ object FSMDocSpec {
 
   sealed trait Data
   case object Uninitialized extends Data
-  final case class Todo(target: ActorRef, queue: immutable.Seq[Any]) extends Data
+  final case class Todo(target: ActorRef, queue: Seq[Any]) extends Data
   // #simple-state
   // #test-code
 }
@@ -223,12 +222,12 @@ class FSMDocSpec extends MyFavoriteTestFrameWorkPlusPekkoTestKit {
       buncher ! SetTarget(testActor)
       buncher ! Queue(42)
       buncher ! Queue(43)
-      expectMsg(Batch(immutable.Seq(42, 43)))
+      expectMsg(Batch(Seq(42, 43)))
       buncher ! Queue(44)
       buncher ! Flush
       buncher ! Queue(45)
-      expectMsg(Batch(immutable.Seq(44)))
-      expectMsg(Batch(immutable.Seq(45)))
+      expectMsg(Batch(Seq(44)))
+      expectMsg(Batch(Seq(45)))
     }
 
     "not batch if uninitialized" in {

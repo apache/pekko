@@ -15,7 +15,6 @@ package org.apache.pekko.persistence.fsm
 
 import scala.annotation.nowarn
 import scala.annotation.varargs
-import scala.collection.immutable
 import scala.concurrent.ExecutionContextExecutor
 import scala.concurrent.duration._
 import scala.reflect.ClassTag
@@ -148,7 +147,7 @@ trait PersistentFSM[S <: FSMState, D, E] extends PersistentActor with Persistent
    * Persist FSM State and FSM State Data
    */
   override private[pekko] def applyState(nextState: State): Unit = {
-    var eventsToPersist: immutable.Seq[Any] = nextState.domainEvents.toList
+    var eventsToPersist: Seq[Any] = nextState.domainEvents.toList
 
     // Prevent StateChangeEvent persistence when staying in the same state, except when state defines a timeout
     if (nextState.notifies || nextState.timeout.nonEmpty) {

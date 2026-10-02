@@ -17,7 +17,6 @@ import java.util.concurrent.TimeUnit.NANOSECONDS
 
 import scala.annotation.nowarn
 import scala.annotation.tailrec
-import scala.collection.immutable
 import scala.collection.immutable.VectorBuilder
 import scala.concurrent.Future
 import scala.concurrent.duration.{ FiniteDuration, _ }
@@ -797,12 +796,12 @@ private[stream] object Collect {
  * INTERNAL API
  */
 @InternalApi private[pekko] final case class GroupedWeighted[T](minWeight: Long, costFn: T => Long)
-    extends GraphStage[FlowShape[T, immutable.Seq[T]]] {
+    extends GraphStage[FlowShape[T, Seq[T]]] {
   require(minWeight > 0, "minWeight must be greater than 0")
 
   val in = Inlet[T]("GroupedWeighted.in")
-  val out = Outlet[immutable.Seq[T]]("GroupedWeighted.out")
-  override val shape: FlowShape[T, immutable.Seq[T]] = FlowShape(in, out)
+  val out = Outlet[Seq[T]]("GroupedWeighted.out")
+  override val shape: FlowShape[T, Seq[T]] = FlowShape(in, out)
 
   override def initialAttributes: Attributes = DefaultAttributes.groupedWeighted
 
@@ -890,13 +889,13 @@ private[stream] object Collect {
  * INTERNAL API
  */
 @InternalApi private[pekko] final case class Sliding[T](val n: Int, val step: Int)
-    extends GraphStage[FlowShape[T, immutable.Seq[T]]] {
+    extends GraphStage[FlowShape[T, Seq[T]]] {
   require(n > 0, "n must be greater than 0")
   require(step > 0, "step must be greater than 0")
 
   val in = Inlet[T]("Sliding.in")
-  val out = Outlet[immutable.Seq[T]]("Sliding.out")
-  override val shape: FlowShape[T, immutable.Seq[T]] = FlowShape(in, out)
+  val out = Outlet[Seq[T]]("Sliding.out")
+  override val shape: FlowShape[T, Seq[T]] = FlowShape(in, out)
 
   override protected val initialAttributes: Attributes = DefaultAttributes.sliding
 
@@ -1884,13 +1883,13 @@ private[stream] object Collect {
     val maxNumber: Int,
     val costFn: T => Long,
     val interval: FiniteDuration)
-    extends GraphStage[FlowShape[T, immutable.Seq[T]]] {
+    extends GraphStage[FlowShape[T, Seq[T]]] {
   require(maxWeight > 0, "maxWeight must be greater than 0")
   require(maxNumber > 0, "maxNumber must be greater than 0")
   require(interval > Duration.Zero)
 
   val in = Inlet[T]("in")
-  val out = Outlet[immutable.Seq[T]]("out")
+  val out = Outlet[Seq[T]]("out")
 
   override def initialAttributes = DefaultAttributes.groupedWeightedWithin and SourceLocation.forLambda(costFn)
 

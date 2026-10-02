@@ -13,7 +13,6 @@
 
 package org.apache.pekko.actor
 
-import scala.collection.immutable
 import scala.util.control.NoStackTrace
 
 import org.apache.pekko
@@ -193,7 +192,7 @@ private[pekko] trait StashSupport {
    * Prepends `others` to this stash. This method is optimized for a large stash and
    * small `others`.
    */
-  private[pekko] def prepend(others: immutable.Seq[Envelope]): Unit =
+  private[pekko] def prepend(others: Seq[Envelope]): Unit =
     theStash = others.foldRight(theStash)((e, s) => e +: s)
 
   /**

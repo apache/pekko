@@ -16,7 +16,6 @@ import java.time.Instant
 import java.time.temporal.ChronoUnit
 
 import scala.annotation.nowarn
-import scala.collection.immutable
 
 import org.apache.pekko
 import pekko.NotUsed
@@ -200,7 +199,7 @@ final class PersistenceTestKitReadJournal(system: ExtendedActorSystem, @nowarn("
   override def sliceForPersistenceId(persistenceId: String): Int =
     persistence.sliceForPersistenceId(persistenceId)
 
-  override def sliceRanges(numberOfRanges: Int): immutable.Seq[Range] =
+  override def sliceRanges(numberOfRanges: Int): Seq[Range] =
     persistence.sliceRanges(numberOfRanges)
 
   /**

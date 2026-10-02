@@ -17,7 +17,6 @@ import java.util.concurrent.LinkedBlockingQueue
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.locks.LockSupport
 
-import scala.collection.immutable
 import scala.concurrent.Await
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
@@ -323,7 +322,7 @@ class FlowMapAsyncPartitionedSpec extends StreamSpec with WithLogCapturing {
 
       probe.request(100)
       val failure = new Exception("BOOM två")
-      scala.util.Random.shuffle((0 until 6): immutable.Seq[Int]).foreach { n =>
+      scala.util.Random.shuffle((0 until 6): Seq[Int]).foreach { n =>
         if (n == 2) promises(n).failure(failure)
         else promises(n).success(n)
       }
@@ -360,7 +359,7 @@ class FlowMapAsyncPartitionedSpec extends StreamSpec with WithLogCapturing {
           .runWith(Sink.seq)
 
       val failure = new Exception("BOOM TWEE!")
-      scala.util.Random.shuffle((0 until 6): immutable.Seq[Int]).foreach { n =>
+      scala.util.Random.shuffle((0 until 6): Seq[Int]).foreach { n =>
         if (n == 2) promises(n).failure(failure)
         else promises(n).success(n)
       }

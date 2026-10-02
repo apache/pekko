@@ -18,7 +18,6 @@ import java.util.Optional
 import java.util.concurrent.CompletionStage
 import java.util.concurrent.TimeUnit
 
-import scala.collection.immutable
 import scala.concurrent.Future
 import scala.concurrent.duration.FiniteDuration
 import scala.jdk.DurationConverters._
@@ -40,15 +39,15 @@ object ServiceDiscovery {
   final class DiscoveryTimeoutException(reason: String) extends RuntimeException(reason)
 
   object Resolved {
-    def apply(serviceName: String, addresses: immutable.Seq[ResolvedTarget]): Resolved =
+    def apply(serviceName: String, addresses: Seq[ResolvedTarget]): Resolved =
       new Resolved(serviceName, addresses)
 
-    def unapply(resolved: Resolved): Option[(String, immutable.Seq[ResolvedTarget])] =
+    def unapply(resolved: Resolved): Option[(String, Seq[ResolvedTarget])] =
       Some((resolved.serviceName, resolved.addresses))
   }
 
   /** Result of a successful resolve request */
-  final class Resolved(val serviceName: String, val addresses: immutable.Seq[ResolvedTarget])
+  final class Resolved(val serviceName: String, val addresses: Seq[ResolvedTarget])
       extends DeadLetterSuppression
       with NoSerializationVerificationNeeded {
 

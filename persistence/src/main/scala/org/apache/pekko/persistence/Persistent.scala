@@ -13,8 +13,6 @@
 
 package org.apache.pekko.persistence
 
-import scala.collection.immutable
-
 import org.apache.pekko
 import pekko.actor.{ ActorRef, NoSerializationVerificationNeeded }
 import pekko.annotation.DoNotInherit
@@ -46,7 +44,7 @@ object AtomicWrite {
   def apply(event: PersistentRepr): AtomicWrite = apply(List(event))
 }
 
-final case class AtomicWrite(payload: immutable.Seq[PersistentRepr]) extends PersistentEnvelope with Message {
+final case class AtomicWrite(payload: Seq[PersistentRepr]) extends PersistentEnvelope with Message {
   require(payload.nonEmpty, "payload of AtomicWrite must not be empty!")
   private var _highestSequenceNr: Long = payload.head.sequenceNr
 

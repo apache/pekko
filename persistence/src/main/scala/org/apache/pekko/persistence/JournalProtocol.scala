@@ -13,8 +13,6 @@
 
 package org.apache.pekko.persistence
 
-import scala.collection.immutable
-
 import org.apache.pekko
 import pekko.actor._
 
@@ -48,7 +46,7 @@ private[persistence] object JournalProtocol {
    * @param persistentActor write requester.
    */
   final case class WriteMessages(
-      messages: immutable.Seq[PersistentEnvelope],
+      messages: Seq[PersistentEnvelope],
       persistentActor: ActorRef,
       actorInstanceId: Int)
       extends Request

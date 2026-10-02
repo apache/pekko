@@ -15,7 +15,6 @@ package org.apache.pekko.persistence.testkit.state.scaladsl
 
 import java.util.concurrent.atomic.AtomicLong
 
-import scala.collection.immutable
 import scala.concurrent.Future
 
 import org.apache.pekko
@@ -196,7 +195,7 @@ class PersistenceTestKitDurableStateStore[A](val system: ExtendedActorSystem)
   override def sliceForPersistenceId(persistenceId: String): Int =
     persistence.sliceForPersistenceId(persistenceId)
 
-  override def sliceRanges(numberOfRanges: Int): immutable.Seq[Range] =
+  override def sliceRanges(numberOfRanges: Int): Seq[Range] =
     persistence.sliceRanges(numberOfRanges)
 
   override def currentPersistenceIds(afterId: Option[String], limit: Long): Source[String, NotUsed] =

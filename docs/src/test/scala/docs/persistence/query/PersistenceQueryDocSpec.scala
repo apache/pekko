@@ -22,7 +22,6 @@ import pekko.stream.javadsl
 import pekko.testkit.PekkoSpec
 import pekko.util.Timeout
 import org.reactivestreams.Subscriber
-import scala.collection.immutable
 import scala.concurrent.Future
 import scala.concurrent.duration.FiniteDuration
 import scala.concurrent.duration._
@@ -160,7 +159,7 @@ object PersistenceQueryDocSpec {
     def convertToReadSideTypes(in: Any): Any = ???
 
     object ReactiveStreamsCompatibleDBDriver {
-      def batchWriter: Subscriber[immutable.Seq[Any]] = ???
+      def batchWriter: Subscriber[Seq[Any]] = ???
     }
 
     // #projection-into-different-store-rs
@@ -168,7 +167,7 @@ object PersistenceQueryDocSpec {
 
     val readJournal =
       PersistenceQuery(system).readJournalFor[MyScaladslReadJournal](JournalId)
-    val dbBatchWriter: Subscriber[immutable.Seq[Any]] =
+    val dbBatchWriter: Subscriber[Seq[Any]] =
       ReactiveStreamsCompatibleDBDriver.batchWriter
 
     // Using an example (Reactive Streams) Database driver

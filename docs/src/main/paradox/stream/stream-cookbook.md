@@ -77,7 +77,7 @@ instead; e.g. `Source.unfold` or `Source.unfoldResource`.
 all the nested elements inside the sequences separately.
 
 The `mapConcat` operation can be used to implement a one-to-many transformation of elements using a mapper function
-in the form of @scala[`In => immutable.Seq[Out]`] @java[`In -> List<Out>`]. In this case we want to map a @scala[`Seq`] @java[`List`] of elements to the elements in the
+in the form of @scala[`In => Seq[Out]`] @java[`In -> List<Out>`]. In this case we want to map a @scala[`Seq`] @java[`List`] of elements to the elements in the
 collection itself, so we can call @scala[`mapConcat(identity)`] @java[`mapConcat(l -> l)`].
 
 Scala
