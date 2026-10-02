@@ -64,8 +64,37 @@ class ByteString_byteAtUnchecked_Benchmark {
   manyFragments_sequential  thrpt    3   54838.759 ±   29275.476  ops/s
 
   Sequential access is roughly 84x faster. Random access is unchanged (the hint never hits) and
-  reverse access does not benefit either, since each step lands before the remembered fragment
-  and falls back to a scan from the start -- both stay within the noise of the previous numbers.
+  reverse access did not benefit at that point, since each step landed before the remembered
+  fragment and fell back to a scan from the start -- both stayed within the noise of the
+  previous numbers.
+
+  After resolveFragment also resumes backward from the remembered fragment (same short run,
+  same wide error bars):
+
+  manyFragments_reverse     thrpt    3    386.052 ±  550.638  ops/s   (before, on this machine)
+  manyFragments_reverse     thrpt    3  39969.362 ± 49806.718 ops/s   (after)
+  manyFragments_sequential  thrpt    3  43415.035 ± 45223.244 ops/s   (before, on this machine)
+  manyFragments_sequential  thrpt    3  44624.286 ± 42770.609 ops/s   (after)
+
+  Reverse access is roughly 100x faster and on par with sequential; sequential is unchanged
+  within the noise.
+
+  Making the hint volatile, so that its index and start cannot be read as two halves of
+  different writes (JLS 17.7), costs nothing measurable outside the one-byte-fragment
+  sequential case. Paired run toggling only the `@volatile` keyword, -f2 -wi 5 -i 5, with
+  manyFragments_map -- which walks the fragments directly and never consults the hint -- as
+  an in-run control:
+
+                            plain long                    volatile
+  manyFragments_map          143209.374 ± 8645.210         139763.871 ± 9327.740  ops/s
+  manyFragments_random          911.739 ±   76.206            901.787 ±  154.965  ops/s
+  manyFragments_reverse       43961.948 ± 9780.313          42858.330 ±  949.351  ops/s
+  manyFragments_sequential    48989.773 ± 6972.720          41100.395 ± 3682.974  ops/s
+
+  Random and reverse move by about as much as the control (~2%); only sequential shows a
+  possible cost, and its intervals barely separate. These 1024 one-byte fragments are the
+  worst case for it, since the hint is then written on every single access -- at realistic
+  fragment sizes the write is amortised over the whole fragment.
    */
 
   private val randomIndices: Array[Int] = {
