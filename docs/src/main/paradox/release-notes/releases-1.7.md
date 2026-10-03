@@ -6,7 +6,7 @@ Apache Pekko 1.7.x releases support Java 8 and above.
 
 Pekko 1.7.1 has some bug fixes. See the [GitHub Milestone for 1.7.1](https://github.com/apache/pekko/milestone/33?closed=1) for a fuller list of changes.
 
-### Bug Fix
+### Bug Fixes
 
 * Make AbstractPersistentActorWithTimers and AbstractFSMWithStash subclassable from Java on Scala 3 ([PR3477](https://github.com/apache/pekko/pull/3477))
 * Use a Seq rather than a Set to hold the TCP magic ByteStrings ([PR3498](https://github.com/apache/pekko/pull/3498))
@@ -25,7 +25,7 @@ Pekko 1.7.1 has some bug fixes. See the [GitHub Milestone for 1.7.1](https://git
 
 Pekko 1.7.0 has some bug fixes. See the [GitHub Milestone for 1.7.0](https://github.com/apache/pekko/milestone/30?closed=1) for a fuller list of changes.
 
-### Bug Fix
+### Bug Fixes
 
 * Harden EndpointReader against NonFatal dispatch errors and unwrap WrappedMessage in writer logs ([#3169](https://github.com/apache/pekko/issues/3169))
 * Filter messages from remember-entities store ([PR3411](https://github.com/apache/pekko/pull/3411))
