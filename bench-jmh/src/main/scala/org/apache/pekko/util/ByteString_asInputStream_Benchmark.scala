@@ -17,7 +17,7 @@
 
 package org.apache.pekko.util
 
-import java.io.InputStream
+import java.io.{ ByteArrayOutputStream, InputStream }
 import java.util.concurrent.TimeUnit
 
 import org.openjdk.jmh.annotations._
@@ -86,6 +86,18 @@ class ByteString_asInputStream_Benchmark {
   @Benchmark
   def composed_bs_as_input_stream(blackhole: Blackhole): Unit = {
     blackhole.consume(countBytes(composed.asInputStream))
+  }
+
+  @Benchmark
+  def single_bs_as_input_stream_read_all_bytes(blackhole: Blackhole): Unit = {
+    blackhole.consume(bs.asInputStream.readAllBytes())
+  }
+
+  @Benchmark
+  def single_bs_as_input_stream_transfer_to(blackhole: Blackhole): Unit = {
+    val out = new ByteArrayOutputStream(bs.length)
+    bs.asInputStream.transferTo(out)
+    blackhole.consume(out.toByteArray)
   }
 
   private def countBytes(stream: InputStream): Int = {
