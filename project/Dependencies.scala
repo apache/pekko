@@ -35,7 +35,7 @@ object Dependencies {
   // https://github.com/aeron-io/aeron/blob/1.x.y/gradle/libs.versions.toml
   // (remember to also update the scala-steward pin)
   val agronaVersion = "2.6.1"
-  val nettyVersion = "4.2.18.Final"
+  val nettyVersion = "4.2.19.Final"
   val logbackVersion = "1.6.5"
 
   val jacksonAnnotationsVersion = "2.22"
