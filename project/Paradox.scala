@@ -78,7 +78,7 @@ object Paradox {
   lazy val rootsSettings = Seq(
     paradoxRoots := List(
       "index.html",
-      // TODO page not linked to
+      // linked from fault-tolerance.md, not in the TOC
       "fault-tolerance-sample.html"))
 
   lazy val themeSettings = Seq(
