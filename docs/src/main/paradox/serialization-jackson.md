@@ -16,6 +16,36 @@ To use Jackson Serialization, you must add the following dependency in your proj
   version=PekkoVersion
 }
 
+### Jackson 3
+
+`pekko-serialization-jackson` uses Jackson 2. If you want to use Jackson 3 instead, add the
+`pekko-serialization-jackson3` dependency in place of `pekko-serialization-jackson`:
+
+@@dependency[sbt,Maven,Gradle] {
+  bomGroup=org.apache.pekko bomArtifact=pekko-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  symbol1=PekkoVersion
+  value1="$pekko.version$"
+  group="org.apache.pekko"
+  artifact="pekko-serialization-jackson3_$scala.binary.version$"
+  version=PekkoVersion
+}
+
+The rest of this page applies to both modules, with these differences for `pekko-serialization-jackson3`:
+
+* The classes are in the `org.apache.pekko.serialization.jackson3` package, for example `JacksonMigration`
+  and `JacksonObjectMapperProvider`.
+* The configuration is under `pekko.serialization.jackson3` instead of `pekko.serialization.jackson`,
+  see the @ref:[reference configuration](general/configuration-reference.md#config-pekko-serialization-jackson3).
+* Jackson 3 uses the `tools.jackson` packages (for example `tools.jackson.databind.ObjectMapper`). The
+  annotations are still in `com.fasterxml.jackson.annotation`.
+* Jackson 3 has built-in support for Java 8 date/time types, `Optional` and parameter names, so the
+  `JavaTimeModule`, `Jdk8Module` and `ParameterNamesModule` are not registered in `jackson-modules`. Apart from
+  the Pekko modules, only the Jackson Scala module is registered by default. The date/time features such as
+  `WRITE_DATES_AS_TIMESTAMPS` are configured in a `datetime-features` section instead of `serialization-features`.
+
+Both modules register their serializers with the same names (`jackson-json` and `jackson-cbor`) and the
+same serializer identifiers, so only add one of them to your application.
+
 ## Introduction
 
 You find general concepts for Pekko serialization in the @ref:[Serialization](serialization.md) section.
