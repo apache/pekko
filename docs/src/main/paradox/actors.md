@@ -293,6 +293,8 @@ described here: @ref:[What Restarting Means](general/supervision.md#supervision-
 When using a dependency injection framework, actor beans *MUST NOT* have
 singleton scope.
 
+@@@
+
 ## Actor API
 
 @scala[The @apidoc[actor.Actor] trait defines only one abstract method, the above mentioned
@@ -747,7 +749,7 @@ you a way to avoid blocking.
 
 @@@ warning
 
-When using future callbacks, @scala[such as @scaladoc[onComplete](scala.concurrent.Future#onComplete[U](f:scala.util.Try[T]=%3EU)(implicitexecutor:scala.concurrent.ExecutionContext):Unit), or @scaladoc[map](scala.concurrent.Future#map[S](f:T=%3ES)(implicitexecutor:scala.concurrent.ExecutionContext):scala.concurrent.Future[S])]@scala[such as @javadoc[thenRun](java.util.concurrent.CompletionStage#thenRun(java.lang.Runnable)), or @javadoc[thenApply](java.util.concurrent.CompletionStage#thenApply(java.util.function.Function))]
+When using future callbacks, @scala[such as @scaladoc[onComplete](scala.concurrent.Future#onComplete[U](f:scala.util.Try[T]=%3EU)(implicitexecutor:scala.concurrent.ExecutionContext):Unit), or @scaladoc[map](scala.concurrent.Future#map[S](f:T=%3ES)(implicitexecutor:scala.concurrent.ExecutionContext):scala.concurrent.Future[S])]@java[such as @javadoc[thenRun](java.util.concurrent.CompletionStage#thenRun(java.lang.Runnable)), or @javadoc[thenApply](java.util.concurrent.CompletionStage#thenApply(java.util.function.Function))]
 inside actors you need to carefully avoid closing over
 the containing actor’s reference, i.e. do not call methods or access mutable state
 on the enclosing actor from within the callback. This would break the actor
@@ -866,7 +868,7 @@ Java
 
 ## Receive timeout
 
-The @java[@scaladoc[ActorContext.setReceiveTimeout](pekko.actor.ActorContext#setReceiveTimeout(timeout:scala.concurrent.duration.Duration):Unit)]@java[@javadoc[ActorContext.setReceiveTimeout](pekko.actor.AbstractActor.ActorContext#setReceiveTimeout(java.time.Duration))] defines the inactivity timeout after which
+The @scala[@scaladoc[ActorContext.setReceiveTimeout](pekko.actor.ActorContext#setReceiveTimeout(timeout:scala.concurrent.duration.Duration):Unit)]@java[@javadoc[ActorContext.setReceiveTimeout](pekko.actor.AbstractActor.ActorContext#setReceiveTimeout(java.time.Duration))] defines the inactivity timeout after which
 the sending of a @apidoc[actor.ReceiveTimeout] message is triggered.
 When specified, the receive function should be able to handle an `org.apache.pekko.actor.ReceiveTimeout` message.
 1 millisecond is the minimum supported timeout.

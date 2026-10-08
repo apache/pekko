@@ -225,7 +225,7 @@ is called (logging the error by default) and the actor will be stopped.
 ### Internal stash
 
 The persistent actor has a private @ref:[stash](actors.md#stash) for internally caching incoming messages during
-[recovery](#recovery) or the @scala[@scaladoc[persist](pekko.persistence.PersistentActor#persist[A](event:A)(handler:A=%3EUnit):Unit)]@java[@javadoc[persist](pekko.persistence.AbstractPersistentActorLike#persist(A,org.apache.pekko.japi.Procedure))]\@scala[@scaladoc[persistAll](pekko.persistence.PersistentActor#persistAll[A](events:Seq[A])(handler:A=%3EUnit):Unit)]@java[@javadoc[persistAll](pekko.persistence.AbstractPersistentActorLike#persistAll(java.lang.Iterable,org.apache.pekko.japi.Procedure))] method persisting events. You can still use/inherit from the
+[recovery](#recovery) or the @scala[@scaladoc[persist](pekko.persistence.PersistentActor#persist[A](event:A)(handler:A=%3EUnit):Unit)]@java[@javadoc[persist](pekko.persistence.AbstractPersistentActorLike#persist(A,org.apache.pekko.japi.Procedure))]@scala[ or @scaladoc[persistAll](pekko.persistence.PersistentActor#persistAll[A](events:Seq[A])(handler:A=%3EUnit):Unit)]@java[ or @javadoc[persistAll](pekko.persistence.AbstractPersistentActorLike#persistAll(java.lang.Iterable,org.apache.pekko.japi.Procedure))] method persisting events. You can still use/inherit from the
 @apidoc[actor.Stash] interface. The internal stash cooperates with the normal stash by hooking into @apidoc[unstashAll](actor.Stash) {scala="#unstashAll():Unit" java="#unstashAll()"}
 making sure messages are unstashed properly to the internal stash to maintain ordering guarantees.
 
@@ -634,7 +634,7 @@ Note that the "persistence mode" of @ref:[Cluster Sharding](cluster-sharding.md)
 A persistent actor can delete individual snapshots by calling the @apidoc[deleteSnapshot](persistence.Snapshotter) {scala="#deleteSnapshot(sequenceNr:Long):Unit" java="#deleteSnapshot(long)"} method with the sequence number of
 when the snapshot was taken.
 
-To bulk-delete a range of snapshots matching scala/org/apache/pekko/persistence.SnapshotSelectionCriteria],
+To bulk-delete a range of snapshots matching @apidoc[persistence.SnapshotSelectionCriteria],
 persistent actors should use the @apidoc[deleteSnapshots](persistence.Snapshotter) {scala="#deleteSnapshots(criteria:org.apache.pekko.persistence.SnapshotSelectionCriteria):Unit" java="#deleteSnapshots(org.apache.pekko.persistence.SnapshotSelectionCriteria)"} method. Depending on the journal used this might be inefficient. It is 
 best practice to do specific deletes with `deleteSnapshot` or to include a `minSequenceNr` as well as a `maxSequenceNr`
 for the `SnapshotSelectionCriteria`.
