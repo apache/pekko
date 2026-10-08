@@ -162,6 +162,28 @@ Stream refs utilise normal actor messaging for their transport, and therefore pr
 - messages can be lost, however:
     - a *dropped demand signal* will be re-delivered automatically (similar to system messages)
     - a *dropped element signal* will cause the stream to *fail*
+
+### Transferring large amounts of data
+
+Stream refs can also be used to create simple side-channels to transfer large amounts of data, such as big log
+files, other files or media, between nodes, with as much ease as if it was a local stream. This uses the same
+`SourceRef` and `SinkRef` described above; there is no separate API for it. For example, a file can be offered to a
+remote node by running `FileIO.fromPath(path)` into `StreamRefs.sourceRef()` and sending the materialized `SourceRef`
+to a remote actor, which runs its `source` into a `Sink` of its own, such as `FileIO.toPath`.
+
+Things to keep in mind for large transfers:
+
+- Back-pressure is maintained across the network, so the origin does not send data faster than the target can process it.
+- Each `SourceRef` and `SinkRef` can be materialized only once.
+- Stream refs are not persistent and, as described in @ref:[Delivery guarantees](#delivery-guarantees), a lost element
+  or a failure of one of the nodes fails the stream. There is no automatic resumption, so for very large transfers
+  consider adding your own resumption protocol, for example by tracking an offset in the actor messages that set up
+  the stream.
+- Each stream element is sent as a remoting message, so a serialized element must fit within the remoting frame size
+  (`pekko.remote.artery.advanced.maximum-frame-size`, 256 KiB by default). When streaming files, keep the `ByteString`
+  chunk size well below that.
+- The target side must attach to the stream ref within the
+  @ref:[subscription timeout](#stream-reference-subscription-timeouts).
   
 ## Serialization of SourceRef and SinkRef
 
