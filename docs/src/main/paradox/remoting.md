@@ -40,8 +40,11 @@ not using classic remoting do not have to have Netty on the classpath:
 
 @@dependency[sbt,Maven,Gradle] {
   group=io.netty
-  artifact=netty
+  artifact=netty-transport
   version=$netty_version$
+  group2=io.netty
+  artifact2=netty-handler
+  version2=$netty_version$
 }
 
 ## Configuration

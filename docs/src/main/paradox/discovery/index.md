@@ -106,7 +106,7 @@ Lookups with all the fields set become SRV queries. For example:
 ```
 dig srv _service._tcp.pekko.test
 
-; <<>> DiG 9.11.3-RedHat-9.11.3-6.fc28 <<>> srv service.tcp.pekko.test
+; <<>> DiG 9.11.3-RedHat-9.11.3-6.fc28 <<>> srv _service._tcp.pekko.test
 ;; global options: +cmd
 ;; Got answer:
 ;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 60023
@@ -116,7 +116,7 @@ dig srv _service._tcp.pekko.test
 ; EDNS: version: 0, flags:; udp: 4096
 ; COOKIE: 5ab8dd4622e632f6190f54de5b28bb8fb1b930a5333c3862 (good)
 ;; QUESTION SECTION:
-;service.tcp.pekko.test.         IN      SRV
+;_service._tcp.pekko.test.       IN      SRV
 
 ;; ANSWER SECTION:
 _service._tcp.pekko.test.  86400   IN      SRV     10 60 5060 a-single.pekko.test.
@@ -124,7 +124,7 @@ _service._tcp.pekko.test.  86400   IN      SRV     10 40 5070 a-double.pekko.tes
 
 ```
 
-In this case `service.tcp.pekko.test` resolves to `a-single.pekko.test` on port `5060`
+In this case `_service._tcp.pekko.test` resolves to `a-single.pekko.test` on port `5060`
 and `a-double.pekko.test` on port `5070`. Currently discovery does not support the weightings.
 
 #### A/AAAA records

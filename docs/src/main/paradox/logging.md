@@ -94,8 +94,8 @@ does not necessarily indicate a problem, but they are logged by default for the 
 After a few messages this logging is turned off, to avoid flooding the logs.
 You can disable this logging completely or adjust how many dead letters are
 logged. During system shutdown it is likely that you see dead letters, since pending
-messages in the actor mailboxes are sent to dead letters. You can also disable logging
-of dead letters during shutdown.
+messages in the actor mailboxes are sent to dead letters. Logging of dead letters during shutdown is disabled by default,
+but it can be enabled.
 
 ```ruby
 pekko {

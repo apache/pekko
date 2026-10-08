@@ -123,7 +123,7 @@ Scala
 Java
 :  @@snip [JavaUdpMulticast.java](/docs/src/test/java/jdocs/io/JavaUdpMulticast.java) { #multicast-group }
 
-Socket options must be provided to @scala[`UdpMessage.Bind`]@java[`UdpMessage.bind`] message.
+Socket options must be provided to @scala[`Udp.Bind`]@java[`UdpMessage.bind`] message.
 
 Scala
 :  @@snip [ScalaUdpMulticast.scala](/docs/src/test/scala/docs/io/ScalaUdpMulticast.scala) { #bind }

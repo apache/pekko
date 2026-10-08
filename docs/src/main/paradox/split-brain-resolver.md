@@ -264,7 +264,7 @@ There is another use of the `role` as well. By defining a `role` for a few (e.g.
 nodes in the cluster and using that in the configuration of `static-quorum` you will be able
 to dynamically add and remove other nodes without this role and still have good decisions of what
 nodes to keep running and what nodes to shut down in the case of network partitions. The advantage
-of this approach compared to `keep-majority` (described below) is that you *do not* risk splitting
+of this approach compared to `keep-majority` (described above) is that you *do not* risk splitting
 the cluster into two separate clusters, i.e. *a split brain**. You must still obey the rule of not
 starting too many nodes with this `role` as described above. It also suffers the risk of shutting
 down all nodes if there is a failure when there are not enough nodes with this `role` remaining 
@@ -460,7 +460,7 @@ garbage collection. When a node is unresponsive it is not known if it is due to 
 network partition. If it is pause that lasts longer than `stable-after` * 2 it gives time for SBR to down the node
 and for singletons and shards to be started on other nodes. When the node un-pauses there will be a short time before
 it sees its self as down where singletons and sharded actors are still running. It is therefore important to understand
-the max pause time your application is likely to incur and make sure it is smaller than `stable-margin`.
+the max pause time your application is likely to incur and make sure it is smaller than `stable-after`.
 
 If you choose to set a separate value for `down-removal-margin`, the recommended minimum duration for different cluster sizes are:
 

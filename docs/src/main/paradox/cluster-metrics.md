@@ -128,7 +128,7 @@ It can be configured to use a specific MetricsSelector to produce the probabilit
 * `mix` / `MixMetricsSelector` - Combines heap, cpu and load. Weights based on mean of remaining capacity of the combined selectors.
 * Any custom implementation of `org.apache.pekko.cluster.metrics.MetricsSelector`
 
-The collected metrics values are smoothed with [exponential weighted moving average](https://en.wikipedia.org/wiki/Moving_average#Exponential_moving_average). In the @ref:[Cluster configuration](cluster-usage.md#cluster-configuration) you can adjust how quickly past data is decayed compared to new data.
+The collected metrics values are smoothed with [exponential weighted moving average](https://en.wikipedia.org/wiki/Moving_average#Exponential_moving_average). With the `pekko.cluster.metrics.collector.moving-average-half-life` setting (see @ref:[Configuration](#configuration)) you can adjust how quickly past data is decayed compared to new data.
 
 Let's take a look at this router in action. What can be more demanding than calculating factorials?
 

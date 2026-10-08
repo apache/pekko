@@ -85,7 +85,7 @@ to the new incarnation even though they have the same path.
 
 Each actor path has an address component, describing the protocol and location
 by which the corresponding actor is reachable, followed by the names of the
-actors in the hierarchy from the root up. Examples are:
+actors in the hierarchy from the root down. Examples are:
 
 ```
 "pekko://my-sys/user/service-a/worker1"               // purely local

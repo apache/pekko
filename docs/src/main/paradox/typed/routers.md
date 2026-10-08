@@ -117,7 +117,7 @@ of routees stays relatively stable, but may be unfair if the set of routees chan
 
 This is the default for pool routers as the pool of routees is expected to remain the same.
 
-An optional parameter `preferLocalRoutees` can be used for this strategy. Routers will only use routees located in local actor system if `preferLocalRoutees` is true and local routees do exist. The default value for this parameter is false.
+For group routers, an optional parameter `preferLocalRoutees` can be used for this strategy (it is not available for pool routers). Group routers will only use routees located in local actor system if `preferLocalRoutees` is true and local routees do exist. The default value for this parameter is false.
 
 ### Random
 
@@ -125,7 +125,7 @@ Randomly selects a routee when a message is sent through the router.
 
 This is the default for group routers as the group of routees is expected to change as nodes join and leave the cluster.
 
-An optional parameter `preferLocalRoutees` can be used for this strategy. Routers will only use routees located in local actor system if `preferLocalRoutees` is true and local routees do exist. The default value for this parameter is false.
+For group routers, an optional parameter `preferLocalRoutees` can be used for this strategy (it is not available for pool routers). Group routers will only use routees located in local actor system if `preferLocalRoutees` is true and local routees do exist. The default value for this parameter is false.
 
 ### Consistent Hashing
 

@@ -138,7 +138,8 @@ user provided message itself, which we will from here on refer to as the `payloa
 
 Pekko Persistence provided serializers wrap the user payload in an envelope containing all persistence-relevant information.
 **If the Journal uses provided Protobuf serializers for the wrapper types (e.g. PersistentRepr), then the payload will
-be serialized using the user configured serializer, and if none is provided explicitly, Java serialization will be used for it.**
+be serialized using the user configured serializer. If none is provided explicitly, the payload falls back to Java serialization, which is
+disabled by default (`pekko.actor.allow-java-serialization = off`), so serialization of the payload will fail.**
 
 The blue colored regions of the `PersistentMessage` indicate what is serialized using the generated protocol buffers
 serializers, and the yellow payload indicates the user provided event (by calling @scala[@scaladoc[persist(payload)(...)](pekko.persistence.PersistentActor#persist[A](event:A)(handler:A=%3EUnit):Unit)]@java[@javadoc[persist(payload,...)](pekko.persistence.AbstractPersistentActorLike#persist(A,org.apache.pekko.japi.Procedure))].
@@ -149,7 +150,8 @@ More advanced techniques (e.g. @ref:[Remove event class and ignore events](#remo
 flexibility of the persisted vs. exposed types even more. However for now we will focus on the simpler evolution techniques,
 concerning only configuring the payload serializers.
 
-By default the `payload` will be serialized using Java Serialization. This is fine for testing and initial phases
+If no serializer is configured for it, the `payload` falls back to Java Serialization, which is disabled by default
+(`pekko.actor.allow-java-serialization = off`). Enabling it may be acceptable for testing and initial phases
 of your development (while you're still figuring out things, and the data will not need to stay persisted forever).
 However, once you move to production you should really *pick a different serializer for your payloads*.
 

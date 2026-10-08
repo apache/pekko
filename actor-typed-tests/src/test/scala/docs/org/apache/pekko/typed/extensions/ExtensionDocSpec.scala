@@ -55,7 +55,7 @@ class DatabasePool(system: ActorSystem[?]) extends Extension {
 object ExtensionDocSpec {
   val config = ConfigFactory.parseString("""
       #config      
-      pekko.actor.typed.extensions = ["org.apache.pekko.pekko.extensions.DatabasePool"]
+      pekko.actor.typed.extensions = ["docs.org.apache.pekko.typed.extensions.DatabasePool"]
       #config
                                          """)
 

@@ -102,7 +102,7 @@ There are 2 different types of message dispatchers:
     * Use cases: Default dispatcher, Bulkheading
     * Driven by: `java.util.concurrent.ExecutorService`.
       Specify using "executor" using "fork-join-executor", "thread-pool-executor" or the fully-qualified
-      class name of an `org.apache.pekko.dispatcher.ExecutorServiceConfigurator` implementation.
+      class name of an `org.apache.pekko.dispatch.ExecutorServiceConfigurator` implementation.
 
 * **PinnedDispatcher**
 

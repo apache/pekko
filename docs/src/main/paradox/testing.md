@@ -177,7 +177,7 @@ call is non-blocking (polling mode).
 
 @@@
 
-* @scala[`receiveWhile[T](max: Duration, idle: Duration, messages: Int)(pf: PartialFunction[Any, T]): Seq[T]`]@java[`public <T> List<T> receiveWhile(Duration max, Duration idle, Int messages, Function<Object, T> f)`]
+* @scala[`receiveWhile[T](max: Duration, idle: Duration, messages: Int)(pf: PartialFunction[Any, T]): Seq[T]`]@java[`public <T> List<T> receiveWhile(Duration max, Duration idle, int messages, Function<Object, T> f)`]
 Collect messages as long as
     * they are matching the given partial function
     * the given time interval is not used up
@@ -200,11 +200,10 @@ Poll the given assert function every `interval` until it does not throw
 an exception or the `max` duration is used up. If the timeout expires the
 last exception is thrown. @scala[The interval defaults to 100 ms and the maximum defaults
 to the time remaining in the innermost enclosing @ref:[within](#testkit-within)
-block. The interval defaults to 100 ms and the maximum defaults to the time
-remaining in the innermost enclosing @ref:[within](#testkit-within) block.] Return an arbitrary value that would be returned from awaitAssert if successful, if not interested in such value you can return null.
+block.] Return an arbitrary value that would be returned from awaitAssert if successful, if not interested in such value you can return null.
 
 * @scala[`ignoreMsg(pf: PartialFunction[AnyRef, Boolean])`]@java[`public void ignoreMsg(Function<Object, Boolean> f)`]
-@scala[`ignoreMsg`]@java[`public void ignoreMsg()`]
+@scala[`ignoreNoMsg()`]@java[`public void ignoreNoMsg()`]
 @java[There are also cases where not all messages sent to the test kit are actually
 relevant to the test, but removing them would mean altering the actors under
 test. For this purpose it is possible to ignore certain messages.]

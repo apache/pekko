@@ -247,7 +247,7 @@ Having to define two response classes and a shared supertype for every request t
 where you also have to make sure the messages can be serialized to be sent over the network.
 
 To help with this a generic status-response type is included in Pekko: @apidoc[StatusReply], everywhere where `ask` can be used
-there is also a second method @apidoc[askWithStatus](typed.*.ActorFlow$) {scala="#askWithStatus[I,Q,A](parallelism:Int)(ref:org.apache.pekko.actor.typed.ActorRef[Q])(makeMessage:(I,org.apache.pekko.actor.typed.ActorRef[org.apache.pekko.pattern.StatusReply[A]])=%3EQ)(implicittimeout:org.apache.pekko.util.Timeout):org.apache.pekko.stream.scaladsl.Flow[I,A,org.apache.pekko.NotUsed]" java="#askWithStatus(int,org.apache.pekko.actor.typed.ActorRef,java.time.Duration,java.util.function.BiFunction)"} which, given that the response is a `StatusReply` will unwrap successful responses
+there is also a second method @apidoc[askWithStatus](typed.*.ActorContext) {scala="#askWithStatus[Req,Res](target:org.apache.pekko.actor.typed.RecipientRef[Req],createRequest:org.apache.pekko.actor.typed.ActorRef[org.apache.pekko.pattern.StatusReply[Res]]=%3EReq)(mapResponse:scala.util.Try[Res]=%3ET)(implicitresponseTimeout:org.apache.pekko.util.Timeout,implicitclassTag:scala.reflect.ClassTag[Res]):Unit" java="#askWithStatus(java.lang.Class,org.apache.pekko.actor.typed.RecipientRef,java.time.Duration,org.apache.pekko.japi.function.Function,org.apache.pekko.japi.function.Function2)"} which, given that the response is a `StatusReply` will unwrap successful responses
 and help with handling validation errors. Pekko includes pre-built serializers for the type, so in the normal use case a clustered 
 application only needs to provide a serializer for the successful result.
 
@@ -494,8 +494,8 @@ This can be used with any type of @apidoc[actor.typed.Behavior], including @apid
 Scheduling of recurring messages can have two different characteristics:
 
 * fixed-delay - The delay between sending subsequent messages will always be (at least) the given `delay`.
-  Use @apidoc[startTimerWithFixedDelay](actor.TimerScheduler) {scala="#startTimerWithFixedDelay(key:Any,msg:Any,initialDelay:scala.concurrent.duration.FiniteDuration,delay:scala.concurrent.duration.FiniteDuration):Unit" java="#startTimerWithFixedDelay(java.lang.Object,java.lang.Object,java.time.Duration,java.time.Duration)"}.
-* fixed-rate - The frequency of execution over time will meet the given `interval`. Use @apidoc[startTimerAtFixedRate](actor.TimerScheduler) {scala="#startTimerAtFixedRate(key:Any,msg:Any,interval:scala.concurrent.duration.FiniteDuration):Unit" java="#startTimerAtFixedRate(java.lang.Object,java.lang.Object,java.time.Duration,java.time.Duration)"}.
+  Use @apidoc[startTimerWithFixedDelay](typed.*.TimerScheduler) {scala="#startTimerWithFixedDelay(key:Any,msg:T,initialDelay:scala.concurrent.duration.FiniteDuration,delay:scala.concurrent.duration.FiniteDuration):Unit" java="#startTimerWithFixedDelay(java.lang.Object,T,java.time.Duration,java.time.Duration)"}.
+* fixed-rate - The frequency of execution over time will meet the given `interval`. Use @apidoc[startTimerAtFixedRate](typed.*.TimerScheduler) {scala="#startTimerAtFixedRate(key:Any,msg:T,interval:scala.concurrent.duration.FiniteDuration):Unit" java="#startTimerAtFixedRate(java.lang.Object,T,java.time.Duration)"}.
 
 If you are uncertain of which one to use you should pick `startTimerWithFixedDelay`.
 
@@ -509,12 +509,12 @@ it is appropriate for activities where it is more important to keep the frequenc
 than in the long run.
 
 When using **fixed-rate** it will compensate the delay for a subsequent task if the previous messages were delayed
-too long. In such cases, the actual sending interval will differ from the interval passed to the `scheduleAtFixedRate`
+too long. In such cases, the actual sending interval will differ from the interval passed to the `startTimerAtFixedRate`
 method.
 
 If the tasks are delayed longer than the `interval`, the subsequent message will be sent immediately after the
 prior one. This also has the consequence that after long garbage collection pauses or other reasons when the JVM
-was suspended all "missed" tasks will execute when the process wakes up again. For example, `scheduleAtFixedRate`
+was suspended all "missed" tasks will execute when the process wakes up again. For example, `startTimerAtFixedRate`
 with an interval of 1 second and the process is suspended for 30 seconds will result in 30 messages being sent
 in rapid succession to catch up. In the long run, the frequency of execution will be exactly the reciprocal of
 the specified `interval`.
@@ -525,8 +525,8 @@ timer that ticks once every second for ten seconds.
 
 @@@ warning
 
-`scheduleAtFixedRate` can result in bursts of scheduled messages after long garbage collection pauses,
-which may in worst case cause undesired load on the system. `scheduleWithFixedDelay` is often preferred.
+`startTimerAtFixedRate` can result in bursts of scheduled messages after long garbage collection pauses,
+which may in worst case cause undesired load on the system. `startTimerWithFixedDelay` is often preferred.
 
 @@@
 
