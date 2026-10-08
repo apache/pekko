@@ -1906,7 +1906,7 @@ trait FlowOps[+Out, +Mat] {
   /**
    * Ensure stream boundedness by limiting the number of elements from upstream.
    * If the number of incoming elements exceeds max, it will signal
-   * upstream failure `StreamLimitException` downstream.
+   * upstream failure `StreamLimitReachedException` downstream.
    *
    * Due to input buffering some elements may have been
    * requested from upstream publishers that will then not be processed downstream
@@ -1918,7 +1918,7 @@ trait FlowOps[+Out, +Mat] {
    *
    * '''Completes when''' upstream completes and the number of emitted elements has not reached max
    *
-   * '''Errors when''' the total number of incoming element exceeds max
+   * '''Errors when''' the total number of incoming elements exceeds max
    *
    * '''Cancels when''' downstream cancels
    *
@@ -1930,7 +1930,7 @@ trait FlowOps[+Out, +Mat] {
    * Ensure stream boundedness by evaluating the cost of incoming elements
    * using a cost function. Exactly how many elements will be allowed to travel downstream depends on the
    * evaluated cost of each element. If the accumulated cost exceeds max, it will signal
-   * upstream failure `StreamLimitException` downstream.
+   * upstream failure `StreamLimitReachedException` downstream.
    *
    * Due to input buffering some elements may have been
    * requested from upstream publishers that will then not be processed downstream
@@ -1942,9 +1942,9 @@ trait FlowOps[+Out, +Mat] {
    *
    * '''Backpressures when''' downstream backpressures
    *
-   * '''Completes when''' upstream completes and the number of emitted elements has not reached max
+   * '''Completes when''' upstream completes and the accumulated cost has not reached max
    *
-   * '''Errors when''' when the accumulated cost exceeds max
+   * '''Errors when''' the accumulated cost exceeds max
    *
    * '''Cancels when''' downstream cancels
    *

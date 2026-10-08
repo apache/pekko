@@ -1397,24 +1397,21 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
   /**
    * Ensure stream boundedness by limiting the number of elements from upstream.
    * If the number of incoming elements exceeds max, it will signal
-   * upstream failure `StreamLimitException` downstream.
+   * upstream failure `StreamLimitReachedException` downstream.
    *
    * Due to input buffering some elements may have been
    * requested from upstream publishers that will then not be processed downstream
    * of this step.
    *
-   * The stream will be completed without producing any elements if `n` is zero
-   * or negative.
-   *
-   * '''Emits when''' the specified number of elements to take has not yet been reached
+   * '''Emits when''' upstream emits and the number of emitted elements has not reached max
    *
    * '''Backpressures when''' downstream backpressures
    *
-   * '''Completes when''' the defined number of elements has been taken or upstream completes
+   * '''Completes when''' upstream completes and the number of emitted elements has not reached max
    *
-   * '''Errors when''' the total number of incoming element exceeds max
+   * '''Errors when''' the total number of incoming elements exceeds max
    *
-   * '''Cancels when''' the defined number of elements has been taken or downstream cancels
+   * '''Cancels when''' downstream cancels
    *
    * See also [[Flow.take]], [[Flow.takeWithin]], [[Flow.takeWhile]]
    */
@@ -1424,26 +1421,23 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    * Ensure stream boundedness by evaluating the cost of incoming elements
    * using a cost function. Exactly how many elements will be allowed to travel downstream depends on the
    * evaluated cost of each element. If the accumulated cost exceeds max, it will signal
-   * upstream failure `StreamLimitException` downstream.
+   * upstream failure `StreamLimitReachedException` downstream.
    *
    * Due to input buffering some elements may have been
    * requested from upstream publishers that will then not be processed downstream
    * of this step.
    *
-   * The stream will be completed without producing any elements if `n` is zero
-   * or negative.
-   *
    * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
    *
-   * '''Emits when''' the specified number of elements to take has not yet been reached
+   * '''Emits when''' upstream emits and the accumulated cost has not reached max
    *
    * '''Backpressures when''' downstream backpressures
    *
-   * '''Completes when''' the defined number of elements has been taken or upstream completes
+   * '''Completes when''' upstream completes and the accumulated cost has not reached max
    *
-   * '''Errors when''' when the accumulated cost exceeds max
+   * '''Errors when''' the accumulated cost exceeds max
    *
-   * '''Cancels when''' the defined number of elements has been taken or downstream cancels
+   * '''Cancels when''' downstream cancels
    *
    * See also [[Flow.take]], [[Flow.takeWithin]], [[Flow.takeWhile]]
    */
