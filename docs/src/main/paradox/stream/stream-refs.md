@@ -112,7 +112,7 @@ The process of preparing and running a `SourceRef`-powered distributed stream is
 
 ### Sink Refs - offering to receive streaming data from a remote system
 
-The dual of @scala[@scaladoc[`SourceRef`](pekko.stream.SinkRef)]@java[@javadoc[`SourceRef`](pekko.stream.SinkRef)]s.
+The dual of @scala[@scaladoc[`SourceRef`](pekko.stream.SourceRef)]@java[@javadoc[`SourceRef`](pekko.stream.SourceRef)]s.
 
 They can be used to offer the other side the capability to 
 send to the *origin* side data in a streaming, flow-controlled fashion. The origin here allocates a `Sink`,

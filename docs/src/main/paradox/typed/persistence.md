@@ -244,7 +244,7 @@ Scala
 Java
 :  @@snip [BasicPersistentBehaviorTest.java](/persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/BasicPersistentBehaviorTest.java) { #effects }
 
-Most of the time this will be done with the @apidoc[thenRun](typed.(scaladsl|javadsl).EffectBuilder) {scala="#thenRun(callback:State=%3EUnit):org.apache.pekko.persistence.typed.scaladsl.EffectBuilder[Event,State]" java="#thenRun(function.Effect)"} method on the `Effect` above. You can factor out
+Most of the time this will be done with the @apidoc[thenRun](typed.(scaladsl|javadsl).EffectBuilder) {scala="#thenRun(callback:State=%3EUnit):org.apache.pekko.persistence.typed.scaladsl.EffectBuilder[Event,State]" java="#thenRun(org.apache.pekko.japi.function.Effect)"} method on the `Effect` above. You can factor out
 common side effects into functions and reuse for several commands. For example:
 
 Scala
@@ -384,7 +384,7 @@ when accepted you want a confirmation when the events have been successfully sto
 Therefore you typically include a @apidoc[typed.ActorRef]@scala[`[ReplyMessageType]`]@java[`<ReplyMessageType>`]. If the 
 command can either have a successful response or a validation error returned, the generic response type @apidoc[pattern.StatusReply]@scala[`[ReplyType]`]
 @java[`<ReplyType>`] can be used. If the successful reply does not contain a value but is more of an acknowledgement
-a pre defined @scala[@scaladoc[StatusReply.Ack](pekko.pattern.StatusReply$#Ack:org.apache.pekko.pattern.StatusReply[org.apache.pekko.Done])]@java[@javadoc[StatusReply.ack()](pekko.pattern.StatusReply$#ack():org.apache.pekko.pattern.StatusReply[org.apache.pekko.Done])] of type @scala[`StatusReply[Done]`]@java[`StatusReply<Done>`]
+a pre defined @scala[@scaladoc[StatusReply.Ack](pekko.pattern.StatusReply$#Ack:org.apache.pekko.pattern.StatusReply[org.apache.pekko.Done])]@java[@javadoc[StatusReply.ack()](pekko.pattern.StatusReply#ack())] of type @scala[`StatusReply[Done]`]@java[`StatusReply<Done>`]
 can be used.
 
 After validation errors or after persisting events, using a @apidoc[thenRun](typed.(scaladsl|javadsl).EffectBuilder) {scala="#thenRun(callback:State=%3EUnit):org.apache.pekko.persistence.typed.scaladsl.EffectBuilder[Event,State]" java="#thenRun(org.apache.pekko.japi.function.Effect)"} side effect, the reply message can

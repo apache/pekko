@@ -6,7 +6,7 @@ Create a sink that wraps an `OutputStream`.
 
 ## Signature
 
-@apidoc[StreamConverters.fromOutputStream](StreamConverters$) { scala="#fromOutputStream(out:()=%3Cjava.io.OutputStream,autoFlush:Boolean):org.apache.pekko.stream.scaladsl.Sink[org.apache.pekko.util.ByteString,scala.concurrent.Future[org.apache.pekko.stream.IOResult]]" java="#fromOutputStream(org.apache.pekko.japi.function.Creator)" }
+@apidoc[StreamConverters.fromOutputStream](StreamConverters$) { scala="#fromOutputStream(out:()=%3Ejava.io.OutputStream,autoFlush:Boolean):org.apache.pekko.stream.scaladsl.Sink[org.apache.pekko.util.ByteString,scala.concurrent.Future[org.apache.pekko.stream.IOResult]]" java="#fromOutputStream(org.apache.pekko.japi.function.Creator)" }
 
 ## Description
 

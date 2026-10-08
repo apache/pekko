@@ -6,15 +6,15 @@ Prepends the given source to the flow, consuming it until completion before the 
 
 ## Signature
 
-@apidoc[Source.prepend](Source) { scala="#prepend[U&gt;:Out,Mat2](that:org.apache.pekko.stream.Graph[org.apache.pekko.stream.SourceShape[U],Mat2]):FlowOps.this.Repr[U]" java="#prepend(org.apache.pekko.stream.Graph)" }
-@apidoc[Flow.prepend](Flow) { scala="#prepend[U&gt;:Out,Mat2](that:org.apache.pekko.stream.Graph[org.apache.pekko.stream.SourceShape[U],Mat2]):FlowOps.this.Repr[U]" java="#prepend(org.apache.pekko.stream.Graph)" }
+@apidoc[Source.prependLazy](Source) { scala="#prependLazy[U&gt;:Out,Mat2](that:org.apache.pekko.stream.Graph[org.apache.pekko.stream.SourceShape[U],Mat2]):FlowOps.this.Repr[U]" java="#prependLazy(org.apache.pekko.stream.Graph)" }
+@apidoc[Flow.prependLazy](Flow) { scala="#prependLazy[U&gt;:Out,Mat2](that:org.apache.pekko.stream.Graph[org.apache.pekko.stream.SourceShape[U],Mat2]):FlowOps.this.Repr[U]" java="#prependLazy(org.apache.pekko.stream.Graph)" }
 
 
 ## Description
 
 Prepends the given source to the flow, consuming it until completion before the original source is consumed.
 
-Both streams will be materialized together, however, the original stream will be pulled for the first time only after the prepended upstream was completed. (In contrast, @ref(prepend)[prepend.md], introduces single-element buffers after both, original and given sources so that the original source is also pulled once immediately.)
+Both streams will be materialized together, however, the original stream will be pulled for the first time only after the prepended upstream was completed. (In contrast, @ref[prepend](prepend.md), introduces single-element buffers after both, original and given sources so that the original source is also pulled once immediately.)
 
 If materialized values needs to be collected `prependLazyMat` is available.
 

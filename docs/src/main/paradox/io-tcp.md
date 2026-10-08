@@ -219,7 +219,7 @@ to the network socket.
 
 These write back-pressure models (with the exception of the second which is rather specialised) are
 demonstrated in complete examples below. The full and contiguous source is
-available @scala[@extref[on GitHub](github:docs/src/test/scala/docs/io/EchoServer.scala)]@java[@extref[on GitHub](github:docs/rst/java/code/jdocs/io/japi)].
+available @scala[@extref[on GitHub](github:docs/src/test/scala/docs/io/EchoServer.scala)]@java[@extref[on GitHub](github:docs/src/test/java/jdocs/io/japi)].
 
 For back-pressuring reads there are two modes of operation
 

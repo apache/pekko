@@ -6,8 +6,8 @@ Emits a specifiable number of elements from the original source, then from the p
 
 ## Signature
 
-@apidoc[Source.interleaveAll](Source) { scala="#interleaveAll[U&gt;:Out](that:List[org.apache.pekko.stream.Graph[org.apache.pekko.stream.SourceShape[U],_]],segmentSize:Int,eagerClose:Boolean):FlowOps.this.Repr[U]" java="#interleaveAll(java.util.List[org.apache.pekko.stream.Graph],int,boolean)" }
-@apidoc[Flow.interleaveAll](Flow) { scala="#interleaveAll[U&gt;:Out](that:List[org.apache.pekko.stream.Graph[org.apache.pekko.stream.SourceShape[U],_]],segmentSize:Int,eagerClose:Boolean):FlowOps.this.Repr[U]" java="#interleaveAll(java.util.List[org.apache.pekko.stream.Graph],int,boolean)" }
+@apidoc[Source.interleaveAll](Source) { scala="#interleaveAll[U&gt;:Out](those:Seq[org.apache.pekko.stream.Graph[org.apache.pekko.stream.SourceShape[U],_]],segmentSize:Int,eagerClose:Boolean):FlowOps.this.Repr[U]" java="#interleaveAll(java.util.List,int,boolean)" }
+@apidoc[Flow.interleaveAll](Flow) { scala="#interleaveAll[U&gt;:Out](those:Seq[org.apache.pekko.stream.Graph[org.apache.pekko.stream.SourceShape[U],_]],segmentSize:Int,eagerClose:Boolean):FlowOps.this.Repr[U]" java="#interleaveAll(java.util.List,int,boolean)" }
 
 
 ## Description

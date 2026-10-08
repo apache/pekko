@@ -115,7 +115,7 @@ will eventually reach the same set of actors per `ServiceKey`.
 
 `Subscription`s and `Find` queries to a clustered receptionist will keep track of cluster reachability and only list 
 registered actors that are reachable. The full set of actors, including unreachable ones, is available through 
-@scala[@scaladoc[Listing.allServiceInstances](pekko.typed.receptionist.Receptionist.Listing#allServiceInstances[T](key:org.apache.pekko.actor.typed.receptionist.ServiceKey[T]):Set[org.apache.pekko.actor.typed.ActorRef[T]])]@java[@javadoc[Listing.getAllServiceInstances](pekko.actor.typed.receptionist.Receptionist.Listing#getAllServiceInstances(org.apache.pekko.actor.typed.receptionist.ServiceKey))].
+@scala[@scaladoc[Listing.allServiceInstances](pekko.actor.typed.receptionist.Receptionist.Listing#allServiceInstances[T](key:org.apache.pekko.actor.typed.receptionist.ServiceKey[T]):Set[org.apache.pekko.actor.typed.ActorRef[T]])]@java[@javadoc[Listing.getAllServiceInstances](pekko.actor.typed.receptionist.Receptionist.Listing#getAllServiceInstances(org.apache.pekko.actor.typed.receptionist.ServiceKey))].
 
 One important difference from local only receptions are the serialization concerns, all messages sent to and back from 
 an actor on another node must be serializable, see @ref:[serialization](../serialization.md).

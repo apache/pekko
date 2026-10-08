@@ -35,14 +35,14 @@ for any concrete implementation.
 
 The classifiers presented here are part of the Pekko distribution, but rolling
 your own in case you do not find a perfect match is not difficult, check the
-implementation of the existing ones on @extref[github](github:pekko-actor/src/main/scala/org/apache/pekko/event/EventBus.scala) 
+implementation of the existing ones on @extref[github](github:actor/src/main/scala/org/apache/pekko/event/EventBus.scala) 
 
 ### Lookup Classification
 
 The simplest classification is just to extract an arbitrary classifier from
 each event and maintaining a set of subscribers for each possible classifier.
 This can be compared to tuning in on a radio station. The @scala[trait
-@scaladoc[LookupClassification](pekko.event.LookupClassification)]@java[abstract class @scaladoc[LookupEventBus](org.apache.pekko.event.japi.LookupEventBus)] is still generic in that it abstracts over how to
+@scaladoc[LookupClassification](pekko.event.LookupClassification)]@java[abstract class @javadoc[LookupEventBus](pekko.event.japi.LookupEventBus)] is still generic in that it abstracts over how to
 compare subscribers and how exactly to classify them.
 
 The necessary methods to be implemented are illustrated with the following example:

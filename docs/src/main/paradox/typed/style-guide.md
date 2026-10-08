@@ -271,7 +271,7 @@ Scala
 Java
 :  @@snip [StyleGuideDocExamples.java](/actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/StyleGuideDocExamples.java) { #message-protocol }
 
-Note that the response message hierarchy in this case could be completely avoided by using the @apiDoc[StatusReply] API 
+Note that the response message hierarchy in this case could be completely avoided by using the @apidoc[StatusReply] API 
 instead (see @ref[Generic Response Wrapper](interaction-patterns.md#generic-response-wrapper)).
 
 ## Public versus private messages

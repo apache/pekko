@@ -234,7 +234,7 @@ There is no built in support for knowing an event has been replicated to all rep
 For some use cases you may need to trigger side effects after consuming replicated events. For example when an auction has been closed in 
 all data centers and all bids have been replicated. 
 
-The @api[ReplicationContext] contains the current replica, the origin replica for the event processes, and if a recovery is running. These can be used to 
+The @apidoc[ReplicationContext] contains the current replica, the origin replica for the event processes, and if a recovery is running. These can be used to 
 implement side effects that take place once events are fully replicated. If the side effect should happen only once then a particular replica can be
 designated to do it. The @ref[Auction example](replicated-eventsourcing-auction.md) uses these techniques.
 
@@ -402,11 +402,11 @@ More examples can be found in @ref[Replicated Event Sourcing Examples](./replica
 
 ## Journal Support
 
-For a journal plugin to support replication it needs to store and read metadata for each event if it is defined in the @apiref[PersistentRepr]
+For a journal plugin to support replication it needs to store and read metadata for each event if it is defined in the @apidoc[PersistentRepr]
  `metadata` field. To attach the metadata after writing it, `PersistentRepr.withMetadata` is used. The @apidoc[JournalSpec] in the Persistence TCK provides 
  a capability flag `supportsMetadata` to toggle verification that metadata is handled correctly.
  
-For a snapshot plugin to support replication it needs to store and read metadata for the snapshot if it is defined in the @apiref[org.apache.pekko.persistence.SnapshotMetadata] `metadata` field. 
+For a snapshot plugin to support replication it needs to store and read metadata for the snapshot if it is defined in the @apidoc[persistence.SnapshotMetadata] `metadata` field. 
 To attach the metadata when reading the snapshot the `org.apache.pekko.persistence.SnapshotMetadata.apply` factory overload taking a `metadata` parameter is used.
 The @apidoc[SnapshotStoreSpec] in the Persistence TCK provides a capability flag `supportsMetadata` to toggle verification that metadata is handled correctly.
 

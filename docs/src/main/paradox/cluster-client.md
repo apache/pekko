@@ -93,9 +93,9 @@ what clients are connected to.
 Response messages from the destination actor are tunneled via the receptionist
 to avoid inbound connections from other cluster nodes to the client:
 
-* @scala[@scaladoc[`sender()`](pekko.actor.Actor)]@java[@javadoc[`getSender()`](pekko.actor.Actor)], as seen by the destination actor, is not the client itself,
+* @scala[@scaladoc[`sender()`](pekko.actor.Actor)]@java[@javadoc[`getSender()`](pekko.actor.AbstractActor#getSender())], as seen by the destination actor, is not the client itself,
   but the receptionist
-* @scala[@scaladoc[`sender()`](pekko.actor.Actor)] @java[@javadoc[`getSender()`](pekko.actor.Actor)] of the response messages, sent back from the destination and seen by the client,
+* @scala[@scaladoc[`sender()`](pekko.actor.Actor)] @java[@javadoc[`getSender()`](pekko.actor.AbstractActor#getSender())] of the response messages, sent back from the destination and seen by the client,
   is `deadLetters`
 
 since the client should normally send subsequent messages via the @apidoc[ClusterClient].
@@ -253,8 +253,8 @@ An example is provided to illustrate an approach to migrate from the deprecated 
 with minimal changes to your existing code. The example is intended to be copied and adjusted to your needs.
 It will not be provided as a published artifact.
 
-* [pekko-samples/pekko-sample-cluster-cluster-client-grpc-scala](https://github.com/apache/pekko-samples/tree/main/pekko-sample-cluster-client-grpc-scala) implemented in Scala
-* [pekko-samples/pekko-sample-cluster-cluster-client-grpc-java](https://github.com/apache/pekko-samples/tree/main/pekko-sample-cluster-client-grpc-java) implemented in Java
+* [pekko-samples/pekko-sample-cluster-client-grpc-scala](https://github.com/apache/pekko-samples/tree/main/pekko-sample-cluster-client-grpc-scala) implemented in Scala
+* [pekko-samples/pekko-sample-cluster-client-grpc-java](https://github.com/apache/pekko-samples/tree/main/pekko-sample-cluster-client-grpc-java) implemented in Java
 
 The example is still using an actor on the client-side to have an API that is very close
 to the original Cluster Client. The messages this actor can handle correspond to the

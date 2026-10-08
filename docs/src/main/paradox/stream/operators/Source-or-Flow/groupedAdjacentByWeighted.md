@@ -6,8 +6,8 @@ Partitions this stream into chunks by a delimiter function and a weight limit.
 
 ## Signature
 
-@apidoc[Source.groupedAdjacentByWeighted](Source) { scala="#groupedAdjacentByWeighted[T](f:Out=&gt;T,maxWeight:Long)(costFn:Out=&gt;Long):FlowOps.this.Repr[Seq[Out]]" java="#groupedAdjacentBy(org.apache.pekko.japi.function.Function,long,org.apache.pekko.japi.function.Function)" }
-@apidoc[Flow.groupedAdjacentByWeighted](Flow) { scala="#groupedAdjacentByWeighted[T](f:Out=&gt;T,maxWeight:Long)(costFn:Out=&gt;Long):FlowOps.this.Repr[Seq[Out]]" java="#groupedAdjacentBy(org.apache.pekko.japi.function.Function,long,org.apache.pekko.japi.function.Function)" }
+@apidoc[Source.groupedAdjacentByWeighted](Source) { scala="#groupedAdjacentByWeighted[T](f:Out=&gt;T,maxWeight:Long)(costFn:Out=&gt;Long):FlowOps.this.Repr[Seq[Out]]" java="#groupedAdjacentByWeighted(org.apache.pekko.japi.function.Function,long,org.apache.pekko.japi.function.Function)" }
+@apidoc[Flow.groupedAdjacentByWeighted](Flow) { scala="#groupedAdjacentByWeighted[T](f:Out=&gt;T,maxWeight:Long)(costFn:Out=&gt;Long):FlowOps.this.Repr[Seq[Out]]" java="#groupedAdjacentByWeighted(org.apache.pekko.japi.function.Function,long,org.apache.pekko.japi.function.Function)" }
 
 ## Description
 
