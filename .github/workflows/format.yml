@@ -35,7 +35,7 @@ jobs:
           persist-credentials: false
 
       - name: Setup Coursier
-        uses: coursier/setup-action@3174df5c784a0c8724f06b7924b849551c40c39e # v3.0.3
+        uses: coursier/setup-action@648df969f41ef15fda2baba8b37f9fa3d16390a3 # v3.0.4
         with:
           apps: scalafmt
 
