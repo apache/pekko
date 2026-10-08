@@ -237,18 +237,3 @@ pekko {
 The above configuration will result in `pekko-dns` first being checked and if it fails or returns no
 targets for the given service name then `config` is queried which i configured with one service called
 `service1` which two hosts `host1` and `host2`.
-
-## Migrating from Pekko Management Discovery (before 1.0.0)
-
-Pekko Discovery started out as a submodule of Pekko Management, before 1.0.0 of Pekko Management. Pekko Discovery is not compatible with those versions of Pekko Management Discovery.
-
-At least version `1.0.0` of any Pekko Management module should be used if also using Pekko Discovery.
-
-Migration steps:
-
-* Any custom discovery method should now implement `org.apache.pekko.discovery.ServiceDiscovery`
-* `discovery-method` now has to be a configuration location under `pekko.discovery` with at minimum a property `class` specifying the fully qualified name of the implementation of `org.apache.pekko.discovery.ServiceDiscovery`.
-  Previous versions allowed this to be a class name or a fully qualified config location e.g. `pekko.discovery.kubernetes-api` rather than just `kubernetes-api`
-
-
-

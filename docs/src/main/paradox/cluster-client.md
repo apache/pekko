@@ -50,7 +50,7 @@ within the same cluster. Similar functionality as the @apidoc[ClusterClient] is
 provided more efficiently by @ref:[Distributed Publish Subscribe in Cluster](distributed-pub-sub.md) for actors that
 belong to the same cluster.
 
-The connecting system must have its `org.apache.pekko.actor.provider` set  to `remote` or `cluster` when using
+The connecting system must have its `pekko.actor.provider` set  to `remote` or `cluster` when using
 the cluster client.
 
 The receptionist is supposed to be started on all nodes, or all nodes with a specified role,
@@ -163,7 +163,7 @@ It is recommended to load the extension when the actor system is started by defi
 `pekko.extensions` configuration property:
 
 ```
-pekko.extensions = ["pekko.cluster.client.ClusterClientReceptionist"]
+pekko.extensions = ["org.apache.pekko.cluster.client.ClusterClientReceptionist"]
 ```
 
 ## Events

@@ -37,10 +37,10 @@ upon their presence in the `reference.conf` supplied with the library in
 question.
 
 Highest precedence is given to overrides given as system properties, see [the
-HOCON specification](https://github.com/typesafehub/config/blob/master/HOCON.md) (near the
+HOCON specification](https://github.com/lightbend/config/blob/master/HOCON.md) (near the
 bottom). Also noteworthy is that the application configuration—which defaults
 to `application`—may be overridden using the `config.resource` property
-(there are more, please refer to the [Config docs](https://github.com/typesafehub/config/blob/master/README.md)).
+(there are more, please refer to the [Config docs](https://github.com/lightbend/config/blob/master/README.md)).
 
 @@@ note
 
@@ -131,7 +131,7 @@ pekko {
 }
 ```
 
-More advanced include and substitution mechanisms are explained in the [HOCON](https://github.com/typesafehub/config/blob/master/HOCON.md)
+More advanced include and substitution mechanisms are explained in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md)
 specification.
 
 <a id="dpekko-log-config-on-start"></a>
@@ -149,7 +149,7 @@ If in doubt, you can inspect your configuration objects
 before or after using them to construct an actor system:
 
 ```
-Welcome to Scala 2.13 (Java HotSpot(TM) 64-Bit Server VM, Java 1.8.0).
+Welcome to Scala 2.13 (OpenJDK 64-Bit Server VM, Java 17).
 Type in expressions to have them evaluated.
 Type :help for more information.
 

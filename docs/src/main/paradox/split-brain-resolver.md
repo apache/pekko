@@ -79,10 +79,10 @@ This works great for crashes and short transient network partitions, but not for
 partitions. Both sides of the network partition will see the other side as unreachable and
 after a while remove it from its cluster membership. Since this happens on both sides the result
 is that two separate disconnected clusters have been created.
-This approach is provided by the opt-in (off by default) auto-down feature in the OSS version of
-Pekko Cluster.
+This approach was provided by the opt-in (off by default) auto-down feature, which has been removed
+from Pekko Cluster.
 
-If you use the timeout based auto-down feature in combination with Cluster Singleton or Cluster Sharding
+If such a timeout based auto-down approach were used in combination with Cluster Singleton or Cluster Sharding
 that would mean that two singleton instances or two sharded entities with the same identifier would be running.
 One would be running: one in each cluster.
 For example when used together with Pekko Persistence that could result in that two instances of a

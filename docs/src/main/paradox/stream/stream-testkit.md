@@ -92,7 +92,7 @@ Java
 :   @@snip [StreamTestKitDocTest.java](/docs/src/test/java/jdocs/stream/StreamTestKitDocTest.java) { #sink-actorref }
 
 Similarly to `Sink.actorRef` that provides control over received
-elements, we can use @apidoc[Source.actorRef](stream.*.Source$) {scala="#actorRef[T](completionMatcher:PartialFunction[Any,org.apache.pekko.stream.CompletionStrategy],failureMatcher:PartialFunction[Any,Throwable],bufferSize:Int,overflowStrategy:org.apache.pekko.stream.OverflowStrategy):org.apache.pekko.stream.scaladsl.Source[T,org.apache.pekko.actor.ActorRef]" java="#actorRef(int,org.apache.pekko.stream.OverflowStrategy)"} and have full control over
+elements, we can use @apidoc[Source.actorRef](stream.*.Source$) {scala="#actorRef[T](completionMatcher:PartialFunction[Any,org.apache.pekko.stream.CompletionStrategy],failureMatcher:PartialFunction[Any,Throwable],bufferSize:Int,overflowStrategy:org.apache.pekko.stream.OverflowStrategy):org.apache.pekko.stream.scaladsl.Source[T,org.apache.pekko.actor.ActorRef]" java="#actorRef(org.apache.pekko.japi.function.Function,org.apache.pekko.japi.function.Function,int,org.apache.pekko.stream.OverflowStrategy)"} and have full control over
 elements to be sent.
 
 Scala
@@ -111,7 +111,7 @@ provide sources and sinks that materialize to probes that allow fluent API.
 
 ### Using the TestKit
 
-A sink returned by @apidoc[TestSink.probe](stream.testkit.*.TestSink$) {scala="#probe[T](implicitsystem:org.apache.pekko.actor.ActorSystem):org.apache.pekko.stream.scaladsl.Sink[T,org.apache.pekko.stream.testkit.TestSubscriber.Probe[T]]" java="#probe(org.apache.pekko.actor.ActorSystem)"} allows manual control over demand and
+A sink returned by @scala[@scaladoc[TestSink()](pekko.stream.testkit.scaladsl.TestSink$#apply[T]()(implicitsystem:org.apache.pekko.actor.ClassicActorSystemProvider):org.apache.pekko.stream.scaladsl.Sink[T,org.apache.pekko.stream.testkit.TestSubscriber.Probe[T]])]@java[@javadoc[TestSink.create](pekko.stream.testkit.javadsl.TestSink#create(org.apache.pekko.actor.ClassicActorSystemProvider))] allows manual control over demand and
 assertions over elements coming downstream.
 
 Scala
@@ -120,7 +120,7 @@ Scala
 Java
 :   @@snip [StreamTestKitDocTest.java](/docs/src/test/java/jdocs/stream/StreamTestKitDocTest.java) { #test-sink-probe }
 
-A source returned by @apidoc[TestSource.probe](stream.testkit.*.TestSource$) {scala="#probe[T](implicitsystem:org.apache.pekko.actor.ActorSystem):org.apache.pekko.stream.scaladsl.Source[T,org.apache.pekko.stream.testkit.TestPublisher.Probe[T]]" java="#probe(org.apache.pekko.actor.ActorSystem)"} can be used for asserting demand or
+A source returned by @scala[@scaladoc[TestSource()](pekko.stream.testkit.scaladsl.TestSource$#apply[T]()(implicitsystem:org.apache.pekko.actor.ClassicActorSystemProvider):org.apache.pekko.stream.scaladsl.Source[T,org.apache.pekko.stream.testkit.TestPublisher.Probe[T]])]@java[@javadoc[TestSource.create](pekko.stream.testkit.javadsl.TestSource#create(org.apache.pekko.actor.ClassicActorSystemProvider))] can be used for asserting demand or
 controlling when stream is completed or ended with an error.
 
 Scala

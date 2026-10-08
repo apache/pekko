@@ -388,8 +388,7 @@ Java
 
 ### Integration with actors
 
-**This section is a stub and will be extended in the next release**
-**This is a @ref:[may change](../common/may-change.md) feature***
+**This is a @ref:[may change](../common/may-change.md) feature**
 
 It is possible to acquire an ActorRef that can be addressed from the outside of the operator, similarly how
 @apidoc[stage.AsyncCallback] allows injecting asynchronous events into an operator logic. This reference can be obtained
@@ -427,8 +426,6 @@ Java
 :   @@snip [GraphStageDocTest.java](/docs/src/test/java/jdocs/stream/GraphStageDocTest.java) { #materialized }
 
 ### Using attributes to affect the behavior of an operator
-
-**This section is a stub and will be extended in the next release**
 
 Operators can access the @apidoc[stream.Attributes] object created by the materializer. This contains all the applied (inherited)
 attributes applying to the operator, ordered from least specific (outermost) towards the most specific (innermost)
@@ -515,11 +512,12 @@ operator to integrate it into your stream topology. This works with all @scalado
 ports that you connect with the graph DSL.
 
 Advanced Scala users may wonder whether it is possible to write extension methods that enrich `FlowOps` to
-allow nicer syntax. The short answer is that Scala 2 does not support this in a fully generic fashion, the problem is
-that it is impossible to abstract over the kind of stream that is being extended because `Source`, `Flow`
-and `SubFlow` differ in the number and kind of their type parameters. While it would be possible to write
-an implicit class that enriches them generically, this class would require explicit instantiation with all type
-parameters due to [SI-2712](https://github.com/scala/bug/issues/2712). For a partial workaround that unifies
+allow nicer syntax. The short answer is that this is not possible in a fully generic fashion, the problem is
+that it is hard to abstract over the kind of stream that is being extended because `Source`, `Flow`
+and `SubFlow` differ in the number and kind of their type parameters. Partial unification (the fix for
+[SI-2712](https://github.com/scala/bug/issues/2712)), which is always enabled in Scala 2.13 and Scala 3, helps the
+compiler infer such type constructors, but it does not remove the need to abstract over these differently shaped
+type constructors. For a partial workaround that unifies
 extensions to `Source` and `Flow` see [this sketch by R. Kuhn](https://gist.github.com/rkuhn/2870fcee4937dda2cad5).
 
 A lot simpler is the task of adding an extension method to `Source` as shown below:
@@ -537,6 +535,6 @@ shown in the linked sketch the author encountered such a density of compiler Sta
 that he gave up).
 
 It is interesting to note that a simplified form of this problem has found its way into the [dotty test suite](https://github.com/lampepfl/dotty/pull/1186/files).
-Dotty is the development version of Scala on its way to Scala 3.
+Dotty was the development name of the compiler that became Scala 3.
 
 @@@

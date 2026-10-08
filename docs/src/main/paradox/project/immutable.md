@@ -24,7 +24,7 @@ To add Lombok to a Maven project, declare it as a simple dependency:
 @@dependency[Maven,Gradle] {
   group="org.projectlombok"
   artifact="lombok"
-  version=1.18.10
+  version=1.18.48
 }
 
 # Using lombok

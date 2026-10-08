@@ -56,7 +56,7 @@ Some modules are excluded from the binary compatibility guarantees, such as:
 
 Once a method has been deprecated then the guideline* is that it will be kept, at minimum, for one **full** minor version release. For example, if it is deprecated in version 1.0.2 then it will remain through the rest of 1.0, as well as the entirety of 1.1.
 
-Methods that were deprecated in Akka, before the project fork to Pekko, are being considered for removal in Pekko 1.1.0.
+Methods that were deprecated in Akka, before the project fork to Pekko, have been removed in Pekko 2.0.0.
 
 *This is a guideline because in **rare** instances, after careful consideration, an exception may be made and the method removed earlier.
 

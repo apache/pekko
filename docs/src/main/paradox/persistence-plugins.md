@@ -45,12 +45,12 @@ pekko {
 
     journal {
       plugin = "pekko.persistence.journal.leveldb"
-      auto-start-journals = ["org.apache.pekko.persistence.journal.leveldb"]
+      auto-start-journals = ["pekko.persistence.journal.leveldb"]
     }
 
     snapshot-store {
       plugin = "pekko.persistence.snapshot-store.local"
-      auto-start-snapshot-stores = ["org.apache.pekko.persistence.snapshot-store.local"]
+      auto-start-snapshot-stores = ["pekko.persistence.snapshot-store.local"]
     }
 
   }
@@ -79,12 +79,21 @@ defining config property:
 
 @@snip [PersistencePluginDocSpec.scala](/docs/src/test/scala/docs/persistence/PersistencePluginDocSpec.scala) { #leveldb-plugin-config }
 
-LevelDB based plugins will also require the following additional dependency declaration:
+LevelDB based plugins will also require additional dependencies. With the default setting `native = on`,
+the native LevelDB (via JNI) is used, which requires:
 
 @@dependency[sbt,Maven,Gradle] {
   group="org.fusesource.leveldbjni"
   artifact="leveldbjni-all"
   version="1.8"
+}
+
+With `native = off`, the LevelDB Java port is used, which requires:
+
+@@dependency[sbt,Maven,Gradle] {
+  group="org.iq80.leveldb"
+  artifact="leveldb"
+  version="0.12"
 }
 
 The default location of LevelDB files is a directory named `journal` in the current working

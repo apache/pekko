@@ -41,7 +41,8 @@ Docker allows [constraining each containers' resource usage](https://docs.docker
 
 #### Memory
 
-You may want to look into using `-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap` options for your JVM later than 8u131, which makes it understand c-group memory limits. On JVM 10 and later, the `-XX:+UnlockExperimentalVMOptions` option is no longer needed.
+Modern JVMs are container aware: container support (`-XX:+UseContainerSupport`) is enabled by default, so the JVM respects the c-group memory limits of the container.
+By default the maximum heap size is only a fraction of the container memory limit, so you may want to tune it with `-XX:MaxRAMPercentage`.
 
 #### CPU
 

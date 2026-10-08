@@ -859,7 +859,7 @@ in your Pekko configuration. Also note that for the LevelDB Java port, you will 
 @@dependency[sbt,Maven,Gradle] {
   group="org.iq80.leveldb"
   artifact="leveldb"
-  version="0.9"
+  version="0.12"
 }
 
 @@@ note

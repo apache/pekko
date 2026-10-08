@@ -50,13 +50,6 @@ any other node.
 There are two different modes of message delivery, explained in the sections
 @ref:[Publish](#distributed-pub-sub-publish) and @ref:[Send](#distributed-pub-sub-send) below.
 
-@@@ div { .group-scala }
-
-A more comprehensive sample is available in the
-tutorial named [Pekko Clustered PubSub with Scala!](https://github.com/typesafehub/activator-pekko-clustering).
-
-@@@
-
 <a id="distributed-pub-sub-publish"></a>
 ## Publish
 

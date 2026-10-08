@@ -99,16 +99,6 @@ Consequently the example shown here looks quite similar to the previous one,
 the biggest difference is the absence of remote address information in
 @scala[`Send`]@java[`UdpMessage.send`] and `Received` messages.
 
-@@@ note
-
-There is a small performance benefit in using connection based UDP API over
-the connectionless one.  If there is a SecurityManager enabled on the system,
-every connectionless message send has to go through a security check, while
-in the case of connection-based UDP the security check is cached after
-connect, thus writes do not suffer an additional performance penalty.
-
-@@@
-
 ## UDP Multicast
 
 Pekko provides a way to control various options of `DatagramChannel` through the

@@ -185,8 +185,8 @@ sent for all matching keys, also new keys added later.
 A data entry can be deleted by sending a `Replicator.Delete` message to the local
 `Replicator`. As reply of the `Delete` a `Replicator.DeleteSuccess` is sent to
 the `replyTo` of the `Delete` if the value was successfully deleted according to the supplied
-consistency level within the supplied timeout. Otherwise a `Replicator.ReplicationDeleteFailure`
-is sent. Note that `ReplicationDeleteFailure` does not mean that the delete completely failed or
+consistency level within the supplied timeout. Otherwise a `Replicator.DeleteFailure`
+is sent. Note that `DeleteFailure` does not mean that the delete completely failed or
 was rolled back. It may still have been replicated to some nodes, and may eventually be replicated
 to all nodes.
 
@@ -729,7 +729,7 @@ data is typically replicated to other nodes immediately according to the given `
 pekko.cluster.distributed-data.durable.lmdb.write-behind-interval = 200 ms
 ```
 
-Note that you should be prepared to receive `WriteFailure` as reply to an `Update` of a
+Note that you should be prepared to receive `StoreFailure` as reply to an `Update` of a
 durable entry if the data could not be stored for some reason. When enabling `write-behind-interval`
 such errors will only be logged and `UpdateSuccess` will still be the reply to the `Update`.
 

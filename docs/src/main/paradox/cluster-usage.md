@@ -382,13 +382,15 @@ There are several management tools for the cluster. Please refer to the
 
 @@@ warning
 
-**Deprecation warning** - The command line script has been deprecated and is scheduled for removal
-in the next major version. Use the @ref:[HTTP management](additional/operations.md#http) API with [curl](https://curl.se/)
+**Deprecation warning** - The command line script has been deprecated and may be removed
+in a future release. Use the @ref:[HTTP management](additional/operations.md#http) API with [curl](https://curl.se/)
 or similar instead.
 
 @@@
 
-The cluster can be managed with the script `pekko-cluster` provided in the Pekko GitHub repository @extref[here](github:cluster/jmx-client). Place the script and the `jmxsh-R5.jar` library in the same directory.
+The cluster can be managed with the script `pekko-cluster` provided in the Pekko GitHub repository @extref[here](github:cluster/jmx-client). The script requires the `jmxsh-R5.jar` library, which is not shipped with Pekko. If the jar is not present, the script
+attempts to download it with `curl` into the directory containing the script; alternatively, obtain it separately and place it
+in the same directory as the script.
 
 Run it without parameters to see instructions about how to use the script:
 
@@ -417,7 +419,7 @@ Examples: ./pekko-cluster localhost 9999 is-available
 ```
 
 To be able to use the script you must enable remote monitoring and management when starting the JVMs of the cluster nodes,
-as described in [Monitoring and Management Using JMX Technology](https://docs.oracle.com/javase/8/docs/technotes/guides/management/agent.html).
+as described in [Monitoring and Management Using JMX Technology](https://docs.oracle.com/en/java/javase/17/management/monitoring-and-management-using-jmx-technology.html).
 Make sure you understand the security implications of enabling remote monitoring and management.
 
 <a id="cluster-configuration"></a>

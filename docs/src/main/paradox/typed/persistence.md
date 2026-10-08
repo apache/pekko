@@ -637,7 +637,9 @@ Java
 :  @@snip [StashingExample.java](/persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/StashingExample.java) { #stashing }
 
 You should be careful to not send more messages to a persistent actor than it can keep up with, otherwise the stash
-buffer will fill up and when reaching its maximum capacity the commands will be dropped. The capacity can be configured with:
+buffer will fill up and when reaching its maximum capacity the commands will be dropped (with the default
+`pekko.persistence.typed.stash-overflow-strategy = "drop"`; set it to `"fail"` to fail the actor instead).
+The capacity (default 4096) can be configured with, for example:
 
 ```
 pekko.persistence.typed.stash-capacity = 10000

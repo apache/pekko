@@ -54,7 +54,7 @@ First off, it is a one-for-one strategy, meaning that each child is treated
 separately (an all-for-one strategy works very similarly, the only difference
 is that any decision is applied to all children of the supervisor, not only the
 failing one). 
-In the above example, `10` and @scala[`1 minute`]@java[`Duration.create(1, TimeUnit.MINUTES)`] are passed to the `maxNrOfRetries`
+In the above example, `10` and @scala[`1 minute`]@java[`Duration.ofMinutes(1)`] are passed to the `maxNrOfRetries`
 and `withinTimeRange` parameters respectively, which means that the strategy restarts a child up to 10 restarts per minute.
 The child actor is stopped if the restart count exceeds `maxNrOfRetries` during the `withinTimeRange` duration.
 
@@ -310,7 +310,7 @@ Java
 
 ### Customization
 
-The `org.apache.pekko.pattern.BackoffOnFailureOptions` and `org.apache.pekko.pattern.BackoffOnRestartOptions` can be used to customize the behavior of the back-off supervisor actor.
+The `org.apache.pekko.pattern.BackoffOnFailureOptions` and `org.apache.pekko.pattern.BackoffOnStopOptions` can be used to customize the behavior of the back-off supervisor actor.
 Options are:
 * `withAutoReset`: The backoff is reset if no failure/stop occurs within the duration. This is the default behavior with `minBackoff` as default value
 * `withManualReset`: The child must send `BackoffSupervisor.Reset` to its backoff supervisor (parent)
