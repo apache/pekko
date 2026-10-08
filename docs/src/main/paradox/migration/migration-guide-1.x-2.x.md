@@ -62,8 +62,9 @@ them before.
 
 * `pekko.actor.default-dispatcher.fork-join-executor.minimum-runnable` changed from `1` to `-1`.
 The setting first appeared in Pekko 1.7.0, with a default of `1`.
-The value `-1` selects a JDK-aware default that maintains a minimum number of non-blocked worker
-threads on newer JDKs. Set it explicitly to `1` to restore the Pekko 1.x behavior.
+The value `-1` selects a JDK-aware default: on JDK 25 and later the effective value is
+`min(8, max(1, parallelism / 2))`, and on earlier JDKs it is `1`, so the behavior only changes on
+JDK 25 and later. Set it explicitly to `1` to restore the Pekko 1.x behavior on all JDKs.
 The internal dispatcher (`pekko.actor.internal-dispatcher.fork-join-executor`) uses the same new default.
 ([PR2890](https://github.com/apache/pekko/pull/2890))
 * `pekko.remote.artery.propagate-harmless-quarantine-events` changed from `on` to `off`, so harmless
@@ -98,10 +99,12 @@ trust, remove them before upgrading. ([PR3528](https://github.com/apache/pekko/p
 ### Removed configuration
 
 * `pekko.actor.typed.timeout` was removed along with the deprecated `TypedActor` API.
+([PR1969](https://github.com/apache/pekko/pull/1969))
 * `pekko.cluster.sharding.passivate-idle-entity-after` was removed; use
 `pekko.cluster.sharding.passivation.default-idle-strategy.idle-entity.timeout` instead.
+([PR3026](https://github.com/apache/pekko/pull/3026))
 * The `pekko.ssl-config` and top-level `ssl-config` sections were removed along with the
-`ssl-config` library dependency.
+`ssl-config` library dependency. ([PR2127](https://github.com/apache/pekko/pull/2127))
 
 ### New configuration
 
@@ -139,7 +142,7 @@ serializers decompress it. First appeared in Pekko 1.7.1.
 * `pekko.cluster.sharded-daemon-process.keep-alive-from-number-of-nodes` and
 `pekko.cluster.sharded-daemon-process.keep-alive-throttle-interval` tune keep-alive pinging, which
 is now performed from a limited number of nodes instead of every node.
-([PR2755](https://github.com/apache/pekko/pull/2755))
+([PR2734](https://github.com/apache/pekko/pull/2734))
 * `pekko.cluster.sharding.healthcheck.disabled-after` disables the sharding health check after the
 configured duration post member-up. ([PR2785](https://github.com/apache/pekko/pull/2785))
 * `pekko.cluster.distributed-data.expire-keys-after-inactivity` configures automatic expiry of
@@ -193,3 +196,20 @@ stream stage errors. ([PR2805](https://github.com/apache/pekko/pull/2805))
 drained per envelope for lazily materialized stage actors. ([PR3035](https://github.com/apache/pekko/pull/3035))
 * `pekko.stream.materializer.tls.engine` selects the stream TLS engine implementation
 (`"legacy-actor"` or the opt-in `"graph-stage"`). ([PR2878](https://github.com/apache/pekko/pull/2878))
+
+### Serialization bindings
+
+These serialization changes matter if you do a rolling update from Pekko 1.x to 2.x, or need to roll
+back:
+
+* `org.apache.pekko.util.ByteString$ByteString2`, a new `ByteString` implementation, is bound to the
+existing `primitive-bytestring` serializer. That serializer writes no manifest, so Pekko 1.x nodes read
+these messages as an ordinary `ByteString`. ([PR2924](https://github.com/apache/pekko/pull/2924))
+* The `typed-sharding` serializer is now bound to the internal `ClusterShardingTypedSerializable` marker
+instead of `ShardingEnvelope`. `ShardingEnvelope` is serialized as before, but the serializer also
+handles new Sharded Daemon Process messages (its state, and the commands for getting and changing the
+number of processes) that Pekko 1.x nodes cannot deserialize. ([PR2755](https://github.com/apache/pekko/pull/2755))
+* The new `FilteredPayload` placeholder, which is stored in the journal in place of a filtered event
+(for example with events-by-slice queries and projections), has a new serializer with identifier `34`.
+Pekko 1.x cannot deserialize it, so do not run Pekko 1.x against a journal once such events have been
+written. ([PR3275](https://github.com/apache/pekko/pull/3275))
