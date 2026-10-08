@@ -4,7 +4,7 @@ Apache Pekko 2.0.x releases support Java 17 and above.
 
 ## 2.0.0-M4
 
-This is milestone release and is aimed at testing this new major version
+This is a milestone release and is aimed at testing this new major version
 by early adopters. This is experimental. This release should not be used in production.
 
 See the [GitHub Milestone for 2.0.0-M4](https://github.com/apache/pekko/milestone/31?closed=1) for a fuller list of changes.
@@ -18,20 +18,20 @@ See the [GitHub Milestone for 2.0.0-M4](https://github.com/apache/pekko/mileston
 
 ## 2.0.0-M3
 
-This is milestone release and is aimed at testing this new major version
+This is a milestone release and is aimed at testing this new major version
 by early adopters. This is experimental. This release should not be used in production.
 
 We recommend that anyone using previous 2.0.0 milestones upgrade to this release due to some important bug fixes.
 
 See the [GitHub Milestone for 2.0.0-M3](https://github.com/apache/pekko/milestone/28?closed=1) for a fuller list of changes.
 
-### Bug fix
+### Bug Fixes
 
-* The existing 2.0.0 milestones have issues related to high concurrency introduced when we switched away from sun.misc.Unsafe to using Var Handles.
+* The existing 2.0.0 milestones have issues related to high concurrency introduced when we switched away from sun.misc.Unsafe to using VarHandles.
 
 ## 2.0.0-M2
 
-This is milestone release and is aimed at testing this new major version
+This is a milestone release and is aimed at testing this new major version
 by early adopters. This is experimental. This release should not be used in production.
 
 See the [GitHub Milestone for 2.0.0-M2](https://github.com/apache/pekko/milestone/19?closed=1) for a fuller list of changes.
@@ -43,7 +43,7 @@ See the [GitHub Milestone for 2.0.0-M2](https://github.com/apache/pekko/mileston
 
 ## 2.0.0-M1
 
-This is milestone release and is aimed at testing this new major version
+This is a milestone release and is aimed at testing this new major version
 by early adopters. This is experimental. This release should not be used in production.
 
 See the [GitHub Milestone for 2.0.0-M1](https://github.com/apache/pekko/milestone/5?closed=1) for a fuller list of changes.

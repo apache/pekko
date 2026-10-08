@@ -2,7 +2,7 @@
 
 Apache Pekko 1.5.x releases support Java 8 and above.
 
-# 1.5.0
+## 1.5.0
 
 Pekko 1.5.0 has some bug fixes and small enhancements. See the [GitHub Milestone for 1.5.0](https://github.com/apache/pekko/milestone/26?closed=1) for a fuller list of changes.
 

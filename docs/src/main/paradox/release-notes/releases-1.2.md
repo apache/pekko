@@ -2,9 +2,9 @@
 
 Apache Pekko 1.2.x releases support Java 8 and above.
 
-# 1.2.1
+## 1.2.1
 
-Pekko 1.2.1 has some bug fixes and some code has been deprecated to signal that it likely to be removed in 2.0.0. See the [GitHub Milestone](https://github.com/apache/pekko/milestone/20?closed=1) for a fuller list of changes.
+Pekko 1.2.1 has some bug fixes and some code has been deprecated to signal that it is likely to be removed in 2.0.0. See the [GitHub Milestone for 1.2.1](https://github.com/apache/pekko/milestone/20?closed=1) for a fuller list of changes.
 
 ### Bug Fixes
 
@@ -19,7 +19,7 @@ Pekko 1.2.1 has some bug fixes and some code has been deprecated to signal that 
 * netty 4.2.5.Final
 * lightbend/config 1.4.5
 
-# 1.2.0
+## 1.2.0
 
 Pekko 1.2.0 has some new features, performance updates and dependency upgrades. See [GitHub Milestone for 1.2.0-M1](https://github.com/apache/pekko/milestone/6?closed=1), [GitHub Milestone for 1.2.0-M2](https://github.com/apache/pekko/milestone/15?closed=1) and [GitHub Milestone for 1.2.0](https://github.com/apache/pekko/milestone/16?closed=1) for a fuller list of changes.
 
@@ -33,7 +33,7 @@ Most of the changes appeared in the milestone releases (1.2.0-M1 and 1.2.0-M2) b
 * Add the missing EmptySource case to TraversalBuilder ([PR1743](https://github.com/apache/pekko/pull/1743))
 * Issue forming mixed Akka/Pekko cluster when classic remoting with SSL/TLS is used ([PR1857](https://github.com/apache/pekko/pull/1857))
 * Join cluster check adjusted to support Akka nodes ([PR1866](https://github.com/apache/pekko/pull/1866), [PR1877](https://github.com/apache/pekko/pull/1877))
-    * If you are attempting to mix Akka and Pekko nodes in a cluster, it is still recommended to disable the join cluster check but these changes may be enough to get it work ([docs](https://cwiki.apache.org/confluence/display/PEKKO/Pekko+Akka+Compatibility)).
+    * If you are attempting to mix Akka and Pekko nodes in a cluster, it is still recommended to disable the join cluster check but these changes may be enough to get it to work ([docs](https://cwiki.apache.org/confluence/display/PEKKO/Pekko+Akka+Compatibility)).
 * BroadcastHub drops elements due to register/unregister race ([PR1841](https://github.com/apache/pekko/pull/1841))
 * Fix issue with number deserialization in pekko-cluster-metrics ([PR1899](https://github.com/apache/pekko/pull/1899))
 * Fix typed persistence stack overflow with many read only commands ([PR1919](https://github.com/apache/pekko/pull/1919))
@@ -44,7 +44,7 @@ Most of the changes appeared in the milestone releases (1.2.0-M1 and 1.2.0-M2) b
 
 * add non-default config that allows InboundQuarantineCheck to ignore 'harmless' quarantine events ([PR1555](https://github.com/apache/pekko/pull/1555))
 * New Sink.none operator ([PR1614](https://github.com/apache/pekko/pull/1614))
-* Add overridden duration timeout to StreamTestKit ([PR1648](https://github.com/apache/pekko/pull/1648))
+* Add overridden duration timeout to StreamTestKit ([PR1468](https://github.com/apache/pekko/pull/1468))
 * Add Identity function to Java DSL ([PR1671](https://github.com/apache/pekko/pull/1671))
 * Add support for controlling the NettyTransport's byteBuf allocator type ([PR1707](https://github.com/apache/pekko/pull/1707))
 * Add Pattern timeout support ([PR1424](https://github.com/apache/pekko/pull/1424))
@@ -65,7 +65,7 @@ Most of the changes appeared in the milestone releases (1.2.0-M1 and 1.2.0-M2) b
 * Add JournalPersistFailed and JournalPersistRejected signals ([PR1961](https://github.com/apache/pekko/pull/1961))
 * Make calculateDelay a public method ([PR1940](https://github.com/apache/pekko/pull/1940))
 * Allow disabling AsyncWriteJournal.Resequencer to improve latency ([#2026](https://github.com/apache/pekko/issues/2026))
-* Add CompletionStages helper ([PR2049](https://github.com/apache/pekko/pull/2049))
+* Add CompletionStages helper ([PR2060](https://github.com/apache/pekko/pull/2060))
 
 ### Changes
 
@@ -100,8 +100,8 @@ Most of the changes appeared in the milestone releases (1.2.0-M1 and 1.2.0-M2) b
 * jackson 2.19.2
 * lightbend/config 1.4.4
 * protobuf-java 4.32.0
-* slfj4 2.0.17
-* jupiter-junit 5.13.3
+* slf4j 2.0.17
+* junit-jupiter 5.13.4
 * scala 2.12.20, 2.13.16, 3.3.6
 
 ### Known Issues
