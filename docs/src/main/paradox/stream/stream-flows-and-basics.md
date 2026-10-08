@@ -13,8 +13,6 @@ To use Pekko Streams, add the module to your project:
   version=PekkoVersion
 }
 
-## Introduction
-
 ## Core concepts
 
 Pekko Streams is a library to process and transfer a sequence of elements using bounded buffer space. This

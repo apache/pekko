@@ -7,12 +7,18 @@ Transform each input element into a `Source` whose elements are then flattened i
 
 ## Signature
 
+@apidoc[Source.flatMapConcat](Source) { scala="#flatMapConcat[T,M](f:Out=%3Eorg.apache.pekko.stream.Graph[org.apache.pekko.stream.SourceShape[T],M]):FlowOps.this.Repr[T]" java="#flatMapConcat(org.apache.pekko.japi.function.Function)" }
+@apidoc[Source.flatMapConcat](Source) { scala="#flatMapConcat[T,M](parallelism:Int,f:Out=%3Eorg.apache.pekko.stream.Graph[org.apache.pekko.stream.SourceShape[T],M]):FlowOps.this.Repr[T]" java="#flatMapConcat(int,org.apache.pekko.japi.function.Function)" }
 @apidoc[Flow.flatMapConcat](Flow) { scala="#flatMapConcat[T,M](f:Out=%3Eorg.apache.pekko.stream.Graph[org.apache.pekko.stream.SourceShape[T],M]):FlowOps.this.Repr[T]" java="#flatMapConcat(org.apache.pekko.japi.function.Function)" } 
+@apidoc[Flow.flatMapConcat](Flow) { scala="#flatMapConcat[T,M](parallelism:Int,f:Out=%3Eorg.apache.pekko.stream.Graph[org.apache.pekko.stream.SourceShape[T],M]):FlowOps.this.Repr[T]" java="#flatMapConcat(int,org.apache.pekko.japi.function.Function)" }
 
 ## Description
 
 Transform each input element into a `Source` whose elements are then flattened into the output stream through
 concatenation. This means each source is fully consumed before consumption of the next source starts. 
+
+Since 1.2.0, an overload accepting a `parallelism` parameter can be used to configure the maximum number of in-flight
+sources that are materialized at the same time. The elements are still emitted in order, one source after the other.
 
 See also: @ref:[flatMapMerge](flatMapMerge.md), @ref:[mapConcat](mapConcat.md)
 

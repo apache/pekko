@@ -8,6 +8,8 @@ Chunk up this stream into groups of elements received within a time window, or l
 
 @apidoc[Source.groupedWeightedWithin](Source) { scala="#groupedWeightedWithin(maxWeight:Long,d:scala.concurrent.duration.FiniteDuration)(costFn:Out=&gt;Long):FlowOps.this.Repr[Seq[Out]]" java="#groupedWeightedWithin(long,org.apache.pekko.japi.function.Function,java.time.Duration)" }
 @apidoc[Flow.groupedWeightedWithin](Flow) { scala="#groupedWeightedWithin(maxWeight:Long,d:scala.concurrent.duration.FiniteDuration)(costFn:Out=&gt;Long):FlowOps.this.Repr[Seq[Out]]" java="#groupedWeightedWithin(long,org.apache.pekko.japi.function.Function,java.time.Duration)" }
+@apidoc[Source.groupedWeightedWithin](Source) { scala="#groupedWeightedWithin(maxWeight:Long,maxNumber:Int,d:scala.concurrent.duration.FiniteDuration)(costFn:Out=&gt;Long):FlowOps.this.Repr[Seq[Out]]" java="#groupedWeightedWithin(long,int,org.apache.pekko.japi.function.Function,java.time.Duration)" }
+@apidoc[Flow.groupedWeightedWithin](Flow) { scala="#groupedWeightedWithin(maxWeight:Long,maxNumber:Int,d:scala.concurrent.duration.FiniteDuration)(costFn:Out=&gt;Long):FlowOps.this.Repr[Seq[Out]]" java="#groupedWeightedWithin(long,int,org.apache.pekko.japi.function.Function,java.time.Duration)" }
 
 
 ## Description

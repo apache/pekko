@@ -8,11 +8,16 @@ Only pass on those elements that are distinct from the previous element.
 
 @apidoc[Source.dropRepeated](Source) { scala="#dropRepeated():FlowOps.this.Repr[Out]" java="#dropRepeated()" }
 @apidoc[Flow.dropRepeated](Flow) { scala="#dropRepeated():FlowOps.this.Repr[Out]" java="#dropRepeated()" }
+@apidoc[Source.dropRepeated](Source) { scala="#dropRepeated(p:(Out,Out)=&gt;Boolean):FlowOps.this.Repr[Out]" java="#dropRepeated(org.apache.pekko.japi.function.Function2)" }
+@apidoc[Flow.dropRepeated](Flow) { scala="#dropRepeated(p:(Out,Out)=&gt;Boolean):FlowOps.this.Repr[Out]" java="#dropRepeated(org.apache.pekko.japi.function.Function2)" }
 
 
 ## Description
 
 Only pass on those elements that are distinct from the previous element.
+
+By default elements are compared using equality. An overload accepting a predicate `p` can be used instead,
+in which case an element is dropped when `p` returns `true` for the previous element and the current element.
 
 ## Example
 

@@ -13,8 +13,6 @@ To use Pekko Streams, add the module to your project:
   version=PekkoVersion
 }
 
-## Introduction
-
 <a id="kill-switch"></a>
 ## Controlling stream completion with KillSwitch
 

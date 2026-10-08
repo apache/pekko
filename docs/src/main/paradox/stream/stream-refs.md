@@ -163,11 +163,6 @@ Stream refs utilise normal actor messaging for their transport, and therefore pr
     - a *dropped demand signal* will be re-delivered automatically (similar to system messages)
     - a *dropped element signal* will cause the stream to *fail*
   
-## Bulk Stream References
-
-Bulk stream refs can be used to create simple side-channels to transfer humongous amounts
-of data such as huge log files, messages or even media, with as much ease as if it was a trivial local stream.
-
 ## Serialization of SourceRef and SinkRef
 
 StreamRefs require serialization, since the whole point is to send them between nodes of a cluster. A built in serializer

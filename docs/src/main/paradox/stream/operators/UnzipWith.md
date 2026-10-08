@@ -6,6 +6,8 @@ Splits each element of input into multiple downstreams using a function
 
 ## Signature
 
+@apidoc[stream.*.UnzipWith$]
+
 ## Description
 
 Splits each element of input into multiple downstreams using a function
