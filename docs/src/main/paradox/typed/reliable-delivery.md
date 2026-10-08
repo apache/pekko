@@ -333,6 +333,9 @@ Note how the `ActorRef` in the `Start` messages are constructed as message adapt
 
 Those are initialized with sharding like this (from the guardian):
 
+Scala
+:  @@snip [ShardingDocExample.scala](/cluster-sharding-typed/src/test/scala/docs/delivery/ShardingDocExample.scala) { #init }
+
 Java
 :  @@snip [ShardingDocExample.java](/cluster-sharding-typed/src/test/java/jdocs/delivery/ShardingDocExample.java) { #init }
 
