@@ -13,7 +13,7 @@ Pass incoming elements to a function that returns a @scala[`Future`] @java[`Comp
 ## Description
 
 Pass incoming elements to a function that returns a @scala[`Future`] @java[`CompletionStage`] result. When the @scala[`Future`] @java[`CompletionStage`] arrives the result is passed
-downstream. Up to `n` elements can be processed concurrently, but regardless of their completion time the incoming
+downstream. Up to `parallelism` elements can be processed concurrently, but regardless of their completion time the incoming
 order will be kept when results complete. For use cases where order does not matter `mapAsyncUnordered` can be used.
 
 If a @scala[`Future`] @java[`CompletionStage`] completes with `null`, element is not passed downstream.
