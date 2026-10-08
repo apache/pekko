@@ -159,8 +159,11 @@ The magic header has evolved across versions:
  * Pekko 2.x (and above) sends `"PEKK"` by default but accepts both `"PEKK"` and `"AKKA"`.
 
 Because Pekko 1.7.x+ and 2.x accept both values by default, rolling upgrades between these versions
-do not require changing the `tcp-magic` configuration. Upgrading from Pekko 1.6.x or earlier to 2.x
-directly is also supported since the 2.x default accepts `"AKKA"`.
+do not require changing the `tcp-magic` configuration.
+
+Pekko 1.6.x and earlier reject the `"PEKK"` header that Pekko 2.x sends by default. Upgrade to Pekko 1.7.x
+first, or, if you upgrade from Pekko 1.6.x or earlier directly to 2.x, set
+`pekko.remote.artery.advanced.tcp-magic = ["AKKA", "PEKK"]` on the 2.x nodes until all nodes run 2.x.
 
 If you remove `"AKKA"` from the array, nodes running older versions will be unable to connect.
 
