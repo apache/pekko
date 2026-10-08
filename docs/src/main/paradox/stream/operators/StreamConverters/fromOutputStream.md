@@ -12,7 +12,7 @@ Create a sink that wraps an `OutputStream`.
 
 Creates a Sink which writes incoming @apidoc[util.ByteString]s to a `java.io.OutputStream` created by the given function.
 
-Materializes a @java[`CompletionStage`]@scala[`Future`] of `IOResult` that will be completed with the size of the file (in bytes) on completion,
+Materializes a @java[`CompletionStage`]@scala[`Future`] of `IOResult` that will be completed with the number of bytes written on completion,
 and a possible exception if IO operation was not completed successfully.
 
 You can configure the default dispatcher for this Sink by changing the `pekko.stream.materializer.blocking-io-dispatcher` or

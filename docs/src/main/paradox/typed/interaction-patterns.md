@@ -252,7 +252,7 @@ and help with handling validation errors. Pekko includes pre-built serializers f
 application only needs to provide a serializer for the successful result.
 
 For the case where the successful reply does not contain an actual value but is more of an acknowledgment there is a pre defined
-@scala[@scaladoc[StatusReply.Ack](pekko.pattern.StatusReply$#Ack:org.apache.pekko.pattern.StatusReply[org.apache.pekko.Done])]@java[@javadoc[StatusReply.ack()](pekko.pattern.StatusReply$#ack())] of type @scala[`StatusReply[Done]`]@java[`StatusReply<Done>`].
+@scala[@scaladoc[StatusReply.Ack](pekko.pattern.StatusReply$#Ack:org.apache.pekko.pattern.StatusReply[org.apache.pekko.Done])]@java[@javadoc[StatusReply.ack()](pekko.pattern.StatusReply#ack())] of type @scala[`StatusReply[Done]`]@java[`StatusReply<Done>`].
 
 Errors are preferably sent as a text describing what is wrong, but using exceptions to attach a type is also possible.
 
