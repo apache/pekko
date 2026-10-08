@@ -299,7 +299,7 @@ Java
 ## Flattening sequences in streams
 
 In the previous section we were working on 1:1 relationships of elements which is the most common case, but sometimes
-we might want to map from one element to a number of elements and receive a "flattened" stream, similarly like `flatMap`
+we might want to map from one element to a number of elements and receive a "flattened" stream, similar to how `flatMap`
 works on Scala Collections. In order to get a flattened stream of hashtags from our stream of tweets we can use the @apidoc[mapConcat](stream.*.Source) {scala="#mapConcat[T](f:Out=%3EIterableOnce[T]):FlowOps.this.Repr[T]" java="#mapConcat(org.apache.pekko.japi.function.Function)"}
 operator:
 
@@ -393,7 +393,7 @@ While this question is not as obvious to give an answer to in case of an infinit
 this question in a streaming setting would be to create a stream of counts described as "*up until now*, we've processed N tweets"),
 but in general it is possible to deal with finite streams and come up with a nice result such as a total count of elements.
 
-First, let's write such an element counter using @scala[@scaladoc[Sink.fold](pekko.stream.scaladsl.Sink$#fold[U,T](zero:U)(f:(U,T)=%3EU):org.apache.pekko.stream.scaladsl.Sink[T,scala.concurrent.Future[U]]) and]@java[@javadoc[Flow.of(Class)](pekko.stream.javadsl.Flow#of(java.lang.Class)) and @javadoc[Sink.fold](pekko.stream.javadsl.Sink$#fold(U,org.apache.pekko.japi.function.Function2)) to]  see how the types look like:
+First, let's write such an element counter using @scala[@scaladoc[Sink.fold](pekko.stream.scaladsl.Sink$#fold[U,T](zero:U)(f:(U,T)=%3EU):org.apache.pekko.stream.scaladsl.Sink[T,scala.concurrent.Future[U]]) and]@java[@javadoc[Flow.of(Class)](pekko.stream.javadsl.Flow#of(java.lang.Class)) and @javadoc[Sink.fold](pekko.stream.javadsl.Sink$#fold(U,org.apache.pekko.japi.function.Function2)) to]  see what the types look like:
 
 Scala
 :   @@snip [TwitterStreamQuickstartDocSpec.scala](/docs/src/test/scala/docs/stream/TwitterStreamQuickstartDocSpec.scala) { #tweets-fold-count }

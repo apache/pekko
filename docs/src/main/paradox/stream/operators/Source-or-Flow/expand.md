@@ -30,7 +30,7 @@ Imagine a streaming client decoding a video. It is possible the network bandwidt
 unreliable. It's fine, as long as the audio remains fluent, it doesn't matter if we can't decode 
 a frame or two (or more). But we also want to watermark every decoded frame with the name of 
 our colleague. `expand` provides access to the element flowing through the stream
-and let's us create extra frames in case the producer slows down:
+and lets us create extra frames in case the producer slows down:
 
 Scala
 :   @@snip [ExtrapolateAndExpand.scala](/docs/src/test/scala/docs/stream/operators/sourceorflow/ExtrapolateAndExpand.scala) { #expand }

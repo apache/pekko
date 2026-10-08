@@ -237,7 +237,7 @@ Java
 
 Here the app is sending 100 messages to `BlockingActor`s and `PrintActor`s and large numbers
 of `pekko.actor.default-dispatcher` threads are handling requests. When you run the above code,
-you will likely to see the entire application gets stuck somewhere like this:
+you will likely see the entire application gets stuck somewhere like this:
 
 ```
 >　PrintActor: 44
@@ -394,7 +394,7 @@ Configuring a dispatcher with virtual threads, requires Java 21 or above:
 
 @@snip [DispatcherDocSpec.scala](/docs/src/test/scala/docs/dispatcher/DispatcherDocSpec.scala) { #virtual-thread-dispatcher-config }
 
-With this, an actor will run in a virtual thread, so you may want to configure it further with :
+With this, an actor will run in a virtual thread, so you may want to configure it further with
 dispatcher pool settings such as `parallelism-min` and `parallelism-max`, and with `jdk.unparker.maxPoolSize` if the
 shared unparker becomes a bottleneck.
 You can enable the same setting from the command line with a system property such as

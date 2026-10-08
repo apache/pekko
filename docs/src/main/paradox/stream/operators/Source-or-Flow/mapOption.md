@@ -22,7 +22,7 @@ Scala
 
 @@@div { .callout }
 
-**emits** when the mapping function returns and element present
+**emits** when the mapping function returns an element present
 
 **backpressures** when downstream backpressures
 

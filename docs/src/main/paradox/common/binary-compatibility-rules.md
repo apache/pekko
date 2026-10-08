@@ -87,7 +87,7 @@ you might want to add `pekko-persistence-query` dependency for 1.0.6.
 
 @@@ note
 
-We recommend keeping an `pekkoVersion` variable in your build file, and reuse it for all
+We recommend keeping a `pekkoVersion` variable in your build file, and reusing it for all
 included modules, so when you upgrade you can simply change it in this one place.
 
 @@@
@@ -145,7 +145,7 @@ possible, however these markers allow to experiment, gather feedback and stabili
 ## Binary Compatibility Checking Toolchain
 
 Pekko uses the Lightbend maintained [MiMa](https://github.com/lightbend/mima),
-for enforcing binary compatibility is kept where it was promised.
+to enforce that binary compatibility is kept where it was promised.
 
 All Pull Requests must pass MiMa validation (which happens automatically), and if failures are detected,
 manual exception overrides may be put in place if the change happened to be in an Internal API for example.

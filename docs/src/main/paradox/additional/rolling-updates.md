@@ -21,7 +21,7 @@ For rolling updates related to Pekko dependency version upgrades and the migrati
 
 ## Serialization Compatibility
 
-There are two parts of Pekko that need careful consideration when performing an rolling update.
+There are two parts of Pekko that need careful consideration when performing a rolling update.
 
 1. Compatibility of remote message protocols. Old nodes may send messages to new nodes and vice versa.
 1. Serialization format of persisted events and snapshots. New nodes must be able to read old data, and
@@ -109,7 +109,7 @@ For example, it is possible to migrate Cluster Sharding from Classic to Typed Ac
 
 * Deploy with the new nodes set to `pekko.cluster.configuration-compatibility-check.enforce-on-join = off`
 and ensure all nodes are in this state
-* Deploy again and with the new nodes set to `pekko.cluster.configuration-compatibility-check.enforce-on-join = on`. 
+* Deploy again with the new nodes set to `pekko.cluster.configuration-compatibility-check.enforce-on-join = on`. 
   
 Full documentation about enforcing these checks on joining nodes and optionally adding custom checks can be found in  
 @ref:[Pekko Cluster configuration compatibility checks](../typed/cluster.md#configuration-compatibility-check).
@@ -135,7 +135,7 @@ If you need to change any of the following aspects of sharding it will require a
 ### Migrating from PersistentFSM to EventSourcedBehavior
 
 If you've @ref:[migrated from `PersistentFSM` to `EventSourcedBehavior`](../persistence-fsm.md#migration-to-eventsourcedbehavior)
-and are using PersistenceFSM with Cluster Sharding, a full shutdown is required as shards can move between new and old nodes.
+and are using PersistentFSM with Cluster Sharding, a full shutdown is required as shards can move between new and old nodes.
   
 ### Migrating from classic remoting to Artery
 

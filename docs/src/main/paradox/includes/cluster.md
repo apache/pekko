@@ -20,7 +20,7 @@ their physical location in the cluster.
 <!--- #cluster-ddata --->
 ### Distributed Data
 
-Distributed Data is useful when you need to share data between nodes in an
+Distributed Data is useful when you need to share data between nodes in a
 Pekko Cluster. The data is accessed with an actor providing a key-value store like API.
 
 <!--- #cluster-ddata --->

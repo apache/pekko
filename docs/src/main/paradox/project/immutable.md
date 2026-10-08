@@ -5,7 +5,7 @@ project.description: Data immutability using Project Lombok
 
 A preferred best practice in Apache Pekko is to have immutable messages. Scala provides case class which makes it extremely easy
 to have short and clean classes for creating immutable objects, but no such facility is easily available in Java. We can make use
-of several third party libraries which help is achieving this. One good example is Lombok.
+of several third party libraries which help in achieving this. One good example is Lombok.
 
 Project Lombok is a java library that automatically plugs into your editor and build tools, and helps 
 get rid of much of the boilerplate code for java development.

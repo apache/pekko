@@ -1,4 +1,4 @@
-# ActorFlow.askWithContext
+# ActorFlow.askWithStatusAndContext
 
 Use the "Ask Pattern" to send each stream element (without the context) as an `ask` to the target actor (of the new actors API), and expect a reply of Type @scala[`StatusReply[T]`]@java[`StatusReply<T>`] where the T will be unwrapped and emitted downstream.
 

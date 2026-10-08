@@ -28,7 +28,7 @@ Facilities emerged to "wrap" binary JARs so they could be used as bundles, but t
 situations. An application of the "80/20 Rule" here would have that "80% of the complexity is with 20% of the configuration",
 but it was enough to give OSGi a reputation that has stuck with it to this day.
 
-This document aims to the productivity basics folks need to use it with Pekko, the 20% that users need to get 80% of what they want.
+This document aims to cover the productivity basics folks need to use it with Pekko, the 20% that users need to get 80% of what they want.
 For more information than is provided here, [OSGi In Action](https://www.manning.com/books/osgi-in-action) is worth exploring.
 
 ## Core Components and Structure of OSGi Applications

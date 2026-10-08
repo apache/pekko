@@ -247,7 +247,7 @@ Java
 
 Such a style is preferred over using @scala[importing `Down` and using `countDown ! Down`]
 @java[importing `Down` and using `countDown.tell(Down.INSTANCE);`].
-However, within the `Behavior` that handle these messages the short names can be used.
+However, within the `Behavior` that handles these messages the short names can be used.
 
 Therefore it is not recommended to define messages as top-level classes.
 
@@ -407,7 +407,7 @@ Following up from previous section, there are times when one might want to combi
 
 A good use case for composing two or more `PartialFunction`s is when there is a bit of behavior that repeats across different states of the Actor. Below, you can find a simplified example for this use case.
 
-The Command definition is still highly recommended be kept within a `sealed` Trait:
+The Command definition is still highly recommended to be kept within a `sealed` Trait:
 
 Scala
 :  @@snip [StyleGuideDocExamples.scala](/actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/StyleGuideDocExamples.scala) { #messages-sealed-composition }
@@ -469,7 +469,7 @@ be good to know that it's optional in case you would prefer a different approach
 * annotation processor
 * pattern matching since JDK 21 ([JEP 441](https://openjdk.org/jeps/441))
 
-In `Behaviors` there are `receive`, `receiveMessage` and `receiveSignal` factory methods that takes functions
+In `Behaviors` there are `receive`, `receiveMessage` and `receiveSignal` factory methods that take functions
 instead of using the `ReceiveBuilder`, which is the `receive` with the class parameter.
 
 In `AbstractBehavior` you can return your own `org.apache.pekko.actor.typed.javadsl.Receive` from `createReceive` instead

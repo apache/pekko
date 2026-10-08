@@ -23,7 +23,7 @@ Scala
 
 **emits** when the mapping function returns an element
 
-**backpressures** '''Backpressures when''' original flow backpressures
+**backpressures** when original flow backpressures
 
 **completes** when upstream completes
 

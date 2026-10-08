@@ -302,7 +302,7 @@ If a crashed node is restarted and joining the cluster again with the same hostn
 of that member will first be downed and removed. The new join attempt with same hostname and port is used as evidence
 that the previous is no longer alive.
 
-If a node is still running and sees its self as `Down` it will shutdown. @ref:[Coordinated Shutdown](../coordinated-shutdown.md) will automatically
+If a node is still running and sees itself as `Down` it will shutdown. @ref:[Coordinated Shutdown](../coordinated-shutdown.md) will automatically
 run if `run-coordinated-shutdown-when-down` is set to `on` (the default) however the node will not try
 and leave the cluster gracefully.
 
@@ -336,7 +336,7 @@ unreachable from the rest of the cluster. Please see:
  
 ### Using the Failure Detector
  
-Cluster uses the @apidoc[remote.PhiAccrualFailureDetector](PhiAccrualFailureDetector) failure detector by default, or you can provide your by
+Cluster uses the @apidoc[remote.PhiAccrualFailureDetector](PhiAccrualFailureDetector) failure detector by default, or you can provide your own by
 implementing the @apidoc[remote.FailureDetector](FailureDetector) and configuring it:
 
 ```
@@ -344,7 +344,7 @@ pekko.cluster.implementation-class = "com.example.CustomFailureDetector"
 ```
 
 In the @ref:[Cluster Configuration](#configuration) you may want to adjust these
-depending on you environment:
+depending on your environment:
 
 * When a *phi* value is considered to be a failure `pekko.cluster.failure-detector.threshold`
 * Margin of error for sudden abnormalities `pekko.cluster.failure-detector.acceptable-heartbeat-pause`  
@@ -405,7 +405,7 @@ The Cluster extension is implemented with actors. To protect them against
 disturbance from user actors they are by default run on the internal dispatcher configured
 under `pekko.actor.internal-dispatcher`. The cluster actors can potentially be isolated even
 further, onto their own dispatcher using the setting `pekko.cluster.use-dispatcher`
-or made run on the same dispatcher to keep the number of threads down.
+or made to run on the same dispatcher to keep the number of threads down.
 
 ### Configuration Compatibility Check
 

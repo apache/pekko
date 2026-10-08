@@ -22,7 +22,7 @@ The same `seed` value will be used for every materialization of the `Source` so 
 
 ## Examples
 
-The next example shows how to craet
+The next example shows how to create a source that counts from 1 to `n`:
 
 Scala
  :   @@snip [Iterate.scala](/docs/src/test/scala/docs/stream/operators/source/Iterate.scala) { #countTo }
@@ -37,7 +37,7 @@ Java
 
 **emits** when there is demand and the `next` function returns.
 
-**completes** when the `haxNext` predicate returns false.
+**completes** when the `hasNext` predicate returns false.
 
 @@@
 

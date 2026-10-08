@@ -205,7 +205,7 @@ the @apidoc[cluster.ddata.Replicator.Update] when the @apidoc[cluster.ddata.Repl
 needed when you need to base a decision on latest information or when removing entries from an @apidoc[cluster.ddata.ORSet]
 or @apidoc[cluster.ddata.ORMap]. If an entry is added to an `ORSet` or `ORMap` from one node and removed from another
 node the entry will only be removed if the added entry is visible on the node where the removal is
-performed (hence the name observed-removed set).
+performed (hence the name observed-remove set).
 
 The following example illustrates how to do that:
 

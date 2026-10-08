@@ -70,7 +70,7 @@ In order to activate the new connection a @scala[`Register` message]@java[messag
 sent to the connection actor, informing that one about who shall receive data
 from the socket. Before this step is done the connection cannot be used, and
 there is an internal timeout after which the connection actor will shut itself
-down if no @scala[`Register` message]@java[message by the `TcpMessage.register` method] message is received.
+down if no @scala[`Register` message]@java[message by the `TcpMessage.register` method] is received.
 
 The connection actor watches the registered handler and closes the connection
 when that one terminates, thereby cleaning up all internal resources associated
@@ -140,7 +140,7 @@ will continue to be received until the remote endpoint closes the connection, to
 successful, the listener will be notified with `ConfirmedClosed`.
 
 @scala[`Abort`]@java[`TcpMessage.abort`] will immediately terminate the connection by sending a `RST` message to the remote endpoint. Pending
-writes will be not flushed. If the close is successful, the listener will be notified with `Aborted`.
+writes will not be flushed. If the close is successful, the listener will be notified with `Aborted`.
 
 `PeerClosed` will be sent to the listener if the connection has been closed by the remote endpoint. Per default, the
 connection will then automatically be closed from this endpoint as well. To support half-closed connections set the
@@ -164,7 +164,7 @@ in-memory data with a maximum (total) size of 2 GB (2^31 bytes).
 
 Tcp.WriteFile
 : If you want to send "raw" data from a file you can do so efficiently with the `Tcp.WriteFile` command.
-This allows you do designate a (contiguous) chunk of on-disk bytes for sending across the connection without
+This allows you to designate a (contiguous) chunk of on-disk bytes for sending across the connection without
 the need to first load them into the JVM memory. As such `Tcp.WriteFile` can "hold" more than 2GB of data and
 an "ack" event if required.
 
@@ -301,7 +301,7 @@ Java
 :  @@snip [EchoHandler.java](/docs/src/test/java/jdocs/io/japi/EchoHandler.java) { #echo-handler }
 
 The principle here is to keep writing until a `CommandFailed` is
-received, using acknowledgements only to prune the resend buffer. When a such a
+received, using acknowledgements only to prune the resend buffer. When such a
 failure was received, transition into a different state for handling and handle
 resending of all queued data:
 

@@ -60,7 +60,7 @@ Scala
 @@@
 
 The closing and closed states are to model waiting for all replicas to see the result of the auction before
-actually closing the action.
+actually closing the auction.
 
 Let's have a look at our state class, `AuctionState` which also represents the CRDT in our example.
 
@@ -78,7 +78,7 @@ In the `eventHandler`, we handle persisted events to drive the state change. Whe
  * it needs to be decided whether the new bid is the winning bid or not
  * the state needs to be updated accordingly
 
-The point of CRDTs is that the state must be end up being the same regardless of the order the events have been processed.
+The point of CRDTs is that the state must end up being the same regardless of the order the events have been processed.
 We can see how this works in the auction example: we are only interested in the highest bid, so, if we can define an
 ordering on all bids, it should suffice to compare the new bid with currently highest to eventually end up with the globally
 highest regardless of the order in which the events come in.
@@ -97,7 +97,7 @@ outside of our state class so that all replicas come to the same result. We defi
 If the new bid was higher, we keep this one as the new highest and keep the amount of the former highest as the `highestCounterOffer`.
 If the new bid was lower, we just update the `highestCounterOffer` if necessary.
 
-Using those rules, the order of incoming does not matter. Replicas will eventually converge to the same result.
+Using those rules, the order of incoming events does not matter. Replicas will eventually converge to the same result.
 
 ## Triggering closing
 
@@ -112,7 +112,7 @@ Scala
 Java
 :   @@snip [AuctionExample](/persistence-typed-tests/src/test/java/jdocs/org/apache/pekko/persistence/typed/ReplicatedAuctionExampleTest.java) { #event-triggers }
 
-The event trigger uses the `ReplicationContext` to decide when to trigger the Finish of the action.
+The event trigger uses the `ReplicationContext` to decide when to trigger the Finish of the auction.
 When a replica saves the `AuctionFinished` event it checks whether it should close the auction.
 For the close to happen the replica must be the one designated to close and all replicas must have
 reported that they have finished. 

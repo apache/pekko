@@ -24,6 +24,6 @@ For use cases where order matters, `mapAsyncPartitioned` can be used.
 
 **backpressures** when the number of @scala[`Future` s] @java[`CompletionStage` s] reaches the configured parallelism and the downstream backpressures
 
-**completes** upstream completes and all @scala[`Future` s] @java[`CompletionStage` s] has been completed  and all elements has been emitted
+**completes** when upstream completes and all @scala[`Future` s] @java[`CompletionStage` s] have been completed and all elements have been emitted
 
 @@@

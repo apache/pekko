@@ -100,7 +100,7 @@ however in client-server scenarios it is often the simplest to make either side 
 @@@ note
 
 In case of back-pressured cycles (which can occur even between different systems) sometimes you have to decide
-which of the sides has start the conversation in order to kick it off. This can be often done by injecting an
+which of the sides has to start the conversation in order to kick it off. This can be often done by injecting an
 initial message from one of the sides–a conversation starter.
 
 @@@
@@ -121,7 +121,7 @@ To emit the initial message we merge a @apidoc[stream.*.Source] with a single el
 framing and transformation to @apidoc[util.ByteString] s this way we do not have to repeat such logic.
 
 In this example both client and server may need to close the stream based on a parsed command - `BYE` in the case
-of the server, and `q` in the case of the client. This is implemented by @scala[taking from the stream until `q` and
+of the server, and `q` in the case of the client. This is implemented by @scala[taking from the stream until `q`
 and concatenating a `Source` with a single `BYE` element which will then be sent after the original source completed]@java[using a custom operator extending @ref[`GraphStage`](stream-customize.md)
 which completes the stream once it encounters such command].
 

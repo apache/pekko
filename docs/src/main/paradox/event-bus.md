@@ -149,7 +149,7 @@ Scala
 Java
 :  @@snip [EventBusDocTest.java](/docs/src/test/java/jdocs/event/EventBusDocTest.java) { #actor-bus-test }
 
-This classifier is still is generic in the event type, and it is efficient for
+This classifier is still generic in the event type, and it is efficient for
 all use cases.
 
 ## Event Stream

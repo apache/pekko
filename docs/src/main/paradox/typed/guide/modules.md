@@ -112,7 +112,7 @@ Challenges the Cluster module solves include the following:
 }
 
 Sharding helps to solve the problem of distributing a set of actors among members of a Pekko cluster.
-Sharding is a pattern that mostly used together with Persistence to balance a large set of persistent entities
+Sharding is a pattern that is mostly used together with Persistence to balance a large set of persistent entities
 (backed by actors) to members of a cluster and also migrate them to other nodes when members crash or leave.
 
 Challenges that Sharding solves include the following:
@@ -244,7 +244,7 @@ Streams solve the following challenges:
 
 [Pekko Connectors]($pekko.doc.dns$/docs/pekko-connectors/current/) is a separate module from Pekko.
 
-Pekko Connectors is collection of modules built upon the Streams API to provide Reactive Stream connector
+Pekko Connectors is a collection of modules built upon the Streams API to provide Reactive Stream connector
 implementations for a variety of technologies common in the cloud and infrastructure landscape.  
 See the [Pekko Connectors overview page]($pekko.doc.dns$/docs/pekko-connectors/current/overview.html) for more details on the API and the implementation modules available.
 
@@ -284,7 +284,7 @@ Some of the challenges that Pekko gRPC tackles:
 
 ### Example of module use
 
-Pekko modules integrate together seamlessly. For example, think of a large set of stateful business objects, such as documents or shopping carts, that website users access. If you model these as sharded entities, using Sharding and Persistence, they will be balanced across a cluster that you can scale out on-demand. They will be available during spikes that come from advertising campaigns or before holidays will be handled, even if some systems crash. You can also take the real-time stream of domain events with Persistence Query and use Streams to pipe them into a streaming Fast Data engine. Then, take the output of that engine as a Stream, manipulate it using Pekko Streams
+Pekko modules integrate together seamlessly. For example, think of a large set of stateful business objects, such as documents or shopping carts, that website users access. If you model these as sharded entities, using Sharding and Persistence, they will be balanced across a cluster that you can scale out on-demand. They will be available during spikes that come from advertising campaigns or before holidays, even if some systems crash. You can also take the real-time stream of domain events with Persistence Query and use Streams to pipe them into a streaming Fast Data engine. Then, take the output of that engine as a Stream, manipulate it using Pekko Streams
 operators and expose it as web socket connections served by a load balanced set of HTTP servers hosted by your cluster
 to power your real-time business analytics tool.
 

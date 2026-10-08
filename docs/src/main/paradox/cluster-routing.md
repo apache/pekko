@@ -43,7 +43,7 @@ To use Cluster aware routers, you must add the following dependency in your proj
 ## Router with Group of Routees
 
 When using a `Group` you must start the routee actors on the cluster member nodes.
-That is not done by the router. The configuration for a group looks like this::
+That is not done by the router. The configuration for a group looks like this:
 
 ```
 pekko.actor.deployment {
@@ -152,7 +152,7 @@ This means that user requests can be sent to `StatsService` on any node and it w
 ## Router with Pool of Remote Deployed Routees
 
 When using a `Pool` with routees created and deployed on the cluster member nodes
-the configuration for a router looks like this::
+the configuration for a router looks like this:
 
 ```
 pekko.actor.deployment {
@@ -234,7 +234,7 @@ Java
 The `ClusterSingletonProxy` receives text from users and delegates to the current `StatsService`, the single
 master. It listens to cluster events to lookup the `StatsService` on the oldest node.
 
-All nodes start `ClusterSingletonProxy` and the `ClusterSingletonManager`. The router is now configured like this::
+All nodes start `ClusterSingletonProxy` and the `ClusterSingletonManager`. The router is now configured like this:
 
 ```
 pekko.actor.deployment {
@@ -249,6 +249,6 @@ pekko.actor.deployment {
   }
 }
 ```
-The easiest way to run **Router Example with Pool of Routees** example yourself is to try the
+The easiest way to run **Router Example with Pool of Remote Deployed Routees** example yourself is to try the
 @scala[@extref[Pekko Cluster Sample with Scala](samples:pekko-sample-cluster-scala)]@java[@extref[Pekko Cluster Sample with Java](samples:pekko-sample-cluster-java)].
-It contains instructions on how to run the **Router Example with Pool of Routees** sample.
+It contains instructions on how to run the **Router Example with Pool of Remote Deployed Routees** sample.

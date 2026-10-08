@@ -93,11 +93,11 @@ Java
 Also note how a @apidoc[messageAdapter](actor.typed.*.ActorContext) {scala="#messageAdapter[U](f:U=%3ET)(implicitevidence$1:scala.reflect.ClassTag[U]):org.apache.pekko.actor.typed.ActorRef[U]" java="#messageAdapter(java.lang.Class,org.apache.pekko.japi.function.Function)"} is used to convert the `Receptionist.Listing` to a message type that
 the `PingManager` understands.
 
-If a server no longer wish to be associated with a service key it can deregister using the command `Receptionist.Deregister`
+If a server no longer wishes to be associated with a service key it can deregister using the command `Receptionist.Deregister`
 which will remove the association and inform all subscribers.
 
 The command can optionally send an acknowledgement once the local receptionist has removed the registration. The acknowledgement does not guarantee
-that all subscribers has seen that the instance has been removed, it may still receive messages from subscribers for some time after this.
+that all subscribers have seen that the instance has been removed, it may still receive messages from subscribers for some time after this.
 
 Scala
 :  @@snip [ReceptionistExample](/cluster-typed/src/test/scala/docs/org/apache/pekko/cluster/typed/ReceptionistExample.scala) { #deregister }
@@ -117,11 +117,11 @@ will eventually reach the same set of actors per `ServiceKey`.
 registered actors that are reachable. The full set of actors, including unreachable ones, is available through 
 @scala[@scaladoc[Listing.allServiceInstances](pekko.typed.receptionist.Receptionist.Listing#allServiceInstances[T](key:org.apache.pekko.actor.typed.receptionist.ServiceKey[T]):Set[org.apache.pekko.actor.typed.ActorRef[T]])]@java[@javadoc[Listing.getAllServiceInstances](pekko.actor.typed.receptionist.Receptionist.Listing#getAllServiceInstances(org.apache.pekko.actor.typed.receptionist.ServiceKey))].
 
-One important difference from local only receptions are the serialization concerns, all messages sent to and back from 
+One important difference from local-only receptionists are the serialization concerns, all messages sent to and back from 
 an actor on another node must be serializable, see @ref:[serialization](../serialization.md).
 
 ## Receptionist Scalability
 
 The receptionist does not scale up to any number of services or very high turnaround of services. 
-It will likely handle up to thousands or tens of thousands of services. Use cases with higher 
-demands the receptionist for initial contact between actors on the nodes while the actual logic of those is up to the applications own actors. 
+It will likely handle up to thousands or tens of thousands of services. For use cases with higher 
+demands, use the receptionist only for initial contact between actors on the nodes while the actual logic of those is up to the applications own actors. 

@@ -462,7 +462,7 @@ the binding name (for example `jackson-cbor`).
 ## Using Pekko Serialization for embedded types
 
 For types that already have a Pekko Serializer defined that are embedded in types serialized with Jackson the @apidoc[pekko.serialization.jackson.PekkoSerializationSerializer] and
-@apidoc[pekko.serialization.jackson.PekkoSerializationDeserializer] can be used to Pekko Serialization for individual fields. 
+@apidoc[pekko.serialization.jackson.PekkoSerializationDeserializer] can be used to use Pekko Serialization for individual fields. 
 
 The serializer/deserializer are not enabled automatically. The @javadoc[@JsonSerialize](com.fasterxml.jackson.databind.annotation.JsonSerialize) and @javadoc[@JsonDeserialize](com.fasterxml.jackson.databind.annotation.JsonDeserialize) annotation needs to be added
 to the fields containing the types to be serialized with Pekko Serialization.
@@ -531,4 +531,4 @@ you can change the following configuration for better performance of date/time f
 
 @@snip [config](/serialization-jackson/src/test/scala/doc/org/apache/pekko/serialization/jackson/SerializationDocSpec.scala) { #date-time }
 
-Jackson is still be able to deserialize the other format independent of this setting.
+Jackson is still able to deserialize the other format independent of this setting.

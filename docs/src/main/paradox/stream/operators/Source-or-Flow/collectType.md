@@ -12,7 +12,7 @@ Transform this stream by testing the type of each of the elements on which the e
 
 ## Description
 
-Filter elements that is of a given type.
+Filter elements that are of a given type.
 
 ## Example
 
@@ -41,7 +41,7 @@ Java
 
 **emits** when the element is of the given type
 
-**backpressures** the element is of the given type and downstream backpressures
+**backpressures** when the element is of the given type and downstream backpressures
 
 **completes** when upstream completes
 

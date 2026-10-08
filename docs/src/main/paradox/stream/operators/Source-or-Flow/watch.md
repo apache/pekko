@@ -17,7 +17,7 @@ The signaled failure will be an @java[@javadoc:[WatchedActorTerminatedException]
 
 ## Example
 
-An `ActorRef` can be can be watched and the stream will fail with `WatchedActorTerminatedException` when the
+An `ActorRef` can be watched and the stream will fail with `WatchedActorTerminatedException` when the
 actor terminates. 
 
 Scala

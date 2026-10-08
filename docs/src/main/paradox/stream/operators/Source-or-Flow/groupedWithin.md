@@ -29,7 +29,7 @@ See also:
 **emits** when the configured time elapses since the last group has been emitted,
 but not if no elements has been grouped (i.e: no empty groups), or when limit has been reached.
 
-**backpressures** downstream backpressures, and there are *n+1* buffered elements
+**backpressures** when downstream backpressures, and there are *n+1* buffered elements
 
 **completes** when upstream completes
 

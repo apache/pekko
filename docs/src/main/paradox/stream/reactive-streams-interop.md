@@ -19,14 +19,14 @@ To use Pekko Streams, add the module to your project:
 Pekko Streams implements the [Reactive Streams](https://www.reactive-streams.org/) standard for asynchronous stream processing with non-blocking
 back pressure. 
 
-Since Java 9 the APIs of Reactive Streams has been included in the Java Standard library, under the `java.util.concurrent.Flow`
+Since Java 9 the APIs of Reactive Streams have been included in the Java Standard library, under the `java.util.concurrent.Flow`
 namespace. There is also a separate Reactive Streams artifact with the same APIs in the package `org.reactivestreams`.
 
 Pekko streams provides interoperability for both these two API versions, the Reactive Streams interfaces directly through factories on the
 regular `Source` and `Sink` APIs. For the `java.util.concurrent.Flow` built in interfaces there is a separate set of factories in
 @scala[`org.apache.pekko.stream.scaladsl.JavaFlowSupport`]@java[`org.apache.pekko.stream.javadsl.JavaFlowSupport`].
 
-In the following samples the standalone Reactive Stream API factories has been used but each such call can be replaced with the
+In the following samples the standalone Reactive Stream API factories have been used but each such call can be replaced with the
 corresponding method from `JavaFlowSupport` and the JDK @scala[`java.util.concurrent.Flow._`]@java[`java.util.concurrent.Flow.*`] interfaces.
 
 The two most important interfaces in Reactive Streams are the `Publisher` and `Subscriber`.
@@ -115,7 +115,7 @@ Scala
 Java
 :   @@snip [ReactiveStreamsDocTest.java](/docs/src/test/java/jdocs/stream/ReactiveStreamsDocTest.java) { #sink-subscriber }
 
-It is also possible to use re-wrap `Processor` instances as a `Flow` by
+It is also possible to re-wrap `Processor` instances as a `Flow` by
 passing a factory function that will create the `Processor` instances:
 
 Scala

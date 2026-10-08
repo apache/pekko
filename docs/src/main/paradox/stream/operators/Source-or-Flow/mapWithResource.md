@@ -54,7 +54,7 @@ Scala
 Java
 :   @@snip [UnfoldResource.java](/docs/src/test/java/jdocs/stream/operators/sourceorflow/MapWithResource.java) { #mapWithResource }
 
-In this example we retrieve data form two tables with the same shared connection, and transform the results
+In this example we retrieve data from two tables with the same shared connection, and transform the results
 to individual records with @scala[`mapConcat(identity)`]@java[`mapConcat(elems -> elems)`], once done the connection is closed.
 
 

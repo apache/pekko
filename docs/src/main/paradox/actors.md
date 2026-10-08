@@ -564,7 +564,7 @@ Messages can be sent via the @apidoc[actor.ActorSelection] and the path of the
 does not match any actors the message will be dropped.
 
 To acquire an @apidoc[actor.ActorRef] for an `ActorSelection` you need to send
-a message to the selection and use the @scala[@scaladoc[sender](pekko.actor.Actor#sender():org.apache.pekko.actor.ActorRef)] @java[@javadoc[getSender()](pekko.actor.AbstractActor#getSender())]) reference of the reply from
+a message to the selection and use the @scala[@scaladoc[sender](pekko.actor.Actor#sender():org.apache.pekko.actor.ActorRef)] @java[@javadoc[getSender()](pekko.actor.AbstractActor#getSender())] reference of the reply from
 the actor. There is a built-in @apidoc[actor.Identify] message that all Actors will
 understand and automatically reply to with an @apidoc[actor.ActorIdentity] message
 containing the @apidoc[actor.ActorRef]. This message is handled specially by the
@@ -1149,7 +1149,7 @@ major impact on performance.
 @@@ warning { .group-scala }
 
 Note that the @scaladoc[Stash](pekko.actor.Stash) trait must be mixed into (a subclass of) the
-@scaladoc[Actor](pekko.actor.Actor) trait before any trait/class that overrides the @scaladoc[preRestart](org.apache.pekko.actor.Actor#preRestart(reason:Throwable,message:Option[Any]):Unit)]
+@scaladoc[Actor](pekko.actor.Actor) trait before any trait/class that overrides the @scaladoc[preRestart](org.apache.pekko.actor.Actor#preRestart(reason:Throwable,message:Option[Any]):Unit)
 callback. This means it's not possible to write
 `Actor with MyActor with Stash` if `MyActor` overrides `preRestart`.
 

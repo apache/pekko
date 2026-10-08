@@ -46,7 +46,7 @@ The assignment of channels to selectors is performed by the manager actor and
 remains unchanged for the entire lifetime of a channel. Thereby the management
 actor "stripes" new channels across one or more selector actors based on some
 implementation-specific distribution logic. This logic may be delegated (in
-part) to the selectors actors, which could, for example, choose to reject the
+part) to the selector actors, which could, for example, choose to reject the
 assignment of a new channel when they consider themselves to be at capacity.
 
 The manager actor creates (and therefore supervises) the selector actors, which
@@ -62,7 +62,7 @@ sending the channel actor a message which temporarily disables read interest
 for the channel until reading is re-enabled with a corresponding resume command.
 In the case of transports with flow control—like TCP—the act of not
 consuming data at the receiving end (thereby causing them to remain in the
-kernels read buffers) is propagated back to the sender, linking these two
+kernel's read buffers) is propagated back to the sender, linking these two
 mechanisms across the network.
 
 ## Design Benefits

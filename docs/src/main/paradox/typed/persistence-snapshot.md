@@ -56,7 +56,7 @@ or you can pick a snapshot store for a specific `EventSourcedBehavior` by
 @scala[defining it with `withSnapshotPluginId` of the `EventSourcedBehavior`]@java[overriding `snapshotPluginId` in
 the `EventSourcedBehavior`].
 
-Because some use cases may not benefit from or need snapshots, it is perfectly valid not to not configure a snapshot store.
+Because some use cases may not benefit from or need snapshots, it is perfectly valid not to configure a snapshot store.
 However, Pekko will log a warning message when this situation is detected and then continue to operate until
 an actor tries to store a snapshot, at which point the operation will fail.
 

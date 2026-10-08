@@ -272,7 +272,7 @@ after: I
 ```
 
 Note that `after` lines are not in the same order as the `before` lines. For example
-`H` overtakes the slow `G`.
+`H` overtakes the slow `g`.
 
 The numbers in parentheses illustrate how many calls that are in progress at
 the same time. Here the downstream demand and thereby the number of concurrent

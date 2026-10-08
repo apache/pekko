@@ -412,7 +412,7 @@ Java
 ## Only flow control
 
 It's possible to use this without resending lost messages, but the flow control is still used. This can
-for example be useful when both consumer and producer are know to be located in the same local `ActorSystem`.
+for example be useful when both consumer and producer are known to be located in the same local `ActorSystem`.
 This can be more efficient since messages don't have to be kept in memory in the `ProducerController` until
 they have been confirmed, but the drawback is that lost messages will not be delivered. See configuration
 `only-flow-control` of the `ConsumerController`.

@@ -19,7 +19,6 @@ See also:
 
  * @ref:[zip](zip.md)
  * @ref:[zipWith](zipWith.md)
- * @ref:[zipWith](zipWith.md)  
  * @ref:[zipWithIndex](zipWithIndex.md)
 
 ## Example
@@ -39,6 +38,6 @@ Java
 
 **backpressures** both upstreams when downstream backpressures but also on an upstream that has emitted an element until the other upstream has emitted an element
 
-**completes** when both upstream completes
+**completes** when both upstreams complete
 
 @@@

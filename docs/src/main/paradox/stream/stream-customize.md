@@ -217,7 +217,7 @@ Java
 :   @@snip [GraphStageDocTest.java](/docs/src/test/java/jdocs/stream/GraphStageDocTest.java) { #one-to-one }
 
 Map is a typical example of a one-to-one transformation of a stream where
-demand is passed along upstream elements passed on downstream.
+demand is passed along upstream and elements are passed on downstream.
 
 To demonstrate a many-to-one operator we will implement
 filter. The conceptual wiring of `Filter` looks like this:
@@ -295,7 +295,7 @@ operator has been completed. This can be done by overriding the `onUpstreamFinis
 Operators by default automatically stop once all of their ports (input and output) have been closed externally or internally.
 It is possible to opt out from this behavior by invoking `setKeepGoing(true)` (which is not supported from the operator’s
 constructor and usually done in `preStart`). In this case the operator **must** be explicitly closed by calling @apidoc[completeStage()](stage.GraphStageLogic) {scala="#completeStage():Unit" java="#completeStage()"}
-or `@apidoc[failStage(exception)](stage.GraphStageLogic) {scala="#failStage(ex:Throwable):Unit" java="#failStage(java.lang.Throwable)"}. This feature carries the risk of leaking streams and actors, therefore it should be used
+or @apidoc[failStage(exception)](stage.GraphStageLogic) {scala="#failStage(ex:Throwable):Unit" java="#failStage(java.lang.Throwable)"}. This feature carries the risk of leaking streams and actors, therefore it should be used
 with care.
 
 ### Logging inside GraphStages
@@ -476,7 +476,7 @@ Java
 ## Thread safety of custom operators
 
 All of the above custom operators (linear or graph) provide a few simple guarantees that implementers can rely on.
-: 
+
  * The callbacks exposed by all of these classes are never called concurrently.
  * The state encapsulated by these classes can be safely modified from the provided callbacks, without any further
 synchronization.

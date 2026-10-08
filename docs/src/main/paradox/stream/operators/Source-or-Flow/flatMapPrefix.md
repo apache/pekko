@@ -25,9 +25,9 @@ This method returns a flow consuming the rest of the stream producing the materi
 
 **backpressures** when the materialized flow backpressures
 
-**completes**  the materialized flow completes.
+**completes** when the materialized flow completes.
     If upstream completes before producing `n` elements, `f` will be applied with the provided elements,
-    the resulting flow will be materialized and signalled for upstream completion, it can then or continue to emit elements at its own discretion.
+    the resulting flow will be materialized and signalled for upstream completion, it can then continue to emit elements at its own discretion.
 
 
 @@@

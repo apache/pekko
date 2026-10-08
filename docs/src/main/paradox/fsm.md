@@ -392,7 +392,7 @@ are still executed in declaration order, though.
 
 This kind of internal monitoring may be used to structure your FSM according
 to transitions, so that for example the cancellation of a timer upon leaving
-a certain state cannot be forgot when adding new target states.
+a certain state cannot be forgotten when adding new target states.
 
 @@@
 
@@ -406,8 +406,8 @@ whenever a state change is triggered.
 
 @@@ div { .group-scala }
 
-Please note that a state change includes the action of performing an `goto(S)`, while
-already being state `S`. In that case the monitoring actor will be notified with an
+Please note that a state change includes the action of performing a `goto(S)`, while
+already being state `S`. In that case the monitoring actor will be notified with a
 `Transition(ref,S,S)` message. This may be useful if your `FSM` should
 react on all (also same-state) transitions. In case you'd rather not emit events for same-state
 transitions use `stay()` instead of `goto(S)`.

@@ -22,7 +22,7 @@ To use Multi Node Testing, you must add the following dependency in your project
 ## Multi Node Testing Concepts
 
 When we talk about multi node testing in Pekko we mean the process of running coordinated tests on multiple actor
-systems in different JVMs. The multi node testing kit consist of three main parts.
+systems in different JVMs. The multi node testing kit consists of three main parts.
 
  * @ref:[The Test Conductor](#the-test-conductor). that coordinates and controls the nodes under test.
  * @ref:[The Multi Node Spec](#the-multi-node-spec). that is a convenience wrapper for starting the @apidoc[TestConductor$] and letting all
@@ -169,12 +169,12 @@ complete the test names.
 
 ## A Multi Node Testing Example
 
-First we need some scaffolding to hook up the @apidoc[MultiNodeSpec] with your favorite test framework. Lets define a trait
+First we need some scaffolding to hook up the @apidoc[MultiNodeSpec] with your favorite test framework. Let's define a trait
 `STMultiNodeSpec` that uses ScalaTest to start and stop `MultiNodeSpec`.
 
 @@snip [STMultiNodeSpec.scala](/remote-tests/src/test/scala/org/apache/pekko/remote/testkit/STMultiNodeSpec.scala) { #example }
 
-Then we need to define a configuration. Lets use two nodes `"node1` and `"node2"` and call it
+Then we need to define a configuration. Let's use two nodes `"node1"` and `"node2"` and call it
 `MultiNodeSampleConfig`.
 
 @@snip [MultiNodeSample.scala](/remote-tests/src/multi-jvm/scala/org/apache/pekko/remote/sample/MultiNodeSample.scala) { #package #config }
@@ -195,7 +195,7 @@ throttler transport adapters by specifying @scala[@scaladoc[testTransport(on = t
  * Throttling, shutdown and other failure injections can only be done from the first node, which again is the controller.
  * Don't ask for the address of a node using `node(address)` after the node has been shut down. Grab the address before
 shutting down the node.
- * Don't use MultiNodeSpec methods like address lookup, barrier entry et.c. from other threads than the main test
+ * Don't use MultiNodeSpec methods like address lookup, barrier entry etc. from other threads than the main test
 thread. This also means that you shouldn't use them from inside an actor, a future, or a scheduled task.
 
 ## Configuration

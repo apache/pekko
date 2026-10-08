@@ -48,7 +48,7 @@ The JMX information can be displayed with an ordinary JMX console such as JConso
 
 From JMX you can:
 
- * see what members that are part of the cluster
+ * see which members are part of the cluster
  * see status of this node
  * see roles of each member
  * join this node to another node in cluster

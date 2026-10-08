@@ -1,6 +1,6 @@
 # Replicated Event Sourcing
 
-@ref[Event Sourcing](./persistence.md) with `EventSourcedBehavior`s is based on the single writer principle, which means that there can only be one active instance of a `EventSourcedBehavior` 
+@ref[Event Sourcing](./persistence.md) with `EventSourcedBehavior`s is based on the single writer principle, which means that there can only be one active instance of an `EventSourcedBehavior` 
 with a given `persistenceId`. Otherwise, multiple instances would store interleaving events based on different states, and when these events would later be replayed it would not be possible to reconstruct the correct state.
 
 This restriction means that in the event of network partitions, and for a short time during rolling re-deploys, some
@@ -33,7 +33,7 @@ To be able to use Replicated Event Sourcing the journal and snapshot store used 
 
 Taking the example of using Replicated Event Sourcing to run a replica per data center.
 
-When there is no network partitions and no concurrent writes the events stored by an `EventSourcedBehavior` at one replica can be replicated and consumed by another (corresponding) replica in another data center without any concerns. Such replicated events can simply be applied to the local state.
+When there are no network partitions and no concurrent writes the events stored by an `EventSourcedBehavior` at one replica can be replicated and consumed by another (corresponding) replica in another data center without any concerns. Such replicated events can simply be applied to the local state.
 
 ![images/replicated-events1.png](images/replicated-events1.png)
 
@@ -138,7 +138,7 @@ The rule for operation-based CRDT's is that the operations must be commutative �
 (which represent the operations) in any order should always produce the same final state. You may assume each event
 is applied only once, with @ref:[causal delivery order](#causal-delivery-order).
 
-The following CRDTs are included that can you can use as the state or part of the state in the entity:
+The following CRDTs are included that you can use as the state or part of the state in the entity:
 
 * @apidoc[LwwTime]
 * @apidoc[Counter]
@@ -199,7 +199,7 @@ not eventually converge.
 An example of that would be an entity representing a blog post and the fields `author` and `title` could be updated
 separately with events @scala[`AuthorChanged(newAuthor: String)`]@java[`new AuthorChanged(newAuthor)`] and @scala[`TitleChanged(newTitle: String)`]@java[`new TitleChanged(newTitle)`].
 
-Let's say the blog post is created and the initial state of `title=Pekko, author=unknown` is in sync in both replicas `DC-A` and `DC-B.
+Let's say the blog post is created and the initial state of `title=Pekko, author=unknown` is in sync in both replicas `DC-A` and `DC-B`.
 
 In `DC-A` author is changed to "Bob" at time `100`. Before that event has been replicated over to `DC-B` the
 title is updated to "Pekko News" at time `101` in `DC-B`. When the events have been replicated the result will be:
@@ -223,7 +223,7 @@ In most cases it is recommended to do side effects as @ref[described for `EventS
 Side effects from the event handler are generally discouraged because the event handlers are also used during replay and when consuming replicated events and that would 
 result in undesired re-execution of the side effects.
 
-Uses cases for doing side effects in the event handler:
+Use cases for doing side effects in the event handler:
 
 * Doing a side effect only in a single replica
 * Doing a side effect once all replicas have seen an event
@@ -284,9 +284,9 @@ Each replica "owns" a slot in the version vector and increases its counter when 
 When comparing two version vectors `v1` and `v2`: 
 
 * `v1` is SAME as `v2` iff for all i `v1(i) == v2(i)`
-* `v1`is BEFORE `v2` iff for all i `v1(i) <= v2(i)` and there exist a j such that `v1(j) < v2(j)`
-* `v1`is AFTER `v2` iff for all i `v1(i) >= v2(i)` and there exist a j such that `v1(j) > v2(j)`
-* `v1`is CONCURRENT with `v2` otherwise
+* `v1` is BEFORE `v2` iff for all i `v1(i) <= v2(i)` and there exist a j such that `v1(j) < v2(j)`
+* `v1` is AFTER `v2` iff for all i `v1(i) >= v2(i)` and there exist a j such that `v1(j) > v2(j)`
+* `v1` is CONCURRENT with `v2` otherwise
 
 
 ## Sharded Replicated Event Sourced entities
@@ -307,7 +307,7 @@ Scala
 Java
 :  @@snip [ReplicatedShardingTest.java](/cluster-sharding-typed/src/test/java/jdocs/org/apache/pekko/cluster/sharding/typed/ReplicatedShardingCompileOnlySpec.java) { #bootstrap }
 
-This will run an instance of sharding and per replica and each entity id contains the replica id and the type name.
+This will run an instance of sharding per replica and each entity id contains the replica id and the type name.
 Replicas could be on the same node if they end up in the same shard or if the shards get allocated to the same node.
 
 To prevent this roles can be used. You could for instance add a cluster role per availability zone / rack and have a replica per rack.
@@ -349,7 +349,7 @@ streams that can more directly serve user queries – known as building the “r
 Creating read side projections is possible through [Pekko Projection]($pekko.doc.dns$/docs/pekko-projection/current/)
 or through direct usage of the @ref[events by tag queries](../persistence-query.md#eventsbytag-and-currenteventsbytag).  
 
-The tagging is invoked in each replicas, which requires some special care in using tags, or else the same event will be
+The tagging is invoked in each replica, which requires some special care in using tags, or else the same event will be
 tagged one time for each replica and show up in the event by tag stream one time for each replica. In addition to this
 the tags will be written in the respective journal of the replicas, which means that unless they all share a single journal
 the tag streams will be local to the replica even if the same tag is used on multiple replicas.
