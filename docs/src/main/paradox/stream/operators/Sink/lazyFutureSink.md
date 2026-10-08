@@ -13,10 +13,10 @@ Defers creation and materialization of a `Sink` until there is a first element.
 
 When the first element comes from upstream the `Future[Sink]` is created. When that completes successfully with a sink
 that is materialized and inserted in the stream.
-The internal `Sink` will not be created if the stream completes of fails before any element got through.
+The internal `Sink` will not be created if the stream completes or fails before any element got through.
 
-The materialized value of the `Sink` will be the materialized value of the created internal flow if it is materialized
-and failed with a `org.apache.pekko.stream.NeverMaterializedException` if the stream fails or completes without the flow being materialized.
+The materialized value of the `Sink` will be the materialized value of the created internal sink if it is materialized
+and failed with a `org.apache.pekko.stream.NeverMaterializedException` if the stream fails or completes without the sink being materialized.
 
 Can be combined with @ref:[prefixAndTail](../Source-or-Flow/prefixAndTail.md) to base the sink on the first element.
 

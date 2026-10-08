@@ -6,11 +6,7 @@ Integration with Reactive Streams, subscribes to a `org.reactivestreams.Publishe
 
 ## Signature
 
-Scala
-:   @@snip[JavaFlowSupport.scala](/stream/src/main/scala/org/apache/pekko/stream/scaladsl/JavaFlowSupport.scala) { #fromPublisher }
-
-Java
-:   @@snip[FromPublisher.java](/docs/src/test/java/jdocs/stream/operators/source/FromPublisher.java) { #api }
+@apidoc[Source.fromPublisher](Source$) { scala="#fromPublisher[T](publisher:org.reactivestreams.Publisher[T]):org.apache.pekko.stream.scaladsl.Source[T,org.apache.pekko.NotUsed]" java="#fromPublisher(org.reactivestreams.Publisher)" }
 
 
 ## Description
@@ -27,6 +23,8 @@ Since those APIs are identical but exist at different package namespaces and doe
 through @scala[`org.apache.pekko.stream.scaladsl.JavaFlowSupport.Source#fromPublisher`]@java[`org.apache.pekko.stream.javadsl.JavaFlowSupport.Source#fromPublisher`].
 
 ## Example
+
+The examples below use the `JavaFlowSupport` variant, which works with the `java.util.concurrent.Flow` interfaces.
 
 Suppose we use a database client that supports [Reactive Streams](https://www.reactive-streams.org/),
 we could create a @apidoc[Source] that queries the database for its rows. That @apidoc[Source] can then

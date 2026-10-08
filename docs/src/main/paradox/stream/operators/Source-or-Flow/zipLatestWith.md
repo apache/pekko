@@ -14,10 +14,10 @@ Combines elements from multiple sources through a `combine` function and passes 
 
 ## Description
 
-Combines elements from each of multiple sources into @scala[tuples] @java[*Pair*] and passes the @scala[tuples] @java[pairs] downstream, picking always the latest element of each.
+Combines elements from each of multiple sources through a `combine` function and passes the returned value downstream, picking always the latest element of each.
 
 No element is emitted until at least one element from each Source becomes available. Whenever a new
-element appears, the zipping function is invoked with a tuple containing the new element and the last seen element of the other stream.
+element appears, the `combine` function is invoked with the new element and the last seen element of the other stream.
 
 By default the stream completes as soon as any upstream completes. Use the overload with `eagerComplete` set to `false`
 to keep running until all upstreams have completed (the stream still completes immediately if an upstream

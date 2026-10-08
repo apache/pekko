@@ -61,8 +61,6 @@ all materialization and what is even worse, unsafely across threads.
 
 **completes** when upstream completes and all elements have been emitted from the internal flow
 
-**completes** when upstream completes and all futures have been completed and all elements have been emitted
-
 **cancels** when downstream cancels (keep reading)
     The operator's default behavior in case of downstream cancellation before nested flow materialization (future completion) is to cancel immediately.
      This behavior can be controlled by setting the [[org.apache.pekko.stream.Attributes.NestedMaterializationCancellationPolicy.PropagateToNested]] attribute,

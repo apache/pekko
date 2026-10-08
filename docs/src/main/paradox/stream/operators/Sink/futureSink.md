@@ -11,7 +11,7 @@ Streams the elements to the given future sink once it successfully completes.
 
 ## Description
 
-Streams the elements through the given future flow once it successfully completes. 
+Streams the elements through the given future sink once it successfully completes. 
 If the future fails the stream is failed.
 
 `futureSink` uses the same lazy materialization semantics as @ref:[lazyFutureSink](lazyFutureSink.md): the nested sink

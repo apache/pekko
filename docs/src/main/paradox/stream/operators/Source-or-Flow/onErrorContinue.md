@@ -35,7 +35,9 @@ This operator relies on supervision, so it has no effect on operators that do no
 
 **backpressures** downstream backpressures
 
-**completes** upstream completes or upstream failed with exception this operator can't handle
+**completes** upstream completes
+
+**fails** upstream failed with exception this operator can't handle
 
 **Cancels when** downstream cancels
 @@@

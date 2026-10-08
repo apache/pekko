@@ -6,7 +6,7 @@ Creates a sequential `Source` by iterating with the given predicate, function an
 
 ## Signature
 
-@apidoc[Source.iterate](Source$) { scala="#iterate%5BT](seed:T)(hasNext:T=&gt;Boolean,next:T=&gt;T):org.apache.pekko.stream.scaladsl.Source%5BT,org.apache.pekko.NotUsed]" java="#iterate(java.lang.Object,org.apache.pekko.japi.function.Predicate,org.apache.pekko.japi.function.Function)" }
+@apidoc[Source.iterate](Source$) { scala="#iterate%5BT](seed:T)(p:T=&gt;Boolean,f:T=&gt;T):org.apache.pekko.stream.scaladsl.Source%5BT,org.apache.pekko.NotUsed]" java="#iterate(java.lang.Object,org.apache.pekko.japi.function.Predicate,org.apache.pekko.japi.function.Function)" }
 
 
 ## Description
@@ -16,7 +16,7 @@ starting with the given seed value. If the hasNext function returns false for th
 
 @@@ warning
 
-The same `seed` value will be used for every materialization of the `Source` so it is **mandatory** that the state is immutable. For example a `java.util.Iterator`, `Array` or Java standard library collection would not be safe as the fold operation could mutate the value. If you must use a mutable value, combining with @ref:[Source.lazySource](lazySource.md) to make sure a new mutable `zero` value is created for each materialization is one solution.
+The same `seed` value will be used for every materialization of the `Source` so it is **mandatory** that the state is immutable. For example a `java.util.Iterator`, `Array` or Java standard library collection would not be safe as the `next` function could mutate the value. If you must use a mutable value, combining with @ref:[Source.lazySource](lazySource.md) to make sure a new mutable `seed` value is created for each materialization is one solution.
 
 @@@
 

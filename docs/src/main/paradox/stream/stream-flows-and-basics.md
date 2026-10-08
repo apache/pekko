@@ -192,7 +192,7 @@ of absence of a value we recommend using @scala[@scaladoc[scala.Option](scala.Op
 ## Back-pressure explained
 
 Pekko Streams implement an asynchronous non-blocking back-pressure protocol standardised by the [Reactive Streams](https://www.reactive-streams.org/)
-specification, which Pekko is a founding member of.
+specification.
 
 The user of the library does not have to write any explicit back-pressure handling code — it is built in
 and dealt with automatically by all of the provided Pekko Streams operators. It is possible however to add

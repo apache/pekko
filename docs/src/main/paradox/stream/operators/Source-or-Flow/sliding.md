@@ -6,6 +6,7 @@ Provide a sliding window over the incoming stream and pass the windows as groups
 
 ## Signature
 
+@apidoc[Source.sliding](Source) { scala="#sliding(n:Int,step:Int):FlowOps.this.Repr[Seq[Out]]" java="#sliding(int,int)" }
 @apidoc[Flow.sliding](Flow) { scala="#sliding(n:Int,step:Int):FlowOps.this.Repr[Seq[Out]]" java="#sliding(int,int)" } 
 
 ## Description

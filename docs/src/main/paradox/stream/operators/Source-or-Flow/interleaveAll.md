@@ -29,7 +29,7 @@ Java
 
 **emits** when element is available from the currently consumed upstream
 
-**backpressures** when upstream backpressures
+**backpressures** when downstream backpressures
 
 **completes** when all upstreams have completed if `eagerClose` is false, or any upstream completes if `eagerClose` is true.
 

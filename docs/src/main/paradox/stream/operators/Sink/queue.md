@@ -21,7 +21,7 @@ a buffer in case stream emitting elements faster than queue pulling them.
 
 **cancels** when  `SinkQueue.cancel` is called
 
-**backpressures** when buffer has some space
+**backpressures** when the buffer is full
 
 @@@
 

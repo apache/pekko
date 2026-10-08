@@ -15,7 +15,7 @@ which will be completed with a result of the Java @javadoc[Collector](java.util.
 
 ## Example
 
-Given a stream of numbers we can collect the numbers into a collection with the `seq` operator
+Given a stream of numbers we can collect the numbers into a `List` with the `collect` operator and `Collectors.toList()`
 
 Java
 :   @@snip [SinkTest.java](/stream-tests/src/test/java/org/apache/pekko/stream/javadsl/SinkTest.java) { #collect-to-list }
