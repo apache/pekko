@@ -198,7 +198,7 @@ Scala
     ```scala
     val props: Props = ...
     // this actor uses MyCustomMailbox, which is assumed to be a singleton
-    system.actorOf(props.withDispatcher("myCustomMailbox")) ! "bang"
+    system.actorOf(props.withMailbox("myCustomMailbox")) ! "bang"
     assert(MyCustomMailbox.instance.getLastEnqueuedMessage == "bang")
     ```
     @@@
@@ -208,7 +208,7 @@ Java
     ```java
     final Props props = ...
     // this actor uses MyCustomMailbox, which is assumed to be a singleton
-    system.actorOf(props.withDispatcher("myCustomMailbox").tell("bang", sender);
+    system.actorOf(props.withMailbox("myCustomMailbox")).tell("bang", sender);
     assert(MyCustomMailbox.getInstance().getLastEnqueued().equals("bang"));
     ```
     @@@

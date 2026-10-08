@@ -21,11 +21,11 @@ To configure it in your project you should do the following steps:
 2.  Add multi-JVM testing to `build.sbt` or `project/Build.scala` by enabling `MultiJvmPlugin` and
     setting the `MultiJvm` config.
 
-        ```none
-        lazy val root = (project in file("."))
-          .enablePlugins(MultiJvmPlugin)
-          .configs(MultiJvm)
-        ```
+    ```none
+    lazy val root = (project in file("."))
+      .enablePlugins(MultiJvmPlugin)
+      .configs(MultiJvm)
+    ```
 
 **Please note** that by default MultiJvm test sources are located in `src/multi-jvm/...`,
 and not in `src/test/...`.
