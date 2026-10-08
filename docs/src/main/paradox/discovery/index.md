@@ -235,5 +235,5 @@ pekko {
 ```
 
 The above configuration will result in `pekko-dns` first being checked and if it fails or returns no
-targets for the given service name then `config` is queried which i configured with one service called
-`service1` which two hosts `host1` and `host2`.
+targets for the given service name then `config` is queried which is configured with one service called
+`service1` with two hosts `host1` and `host2`.
