@@ -55,6 +55,11 @@ Scala 2.13 and Scala 3.
 * Agrona was updated from 1.x to 2.x, which
 [means](https://github.com/aeron-io/agrona/wiki/Change-Log#200-2024-12-17) you may have to add
 `--add-opens java.base/jdk.internal.misc=ALL-UNNAMED` if you use the Java Module System and Pekko Remote.
+* pekko-serialization-jackson depends on `at.yawk.lz4:lz4-java` instead of the unmaintained `org.lz4:lz4-java`.
+This change was made in Pekko 1.4.0, so you will only notice it if you are upgrading from an earlier Pekko 1.x
+release. The fork is a drop-in replacement with important bug fixes. If your build also depends on
+`org.lz4:lz4-java`, consider excluding it so that the two jars are not both on the classpath.
+([PR2537](https://github.com/apache/pekko/pull/2537))
 * The `ssl-config` library is no longer a dependency of Pekko and the `ssl-config` configuration sections have
 been removed (see Removed configuration below). ([PR2127](https://github.com/apache/pekko/pull/2127))
 
