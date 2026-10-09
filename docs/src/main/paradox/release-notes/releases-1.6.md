@@ -2,7 +2,7 @@
 
 Apache Pekko 1.6.x releases support Java 8 and above.
 
-# 1.6.0
+## 1.6.0
 
 Pekko 1.6.0 has some bug fixes. See the [GitHub Milestone for 1.6.0](https://github.com/apache/pekko/milestone/29?closed=1) for a fuller list of changes.
 
