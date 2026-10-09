@@ -38,8 +38,10 @@ Java
 Next, we handle *each* incoming connection using a @apidoc[stream.*.Flow] which will be used as the operator
 to handle and emit @apidoc[util.ByteString] s from and to the TCP Socket. Since one `ByteString` does not have to necessarily
 correspond to exactly one line of text (the client might be sending the line in chunks) we use the @apidoc[Framing.delimiter](stream.*.Framing$) {scala="#delimiter(delimiter:org.apache.pekko.util.ByteString,maximumFrameLength:Int,allowTruncation:Boolean):org.apache.pekko.stream.scaladsl.Flow[org.apache.pekko.util.ByteString,org.apache.pekko.util.ByteString,org.apache.pekko.NotUsed]" java="#delimiter(org.apache.pekko.util.ByteString,int,org.apache.pekko.stream.javadsl.FramingTruncation)"}
-helper Flow to chunk the inputs up into actual lines of text. The last boolean
-argument indicates that we require an explicit line ending even for the last message before the connection is closed.
+helper Flow to chunk the inputs up into actual lines of text. The last argument controls whether an explicit line ending
+is required for the last message before the connection is closed: @scala[`allowTruncation = true` means that the last message
+is emitted even without a trailing line ending]@java[`FramingTruncation.DISALLOW` means that an explicit line ending is required
+even for the last message].
 In this example we add exclamation marks to each incoming text message and push it through the flow:
 
 Scala

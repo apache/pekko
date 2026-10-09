@@ -13,8 +13,6 @@ To use Pekko Streams, add the module to your project:
   version=PekkoVersion
 }
 
-## Introduction
-
 <a id="kill-switch"></a>
 ## Controlling stream completion with KillSwitch
 
@@ -165,7 +163,7 @@ Java
 We now wrap the @apidoc[stream.*.Sink] and @apidoc[stream.*.Source] in a @apidoc[stream.*.Flow] using @apidoc[Flow.fromSinkAndSource](stream.*.Flow$) {scala="#fromSinkAndSource[I,O](sink:org.apache.pekko.stream.Graph[org.apache.pekko.stream.SinkShape[I],_],source:org.apache.pekko.stream.Graph[org.apache.pekko.stream.SourceShape[O],_]):org.apache.pekko.stream.scaladsl.Flow[I,O,org.apache.pekko.NotUsed]" java="#fromSinkAndSource(org.apache.pekko.stream.Graph,org.apache.pekko.stream.Graph)"}. This bundles
 up the two sides of the channel into one and forces users of it to always define a publisher and subscriber side
 (even if the subscriber side is dropping). It also allows us to attach a @apidoc[stream.KillSwitch] as
-a `BidiStage` which in turn makes it possible to close both the original `Sink` and `Source` at the
+a bidirectional operator (with `BidiShape`, created by `KillSwitches.singleBidi`) which in turn makes it possible to close both the original `Sink` and `Source` at the
 same time.
 Finally, we add `backpressureTimeout` on the consumer side to ensure that subscribers that block the channel for more
 than 3 seconds are forcefully removed (and their stream failed).

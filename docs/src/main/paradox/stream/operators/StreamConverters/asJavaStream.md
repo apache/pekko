@@ -16,7 +16,7 @@ Elements emitted through the stream will be available for reading through the Ja
 The Java 8 `Stream` will be ended when the stream flowing into this `Sink` completes, and closing the Java
 `Stream` will cancel the inflow of this `Sink`. If the Java `Stream` throws an exception, the Pekko stream is cancelled.
 
-Be aware that Java `Stream` blocks current thread while waiting on next element from downstream.
+Be aware that Java `Stream` blocks current thread while waiting on next element from upstream.
 
 ## Example
 

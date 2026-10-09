@@ -45,7 +45,7 @@ In this example we make use of that by unfolding a mutable object that works lik
 there are more elements and one that produces the next and moves to the next element.
 
 If the `IteratorLikeThing` was used directly in a `Source.unfold` the same instance would end up being unsafely shared
-across all three materializations of the stream, but wrapping it with `Source.lazy` ensures we create a separate instance
+across all three materializations of the stream, but wrapping it with `Source.lazySource` ensures we create a separate instance
 for each of the started streams:
 
 Scala

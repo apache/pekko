@@ -12,7 +12,7 @@ Start with current value `zero` and then apply the current and next value to the
 ## Description
 
 Start with current value `zero` and then apply the current and next value to the given function. When upstream
-completes, the current value is emitted downstream.
+completes or the predicate `p` returns `false`, the current value is emitted downstream and the stream completes.
 
 @@@ warning
 
@@ -38,11 +38,11 @@ Java
 
 @@@div { .callout }
 
-**emits** when upstream completes
+**emits** when upstream completes or the predicate `p` returns `false`
 
 **backpressures** when downstream backpressures
 
-**completes** when upstream completes
+**completes** when upstream completes or the predicate `p` returns `false`
 
 @@@
 

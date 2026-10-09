@@ -6,18 +6,14 @@ Integration with Reactive Streams, materializes into a `org.reactivestreams.Subs
 
 ## Signature
 
-Scala
-:   @@snip[JavaFlowSupport.scala](/stream/src/main/scala/org/apache/pekko/stream/scaladsl/JavaFlowSupport.scala) { #asSubscriber }
-
-Java
-:   @@snip[AsSubscriber.java](/docs/src/test/java/jdocs/stream/operators/source/AsSubscriber.java) { #api }
+@apidoc[Source.asSubscriber](Source$) { scala="#asSubscriber[T]:org.apache.pekko.stream.scaladsl.Source[T,org.reactivestreams.Subscriber[T]]" java="#asSubscriber()" }
 
 ## Description
 
 If you want to create a @apidoc[Source] that gets its elements from another library that supports
 [Reactive Streams](https://www.reactive-streams.org/), you can use `Source.asSubscriber`.
 Each time this @apidoc[Source] is materialized, it produces a materialized value of type
-@javadoc[org.reactivestreams.Subscriber](java.util.concurrent.Flow.Subscriber).
+`org.reactivestreams.Subscriber`.
 This `org.reactivestreams.Subscriber` can be attached to a
 [Reactive Streams](https://www.reactive-streams.org/) `org.reactivestreams.Publisher`
 to populate it.
@@ -29,6 +25,8 @@ Since those APIs are identical but exist at different package namespaces and doe
 through @scala[`org.apache.pekko.stream.scaladsl.JavaFlowSupport.Source#asSubscriber`]@java[`org.apache.pekko.stream.javadsl.JavaFlowSupport.Source#asSubscriber`].
 
 ## Example
+
+The examples below use the `JavaFlowSupport` variant, which works with the `java.util.concurrent.Flow` interfaces.
 
 Suppose we use a database client that supports [Reactive Streams](https://www.reactive-streams.org/),
 we could create a @apidoc[Source] that queries the database for its rows. That @apidoc[Source] can then

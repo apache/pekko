@@ -133,7 +133,8 @@ in that state.
 
 The following operations are available for *input* ports:
 
- * `pull(in)` requests a new element from an input port. This is only possible after the port has been pushed by upstream.
+ * `pull(in)` requests a new element from an input port. This is only possible if the port is not closed and has not already been pulled
+(i.e. after a previous element has been pushed by upstream, or initially before any element has been requested).
  * `grab(in)` acquires the element that has been received during an `onPush()`. It cannot be called again until the
 port is pushed again by the upstream.
  * `cancel(in)` closes the input port.

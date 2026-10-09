@@ -11,8 +11,8 @@ Collect the value of `Optional` from all the elements passing through this flow 
 
 ## Description
 
-Streams the elements through the given future flow once it successfully completes. 
-If the future fails the stream is failed.
+Creates a `Flow` that emits the value of each present @javadoc[Optional](java.util.Optional) element passing through it,
+while empty `Optional` elements are filtered out (dropped).
 
 ## Reactive Streams semantics
 

@@ -33,7 +33,9 @@ Scala
 
 **completes** when upstream completes and all elements have been emitted from the internal flow
 
-**completes** when upstream completes and all futures have been completed and all elements have been emitted
-
+**cancels** when downstream cancels (keep reading)
+    The operator's default behavior in case of downstream cancellation before nested flow materialization (`CompletionStage` completion) is to cancel immediately.
+     This behavior can be controlled by setting the [[org.apache.pekko.stream.Attributes.NestedMaterializationCancellationPolicy.PropagateToNested]] attribute,
+    this will delay downstream cancellation until nested flow's materialization which is then immediately cancelled (with the original cancellation cause).
 @@@
 

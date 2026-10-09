@@ -1,6 +1,6 @@
 # alsoToAll
 
-Attaches the given @apidoc[Source]s to this @apidoc[Flow], meaning that elements that pass through this @apidoc[Flow] will also be sent to all those @apidoc[Sink]s.
+Attaches the given @apidoc[Sink]s to this @apidoc[Flow], meaning that elements that pass through this @apidoc[Flow] will also be sent to all those @apidoc[Sink]s.
 
 @ref[Fan-out operators](../index.md#fan-out-operators)
 
@@ -11,7 +11,7 @@ Attaches the given @apidoc[Source]s to this @apidoc[Flow], meaning that elements
 
 ## Description
 
-Attaches the given @apidoc[Source] s to this @apidoc[Flow], meaning that elements that pass through this @apidoc[Flow]
+Attaches the given @apidoc[Sink]s to this @apidoc[Flow], meaning that elements that pass through this @apidoc[Flow]
 will also be sent to all those @apidoc[Sink]s.
 
 ## Reactive Streams semantics

@@ -79,7 +79,7 @@ Java
 
 **emits** when there is demand and the queue contains elements
 
-**completes** when downstream completes
+**completes** when the queue is completed (via `complete()` on the materialized queue) and all buffered elements have been emitted
 
 @@@
 

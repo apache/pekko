@@ -21,7 +21,7 @@ This operator adheres to the ActorAttributes.SupervisionStrategy attribute. On `
 
 **emits** when there is a pending element in the buffer and configured time for this element elapsed
 
-**backpressures** differs, depends on `OverflowStrategy` set
+**backpressures** differs, depends on `DelayOverflowStrategy` set
 
 **completes** when upstream completes and buffered elements have been drained
 

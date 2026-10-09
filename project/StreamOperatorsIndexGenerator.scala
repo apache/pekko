@@ -63,8 +63,6 @@ object StreamOperatorsIndexGenerator extends AutoPlugin {
     "runForeach",
     "runReduce",
     "named",
-    "throttleEven",
-    "actorPublisher",
     "addAttributes",
     "mapMaterializedValue",
     // for comprehensions
@@ -109,7 +107,6 @@ object StreamOperatorsIndexGenerator extends AutoPlugin {
       "shape",
       "traversalBuilder",
       "fromGraph",
-      "actorSubscriber",
       "foldAsync",
       "newOnCompleteStage"))
 

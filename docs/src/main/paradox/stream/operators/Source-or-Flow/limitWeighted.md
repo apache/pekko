@@ -30,10 +30,10 @@ Java
 
 @@@div { .callout }
 
-**emits** when upstream emits and the number of emitted elements has not reached max
+**emits** when upstream emits and the accumulated cost has not reached max
 
 **backpressures** when downstream backpressures
 
-**completes** when upstream completes and the number of emitted elements has not reached max
+**completes** when upstream completes and the accumulated cost has not reached max
 
 @@@

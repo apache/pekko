@@ -6,6 +6,8 @@ Takes a stream of two element tuples and unzips the two elements into two differ
 
 ## Signature
 
+@apidoc[stream.*.Unzip$]
+
 ## Description
 
 Takes a stream of two element tuples and unzips the two elements into two different downstreams.
