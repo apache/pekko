@@ -459,6 +459,17 @@ For the `jackson-cbor` and custom bindings other than `jackson-json` compression
 but can be enabled in the same way as the configuration shown above but replacing `jackson-json` with
 the binding name (for example `jackson-cbor`).
 
+The `compression.max-decompressed-size` property limits how large a compressed (gzip or lz4) payload may
+become when it is decompressed during deserialization, guarding against a small message that expands to an
+excessive size. It applies regardless of the `algorithm` setting. The default is `unlimited`, which applies
+no limit (a negative number also means unlimited). Set a size such as `256 MiB`, larger than any payload the
+system legitimately exchanges, to bound decompression. A payload that exceeds the limit is rejected with an
+`IllegalArgumentException` instead of being deserialized. The property can be set in
+`pekko.serialization.jackson.compression` for all bindings, or per binding, for example in
+`pekko.serialization.jackson.jackson-cbor.compression`. The `pekko.serialization.jackson3` serializers have the
+same property under `pekko.serialization.jackson3`. This limit is separate from
+`pekko.serialization.max-decompressed-size`, which applies to other Pekko serializers but not to the Jackson ones.
+
 ## Using Pekko Serialization for embedded types
 
 For types that already have a Pekko Serializer defined that are embedded in types serialized with Jackson the @apidoc[pekko.serialization.jackson.PekkoSerializationSerializer] and
