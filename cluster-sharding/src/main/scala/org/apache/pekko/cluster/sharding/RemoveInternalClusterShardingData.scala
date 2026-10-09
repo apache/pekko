@@ -59,6 +59,10 @@ import pekko.persistence.journal.leveldb.SharedLeveldbStore
  *
  * Specify the entity type names (same as you use in the `start` method
  * of `ClusterSharding`) as program arguments.
+ *
+ * If you specify `-2.3` as the first program argument it will also try
+ * to remove data that was stored by Cluster Sharding in Akka 2.3.x using
+ * different persistenceId.
  */
 object RemoveInternalClusterShardingData {
 
