@@ -21,15 +21,8 @@ on:
   schedule:
     - cron: "0 2 * * *"
   workflow_dispatch:
-  # TEMPORARY: run on pull requests so the new job can be evaluated in PR CI.
-  # Remove this trigger before merging.
-  pull_request:
 
 permissions: {}
-
-concurrency:
-  group: multi-jvm-${{ github.ref }}
-  cancel-in-progress: true
 
 jobs:
   pekko-multi-jvm-tests:
