@@ -1,12 +1,14 @@
 # Release Notes (1.0.x)
 
+Apache Pekko 1.0.x releases support Java 8 and above.
+
 ## 1.0.3
 
 Contains all the changes in 1.0.3-M1 but this release is safe to be used in production. There are a few additional changes.
 
 ### Bug Fixes
 
-* TcpDnsClient cannot recover if registration on TcpConnection times out ([PR1182](https://github.com/apache/pekko/pull/1182))
+* TcpDnsClient cannot recover if registration on TcpConnection times out ([PR1183](https://github.com/apache/pekko/pull/1183))
 * Fix `ByteIterator#indexWhere` ([PR1282](https://github.com/apache/pekko/pull/1282))
 * Avoid unnecessary shard updates while shutting down ([PR1342](https://github.com/apache/pekko/pull/1342))
 
@@ -15,7 +17,7 @@ Contains all the changes in 1.0.3-M1 but this release is safe to be used in prod
 * Remove the deprecation of statefulMapConcat operator ([PR1161](https://github.com/apache/pekko/pull/1161))
 
 ## 1.0.3-M1
-This is milestone release and is aimed at testing some new support for users who want to add Pekko nodes to an existing Akka cluster. This support is experimental. This release should not be used in production.
+This is a milestone release and is aimed at testing some new support for users who want to add Pekko nodes to an existing Akka cluster. This support is experimental. This release should not be used in production.
 
 ### Bug Fixes
 
@@ -26,7 +28,7 @@ This is milestone release and is aimed at testing some new support for users who
 
 * Change the manager name to use `pekko` in the name ([PR587](https://github.com/apache/pekko/pull/587))
 * Support interacting with Akka Remote and Cluster nodes ([PR765](https://github.com/apache/pekko/pull/765), [PR1112](https://github.com/apache/pekko/pull/1112))
-    * See the [wiki notes](https://cwiki.apache.org/confluence/display/PEKKO/Pekko+Akka+Compatibility) about uptaking this 
+    * See the [wiki notes](https://cwiki.apache.org/confluence/display/PEKKO/Pekko+Akka+Compatibility) about using this support.
 * Change noisy logging in DNS handler ([PR835](https://github.com/apache/pekko/pull/835))
 * Support reading akka-persistence snapshots ([PR837](https://github.com/apache/pekko/pull/837), [PR841](https://github.com/apache/pekko/pull/841))
 * Fix deprecation version on GraphApply ([PR877](https://github.com/apache/pekko/pull/877))
@@ -89,4 +91,4 @@ We have tried to limit the changes to third party dependencies that are used in 
 * scalatest 3.2.14. Pekko users who have existing tests based on Akka Testkit may need to migrate their tests due to the scalatest upgrade. The [scalatest 3.2 release notes](https://www.scalatest.org/release_notes/3.2.0) have a detailed description of the changes needed.
 
 ### Known Issues
-* The Pekko tests run well in our GitHub Actions continuous integration setup but can be hard to get running locally. We are adding improvements and they can be tracked among our GitHub issues using the [make-tests-easier-to-run](https://github.com/apache/pekko/issues?q=label%3Amake-tests-easier-to-run+) label).
+* The Pekko tests run well in our GitHub Actions continuous integration setup but can be hard to get running locally. We are adding improvements and they can be tracked among our GitHub issues using the [make-tests-easier-to-run](https://github.com/apache/pekko/issues?q=label%3Amake-tests-easier-to-run+) label.
