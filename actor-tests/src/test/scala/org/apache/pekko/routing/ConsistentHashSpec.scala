@@ -63,6 +63,13 @@ class ConsistentHashSpec extends AnyWordSpec with Matchers {
       ===(routing(ConsistentHash(List(nodeB, nodeC), factor)))
     }
 
+    "build the same ring with apply as by adding the nodes one by one" in {
+      val many = (0 until 200).map(n => s"node-host-$n") ++ List(nodeA, nodeB, nodeC, nodeA)
+      val incremental = many.foldLeft(ConsistentHash(Nil: Seq[String], factor))(_ :+ _)
+      routing(ConsistentHash(many, factor)) should ===(routing(incremental))
+      routing(ConsistentHash(many.reverse, factor)) should ===(routing(incremental))
+    }
+
     "be empty after all nodes are removed" in {
       (ConsistentHash(List(nodeA, nodeB), factor) :- nodeA :- nodeB).isEmpty should ===(true)
     }
