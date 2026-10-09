@@ -6,10 +6,8 @@ Pass elements downstream until the predicate function returns true. The first el
 
 ## Signature
 
-@apidoc[Source.takeUntil](Source) { scala="#takeUntil(p:Out=&gt;Boolean):FlowOps.this.Repr[Out]" java="#takeUntil(
-org.apache.pekko.japi.function.Predicate)" }
-@apidoc[Flow.takeUntil](Flow) { scala="#takeUntil(p:Out=&gt;Boolean):FlowOps.this.Repr[Out]" java="#takeUntil(
-org.apache.pekko.japi.function.Predicate)" }
+@apidoc[Source.takeUntil](Source) { scala="#takeUntil(p:Out=&gt;Boolean):FlowOps.this.Repr[Out]" java="#takeUntil(org.apache.pekko.japi.function.Predicate)" }
+@apidoc[Flow.takeUntil](Flow) { scala="#takeUntil(p:Out=&gt;Boolean):FlowOps.this.Repr[Out]" java="#takeUntil(org.apache.pekko.japi.function.Predicate)" }
 
 ## Description
 

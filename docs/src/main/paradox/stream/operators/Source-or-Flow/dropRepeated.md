@@ -6,7 +6,7 @@ Only pass on those elements that are distinct from the previous element.
 
 ## Signature
 
-@apidoc[Source.dropRepeated](Source) { scala="#dropRepeated):FlowOps.this.Repr[Out]" java="#dropRepeated()" }
+@apidoc[Source.dropRepeated](Source) { scala="#dropRepeated():FlowOps.this.Repr[Out]" java="#dropRepeated()" }
 @apidoc[Flow.dropRepeated](Flow) { scala="#dropRepeated():FlowOps.this.Repr[Out]" java="#dropRepeated()" }
 
 
@@ -38,4 +38,4 @@ Java
 
 ## API docs
 
-@apidoc[Flow.filter](Flow) { scala="#dropRepeated():FlowOps.this.Repr[Out]" java="#dropRepeated()" }
+@apidoc[Flow.dropRepeated](Flow) { scala="#dropRepeated():FlowOps.this.Repr[Out]" java="#dropRepeated()" }

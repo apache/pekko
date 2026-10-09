@@ -14,15 +14,6 @@ Prepends the given source to the flow, consuming it until completion before the 
 
 Prepends the given source to the flow, consuming it until completion before the original source is consumed.
 
-@@@ note
-
-    The `prepend` operator is for backwards compatibility reasons "detached" and will eagerly
-    demand an element from both upstreams when the stream is materialized and will then have a
-    one element buffer for each of the upstreams, this is most often not what you want, instead
-    use @ref(prependLazy)[prependLazy.md]
-
-@@@
-
 If materialized values needs to be collected `prependMat` is available.
 
 @@@ note
@@ -30,7 +21,7 @@ If materialized values needs to be collected `prependMat` is available.
 The `prepend` operator is for backwards compatibility reasons "detached" and will eagerly
 demand an element from both upstreams when the stream is materialized and will then have a
 one element buffer for each of the upstreams, this is not always what you want, if not,
-use @ref(prependLazy)[prependLazy.md]
+use @ref[prependLazy](prependLazy.md)
 
 @@@
 

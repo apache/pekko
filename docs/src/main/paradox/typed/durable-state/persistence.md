@@ -238,7 +238,7 @@ Scala
 :  @@snip [DurableStatePersistentBehaviorCompileOnly.scala](/persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/DurableStatePersistentBehaviorCompileOnly.scala) { #actor-context }
 
 Java
-:  @@snip [BasicPersistentBehaviorTest.java](/persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/DurableStatePersistentBehaviorTest.java) { #actor-context }
+:  @@snip [DurableStatePersistentBehaviorTest.java](/persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/DurableStatePersistentBehaviorTest.java) { #actor-context }
 
 ## Changing Behavior
 
@@ -397,7 +397,7 @@ other behaviors such as `Behaviors.setup` in order to access the `ActorContext` 
 to access the logger from within the `ActorContext` to log for debugging the `commandHandler`.
 
 Scala
-:  @@snip [DurableStatePersistentActorCompileOnly.scala](/persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/DurableStatePersistentBehaviorCompileOnly.scala) { #wrapPersistentBehavior }
+:  @@snip [DurableStatePersistentBehaviorCompileOnly.scala](/persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/DurableStatePersistentBehaviorCompileOnly.scala) { #wrapPersistentBehavior }
 
 Java
 :  @@snip [DurableStatePersistentBehaviorTest.java](/persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/DurableStatePersistentBehaviorTest.java) { #wrapPersistentBehavior }

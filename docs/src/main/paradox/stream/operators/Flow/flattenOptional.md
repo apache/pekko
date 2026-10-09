@@ -6,7 +6,7 @@ Collect the value of `Optional` from all the elements passing through this flow 
 
 ## Signature
 
-@apidoc[Flow.flattenOptional](Flow$) { java="#flattenOptional(org.apache.pekko.stream.javadsl.Flow)" }
+@apidoc[Flow.flattenOptional](Flow$) { java="#flattenOptional()" }
 
 
 ## Description

@@ -128,7 +128,7 @@ Scala
 :   @@snip [DeviceInProgress.scala](/docs/src/test/scala/typed/tutorial_3/DeviceInProgress.scala) { #device-with-read }
 
 Java
-:   @@snip [DeviceInProgress2.java](/docs/src/test/java/jdocs/typed/tutorial_3/inprogress2/Device.java) { #device-with-read }
+:   @@snip [Device.java](/docs/src/test/java/jdocs/typed/tutorial_3/inprogress2/Device.java) { #device-with-read }
 
 Note in the code that:
 
@@ -165,7 +165,7 @@ However, this approach does not take into account that the sender of the record 
 Just like in the case of temperature queries and responses, it is also a good idea to include an ID field to provide maximum flexibility.
 
 Scala
-:   @@snip [DeviceInProgress.scala](/docs/src/test/scala/typed/tutorial_3/Device.scala) { #write-protocol }
+:   @@snip [Device.scala](/docs/src/test/scala/typed/tutorial_3/Device.scala) { #write-protocol }
 
 Java
 :   @@snip [Device.java](/docs/src/test/java/jdocs/typed/tutorial_3/Device.java) { #write-protocol }
@@ -182,10 +182,10 @@ Java
 
 We should also write a new test case now, exercising both the read/query and write/record functionality together:
 
-Scala:
+Scala
 :   @@snip [DeviceSpec.scala](/docs/src/test/scala/typed/tutorial_3/DeviceSpec.scala) { #device-write-read-test }
 
-Java:
+Java
 :   @@snip [DeviceTest.java](/docs/src/test/java/jdocs/typed/tutorial_3/DeviceTest.java) { #device-write-read-test }
 
 ## What's Next?

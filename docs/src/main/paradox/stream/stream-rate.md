@@ -23,7 +23,7 @@ buffers in a stream. In this chapter we cover how buffers are used in Pekko Stre
 
 In this section we will discuss internal buffers that are introduced as an optimization when using asynchronous operators.
 
-To run an operator asynchronously it has to be marked explicitly as such using the @scala[@scaladoc[`.async`](pekko.stream.Graph#shape:S)]@java[@javadoc[`.async()`](pekko.stream.Graph#async--)] method. Being run
+To run an operator asynchronously it has to be marked explicitly as such using the @scala[@scaladoc[`.async`](pekko.stream.Graph#async:org.apache.pekko.stream.Graph[S,M])]@java[@javadoc[`.async()`](pekko.stream.Graph#async--)] method. Being run
 asynchronously means that an operator, after handing out an element to its downstream consumer is able to immediately
 process the next message. To demonstrate what we mean by this, let's take a look at the following example:
 

@@ -87,7 +87,7 @@ Similarly, to create a custom @apidoc[stream.*.Sink] one can register a subclass
 The @apidoc[onPush()](stage.InHandler) {scala="#onPush():Unit" java="#onPush()"} callback is used to signal the handler a new element has been pushed to the operator,
 and can hence be grabbed and used. `onPush()` can be overridden to provide custom behavior.
 Please note, most Sinks would need to request upstream elements as soon as they are created: this can be
-done by calling @apidoc[pull(inlet)](stage.OutHandler) {scala="#onPull():Unit" java="#onPull()"} in the @apidoc[preStart()](stage.GraphStageLogic) {scala="#preStart():Unit" java="#preStart()"} callback.
+done by calling @apidoc[pull(inlet)](stage.GraphStageLogic) {scala="#pull[T](in:org.apache.pekko.stream.Inlet[T]):Unit" java="#pull(org.apache.pekko.stream.Inlet)"} in the @apidoc[preStart()](stage.GraphStageLogic) {scala="#preStart():Unit" java="#preStart()"} callback.
 
 Scala
 :   @@snip [GraphStageDocSpec.scala](/docs/src/test/scala/docs/stream/GraphStageDocSpec.scala) { #custom-sink-example }

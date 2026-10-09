@@ -6,8 +6,8 @@ Pass incoming elements to a partitioning function that returns a partition resul
 
 ## Signature
 
-@apidoc[Source.mapAsyncPartitionedUnordered](Source) { scala="#mapAsyncPartitioned[T,P](parallelism:Int)(partitioner:Out=%3EP)(f:(Out,P)=%3Escala.concurrent.Future[T]):FlowOps.this.Repr[T]" java="#mapAsyncPartitioned(int,org.apache.pekko.japi.function.Function,org.apache.pekko.japi.function.Function2" }
-@apidoc[Flow.mapAsyncPartitionedUnordered](Source) { scala="#mapAsyncPartitioned[T,P](parallelism:Int)(partitioner:Out=%3EP)(f:(Out,P)=%3Escala.concurrent.Future[T]):FlowOps.this.Repr[T]" java="#mapAsyncPartitioned(int,org.apache.pekko.japi.function.Function,org.apache.pekko.japi.function.Function2" }
+@apidoc[Source.mapAsyncPartitionedUnordered](Source) { scala="#mapAsyncPartitionedUnordered[T,P](parallelism:Int)(partitioner:Out=%3EP)(f:(Out,P)=%3Escala.concurrent.Future[T]):FlowOps.this.Repr[T]" java="#mapAsyncPartitionedUnordered(int,org.apache.pekko.japi.function.Function,org.apache.pekko.japi.function.Function2)" }
+@apidoc[Flow.mapAsyncPartitionedUnordered](Flow) { scala="#mapAsyncPartitionedUnordered[T,P](parallelism:Int)(partitioner:Out=%3EP)(f:(Out,P)=%3Escala.concurrent.Future[T]):FlowOps.this.Repr[T]" java="#mapAsyncPartitionedUnordered(int,org.apache.pekko.japi.function.Function,org.apache.pekko.japi.function.Function2)" }
 
 ## Description
 

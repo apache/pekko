@@ -6,8 +6,8 @@ Continues the stream when an upstream error occurs.
 
 ## Signature
 
-@apidoc[Source.onErrorContinue](Source) { scala="#onErrorContinue(errorConsumer%3A%20Function%5BThrowable%2C%20Unit%5D)%3AFlowOps.this.Repr%5BT%5D" java="#onErrorContinue(org.apache.pekko.japi.function.Procedure)" }
-@apidoc[Flow.onErrorContinue](Flow) { scala="#onErrorContinue%5BT%20%3C%3A%20Throwable%5D(errorConsumer%3A%20Function%5BThrowable%2C%20Unit%5D)(implicit%20tag%3A%20ClassTag%5BT%5D)%3AFlowOps.this.Repr%5BT%5D" java="#onErrorContinue(java.lang.Class,org.apache.pekko.japi.function.Procedure)" }
+@apidoc[Source.onErrorContinue](Source) { scala="#onErrorContinue[T%3C:Throwable](errorConsumer:Throwable=%3EUnit)(implicittag:scala.reflect.ClassTag[T]):FlowOps.this.Repr[Out]" java="#onErrorContinue(org.apache.pekko.japi.function.Procedure)" }
+@apidoc[Flow.onErrorContinue](Flow) { scala="#onErrorContinue[T%3C:Throwable](errorConsumer:Throwable=%3EUnit)(implicittag:scala.reflect.ClassTag[T]):FlowOps.this.Repr[Out]" java="#onErrorContinue(java.lang.Class,org.apache.pekko.japi.function.Procedure)" }
 
 ## Description
 

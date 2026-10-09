@@ -59,7 +59,7 @@ To understand which is old and new it compares the version numbers using normal 
 see @apidoc[util.Version] for more details.
 
 When using [Kubernetes Deployments](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/) with `RollingUpdate`
-strategy you should enable the @extref:[app-version from Deployment feature from Pekko Management](pekko-management-snapshot:rolling-updates.html#app-version-from-deployment)
+strategy you should enable the @extref:[app-version from Deployment feature from Pekko Management](pekko-management:rolling-updates.html#app-version-from-deployment)
 to automatically define the `app-version` from the Kubernetes `deployment.kubernetes.io/revision` annotation.
 
 Rebalance is also disabled during rolling updates, since shards from stopped nodes are anyway supposed to be
@@ -130,7 +130,7 @@ If you need to change any of the following aspects of sharding it will require a
  
 ### Cluster configuration change
 
-* A full restart is required if you change the [SBR strategy]($pekko.doc.dns$/docs/pekko/current/split-brain-resolver.html#strategies)
+* A full restart is required if you change the @ref:[SBR strategy](../split-brain-resolver.md#strategies)
 
 ### Migrating from PersistentFSM to EventSourcedBehavior
 
