@@ -61,10 +61,12 @@ private[remote] class InboundQuarantineCheck(inboundContext: InboundContext)
                     association.remoteAddress,
                     env.originUid)
                 // avoid starting outbound stream for heartbeats
-                if (!env.message.isInstanceOf[Quarantined] && !isHeartbeat(env.message))
+                if (!env.message.isInstanceOf[Quarantined] && !isHeartbeat(env.message)) {
+                  log.info("Sending Quarantined to [{}]", association.remoteAddress)
                   inboundContext.sendControl(
                     association.remoteAddress,
                     Quarantined(inboundContext.localAddress, UniqueAddress(association.remoteAddress, env.originUid)))
+                }
               }
               pull(in)
             } else
