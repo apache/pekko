@@ -18,7 +18,11 @@
 package org.apache.pekko.io;
 
 import java.io.ByteArrayInputStream;
+import java.io.EOFException;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Arrays;
 import java.util.Objects;
 import org.apache.pekko.annotation.InternalApi;
 
@@ -26,22 +30,21 @@ import org.apache.pekko.annotation.InternalApi;
  * Internal API: An unsynchronized byte array input stream. This class does not copy the provided
  * byte array, and it is not thread safe.
  *
+ * <p>All bulk operations ({@link #readAllBytes()}, {@link #readNBytes(int)}, {@link
+ * #transferTo(OutputStream)}, ...) are overridden so that they operate directly on the backing
+ * array instead of going through the chunked, allocation-heavy defaults in {@link InputStream}.
+ *
  * @see ByteArrayInputStream
  * @since 2.0.0
  */
 // @NotThreadSafe
-// copied from
+// originally copied from
 // https://github.com/apache/commons-io/blob/26e5aa9661a72bfd9697fb384ca72f58e5d672e9/src/main/java/org/apache/commons/io/input/UnsynchronizedByteArrayInputStream.java
 @InternalApi
 public class UnsynchronizedByteArrayInputStream extends InputStream {
 
   /** The end of stream marker. */
   private static final int END_OF_STREAM = -1;
-
-  private static int minPosLen(final byte[] data, final int defaultValue) {
-    requireNonNegative(defaultValue, "defaultValue");
-    return Math.min(defaultValue, data.length > 0 ? data.length : defaultValue);
-  }
 
   private static int requireNonNegative(final int value, final String name) {
     if (value < 0) {
@@ -50,21 +53,14 @@ public class UnsynchronizedByteArrayInputStream extends InputStream {
     return value;
   }
 
-  private static void checkFromIndexSize(final byte[] array, final int off, final int len) {
-    final int arrayLength = Objects.requireNonNull(array, "byte array").length;
-    if ((off | len | arrayLength) < 0 || arrayLength - len < off) {
-      throw new IndexOutOfBoundsException(
-          "Range [%s, %<s + %s) out of bounds for length %s".formatted(off, len, arrayLength));
-    }
-  }
-
   /** The underlying data buffer. */
   private final byte[] data;
 
   /**
    * End Of Data.
    *
-   * <p>Similar to data.length, which is the last readable offset + 1.
+   * <p>Similar to data.length, which is the last readable offset + 1. Invariant: {@code offset <=
+   * eod <= data.length}.
    */
   private final int eod;
 
@@ -98,14 +94,16 @@ public class UnsynchronizedByteArrayInputStream extends InputStream {
     requireNonNegative(offset, "offset");
     requireNonNegative(length, "length");
     this.data = Objects.requireNonNull(data, "data");
-    this.eod = Math.min(minPosLen(data, offset) + length, data.length);
-    this.offset = minPosLen(data, offset);
-    this.markedOffset = minPosLen(data, offset);
+    final int start = Math.min(offset, data.length);
+    this.offset = start;
+    this.markedOffset = start;
+    // long arithmetic avoids int overflow for large offset + length
+    this.eod = (int) Math.min((long) start + length, data.length);
   }
 
   @Override
   public int available() {
-    return offset < eod ? eod - offset : 0;
+    return eod - offset;
   }
 
   @SuppressWarnings("sync-override")
@@ -132,29 +130,46 @@ public class UnsynchronizedByteArrayInputStream extends InputStream {
 
   @Override
   public int read(final byte[] dest, final int off, final int len) {
-    checkFromIndexSize(dest, off, len);
+    Objects.checkFromIndexSize(off, len, Objects.requireNonNull(dest, "dest").length);
     return readLocal(dest, off, len);
   }
 
-  private final int readLocal(final byte[] dest, final int off, final int len) {
+  private int readLocal(final byte[] dest, final int off, final int len) {
     if (len == 0) {
       return 0;
     }
-
-    if (offset >= eod) {
-      return END_OF_STREAM;
-    }
-
-    int actualLen = eod - offset;
-    if (len < actualLen) {
-      actualLen = len;
-    }
+    final int actualLen = Math.min(len, eod - offset);
     if (actualLen <= 0) {
-      return 0;
+      return END_OF_STREAM;
     }
     System.arraycopy(data, offset, dest, off, actualLen);
     offset += actualLen;
     return actualLen;
+  }
+
+  @Override
+  public byte[] readAllBytes() {
+    final byte[] result = Arrays.copyOfRange(data, offset, eod);
+    offset = eod;
+    return result;
+  }
+
+  @Override
+  public byte[] readNBytes(final int len) {
+    if (len < 0) {
+      // same exception type/message as InputStream.readNBytes(int)
+      throw new IllegalArgumentException("len < 0");
+    }
+    final int actualLen = Math.min(len, eod - offset);
+    final byte[] result = Arrays.copyOfRange(data, offset, offset + actualLen);
+    offset += actualLen;
+    return result;
+  }
+
+  @Override
+  public int readNBytes(final byte[] dest, final int off, final int len) {
+    final int n = read(dest, off, len);
+    return n == END_OF_STREAM ? 0 : n;
   }
 
   @SuppressWarnings("sync-override")
@@ -168,13 +183,30 @@ public class UnsynchronizedByteArrayInputStream extends InputStream {
     if (n < 0) {
       throw new IllegalArgumentException("Skipping backward is not supported");
     }
-
-    long actualSkip = eod - offset;
-    if (n < actualSkip) {
-      actualSkip = n;
-    }
-
-    offset = Math.addExact(offset, Math.toIntExact(n));
+    final int actualSkip = (int) Math.min(n, eod - offset);
+    offset += actualSkip;
     return actualSkip;
+  }
+
+  @Override
+  public void skipNBytes(final long n) throws IOException {
+    if (n > 0) {
+      if (n > eod - offset) {
+        offset = eod;
+        throw new EOFException();
+      }
+      offset += (int) n;
+    }
+  }
+
+  @Override
+  public long transferTo(final OutputStream out) throws IOException {
+    Objects.requireNonNull(out, "out");
+    final int len = eod - offset;
+    if (len > 0) {
+      out.write(data, offset, len);
+      offset = eod;
+    }
+    return len;
   }
 }
