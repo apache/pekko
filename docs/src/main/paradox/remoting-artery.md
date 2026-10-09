@@ -601,7 +601,7 @@ The classpath would be approximately (but you will need to fix up the version nu
 agrona-2.6.0.jar:aeron-driver-1.53.1.jar:aeron-client-1.53.1.jar
 ```
 
-You find those jar files on [Maven Central](https://search.maven.org/), or you can create a
+You find those jar files on [Sonatype Central](https://central.sonatype.com/), or you can create a
 package with your preferred build tool.
 
 You can pass [Aeron properties](https://github.com/real-logic/Aeron/wiki/Configuration-Options) as
