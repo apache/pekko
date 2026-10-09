@@ -30,11 +30,11 @@ element is dropped, the accumulated batch is discarded, and the operator starts 
 
 @@@div { .callout }
 
-**emits** downstream stops backpressuring and there is a batched element available
+**emits** when downstream stops backpressuring and there is a batched element available
 
-**backpressures** batched elements reached the max weight limit of allowed batched elements & downstream backpressures
+**backpressures** when batched elements reached the max weight limit of allowed batched elements & downstream backpressures
 
-**completes** upstream completes and a "possibly pending" element was drained
+**completes** when upstream completes and a "possibly pending" element was drained
 
 @@@
 

@@ -12,7 +12,7 @@ how the Split Brain Resolver works.
 
 ## Module info
 
-To use Pekko Split Brain Resolver is part of `pekko-cluster` and you probably already have that
+Pekko Split Brain Resolver is part of `pekko-cluster` and you probably already have that
 dependency included. Otherwise, add the following dependency in your project:
 
 @@dependency[sbt,Maven,Gradle] {
@@ -201,7 +201,7 @@ because they think that they are not in majority, and thereby the whole cluster 
 The decision can be based on nodes with a configured `role` instead of all nodes in the cluster.
 This can be useful when some types of nodes are more valuable than others. You might for example
 have some nodes responsible for persistent data and some nodes with stateless worker services.
-Then it probably more important to keep as many persistent data nodes as possible even though
+Then it is probably more important to keep as many persistent data nodes as possible even though
 it means shutting down more worker nodes.
 
 Configuration:
@@ -247,7 +247,7 @@ at the same time as the rolling update is in progress there could be an SBR deci
 the total number of members limit is not exceeded during the rolling update it's recommended to
 leave and fully remove one node before adding a new one, when using `static-quorum`.
 
-If the cluster is split into 3 (or more) parts each part that is smaller than then configured `quorum-size`
+If the cluster is split into 3 (or more) parts each part that is smaller than the configured `quorum-size`
 will down itself and possibly shutdown the whole cluster.
 
 If more nodes than the configured `quorum-size` crash at the same time the other running nodes
@@ -257,7 +257,7 @@ cluster is terminated.
 The decision can be based on nodes with a configured `role` instead of all nodes in the cluster.
 This can be useful when some types of nodes are more valuable than others. You might, for example,
 have some nodes responsible for persistent data and some nodes with stateless worker services.
-Then it probably more important to keep as many persistent data nodes as possible even though
+Then it is probably more important to keep as many persistent data nodes as possible even though
 it means shutting down more worker nodes.
 
 There is another use of the `role` as well. By defining a `role` for a few (e.g. 7) stable

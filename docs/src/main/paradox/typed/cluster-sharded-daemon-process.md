@@ -18,7 +18,7 @@ To use Pekko Sharded Daemon Process, you must add the following dependency in yo
 ## Introduction
 
 Sharded Daemon Process provides a way to run `N` actors, each given a numeric id starting from `0` that are then kept alive
-and balanced across the cluster. When a rebalance is needed the actor is stopped and, triggered by a keep alive from
+and balanced across the cluster. When a rebalance is needed the actor is stopped and then started again on another node, triggered by a keep alive from
 a Cluster Singleton (the keep alive should be seen as an implementation detail and may change in future versions).
 
 The intended use case is for splitting data processing workloads across a set number of workers that each get to work on a subset
@@ -44,7 +44,7 @@ An additional factory method is provided for further configurability and providi
 ## Addressing the actors
 
 In use cases where you need to send messages to the daemon process actors it is recommended to use the @ref:[system receptionist](actor-discovery.md)
-either with a single `ServiceKey` which all daemon process actors register themeselves to for broadcasts or individual keys if more fine grained messaging is needed.
+either with a single `ServiceKey` which all daemon process actors register themselves to for broadcasts or individual keys if more fine grained messaging is needed.
 
 ## Dynamic scaling of number of workers
 

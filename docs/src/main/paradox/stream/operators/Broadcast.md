@@ -1,6 +1,6 @@
 # Broadcast
 
-Emit each incoming element each of `n` outputs.
+Emit each incoming element to each of `n` outputs.
 
 @ref[Fan-out operators](index.md#fan-out-operators)
 
@@ -10,7 +10,7 @@ Emit each incoming element each of `n` outputs.
 
 ## Description
 
-Emit each incoming element each of `n` outputs.
+Emit each incoming element to each of `n` outputs.
 
 ## Example
 

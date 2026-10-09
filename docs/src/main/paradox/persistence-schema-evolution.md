@@ -73,7 +73,7 @@ persisted in the past. Instead, we want the Actors to work on some form of "late
 means of either converting old "versions" of stored events into this "latest" event type, or constantly evolve the event
 definition - in a backwards compatible way - such that the new deserialization code can still read old events.
 
-The most common schema changes you will likely are:
+The most common schema changes you will likely encounter are:
 
  * @ref:[adding a field to an event type](#add-field),
  * @ref:[remove or rename field in event type](#rename-field),
@@ -155,7 +155,7 @@ However, once you move to production you should really *pick a different seriali
 
 @@@ warning
 
-Do not rely on Java serialization for *serious* application development! It does not lean itself well to evolving
+Do not rely on Java serialization for *serious* application development! It does not lend itself well to evolving
 schemas over long periods of time, and its performance is also not very high (it never was designed for high-throughput
 scenarios).
 
@@ -386,7 +386,7 @@ Java
 :  @@snip [PersistenceSchemaEvolutionDocTest.java](/docs/src/test/java/jdocs/persistence/PersistenceSchemaEvolutionDocTest.java) { #string-serializer-skip-deleved-event-by-manifest }
 
 The EventAdapter we implemented is aware of `EventDeserializationSkipped` events (our "Tombstones"),
-and emits and empty `EventSeq` whenever such object is encountered:
+and emits an empty `EventSeq` whenever such object is encountered:
 
 Scala
 :  @@snip [PersistenceSchemaEvolutionDocSpec.scala](/docs/src/test/scala/docs/persistence/PersistenceSchemaEvolutionDocSpec.scala) { #string-serializer-skip-deleved-event-by-manifest-adapter }
@@ -438,7 +438,7 @@ Java
 :  @@snip [PersistenceSchemaEvolutionDocTest.java](/docs/src/test/java/jdocs/persistence/PersistenceSchemaEvolutionDocTest.java) { #detach-models-adapter }
 
 The same technique could also be used directly in the Serializer if the end result of marshalling is bytes.
-Then the serializer can simply convert the bytes do the domain object by using the generated protobuf builders.
+Then the serializer can simply convert the bytes to the domain object by using the generated protobuf builders.
 
 <a id="store-human-readable"></a>
 ### Store events as human-readable data model

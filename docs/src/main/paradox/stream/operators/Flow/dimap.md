@@ -27,7 +27,7 @@ Java
 
 **emits** when the mapping function `g` returns an element
 
-**backpressures** '''Backpressures when''' original flow backpressures
+**backpressures** when original flow backpressures
 
 **completes** when original flow completes
 

@@ -114,7 +114,7 @@ Java
 
 ### Testing other effects
 
-The @apidoc[BehaviorTestKit] keeps track other effects you can verify, look at the sub-classes of @apidoc[actor.testkit.typed.Effect]
+The @apidoc[BehaviorTestKit] keeps track of other effects you can verify, look at the sub-classes of @apidoc[actor.testkit.typed.Effect]
 
  * SpawnedAdapter
  * Stopped

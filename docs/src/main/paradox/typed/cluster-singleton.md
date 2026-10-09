@@ -65,13 +65,13 @@ and the new oldest before a new singleton is started up.
 
 The cluster @ref:[failure detector](cluster.md#failure-detector) will notice when oldest node becomes unreachable due to
 things like JVM crash, hard shut down, or network failure. After @ref:[Downing](cluster.md#downing) and removing that
-node the a new oldest node will take over and a new singleton actor is created. For these failure scenarios there will
+node a new oldest node will take over and a new singleton actor is created. For these failure scenarios there will
 not be a graceful hand-over, but more than one active singletons is prevented by all reasonable means. Some corner
 cases are eventually resolved by configurable timeouts. Additional safety can be added by using a @ref:[Lease](#lease). 
 
 ### Singleton proxy
 
-To communicate with a given named singleton in the cluster you can access it though a proxy @apidoc[ActorRef](typed.ActorRef).
+To communicate with a given named singleton in the cluster you can access it through a proxy @apidoc[ActorRef](typed.ActorRef).
 When calling @apidoc[ClusterSingleton.init](ClusterSingleton) {scala="#init[M](singleton:org.apache.pekko.cluster.typed.SingletonActor[M]):org.apache.pekko.actor.typed.ActorRef[M]" java="#init(org.apache.pekko.cluster.typed.SingletonActor)"} for a given `singletonName` on a node an `ActorRef` is returned. It is
 to this `ActorRef` that you can send messages to the singleton instance, independent of which node the singleton
 instance is active. `ClusterSingleton.init` can be called multiple times, if there already is a singleton manager 
@@ -123,7 +123,7 @@ Java
 :  @@snip [SingletonCompileOnlyTest.java](/cluster-typed/src/test/java/jdocs/org/apache/pekko/cluster/typed/SingletonCompileOnlyTest.java) { #counter }
 
 Then on every node in the cluster, or every node with a given role, use the @apidoc[ClusterSingleton$] extension
-to spawn the singleton. An instance will per data centre of the cluster:
+to spawn the singleton. One instance will run per data centre of the cluster:
 
 
 Scala

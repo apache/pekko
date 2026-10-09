@@ -599,4 +599,4 @@ It is also possible to use the @javadoc[org.slf4j.Marker](org.slf4j.Marker) with
 Since the pekko-actor library avoids depending on any specific logging library, the support for this is included in `pekko-slf4j`,
 which provides the @apidoc[Slf4jLogMarker] type which can be passed in as first argument instead of the logging framework agnostic LogMarker
 type from `pekko-actor`. The most notable difference between the two is that slf4j's Markers can have child markers, so one can
-rely more information using them rather than just a single string.
+relay more information using them rather than just a single string.

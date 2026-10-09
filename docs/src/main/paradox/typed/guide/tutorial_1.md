@@ -145,6 +145,6 @@ We see that after failure the supervised actor is stopped and immediately restar
 For the impatient, we also recommend looking into the @ref:[fault tolerance reference page](../fault-tolerance.md) for more in-depth
 details.
 
-# Summary
+## Summary
 We've learned about how Pekko manages actors in hierarchies where parents supervise their children and handle exceptions. We saw how to create a very simple actor and child. Next, we'll apply this knowledge to our example use case by modeling the communication necessary to get information from device actors. Later, we'll deal with how to manage the actors in groups.
 

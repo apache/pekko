@@ -194,7 +194,7 @@ Scala
 Java
 :  @@snip [TransformationFrontend.java](/docs/src/test/java/jdocs/cluster/TransformationFrontend.java) { #frontend }
 
-Note that the `TransformationFrontend` actor watch the registered backend
+Note that the `TransformationFrontend` actor watches the registered backend
 to be able to remove it from its list of available backend workers.
 Death watch uses the cluster failure detector for nodes in the cluster, i.e. it detects
 network failures and JVM crashes, in addition to graceful termination of watched
@@ -216,14 +216,14 @@ A common use case is to start actors after the cluster has been initialized,
 members have joined, and the cluster has reached a certain size.
 
 With a configuration option you can define required number of members
-before the leader changes member status of 'Joining' members to 'Up'.:
+before the leader changes member status of 'Joining' members to 'Up':
 
 ```
 pekko.cluster.min-nr-of-members = 3
 ```
 
 In a similar way you can define required number of members of a certain role
-before the leader changes member status of 'Joining' members to 'Up'.:
+before the leader changes member status of 'Joining' members to 'Up':
 
 ```
 pekko.cluster.role {
@@ -245,16 +245,16 @@ Java
 ## How To Cleanup when Member is Removed
 
 You can do some clean up in a @apidoc[registerOnMemberRemoved](cluster.Cluster) {scala="#registerOnMemberRemoved[T](code:=%3ET):Unit" java="#registerOnMemberRemoved(java.lang.Runnable)"} callback, which will
-be invoked when the current member status is changed to 'Removed' or the cluster have been shutdown.
+be invoked when the current member status is changed to 'Removed' or the cluster has been shut down.
 
 An alternative is to register tasks to the @ref:[Coordinated Shutdown](coordinated-shutdown.md).
 
 @@@ note
 
-Register a OnMemberRemoved callback on a cluster that have been shutdown, the callback will be invoked immediately on
+Registering an OnMemberRemoved callback on a cluster that has been shut down, the callback will be invoked immediately on
 the caller thread, otherwise it will be invoked later when the current member status changed to @scala[@scaladoc[Removed](pekko.cluster.MemberStatus$$Removed$)]@java[@javadoc[Removed](pekko.cluster.MemberStatus#removed())]. You may
 want to install some cleanup handling after the cluster was started up, but the cluster might already be shutting
-down when you installing, and depending on the race is not healthy.
+down when you install it, and depending on the race is not healthy.
 
 @@@
 

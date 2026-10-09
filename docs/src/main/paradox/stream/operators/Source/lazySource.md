@@ -29,7 +29,7 @@ See also:
 ## Example
 
 In this example you might expect this sample to not construct the expensive source until `.pull` is called. However, 
-since `Sink.queue` has a buffer and will ask for that immediately on materialization the expensive source is in created
+since `Sink.queue` has a buffer and will ask for that immediately on materialization the expensive source is created
 quickly after the stream has been materialized:
 
 Scala

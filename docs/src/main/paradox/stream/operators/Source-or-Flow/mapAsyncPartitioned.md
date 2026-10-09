@@ -21,7 +21,7 @@ order will be kept when results complete. For use cases where order does not mat
 
 **emits** when the next in order @scala[`Future`] @java[`CompletionStage`] returned by the provided function completes successfully
 
-**backpressures** when downstream backgpressures and completed and incomplete @scala[`Future`] @java[`CompletionStage`] has reached the configured `parallelism`
+**backpressures** when downstream backpressures and completed and incomplete @scala[`Future`] @java[`CompletionStage`] has reached the configured `parallelism`
 
 **completes** when upstream completes and all @scala[Futures] @java[CompletionStages] have completed and all results have been emitted
 

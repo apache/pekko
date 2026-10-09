@@ -129,7 +129,7 @@ The next example will also queue up 1000 jobs locally, but if there are more job
 in the imaginary external systems, it makes space for the new element by
 dropping one element from the *tail* of the buffer. Dropping from the tail is a very common strategy but
 it must be noted that this will drop the *youngest* waiting job. If some "fairness" is desired in the sense that
-we want to be nice to jobs that has been waiting for long, then this option can be useful.
+we want to be nice to jobs that have been waiting for long, then this option can be useful.
 
 Scala
 :   @@snip [StreamBuffersRateSpec.scala](/docs/src/test/scala/docs/stream/StreamBuffersRateSpec.scala) { #explicit-buffers-droptail }
@@ -204,7 +204,7 @@ Scala
 Java
 :   @@snip [RateTransformationDocTest.java](/docs/src/test/java/jdocs/stream/RateTransformationDocTest.java) { #conflate-sample }
 
-See also @ref:[`conflate`](operators/Source-or-Flow/conflate.md) and @ref:[conflateWithSeed`](operators/Source-or-Flow/conflateWithSeed.md) for more information and examples.
+See also @ref:[`conflate`](operators/Source-or-Flow/conflate.md) and @ref:[`conflateWithSeed`](operators/Source-or-Flow/conflateWithSeed.md) for more information and examples.
 
 
 ### Understanding extrapolate and expand

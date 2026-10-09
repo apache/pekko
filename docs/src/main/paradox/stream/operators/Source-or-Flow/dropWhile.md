@@ -1,6 +1,6 @@
 # dropWhile
 
-Drop elements as long as a predicate function return true for the element
+Drop elements as long as a predicate function returns true for the element
 
 @ref[Simple operators](../index.md#simple-operators)
 
@@ -12,7 +12,7 @@ Drop elements as long as a predicate function return true for the element
 
 ## Description
 
-Drop elements as long as a predicate function return true for the element
+Drop elements as long as a predicate function returns true for the element
 
 ## Example
 
@@ -31,7 +31,7 @@ Java
 
 **emits** when the predicate returned false and for all following stream elements
 
-**backpressures** predicate returned false and downstream backpressures
+**backpressures** when predicate returned false and downstream backpressures
 
 **completes** when upstream completes
 

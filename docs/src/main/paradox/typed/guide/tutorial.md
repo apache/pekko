@@ -8,7 +8,7 @@ Fortunately &#8212; unlike with prose &#8212; established best practices can gui
 You should have already followed the instructions in the @scala[[Pekko Quickstart with Scala guide](https://github.com/apache/pekko-quickstart-scala.g8)] @java[[Pekko Quickstart with Java guide](https://github.com/apache/pekko-quickstart-java.g8)] to download and run the Hello World example. You will use this as a seed project and add the functionality described in this tutorial.
 
 @@@ note
-Both the Java and Scala DSLs of Pekko modules bundled in the same JAR. For a smooth development experience,
+Both the Java and Scala DSLs of Pekko modules are bundled in the same JAR. For a smooth development experience,
 when using an IDE such as Eclipse or IntelliJ, you can disable the auto-importer from suggesting `javadsl`
 imports when working in Scala, or vice versa. See @ref:[IDE Tips](../../additional/ide.md). 
 @@@

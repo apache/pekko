@@ -154,7 +154,7 @@ include a dependency on `junit-jupiter` to use this. The earlier `TestKitJUnit5E
 @@@
 
 As you may have noticed @scaladoc[ScalaTestWithActorTestKit](pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit) is an abstract class
-which means its problematic if you want treat a given test suite as a value and extend it in multiple ways (i.e. as an example you happen to be using 
+which means it's problematic if you want to treat a given test suite as a value and extend it in multiple ways (i.e. as an example you happen to be using 
 [testcontainers-scala](https://github.com/testcontainers/testcontainers-scala) and hypothetically you want to extend the same test for each different type of database
 you support).
 
@@ -210,9 +210,9 @@ of another library.
 
 ### Controlling the scheduler
 
-It can be hard to reliably unit test specific scenario's when your actor relies on timing:
+It can be hard to reliably unit test specific scenarios when your actor relies on timing:
 especially when running many tests in parallel it can be hard to get the timing just right.
-Making such tests more reliable by using generous timeouts make the tests take a long time to run.
+Making such tests more reliable by using generous timeouts makes the tests take a long time to run.
 
 For such situations, we provide a scheduler where you can manually, explicitly advance the clock.
 

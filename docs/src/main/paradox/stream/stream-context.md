@@ -14,7 +14,7 @@ Essentially, a @apidoc[FlowWithContext] is just a @apidoc[Flow] that
 contains @scala[tuples]@java[pairs] of element and context, but the
 advantage is in the operators: most operators on @apidoc[FlowWithContext]
 will work on the element rather than on the @scala[tuple]@java[pair],
-allowing you to focus on your application logic rather without worrying
+allowing you to focus on your application logic without worrying
 about the context.
 
 ## Restrictions
@@ -73,7 +73,7 @@ produces elements of type `Bar` with contexts of type `Ctx`. The
 reason for this is that `flow` might reorder the elements flowing
 through it, making `via` challenging to implement.
 
-Due to this there is a `unsafeDataVia` that can be used instead however no
+Due to this there is an `unsafeDataVia` that can be used instead however no
 protection is offered to prevent reordering or dropping/duplicating elements
 from stream so use this operation with great care.
 

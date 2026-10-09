@@ -94,7 +94,7 @@ exceptions are handled by default:
  * `Exception` will restart the failing child actor
  * Other types of `Throwable` will be escalated to parent actor
 
-If the exception escalate all the way up to the root guardian it will handle it
+If the exception escalates all the way up to the root guardian it will handle it
 in the same way as the default strategy defined above.
 
 @@@ div { .group-scala }
@@ -261,7 +261,7 @@ There are two basic supervision strategies available for backoff:
 * 'On failure': The supervisor will terminate and then start the supervised actor if it crashes. If the supervised actor stops normally (e.g. through `context.stop`), the supervisor will be terminated and no further attempt to start the supervised actor will be done.
 * 'On stop': The supervisor will terminate and then start the supervised actor if it terminates in any way (consider this for `PersistentActor` since they stop on persistence failures instead of crashing)
 
-To note that this supervision strategy does not restart the actor but rather stops and starts it. Be aware of it if you 
+Note that this supervision strategy does not restart the actor but rather stops and starts it. Be aware of it if you 
 use @scala[`Stash` trait’s] @java[`AbstractActorWithStash`] in combination with the backoff supervision strategy.
 The `preRestart` hook will not be executed if the supervised actor fails or stops and you will miss the opportunity
 to unstash the messages.

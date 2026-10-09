@@ -20,7 +20,7 @@ To use Pekko Persistence, add the module to your project:
   scope2=test
 }
 
-You also have to select durable state store plugin, see @ref:[Persistence Plugins](../../persistence-plugins.md).
+You also have to select a durable state store plugin, see @ref:[Persistence Plugins](../../persistence-plugins.md).
 
 @@project-info{ projectId="persistence-typed" }
 
@@ -64,7 +64,7 @@ Next we'll discuss each of these in detail.
 ### PersistenceId
 
 The @apidoc[persistence.typed.PersistenceId] is the stable unique identifier for the persistent actor in the backend
-durabe state store.
+durable state store.
 
 @ref:[Cluster Sharding](../cluster-sharding.md) is typically used together with `DurableStateBehavior` to ensure
 that there is only one active entity for each `PersistenceId` (`entityId`). There are techniques to ensure this 
@@ -310,7 +310,7 @@ persistent actors, because you typically want to know if the command was rejecte
 when accepted you want a confirmation when the events have been successfully stored.
 
 Therefore you typically include a @scala[`ActorRef[ReplyMessageType]`]@java[`ActorRef<ReplyMessageType>`]. If the 
-command can either have a successful response or a validation error returned, the generic response type @scala[`StatusReply[ReplyType]]`]
+command can either have a successful response or a validation error returned, the generic response type @scala[`StatusReply[ReplyType]`]
 @java[`StatusReply<ReplyType>`] can be used. If the successful reply does not contain a value but is more of an acknowledgement
 a pre defined @scala[`StatusReply.Ack`]@java[`StatusReply.ack()`] of type @scala[`StatusReply[Done]`]@java[`StatusReply<Done>`]
 can be used.

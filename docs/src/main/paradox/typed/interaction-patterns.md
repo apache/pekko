@@ -207,7 +207,7 @@ Sometimes, you need to interact with actors from the outside of the actor system
 @scala[To do this we use `ask` (or the symbolic `?`) implicitly added to @scaladoc[ActorRef](pekko.actor.typed.ActorRef) by `org.apache.pekko.actor.typed.scaladsl.AskPattern._`
 to send a message to an actor and get a `Future[Response]` back. `ask` takes implicit @scaladoc[Timeout](pekko.util.Timeout) and @scaladoc[ActorSystem](org.apache.pekko.actor.typed.ActorSystem) parameters.]
 @java[To do this we use `org.apache.pekko.actor.typed.javadsl.AskPattern.ask` to send a message to an actor and get a 
-`CompletionState[Response]` back.]
+`CompletionStage<Response>` back.]
 
 **Example:**
 
@@ -236,7 +236,7 @@ Java
 
 **Problems:**
 
- * It is easy to accidentally close over and unsafely mutable state with the callbacks on the returned @scala[@scaladoc[Future](scala.concurrent.Future)]@java[@javadoc[CompletionStage](java.util.concurrent.CompletionStage)] as those will be executed on a different thread
+ * It is easy to accidentally close over and unsafely mutate state with the callbacks on the returned @scala[@scaladoc[Future](scala.concurrent.Future)]@java[@javadoc[CompletionStage](java.util.concurrent.CompletionStage)] as those will be executed on a different thread
  * There can only be a single response to one `ask` (see @ref:[per session child Actor](#per-session-child-actor))
  * When `ask` times out, the receiving actor does not know and may still process it to completion, or even start processing it after the fact
 
@@ -339,7 +339,7 @@ Therefore it is better to map the result to a message and perform further proces
    an external service
  * The actor needs to continue processing when the @scala[`Future`]@java[`CompletionStage`] has completed
  * Keep context from the original request and use that when the @scala[`Future`]@java[`CompletionStage`] has completed,
-   for example an `replyTo` actor reference
+   for example a `replyTo` actor reference
  
 **Problems:**
 
@@ -413,7 +413,7 @@ Java
 
 **Useful when:**
 
- * Aggregating replies are performed in the same way at multiple places and should be extracted to a more general
+ * Aggregating replies is performed in the same way at multiple places and should be extracted to a more general
    purpose actor.
  * A single incoming request should result in multiple interactions with other actors before a result can be built,
    for example aggregation of several results
@@ -537,7 +537,7 @@ take into account that an actor may move or get passivated.
 
 The normal pattern for expecting a reply is to include an @apidoc[actor.typed.ActorRef] in the message, typically a message adapter. This can be used
 for a sharded actor but if @scala[@scaladoc[ctx.self](pekko.actor.typed.scaladsl.ActorContext#self:org.apache.pekko.actor.typed.ActorRef[T])]@java[@javadoc[ctx.getSelf()](pekko.actor.typed.javadsl.ActorContext#getSelf())] is sent and the sharded actor is moved or passivated then the reply
-will sent to dead letters.
+will be sent to dead letters.
 
 An alternative is to send the `entityId` in the message and have the reply sent via sharding.
 

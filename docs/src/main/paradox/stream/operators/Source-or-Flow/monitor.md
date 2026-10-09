@@ -23,7 +23,7 @@ and get information about the stream.
 
 The example below uses the `monitorMat` variant of `monitor`. The only difference between the two operators is 
 that `monitorMat` has a `combine` argument so we can decide which materialization value to keep. In the sample 
-below be `Keep.right` so only the `FlowMonitor[Int]` is returned. 
+below it is `Keep.right` so only the `FlowMonitor[Int]` is returned. 
 
 Scala
 :   @@snip [Monitor.scala](/docs/src/test/scala/docs/stream/operators/sourceorflow/Monitor.scala) { #monitor }

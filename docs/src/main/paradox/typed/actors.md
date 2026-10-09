@@ -163,14 +163,6 @@ The console output may look like this:
 
 You will also need to add a @ref:[logging dependency](logging.md) to see that output when running.
 
-@@@ div { .group-scala }
-
-#### Here is another example:
-
-@@snip [IntroSpec.scala](/actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/IntroSpec.scala) { #hello-world-main }
-
-@@@
-
 
 ## A More Complex Example
 

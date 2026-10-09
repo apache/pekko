@@ -22,7 +22,7 @@ The `async-dns` API is marked as `ApiMayChange` as more information is expected 
 
 @@@ warning
 
-The ability to plugin in a custom DNS implementation is expected to be removed in future versions of Pekko.
+The ability to plug in a custom DNS implementation is expected to be removed in future versions of Pekko.
 Users should pick one of the built in extensions.
 
 @@@

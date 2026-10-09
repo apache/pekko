@@ -211,7 +211,7 @@ The recommended approach to do deep serialization of internal actor state is to 
 
 ## Serialization of Pekko's messages
 
-Pekko is using a Protobuf 3 for serialization of messages defined by Pekko. This dependency is
+Pekko uses Protobuf 3 for serialization of messages defined by Pekko. This dependency is
 shaded in the `pekko-protobuf-v3` artifact so that applications can use another version of Protobuf.
 
 Applications should use standard Protobuf dependency and not `pekko-protobuf-v3`.
@@ -241,7 +241,7 @@ older systems that rely on Java serialization it can be enabled with the followi
 pekko.actor.allow-java-serialization = on
 ```
 
-Pekko will still log warning when Java serialization is used and to silent that you may add:
+Pekko will still log a warning when Java serialization is used and to silence that you may add:
 
 ```ruby
 pekko.actor.warn-about-java-serializer-usage = off

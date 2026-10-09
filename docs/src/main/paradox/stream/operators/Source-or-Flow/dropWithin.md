@@ -22,7 +22,7 @@ Drop elements until a timeout has fired
 
 **backpressures** when downstream backpressures
 
-**completes** upstream completes
+**completes** when upstream completes
 
 @@@
 

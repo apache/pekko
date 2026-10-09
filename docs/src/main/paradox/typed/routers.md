@@ -155,5 +155,5 @@ actors will actually give higher throughput or faster answers. For example if th
 it will not give better performance to create more routees than there are threads to execute the actors.
 
 Since the router itself is an actor and has a mailbox this means that messages are routed sequentially to the routees
-where it can be processed in parallel (depending on the available threads in the dispatcher).
+where they can be processed in parallel (depending on the available threads in the dispatcher).
 In a high throughput use cases the sequential routing could become a bottle neck. Pekko Typed does not provide an optimized tool for this.

@@ -104,7 +104,7 @@ necessary parameters) and then call the method when the message is received.
 
 @@@ warning
 
-All scheduled task will be executed when the @apidoc[actor.ActorSystem] is terminated, i.e.
+All scheduled tasks will be executed when the @apidoc[actor.ActorSystem] is terminated, i.e.
 the task may execute before its timeout.
 
 @@@

@@ -39,7 +39,7 @@ Pekko Streams currently provide these junctions (for a detailed list see the @re
 
     * @scala[`Broadcast[T]`]@java[`Broadcast<T>`] – *(1 input, N outputs)* given an input element emits to each output
     * @scala[`Balance[T]`]@java[`Balance<T>`] – *(1 input, N outputs)* given an input element emits to one of its output ports
-    * @scala[`Partition[T]]`]@java[`Partition<T>`] – *(1 input, N outputs)* given an input element emits to specified output based on a partition function
+    * @scala[`Partition[T]`]@java[`Partition<T>`] – *(1 input, N outputs)* given an input element emits to specified output based on a partition function
     * @scala[`UnzipWith[In,A,B,...]`]@java[`UnzipWith<In,A,B,...>`] – *(1 input, N outputs)* takes a function of 1 input that given a value for each input emits N output elements (where N <= 20)
     * @scala[`UnZip[A,B]`]@java[`UnZip<A,B>`] – *(1 input, 2 outputs)* splits a stream of @scala[`(A,B)`]@java[`Pair<A,B>`] tuples into two streams, one of type `A` and one of type `B`
 
@@ -125,7 +125,7 @@ all of its different phases in different places and in the end connect them all 
 This can be achieved by @scala[returning a different `Shape` than `ClosedShape`, for example `FlowShape(in, out)`, from the
 function given to `GraphDSL.create`. See @ref:[Predefined shapes](#predefined-shapes) for a list of such predefined shapes.
 Making a `Graph` a `RunnableGraph`]@java[using the returned `Graph` from `GraphDSL.create()` rather than
-passing it to `RunnableGraph.fromGraph()` to wrap it in a `RunnableGraph`.The reason of representing it as a different type is that a
+passing it to `RunnableGraph.fromGraph()` to wrap it in a `RunnableGraph`. The reason of representing it as a different type is that a
 `RunnableGraph`] requires all ports to be connected, and if they are not
 it will throw an exception at construction time, which helps to avoid simple
 wiring errors while working with graphs. A partial graph however allows
@@ -184,7 +184,7 @@ complex element and from there on treat it as simple compound operator for linea
 
 In order to create a Source from a graph the method `Source.fromGraph` is used, to use it we must have a
 @scala[`Graph[SourceShape, T]`]@java[`Graph` with a `SourceShape`]. This is constructed using
-@scala[`GraphDSL.create` and returning a `SourceShape` from the function passed in]@java[`GraphDSL.create` and providing building a `SourceShape` graph].
+@scala[`GraphDSL.create` and returning a `SourceShape` from the function passed in]@java[`GraphDSL.create` and building a graph with a `SourceShape`].
 The single outlet must be provided to the `SourceShape.of` method and will become
 “the sink that must be attached before this Source can run”.
 

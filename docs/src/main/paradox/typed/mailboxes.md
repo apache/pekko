@@ -60,7 +60,7 @@ fall-back to the default mailbox configuration section.
 
 ### Interoperability with DispatcherSelector
 
-The @apidoc[MailboxSelector](MailboxSelector$) will create a @apidoc[Props](typed.Props) instance that can be both set up Dispatcher and Mailbox,
+The @apidoc[MailboxSelector](MailboxSelector$) will create a @apidoc[Props](typed.Props) instance that can set up both the dispatcher and the mailbox,
 which means that you can continue to set up Dispatcher through chain calls.
 
 Scala
@@ -115,7 +115,7 @@ Pekko ships with a number of mailbox implementations:
     * Bounded: No
     * Configuration name: `"org.apache.pekko.dispatch.UnboundedStablePriorityMailbox"`
 
-Other bounded mailbox implementations which will block the sender if the capacity is reached and
+Other bounded mailbox implementations will block the sender if the capacity is reached and
 configured with non-zero `mailbox-push-timeout-time`. 
 
 @@@ note

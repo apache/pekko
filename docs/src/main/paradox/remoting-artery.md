@@ -537,7 +537,7 @@ path patterns that have to be specified in the actor system's configuration on b
 pekko.remote.artery.large-message-destinations = [
    "/user/largeMessageActor",
    "/user/largeMessagesGroup/*",
-   "/user/anotherGroup/*/largeMesssages",
+   "/user/anotherGroup/*/largeMessages",
    "/user/thirdGroup/**",
    "/temp/session-ask-actor*"
 ]
@@ -546,8 +546,8 @@ pekko.remote.artery.large-message-destinations = [
 This means that all messages sent to the following actors will pass through the dedicated, large messages channel:
 
  * `/user/largeMessageActor`
- * `/user/largeMessageActorGroup/actor1`
- * `/user/largeMessageActorGroup/actor2`
+ * `/user/largeMessagesGroup/actor1`
+ * `/user/largeMessagesGroup/actor2`
  * `/user/anotherGroup/actor1/largeMessages`
  * `/user/anotherGroup/actor2/largeMessages`
  * `/user/thirdGroup/actor3/`

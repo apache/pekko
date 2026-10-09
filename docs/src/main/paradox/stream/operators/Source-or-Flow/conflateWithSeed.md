@@ -28,7 +28,7 @@ Java
 If downstream is slower, the "seed" function is called which is able to change the type of the to be conflated
 elements if needed (it can also be an identity function, in which case this `conflateWithSeed` is equivalent to 
 a plain `conflate`). Next, the conflating function is applied while there is back-pressure from the downstream,
-such that the upstream can produce elements at an rate independent of the downstream.
+such that the upstream can produce elements at a rate independent of the downstream.
 
 You may want to use this operation for example to apply an average operation on the upstream elements,
 while the downstream backpressures. This allows us to keep processing upstream elements, and give an average

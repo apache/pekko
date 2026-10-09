@@ -1,7 +1,7 @@
 # Persistence - Building a storage backend 
 
 Storage backends for journals and snapshot stores are pluggable in the Pekko persistence extension.
-This documentation described how to build a new storage backend.
+This documentation describes how to build a new storage backend.
 
 Applications can provide their own plugins by implementing a plugin API and activating them by configuration.
 Plugin development requires the following imports:

@@ -16,7 +16,7 @@ To use Pekko Streams, add the module to your project:
 ## Introduction
 
 Pekko Streams provide a uniform model of stream processing graphs, which allows flexible composition of reusable
-components. In this chapter we show how these look like from the conceptual and API perspective, demonstrating
+components. In this chapter we show what these look like from the conceptual and API perspective, demonstrating
 the modularity aspects of the library.
 
 ## Basics of composition and modularity
@@ -102,7 +102,7 @@ Java
 :   @@snip [CompositionDocTest.java](/docs/src/test/java/jdocs/stream/CompositionDocTest.java) { #nested-flow }
 
 Once we have hidden the internals of our components, they act like any other built-in component of similar shape. If
-we hide some of the internals of our composites, the result looks just like if any other predefine component has been
+we hide some of the internals of our composites, the result looks just like if any other predefined component has been
 used:
 
 ![compose_nested_flow_opaque.png](../images/compose_nested_flow_opaque.png)
@@ -257,7 +257,7 @@ The propagation of the individual materialized values from the enclosed modules 
 ![compose_mat.png](../images/compose_mat.png)
 
 To implement the above, first, we create a composite `Source`, where the enclosed `Source` have a
-materialized type of @scala[`Promise[[Option[Int]]`] @java[`CompletableFuture<Optional<Integer>>>`]. By using the combiner function `Keep.left`, the resulting materialized
+materialized type of @scala[`Promise[Option[Int]]`] @java[`CompletableFuture<Optional<Integer>>`]. By using the combiner function `Keep.left`, the resulting materialized
 type is of the nested module (indicated by the color *red* on the diagram):
 
 Scala

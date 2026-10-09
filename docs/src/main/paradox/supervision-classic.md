@@ -141,6 +141,6 @@ handled explicitly as well.
 
 Please note that creating one-off actors from an all-for-one supervisor entails
 that failures escalated by the temporary actor will affect all the permanent
-ones. If this is not desired, install an intermediate supervisor; this can very
+ones. If this is not desired, install an intermediate supervisor; this can easily
 be done by declaring a router of size 1 for the worker, see
 @ref:[Routing](routing.md).

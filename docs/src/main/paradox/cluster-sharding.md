@@ -245,7 +245,7 @@ See @ref:[Lease](typed/cluster-sharding.md#lease) in the documentation of the ne
 ## Configuration
 
 `ClusterShardingSettings` is a parameter to the `start` method of
-the `ClusterSharding` extension, i.e. each each entity type can be configured with different settings
+the `ClusterSharding` extension, i.e. each entity type can be configured with different settings
 if needed.
 
 See @ref:[configuration](typed/cluster-sharding.md#configuration) for more information.

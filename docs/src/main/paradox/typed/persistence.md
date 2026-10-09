@@ -22,7 +22,7 @@ To use Pekko Persistence, add the module to your project:
   scope2=test
 }
 
-You also have to select journal plugin and optionally snapshot store plugin, see 
+You also have to select a journal plugin and optionally snapshot store plugin, see 
 @ref:[Persistence Plugins](../persistence-plugins.md).
 
 @@project-info{ projectId="persistence-typed" }
@@ -264,7 +264,7 @@ have not been acknowledged at that point. That may possibly result in executing 
 The side effects are executed sequentially, it is not possible to execute side effects in parallel, unless they
 call out to something that is running concurrently (for example sending a message to another actor).
 
-It's possible to execute a side effects before persisting the event, but that can result in that the
+It's possible to execute a side effect before persisting the event, but that can result in that the
 side effect is performed but the event is not stored if the persist fails.
 
 ### Atomic writes
@@ -600,7 +600,7 @@ Java
 :  @@snip [BasicPersistentBehaviorTest.java](/persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/BasicPersistentBehaviorTest.java) { #supervision }
 
 If there is a problem with recovering the state of the actor from the journal, a @apidoc[typed.RecoveryFailed] signal is
-emitted to the @scala[@scaladoc[receiveSignal](pekko.persistence.typed.scaladsl.EventSourcedBehavior#receiveSignal(signalHandler:PartialFunction[(State,org.apache.pekko.actor.typed.Signal),Unit]):org.apache.pekko.persistence.typed.scaladsl.EventSourcedBehavior[Command,Event,State]) handler] @java[@javadoc[receiveSignal](pekko.persistence.typed.javadsl.SignalHandlerBuilder#onSignal(java.lang.Class,java.util.function.BiConsumer)) method] and the actor will be stopped
+emitted to the @scala[@scaladoc[receiveSignal](pekko.persistence.typed.scaladsl.EventSourcedBehavior#receiveSignal(signalHandler:PartialFunction[(State,org.apache.pekko.actor.typed.Signal),Unit]):org.apache.pekko.persistence.typed.scaladsl.EventSourcedBehavior[Command,Event,State]) handler] @java[@javadoc[signalHandler](pekko.persistence.typed.javadsl.SignalHandlerBuilder#onSignal(java.lang.Class,java.util.function.BiConsumer)) method] and the actor will be stopped
 (or restarted with backoff).
 
 ### Journal rejections

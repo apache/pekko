@@ -5,7 +5,7 @@ project.description: Query side to Apache Pekko Persistence allowing for buildin
 
 ## Dependency
 
-To use Apache Persistence Query, you must add the following dependency in your project:
+To use Apache Pekko Persistence Query, you must add the following dependency in your project:
 
 @@dependency[sbt,Maven,Gradle] {
   bomGroup=org.apache.pekko bomArtifact=pekko-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
@@ -32,7 +32,7 @@ application implemented using Pekko persistence, is completely separated from th
 
 Pekko Persistence and Pekko Projections together can be used to develop a CQRS application. In the application the 
 durable state is stored in a database and fetched as an asynchronous stream to the user. Currently queries on 
-durable state, provided by the `DurableStateStoreQuery` interface, is used to implement tag based searches in 
+durable state, provided by the `DurableStateStoreQuery` interface, are used to implement tag based searches in 
 Pekko Projections. 
 
 Changes to durable state can be queried in two ways, depending on which queries the state store plugin implements:

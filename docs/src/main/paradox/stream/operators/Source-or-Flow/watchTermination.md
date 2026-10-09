@@ -1,6 +1,6 @@
 # watchTermination
 
-Materializes to a @scala[`Future`] @java[`CompletionStage`] that will be completed with Done or failed depending whether the upstream of the operators has been completed or failed.
+Materializes to a @scala[`Future`] @java[`CompletionStage`] that will be completed with Done or failed depending whether the upstream of the operator has been completed or failed.
 
 @ref[Watching status operators](../index.md#watching-status-operators)
 
@@ -12,8 +12,8 @@ Materializes to a @scala[`Future`] @java[`CompletionStage`] that will be complet
 
 ## Description
 
-Materializes to a @scala[`Future`] @java[`CompletionStage`] that will be completed with Done or failed depending whether the upstream of the operators has been completed or failed.
-The operators otherwise passes through elements unchanged.
+Materializes to a @scala[`Future`] @java[`CompletionStage`] that will be completed with Done or failed depending whether the upstream of the operator has been completed or failed.
+The operator otherwise passes through elements unchanged.
 
 ## Examples
 

@@ -144,7 +144,7 @@ There are two testkit classes which have similar api:
  
 The testkit classes have two corresponding plugins which emulate the behavior of the storages: 
 
- * @apidoc[PersistenceTestKitPlugin] class emulates a events storage 
+ * @apidoc[PersistenceTestKitPlugin] class emulates an events storage 
  * @apidoc[PersistenceTestKitSnapshotPlugin] class emulates a snapshots storage
 
 **Note!** The corresponding plugins **must** be configured in the actor system which is used to initialize the particular testkit class:
@@ -257,8 +257,8 @@ it's often better and more realistic to use a real database.
 
 ### Plugin initialization
 
-Some Persistence plugins create tables automatically, but has the limitation that it can't be done concurrently
-from several ActorSystems. That can be a problem if the test creates a Cluster and all nodes tries to initialize
+Some Persistence plugins create tables automatically, but have the limitation that it can't be done concurrently
+from several ActorSystems. That can be a problem if the test creates a Cluster and all nodes try to initialize
 the plugins at the same time. To coordinate initialization you can use the `PersistenceInit` utility.
 
 `PersistenceInit` is part of `pekko-persistence-testkit` and you need to add the dependency to your project:

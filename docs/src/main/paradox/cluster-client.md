@@ -222,7 +222,7 @@ It is possible to make the cluster client stop entirely if it cannot find a rece
 within a configurable interval. This is configured with the `reconnect-timeout`, which defaults to `off`.
 This can be useful when initial contacts are provided from some kind of service registry, cluster node addresses
 are entirely dynamic and the entire cluster might shut down or crash, be restarted on new addresses. Since the
-client will be stopped in that case a monitoring actor can watch it and upon `Terminate` a new set of initial
+client will be stopped in that case a monitoring actor can watch it and upon `Terminated` a new set of initial
 contacts can be fetched and a new cluster client started.
 
 ## Migration to Apache Pekko gRPC

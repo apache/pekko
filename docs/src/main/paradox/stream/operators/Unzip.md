@@ -1,6 +1,6 @@
 # Unzip
 
-Takes a stream of two element tuples and unzips the two elements ino two different downstreams.
+Takes a stream of two element tuples and unzips the two elements into two different downstreams.
 
 @ref[Fan-out operators](index.md#fan-out-operators)
 
@@ -8,7 +8,7 @@ Takes a stream of two element tuples and unzips the two elements ino two differe
 
 ## Description
 
-Takes a stream of two element tuples and unzips the two elements ino two different downstreams.
+Takes a stream of two element tuples and unzips the two elements into two different downstreams.
 
 ## Reactive Streams semantics
 

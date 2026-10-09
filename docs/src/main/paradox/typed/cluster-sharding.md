@@ -82,7 +82,7 @@ Java
 :  @@snip [ShardingCompileOnlyTest.java](/cluster-sharding-typed/src/test/java/jdocs/org/apache/pekko/cluster/sharding/typed/ShardingCompileOnlyTest.java) { #init }
 
 Messages to a specific entity are then sent via an @apidoc[typed.*.EntityRef].  The `entityId` and the name of the Entity's key can be retrieved from the `EntityRef`.
-It is also possible to wrap methods in a @apidoc[typed.ShardingEnvelope] or define extractor functions and send messages directly to the shard region.
+It is also possible to wrap messages in a @apidoc[typed.ShardingEnvelope] or define extractor functions and send messages directly to the shard region.
 
 Scala
 :  @@snip [ShardingCompileOnlySpec.scala](/cluster-sharding-typed/src/test/scala/docs/org/apache/pekko/cluster/sharding/typed/ShardingCompileOnlySpec.scala) { #send }
@@ -141,7 +141,7 @@ Scala
 Java
 :  @@snip [HelloWorldPersistentEntityExample.java](/cluster-sharding-typed/src/test/java/jdocs/org/apache/pekko/cluster/sharding/typed/HelloWorldPersistentEntityExample.java) { #persistent-entity-usage-import #persistent-entity-usage }
 
-Note how an unique @apidoc[persistence.typed.PersistenceId] can be constructed from the @apidoc[typed.*.EntityTypeKey] and the `entityId`
+Note how a unique @apidoc[persistence.typed.PersistenceId] can be constructed from the @apidoc[typed.*.EntityTypeKey] and the `entityId`
 provided by the @apidoc[typed.*.EntityContext] in the factory function for the @apidoc[typed.Behavior]. This is a typical way
 of defining the `PersistenceId` but other formats are possible, as described in the
 @ref:[PersistenceId section](persistence.md#persistenceid).
@@ -747,7 +747,7 @@ for more information about `min-nr-of-members`.
 
 ## Health check
 
-An [Pekko Management compatible health check]($pekko.doc.dns$/docs/pekko-management/current/healthchecks.html) is included that returns healthy once the local shard region
+A [Pekko Management compatible health check]($pekko.doc.dns$/docs/pekko-management/current/healthchecks.html) is included that returns healthy once the local shard region
 has registered with the coordinator. This health check should be used in cases where you don't want to receive production traffic until the local shard region is ready to retrieve locations
 for shards. For shard regions that aren't critical and therefore should not block this node becoming ready do not include them.
 
@@ -823,9 +823,9 @@ be buffered in the `ShardRegion`. If the lease is lost after initialization the 
 
 ## Removal of internal Cluster Sharding data
 
-Removal of internal Cluster Sharding data is only relevant for "Persistent Mode".
+Removal of internal Cluster Sharding data is only relevant for "Persistence Mode".
 The Cluster Sharding `ShardCoordinator` stores locations of the shards.
-This data is safely be removed when restarting the whole Pekko Cluster.
+This data can safely be removed when restarting the whole Pekko Cluster.
 Note that this does not include application data.
 
 There is a utility program @apidoc[cluster.sharding.RemoveInternalClusterShardingData$]
@@ -868,7 +868,7 @@ with the same layout as below.
 
 One important configuration property is `number-of-shards` as described in @ref:[Shard allocation](#shard-allocation).
 
-You may also need to tune the configuration properties is `rebalance-absolute-limit` and `rebalance-relative-limit`
+You may also need to tune the configuration properties `rebalance-absolute-limit` and `rebalance-relative-limit`
 as described in @ref:[Shard allocation](#shard-allocation).
 
 @@snip [reference.conf](/cluster-sharding/src/main/resources/reference.conf) { #sharding-ext-config }

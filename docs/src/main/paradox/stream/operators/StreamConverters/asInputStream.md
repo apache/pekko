@@ -14,7 +14,7 @@ Create a sink which materializes into an `InputStream` that can be read to trigg
 Create a sink which materializes into an `InputStream` that can be read to trigger demand through the sink.
 Bytes emitted through the stream will be available for reading through the `InputStream`
 
-The `InputStream` will be ended when the stream flowing into this `Sink` completes, and the closing the
+The `InputStream` will be ended when the stream flowing into this `Sink` completes, and closing the
 `InputStream` will cancel the inflow of this `Sink`.
 
 ## Reactive Streams semantics

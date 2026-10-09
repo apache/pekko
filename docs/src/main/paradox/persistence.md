@@ -621,7 +621,7 @@ saved snapshot matches the specified `SnapshotSelectionCriteria` will replay all
 In order to use snapshots, a default snapshot-store (`pekko.persistence.snapshot-store.plugin`) must be configured,
 or the @scala[`PersistentActor`]@java[persistent actor] can pick a snapshot store explicitly by overriding @scala[`def snapshotPluginId: String`]@java[`String snapshotPluginId()`].
 
-Because some use cases may not benefit from or need snapshots, it is perfectly valid not to not configure a snapshot store.
+Because some use cases may not benefit from or need snapshots, it is perfectly valid not to configure a snapshot store.
 However, Pekko will log a warning message when this situation is detected and then continue to operate until
 an actor tries to store a snapshot, at which point the operation will fail (by replying with an @apidoc[persistence.SaveSnapshotFailure] for example).
 
@@ -722,7 +722,7 @@ the persistent actor will resend these before sending any other messages.
 
 Deliver requires a `deliveryIdToMessage` function to pass the provided `deliveryId` into the message so that the correlation
 between `deliver` and `confirmDelivery` is possible. The `deliveryId` must do the round trip. Upon receipt
-of the message, the destination actor will send the same``deliveryId`` wrapped in a confirmation message back to the sender.
+of the message, the destination actor will send the same `deliveryId` wrapped in a confirmation message back to the sender.
 The sender will then use it to call `confirmDelivery` method to complete the delivery routine.
 
 Scala
@@ -760,7 +760,7 @@ The default value can be configured with the `pekko.persistence.at-least-once-de
 configuration key. The method can be overridden by implementation classes to return non-default values.
 
 The maximum number of messages that will be sent at each redelivery burst is defined by the
-@apidoc[redeliverBurstLimit](persistence.AtLeastOnceDeliveryLike) {scala="#redeliveryBurstLimit:Int" java="#redeliveryBurstLimit()"} method (burst frequency is half of the redelivery interval). If there's a lot of
+@apidoc[redeliveryBurstLimit](persistence.AtLeastOnceDeliveryLike) {scala="#redeliveryBurstLimit:Int" java="#redeliveryBurstLimit()"} method (burst frequency is half of the redelivery interval). If there's a lot of
 unconfirmed messages (e.g. if the destination is not available for a long time), this helps to prevent an overwhelming
 amount of messages to be sent at once. The default value can be configured with the
 `pekko.persistence.at-least-once-delivery.redelivery-burst-limit` configuration key. The method can be overridden
@@ -775,7 +775,7 @@ configuration key. The method can be overridden by implementation classes to ret
 
 The @scala[@scaladoc[AtLeastOnceDelivery](pekko.persistence.AtLeastOnceDelivery) trait]@java[@javadoc[AbstractPersistentActorWithAtLeastOnceDelivery](pekko.persistence.AbstractPersistentActorWithAtLeastOnceDelivery) class] holds messages in memory until their successful delivery has been confirmed.
 The maximum number of unconfirmed messages that the actor is allowed to hold in memory
-is defined by the @apidoc[maxUnconfirmedMessages](persistence.AtLeastOnceDeliveryLike) {scala="#maxUnconfirmedMessages:Int" java="#maxUnconfirmedMessages()"} method. If this limit is exceed the `deliver` method will
+is defined by the @apidoc[maxUnconfirmedMessages](persistence.AtLeastOnceDeliveryLike) {scala="#maxUnconfirmedMessages:Int" java="#maxUnconfirmedMessages()"} method. If this limit is exceeded the `deliver` method will
 not accept more messages and it will throw @apidoc[AtLeastOnceDelivery.MaxUnconfirmedMessagesExceededException].
 The default value can be configured with the `pekko.persistence.at-least-once-delivery.max-unconfirmed-messages`
 configuration key. The method can be overridden by implementation classes to return non-default values.
@@ -836,7 +836,7 @@ it must add
 
 @@snip [PersistenceSerializerDocSpec.scala](/docs/src/test/scala/docs/persistence/PersistenceSerializerDocSpec.scala) { #custom-serializer-config }
 
-to the application configuration. If not specified, an exception will be throw when trying to persist events or snapshots.
+to the application configuration. If not specified, an exception will be thrown when trying to persist events or snapshots.
 
 For more advanced schema evolution techniques refer to the @ref:[Persistence - Schema Evolution](persistence-schema-evolution.md) documentation.
 

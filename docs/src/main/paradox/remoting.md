@@ -325,7 +325,7 @@ Please see:
 
 ### Using the Failure Detector
  
-Remoting uses the `org.apache.pekko.remote.PhiAccrualFailureDetector` failure detector by default, or you can provide your by
+Remoting uses the `org.apache.pekko.remote.PhiAccrualFailureDetector` failure detector by default, or you can provide your own by
 implementing the `org.apache.pekko.remote.FailureDetector` and configuring it:
 
 ```
@@ -369,7 +369,7 @@ That is not done by the router.
 ### Remote Events
 
 It is possible to listen to events that occur in Pekko Remote, and to subscribe/unsubscribe to these events
-you register as listener to the below described types in on the `ActorSystem.eventStream`.
+you register as listener to the below described types on the `ActorSystem.eventStream`.
 
 @@@ note
 
@@ -439,7 +439,7 @@ That is also security best-practice because of its multiple
 <a id="remote-tls"></a>
 ### Configuring SSL/TLS for Pekko Remoting
 
-SSL can be used as the remote transport by adding `pekko.remote.classic.netty.ssl` to the `enabled-transport` configuration section.
+SSL can be used as the remote transport by adding `pekko.remote.classic.netty.ssl` to the `enabled-transports` configuration section.
 An example of setting up the default Netty based SSL driver as default:
 
 ```
@@ -497,7 +497,7 @@ duplicated here, including the TLS 1.3 cipher-suite list, custom post-handshake 
 
 @@@
 
-Since a Pekko remoting is inherently @ref:[peer-to-peer](general/remoting.md#symmetric-communication) both the key-store as well as trust-store
+Since Pekko remoting is inherently @ref:[peer-to-peer](general/remoting.md#symmetric-communication) both the key-store as well as trust-store
 need to be configured on each remoting node participating in the cluster.
 
 The official [Java Secure Socket Extension documentation](https://docs.oracle.com/en/java/javase/25/security/java-secure-socket-extension-jsse-reference-guide.html)

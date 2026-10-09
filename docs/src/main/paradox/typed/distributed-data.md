@@ -22,7 +22,7 @@ To use Pekko Cluster Distributed Data, you must add the following dependency in 
 
 ## Introduction
 
-*Pekko Distributed Data* is useful when you need to share data between nodes in an
+*Pekko Distributed Data* is useful when you need to share data between nodes in a
 Pekko Cluster. The data is accessed with an actor providing a key-value store like API.
 The keys are unique identifiers with type information of the data values. The values
 are *Conflict Free Replicated Data Types* (CRDTs).
@@ -49,7 +49,7 @@ accessed through the @apidoc[typed.*.DistributedData] extension.
 The messages for the replicator, such as @apidoc[typed.*Replicator.Update] are defined as
 subclasses of @apidoc[typed.*Replicator.Command]
 and the actual CRDTs are defined in the `pekko.cluster.ddata` package, for example
-@apidoc[cluster.ddata.GCounter]. It requires a @scala[implicit] `org.apache.pekko.cluster.ddata.SelfUniqueAddress`,
+@apidoc[cluster.ddata.GCounter]. It requires @scala[an implicit]@java[a] `org.apache.pekko.cluster.ddata.SelfUniqueAddress`,
 available from:
 
 Scala
@@ -100,7 +100,7 @@ it contains five values:
  1. a `modify` function that takes a previous state and updates it, in our case by incrementing it with 1
 
 @@@ div { .group-scala }
-There is alternative way of constructing the function for the `Update` message:
+There is an alternative way of constructing the function for the `Update` message:
 
 Scala
 :  @@snip [ReplicatorSpec.scala](/cluster-typed/src/test/scala/org/apache/pekko/cluster/ddata/typed/scaladsl/ReplicatorCompileOnlyTest.scala) { #curried-update }
@@ -295,7 +295,7 @@ to 4 nodes and reads from 4 nodes.
 You can define a minimum number of nodes for `WriteMajority` and `ReadMajority`,
 this will minimize the risk of reading stale data. Minimum cap is
 provided by minCap property of `WriteMajority` and `ReadMajority` and defines the required majority.
-If the minCap is higher then **N / 2 + 1** the minCap will be used.
+If the minCap is higher than **N / 2 + 1** the minCap will be used.
 
 For example if the minCap is 5 the `WriteMajority` and `ReadMajority` for cluster of 3 nodes will be 3, for
 cluster of 6 nodes will be 5 and for cluster of 12 nodes will be 7 ( **N / 2 + 1** ).
@@ -433,7 +433,7 @@ While the `ORMap` supports removing and re-adding keys any number of times, the 
 can be non-deterministic. A merge will always attempt to merge two values for the same key, regardless of whether that
 key has been removed and re-added in the meantime, an attempt to replace a value with a new one may not have the
 intended effect. This means that old values can effectively be resurrected if a node, that has seen both the remove and
-the update,gossips with a node that has seen neither. One consequence of this is that changing the value type of the
+the update, gossips with a node that has seen neither. One consequence of this is that changing the value type of the
 CRDT, for example, from a `GCounter` to a `GSet`, could result in the merge function for the CRDT always failing.
 This could be an unrecoverable state for the node, hence, the types of `ORMap` values must never change for a given key.
 
@@ -576,7 +576,7 @@ A nice property of stateful CRDTs is that they typically compose nicely, i.e. yo
 smaller data types to build richer data structures. For example, the `PNCounter` is composed of
 two internal `GCounter` instances to keep track of increments and decrements separately.
 
-Here is s simple implementation of a custom `TwoPhaseSet` that is using two internal `GSet` types
+Here is a simple implementation of a custom `TwoPhaseSet` that is using two internal `GSet` types
 to keep track of addition and removals.  A `TwoPhaseSet` is a set where an element may be added and
 removed, but never added again thereafter.
 
@@ -641,7 +641,7 @@ serializer for those types. This can be done by declaring those as bytes fields 
 
 and use the methods `otherMessageToProto` and `otherMessageFromBinary` that are provided
 by the `SerializationSupport` trait to serialize and deserialize the `GSet` instances. This
-works with any type that has a registered Pekko serializer. This is how such an serializer would
+works with any type that has a registered Pekko serializer. This is how such a serializer would
 look like for the `TwoPhaseSet`:
 
 Scala
@@ -733,7 +733,7 @@ Note that you should be prepared to receive `WriteFailure` as reply to an `Updat
 durable entry if the data could not be stored for some reason. When enabling `write-behind-interval`
 such errors will only be logged and `UpdateSuccess` will still be the reply to the `Update`.
 
-There is one important caveat when it comes pruning of @ref:[CRDT Garbage](#crdt-garbage) for durable data.
+There is one important caveat when it comes to pruning of @ref:[CRDT Garbage](#crdt-garbage) for durable data.
 If an old data entry that was never pruned is injected and merged with existing data after
 that the pruning markers have been removed the value will not be correct. The time-to-live
 of the markers is defined by configuration

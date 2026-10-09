@@ -44,7 +44,7 @@ Java
 :  @@snip [CompileOnlyTest.java](/discovery/src/test/java/jdoc/org/apache/pekko/discovery/CompileOnlyTest.java) { #loading }
 
 A `Lookup` contains a mandatory `serviceName` and an optional `portName` and `protocol`. How these are interpreted is discovery 
-method dependent e.g.DNS does an A/AAAA record query if any of the fields are missing and an SRV query for a full look up:
+method dependent e.g. DNS does an A/AAAA record query if any of the fields are missing and an SRV query for a full look up:
 
 Scala
 :  @@snip [CompileOnlySpec.scala](/discovery/src/test/scala/doc/org/apache/pekko/discovery/CompileOnlySpec.scala) { #basic }
@@ -201,7 +201,7 @@ Each service can have multiple endpoints.
 Aggregate discovery allows multiple discovery methods to be aggregated e.g. try and resolve
 via DNS and fall back to configuration.
 
-To use aggregate discovery add its dependency as well as all of the discovery that you
+To use aggregate discovery add its dependency as well as all of the discovery methods that you
 want to aggregate.
 
 Configure `aggregate` as `pekko.discovery.method` and which discovery methods are tried and in which order.
