@@ -4,8 +4,17 @@ Apache Pekko 2.0.x releases support Java 17 and above.
 
 ## 2.0.0
 
-Apache Pekko 2.0.0 is a new major release. It is not binary compatible with Pekko 1.x and it also has some source
-incompatible changes. Please read the @ref:[Migration Guide](../migration/migration-guide-1.x-2.x.md) before upgrading.
+@@@ warning
+
+Apache Pekko 2.0.0 is a new major release. Do not assume binary compatibility with Pekko 1.x: libraries built
+against Pekko 1.x need to be rebuilt against Pekko 2.0.0, and some code will need source changes. Please read the
+@ref:[Migration Guide](../migration/migration-guide-1.x-2.x.md) before upgrading.
+
+It could take months for the other Pekko modules, such as Pekko HTTP, Pekko Connectors, Pekko gRPC, Pekko Management
+and the persistence plugins, to have 2.0.0 releases. Until then, users might be able to use the 2.0.0 milestone
+releases of those modules with Pekko 2.0.0, but you should test very carefully before relying on this in production.
+
+@@@
 
 The changes in this release were previewed in a series of milestone releases. See the GitHub milestones for
 [2.0.0-M1](https://github.com/apache/pekko/milestone/5?closed=1),
