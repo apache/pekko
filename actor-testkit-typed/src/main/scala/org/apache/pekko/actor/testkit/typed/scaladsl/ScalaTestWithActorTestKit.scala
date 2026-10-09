@@ -92,10 +92,10 @@ trait ScalaTestWithActorTestKitBase
    * `DefaultTimeout` is dilated with [[pekko.actor.testkit.typed.TestKitSettings#TestTimeFactor]],
    * which means that the patience is also dilated.
    *
-   * Lazy so that a spec can override `testKit` with a `val` without hitting a `NullPointerException`
-   * during initialization.
+   * A `def` so that a spec can override `testKit` with a `val` without hitting a `NullPointerException`
+   * during initialization, while subclasses can still override it with a `val`, `lazy val` or `def`.
    */
-  implicit lazy val patience: PatienceConfig =
+  implicit def patience: PatienceConfig =
     PatienceConfig(testKit.testKitSettings.DefaultTimeout.duration, Span(100, org.scalatest.time.Millis))
 
   /**
