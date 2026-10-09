@@ -209,7 +209,7 @@ Java
     final Props props = ...
     // this actor uses MyCustomMailbox, which is assumed to be a singleton
     system.actorOf(props.withMailbox("myCustomMailbox")).tell("bang", sender);
-    assert(MyCustomMailbox.getInstance().getLastEnqueued().equals("bang"));
+    assert(MyCustomMailbox.getInstance().getLastEnqueuedMessage().equals("bang"));
     ```
     @@@
 
