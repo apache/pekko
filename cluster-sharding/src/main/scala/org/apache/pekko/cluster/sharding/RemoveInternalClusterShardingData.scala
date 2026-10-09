@@ -59,10 +59,6 @@ import pekko.persistence.journal.leveldb.SharedLeveldbStore
  *
  * Specify the entity type names (same as you use in the `start` method
  * of `ClusterSharding`) as program arguments.
- *
- * If you specify `-2.3` as the first program argument it will also try
- * to remove data that was stored by Cluster Sharding in Akka 2.3.x using
- * different persistenceId.
  */
 object RemoveInternalClusterShardingData {
 
@@ -74,16 +70,10 @@ object RemoveInternalClusterShardingData {
       println("Specify the Cluster Sharding type names to remove in program arguments")
     else {
       val system = ActorSystem("RemoveInternalClusterShardingData")
-      val remove2dot3Data = args(0) == "-2.3"
-      val typeNames = if (remove2dot3Data) args.tail.toSet else args.toSet
-      if (typeNames.isEmpty)
-        println("Specify the Cluster Sharding type names to remove in program arguments")
-      else {
-        val journalPluginId = system.settings.config.getString("pekko.cluster.sharding.journal-plugin-id")
-        import system.dispatcher
-        remove(system, journalPluginId, typeNames, remove2dot3Data).onComplete { _ =>
-          system.terminate()
-        }
+      val journalPluginId = system.settings.config.getString("pekko.cluster.sharding.journal-plugin-id")
+      import system.dispatcher
+      remove(system, journalPluginId, args.toSet).onComplete { _ =>
+        system.terminate()
       }
     }
   }
@@ -95,8 +85,7 @@ object RemoveInternalClusterShardingData {
   def remove(
       system: ActorSystem,
       journalPluginId: String,
-      typeNames: Set[String],
-      remove2dot3Data: Boolean): Future[Unit] = {
+      typeNames: Set[String]): Future[Unit] = {
 
     val resolvedJournalPluginId =
       if (journalPluginId == "") system.settings.config.getString("pekko.persistence.journal.plugin")
@@ -109,7 +98,7 @@ object RemoveInternalClusterShardingData {
 
     val completion = Promise[Unit]()
     system.actorOf(
-      props(journalPluginId, typeNames, completion, remove2dot3Data),
+      props(journalPluginId, typeNames, completion),
       name = "removeInternalClusterShardingData")
     completion.future
   }
@@ -120,9 +109,8 @@ object RemoveInternalClusterShardingData {
   private[pekko] def props(
       journalPluginId: String,
       typeNames: Set[String],
-      completion: Promise[Unit],
-      remove2dot3Data: Boolean): Props =
-    Props(new RemoveInternalClusterShardingData(journalPluginId, typeNames, completion, remove2dot3Data))
+      completion: Promise[Unit]): Props =
+    Props(new RemoveInternalClusterShardingData(journalPluginId, typeNames, completion))
       .withDeploy(Deploy.local)
 
   /**
@@ -207,8 +195,7 @@ object RemoveInternalClusterShardingData {
 class RemoveInternalClusterShardingData(
     journalPluginId: String,
     typeNames: Set[String],
-    completion: Promise[Unit],
-    remove2dot3Data: Boolean)
+    completion: Promise[Unit])
     extends Actor
     with ActorLogging {
   import RemoveInternalClusterShardingData._
@@ -216,12 +203,9 @@ class RemoveInternalClusterShardingData(
 
   var currentPid: String = _
   var currentRef: ActorRef = _
-  var remainingPids = typeNames.map(persistenceId) ++
-    (if (remove2dot3Data) typeNames.map(persistenceId2dot3) else Set.empty)
+  var remainingPids = typeNames.map(persistenceId)
 
   def persistenceId(typeName: String): String = s"/sharding/${typeName}Coordinator"
-
-  def persistenceId2dot3(typeName: String): String = s"/user/sharding/${typeName}Coordinator/singleton/coordinator"
 
   override def preStart(): Unit = {
     removeNext()
