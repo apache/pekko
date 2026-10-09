@@ -50,7 +50,7 @@ Java users should match on `ReceiveTimeout.class` instead.
 rolling updates. ([PR3425](https://github.com/apache/pekko/pull/3425))
 * `RemoveInternalClusterShardingData` no longer supports removing Cluster Sharding coordinator data stored
 by Akka 2.3.x. The `-2.3` program argument and the `remove2dot3Data` parameter of
-`RemoveInternalClusterShardingData.remove` have been removed. ([PRXXXX](https://github.com/apache/pekko/pull/XXXX))
+`RemoveInternalClusterShardingData.remove` have been removed. ([PR3608](https://github.com/apache/pekko/pull/3608))
 
 ## Configuration Changes in Pekko 2.x
 
