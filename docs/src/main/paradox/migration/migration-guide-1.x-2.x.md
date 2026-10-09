@@ -28,6 +28,15 @@ Not every deprecated API has been removed in Pekko 2.x but many have been.
 Java API users may find that they have more deprecations to deal with because the Scala API is more stable and there
 were a few mistakes in the Java API where Scala classes leaked into some of the Java API methods.
 
+### Deprecations in Pekko 2.x
+
+* The `Source.queue` overloads that take an `OverflowStrategy` and materialize a `SourceQueueWithComplete` are
+deprecated. Their asynchronous `offer` can hang indefinitely under `OverflowStrategy.backpressure` when downstream
+stalls. Use `Source.queue(bufferSize)` (which materializes a `BoundedSourceQueue` with synchronous feedback),
+`Source.actorRefWithBackpressure` or `MergeHub.source` instead. See
+@ref:[Migrating from the deprecated Source.queue overloads](../stream/operators/Source/queue.md#migrating-from-the-deprecated-sourcequeueint-overflowstrategy-overloads)
+for a replacement per `OverflowStrategy`, with code examples.
+
 ## Additional Breaking Changes in Pekko 2.x
 * In the Scala DSL for Flow and Source, the `watchTermination` function call no longer needs an empty param
 list before a second param list. Instead of `watchTermination(){ ... }`, you now must use `watchTermination{ ... }`.

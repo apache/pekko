@@ -87,11 +87,67 @@ Java
 
 | Old call | Replacement |
 |----------|-------------|
-| `Source.queue(n, OverflowStrategy.dropNew)` | `Source.queue[T](n)` — `BoundedSourceQueue` already drops the newest element. |
-| `Source.queue(n, OverflowStrategy.dropHead)` | `Source.queue[T](n)` if drop-new is acceptable. Otherwise build a custom @apidoc[GraphStage] with a FIFO buffer that drops the head. |
-| `Source.queue(n, OverflowStrategy.dropTail)` | Same as above; `BoundedSourceQueue` always drops the newest offer (i.e. the tail). |
+| `Source.queue(n, OverflowStrategy.dropNew)` (`dropNew` was removed in 2.0.0) | `Source.queue[T](n)`, which has the same semantics: the offered element is dropped when the buffer is full. |
+| `Source.queue(n, OverflowStrategy.dropHead)` | `Source.queue[T](n)` if dropping the offered element instead of the oldest buffered one is acceptable. Otherwise build a custom @apidoc[GraphStage] with a FIFO buffer that drops the head. |
+| `Source.queue(n, OverflowStrategy.dropTail)` | `Source.queue[T](n)` if dropping the offered element instead of the youngest buffered one is acceptable. `BoundedSourceQueue` leaves the buffer unchanged and reports `QueueOfferResult.Dropped` for the offered element. |
 | `Source.queue(n, OverflowStrategy.dropBuffer)` | `Source.queue[T](n)` combined with a @apidoc[GraphStage] that clears the buffer on overflow, or rework the producer to tolerate drops. |
 | `Source.queue(n, OverflowStrategy.fail)` | `Source.queue[T](n)` and, on `QueueOfferResult.Dropped`, call `BoundedSourceQueue.fail` with a `BufferOverflowException`. |
 | `Source.queue(n, OverflowStrategy.backpressure)` | @ref:[`Source.actorRefWithBackpressure`](actorRefWithBackpressure.md) (single imperative producer) or `MergeHub.source` (multiple producers). |
 
 `SourceQueueWithComplete.offer` returned a @scala[`Future[QueueOfferResult]`]@java[`CompletionStage<QueueOfferResult>`]; `BoundedSourceQueue.offer` returns `QueueOfferResult` synchronously. Call sites that previously chained `.map`/`.flatMap` on the offer future can usually be rewritten as a direct `match`/`switch` on the result.
+
+### Dropping elements (`dropHead`, `dropTail`, `dropBuffer`)
+
+`BoundedSourceQueue` drops the element being offered when the buffer is full and tells the caller synchronously, instead of completing a @scala[`Future`]@java[`CompletionStage`].
+
+Before:
+
+Scala
+:   @@snip [QueueMigrationDocSpec.scala](/docs/src/test/scala/docs/stream/operators/source/QueueMigrationDocSpec.scala) { #drop-before }
+
+Java
+:   @@snip [QueueMigrationDocTest.java](/docs/src/test/java/jdocs/stream/operators/source/QueueMigrationDocTest.java) { #drop-before }
+
+After:
+
+Scala
+:   @@snip [QueueMigrationDocSpec.scala](/docs/src/test/scala/docs/stream/operators/source/QueueMigrationDocSpec.scala) { #drop-after }
+
+Java
+:   @@snip [QueueMigrationDocTest.java](/docs/src/test/java/jdocs/stream/operators/source/QueueMigrationDocTest.java) { #drop-after }
+
+### Failing the stream on overflow (`fail`)
+
+`BoundedSourceQueue` reports `QueueOfferResult.Dropped` instead of failing the stream. To keep the old behavior, fail the queue yourself:
+
+Scala
+:   @@snip [QueueMigrationDocSpec.scala](/docs/src/test/scala/docs/stream/operators/source/QueueMigrationDocSpec.scala) { #fail-after }
+
+Java
+:   @@snip [QueueMigrationDocTest.java](/docs/src/test/java/jdocs/stream/operators/source/QueueMigrationDocTest.java) { #fail-after }
+
+### Backpressuring the producer (`backpressure`)
+
+A typical use of `OverflowStrategy.backpressure` offers the next element only after the previous offer completed:
+
+Scala
+:   @@snip [QueueMigrationDocSpec.scala](/docs/src/test/scala/docs/stream/operators/source/QueueMigrationDocSpec.scala) { #backpressure-before }
+
+Java
+:   @@snip [QueueMigrationDocTest.java](/docs/src/test/java/jdocs/stream/operators/source/QueueMigrationDocTest.java) { #backpressure-before }
+
+For a single imperative producer, @ref:[`Source.actorRefWithBackpressure`](actorRefWithBackpressure.md) combined with `ask` gives the same "wait for the offer to be accepted" shape. The ack is sent to the sender of each element, so the `ask` @scala[`Future`]@java[`CompletionStage`] completes once the element was emitted. Sending a new element before the previous one was acknowledged fails the stream, just like exceeding `maxConcurrentOffers` failed the offer before. With the typed actor API, use @ref:[`ActorSource.actorRefWithBackpressure`](../ActorSource/actorRefWithBackpressure.md) the same way.
+
+Scala
+:   @@snip [QueueMigrationDocSpec.scala](/docs/src/test/scala/docs/stream/operators/source/QueueMigrationDocSpec.scala) { #backpressure-single-producer }
+
+Java
+:   @@snip [QueueMigrationDocTest.java](/docs/src/test/java/jdocs/stream/operators/source/QueueMigrationDocTest.java) { #backpressure-single-producer }
+
+For multiple producers, or when `maxConcurrentOffers` was greater than 1, use @ref:[`MergeHub.source`](../../stream-dynamic.md#using-the-mergehub). Each producer becomes a stream connected to the materialized `Sink` and is back-pressured on its own. If the elements already come from a stream (an iterator, a `Future`, another `Source`), connecting that stream directly is usually simpler than offering elements one at a time.
+
+Scala
+:   @@snip [QueueMigrationDocSpec.scala](/docs/src/test/scala/docs/stream/operators/source/QueueMigrationDocSpec.scala) { #backpressure-multiple-producers }
+
+Java
+:   @@snip [QueueMigrationDocTest.java](/docs/src/test/java/jdocs/stream/operators/source/QueueMigrationDocTest.java) { #backpressure-multiple-producers }
