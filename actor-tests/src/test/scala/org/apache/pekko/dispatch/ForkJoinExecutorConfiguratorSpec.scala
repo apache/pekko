@@ -38,12 +38,22 @@ object ForkJoinExecutorConfiguratorSpec {
       |    parallelism-max = 64
       |  }
       |}
+      |fj-auto-opt-in-dispatcher {
+      |  executor = "fork-join-executor"
+      |  fork-join-executor {
+      |    parallelism-min = 8
+      |    parallelism-factor = 1.0
+      |    parallelism-max = 64
+      |    minimum-runnable = -1
+      |  }
+      |}
       |fj-auto-small-dispatcher {
       |  executor = "fork-join-executor"
       |  fork-join-executor {
       |    parallelism-min = 1
       |    parallelism-factor = 1.0
       |    parallelism-max = 1
+      |    minimum-runnable = -1
       |  }
       |}
       |fj-explicit-zero-dispatcher {
@@ -150,10 +160,16 @@ class ForkJoinExecutorConfiguratorSpec extends PekkoSpec(ForkJoinExecutorConfigu
       resolvedMinimumRunnable("fj-explicit-seven-dispatcher") shouldBe 7
     }
 
-    "auto-scale the default (minimum-runnable not set) on JDK 25+" in {
+    "keep the legacy value of 1 on all JDKs when the default is left untouched" in {
+      // In Pekko 1.x, reference.conf sets minimum-runnable = 1 for backward compatibility,
+      // so the JDK-aware auto policy only applies when users opt in with -1.
+      resolvedMinimumRunnable("fj-auto-default-dispatcher") shouldBe 1
+    }
+
+    "auto-scale when minimum-runnable = -1 on JDK 25+" in {
       if (JavaVersion.majorVersion < 25) pending
 
-      val resolved = resolvedMinimumRunnable("fj-auto-default-dispatcher")
+      val resolved = resolvedMinimumRunnable("fj-auto-opt-in-dispatcher")
       // The dispatcher declares parallelism-min = 8 so effective parallelism is at
       // least 8; auto = min(8, max(1, parallelism/2)) must be at least 4 and never
       // exceed the documented cap of 8.
@@ -161,10 +177,10 @@ class ForkJoinExecutorConfiguratorSpec extends PekkoSpec(ForkJoinExecutorConfigu
       resolved should be <= 8
     }
 
-    "keep the legacy value of 1 on JDK < 25 when the default is left untouched" in {
+    "keep the legacy value of 1 on JDK < 25 when minimum-runnable = -1" in {
       if (JavaVersion.majorVersion >= 25) pending
 
-      resolvedMinimumRunnable("fj-auto-default-dispatcher") shouldBe 1
+      resolvedMinimumRunnable("fj-auto-opt-in-dispatcher") shouldBe 1
     }
 
     "never drop below 1 even for parallelism = 1 dispatchers" in {
