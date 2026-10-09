@@ -92,7 +92,7 @@ not error handling. In other words, data may still be lost, even if every write 
 
 To maintain isolation, actors should communicate with immutable objects only. @apidoc[ByteString](util.ByteString) is an
 immutable container for bytes. It is used by Pekko's I/O system as an efficient, immutable alternative
-to the traditional byte containers used for I/O on the JVM, such as @scala[@scaladoc[Array](scala.Array)[@scaladoc[Byte](scala.Byte)]]@java[`byte[]`] and @javadoc[ByteBuffer](java.nio.ByteBuffer).
+to the traditional byte containers used for I/O on the JVM, such as @scala[@scaladoc[Array[Byte]](scala.Array)]@java[`byte[]`] and @javadoc[ByteBuffer](java.nio.ByteBuffer).
 
 `ByteString` is a [rope-like](https://en.wikipedia.org/wiki/Rope_\(computer_science\)) data structure that is immutable
 and provides fast concatenation and slicing operations (perfect for I/O). When two `ByteString`s are concatenated
