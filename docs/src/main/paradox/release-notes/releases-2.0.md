@@ -35,14 +35,9 @@ Some of the bug fixes listed below have also been backported to Pekko 1.x releas
 
 ### Upgrade notes
 
-* Agrona was updated from 1.x to 2.x, which [means](https://github.com/aeron-io/agrona/wiki/Change-Log#200-2024-12-17) you may have to add `--add-opens java.base/jdk.internal.misc=ALL-UNNAMED` if you use the Java Module System and Pekko Remote ([PR2391](https://github.com/apache/pekko/pull/2391))
-* In the Scala DSL, `watchTermination(){ ... }` must now be written as `watchTermination{ ... }` ([PR2378](https://github.com/apache/pekko/pull/2378))
-* `ReceiveTimeout` changed from a `case object` to a `final case class` that carries the configured timeout duration. Scala pattern matches must use a type pattern and Java users should match on `ReceiveTimeout.class` ([PR3399](https://github.com/apache/pekko/pull/3399))
-* `pekko.remote.artery.propagate-harmless-quarantine-events` now defaults to `off` ([#2141](https://github.com/apache/pekko/issues/2141), [PR2430](https://github.com/apache/pekko/pull/2430))
-* Persistence plugins now use `pekko.actor.default-dispatcher` by default instead of the dedicated `pekko.persistence.dispatchers` ([PR2482](https://github.com/apache/pekko/pull/2482))
-* Artery compression now uses a `FastFrequencySketch` instead of a `CountMinSketch` for heavy hitter detection by default ([PR3023](https://github.com/apache/pekko/pull/3023))
-* The Java test kits now support JUnit Jupiter (JUnit 5 and 6). Pekko's own Java tests have been migrated from JUnit 4 ([#967](https://github.com/apache/pekko/issues/967), [PR2289](https://github.com/apache/pekko/pull/2289), [PR2724](https://github.com/apache/pekko/pull/2724), [PR2865](https://github.com/apache/pekko/pull/2865))
-* Changed the pekko-serialization-jackson lz4-java dependency to `at.yawk.lz4:lz4-java`, a fork that has important bug fixes ([PR2537](https://github.com/apache/pekko/pull/2537))
+Please read the @ref:[Migration Guide](../migration/migration-guide-1.x-2.x.md) before upgrading. It covers the
+breaking API changes, dependency changes (such as the Agrona 2.x `--add-opens` requirement) and the configuration
+defaults that have changed in Pekko 2.0.0.
 
 ### Bug Fixes
 
@@ -159,6 +154,7 @@ These changes were copied from Akka releases (up to and including Akka 2.8.5) th
 * Add `JournalPersistFailed` and `JournalPersistRejected` signals ([PR1961](https://github.com/apache/pekko/pull/1961))
 * Add an AsyncWriteJournal option for disabling the Resequencer ([PR2027](https://github.com/apache/pekko/pull/2027))
 * Add `DurableStateBehaviorTestKit` ([PR3360](https://github.com/apache/pekko/pull/3360))
+* The Java test kits now support JUnit Jupiter (JUnit 5 and 6). Pekko's own Java tests have been migrated from JUnit 4 ([#967](https://github.com/apache/pekko/issues/967), [PR2289](https://github.com/apache/pekko/pull/2289), [PR2724](https://github.com/apache/pekko/pull/2724), [PR2865](https://github.com/apache/pekko/pull/2865))
 * Java DSL TestKit `shutdownActorSystem` that takes Java Duration params ([#2226](https://github.com/apache/pekko/issues/2226), [PR2277](https://github.com/apache/pekko/pull/2277))
 * Add virtualize support for thread-pool-executor (including the blocking IO dispatcher) and support setting the starting number of virtual threads ([#2163](https://github.com/apache/pekko/issues/2163), [PR2169](https://github.com/apache/pekko/pull/2169), [PR2242](https://github.com/apache/pekko/pull/2242))
 * Make ForkJoinPool `minimum-runnable` configurable and auto-tune it on JDK 25+ ([PR2871](https://github.com/apache/pekko/pull/2871), [PR2890](https://github.com/apache/pekko/pull/2890))
