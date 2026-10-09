@@ -19,7 +19,7 @@ import scala.concurrent.duration._
 import org.apache.pekko
 import pekko.actor.{ ActorPath, ActorRef }
 import pekko.actor.ActorSystem
-import pekko.annotation.{ ApiMayChange, DoNotInherit, InternalApi }
+import pekko.annotation.{ DoNotInherit, InternalApi }
 import pekko.pattern.ask
 import pekko.stream.{ Attributes, Materializer }
 import pekko.stream.SystemMaterializer
@@ -40,7 +40,6 @@ object MaterializerState {
   /**
    * Dump stream snapshots of all streams of the default system materializer.
    */
-  @ApiMayChange
   def streamSnapshots(system: ActorSystem): Future[Seq[StreamSnapshot]] = {
     SystemMaterializer(system).materializer match {
       case impl: PhasedFusingActorMaterializer =>
@@ -52,7 +51,6 @@ object MaterializerState {
   /**
    * Dump stream snapshots of all streams of the given materializer.
    */
-  @ApiMayChange
   def streamSnapshots(mat: Materializer): Future[Seq[StreamSnapshot]] = {
     mat match {
       case impl: PhasedFusingActorMaterializer =>
@@ -88,7 +86,7 @@ object MaterializerState {
  *
  * Not for user extension
  */
-@DoNotInherit @ApiMayChange
+@DoNotInherit
 sealed trait StreamSnapshot {
 
   /**
@@ -108,7 +106,7 @@ sealed trait StreamSnapshot {
  *
  * Not for user extension
  */
-@DoNotInherit @ApiMayChange
+@DoNotInherit
 sealed trait InterpreterSnapshot {
   def logics: Seq[LogicSnapshot]
 }
@@ -118,13 +116,13 @@ sealed trait InterpreterSnapshot {
  *
  * Not for user extension
  */
-@DoNotInherit @ApiMayChange
+@DoNotInherit
 sealed trait UninitializedInterpreter extends InterpreterSnapshot
 
 /**
  * A stream interpreter that is running/has been started
  */
-@DoNotInherit @ApiMayChange
+@DoNotInherit
 sealed trait RunningInterpreter extends InterpreterSnapshot {
 
   /**
@@ -151,13 +149,12 @@ sealed trait RunningInterpreter extends InterpreterSnapshot {
 /**
  * Not for user extension
  */
-@DoNotInherit @ApiMayChange
+@DoNotInherit
 sealed trait LogicSnapshot {
   def label: String
   def attributes: Attributes
 }
 
-@ApiMayChange
 object ConnectionSnapshot {
 
   /** Not for user extension */
@@ -170,7 +167,7 @@ object ConnectionSnapshot {
 /**
  * Not for user extension
  */
-@DoNotInherit @ApiMayChange
+@DoNotInherit
 sealed trait ConnectionSnapshot {
   def in: LogicSnapshot
   def out: LogicSnapshot

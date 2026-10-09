@@ -28,7 +28,6 @@ import scala.util.control.NonFatal
 
 import org.apache.pekko
 import pekko.actor.ActorSystem
-import pekko.annotation.ApiMayChange
 import pekko.annotation.DoNotInherit
 import pekko.annotation.InternalApi
 import pekko.annotation.InternalStableApi
@@ -457,9 +456,7 @@ object Attributes {
    * is to call `cancelStage` which shuts down the stage completely. The given strategy will allow customization of how
    * the shutdown procedure should be done precisely.
    */
-  @ApiMayChange
   final case class CancellationStrategy(strategy: CancellationStrategy.Strategy) extends MandatoryAttribute
-  @ApiMayChange
   object CancellationStrategy {
     private[stream] val Default: CancellationStrategy = CancellationStrategy(PropagateFailure)
 
@@ -481,7 +478,6 @@ object Attributes {
      * which arrive late at the other hand will just be ignored (that connection will have been cancelled already and also
      * the paths through which the error could propagates are already shut down).
      */
-    @ApiMayChange
     case object CompleteStage extends Strategy
 
     /**
@@ -501,14 +497,12 @@ object Attributes {
      * which arrive late at the other hand will just be ignored (that connection will have been cancelled already and also
      * the paths through which the error could propagates are already shut down).
      */
-    @ApiMayChange
     def completeStage: Strategy = CompleteStage
 
     /**
      * Strategy that treats `cancelStage` the same as `failStage`, i.e. all inlets are cancelled (propagating the
      * cancellation cause) and all outlets are failed propagating the cause from cancellation.
      */
-    @ApiMayChange
     case object FailStage extends Strategy
 
     /**
@@ -517,7 +511,6 @@ object Attributes {
      * Strategy that treats `cancelStage` the same as `failStage`, i.e. all inlets are cancelled (propagating the
      * cancellation cause) and all outlets are failed propagating the cause from cancellation.
      */
-    @ApiMayChange
     def failStage: Strategy = FailStage
 
     /**
@@ -530,7 +523,6 @@ object Attributes {
      *
      * This is a good default strategy.
      */
-    @ApiMayChange
     case object PropagateFailure extends Strategy
 
     /**
@@ -545,7 +537,6 @@ object Attributes {
      *
      * This is a good default strategy.
      */
-    @ApiMayChange
     def propagateFailure: Strategy = PropagateFailure
 
     /**
@@ -558,7 +549,6 @@ object Attributes {
      * such a delay. During this time, the stream will be mostly "silent", i.e. it cannot make progress because of backpressure,
      * but you might still be able observe a long delay at the ultimate source.
      */
-    @ApiMayChange
     final case class AfterDelay(delay: FiniteDuration, strategy: Strategy) extends Strategy
 
     /**
@@ -573,7 +563,6 @@ object Attributes {
      * such a delay. During this time, the stream will be mostly "silent", i.e. it cannot make progress because of backpressure,
      * but you might still be able observe a long delay at the ultimate source.
      */
-    @ApiMayChange
     def afterDelay(delay: java.time.Duration, strategy: Strategy): Strategy = AfterDelay(delay.toScala, strategy)
   }
 
@@ -594,7 +583,6 @@ object Attributes {
    * which arrive late at the other hand will just be ignored (that connection will have been cancelled already and also
    * the paths through which the error could propagates are already shut down).
    */
-  @ApiMayChange
   def cancellationStrategyCompleteState: CancellationStrategy.Strategy = CancellationStrategy.CompleteStage
 
   /**
@@ -603,7 +591,6 @@ object Attributes {
    * Strategy that treats `cancelStage` the same as `failStage`, i.e. all inlets are cancelled (propagating the
    * cancellation cause) and all outlets are failed propagating the cause from cancellation.
    */
-  @ApiMayChange
   def cancellationStrategyFailStage: CancellationStrategy.Strategy = CancellationStrategy.FailStage
 
   /**
@@ -618,7 +605,6 @@ object Attributes {
    *
    * This is a good default strategy.
    */
-  @ApiMayChange
   def cancellationStrategyPropagateFailure: CancellationStrategy.Strategy = CancellationStrategy.PropagateFailure
 
   /**
@@ -633,7 +619,6 @@ object Attributes {
    * such a delay. During this time, the stream will be mostly "silent", i.e. it cannot make progress because of backpressure,
    * but you might still be able observe a long delay at the ultimate source.
    */
-  @ApiMayChange
   def cancellationStrategyAfterDelay(
       delay: FiniteDuration,
       strategy: CancellationStrategy.Strategy): CancellationStrategy.Strategy =
@@ -651,7 +636,6 @@ object Attributes {
    * this [[Attribute]]: when set to true they will 'stash' the signal and later deliver it to the materialized nested flow
    * , otherwise these stages will immediately cancel without materializing the nested flow.
    */
-  @ApiMayChange
   final class NestedMaterializationCancellationPolicy private[NestedMaterializationCancellationPolicy] (
       val propagateToNestedMaterialization: Boolean,
       name: String)
@@ -659,7 +643,6 @@ object Attributes {
     override def toString: String = name
   }
 
-  @ApiMayChange
   object NestedMaterializationCancellationPolicy {
 
     /**
@@ -694,7 +677,6 @@ object Attributes {
    * nested flow materialization.
    * This applies to [[pekko.stream.scaladsl.FlowOps.flatMapPrefix]], [[pekko.stream.scaladsl.Flow.futureFlow]] and derived operators.
    */
-  @ApiMayChange
   def nestedMaterializationCancellationPolicyEagerCancellation(): NestedMaterializationCancellationPolicy =
     NestedMaterializationCancellationPolicy.EagerCancellation
 
@@ -705,7 +687,6 @@ object Attributes {
    * nested flow materialization. Once the nested flow is materialized it will be cancelled immediately.
    * This applies to [[pekko.stream.scaladsl.FlowOps.flatMapPrefix]], [[pekko.stream.scaladsl.Flow.futureFlow]] and derived operators.
    */
-  @ApiMayChange
   def nestedMaterializationCancellationPolicyPropagateToNested(): NestedMaterializationCancellationPolicy =
     NestedMaterializationCancellationPolicy.PropagateToNested
 

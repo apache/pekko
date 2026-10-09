@@ -30,7 +30,6 @@ import scala.concurrent.duration._
 
 import org.apache.pekko
 import pekko.actor.ActorSystem
-import pekko.annotation.ApiMayChange
 import pekko.annotation.InternalApi
 import pekko.event.LogMarker
 import pekko.event.Logging
@@ -48,15 +47,10 @@ import com.typesafe.config.Config
  * Variation on ConfigSSLEngineProvider that will periodically reload the keys and certificates
  * from disk, to facilitate rolling updates of certificates.
  *
- * This class is still ApiMayChange because it can likely be further harmonized with
- * the standard ConfigSSLEngineProvider. Also the location and default values of the
- * configuration may change in future versions of Apache Pekko.
- *
  * This provider does not perform hostname verification, but instead allows checking
  * that the remote certificate has a subject name that matches the subject name of
  * the configured certificate.
  */
-@ApiMayChange
 final class RotatingKeysSSLEngineProvider(val config: Config, protected val log: MarkerLoggingAdapter)
     extends SSLEngineProvider {
 

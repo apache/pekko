@@ -18,7 +18,6 @@ import scala.concurrent.Future
 import org.apache.pekko
 import pekko.Done
 import pekko.actor.Address
-import pekko.annotation.ApiMayChange
 import pekko.cluster.sharding.ShardRegion.ShardId
 import pekko.cluster.sharding.external.ShardLocations
 
@@ -27,7 +26,6 @@ import pekko.cluster.sharding.external.ShardLocations
  *
  * Not for user extension
  */
-@ApiMayChange
 trait ExternalShardAllocationClient {
 
   /**
