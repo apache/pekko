@@ -12,6 +12,7 @@ permissions: {}
 
 on:
   workflow_dispatch:
+  pull_request: # TEMP: remove before merging
   schedule:
     - cron: '0 6 * * 1'
 
