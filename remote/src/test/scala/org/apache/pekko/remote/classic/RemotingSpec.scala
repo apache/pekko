@@ -14,9 +14,10 @@
 package org.apache.pekko.remote.classic
 
 import java.io.NotSerializableException
+import java.net.{ BindException, InetAddress, ServerSocket }
 import java.util.concurrent.ThreadLocalRandom
 
-import scala.annotation.nowarn
+import scala.annotation.{ nowarn, tailrec }
 import scala.concurrent.{ Await, Future }
 import scala.concurrent.duration._
 import scala.util.control.NonFatal
@@ -966,6 +967,17 @@ class RemotingSpec extends PekkoSpec(RemotingSpec.cfg) with ImplicitSender with 
 
     }
 
+    // classic Netty rethrows the raw java.net.BindException from ActorSystem startup, so look for it in
+    // the cause chain rather than relying on the message text
+    @tailrec
+    def isBindFailure(t: Throwable): Boolean =
+      t match {
+        case null                                                                 => false
+        case _: BindException                                                     => true
+        case _ if t.getMessage != null && t.getMessage.contains("Failed to bind") => true
+        case _                                                                    => isBindFailure(t.getCause)
+      }
+
     // retry a few times as the temporaryServerAddress can be taken by the time the new actor system
     // binds
     def selectionAndBind(
@@ -984,11 +996,27 @@ class RemotingSpec extends PekkoSpec(RemotingSpec.cfg) with ImplicitSender with 
       try {
         (ActorSystem("other-system", otherConfig), otherSelection)
       } catch {
-        case NonFatal(ex) if ex.getMessage.contains("Failed to bind") && retries > 0 =>
+        case NonFatal(ex) if isBindFailure(ex) && retries > 0 =>
           selectionAndBind(config, thisSystem, probe, retries = retries - 1)
         case other =>
           throw other
       }
+    }
+
+    "recognize a bind failure when the configured port is already taken" in {
+      val taken = new ServerSocket(0, 1, InetAddress.getByName("localhost"))
+      try {
+        val config = ConfigFactory.parseString(s"""
+            pekko.remote.classic.enabled-transports = ["pekko.remote.classic.netty.tcp"]
+            pekko.remote.classic.netty.tcp.port = ${taken.getLocalPort}
+            """).withFallback(remoteSystem.settings.config)
+        val ex = intercept[Exception] {
+          val sys = ActorSystem("taken-port-system", config)
+          shutdown(sys)
+        }
+        isBindFailure(ex) shouldBe true
+        isBindFailure(new IllegalStateException("something else")) shouldBe false
+      } finally taken.close()
     }
 
     "be able to connect to system even if it's not there at first" in {
