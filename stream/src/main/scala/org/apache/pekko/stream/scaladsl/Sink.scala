@@ -283,7 +283,7 @@ object Sink {
    * As upstream may be unbounded, `Flow[T].take` or the stricter `Flow[T].limit` (and their variants)
    * may be used to ensure boundedness.
    * Materializes into a `Future` of `That[T]` containing all the collected elements.
-   * `That[T]` is limited to the limitations of the CanBuildFrom associated with it. For example, `Seq` is limited to
+   * `That[T]` is limited to the limitations of the `Factory` associated with it. For example, `Seq` is limited to
    * `Int.MaxValue` elements. See [The Architecture of Scala 2.13's Collections](https://docs.scala-lang.org/overviews/core/architecture-of-scala-213-collections.html) for more info.
    * This Sink will cancel the stream after having received that many elements.
    *

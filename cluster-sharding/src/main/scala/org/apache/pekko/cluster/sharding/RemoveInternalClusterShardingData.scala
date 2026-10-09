@@ -43,14 +43,14 @@ import pekko.persistence.journal.leveldb.SharedLeveldbStore
  *
  * It can be needed to remove the data if the Cluster `ShardCoordinator`
  * cannot startup because of corrupt data, which may happen if accidentally
- * two clusters were running at the same time, e.g. caused by using auto-down
- * and there was a network partition.
+ * two clusters were running at the same time, e.g. caused by a network partition
+ * without a proper downing strategy.
  *
  * Use this program as a standalone Java main program:
  * {{{
  * java -classpath <jar files, including pekko-cluster-sharding>
  *   org.apache.pekko.cluster.sharding.RemoveInternalClusterShardingData
- *     -2.3 entityType1 entityType2 entityType3
+ *     entityType1 entityType2 entityType3
  * }}}
  *
  * The program is included in the `pekko-cluster-sharding` jar file. It

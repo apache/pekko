@@ -154,7 +154,7 @@ class Cluster(val system: ExtendedActorSystem) extends Extension {
       (settings.config.hasPath("auto-down-unreachable-after") && settings.config.getString(
         "auto-down-unreachable-after") != "off"))
       logWarning(
-        "auto-down has been removed in Akka 2.6.0. See " +
+        "auto-down is not supported in Pekko. See " +
         "https://pekko.apache.org/docs/pekko/current/typed/cluster.html#downing for alternatives.")
   }
 
