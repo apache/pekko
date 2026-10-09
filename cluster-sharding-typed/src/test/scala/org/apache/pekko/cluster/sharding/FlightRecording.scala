@@ -30,6 +30,8 @@ class FlightRecording(system: ActorSystem) {
 
   private val lookup = MethodHandles.publicLookup()
   private val noArgVoidMethodType = MethodType.methodType(Void.TYPE)
+  // Recording.stop() returns boolean (JDK 9+)
+  private val noArgBooleanMethodType = MethodType.methodType(java.lang.Boolean.TYPE)
   private val dumpMethodType = MethodType.methodType(Void.TYPE, classOf[Path])
 
   private val dynamic = system.asInstanceOf[ExtendedActorSystem].dynamicAccess
@@ -39,7 +41,7 @@ class FlightRecording(system: ActorSystem) {
   private val startMethod =
     clazz.map(lookup.findVirtual(_, "start", noArgVoidMethodType))
   private val stopMethod =
-    clazz.map(lookup.findVirtual(_, "stop", noArgVoidMethodType))
+    clazz.map(lookup.findVirtual(_, "stop", noArgBooleanMethodType))
   private val dumpMethod =
     clazz.map(lookup.findVirtual(_, "dump", dumpMethodType))
 
