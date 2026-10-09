@@ -23,7 +23,7 @@ Some of the bug fixes listed below have also been backported to Pekko 1.x releas
 * A lot of code that was deprecated in Pekko 1.x (and in Akka before that) has been removed - see the Removed section below
 * Big change for Java DSL users due to the removal of `pekko.japi.Function` (and related classes, such as `pekko.japi.function.FI` and `JAPI`) in favour of `pekko.japi.function.Function` and the other `pekko.japi.function` types. Lambdas should recompile ok but if you declared variables or functions explicitly, then you may need to change your imports ([PR2001](https://github.com/apache/pekko/pull/2001), [PR2064](https://github.com/apache/pekko/pull/2064), [PR2078](https://github.com/apache/pekko/pull/2078), [PR2079](https://github.com/apache/pekko/pull/2079), [PR2143](https://github.com/apache/pekko/pull/2143), [PR2198](https://github.com/apache/pekko/pull/2198))
 * Java APIs no longer leak Scala types: Scala `Future`, `Option`, `Tuple2` and Scala collections have been replaced with `CompletionStage`, `Optional`, `pekko.japi.Pair` and Java collections in a number of Java DSL methods, including the pekko-persistence Java APIs ([PR1419](https://github.com/apache/pekko/pull/1419), [PR2007](https://github.com/apache/pekko/pull/2007), [PR2009](https://github.com/apache/pekko/pull/2009), [PR2092](https://github.com/apache/pekko/pull/2092), [#2086](https://github.com/apache/pekko/issues/2086), [PR3378](https://github.com/apache/pekko/pull/3378), [PR3388](https://github.com/apache/pekko/pull/3388))
-* Added many Akka changes that have recently become Apache Licensed (up to and including Akka 2.8.4) - see the Ported from Akka section below
+* Added many Akka changes that have recently become Apache Licensed (up to and including Akka 2.8.5) - see the Ported from Akka section below
 * `sun.misc.Unsafe` is no longer used. The code has been migrated to use VarHandles ([PR1892](https://github.com/apache/pekko/pull/1892), [PR1894](https://github.com/apache/pekko/pull/1894), [PR1990](https://github.com/apache/pekko/pull/1990), [PR1995](https://github.com/apache/pekko/pull/1995), [PR3007](https://github.com/apache/pekko/pull/3007), [PR3008](https://github.com/apache/pekko/pull/3008))
 * Reflection usage in core modules has been replaced with MethodHandles/VarHandles where possible ([PR3300](https://github.com/apache/pekko/pull/3300), [PR3312](https://github.com/apache/pekko/pull/3312))
 * New pekko-serialization-jackson3 module. Users who are happy with pekko-serialization-jackson, which uses Jackson 2, can stick with that ([PR2348](https://github.com/apache/pekko/pull/2348))
@@ -112,7 +112,7 @@ Some of the bug fixes listed below have also been backported to Pekko 1.x releas
 
 ### Ported from Akka
 
-These changes were copied from Akka releases (up to and including Akka 2.8.4) that are now available under the Apache License, version 2.0.
+These changes were copied from Akka releases (up to and including Akka 2.8.5) that are now available under the Apache License, version 2.0.
 
 * Unpersistent versions of persistent behaviors for testing, renamed to `PersistenceProbeBehavior` ([PR2456](https://github.com/apache/pekko/pull/2456), [PR2494](https://github.com/apache/pekko/pull/2494))
 * Custom stash support in persistence-typed ([PR2433](https://github.com/apache/pekko/pull/2433))
