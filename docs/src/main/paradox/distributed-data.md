@@ -120,6 +120,18 @@ For the full documentation of this feature and for new projects see @ref:[Distri
 To retrieve the current value of a data you send @apidoc[Replicator.Get](cluster.ddata.Replicator.Get) message to the
 `Replicator`. You supply a consistency level which has the following meaning:
 
+ * @scala[`ReadLocal`]@java[`readLocal`] the value will only be read from the local replica
+ * `ReadFrom(n)` the value will be read and merged from `n` replicas,
+   including the local replica
+ * `ReadMajority` the value will be read and merged from a majority of replicas, i.e.
+   at least **N/2 + 1** replicas, where N is the number of nodes in the cluster
+   (or cluster role group)
+ * `ReadMajorityPlus` is like `ReadMajority` but with the given number of `additional` nodes added
+   to the majority count. At most all nodes.
+ * `ReadAll` the value will be read and merged from all nodes in the cluster (or all nodes in the cluster role group)
+
+See @ref:[Read consistency](typed/distributed-data.md#read-consistency) for more details.
+
 Scala
 : @@snip [DistributedDataDocSpec.scala](/docs/src/test/scala/docs/ddata/DistributedDataDocSpec.scala) { #get }
 
