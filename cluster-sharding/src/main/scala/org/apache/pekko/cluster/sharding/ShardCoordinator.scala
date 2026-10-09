@@ -1419,9 +1419,7 @@ private class PersistentShardCoordinator(
             state = state.updated(evt)
           else {
             log.debug(
-              "{}: ShardRegionTerminated, but region {} was not registered. This inconsistency is due to that " +
-              " some stored ActorRef in Akka v2.3.0 and v2.3.1 did not contain full address information. It will be " +
-              "removed by later watch.",
+              "{}: ShardRegionTerminated, but region {} was not registered. Ignoring it, it will be removed by later watch.",
               typeName,
               region)
           }
