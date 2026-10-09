@@ -2,7 +2,7 @@
 
 Apache Pekko 1.7.x releases support Java 8 and above.
 
-# 1.7.1
+## 1.7.1
 
 Pekko 1.7.1 has some bug fixes. See the [GitHub Milestone for 1.7.1](https://github.com/apache/pekko/milestone/33?closed=1) for a fuller list of changes.
 
@@ -21,13 +21,13 @@ Pekko 1.7.1 has some bug fixes. See the [GitHub Milestone for 1.7.1](https://git
 * Bound inbound Artery TCP frame length at framing ([PR3525](https://github.com/apache/pekko/pull/3525))
 * Bound the size a compressed payload may expand to ([PR3527](https://github.com/apache/pekko/pull/3527))
 
-# 1.7.0
+## 1.7.0
 
 Pekko 1.7.0 has some bug fixes. See the [GitHub Milestone for 1.7.0](https://github.com/apache/pekko/milestone/30?closed=1) for a fuller list of changes.
 
 ### Bug Fixes
 
-* Harden EndpointReader against NonFatal dispatch errors and unwrap WrappedMessage in writer logs ([#3169](https://github.com/apache/pekko/issues/3169))
+* Harden EndpointReader against NonFatal dispatch errors and unwrap WrappedMessage in writer logs ([PR3169](https://github.com/apache/pekko/pull/3169))
 * Filter messages from remember-entities store ([PR3411](https://github.com/apache/pekko/pull/3411))
 
 ### Changes

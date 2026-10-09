@@ -2,7 +2,7 @@
 
 Apache Pekko 1.4.x releases support Java 8 and above.
 
-# 1.4.0
+## 1.4.0
 
 Pekko 1.4.0 has a dependency change and some bug fixes. See the [GitHub Milestone for 1.3.1](https://github.com/apache/pekko/milestone/24?closed=1) and the [GitHub Milestone for 1.4.0](https://github.com/apache/pekko/milestone/25?closed=1) for a fuller list of changes.
 
