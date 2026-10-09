@@ -165,7 +165,7 @@ These changes were copied from Akka releases (up to and including Akka 2.8.5) th
 * Support the `SO_REUSEPORT` socket option ([PR2915](https://github.com/apache/pekko/pull/2915))
 * Add `ByteString.endsWith`, `indexOf` with from and to, and make `ByteString.copyToBuffer(buffer, offset)` public ([PR2271](https://github.com/apache/pekko/pull/2271), [PR2862](https://github.com/apache/pekko/pull/2862), [PR2946](https://github.com/apache/pekko/pull/2946))
 * Add OSGi headers to pekko-pki and pekko-cluster-typed and compute OSGi imports for Pekko packages dynamically ([PR2107](https://github.com/apache/pekko/pull/2107), [PR2112](https://github.com/apache/pekko/pull/2112), [PR2313](https://github.com/apache/pekko/pull/2313))
-* Add Scala 3.8 compatibility (Pekko is still published using Scala 3.3 LTS) ([PR3072](https://github.com/apache/pekko/pull/3072), [PR3073](https://github.com/apache/pekko/pull/3073), [PR3074](https://github.com/apache/pekko/pull/3074), [PR3295](https://github.com/apache/pekko/pull/3295))
+* Add Scala 3.8 and 3.9 compatibility (Pekko is still published using Scala 3.3 LTS) ([PR3072](https://github.com/apache/pekko/pull/3072), [PR3073](https://github.com/apache/pekko/pull/3073), [PR3074](https://github.com/apache/pekko/pull/3074), [PR3295](https://github.com/apache/pekko/pull/3295), [PR3303](https://github.com/apache/pekko/pull/3303))
 
 The Stream API has been updated to add some extra operators.
 
