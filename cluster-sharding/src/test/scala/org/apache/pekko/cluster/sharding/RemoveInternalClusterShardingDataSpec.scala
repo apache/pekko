@@ -221,8 +221,7 @@ class RemoveInternalClusterShardingDataSpec
         hasEvents(typeName) should ===(true)
       }
 
-      val result =
-        RemoveInternalClusterShardingData.remove(system, journalPluginId = "", typeNames.toSet, remove2dot3Data = true)
+      val result = RemoveInternalClusterShardingData.remove(system, journalPluginId = "", typeNames.toSet)
       Await.ready(result, remaining)
 
       typeNames.foreach { typeName =>
