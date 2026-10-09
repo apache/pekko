@@ -30,9 +30,10 @@ which is a typical source of failure in real world applications. Of course it de
 on the actual application what is possible to do when the data store is unavailable,
 but in this sample we use a best effort re-connect approach.
 
-Read the following source code. The inlined comments explain the different pieces of
-the fault handling and why they are added. It is also highly recommended to run this
-sample as it is easy to follow the log output to understand what is happening at runtime.
+Read the source code of the @ref:[Fault Tolerance Sample](fault-tolerance-sample.md#fault-tolerance-sample).
+The inlined comments explain the different pieces of the fault handling and why they are added.
+It is also highly recommended to run this sample as it is easy to follow the log output to
+understand what is happening at runtime.
 
 ## Creating a Supervisor Strategy
 
