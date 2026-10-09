@@ -41,6 +41,15 @@ Follow `CONTRIBUTING.md`. If this file conflicts with `CONTRIBUTING.md`, follow 
 - Wire protocol changes must consider rolling upgrade compatibility.
 - Dependency changes must verify Apache-compatible licenses.
 
+## Review Rules
+
+- A review comment is for the author, not a record of the review process.
+- Comment `LGTM` when the change needs nothing. Do not restate the diff or the verification you ran.
+- Otherwise state the conclusion first, then at most 2-3 actionable points.
+- Keep analysis, evidence gathering, and ruled-out hypotheses out of the comment. Report those to whoever asked for the review.
+- Prefix non-blocking points with `Nit:` so the author can tell what must change.
+- Write review comments in English.
+
 ## Package Requirements
 
 ### Coursier
