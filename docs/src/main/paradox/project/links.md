@@ -7,7 +7,7 @@ Pekko uses Git and is hosted at [Github apache/pekko](https://github.com/apache/
 ## Releases Repository
 
 All Pekko releases are published via Sonatype to Maven Central, see
-[search.maven.org](https://search.maven.org/search?q=g:org.apache.pekko)
+[Sonatype Central](https://central.sonatype.com/namespace/org.apache.pekko)
 
 ## Snapshots Repository
 

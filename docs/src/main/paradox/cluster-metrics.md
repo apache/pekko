@@ -114,7 +114,7 @@ To enable usage of Sigar you can add the following dependency to the user projec
   version="$sigar_loader.version$"
 }
 
-You can download Kamon sigar-loader from [Maven Central](https://search.maven.org/search?q=sigar-loader)
+You can download Kamon sigar-loader from [Sonatype Central](https://central.sonatype.com/artifact/io.kamon/sigar-loader)
 
 ## Adaptive Load Balancing
 
