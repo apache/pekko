@@ -49,6 +49,15 @@ Java users should match on `ReceiveTimeout.class` instead.
 @ref:[Changing TCP magic header](../additional/rolling-updates.md#changing-tcp-magic-header) for what this means for
 rolling updates. ([PR3425](https://github.com/apache/pekko/pull/3425))
 
+## Dependency Changes in Pekko 2.x
+* Java 17 is the minimum supported Java version and Scala 2.12 is no longer supported. Pekko 2.x is published for
+Scala 2.13 and Scala 3.
+* Agrona was updated from 1.x to 2.x, which
+[means](https://github.com/aeron-io/agrona/wiki/Change-Log#200-2024-12-17) you may have to add
+`--add-opens java.base/jdk.internal.misc=ALL-UNNAMED` if you use the Java Module System and Pekko Remote.
+* The `ssl-config` library is no longer a dependency of Pekko and the `ssl-config` configuration sections have
+been removed (see Removed configuration below). ([PR2127](https://github.com/apache/pekko/pull/2127))
+
 ## Configuration Changes in Pekko 2.x
 
 The `reference.conf` defaults have changed in a number of places. If you override any of the settings
