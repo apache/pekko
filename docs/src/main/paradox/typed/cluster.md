@@ -340,7 +340,7 @@ Cluster uses the @apidoc[remote.PhiAccrualFailureDetector](PhiAccrualFailureDete
 implementing the @apidoc[remote.FailureDetector](FailureDetector) and configuring it:
 
 ```
-pekko.cluster.implementation-class = "com.example.CustomFailureDetector"
+pekko.cluster.failure-detector.implementation-class = "com.example.CustomFailureDetector"
 ```
 
 In the @ref:[Cluster Configuration](#configuration) you may want to adjust these

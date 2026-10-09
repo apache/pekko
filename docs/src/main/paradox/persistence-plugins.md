@@ -45,12 +45,12 @@ pekko {
 
     journal {
       plugin = "pekko.persistence.journal.leveldb"
-      auto-start-journals = ["org.apache.pekko.persistence.journal.leveldb"]
+      auto-start-journals = ["pekko.persistence.journal.leveldb"]
     }
 
     snapshot-store {
       plugin = "pekko.persistence.snapshot-store.local"
-      auto-start-snapshot-stores = ["org.apache.pekko.persistence.snapshot-store.local"]
+      auto-start-snapshot-stores = ["pekko.persistence.snapshot-store.local"]
     }
 
   }

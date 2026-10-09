@@ -17,7 +17,7 @@ and add the following configuration stanza to your `application.conf`
 :
 
 ```
-pekko.extensions = [ "pekko.cluster.metrics.ClusterMetricsExtension" ]
+pekko.extensions = [ "org.apache.pekko.cluster.metrics.ClusterMetricsExtension" ]
 ```
 
 @@project-info{ projectId="cluster-metrics" }

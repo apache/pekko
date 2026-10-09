@@ -72,7 +72,7 @@ To be able to survive sudden abnormalities, such as garbage collection pauses an
 transient network failures the failure detector is easily @ref:[configurable](cluster.md#using-the-failure-detector)
 for tuning to your environments and needs.
 
-In a cluster each node is monitored by a few (default maximum 5) other nodes.
+In a cluster each node is monitored by a few (default maximum 9) other nodes.
 The nodes to monitor are selected from neighbors in a hashed ordered node ring.
 This is to increase the likelihood to monitor across racks and data centers, but the order
 is the same on all nodes, which ensures full coverage.

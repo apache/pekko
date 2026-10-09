@@ -302,7 +302,7 @@ is attempted to be sent to the remote system or an inbound connection is accepte
 When a communication failure happens and the connection is lost between the two systems the link becomes `Gated`.
 
 In this state the system will not attempt to connect to the remote host and all outbound messages will be dropped. The time
-while the link is in the `Gated` state is controlled by the setting `pekko.remote.retry-gate-closed-for`:
+while the link is in the `Gated` state is controlled by the setting `pekko.remote.classic.retry-gate-closed-for`:
 after this time elapses the link state transitions to `Idle` again. `Gate` is one-sided in the
 sense that whenever a successful *inbound* connection is accepted from a remote system during `Gate` it automatically
 transitions to `Active` and communication resumes immediately.
