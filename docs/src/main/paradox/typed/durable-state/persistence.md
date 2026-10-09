@@ -307,7 +307,7 @@ There is also an example illustrating an @ref:[optional initial state](persisten
 
 The @ref:[Request-Response interaction pattern](../interaction-patterns.md#request-response) is very common for
 persistent actors, because you typically want to know if the command was rejected due to validation errors and
-when accepted you want a confirmation when the events have been successfully stored.
+when accepted you want a confirmation when the state has been successfully stored.
 
 Therefore you typically include a @scala[`ActorRef[ReplyMessageType]`]@java[`ActorRef<ReplyMessageType>`]. If the 
 command can either have a successful response or a validation error returned, the generic response type @scala[`StatusReply[ReplyType]`]
@@ -315,7 +315,7 @@ command can either have a successful response or a validation error returned, th
 a pre defined @scala[`StatusReply.Ack`]@java[`StatusReply.ack()`] of type @scala[`StatusReply[Done]`]@java[`StatusReply<Done>`]
 can be used.
 
-After validation errors or after persisting events, using a `thenRun` side effect, the reply message can
+After validation errors or after persisting the state, using a `thenRun` side effect, the reply message can
 be sent to the `ActorRef`.
 
 Scala
@@ -357,7 +357,7 @@ The `ReplyEffect` is created with @scala[`Effect.reply`]@java[`Effect().reply`],
 @scala[`Effect.thenReply`]@java[`Effect().thenReply`], or @scala[`Effect.thenNoReply`]@java[`Effect().thenNoReply`].
 
 @java[Note that command handlers are defined with `newCommandHandlerWithReplyBuilder` when using
-`EventSourcedBehaviorWithEnforcedReplies`, as opposed to newCommandHandlerBuilder when using `EventSourcedBehavior`.]
+`DurableStateBehaviorWithEnforcedReplies`, as opposed to newCommandHandlerBuilder when using `DurableStateBehavior`.]
 
 Scala
 :  @@snip [AccountExampleWithCommandHandlersInDurableState.scala](/cluster-sharding-typed/src/test/scala/docs/org/apache/pekko/cluster/sharding/typed/AccountExampleWithCommandHandlersInDurableState.scala) { #reply }

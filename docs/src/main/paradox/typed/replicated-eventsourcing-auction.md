@@ -25,7 +25,7 @@ Scala
 Java
 :   @@snip [AuctionExample](/persistence-typed-tests/src/test/java/jdocs/org/apache/pekko/persistence/typed/ReplicatedAuctionExampleTest.java) { #events }
 
-The winner does not have to pay the highest bid but only enough to beat the second highest, so the `highestCounterOffer` is in the `AuctionFinished` event. 
+The winner does not have to pay the highest bid but only enough to beat the second highest, so the `highestCounterOffer` is in the `WinnerDecided` event. 
 
 Let's have a look at the auction entity that will handle incoming commands:
 
@@ -36,7 +36,7 @@ Java
 :   @@snip [AuctionExample](/persistence-typed-tests/src/test/java/jdocs/org/apache/pekko/persistence/typed/ReplicatedAuctionExampleTest.java) { #command-handler }
 
 There is nothing specific to Replicated Event Sourcing about the command handler. It is the same as a command handler for a standard `EventSourcedBehavior`.
-For `OfferBid` and `AuctionFinished` we do nothing more than to emit
+For `OfferBid` and `Finish` we do nothing more than to emit
 events corresponding to the command. For `GetHighestBid` we respond with details from the state. Note, that we overwrite the actual
 offer of the highest bid here with the amount of the `highestCounterOffer`. This is done to follow the popular auction style where
 the actual highest bid is never publicly revealed.

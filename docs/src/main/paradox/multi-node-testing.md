@@ -130,11 +130,11 @@ Here are some examples of how you define hosts:
    `user1@host1`
    User `user1` on host `host1` with the default java.
  * 
-   `user2@host2:/usr/lib/jvm/java-7-openjdk-amd64/bin/java`
-   User `user2` on host `host2` using java 7.
+   `user2@host2:/usr/lib/jvm/java-17-openjdk-amd64/bin/java`
+   User `user2` on host `host2` using Java 17.
  * 
-   `host3:/usr/lib/jvm/java-6-openjdk-amd64/bin/java`
-   The current user on host `host3` using java 6.
+   `host3:/usr/lib/jvm/java-21-openjdk-amd64/bin/java`
+   The current user on host `host3` using Java 21.
 
 
 ### Running the Multi Node Tests
@@ -149,7 +149,7 @@ multiNodeTest
 To run all of them in multi-jvm mode (i.e. all JVMs on the local machine) do:
 
 ```none
-multi-jvm:test
+MultiJvm / test
 ```
 
 To run individual tests use the `multiNodeTestOnly` task:
@@ -161,7 +161,7 @@ multiNodeTestOnly your.MultiNodeTest
 To run individual tests in the multi-jvm mode do:
 
 ```none
-multi-jvm:testOnly your.MultiNodeTest
+MultiJvm / testOnly your.MultiNodeTest
 ```
 
 More than one test name can be listed to run multiple specific tests. Tab completion in sbt makes it easy to

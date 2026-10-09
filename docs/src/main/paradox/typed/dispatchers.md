@@ -102,7 +102,7 @@ There are 2 different types of message dispatchers:
     * Use cases: Default dispatcher, Bulkheading
     * Driven by: `java.util.concurrent.ExecutorService`.
       Specify using "executor" using "fork-join-executor", "thread-pool-executor" or the fully-qualified
-      class name of an `org.apache.pekko.dispatcher.ExecutorServiceConfigurator` implementation.
+      class name of an `org.apache.pekko.dispatch.ExecutorServiceConfigurator` implementation.
 
 * **PinnedDispatcher**
 
@@ -128,9 +128,9 @@ section and the `default-dispatcher` section of the @ref:[configuration](../gene
 The `parallelism-max` for the `fork-join-executor` does not set the upper bound on the total number of threads
 allocated by the ForkJoinPool. It is a setting specifically talking about the number of *hot*
 threads the pool will keep running in order to reduce the latency of handling a new incoming task.
-You can read more about parallelism in the JDK's [ForkJoinPool documentation](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ForkJoinPool.html).
+You can read more about parallelism in the JDK's [ForkJoinPool documentation](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/ForkJoinPool.html).
 
-When Running on Java 9+, you can use `maximum-pool-size` to set the upper bound on the total number of threads allocated by the ForkJoinPool.
+You can use `maximum-pool-size` to set the upper bound on the total number of threads allocated by the ForkJoinPool.
 
 When running on Java 25+, the `minimum-runnable` setting for the `fork-join-executor` defaults to a JDK-aware value
 (`min(8, max(1, parallelism / 2))`) instead of the historical `1`. This raises the number of compensation threads the
@@ -161,7 +161,7 @@ default; use an explicit application or test configuration when opting in.
 @@@ note
 
 The `thread-pool-executor` dispatcher is implemented using by a `java.util.concurrent.ThreadPoolExecutor`.
-You can read more about it in the JDK's [ThreadPoolExecutor documentation](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ThreadPoolExecutor.html).
+You can read more about it in the JDK's [ThreadPoolExecutor documentation](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/ThreadPoolExecutor.html).
 
 @@@
 

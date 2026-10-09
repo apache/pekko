@@ -24,7 +24,7 @@ This operator is included in:
 ## Description
 
 Use the @ref[Ask pattern](../../../typed/interaction-patterns.md#request-response-with-ask-from-outside-an-actor) to send a request-reply message to the target `ref` actor.
-If any of the asks times out it will fail the stream with an @apidoc[AskTimeoutException].
+If any of the asks times out it will fail the stream with a `java.util.concurrent.TimeoutException`.
 
 The `ask` operator requires
 

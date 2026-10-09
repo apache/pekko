@@ -311,12 +311,13 @@ Java
 
 @@@ note
 
-The name `flatMap` was consciously avoided due to its proximity with for-comprehensions and monadic composition.
+The name `flatMap` was originally avoided for this operator due to its proximity with for-comprehensions and monadic composition.
 It is problematic for two reasons: @scala[first]@java[firstly], flattening by concatenation is often undesirable in bounded stream processing
 due to the risk of deadlock (with merge being the preferred strategy), and @scala[second]@java[secondly], the monad laws would not hold for
-our implementation of flatMap (due to the liveness issues).
+an implementation of flatMap on streams (due to the liveness issues).
+@scala[The Scala API does provide `flatMap`, but only as an alias for @ref:[flatMapConcat](operators/Source-or-Flow/flatMapConcat.md) that was added (as an API that may change) to enable for-comprehensions; it operates on streams (the supplied function returns a `Source`), not on collections.]
 
-Please note that the @apidoc[mapConcat](stream.*.Source) {scala="#mapConcat[T](f:Out=%3EIterableOnce[T]):FlowOps.this.Repr[T]" java="#mapConcat(org.apache.pekko.japi.function.Function)"} requires the supplied function to return @scala[an iterable (`f: Out => immutable.Iterable[T]`]@java[a strict collection (`Out f -> java.util.List<T>`)],
+Please note that the @apidoc[mapConcat](stream.*.Source) {scala="#mapConcat[T](f:Out=%3EIterableOnce[T]):FlowOps.this.Repr[T]" java="#mapConcat(org.apache.pekko.japi.function.Function)"} requires the supplied function to return @scala[an iterable (`f: Out => IterableOnce[T]`)]@java[an iterable (`Out f -> java.lang.Iterable<T>`)],
 whereas `flatMap` would have to operate on streams all the way through.
 
 @@@

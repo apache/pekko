@@ -418,7 +418,7 @@ External monitors may be unregistered by sending
 `UnsubscribeTransitionCallBack(actorRef)` to the `FSM` actor.
 
 Stopping a listener will remove it from the subscription list. Subscriptions may
-also be removed explicitly with `UnsubscribeTransitionCallback`.
+also be removed explicitly with `UnsubscribeTransitionCallBack`.
 
 @@@ div { .group-scala }
 

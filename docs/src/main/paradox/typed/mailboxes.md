@@ -41,7 +41,7 @@ Scala
 Java
 :  @@snip [MailboxDocTest.java](/actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/MailboxDocTest.java) { #select-mailbox }
 
-@apidoc[fromConfig](MailboxSelector$) {scala="#fromConfig(path:String):org.apache.pekko.actor.typed.MailboxSelector" java="#fromConfig(java.lang.String)"} takes an absolute config path to a block defining the dispatcher in the config file:
+@apidoc[fromConfig](MailboxSelector$) {scala="#fromConfig(path:String):org.apache.pekko.actor.typed.MailboxSelector" java="#fromConfig(java.lang.String)"} takes an absolute config path to a block defining the mailbox in the config file:
 
 @@snip [MailboxDocSpec.scala](/actor-typed-tests/src/test/resources/mailbox-config-sample.conf) { }
 
@@ -52,7 +52,7 @@ The default mailbox is used when the mailbox is not specified and is the @apidoc
 ### Which Configuration is passed to the Mailbox Type
 
 Each mailbox type is implemented by a class which extends @apidoc[MailboxType](MailboxType)
-and takes two constructor arguments: a @apidoc[ActorSystem.Settings](typed.Settings) object and
+and takes two constructor arguments: a @apidoc[actor.ActorSystem.Settings](actor.ActorSystem.Settings) object and
 a [Config](https://lightbend.github.io/config/latest/api/index.html?com/typesafe/config/Config.html) section. The latter is computed by obtaining the named
 configuration section from the @apidoc[ActorSystem](typed.ActorSystem) configuration, overriding its
 `id` key with the configuration path of the mailbox type and adding a

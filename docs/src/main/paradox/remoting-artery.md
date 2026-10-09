@@ -634,7 +634,7 @@ aeron.threading.mode=SHARED_NETWORK
 #aeron.sender.idle.strategy=org.agrona.concurrent.BusySpinIdleStrategy
 #aeron.receiver.idle.strategy=org.agrona.concurrent.BusySpinIdleStrategy
 
-# use same director in pekko.remote.artery.advanced.aeron-dir config
+# use same directory in pekko.remote.artery.advanced.aeron.aeron-dir config
 # of the Pekko application
 aeron.dir=/dev/shm/aeron
 ```

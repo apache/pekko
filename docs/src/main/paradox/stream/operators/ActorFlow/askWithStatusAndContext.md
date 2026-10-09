@@ -26,7 +26,7 @@ This operator is included in:
 Use the @ref[Ask pattern](../../../typed/interaction-patterns.md#request-response-with-ask-from-outside-an-actor) to send a request-reply message to the target `ref` actor when you expect the reply to be `org.apache.pekko.pattern.StatusReply`.
 The stream context is not sent, instead it is locally recombined to the actor's reply.
 
-If any of the asks times out it will fail the stream with an @apidoc[AskTimeoutException].
+If any of the asks times out it will fail the stream with a `java.util.concurrent.TimeoutException`.
 
 The `ask` operator requires
 

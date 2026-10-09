@@ -43,7 +43,7 @@ Scala
 Java
 :   @@snip [ActorHierarchyExperiments.java](/docs/src/test/java/jdocs/typed/tutorial_1/ActorHierarchyExperiments.java) { #print-refs }
 
-Note the way a message asked the first actor to do its work. We sent the message by using the parent's reference: @scala[`firstRef ! "printit"`]@java[`firstRef.tell("printit", ActorRef.noSender())`]. When the code executes, the output includes the references for the first actor and the child it created as part of the `printit` case. Your output should look similar to the following:
+Note the way a message asked the first actor to do its work. We sent the message by using the parent's reference: @scala[`firstRef ! "printit"`]@java[`firstRef.tell("printit")`]. When the code executes, the output includes the references for the first actor and the child it created as part of the `printit` case. Your output should look similar to the following:
 
 ```
 First: Actor[pekko://testSystem/user/first-actor#1053618476]

@@ -396,7 +396,7 @@ This is needed in order to implement the balancing semantics via
 sharing the same mailbox by all the routees.
 
 While it is not possible to change the dispatcher used by the routees, it is possible
-to fine tune the used *executor*. By default the `fork-join-dispatcher` is used and
+to fine tune the used *executor*. By default the `fork-join-executor` is used and
 can be configured as explained in @ref:[Dispatchers](dispatchers.md). In situations where the
 routees are expected to perform blocking operations it may be useful to replace it
 with a `thread-pool-executor` hinting the number of allocated threads explicitly:

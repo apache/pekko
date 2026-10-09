@@ -43,7 +43,7 @@ See documentation of @extref:[Pekko Management](pekko-management:).
 <a id="cluster-jmx"></a>
 ### JMX
 
-Information and management of the cluster is available as JMX MBeans with the root name `org.apache.pekko.Cluster`.
+Information and management of the cluster is available as JMX MBeans with the root name `pekko:type=Cluster` (or `pekko:type=Cluster,port=<port>` when `pekko.cluster.jmx.multi-mbeans-in-same-jvm` is enabled).
 The JMX information can be displayed with an ordinary JMX console such as JConsole or JVisualVM.
 
 From JMX you can:

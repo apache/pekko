@@ -40,8 +40,11 @@ not using classic remoting do not have to have Netty on the classpath:
 
 @@dependency[sbt,Maven,Gradle] {
   group=io.netty
-  artifact=netty
+  artifact=netty-transport
   version=$netty_version$
+  group2=io.netty
+  artifact2=netty-handler
+  version2=$netty_version$
 }
 
 ## Configuration
@@ -198,7 +201,7 @@ pekko {
 ```
 
 The configuration above instructs Pekko to react when an actor with path `/sampleActor` is created, i.e.
-using @scala[`system.actorOf(Props(...), "sampleActor")`]@java[`system.actorOf(new Props(...), "sampleActor")`]. This specific actor will not be directly instantiated,
+using @scala[`system.actorOf(Props(...), "sampleActor")`]@java[`system.actorOf(Props.create(...), "sampleActor")`]. This specific actor will not be directly instantiated,
 but instead the remote daemon of the remote system will be asked to create the actor,
 which in this sample corresponds to `sampleActorSystem@127.0.0.1:7356`.
 
@@ -302,7 +305,7 @@ is attempted to be sent to the remote system or an inbound connection is accepte
 When a communication failure happens and the connection is lost between the two systems the link becomes `Gated`.
 
 In this state the system will not attempt to connect to the remote host and all outbound messages will be dropped. The time
-while the link is in the `Gated` state is controlled by the setting `pekko.remote.retry-gate-closed-for`:
+while the link is in the `Gated` state is controlled by the setting `pekko.remote.classic.retry-gate-closed-for`:
 after this time elapses the link state transitions to `Idle` again. `Gate` is one-sided in the
 sense that whenever a successful *inbound* connection is accepted from a remote system during `Gate` it automatically
 transitions to `Active` and communication resumes immediately.

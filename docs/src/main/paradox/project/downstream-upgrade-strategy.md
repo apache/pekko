@@ -14,7 +14,7 @@ wait for intermediate libraries to update.
 
 ## Patch versions
 
-When releasing a new patch version of Pekko (e.g. 1.1.0), we typically don't
+When releasing a new patch version of Pekko (e.g. 1.1.1), we typically don't
 immediately bump the Pekko version in satellite projects.
 
 The reason for this is this will make it more low-friction for users to update

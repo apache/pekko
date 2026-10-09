@@ -407,8 +407,8 @@ problematic, so passing an @scala[`ActorRef[PublishSessionMessage]`]@java[`Actor
 #### AbstractMatchingBehavior API
 
 The `AbstractBehavior` API makes use of a builder on receipt of the first message by the actor.  The `Receive` built
-by this builder performs `instanceof` checks and casts "behind the scenes".  Pattern-matching features introduced in Java
-17 and refined in subsequent versions improve the ergonomics of expressing this logic directly in code.  Users of other
+by this builder performs `instanceof` checks and casts "behind the scenes".  Pattern matching for `instanceof`
+(Java 16+) and pattern matching for `switch` (Java 21+) improve the ergonomics of expressing this logic directly in code.  Users of other
 JVM languages (such as Kotlin) may also prefer to not use a builder while using the Java DSL (note that the Scala DSL's
 `AbstractBehavior` does not make use of builders).
 

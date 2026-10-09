@@ -39,7 +39,7 @@ So in Pekko, to run all the multi-JVM tests in the pekko-remote project use (at
 the sbt prompt):
 
 ```none
-remote-tests/multi-jvm:test
+remote-tests / MultiJvm / test
 ```
 
 Or one can change to the `pekko-remote-tests` project first, and then run the
@@ -47,13 +47,13 @@ tests:
 
 ```none
 project remote-tests
-multi-jvm:test
+MultiJvm / test
 ```
 
 To run individual tests use `testOnly`:
 
 ```none
-multi-jvm:testOnly org.apache.pekko.remote.RandomRoutedRemoteActor
+MultiJvm / testOnly org.apache.pekko.remote.RemoteDelivery
 ```
 
 More than one test name can be listed to run multiple specific
@@ -63,7 +63,7 @@ It's also possible to specify JVM options with `testOnly` by including those
 options after the test names and `--`. For example:
 
 ```none
-multi-jvm:testOnly org.apache.pekko.remote.RandomRoutedRemoteActor -- -Dsome.option=something
+MultiJvm / testOnly org.apache.pekko.remote.RemoteDelivery -- -Dsome.option=something
 ```
 
 ## Creating application tests
@@ -87,29 +87,29 @@ like the following:
 package sample
 
 object SampleMultiJvmNode1 {
-  def main(args: Array[String]) {
+  def main(args: Array[String]): Unit = {
     println("Hello from node 1")
   }
 }
 
 object SampleMultiJvmNode2 {
-  def main(args: Array[String]) {
+  def main(args: Array[String]): Unit = {
     println("Hello from node 2")
   }
 }
 
 object SampleMultiJvmNode3 {
-  def main(args: Array[String]) {
+  def main(args: Array[String]): Unit = {
     println("Hello from node 3")
   }
 }
 ```
 
-When you call `multi-jvm:run sample.Sample` at the sbt prompt, three JVMs will be
+When you call `MultiJvm / run sample.Sample` at the sbt prompt, three JVMs will be
 spawned, one for each node. It will look like this:
 
 ```none
-> multi-jvm:run sample.Sample
+> MultiJvm / run sample.Sample
 ...
 [info] * sample.Sample
 [JVM-1] Hello from node 1
@@ -123,22 +123,22 @@ spawned, one for each node. It will look like this:
 You can specify JVM options for the forked JVMs:
 
 ```
-jvmOptions in MultiJvm := Seq("-Xmx256M")
+MultiJvm / jvmOptions := Seq("-Xmx256M")
 ```
 
 You can change the name of the multi-JVM test source directory by adding the following
 configuration to your project:
 
 ```none
-unmanagedSourceDirectories in MultiJvm :=
-   Seq(baseDirectory(_ / "src/some_directory_here")).join.value
+MultiJvm / unmanagedSourceDirectories :=
+   Seq(baseDirectory.value / "src/some_directory_here")
 ```
 
 You can change what the `MultiJvm` identifier is. For example, to change it to
 `ClusterTest` use the `multiJvmMarker` setting:
 
 ```none
-multiJvmMarker in MultiJvm := "ClusterTest"
+MultiJvm / multiJvmMarker := "ClusterTest"
 ```
 
 Your tests should now be named `{TestName}ClusterTest{NodeName}`.
@@ -149,26 +149,26 @@ You can define specific JVM options for each of the spawned JVMs. You do that by
 a file named after the node in the test with suffix `.opts` and put them in the same
 directory as the test.
 
-For example, to feed the JVM options `-Dpekko.remote.port=9991` and `-Xmx256m` to the `SampleMultiJvmNode1`
+For example, to feed the JVM options `-Dpekko.remote.artery.canonical.port=9991` and `-Xmx256m` to the `SampleMultiJvmNode1`
 let's create three `*.opts` files and add the options to them. Separate multiple options with
 space.
 
 `SampleMultiJvmNode1.opts`:
 
 ```
--Dpekko.remote.port=9991 -Xmx256m
+-Dpekko.remote.artery.canonical.port=9991 -Xmx256m
 ```
 
 `SampleMultiJvmNode2.opts`:
 
 ```
--Dpekko.remote.port=9992 -Xmx256m
+-Dpekko.remote.artery.canonical.port=9992 -Xmx256m
 ```
 
 `SampleMultiJvmNode3.opts`:
 
 ```
--Dpekko.remote.port=9993 -Xmx256m
+-Dpekko.remote.artery.canonical.port=9993 -Xmx256m
 ```
 
 ## ScalaTest
@@ -203,7 +203,7 @@ class SpecMultiJvmNode2 extends AnyWordSpec with Matchers {
 }
 ```
 
-To run just these tests you would call `multi-jvm:testOnly sample.Spec` at
+To run just these tests you would call `MultiJvm / testOnly sample.Spec` at
 the sbt prompt.
 
 ## Multi Node Additions

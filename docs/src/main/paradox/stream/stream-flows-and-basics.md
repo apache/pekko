@@ -115,11 +115,13 @@ both a `Source` and a `Sink` (in order to run a `Flow`, since it has neither att
 
 @@@ div { .group-java }
 
-After running (materializing) the @javadoc[RunnableGraph](pekko.stream.javadsl.RunnableGraph) we get a special container object, the `MaterializedMap`. Both
-sources and sinks are able to put specific objects into this map. Whether they put something in or not is implementation
-dependent. 
+After running (materializing) the `RunnableGraph<T>` we get back the materialized value of type T. Every stream
+operator can produce a materialized value, and it is the responsibility of the user to combine them to a new type.
+In the above example, we used `toMat` to indicate that we want to transform the materialized value of the source and
+sink, and we used the convenience function `Keep.right()` to say that we are only interested in the materialized value
+of the sink.
 
-For example, a @javadoc[Sink.fold](pekko.stream.javadsl.Sink$#fold(java.lang.Object,org.apache.pekko.japi.function.Function2)) will make a @javadoc[CompletionStage](java.util.concurrent.CompletionStage) available in this map which will represent the result
+In our example, the @javadoc[Sink.fold](pekko.stream.javadsl.Sink$#fold(java.lang.Object,org.apache.pekko.japi.function.Function2)) materializes a value of type @javadoc[CompletionStage](java.util.concurrent.CompletionStage) which will represent the result
 of the folding process over the stream.  In general, a stream can expose multiple materialized values,
 but it is quite common to be interested in only the value of the Source or the Sink in the stream. For this reason
 there is a convenience method called `runWith()` available for @javadoc[Sink](pekko.stream.javadsl.Sink), @javadoc[Source](pekko.stream.javadsl.Source) or @javadoc[Flow](pekko.stream.javadsl.Flow) requiring, respectively,
@@ -154,10 +156,10 @@ by providing named fan-out elements such as broadcast (signals all down-stream e
 In the above example we used the `runWith` method, which both materializes the stream and returns the materialized value
 of the given sink or source.
 
-Since a stream can be materialized multiple times, the @scala[materialized value will also be calculated anew] @java[`MaterializedMap` returned is different] for each such
+Since a stream can be materialized multiple times, the @scala[materialized value will also be calculated anew] @java[materialized value will also be calculated anew] for each such
 materialization, usually leading to different values being returned each time.
 In the example below, we create two running materialized instances of the stream that we described in the `runnable`
-variable. Both materializations give us a different @scala[@scaladoc[Future](scala.concurrent.Future)]@java[@javadoc[CompletionStage](java.util.concurrent.CompletionStage)] from the map even though we used the same `sink`
+variable. Both materializations give us a different @scala[@scaladoc[Future](scala.concurrent.Future)]@java[@javadoc[CompletionStage](java.util.concurrent.CompletionStage)] even though we used the same `sink`
 to refer to the future:
 
 Scala
@@ -189,7 +191,7 @@ Java
 
 In accordance to the Reactive Streams specification ([Rule 2.13](https://github.com/reactive-streams/reactive-streams-jvm#2.13))
 Pekko Streams do not allow `null` to be passed through the stream as an element. In case you want to model the concept
-of absence of a value we recommend using @scala[@scaladoc[scala.Option](scala.Option) or @scaladoc[scala.util.Either](scala.util.Either)]@java[@javadoc[java.util.Optional](java.util.Optional) which is available since Java 8].
+of absence of a value we recommend using @scala[@scaladoc[scala.Option](scala.Option) or @scaladoc[scala.util.Either](scala.util.Either)]@java[@javadoc[java.util.Optional](java.util.Optional)].
 
 ## Back-pressure explained
 
@@ -315,7 +317,7 @@ operators that have been added since then.
 
 @@@ warning
 
-Without fusing (i.e. up to version 2.0-M2) each stream operator had an implicit input buffer
+Without fusing (as was the case in very early versions of the streams implementation) each stream operator had an implicit input buffer
 that holds a few elements for efficiency reasons. If your flow graphs contain cycles then these buffers
 may have been crucial in order to avoid deadlocks. With fusing these implicit buffers are no longer
 there, data elements are passed without buffering between fused operators. In those cases where buffering

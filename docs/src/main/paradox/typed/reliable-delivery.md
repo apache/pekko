@@ -147,8 +147,8 @@ corresponding producer is started again. Even if the same `ConsumerController` i
 delivery of messages that had already been processed but the fact that they were confirmed had not been stored yet.
 This means that we have at-least-once delivery.
 
-If the consumer crashes, a new `ConsumerController` can be connected to the original `ProducerConsumer`
-without restarting it. The `ProducerConsumer` will then redeliver all unconfirmed messages. In that case
+If the consumer crashes, a new `ConsumerController` can be connected to the original `ProducerController`
+without restarting it. The `ProducerController` will then redeliver all unconfirmed messages. In that case
 the unconfirmed messages will be delivered to the new consumer and some of these may already have been
 processed by the previous consumer.
 Again, this means that we have at-least-once delivery.

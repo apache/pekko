@@ -128,36 +128,21 @@ use `Sink.actorRefWithBackpressure` or `ask` in `mapAsync`, though.
 
 ### Source.queue
 
-@@@ warning { title="Deprecation notice (since 2.0.0)" }
-
-The `Source.queue(Int, OverflowStrategy)` overloads that this section describes — including `OverflowStrategy.backpressure` — are **deprecated** because their asynchronous `offer` @scala[`Future`]@java[`CompletionStage`] can hang indefinitely when downstream stalls. Use `Source.queue[T](bufferSize)` (materializes a @apidoc[BoundedSourceQueue] with synchronous feedback), or for backpressure towards the producer use @ref:[`Source.actorRefWithBackpressure`](operators/Source/actorRefWithBackpressure.md) or `MergeHub.source`. See @ref:[the Source.queue operator page](operators/Source/queue.md) for a per-strategy migration table.
-
-The snippet below has been updated to the recommended non-deprecated API, so it uses a synchronous `match`/`switch` on `QueueOfferResult` rather than the `pipe`-the-`Future` pattern described in the surrounding prose.
-
-@@@
-
-`Source.queue` is an improvement over `Sink.actorRef`, since it can provide backpressure.
-The `offer` method returns a @scala[`Future`]@java[`CompletionStage`], which completes with the result of the enqueue operation.
-
 `Source.queue` can be used for emitting elements to a stream from an actor (or from anything running outside
-the stream). The elements will be buffered until the stream can process them. You can `offer` elements to
-the queue and they will be emitted to the stream if there is demand from downstream, otherwise they will
-be buffered until request for demand is received.
+the stream). `Source.queue[T](bufferSize)` materializes a @apidoc[BoundedSourceQueue] which you can `offer` elements to.
+They will be emitted to the stream if there is demand from downstream, otherwise they will be buffered until request
+for demand is received. Elements in the buffer will be discarded if downstream is terminated.
 
-Use overflow strategy `org.apache.pekko.stream.OverflowStrategy.backpressure` to avoid dropping of elements if the
-buffer is full, instead the returned @scala[`Future`]@java[`CompletionStage`] does not complete until there is space in the
-buffer and `offer` should not be called again until it completes.
+Unlike `Source.actorRef`, `offer` gives immediate, synchronous feedback on whether the element could be enqueued: it
+returns a `QueueOfferResult` which is `QueueOfferResult.Enqueued` if the element was added to the buffer,
+`QueueOfferResult.Dropped` if the element was dropped because the buffer was full, `QueueOfferResult.Failure` if the
+queue was failed, the stream failed or downstream cancelled, or `QueueOfferResult.QueueClosed` if the queue was
+completed. Note that `Enqueued` does not guarantee that the element will be processed by the rest of the stream.
+The caller decides how to handle a dropped element, for example by retrying later or by signalling the producer to
+slow down.
 
-Using `Source.queue` you can push elements to the queue and they will be emitted to the stream if there is
-demand from downstream, otherwise they will be buffered until request for demand is received. Elements in the buffer
-will be discarded if downstream is terminated.
-
-You could combine it with the @ref[`throttle`](operators/Source-or-Flow/throttle.md) operator is used to slow down the stream to `5 element` per `3 seconds` and other patterns.
-
-`SourceQueue.offer` returns @scala[`Future[QueueOfferResult]`]@java[`CompletionStage<QueueOfferResult>`] which completes with `QueueOfferResult.Enqueued`
-if element was added to buffer or sent downstream. It completes with `QueueOfferResult.Dropped` if element
-was dropped. Can also complete  with `QueueOfferResult.Failure` - when stream failed or
-`QueueOfferResult.QueueClosed` when downstream is completed.
+You could combine it with the @ref[`throttle`](operators/Source-or-Flow/throttle.md) operator, which in the example
+below slows down the stream to `5 elements` per `3 seconds`, and other patterns.
 
 Scala
 :   @@snip [IntegrationDocSpec.scala](/docs/src/test/scala/docs/stream/IntegrationDocSpec.scala) { #source-queue }
@@ -165,8 +150,11 @@ Scala
 Java
 :   @@snip [IntegrationDocTest.java](/docs/src/test/java/jdocs/stream/IntegrationDocTest.java) { #source-queue }
 
-When used from an actor you typically `pipe` the result of the @scala[`Future`]@java[`CompletionStage`] back to the actor to
-continue processing.
+@@@ note
+
+The `Source.queue(Int, OverflowStrategy)` overloads, which materialize a `SourceQueueWithComplete` with an asynchronous `offer` returning a @scala[`Future`]@java[`CompletionStage`], are **deprecated** (since 2.0.0) because that @scala[`Future`]@java[`CompletionStage`] can hang indefinitely when downstream stalls. If you need backpressure towards the producer use @ref:[`Source.actorRefWithBackpressure`](operators/Source/actorRefWithBackpressure.md) or `MergeHub.source` instead. See @ref:[the Source.queue operator page](operators/Source/queue.md) for a per-strategy migration table.
+
+@@@
 
 ### Source.actorRef
 
@@ -234,18 +222,18 @@ Sends the elements of the stream to the given @java[`ActorRef<T>`]@scala[`ActorR
 @@@
 
 
-### Topic.source
+### PubSub.source
 
 A source that will subscribe to a @apidoc[actor.typed.pubsub.Topic$] and stream messages published to the topic.
 
 @@@ note
-See also: @ref[ActorSink.actorRefWithBackpressure operator reference docs](operators/PubSub/source.md)
+See also: @ref[PubSub.source operator reference docs](operators/PubSub/source.md)
 @@@
 
-### Topic.sink
+### PubSub.sink
 
 A sink that will publish emitted messages to a @apidoc[actor.typed.pubsub.Topic$].
 
 @@@ note
-See also: @ref[ActorSink.actorRefWithBackpressure operator reference docs](operators/PubSub/sink.md)
+See also: @ref[PubSub.sink operator reference docs](operators/PubSub/sink.md)
 @@@

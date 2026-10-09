@@ -106,7 +106,7 @@ Lookups with all the fields set become SRV queries. For example:
 ```
 dig srv _service._tcp.pekko.test
 
-; <<>> DiG 9.11.3-RedHat-9.11.3-6.fc28 <<>> srv service.tcp.pekko.test
+; <<>> DiG 9.11.3-RedHat-9.11.3-6.fc28 <<>> srv _service._tcp.pekko.test
 ;; global options: +cmd
 ;; Got answer:
 ;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 60023
@@ -116,7 +116,7 @@ dig srv _service._tcp.pekko.test
 ; EDNS: version: 0, flags:; udp: 4096
 ; COOKIE: 5ab8dd4622e632f6190f54de5b28bb8fb1b930a5333c3862 (good)
 ;; QUESTION SECTION:
-;service.tcp.pekko.test.         IN      SRV
+;_service._tcp.pekko.test.       IN      SRV
 
 ;; ANSWER SECTION:
 _service._tcp.pekko.test.  86400   IN      SRV     10 60 5060 a-single.pekko.test.
@@ -124,7 +124,7 @@ _service._tcp.pekko.test.  86400   IN      SRV     10 40 5070 a-double.pekko.tes
 
 ```
 
-In this case `service.tcp.pekko.test` resolves to `a-single.pekko.test` on port `5060`
+In this case `_service._tcp.pekko.test` resolves to `a-single.pekko.test` on port `5060`
 and `a-double.pekko.test` on port `5070`. Currently discovery does not support the weightings.
 
 #### A/AAAA records
@@ -235,20 +235,5 @@ pekko {
 ```
 
 The above configuration will result in `pekko-dns` first being checked and if it fails or returns no
-targets for the given service name then `config` is queried which i configured with one service called
-`service1` which two hosts `host1` and `host2`.
-
-## Migrating from Pekko Management Discovery (before 1.0.0)
-
-Pekko Discovery started out as a submodule of Pekko Management, before 1.0.0 of Pekko Management. Pekko Discovery is not compatible with those versions of Pekko Management Discovery.
-
-At least version `1.0.0` of any Pekko Management module should be used if also using Pekko Discovery.
-
-Migration steps:
-
-* Any custom discovery method should now implement `org.apache.pekko.discovery.ServiceDiscovery`
-* `discovery-method` now has to be a configuration location under `pekko.discovery` with at minimum a property `class` specifying the fully qualified name of the implementation of `org.apache.pekko.discovery.ServiceDiscovery`.
-  Previous versions allowed this to be a class name or a fully qualified config location e.g. `pekko.discovery.kubernetes-api` rather than just `kubernetes-api`
-
-
-
+targets for the given service name then `config` is queried which is configured with one service called
+`service1` with two hosts `host1` and `host2`.

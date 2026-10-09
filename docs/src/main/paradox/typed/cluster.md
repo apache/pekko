@@ -295,7 +295,7 @@ Note that @ref:[Cluster Singleton](cluster-singleton.md) or @ref:[Cluster Shardi
 are running on a crashed (unreachable) node will not be started on another node until the previous node has
 been removed from the Cluster. Removal of crashed (unreachable) nodes is performed after a downing decision.
 
-Downing can also be performed programmatically with @scala[`Cluster(system).manager ! Down(address)`]@java[`Cluster.get(system).manager().tell(Down(address))`],
+Downing can also be performed programmatically with @scala[`Cluster(system).manager ! Down(address)`]@java[`Cluster.get(system).manager().tell(new Down(address))`],
 but that is mostly useful from tests and when implementing a @apidoc[DowningProvider].
 
 If a crashed node is restarted and joining the cluster again with the same hostname and port, the previous incarnation
@@ -340,7 +340,7 @@ Cluster uses the @apidoc[remote.PhiAccrualFailureDetector](PhiAccrualFailureDete
 implementing the @apidoc[remote.FailureDetector](FailureDetector) and configuring it:
 
 ```
-pekko.cluster.implementation-class = "com.example.CustomFailureDetector"
+pekko.cluster.failure-detector.implementation-class = "com.example.CustomFailureDetector"
 ```
 
 In the @ref:[Cluster Configuration](#configuration) you may want to adjust these

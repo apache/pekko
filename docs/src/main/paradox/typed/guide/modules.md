@@ -129,7 +129,7 @@ Challenges that Sharding solves include the following:
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group=org.apache.pekko
-  artifact=pekko-cluster-singleton_$scala.binary.version$
+  artifact=pekko-cluster-typed_$scala.binary.version$
   version=PekkoVersion
 }
 
@@ -173,14 +173,8 @@ Persistence tackles the following challenges:
 
 ### Projections
 
-@@dependency[sbt,Maven,Gradle] {
-  bomGroup=org.apache.pekko bomArtifact=pekko-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
-  symbol1=PekkoVersion
-  value1="$pekko.version$"
-  group=org.apache.pekko
-  artifact=pekko-projection-core_$scala.binary.version$
-  version=PekkoVersion
-}
+[Pekko Projections]($pekko.doc.dns$/docs/pekko-projection/current/) is a separate module from Pekko, with its own
+release cycle and version. See its documentation for the `pekko-projection-core` dependency and the version to use.
 
 Projections provides a simple API for consuming a stream of events for projection into a variety of downstream options.  The core dependency provides only the API and other provider dependencies are required for different source and sink implementations.
 

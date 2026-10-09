@@ -167,7 +167,7 @@ for example with @ref:[Event Sourcing](persistence.md).
 
 To make the list of entities in each `Shard` persistent (durable), set 
 the `rememberEntities` flag to true in `ClusterShardingSettings` when calling
-`ClusterSharding.start` and make sure the `shardIdExtractor` handles
+`ClusterSharding.start` and make sure the @scala[`extractShardId` function]@java[`shardId` method of the `messageExtractor`] handles
 `Shard.StartEntity(EntityId)` which implies that a `ShardId` must be possible to
 extract from the `EntityId`.
 
@@ -222,7 +222,7 @@ See @ref:[removal of Internal Cluster Sharding Data](typed/cluster-sharding.md#r
 Two requests to inspect the cluster state are available:
 
 @scala[`ShardRegion.GetShardRegionState`] @java[`ShardRegion.getShardRegionStateInstance`] which will return
-a @scala[`ShardRegion.CurrentShardRegionState`] @java[`ShardRegion.ShardRegionState`] that contains
+a @scala[`ShardRegion.CurrentShardRegionState`] @java[`ShardRegion.CurrentShardRegionState`] that contains
 the identifiers of the shards running in a Region and what entities are alive for each of them. 
 
 `ShardRegion.GetClusterShardingStats` which will query all the regions in the cluster and return

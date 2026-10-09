@@ -32,8 +32,8 @@ Early completion can be done with combination of the @apidoc[Flow.takeWhile](Flo
 
 See also @ref:[unfoldResource](../Source/unfoldResource.md), @ref:[unfoldResourceAsync](../Source/unfoldResourceAsync.md).
 
-You can configure the default dispatcher for this Source by changing the `org.apache.pekko.stream.materializer.blocking-io-dispatcher`
-or set it for a given Source by using ActorAttributes.
+You can configure the default dispatcher for this Flow by changing the `pekko.stream.materializer.blocking-io-dispatcher`
+or set it for a given Flow by using ActorAttributes.
 
 ## Examples
 
