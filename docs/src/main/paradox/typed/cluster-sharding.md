@@ -319,6 +319,11 @@ the entity when it's supposed to stop itself due to rebalance or passivation. If
 it will be stopped automatically without receiving a specific message. It can be useful to define a custom stop
 message if the entity needs to perform some asynchronous cleanup or interactions before stopping.
 
+If a passivating entity has not stopped within `pekko.cluster.sharding.passivation.stop-timeout` (default 60 seconds)
+after it was sent the stop message, it is stopped forcefully. This prevents an entity that never stops itself, for
+example because it does not handle the stop message, from being stuck in passivation with messages for it buffered
+indefinitely. Set the timeout to `off` to wait indefinitely for the entity to stop itself.
+
 The stop message is only sent locally, from the shard to the entity so does not require an entity id to end up in the right actor. When using a custom @apidoc[typed.ShardingMessageExtractor] without envelopes, the extractor will still have to handle the stop message type to please the compiler, even though it will never actually be passed to the extractor.
 
 ## Automatic Passivation
