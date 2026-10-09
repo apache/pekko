@@ -34,7 +34,7 @@ were a few mistakes in the Java API where Scala classes leaked into some of the 
 deprecated. Their asynchronous `offer` can hang indefinitely under `OverflowStrategy.backpressure` when downstream
 stalls. Use `Source.queue(bufferSize)` (which materializes a `BoundedSourceQueue` with synchronous feedback),
 `Source.actorRefWithBackpressure` or `MergeHub.source` instead. See
-@ref:[Migrating from the deprecated Source.queue overloads](../stream/operators/Source/queue.md#migrating-from-the-deprecated-sourcequeueint-overflowstrategy-overloads)
+@ref:[Migrating from the deprecated Source.queue overloads](../stream/operators/Source/queue.md#migrating-from-the-deprecated-overflowstrategy-overloads)
 for a replacement per `OverflowStrategy`, with code examples.
 
 ## Additional Breaking Changes in Pekko 2.x

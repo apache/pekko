@@ -8,7 +8,7 @@ Materialize a `BoundedSourceQueue` or `SourceQueue` onto which elements can be p
 
 The `Source.queue` overloads that accept an @apidoc[OverflowStrategy] and materialize a `SourceQueueWithComplete` are **deprecated**. Their asynchronous `offer` @scala[`Future`]@java[`CompletionStage`] can hang indefinitely under `OverflowStrategy.backpressure` when downstream stalls, which has caused real-world deadlocks.
 
-Prefer `Source.queue[T](bufferSize)` (this page), which materializes a @apidoc[BoundedSourceQueue] with synchronous feedback and drop-newest overflow. For backpressure towards the producer, use @ref:[`Source.actorRefWithBackpressure`](actorRefWithBackpressure.md) (single imperative producer) or `MergeHub.source` (multiple producers). See the [migration table](#migrating-from-the-deprecated-sourcequeueint-overflowstrategy-overloads) below for a per-strategy replacement.
+Prefer `Source.queue[T](bufferSize)` (this page), which materializes a @apidoc[BoundedSourceQueue] with synchronous feedback and drop-newest overflow. For backpressure towards the producer, use @ref:[`Source.actorRefWithBackpressure`](actorRefWithBackpressure.md) (single imperative producer) or `MergeHub.source` (multiple producers). See the [migration table](#migrating-from-the-deprecated-overflowstrategy-overloads) below for a per-strategy replacement.
 
 @@@
 
@@ -45,7 +45,7 @@ Java
 
 @@@ warning
 
-These two overloads are deprecated since 2.0.0. See the [migration table](#migrating-from-the-deprecated-sourcequeueint-overflowstrategy-overloads) below.
+These two overloads are deprecated since 2.0.0. See the [migration table](#migrating-from-the-deprecated-overflowstrategy-overloads) below.
 
 @@@
 
@@ -83,7 +83,7 @@ Java
 
 @@@
 
-## Migrating from the deprecated `Source.queue(Int, OverflowStrategy)` overloads
+## Migrating from the deprecated OverflowStrategy overloads
 
 | Old call | Replacement |
 |----------|-------------|
