@@ -21,6 +21,11 @@ nondeterministic when loading the configuration.`
 
 @@snip [reference.conf](/actor-typed/src/main/resources/reference.conf)
 
+<a id="config-pekko-actor-testkit-typed"></a>
+### pekko-actor-testkit-typed
+
+@@snip [reference.conf](/actor-testkit-typed/src/main/resources/reference.conf)
+
 <a id="config-pekko-cluster-typed"></a>
 ### pekko-cluster-typed
 
@@ -105,6 +110,16 @@ nondeterministic when loading the configuration.`
 ### pekko-distributed-data
 
 @@snip [reference.conf](/distributed-data/src/main/resources/reference.conf)
+
+<a id="config-pekko-serialization-jackson"></a>
+### pekko-serialization-jackson
+
+@@snip [reference.conf](/serialization-jackson/src/main/resources/reference.conf)
+
+<a id="config-pekko-serialization-jackson3"></a>
+### pekko-serialization-jackson3
+
+@@snip [reference.conf](/serialization-jackson3/src/main/resources/reference.conf)
 
 <a id="config-pekko-stream"></a>
 ### pekko-stream
