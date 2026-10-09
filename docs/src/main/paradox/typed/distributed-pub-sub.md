@@ -4,15 +4,15 @@ You are viewing the documentation for the new actor APIs, to view the Pekko Clas
 
 ## Module info
 
-The distributed publish subscribe topic API is available and usable with the core `(/actor-typed` module, however it will only be distributed
+The distributed publish subscribe topic API is available and usable with the core `pekko-actor-typed` module, however it will only be distributed
 when used in a clustered application:
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=org.apache.pekko bomArtifact=(/bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  bomGroup=org.apache.pekko bomArtifact=pekko-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group="org.apache.pekko"
-  artifact="(/cluster-typed_$scala.binary.version$"
+  artifact="pekko-cluster-typed_$scala.binary.version$"
   version=PekkoVersion
 }
 
