@@ -19,7 +19,6 @@ import scala.jdk.DurationConverters._
 import scala.jdk.OptionConverters._
 
 import org.apache.pekko
-import pekko.annotation.ApiMayChange
 import pekko.japi.Pair
 import pekko.stream.scaladsl
 
@@ -46,7 +45,6 @@ object RetryFlow {
    * @param flow a flow to retry elements from
    * @param decideRetry retry condition decision function
    */
-  @ApiMayChange(issue = "https://github.com/akka/akka/issues/27960")
   def withBackoff[In, Out, Mat](
       minBackoff: java.time.Duration,
       maxBackoff: java.time.Duration,
@@ -85,7 +83,6 @@ object RetryFlow {
    * @param flow a flow to retry elements from
    * @param decideRetry retry condition decision function
    */
-  @ApiMayChange(issue = "https://github.com/akka/akka/issues/27960")
   def withBackoffAndContext[In, InCtx, Out, OutCtx, Mat](
       minBackoff: java.time.Duration,
       maxBackoff: java.time.Duration,
