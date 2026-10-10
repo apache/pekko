@@ -33,7 +33,7 @@ private[pekko] object LoggerClass {
   // java.lang.StackWalker (Java 9+) is accessed through reflection since this module is compiled for Java 8.
   // SHOW_HIDDEN_FRAMES is needed to include the lambda classes, which SecurityManager.getClassContext
   // does not report on JDK 24+ (required by the lambda owner detection below for Scala 3)
-  private val stackWalkerClassStack: Option[() => Array[Class[_]]] =
+  private val stackWalkerClassStack: OptionVal[() => Array[Class[_]]] =
     try {
       val walkerClass = Class.forName("java.lang.StackWalker")
       // nested class names are built with '$' + name to avoid Scala 2.12's missing interpolator lint
@@ -48,18 +48,18 @@ private[pekko] object LoggerClass {
         override def apply(frames: java.util.stream.Stream[AnyRef]): Array[Class[_]] =
           frames.toArray.map(frame => getDeclaringClass.invoke(frame).asInstanceOf[Class[_]])
       }
-      Some(() => walk.invoke(walker, toClasses).asInstanceOf[Array[Class[_]]])
+      OptionVal.Some(() => walk.invoke(walker, toClasses).asInstanceOf[Array[Class[_]]])
     } catch {
-      case NonFatal(_) => None
+      case NonFatal(_) => OptionVal.None
     }
 
   private def getClassStack: Array[Class[_]] = stackWalkerClassStack match {
-    case Some(walk) =>
+    case OptionVal.Some(walk) =>
       // drop the reflection frames so that the stack starts at this class, like getClassContext
       val trace = walk()
       val start = trace.indexWhere(_ eq LoggerClass.getClass)
       if (start > 0) trace.drop(start) else trace
-    case None =>
+    case _ =>
       new TrickySecurityManager().getClassStack
   }
 
