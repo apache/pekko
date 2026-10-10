@@ -36,8 +36,9 @@ private[pekko] object LoggerClass {
   private val stackWalkerClassStack: Option[() => Array[Class[_]]] =
     try {
       val walkerClass = Class.forName("java.lang.StackWalker")
-      val optionClass = Class.forName("java.lang.StackWalker$Option")
-      val getDeclaringClass = Class.forName("java.lang.StackWalker$StackFrame").getMethod("getDeclaringClass")
+      // nested class names are built with '$' + name to avoid Scala 2.12's missing interpolator lint
+      val optionClass = Class.forName(walkerClass.getName + '$' + "Option")
+      val getDeclaringClass = Class.forName(walkerClass.getName + '$' + "StackFrame").getMethod("getDeclaringClass")
       val options = new java.util.HashSet[AnyRef]()
       options.add(optionClass.getField("RETAIN_CLASS_REFERENCE").get(null))
       options.add(optionClass.getField("SHOW_HIDDEN_FRAMES").get(null))
