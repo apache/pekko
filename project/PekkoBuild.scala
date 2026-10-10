@@ -14,6 +14,7 @@
 import MultiJvmPlugin.autoImport.MultiJvm
 
 import com.lightbend.paradox.projectinfo.ParadoxProjectInfoPluginKeys._
+import com.typesafe.tools.mima.plugin.MimaKeys.mimaReportSignatureProblems
 import sbt.Def
 import sbt.Keys._
 import sbt._
@@ -143,6 +144,9 @@ object PekkoBuild {
     Compile / javacOptions ++= (if (allWarnings) Seq("-Xlint:deprecation") else Nil),
     doc / javacOptions := Seq(),
     crossVersion := CrossVersion.binary,
+    // Scala 3 emits different generic signatures than Scala 2.13 so
+    // only report signature problems for Scala 2.13
+    mimaReportSignatureProblems := !scalaVersion.value.startsWith("3."),
     // Adds a `src/main/scala-2.13+` source directory for code shared
     // between Scala 2.13 and Scala 3
     Compile / unmanagedSourceDirectories ++= {

@@ -27,7 +27,8 @@ Global / excludeLintKeys ++= Set(
   logManager,
   unidocProjectFilter,
   fork,
-  javacOptions
+  javacOptions,
+  mimaReportSignatureProblems
 )
 
 enablePlugins(
