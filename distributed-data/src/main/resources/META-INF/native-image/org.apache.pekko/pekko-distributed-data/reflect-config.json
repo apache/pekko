@@ -1,0 +1,38 @@
+[
+  {
+    "name": "org.apache.pekko.cluster.ddata.DistributedData$",
+    "fields": [
+      {
+        "name": "MODULE$"
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.cluster.ddata.protobuf.ReplicatedDataSerializer",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "org.apache.pekko.actor.ExtendedActorSystem"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.cluster.ddata.protobuf.ReplicatorMessageSerializer",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "org.apache.pekko.actor.ExtendedActorSystem"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.cluster.ddata.ReplicatedDataSerialization"
+  },
+  {
+    "name": "org.apache.pekko.cluster.ddata.Replicator$ReplicatorMessage"
+  }
+]
