@@ -60,8 +60,6 @@ object DurableStateBehaviorStashOverflowSpec {
 
     def completeUpsertFuture(): Unit = promise.success(Done)
 
-    override def deleteObject(persistenceId: String): Future[Done] = Future.successful(Done)
-
     override def deleteObject(persistenceId: String, revision: Long): Future[Done] = Future.successful(Done)
   }
 

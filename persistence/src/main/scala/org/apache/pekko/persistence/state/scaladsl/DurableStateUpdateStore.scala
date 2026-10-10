@@ -37,16 +37,6 @@ trait DurableStateUpdateStore[A] extends DurableStateStore[A] {
   def upsertObject(persistenceId: String, revision: Long, value: A, tag: String): Future[Done]
 
   /**
-   * Delete the object with the given `persistenceId`. This deprecated
-   * function ignores whether the object is deleted or not.
-   *
-   * @param persistenceId the persistenceId of the object to delete
-   * @return a Future that completes when the object has been deleted
-   */
-  @deprecated(message = "Use the deleteObject overload with revision instead.", since = "Akka 2.6.20")
-  def deleteObject(persistenceId: String): Future[Done]
-
-  /**
    * Delete the object with the given `persistenceId` and `revision`.
    *
    * <p>
