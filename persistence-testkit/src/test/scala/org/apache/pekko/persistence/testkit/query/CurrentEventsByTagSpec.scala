@@ -20,6 +20,7 @@ import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
 import pekko.actor.typed.ActorRef
 import pekko.persistence.query.NoOffset
 import pekko.persistence.query.PersistenceQuery
+import pekko.persistence.query.Sequence
 import pekko.persistence.testkit.query.EventsByPersistenceIdSpec.Command
 import pekko.persistence.testkit.query.EventsByPersistenceIdSpec.testBehavior
 import pekko.persistence.testkit.query.scaladsl.PersistenceTestKitReadJournal
@@ -61,6 +62,32 @@ class CurrentEventsByTagSpec
 
       queries.currentEventsByTag("all", NoOffset).runWith(Sink.seq).futureValue.map(_.event) should ===(
         Seq("evt-1", "evt-2", "evt-3", "evt-4", "evt-5"))
+    }
+
+    "find tagged events after the given offset" in {
+      val probe = createTestProbe[Done]()
+      val ref1 = setupEmpty("offsetpid-1")
+      val ref2 = setupEmpty("offsetpid-2")
+      ref1 ! Command("evt1-offset", probe.ref)
+      ref1 ! Command("evt2-offset", probe.ref)
+      probe.receiveMessages(2)
+      ref2 ! Command("evt3-offset", probe.ref)
+      probe.receiveMessage()
+      ref1 ! Command("evt4-offset", probe.ref)
+      probe.receiveMessage()
+
+      val all = queries.currentEventsByTag("offset", NoOffset).runWith(Sink.seq).futureValue
+      all.map(_.event) should ===(Seq("evt1-offset", "evt2-offset", "evt3-offset", "evt4-offset"))
+
+      queries.currentEventsByTag("offset", all(1).offset).runWith(Sink.seq).futureValue.map(_.event) should ===(
+        Seq("evt3-offset", "evt4-offset"))
+      queries.currentEventsByTag("offset", all.last.offset).runWith(Sink.seq).futureValue shouldBe empty
+    }
+
+    "reject unsupported offset types" in {
+      intercept[IllegalArgumentException] {
+        queries.currentEventsByTag("all", Sequence(1L))
+      }
     }
   }
 

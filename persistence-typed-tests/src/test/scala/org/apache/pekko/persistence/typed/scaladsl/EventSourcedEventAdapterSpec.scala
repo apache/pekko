@@ -24,6 +24,7 @@ import pekko.actor.typed.scaladsl.Behaviors
 import pekko.persistence.query.EventEnvelope
 import pekko.persistence.query.PersistenceQuery
 import pekko.persistence.query.Sequence
+import pekko.persistence.query.TimestampOffset
 import pekko.persistence.testkit.PersistenceTestKitPlugin
 import pekko.persistence.testkit.query.scaladsl.PersistenceTestKitReadJournal
 import pekko.persistence.typed.EventAdapter
@@ -33,6 +34,7 @@ import pekko.serialization.jackson.CborSerializable
 import pekko.stream.scaladsl.Sink
 import pekko.testkit.JavaSerializable
 
+import org.scalatest.Inside.inside
 import org.scalatest.wordspec.AnyWordSpecLike
 
 import com.typesafe.config.ConfigFactory
@@ -241,7 +243,11 @@ class EventSourcedEventAdapterSpec
       replyProbe.expectMessage(State(1, Vector(0)))
 
       val taggedEvents = queries.currentEventsByTag("tag99").runWith(Sink.seq).futureValue
-      taggedEvents shouldEqual List(EventEnvelope(Sequence(1), pid.id, 1, GenericWrapper(Incremented(1)), 0L))
+      taggedEvents.map(e => (e.persistenceId, e.sequenceNr, e.event)) shouldEqual
+      List((pid.id, 1L, GenericWrapper(Incremented(1))))
+      inside(taggedEvents.head.offset) { case offset: TimestampOffset =>
+        offset.seen shouldEqual Map(pid.id -> 1L)
+      }
     }
   }
 }

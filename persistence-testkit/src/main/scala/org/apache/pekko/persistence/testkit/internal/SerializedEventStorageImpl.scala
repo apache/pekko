@@ -33,7 +33,8 @@ private[testkit] object SerializedEventStorageImpl {
       writerUuid: String,
       payload: Array[Byte],
       tags: Set[String],
-      metadata: Option[Any])
+      metadata: Option[Any],
+      timestamp: Long)
 }
 
 /**
@@ -67,7 +68,8 @@ private[testkit] class SerializedEventStorageImpl(system: ActorSystem) extends E
         writerUuid = pr.writerUuid,
         payload = s.toBinary(payload),
         tags = tags,
-        metadata = pr.metadata)
+        metadata = pr.metadata,
+        timestamp = pr.timestamp)
     }
 
   /**
@@ -83,7 +85,7 @@ private[testkit] class SerializedEventStorageImpl(system: ActorSystem) extends E
       sequenceNr = internal.sequenceNr,
       persistenceId = internal.persistenceId,
       writerUuid = internal.writerUuid,
-      manifest = internal.eventAdapterManifest)
+      manifest = internal.eventAdapterManifest).withTimestamp(internal.timestamp)
     internal.metadata.fold(pr)(meta => pr.withMetadata(meta))
   }
 

@@ -13,6 +13,7 @@
 
 package org.apache.pekko.persistence.typed.scaladsl
 
+import java.time.Instant
 import java.util.UUID
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -42,10 +43,9 @@ import pekko.persistence.SelectedSnapshot
 import pekko.persistence.journal.inmem.InmemJournal
 import pekko.persistence.typed.EventAdapter
 import pekko.persistence.typed.EventSeq
-import pekko.persistence.query.EventEnvelope
 import pekko.persistence.query.Offset
 import pekko.persistence.query.PersistenceQuery
-import pekko.persistence.query.Sequence
+import pekko.persistence.query.TimestampOffset
 import pekko.persistence.snapshot.SnapshotStore
 import pekko.persistence.testkit.PersistenceTestKitPlugin
 import pekko.persistence.testkit.query.scaladsl.PersistenceTestKitReadJournal
@@ -58,6 +58,7 @@ import pekko.persistence.typed.SnapshotSelectionCriteria
 import pekko.serialization.jackson.CborSerializable
 import pekko.stream.scaladsl.Sink
 
+import org.scalatest.Inside.inside
 import org.scalatest.wordspec.AnyWordSpecLike
 
 import com.typesafe.config.Config
@@ -605,7 +606,12 @@ class EventSourcedBehaviorSpec
       replyProbe.expectMessage(State(1, Vector(0)))
 
       val events = queries.currentEventsByTag("tag1", Offset.noOffset).runWith(Sink.seq).futureValue
-      events shouldEqual List(EventEnvelope(Sequence(1), pid.id, 1, Incremented(1), 0L))
+      events.map(e => (e.persistenceId, e.sequenceNr, e.event)) shouldEqual List((pid.id, 1L, Incremented(1)))
+      events.head.timestamp should be > 0L
+      inside(events.head.offset) { case offset: TimestampOffset =>
+        offset.timestamp shouldEqual Instant.ofEpochMilli(events.head.timestamp)
+        offset.seen shouldEqual Map(pid.id -> 1L)
+      }
     }
 
     "tag events based on state" in {
@@ -627,7 +633,11 @@ class EventSourcedBehaviorSpec
 
       val events = queries.currentEventsByTag("higher-than-one", Offset.noOffset).runWith(Sink.seq).futureValue
       events should have size 1
-      events.head shouldEqual EventEnvelope(Sequence(2), pid.id, 2, Incremented(1), 0L)
+      val envelope = events.head
+      (envelope.persistenceId, envelope.sequenceNr, envelope.event) shouldEqual ((pid.id, 2L, Incremented(1)))
+      inside(envelope.offset) { case offset: TimestampOffset =>
+        offset.seen shouldEqual Map(pid.id -> 2L)
+      }
     }
 
     "handle scheduled message arriving before recovery completed " in {

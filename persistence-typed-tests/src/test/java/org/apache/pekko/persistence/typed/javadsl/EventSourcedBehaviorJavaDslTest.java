@@ -15,6 +15,7 @@ package org.apache.pekko.persistence.typed.javadsl;
 
 import static org.apache.pekko.Done.done;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
@@ -41,6 +42,7 @@ import org.apache.pekko.persistence.query.EventEnvelope;
 import org.apache.pekko.persistence.query.NoOffset;
 import org.apache.pekko.persistence.query.PersistenceQuery;
 import org.apache.pekko.persistence.query.Sequence;
+import org.apache.pekko.persistence.query.TimestampOffset;
 import org.apache.pekko.persistence.testkit.PersistenceTestKitPlugin;
 import org.apache.pekko.persistence.testkit.PersistenceTestKitSnapshotPlugin;
 import org.apache.pekko.persistence.testkit.query.javadsl.PersistenceTestKitReadJournal;
@@ -552,7 +554,8 @@ public class EventSourcedBehaviorJavaDslTest {
             .get();
     assertEquals(1, events.size());
     EventEnvelope eventEnvelope = events.get(0);
-    assertEquals(new Sequence(1), eventEnvelope.offset());
+    TimestampOffset offset = assertInstanceOf(TimestampOffset.class, eventEnvelope.offset());
+    assertEquals(Map.of("tagging", 1L), offset.getSeen());
     assertEquals("tagging", eventEnvelope.persistenceId());
     assertEquals(new Incremented(1), eventEnvelope.event());
   }

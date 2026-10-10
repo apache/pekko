@@ -21,6 +21,7 @@ import pekko.actor.typed.ActorRef
 import pekko.persistence.Persistence
 import pekko.persistence.query.NoOffset
 import pekko.persistence.query.PersistenceQuery
+import pekko.persistence.query.Sequence
 import pekko.persistence.query.TimestampOffset
 import pekko.persistence.testkit.query.EventsByPersistenceIdSpec.Command
 import pekko.persistence.testkit.query.EventsByPersistenceIdSpec.testBehavior
@@ -71,6 +72,35 @@ class CurrentEventsBySlicesSpec
         .runWith(Sink.seq)
         .futureValue
         .map(_.event) should ===(Seq("evt-1", "evt-2", "evt-3", "evt-4", "evt-5"))
+    }
+
+    "find eventsBySlices after the given offset" in {
+      val probe = createTestProbe[Done]()
+      val ref1 = spawn(testBehavior("OffsetTest|pid-1"))
+      val ref2 = spawn(testBehavior("OffsetTest|pid-2"))
+      ref1 ! Command("evt-1", probe.ref)
+      ref1 ! Command("evt-2", probe.ref)
+      probe.receiveMessages(2)
+      ref2 ! Command("evt-3", probe.ref)
+      probe.receiveMessage()
+      ref1 ! Command("evt-4", probe.ref)
+      probe.receiveMessage()
+
+      val maxSlice = Persistence(system).numberOfSlices - 1
+      val all = queries.currentEventsBySlices[String]("OffsetTest", 0, maxSlice, NoOffset).runWith(Sink.seq).futureValue
+      all.map(_.event) should ===(Seq("evt-1", "evt-2", "evt-3", "evt-4"))
+
+      queries
+        .currentEventsBySlices[String]("OffsetTest", 0, maxSlice, all(1).offset)
+        .runWith(Sink.seq)
+        .futureValue
+        .map(_.event) should ===(Seq("evt-3", "evt-4"))
+    }
+
+    "reject unsupported offset types for eventsBySlices" in {
+      intercept[IllegalArgumentException] {
+        queries.currentEventsBySlices[String]("Test", 0, Persistence(system).numberOfSlices - 1, Sequence(1L))
+      }
     }
 
     "include tags in events by slices" in {
