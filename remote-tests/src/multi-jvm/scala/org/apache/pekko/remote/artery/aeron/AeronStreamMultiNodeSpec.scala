@@ -41,7 +41,7 @@ abstract class AeronStreamMultiNodeSpec(config: MultiNodeConfig) extends MultiNo
     val n = node(roleName)
     val port = MultiNodeSpec.udpPort match {
       case None =>
-        system.actorSelection(n / "user" / "updPort") ! UdpPortActor.GetUdpPort
+        system.actorSelection(n / "user" / "updPort").tell(UdpPortActor.GetUdpPort, testActor)
         expectMsgType[Int]
       case Some(p) => p
     }

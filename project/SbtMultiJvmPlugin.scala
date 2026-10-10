@@ -314,7 +314,7 @@ object MultiJvmPlugin extends AutoPlugin {
         }
     Tests.Output(
       Tests.overall(results.map(_._2)),
-      Map.empty,
+      results.flatMap(_._3).toMap,
       results.map(result => Tests.Summary("multi-jvm", result._1)))
   }
 
@@ -354,7 +354,7 @@ object MultiJvmPlugin extends AutoPlugin {
       srcDir: File,
       input: Boolean,
       createLogger: String => Logger,
-      log: Logger): (String, sbt.TestResult) = {
+      log: Logger): (String, sbt.TestResult, Map[String, SuiteResult]) = {
     val logName = "* " + name
     log.info(logName)
     val classesHostsJavas = getClassesHostsJavas(classes, IndexedSeq.empty, IndexedSeq.empty, "")
@@ -363,7 +363,7 @@ object MultiJvmPlugin extends AutoPlugin {
       case (testClass, index) =>
         val className = multiSimpleName(testClass)
         val jvmName = "JVM-" + (index + 1) + "-" + className
-        val jvmLogger = createLogger(jvmName)
+        val jvmLogger = new TestCountingLogger(createLogger(jvmName))
         val optionsFile = (srcDir ** (className + ".opts")).get.headOption
         val optionsFromFile =
           optionsFile.map(IO.read(_)).map(_.trim.replace("\\n", " ").split("\\s+").toList).getOrElse(Seq.empty[String])
@@ -373,10 +373,9 @@ object MultiJvmPlugin extends AutoPlugin {
         val connectInput = input && index == 0
         log.debug("Starting %s for %s".format(jvmName, testClass))
         log.debug("  with JVM options: %s".format(allJvmOptions.mkString(" ")))
-        val testClass2Process = (testClass, Jvm.startJvm(javaBin, allJvmOptions, runOptions, jvmLogger, connectInput))
-        testClass2Process
+        (testClass, Jvm.startJvm(javaBin, allJvmOptions, runOptions, jvmLogger, connectInput), jvmLogger)
     }
-    processExitCodes(name, processes, log)
+    testResults(name, processes, log)
   }
 
   def processExitCodes(name: String, processes: Seq[(String, Process)], log: Logger): (String, sbt.TestResult) = {
@@ -389,6 +388,30 @@ object MultiJvmPlugin extends AutoPlugin {
     }
     failures.foreach(log.error(_))
     (name, if (failures.nonEmpty) TestResult.Failed else TestResult.Passed)
+  }
+
+  /**
+   * Waits for the test JVMs and reports one suite result per JVM, with the test counts taken from
+   * the ScalaTest summary line that each JVM prints, so sbt can show real pass/fail totals.
+   */
+  def testResults(
+      name: String,
+      processes: Seq[(String, Process, TestCountingLogger)],
+      log: Logger): (String, sbt.TestResult, Map[String, SuiteResult]) = {
+    val (_, overall) =
+      processExitCodes(name, processes.map { case (testClass, process, _) => (testClass, process) }, log)
+    val events = processes.map {
+      case (testClass, process, counter) =>
+        val exitCode = process.exitValue()
+        val suiteResult = counter.counts match {
+          case Some(counts) if exitCode == 0 || counts.result != TestResult.Passed => counts
+          // the JVM failed without reporting a failed test, e.g. it crashed or an afterAll failed
+          case Some(counts) => counts + SuiteResult.Error
+          case None         => if (exitCode == 0) SuiteResult.Empty else SuiteResult.Error
+        }
+        testClass -> suiteResult
+    }.toMap
+    (name, overall, events)
   }
 
   def multiNodeExecuteTestsTask: Def.Initialize[sbt.Task[Tests.Output]] = Def.task {
@@ -471,7 +494,7 @@ object MultiJvmPlugin extends AutoPlugin {
         }
     Tests.Output(
       Tests.overall(results.map(_._2)),
-      Map.empty,
+      results.flatMap(_._3).toMap,
       results.map(result => Tests.Summary("multi-jvm", result._1)))
   }
 
@@ -488,7 +511,7 @@ object MultiJvmPlugin extends AutoPlugin {
       javas: IndexedSeq[String],
       targetDir: String,
       createLogger: String => Logger,
-      log: Logger): (String, sbt.TestResult) = {
+      log: Logger): (String, sbt.TestResult, Map[String, SuiteResult]) = {
     val logName = "* " + name
     log.info(logName)
     val classesHostsJavas = getClassesHostsJavas(classes, hostsAndUsers, javas, defaultJava)
@@ -503,7 +526,7 @@ object MultiJvmPlugin extends AutoPlugin {
       val processes = classesHostsJavas.zipWithIndex.map {
         case ((testClass, hostAndUser, java), index) => {
           val jvmName = "JVM-" + (index + 1)
-          val jvmLogger = createLogger(jvmName)
+          val jvmLogger = new TestCountingLogger(createLogger(jvmName))
           val className = multiSimpleName(testClass)
           val optionsFile = (srcDir ** (className + ".opts")).get.headOption
           val optionsFromFile = optionsFile
@@ -527,12 +550,13 @@ object MultiJvmPlugin extends AutoPlugin {
               targetDir,
               jvmLogger,
               connectInput,
-              log))
+              log),
+            jvmLogger)
         }
       }
-      processExitCodes(name, processes, log)
+      testResults(name, processes, log)
     } else {
-      syncResult
+      (syncResult._1, syncResult._2, Map.empty[String, SuiteResult])
     }
   }
 
@@ -590,5 +614,28 @@ object MultiJvmPlugin extends AutoPlugin {
       val elems = x.split(":").toList.take(2).padTo(2, defaultJava)
       (elems.head, elems(1))
     }.unzip
+  }
+}
+
+/**
+ * Forwards to the underlying logger and records the counts from the ScalaTest summary line
+ * (`Tests: succeeded 1, failed 0, canceled 0, ignored 0, pending 0`) printed by a test JVM.
+ */
+final class TestCountingLogger(underlying: Logger) extends Logger {
+  private val AnsiEscape = "\u001b\\[[0-9;]*m".r
+  private val Summary = "Tests: succeeded (\\d+), failed (\\d+), canceled (\\d+), ignored (\\d+), pending (\\d+)".r
+
+  @volatile var counts: Option[SuiteResult] = None
+
+  def trace(t: => Throwable): Unit = underlying.trace(t)
+  def success(message: => String): Unit = underlying.success(message)
+  def log(level: Level.Value, message: => String): Unit = {
+    val msg = message
+    Summary.findFirstMatchIn(AnsiEscape.replaceAllIn(msg, "")).foreach { m =>
+      val Seq(succeeded, failed, canceled, ignored, pending) = (1 to 5).map(m.group(_).toInt)
+      val result = if (failed > 0) TestResult.Failed else TestResult.Passed
+      counts = Some(new SuiteResult(result, succeeded, failed, 0, 0, ignored, canceled, pending))
+    }
+    underlying.log(level, msg)
   }
 }

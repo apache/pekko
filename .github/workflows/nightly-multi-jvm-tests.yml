@@ -1,0 +1,82 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+name: Nightly Multi JVM Tests
+
+on:
+  schedule:
+    - cron: "0 2 * * *"
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  pekko-multi-jvm-tests:
+    name: Pekko Multi JVM Tests (${{ matrix.command }})
+    runs-on: ubuntu-22.04
+    if: github.repository == 'apache/pekko'
+    timeout-minutes: 240
+    strategy:
+      fail-fast: false
+      matrix:
+        command:
+          - cluster/MultiJvm/test
+          - cluster-sharding/MultiJvm/test
+          - cluster-typed/MultiJvm/test cluster-sharding-typed/MultiJvm/test
+          - distributed-data/MultiJvm/test cluster-tools/MultiJvm/test cluster-metrics/MultiJvm/test
+          - remote-tests/MultiJvm/test
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7.0.1
+        with:
+          # we don't know what commit the last tag was it's safer to get entire repo so previousStableVersion resolves
+          fetch-depth: 0
+          fetch-tags: true
+          persist-credentials: false
+
+      - name: Setup Java 17
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Install sbt
+        uses: sbt/setup-sbt@c7d2d6258b4bd0d3ec5129e6b3453199d3c79729 # v1.5.8
+
+      - name: Cache Coursier cache
+        uses: coursier/cache-action@95e5b1029b6b86e7bac033ee44a0697d8a527d2d # 8.1.1
+
+      - name: Enable jvm-opts
+        run: cp .jvmopts-ci .jvmopts
+
+      - name: sbt ${{ matrix.command }}
+        env:
+          DEVELOCITY_ACCESS_KEY: ${{ secrets.DEVELOCITY_ACCESS_KEY }}
+        run: |-
+          sbt \
+            -Djava.security.egd=file:/dev/urandom \
+            -Dpekko.cluster.assert=on \
+            -Dpekko.test.timefactor=2 \
+            -Dpekko.actor.testkit.typed.timefactor=2 \
+            -Dpekko.test.tags.exclude=gh-exclude,timing \
+            -Dpekko.log.timestamps=true \
+            -Dio.netty.leakDetection.level=PARANOID \
+            -Dmultinode.XX:MetaspaceSize=128M \
+            -Dmultinode.Xms256M \
+            -Dmultinode.Xmx256M \
+            -Dmultinode.XX:+AlwaysActAsServerClassMachine \
+            clean ${{ matrix.command }}
