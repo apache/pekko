@@ -324,7 +324,7 @@ class DummyClassForStringSources
  * <li>anything else gives compile error unless implicit [[pekko.event.LogSource]] is in scope for it</li>
  * </ul>
  */
-object LogSource {
+object LogSource extends LogSourceCompat {
   implicit val fromString: LogSource[String] = new LogSource[String] {
     def genString(s: String) = s
     override def genString(s: String, system: ActorSystem) = s + "(" + system + ")"
