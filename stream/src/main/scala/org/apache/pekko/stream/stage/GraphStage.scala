@@ -961,6 +961,7 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
    * defined, completes or fails the outgoing ports.
    */
   private def internalCompleteStage(cancelCause: Throwable, optionalFailureCause: OptionVal[Throwable]): Unit = {
+    if (optionalFailureCause.isDefined) interpreter.recordStageFailure(this, optionalFailureCause.get)
     var i = 0
     while (i < portToConn.length) {
       if (i < inCount)

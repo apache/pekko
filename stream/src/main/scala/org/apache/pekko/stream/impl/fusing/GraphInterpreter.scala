@@ -367,7 +367,10 @@ import pekko.stream.stage._
       } catch {
         case NonFatal(e) =>
           log.error(e, "Error during preStart in [{}]: {}", logic.toString, e.getMessage)
-          logic.failStage(e)
+          logic match {
+            case watched: TerminationReporterLogic => watched.underlyingLogic.failStage(e)
+            case _                                 => logic.failStage(e)
+          }
       }
       initializedStages = i + 1
       afterStageHasRun(logic)
@@ -670,6 +673,7 @@ import pekko.stream.stage._
       completeConnection(connection.outOwner.stageId)
       val cause = connection.slot.asInstanceOf[Cancelled].cause
       connection.slot = Empty
+      recordStageFailure(activeStage, cause)
       connection.outHandler.onDownstreamFinish(cause)
     } else if ((code & (OutClosed | InClosed)) == OutClosed) {
       // COMPLETIONS
@@ -684,7 +688,11 @@ import pekko.stream.stage._
         activeStage = connection.inOwner
         completeConnection(connection.inOwner.stageId)
         if ((connection.portState & InFailed) == 0) connection.inHandler.onUpstreamFinish()
-        else connection.inHandler.onUpstreamFailure(connection.slot.asInstanceOf[Failed].ex)
+        else {
+          val failure = connection.slot.asInstanceOf[Failed].ex
+          recordStageFailure(activeStage, failure)
+          connection.inHandler.onUpstreamFailure(failure)
+        }
       } else {
         // Push is pending, first process push, then re-enqueue closing event
         processPush(connection)
@@ -757,8 +765,11 @@ import pekko.stream.stage._
       markStageFinalized(logic)
       runningStages -= 1
       if (pendingFinalizations > 0) pendingFinalizations -= 1
-      finalizeStage(logic)
-      releaseStage(logic)
+      // Events belong to the inner logic of a watched stage. Finalize and release
+      // the registered logic, which delegates all lifecycle hooks.
+      val registeredLogic = logics(logic.stageId)
+      finalizeStage(registeredLogic)
+      releaseStage(registeredLogic)
     }
 
     // O(n) scan: only entered when other stages also completed (cascading completion).
@@ -803,11 +814,11 @@ import pekko.stream.stage._
     while (i < logic.portToConn.length) {
       val connection = logic.portToConn(i)
       if (connection ne null) {
-        if (connection.inOwner eq logic) {
+        if ((connection.inOwner ne null) && connection.inOwner.stageId == logic.stageId) {
           connection.inOwner = null
           connection.inHandler = null
         }
-        if (connection.outOwner eq logic) {
+        if ((connection.outOwner ne null) && connection.outOwner.stageId == logic.stageId) {
           connection.outOwner = null
           connection.outHandler = null
         }
@@ -818,7 +829,7 @@ import pekko.stream.stage._
       }
       i += 1
     }
-    if (activeStage eq logic) activeStage = null
+    if ((activeStage ne null) && activeStage.stageId == logic.stageId) activeStage = null
     logics(logic.stageId) = null
   }
 
@@ -858,14 +869,37 @@ import pekko.stream.stage._
 
   @InternalStableApi
   private[stream] def finalizeStage(logic: GraphStageLogic): Unit = {
+    logic match {
+      case watched: TerminationReporterLogic if !isStageCompleted(logic) =>
+        watched.recordFailure(new AbruptStageTerminationException(logic))
+      case _ =>
+    }
     try {
       logic.postStop()
+    } catch {
+      case NonFatal(e) =>
+        recordStageFailure(logic, e)
+        log.error(e, s"Error during postStop in [{}]: {}", logic.toString, e.getMessage)
+    }
+    try {
       logic.afterPostStop()
     } catch {
       case NonFatal(e) =>
-        log.error(e, s"Error during postStop in [{}]: {}", logic.toString, e.getMessage)
+        recordStageFailure(logic, e)
+        log.error(e, s"Error during afterPostStop in [{}]: {}", logic.toString, e.getMessage)
+    } finally {
+      logic match {
+        case watched: TerminationReporterLogic => watched.reportTermination()
+        case _                                 =>
+      }
     }
   }
+
+  private[stream] def recordStageFailure(logic: GraphStageLogic, cause: Throwable): Unit =
+    logics(logic.stageId) match {
+      case watched: TerminationReporterLogic => watched.recordFailure(cause)
+      case _                                 =>
+    }
 
   private[stream] def chasePush(connection: Connection): Unit = {
     if (chaseCounter > 0 && chasedPush == NoEvent) {
@@ -931,7 +965,10 @@ import pekko.stream.stage._
         enqueue(connection)
       }
     }
-    if ((currentState & InClosed) == 0 && (connection.inOwner ne null)) completeConnection(connection.inOwner.stageId)
+    if ((currentState & InClosed) == 0 && (connection.inOwner ne null)) {
+      recordStageFailure(connection.inOwner, cause)
+      completeConnection(connection.inOwner.stageId)
+    }
   }
 
   /**
