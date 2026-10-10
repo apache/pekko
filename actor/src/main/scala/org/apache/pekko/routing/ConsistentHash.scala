@@ -26,8 +26,17 @@ import scala.reflect.ClassTag
  *
  * Note that toString of the ring nodes are used for the node
  * hash, i.e. make sure it is different for different nodes.
+ *
+ * If virtual nodes of different nodes hash to the same ring position, the node
+ * with the lowest toString owns that position, so the ring does not depend on the
+ * order in which nodes were added.
  */
-class ConsistentHash[T: ClassTag] private (nodes: immutable.SortedMap[Int, T], val virtualNodesFactor: Int) {
+class ConsistentHash[T: ClassTag] private (
+    nodes: immutable.SortedMap[Int, T],
+    // other nodes whose virtual nodes hash to an owned ring position, kept so that
+    // they can take over the position if its owner is removed
+    collisions: immutable.Map[Int, List[T]],
+    val virtualNodesFactor: Int) {
 
   import ConsistentHash._
 
@@ -47,11 +56,8 @@ class ConsistentHash[T: ClassTag] private (nodes: immutable.SortedMap[Int, T], v
    * operation returns a new instance.
    */
   def :+(node: T): ConsistentHash[T] = {
-    val nodeHash = hashFor(node.toString)
-    new ConsistentHash(nodes ++
-      ((1 to virtualNodesFactor).map { r =>
-        concatenateNodeHash(nodeHash, r) -> node
-      }), virtualNodesFactor)
+    val (newNodes, newCollisions) = claim(nodes, collisions, node, virtualNodesFactor)
+    new ConsistentHash(newNodes, newCollisions, virtualNodesFactor)
   }
 
   /**
@@ -68,10 +74,13 @@ class ConsistentHash[T: ClassTag] private (nodes: immutable.SortedMap[Int, T], v
    */
   def :-(node: T): ConsistentHash[T] = {
     val nodeHash = hashFor(node.toString)
-    new ConsistentHash(nodes --
-      ((1 to virtualNodesFactor).map { r =>
-        concatenateNodeHash(nodeHash, r)
-      }), virtualNodesFactor)
+    val (newNodes, newCollisions) = (1 to virtualNodesFactor).foldLeft((nodes, collisions)) {
+      case ((ns, cs), r) =>
+        val hash = concatenateNodeHash(nodeHash, r)
+        val others = claimants(ns, cs, hash).filterNot(sameNode(_, node))
+        setClaimants(ns, cs, hash, others)
+    }
+    new ConsistentHash(newNodes, newCollisions, virtualNodesFactor)
   }
 
   /**
@@ -123,14 +132,52 @@ class ConsistentHash[T: ClassTag] private (nodes: immutable.SortedMap[Int, T], v
 
 object ConsistentHash {
   def apply[T: ClassTag](nodes: Iterable[T], virtualNodesFactor: Int): ConsistentHash[T] = {
-    new ConsistentHash(
-      immutable.SortedMap.empty[Int, T] ++
-      (for {
-        node <- nodes
-        nodeHash = hashFor(node.toString)
-        vnode <- 1 to virtualNodesFactor
-      } yield concatenateNodeHash(nodeHash, vnode) -> node),
-      virtualNodesFactor)
+    if (virtualNodesFactor < 1) throw new IllegalArgumentException("virtualNodesFactor must be >= 1")
+    val nodeArray = nodes.toArray
+    val total = nodeArray.length * virtualNodesFactor
+    // each virtual node is encoded as (ring position << 32 | index), so that a primitive sort orders
+    // them by ring position, and by insertion order for the same position
+    val points = new Array[Long](total)
+    var n = 0
+    while (n < nodeArray.length) {
+      val nodeHash = hashFor(nodeArray(n).toString)
+      var r = 1
+      while (r <= virtualNodesFactor) {
+        val i = n * virtualNodesFactor + r - 1
+        points(i) = (concatenateNodeHash(nodeHash, r).toLong << 32) | i
+        r += 1
+      }
+      n += 1
+    }
+    Arrays.sort(points)
+
+    def hashAt(i: Int): Int = (points(i) >> 32).toInt
+    def nodeAt(i: Int): T = nodeArray((points(i) & 0xFFFFFFFFL).toInt / virtualNodesFactor)
+
+    val ring = immutable.TreeMap.newBuilder[Int, T]
+    var collisions = immutable.Map.empty[Int, List[T]]
+    var i = 0
+    while (i < total) {
+      val hash = hashAt(i)
+      var end = i + 1
+      while (end < total && hashAt(end) == hash) end += 1
+      if (end == i + 1) ring += hash -> nodeAt(i)
+      else {
+        // rare: several virtual nodes at the same ring position, resolve them like `:+` does
+        var claimants = List.empty[T]
+        var j = i
+        while (j < end) {
+          val node = nodeAt(j)
+          claimants = node :: claimants.filterNot(sameNode(_, node))
+          j += 1
+        }
+        val (owner, others) = ownerOf(claimants)
+        ring += hash -> owner
+        if (others.nonEmpty) collisions = collisions.updated(hash, others)
+      }
+      i = end
+    }
+    new ConsistentHash(ring.result(), collisions, virtualNodesFactor)
   }
 
   /**
@@ -140,6 +187,54 @@ object ConsistentHash {
     import scala.jdk.CollectionConverters._
     implicit val ct: ClassTag[T] = ClassTag.Any.asInstanceOf[ClassTag[T]]
     apply(nodes.asScala, virtualNodesFactor)
+  }
+
+  // nodes are identified by their toString, see the class documentation
+  private def sameNode[T](a: T, b: T): Boolean = a.toString == b.toString
+
+  // all nodes with a virtual node at the given ring position, the owner first
+  private def claimants[T](
+      nodes: immutable.SortedMap[Int, T],
+      collisions: immutable.Map[Int, List[T]],
+      hash: Int): List[T] =
+    nodes.get(hash) match {
+      case Some(owner) => owner :: collisions.getOrElse(hash, Nil)
+      case None        => Nil
+    }
+
+  private def setClaimants[T](
+      nodes: immutable.SortedMap[Int, T],
+      collisions: immutable.Map[Int, List[T]],
+      hash: Int,
+      claimants: List[T]): (immutable.SortedMap[Int, T], immutable.Map[Int, List[T]]) =
+    if (claimants.isEmpty) (nodes - hash, collisions - hash)
+    else {
+      val (owner, others) = ownerOf(claimants)
+      (nodes.updated(hash, owner), if (others.isEmpty) collisions - hash else collisions.updated(hash, others))
+    }
+
+  // the lowest toString owns the position, independent of the order the nodes were added
+  private def ownerOf[T](claimants: List[T]): (T, List[T]) =
+    claimants match {
+      case single :: Nil => (single, Nil)
+      case _             =>
+        val sorted = claimants.sortBy(_.toString)
+        (sorted.head, sorted.tail)
+    }
+
+  // adds the virtual nodes of `node`, replacing any previous virtual nodes of the same node
+  private def claim[T](
+      nodes: immutable.SortedMap[Int, T],
+      collisions: immutable.Map[Int, List[T]],
+      node: T,
+      virtualNodesFactor: Int): (immutable.SortedMap[Int, T], immutable.Map[Int, List[T]]) = {
+    val nodeHash = hashFor(node.toString)
+    (1 to virtualNodesFactor).foldLeft((nodes, collisions)) {
+      case ((ns, cs), r) =>
+        val hash = concatenateNodeHash(nodeHash, r)
+        val others = claimants(ns, cs, hash).filterNot(sameNode(_, node))
+        setClaimants(ns, cs, hash, node :: others)
+    }
   }
 
   private def concatenateNodeHash(nodeHash: Int, vnode: Int): Int = {
