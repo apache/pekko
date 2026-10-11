@@ -39,7 +39,8 @@ class StashBufferInstrumentationPointsSpec extends AnyWordSpec with Matchers {
 
   /** `owner` and its anonymous classes, which is where the unstash iteration lives. */
   private def classFiles(owner: String): List[String] =
-    owner :: Iterator
+    owner ::
+    Iterator
       .from(1)
       .map(n => s"$owner$$$$anon$$$n")
       .takeWhile(name => getClass.getClassLoader.getResource(name + ".class") ne null)
@@ -60,8 +61,8 @@ class StashBufferInstrumentationPointsSpec extends AnyWordSpec with Matchers {
       var i = 1
       while (i < count) {
         in.readUnsignedByte() match {
-          case 1      => utf8(i) = in.readUTF()
-          case 7      => classes(i) = in.readUnsignedShort()
+          case 1       => utf8(i) = in.readUTF()
+          case 7       => classes(i) = in.readUnsignedShort()
           case 10 | 11 =>
             methodRefs += ((in.readUnsignedShort(), in.readUnsignedShort()))
           case 12 =>
