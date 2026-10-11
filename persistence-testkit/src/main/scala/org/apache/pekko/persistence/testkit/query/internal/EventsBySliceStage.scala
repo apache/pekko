@@ -21,7 +21,7 @@ import org.apache.pekko
 import pekko.actor.ActorRef
 import pekko.annotation.InternalApi
 import pekko.persistence.Persistence
-import pekko.persistence.query.Sequence
+import pekko.persistence.query.Offset
 import pekko.persistence.query.typed
 import pekko.persistence.testkit.EventStorage
 import pekko.persistence.testkit.PersistenceTestKitPlugin.SliceWrite
@@ -61,6 +61,7 @@ final private[pekko] class EventsBySliceStage[Event](
     entityType: String,
     minSlice: Int,
     maxSlice: Int,
+    offset: Offset,
     storage: EventStorage,
     persistence: Persistence
 ) extends GraphStage[SourceShape[typed.EventEnvelope[Event]]] {
@@ -73,6 +74,7 @@ final private[pekko] class EventsBySliceStage[Event](
     new GraphStageLogicWithLogging(shape) with OutHandler {
       private var state = Option.empty[State]
       private var stageActorRef: ActorRef = null
+      private val isAfterOffset = TimestampOffsets.isAfter(offset)
       override def preStart(): Unit = {
         stageActorRef = getStageActor(receiveNotifications).ref
         materializer.system.eventStream.subscribe(stageActorRef, classOf[SliceWrite])
@@ -98,7 +100,10 @@ final private[pekko] class EventsBySliceStage[Event](
           val maybeNextEvent = storage.tryRead(entityType, repr => shouldFilter(repr.persistenceId))
             .sortBy(pr => (pr.timestamp, pr.sequenceNr))
             .find { pr =>
-              state.forall(_.isAfter(pr.timestamp, pr.sequenceNr))
+              state match {
+                case Some(s) => s.isAfter(pr.timestamp, pr.sequenceNr)
+                case None    => isAfterOffset(pr)
+              }
             }
 
           log.debug("tryPush available. State {} event {}", state, maybeNextEvent)
@@ -106,7 +111,7 @@ final private[pekko] class EventsBySliceStage[Event](
           maybeNextEvent.foreach { pr =>
             val slice = persistence.sliceForPersistenceId(pr.persistenceId)
             push(out,
-              new typed.EventEnvelope[Event](Sequence(pr.sequenceNr), pr.persistenceId, pr.sequenceNr,
+              new typed.EventEnvelope[Event](TimestampOffsets.offsetFor(pr), pr.persistenceId, pr.sequenceNr,
                 Some(pr.payload.asInstanceOf[Event]), pr.timestamp, pr.metadata, entityType, slice))
 
             state = Some(State(pr.timestamp, pr.sequenceNr))

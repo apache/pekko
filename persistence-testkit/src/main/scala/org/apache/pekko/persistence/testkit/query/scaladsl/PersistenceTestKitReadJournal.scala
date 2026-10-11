@@ -12,8 +12,6 @@
  */
 
 package org.apache.pekko.persistence.testkit.query.scaladsl
-import java.time.Instant
-import java.time.temporal.ChronoUnit
 
 import scala.annotation.nowarn
 
@@ -44,6 +42,7 @@ import pekko.persistence.testkit.internal.InMemStorageExtension
 import pekko.persistence.testkit.query.internal.EventsByPersistenceIdStage
 import pekko.persistence.testkit.query.internal.EventsBySliceStage
 import pekko.persistence.testkit.query.internal.EventsByTagStage
+import pekko.persistence.testkit.query.internal.TimestampOffsets
 import pekko.persistence.testkit.query.internal.TypedEventsByPersistenceIdStage
 import pekko.persistence.typed.PersistenceId
 import pekko.stream.scaladsl.Source
@@ -90,12 +89,6 @@ final class PersistenceTestKitReadJournal(system: ExtendedActorSystem, @nowarn("
     case _               => Set.empty
   }
 
-  private def timestampOffsetFor(pr: pekko.persistence.PersistentRepr): TimestampOffset = {
-    val timestamp = Instant.ofEpochMilli(pr.timestamp)
-    val readTimestamp = Instant.now().truncatedTo(ChronoUnit.MICROS)
-    TimestampOffset(timestamp, readTimestamp, Map(pr.persistenceId -> pr.sequenceNr))
-  }
-
   override def eventsByPersistenceId(
       persistenceId: String,
       fromSequenceNr: Long = 0,
@@ -134,7 +127,7 @@ final class PersistenceTestKitReadJournal(system: ExtendedActorSystem, @nowarn("
     val entityType = PersistenceId.extractEntityType(persistenceId)
     Source(storage.tryRead(persistenceId, fromSequenceNr, toSequenceNr, Long.MaxValue)).map { pr =>
       typed.EventEnvelope(
-        timestampOffsetFor(pr),
+        TimestampOffsets.offsetFor(pr),
         persistenceId,
         pr.sequenceNr,
         unwrapTaggedPayload(pr.payload).asInstanceOf[Event],
@@ -148,14 +141,10 @@ final class PersistenceTestKitReadJournal(system: ExtendedActorSystem, @nowarn("
   }
 
   override def currentEventsByTag(tag: String, offset: Offset = NoOffset): Source[EventEnvelope, NotUsed] = {
-    offset match {
-      case NoOffset =>
-      case _        =>
-        throw new UnsupportedOperationException("Offsets not supported for persistence test kit currentEventsByTag yet")
-    }
-    Source(storage.tryReadByTag(tag)).map { pr =>
+    val isAfterOffset = TimestampOffsets.isAfter(offset)
+    Source(storage.tryReadByTag(tag).filter(isAfterOffset)).map { pr =>
       EventEnvelope(
-        Sequence(pr.sequenceNr),
+        TimestampOffsets.offsetFor(pr),
         pr.persistenceId,
         pr.sequenceNr,
         unwrapTaggedPayload(pr.payload),
@@ -169,21 +158,18 @@ final class PersistenceTestKitReadJournal(system: ExtendedActorSystem, @nowarn("
       minSlice: Int,
       maxSlice: Int,
       offset: Offset): Source[typed.EventEnvelope[Event], NotUsed] = {
-    offset match {
-      case NoOffset =>
-      case _        =>
-        throw new UnsupportedOperationException("Offsets not supported for persistence test kit currentEventsByTag yet")
-    }
+    val isAfterOffset = TimestampOffsets.isAfter(offset)
     val prs = storage.tryRead(entityType,
       repr => {
         val pid = repr.persistenceId
         val slice = persistence.sliceForPersistenceId(pid)
-        PersistenceId.extractEntityType(pid) == entityType && slice >= minSlice && slice <= maxSlice
+        PersistenceId.extractEntityType(pid) == entityType && slice >= minSlice && slice <= maxSlice &&
+        isAfterOffset(repr)
       })
     Source(prs).map { pr =>
       val slice = persistence.sliceForPersistenceId(pr.persistenceId)
       typed.EventEnvelope(
-        timestampOffsetFor(pr),
+        TimestampOffsets.offsetFor(pr),
         pr.persistenceId,
         pr.sequenceNr,
         unwrapTaggedPayload(pr.payload).asInstanceOf[Event],
@@ -218,10 +204,9 @@ final class PersistenceTestKitReadJournal(system: ExtendedActorSystem, @nowarn("
     storage.currentPersistenceIds(afterId, limit)
 
   override def eventsByTag(tag: String, offset: Offset = NoOffset): Source[EventEnvelope, NotUsed] = {
-    if (offset != NoOffset) {
-      throw new UnsupportedOperationException("Offsets not supported for persistence test kit currentEventsByTag yet")
-    }
-    Source.fromGraph(new EventsByTagStage(tag, storage))
+    // validate eagerly so that an unsupported offset type fails the call rather than the stream
+    TimestampOffset.toTimestampOffset(offset)
+    Source.fromGraph(new EventsByTagStage(tag, offset, storage))
   }
 
   override def eventsBySlices[Event](
@@ -230,9 +215,8 @@ final class PersistenceTestKitReadJournal(system: ExtendedActorSystem, @nowarn("
       maxSlice: Int,
       offset: Offset
   ): Source[typed.EventEnvelope[Event], NotUsed] = {
-    if (offset != NoOffset) {
-      throw new UnsupportedOperationException("Offsets not supported for persistence test kit eventsBySlices yet")
-    }
-    Source.fromGraph(new EventsBySliceStage(entityType, minSlice, maxSlice, storage, persistence))
+    // validate eagerly so that an unsupported offset type fails the call rather than the stream
+    TimestampOffset.toTimestampOffset(offset)
+    Source.fromGraph(new EventsBySliceStage(entityType, minSlice, maxSlice, offset, storage, persistence))
   }
 }
