@@ -98,11 +98,13 @@ import pekko.util.OptionVal
   }
 
   @InternalStableApi
+  @noinline // Not inlined so that the agent can match the method in the bytecode
   private def createNode(message: T, @nowarn("msg=never used") ctx: scaladsl.ActorContext[T]): Node[T] = {
     new Node(null, message)
   }
 
   @InternalStableApi
+  @noinline // Not inlined so that the agent can match the method in the bytecode
   private def dropHeadForUnstash(): Node[T] = {
     val message = rawHead
     _first = _first.next
@@ -114,6 +116,7 @@ import pekko.util.OptionVal
   }
 
   @InternalStableApi
+  @noinline // Not inlined so that the agent can match the method in the bytecode
   private def interpretUnstashedMessage(
       behavior: Behavior[T],
       ctx: TypedActorContext[T],
@@ -260,10 +263,12 @@ import pekko.util.OptionVal
     s"StashBuffer($size/$capacity)"
 
   @InternalStableApi
+  @noinline // Not inlined so that the agent can match the method in the bytecode
   private[pekko] def unstashed(@nowarn("msg=never used") ctx: ActorContext[T], @nowarn("msg=never used") node: Node[T])
       : Unit = ()
 
   @InternalStableApi
+  @noinline // Not inlined so that the agent can match the method in the bytecode
   private def stashCleared(@nowarn("msg=never used") ctx: ActorContext[T]): Unit = ()
 
 }
