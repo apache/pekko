@@ -125,7 +125,7 @@ lazy val actor = pekkoModule("actor")
 
 lazy val actorTests = pekkoModule("actor-tests")
   .configs(Jdk9.TestJdk9)
-  .dependsOn(testkit % "compile->compile;test->test", actor)
+  .dependsOn(testkit % "compile->compile;test->test", actor % "compile->compile;TestJdk9->CompileJdk9")
   .settings(Dependencies.actorTests)
   .enablePlugins(NoPublish, Jdk9)
   .disablePlugins(MimaPlugin)

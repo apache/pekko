@@ -17,11 +17,11 @@
 
 package org.apache.pekko.dispatch
 
+import java.util.concurrent.{ ForkJoinPool, TimeUnit }
+
 import org.apache.pekko
 import pekko.annotation.InternalApi
 import pekko.dispatch.ForkJoinExecutorConfigurator.PekkoForkJoinTask
-
-import java.util.concurrent.{ ForkJoinPool, ForkJoinTask, TimeUnit }
 
 /**
  * INTERNAL PEKKO USAGE ONLY
@@ -43,8 +43,8 @@ private[dispatch] final class PekkoJdk9ForkJoinPool(
 
   override def execute(r: Runnable): Unit =
     if (r ne null)
-      super.execute(
-        (if (r.isInstanceOf[ForkJoinTask[_]]) r else new PekkoForkJoinTask(r)).asInstanceOf[ForkJoinTask[Any]])
+      // As in PekkoForkJoinPool, never put a caller-owned task back into the work queue.
+      super.execute(new PekkoForkJoinTask(r))
     else
       throw new NullPointerException("Runnable was null")
 

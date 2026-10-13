@@ -66,8 +66,11 @@ object ForkJoinExecutorConfigurator {
 
     override def execute(r: Runnable): Unit =
       if (r ne null)
-        super.execute(
-          (if (r.isInstanceOf[ForkJoinTask[_]]) r else new PekkoForkJoinTask(r)).asInstanceOf[ForkJoinTask[Any]])
+        // Always hand the pool a task object it has not seen before. Pushing a caller-owned
+        // ForkJoinTask lets the same reference return to the same work-queue slot, which a steal
+        // that stalls between its base recheck and its slot CAS turns into a permanently damaged
+        // queue: https://github.com/ben-manes/caffeine/issues/2021
+        super.execute(new PekkoForkJoinTask(r))
       else
         throw new NullPointerException("Runnable was null")
 
