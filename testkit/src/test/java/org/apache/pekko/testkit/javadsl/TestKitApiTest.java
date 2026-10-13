@@ -112,7 +112,7 @@ public class TestKitApiTest {
             Duration.ofSeconds(3),
             "hint",
             (message) -> {
-              return "fishResult1";
+              return true;
             });
     // FIXME how is this supposed to be used, scaladoc talks about a partial function but it accepts
     // a total function #27562
@@ -151,7 +151,7 @@ public class TestKitApiTest {
     // a total function #27562
     testKit.ignoreMsg(
         (message) -> {
-          return message;
+          return true;
         });
     testKit.ignoreNoMsg();
 
