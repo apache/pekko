@@ -96,6 +96,10 @@ abstract class JavaPartialFunction[A, B] extends AbstractPartialFunction[A, B] {
   final override def applyOrElse[A1 <: A, B1 >: B](x: A1, default: A1 => B1): B1 =
     try apply(x, false)
     catch { case NoMatch => default(x) }
+
+  // Scala 3.10 emits conflicting Java generic signatures for runWith in AbstractPartialFunction
+  // and PartialFunction, which stops Java code from subclassing; redeclaring it here fixes that
+  override def runWith[U](action: B => U): A => Boolean = super.runWith(action)
 }
 
 /**

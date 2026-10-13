@@ -237,7 +237,7 @@ public class HubDocTest extends AbstractJavaTest {
                 Integer.class,
                 () ->
                     (info, elem) -> {
-                      final List<Object> ids = info.getConsumerIds();
+                      final List<?> ids = info.getConsumerIds();
                       int minValue = info.queueSize(0);
                       long fastest = info.consumerIdByIdx(0);
                       for (int i = 1; i < ids.size(); i++) {
