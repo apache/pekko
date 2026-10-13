@@ -138,7 +138,7 @@ This bad situation gets worse when things go really wrong and a worker backed by
 up in an unrecoverable situation. For example, an internal exception caused by a bug bubbles up to the root of
 the thread and makes the thread shut down. This immediately raises the question, who should restart the normal operation
 of the service hosted by the thread, and how should it be restored to a known-good state? At first glance,
-this might seem manageable, but we are suddenly faced by a new, unexpected phenomena: the actual task,
+this might seem manageable, but we are suddenly faced by a new, unexpected phenomenon: the actual task,
 that the thread was currently working on, is no longer in the shared memory location where tasks are taken from
 (usually a queue). In fact, due to the exception reaching to the top, unwinding all of the call stack,
 the task state is fully lost! **We have lost a message even though this is local communication with no networking

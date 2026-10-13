@@ -59,7 +59,7 @@ Scala
 :  @@snip [LeaseDocSpec.scala](/docs/src/test/scala/docs/coordination/LeaseDocSpec.scala) { #cluster-owner }
 
 Java
-:  @@snip [LeaseDocTest.scala](/docs/src/test/java/jdocs/coordination/LeaseDocTest.java) { #cluster-owner }
+:  @@snip [LeaseDocTest.java](/docs/src/test/java/jdocs/coordination/LeaseDocTest.java) { #cluster-owner }
 
 For use cases where multiple different leases on the same node then something unique must be added to the name. For example
 a lease can be used with Cluster Sharding and in this case the shard Id is included in the lease name for each shard.

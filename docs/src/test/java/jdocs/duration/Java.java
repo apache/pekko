@@ -14,7 +14,7 @@
 package jdocs.duration;
 
 // #import
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import scala.concurrent.duration.Deadline;
 import scala.concurrent.duration.Duration;

@@ -156,12 +156,10 @@ trait Scheduler {
       implicit
       executor: ExecutionContext,
       sender: ActorRef = Actor.noSender): Cancellable = {
-    scheduleWithFixedDelay(initialDelay, delay)(new Runnable {
-      def run(): Unit = {
-        receiver ! message
-        if (receiver.isTerminated)
-          throw SchedulerException("timer active for terminated actor")
-      }
+    scheduleWithFixedDelay(initialDelay, delay)(() => {
+      receiver ! message
+      if (receiver.isTerminated)
+        throw SchedulerException("timer active for terminated actor")
     })
   }
 
@@ -301,12 +299,10 @@ trait Scheduler {
     schedule(
       initialDelay,
       interval,
-      new Runnable {
-        def run(): Unit = {
-          receiver ! message
-          if (receiver.isTerminated)
-            throw SchedulerException("timer active for terminated actor")
-        }
+      () => {
+        receiver ! message
+        if (receiver.isTerminated)
+          throw SchedulerException("timer active for terminated actor")
       })
 
   /**
@@ -360,10 +356,7 @@ trait Scheduler {
       implicit
       executor: ExecutionContext,
       sender: ActorRef = Actor.noSender): Cancellable =
-    scheduleOnce(delay,
-      new Runnable {
-        override def run(): Unit = receiver ! message
-      })
+    scheduleOnce(delay, () => receiver ! message)
 
   /**
    * Java API: Schedules a message to be sent once with a delay, i.e. a time period that has
@@ -396,7 +389,7 @@ trait Scheduler {
   final def scheduleOnce(delay: FiniteDuration)(f: => Unit)(
       implicit
       executor: ExecutionContext): Cancellable =
-    scheduleOnce(delay, new Runnable { override def run(): Unit = f })
+    scheduleOnce(delay, () => f)
 
   /**
    * Scala API: Schedules a Runnable to be run once with a delay, i.e. a time period that

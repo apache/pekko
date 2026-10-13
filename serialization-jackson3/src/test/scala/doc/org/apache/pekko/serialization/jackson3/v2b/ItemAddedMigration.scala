@@ -17,7 +17,8 @@ package doc.org.apache.pekko.serialization.jackson3.v2b
 import tools.jackson.databind.JsonNode
 import tools.jackson.databind.node.DoubleNode
 import tools.jackson.databind.node.ObjectNode
-import org.apache.pekko.serialization.jackson3.JacksonMigration
+import org.apache.pekko
+import pekko.serialization.jackson3.JacksonMigration
 
 class ItemAddedMigration extends JacksonMigration {
 

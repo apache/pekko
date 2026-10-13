@@ -37,12 +37,12 @@ private[cluster] object VectorClock {
 
     def fromHash(hash: String): Node = hash
 
+    private val hexFormat = java.util.HexFormat.of()
+
     private def hash(name: String): String = {
       val digester = MessageDigest.getInstance("MD5")
       digester.update(name.getBytes(StandardCharsets.UTF_8))
-      digester.digest.map { h =>
-        "%02x".format(0xFF & h)
-      }.mkString
+      hexFormat.formatHex(digester.digest())
     }
   }
 

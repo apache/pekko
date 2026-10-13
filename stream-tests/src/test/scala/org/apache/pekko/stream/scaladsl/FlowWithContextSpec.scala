@@ -13,8 +13,10 @@
 
 package org.apache.pekko.stream.scaladsl
 
-import scala.collection.mutable.ListBuffer
+import java.util.concurrent.ConcurrentLinkedQueue
+
 import scala.concurrent.duration._
+import scala.jdk.CollectionConverters._
 import scala.util.control.NoStackTrace
 
 import org.apache.pekko
@@ -79,15 +81,110 @@ class FlowWithContextSpec extends StreamSpec {
         .expectError(boom)
     }
 
+    "pass through contexts using additional filtering operators" in {
+      val flow = FlowWithContext[Any, String]
+        .collectType[Int]
+        .collectWhile { case value if value < 3 => value * 10 }
+
+      SourceWithContext
+        .fromTuples(Source(Vector((1: Any, "one"), (2: Any, "two"), ("three": Any, "three"), (3: Any, "three-int"))))
+        .via(flow)
+        .runWith(TestSink[(Int, String)]())
+        .request(3)
+        .expectNext((10, "one"), (20, "two"))
+        .expectComplete()
+
+      SourceWithContext
+        .fromTuples(Source(Vector((0, "zero"), (1, "one"), (2, "two"), (3, "three"))))
+        .via(FlowWithContext[Int, String].mapOption(value => if (value == 0) None else Some(value * 10)))
+        .runWith(TestSink[(Int, String)]())
+        .request(3)
+        .expectNext((10, "one"), (20, "two"), (30, "three"))
+        .expectComplete()
+
+      SourceWithContext
+        .fromTuples(Source(Vector((1: Any, "one"), (2: Any, "two"), (3: Any, "three"))))
+        .via(FlowWithContext[Any, String].collectFirst { case value: Int if value > 1 => value * 10 })
+        .runWith(TestSink[(Int, String)]())
+        .request(1)
+        .expectNext((20, "two"))
+        .expectComplete()
+
+      val forComprehensionFlow =
+        for {
+          value <- FlowWithContext[Int, String]
+          if value % 2 == 1
+        } yield value * 10
+
+      SourceWithContext
+        .fromTuples(Source(Vector((1, "one"), (2, "two"), (3, "three"))))
+        .via(forComprehensionFlow)
+        .runWith(TestSink[(Int, String)]())
+        .request(2)
+        .expectNext((10, "one"), (30, "three"))
+        .expectComplete()
+    }
+
+    "pass through contexts using truncating operators" in {
+      val flow = FlowWithContext[Int, String]
+        .drop(1)
+        .dropRepeated()
+        .dropWhile(_ < 2)
+        .takeUntil(_ == 3)
+        .takeWithin(1.day)
+        .take(2)
+        .limit(2)
+        .limitWeighted(2)(_ => 1)
+
+      SourceWithContext
+        .fromTuples(Source(Vector((0, "zero"), (1, "one"), (1, "one-duplicate"), (2, "two"), (3, "three"),
+          (4, "four"))))
+        .via(flow)
+        .runWith(TestSink[(Int, String)]())
+        .request(2)
+        .expectNext((2, "two"), (3, "three"))
+        .expectComplete()
+
+      SourceWithContext
+        .fromTuples(Source(Vector((1, "one"), (2, "two"), (3, "three"))))
+        .via(FlowWithContext[Int, String].takeWhile(_ < 2, inclusive = true))
+        .runWith(TestSink[(Int, String)]())
+        .request(2)
+        .expectNext((1, "one"), (2, "two"))
+        .expectComplete()
+
+      SourceWithContext
+        .fromTuples(Source(Vector((1, "one"), (3, "three"), (4, "four"))))
+        .via(
+          FlowWithContext[Int, String]
+            .dropRepeated((left, right) => left % 2 == right % 2)
+            .takeWhile(_ < 3))
+        .runWith(TestSink[(Int, String)]())
+        .request(2)
+        .expectNext((1, "one"))
+        .expectComplete()
+
+      SourceWithContext
+        .fromTuples(Source.single((1, "one")).initialDelay(50.millis))
+        .via(FlowWithContext[Int, String].dropWithin(10.millis).takeWithin(1.day))
+        .runWith(TestSink[(Int, String)]())
+        .request(1)
+        .expectNext((1, "one"))
+        .expectComplete()
+    }
+
     "pass through all data when using alsoTo" in {
-      val listBuffer = new ListBuffer[String]()
+      // alsoTo feeds an asynchronous side Sink, which may still be draining when the
+      // main stream completes. Poll until it has observed every element instead of
+      // asserting once (the single assertion raced under JDK 25 scheduling).
+      val received = new ConcurrentLinkedQueue[String]()
       Source(Vector(Message("A", 1L), Message("B", 2L), Message("D", 3L), Message("C", 4L)))
         .asSourceWithContext(_.offset)
         .via(
           FlowWithContext.fromTuples(Flow.fromFunction[(Message, Long), (String, Long)] { case (data, offset) =>
             (data.data.toLowerCase, offset)
           })
-            .alsoTo(Sink.foreach(string => listBuffer.+=(string)))
+            .alsoTo(Sink.foreach(string => received.add(string)))
         )
         .toMat(TestSink[(String, Long)]())(Keep.right)
         .run()
@@ -97,20 +194,18 @@ class FlowWithContextSpec extends StreamSpec {
         .expectNext(("d", 3L))
         .expectNext(("c", 4L))
         .expectComplete()
-        .within(10.seconds) {
-          listBuffer should contain theSameElementsInOrderAs List("a", "b", "d", "c")
-        }
+      awaitAssert(received.asScala.toList should contain theSameElementsInOrderAs List("a", "b", "d", "c"), 10.seconds)
     }
 
     "pass through all data when using alsoToContext" in {
-      val listBuffer = new ListBuffer[Long]()
+      val received = new ConcurrentLinkedQueue[Long]()
       Source(Vector(Message("A", 1L), Message("B", 2L), Message("D", 3L), Message("C", 4L)))
         .asSourceWithContext(_.offset)
         .via(
           FlowWithContext.fromTuples(Flow.fromFunction[(Message, Long), (String, Long)] { case (data, offset) =>
             (data.data.toLowerCase, offset)
           })
-            .alsoToContext(Sink.foreach(offset => listBuffer.+=(offset)))
+            .alsoToContext(Sink.foreach(offset => received.add(offset)))
         )
         .toMat(TestSink[(String, Long)]())(Keep.right)
         .run()
@@ -120,19 +215,17 @@ class FlowWithContextSpec extends StreamSpec {
         .expectNext(("d", 3L))
         .expectNext(("c", 4L))
         .expectComplete()
-        .within(10.seconds) {
-          listBuffer should contain theSameElementsInOrderAs List(1L, 2L, 3L, 4L)
-        }
+      awaitAssert(received.asScala.toList should contain theSameElementsInOrderAs List(1L, 2L, 3L, 4L), 10.seconds)
     }
 
     "pass through all data when using wireTap" in {
-      val listBuffer = new ListBuffer[String]()
+      val received = new ConcurrentLinkedQueue[String]()
       Source(Vector(Message("A", 1L), Message("B", 2L), Message("D", 3L), Message("C", 4L)))
         .asSourceWithContext(_.offset)
         .via(
           FlowWithContext.fromTuples(Flow.fromFunction[(Message, Long), (String, Long)] { case (data, offset) =>
             (data.data.toLowerCase, offset)
-          }).wireTap(Sink.foreach(string => listBuffer.+=(string)))
+          }).wireTap(Sink.foreach(string => received.add(string)))
         )
         .toMat(TestSink[(String, Long)]())(Keep.right)
         .run()
@@ -142,19 +235,17 @@ class FlowWithContextSpec extends StreamSpec {
         .expectNext(("d", 3L))
         .expectNext(("c", 4L))
         .expectComplete()
-        .within(10.seconds) {
-          listBuffer should contain atLeastOneElementOf List("a", "b", "d", "c")
-        }
+      awaitAssert(received.asScala.toList should contain atLeastOneElementOf List("a", "b", "d", "c"), 10.seconds)
     }
 
     "pass through all data when using wireTapContext" in {
-      val listBuffer = new ListBuffer[Long]()
+      val received = new ConcurrentLinkedQueue[Long]()
       Source(Vector(Message("A", 1L), Message("B", 2L), Message("D", 3L), Message("C", 4L)))
         .asSourceWithContext(_.offset)
         .via(
           FlowWithContext.fromTuples(Flow.fromFunction[(Message, Long), (String, Long)] { case (data, offset) =>
             (data.data.toLowerCase, offset)
-          }).wireTapContext(Sink.foreach(offset => listBuffer.+=(offset)))
+          }).wireTapContext(Sink.foreach(offset => received.add(offset)))
         )
         .toMat(TestSink[(String, Long)]())(Keep.right)
         .run()
@@ -164,9 +255,7 @@ class FlowWithContextSpec extends StreamSpec {
         .expectNext(("d", 3L))
         .expectNext(("c", 4L))
         .expectComplete()
-        .within(10.seconds) {
-          listBuffer should contain atLeastOneElementOf List(1L, 2L, 3L, 4L)
-        }
+      awaitAssert(received.asScala.toList should contain atLeastOneElementOf List(1L, 2L, 3L, 4L), 10.seconds)
     }
 
     "keep the same order for data and context when using unsafeDataVia" in {

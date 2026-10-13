@@ -13,16 +13,17 @@
 
 package docs.stream.operators.sourceorflow
 
-import org.apache.pekko.NotUsed
-import org.apache.pekko.actor.typed.ActorSystem
-import org.apache.pekko.stream.scaladsl.Source
-import org.apache.pekko.util.ByteString
+import org.apache.pekko
+import pekko.NotUsed
+import pekko.actor.typed.ActorSystem
+import pekko.stream.scaladsl.Source
+import pekko.util.ByteString
 
 import scala.concurrent.Future
 
 object LimitWeighted {
 
-  implicit val system: ActorSystem[_] = ???
+  implicit val system: ActorSystem[?] = ???
 
   def simple(): Unit = {
     // #simple

@@ -82,18 +82,18 @@ object EventSourcedBehaviorStashSpec {
 
   final case class State(value: Int, active: Boolean)
 
-  def counter(persistenceId: PersistenceId, signalProbe: Option[ActorRef[String]] = None): Behavior[Command[_]] =
+  def counter(persistenceId: PersistenceId, signalProbe: Option[ActorRef[String]] = None): Behavior[Command[?]] =
     Behaviors
-      .supervise[Command[_]] {
+      .supervise[Command[?]] {
         Behaviors.setup(_ => eventSourcedCounter(persistenceId, signalProbe))
       }
       .onFailure(SupervisorStrategy.restart.withLoggingEnabled(enabled = false))
 
   def eventSourcedCounter(
       persistenceId: PersistenceId,
-      signalProbe: Option[ActorRef[String]]): EventSourcedBehavior[Command[_], Event, State] = {
+      signalProbe: Option[ActorRef[String]]): EventSourcedBehavior[Command[?], Event, State] = {
     EventSourcedBehavior
-      .withEnforcedReplies[Command[_], Event, State](
+      .withEnforcedReplies[Command[?], Event, State](
         persistenceId,
         emptyState = State(0, active = true),
         commandHandler = (state, command) => {
@@ -123,7 +123,7 @@ object EventSourcedBehaviorStashSpec {
       }
   }
 
-  private def active(state: State, command: Command[_]): ReplyEffect[Event, State] = {
+  private def active(state: State, command: Command[?]): ReplyEffect[Event, State] = {
     command match {
       case Increment(id, replyTo) =>
         Effect.persist(Incremented(1)).thenReply(replyTo)(_ => Ack(id))
@@ -149,7 +149,7 @@ object EventSourcedBehaviorStashSpec {
     }
   }
 
-  private def inactive(state: State, command: Command[_]): ReplyEffect[Event, State] = {
+  private def inactive(state: State, command: Command[?]): ReplyEffect[Event, State] = {
     command match {
       case _: Increment =>
         Effect.stash()
@@ -183,7 +183,7 @@ class EventSourcedBehaviorStashSpec
   import EventSourcedBehaviorStashSpec._
 
   val pidCounter = new AtomicInteger(0)
-  private def nextPid(): PersistenceId = PersistenceId.ofUniqueId(s"c${pidCounter.incrementAndGet()})")
+  private def nextPid(): PersistenceId = PersistenceId.ofUniqueId(s"c${pidCounter.incrementAndGet()}")
 
   "A typed persistent actor that is stashing commands" must {
 
@@ -338,9 +338,10 @@ class EventSourcedBehaviorStashSpec
 
       unhandledProbe.receiveMessages(10)
 
-      val value1 = stateProbe.expectMessageType[State](5.seconds).value
-      val value2 = stateProbe.expectMessageType[State](5.seconds).value
-      val value3 = stateProbe.expectMessageType[State](5.seconds).value
+      // a lot of events, so give it some extra time to complete
+      val value1 = stateProbe.expectMessageType[State](10.seconds).value
+      val value2 = stateProbe.expectMessageType[State](10.seconds).value
+      val value3 = stateProbe.expectMessageType[State](10.seconds).value
 
       // verify the order
 
@@ -541,7 +542,7 @@ class EventSourcedBehaviorStashSpec
     }
 
     trait StashLimit {
-      val customStashLimit: Option[Int] = None
+      def customStashLimit: Option[Int]
       val probe = TestProbe[AnyRef]()
       system.toClassic.eventStream.subscribe(probe.ref.toClassic, classOf[Dropped])
       val behavior = Behaviors.setup[String] { context =>
@@ -556,7 +557,7 @@ class EventSourcedBehaviorStashSpec
                     probe.ref ! "pong"
                     Effect.none
                   case "start-stashing" =>
-                    Effect.persist("start-stashing")
+                    Effect.persist("start-stashing").thenRun(_ => probe ! "started-stashing")
                   case msg =>
                     probe.ref ! msg
                     Effect.none
@@ -585,7 +586,7 @@ class EventSourcedBehaviorStashSpec
     }
 
     "discard when stash has reached limit with default dropped setting" in new StashLimit {
-
+      override val customStashLimit: Option[Int] = None
       val c = spawn(behavior)
 
       // make sure it completed recovery, before we try to overfill the stash
@@ -593,6 +594,8 @@ class EventSourcedBehaviorStashSpec
       probe.expectMessage("pong")
 
       c ! "start-stashing"
+      // make sure write completes before sending more commands so that they are not auto-stashed by ESB
+      probe.expectMessage("started-stashing")
 
       val limit = system.settings.config.getInt("pekko.persistence.typed.stash-capacity")
       LoggingTestKit.warn("Stash buffer is full, dropping message").expect {
@@ -624,6 +627,8 @@ class EventSourcedBehaviorStashSpec
       probe.expectMessage("pong")
 
       c ! "start-stashing"
+      // make sure write completes before sending more commands so that they are not auto-stashed by ESB
+      probe.expectMessage("started-stashing")
 
       LoggingTestKit.warn("Stash buffer is full, dropping message").expect {
         (0 to customLimit).foreach { n =>

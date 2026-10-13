@@ -30,7 +30,7 @@ import org.scalatestplus.scalacheck.Checkers
 
 import org.apache.pekko
 import pekko.io.UnsynchronizedByteArrayInputStream
-import pekko.util.ByteString.{ ByteString1, ByteString1C, ByteStrings }
+import pekko.util.ByteString.{ ByteString1, ByteString1C, ByteString2, ByteStrings }
 
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
@@ -105,6 +105,18 @@ class ByteStringSpec extends AnyWordSpec with Matchers with Checkers {
   def testSer(obj: AnyRef) = {
     deserialize(serialize(obj)) == obj
   }
+
+  def expectByteString2(byteString: ByteString): ByteString2 =
+    byteString match {
+      case byteString2: ByteString2 => byteString2
+      case other                    => fail(s"Expected ByteString2, got [${other.getClass.getName}]")
+    }
+
+  def expectByteStrings(byteString: ByteString): ByteStrings =
+    byteString match {
+      case byteStrings: ByteStrings => byteStrings
+      case other                    => fail(s"Expected ByteStrings, got [${other.getClass.getName}]")
+    }
 
   def hexFromSer(obj: AnyRef) = {
     val os = new ByteArrayOutputStream
@@ -198,7 +210,7 @@ class ByteStringSpec extends AnyWordSpec with Matchers with Checkers {
     (!strict || (bsAIt.toSeq -> bsBIt.toSeq) == (vecAIt.toSeq -> vecBIt.toSeq))
   }
 
-  def likeVecBld(body: Builder[Byte, _] => Unit): Boolean = {
+  def likeVecBld(body: Builder[Byte, ?] => Unit): Boolean = {
     val bsBuilder = ByteString.newBuilder
     val vecBuilder = Vector.newBuilder[Byte]
 
@@ -489,6 +501,45 @@ class ByteStringSpec extends AnyWordSpec with Matchers with Checkers {
       verify(byteString.copyToArray(_, 1, 3))(0, 1, 2)
       verify(byteString.copyToArray(_, 2, 3))(0, 0, 1)
       verify(byteString.copyToArray(_, 3, 3))(0, 0, 0)
+    }
+  }
+  "CompactByteString.apply(IterableOnce[Byte])" must {
+    "return empty for an empty collection" in {
+      (CompactByteString(Seq.empty[Byte]) should be).theSameInstanceAs(CompactByteString.empty)
+      (CompactByteString(List.empty[Byte]) should be).theSameInstanceAs(CompactByteString.empty)
+      (CompactByteString(Iterator.empty[Byte]) should be).theSameInstanceAs(CompactByteString.empty)
+    }
+    "return the correct bytes for a non-empty collection" in {
+      CompactByteString(Seq[Byte](1, 2, 3)) should ===(ByteString(1, 2, 3))
+      CompactByteString(List[Byte](10, 20)) should ===(ByteString(10, 20))
+      CompactByteString(Iterator.single(42.toByte)) should ===(ByteString(42.toByte))
+    }
+    "return a CompactByteString" in {
+      CompactByteString(Seq[Byte](1, 2)).isCompact should ===(true)
+    }
+    "traverse the iterator only once" in {
+      var traversalCount = 0
+      val singleUse = new IterableOnce[Byte] {
+        def iterator: Iterator[Byte] = {
+          traversalCount += 1
+          Iterator[Byte](1, 2, 3)
+        }
+      }
+      val result = CompactByteString(singleUse)
+      traversalCount should ===(1)
+      result should ===(ByteString(1, 2, 3))
+    }
+    "traverse an empty single-use IterableOnce only once" in {
+      var traversalCount = 0
+      val singleUse = new IterableOnce[Byte] {
+        def iterator: Iterator[Byte] = {
+          traversalCount += 1
+          Iterator.empty[Byte]
+        }
+      }
+      val result = CompactByteString(singleUse)
+      traversalCount should ===(1)
+      (result should be).theSameInstanceAs(CompactByteString.empty)
     }
   }
   "ByteStrings" must {
@@ -820,6 +871,133 @@ class ByteStringSpec extends AnyWordSpec with Matchers with Checkers {
       compact.lastIndexOf('b', 1) should ===(1)
       compact.lastIndexOf('b', 0) should ===(-1)
       compact.lastIndexOf('b', -1) should ===(-1)
+
+      val concat0 = ByteStrings(ByteString1.fromString("ab"), ByteString1.fromString("dd"))
+      concat0.lastIndexOf('d'.toByte, 2) should ===(2)
+      concat0.lastIndexOf('d'.toByte, 3) should ===(3)
+
+      // end larger than length - 1 should be clamped to the last valid index
+      val bs5 = ByteString1.fromString("abcde")
+      bs5.lastIndexOf('e', 100) should ===(4)
+      bs5.lastIndexOf('a', 100) should ===(0)
+      bs5.lastIndexOf('z', 100) should ===(-1)
+    }
+    "lastIndexOf (specialized)" in {
+      ByteString.empty.lastIndexOf(5.toByte, -1) should ===(-1)
+      ByteString.empty.lastIndexOf(5.toByte, 0) should ===(-1)
+      ByteString.empty.lastIndexOf(5.toByte, 1) should ===(-1)
+      ByteString.empty.lastIndexOf(5.toByte) should ===(-1)
+      val byteString1 = ByteString1.fromString("abb")
+      byteString1.lastIndexOf('d'.toByte) should ===(-1)
+      byteString1.lastIndexOf('d'.toByte, -1) should ===(-1)
+      byteString1.lastIndexOf('d'.toByte, 4) should ===(-1)
+      byteString1.lastIndexOf('d'.toByte, 1) should ===(-1)
+      byteString1.lastIndexOf('d'.toByte, 0) should ===(-1)
+      byteString1.lastIndexOf('a'.toByte, -1) should ===(-1)
+      byteString1.lastIndexOf('a'.toByte) should ===(0)
+      byteString1.lastIndexOf('a'.toByte, 0) should ===(0)
+      byteString1.lastIndexOf('a'.toByte, 1) should ===(0)
+      byteString1.lastIndexOf('b'.toByte) should ===(2)
+      byteString1.lastIndexOf('b'.toByte, 2) should ===(2)
+      byteString1.lastIndexOf('b'.toByte, 1) should ===(1)
+      byteString1.lastIndexOf('b'.toByte, 0) should ===(-1)
+
+      val byteStrings = ByteStrings(ByteString1.fromString("abb"), ByteString1.fromString("efg"))
+      byteStrings.lastIndexOf('e'.toByte) should ===(3)
+      byteStrings.lastIndexOf('e'.toByte, 6) should ===(3)
+      byteStrings.lastIndexOf('e'.toByte, 4) should ===(3)
+      byteStrings.lastIndexOf('e'.toByte, 1) should ===(-1)
+      byteStrings.lastIndexOf('e'.toByte, 0) should ===(-1)
+      byteStrings.lastIndexOf('e'.toByte, -1) should ===(-1)
+
+      byteStrings.lastIndexOf('b'.toByte) should ===(2)
+      byteStrings.lastIndexOf('b'.toByte, 6) should ===(2)
+      byteStrings.lastIndexOf('b'.toByte, 4) should ===(2)
+      byteStrings.lastIndexOf('b'.toByte, 1) should ===(1)
+      byteStrings.lastIndexOf('b'.toByte, 0) should ===(-1)
+      byteStrings.lastIndexOf('b'.toByte, -1) should ===(-1)
+
+      val compact = byteStrings.compact
+      compact.lastIndexOf('e'.toByte) should ===(3)
+      compact.lastIndexOf('e'.toByte, 6) should ===(3)
+      compact.lastIndexOf('e'.toByte, 4) should ===(3)
+      compact.lastIndexOf('e'.toByte, 1) should ===(-1)
+      compact.lastIndexOf('e'.toByte, 0) should ===(-1)
+      compact.lastIndexOf('e'.toByte, -1) should ===(-1)
+
+      compact.lastIndexOf('b'.toByte) should ===(2)
+      compact.lastIndexOf('b'.toByte, 6) should ===(2)
+      compact.lastIndexOf('b'.toByte, 4) should ===(2)
+      compact.lastIndexOf('b'.toByte, 1) should ===(1)
+      compact.lastIndexOf('b'.toByte, 0) should ===(-1)
+      compact.lastIndexOf('b'.toByte, -1) should ===(-1)
+
+      val sliced = ByteString1.fromString("xxabcdefghijk").drop(2)
+      sliced.lastIndexOf('k'.toByte) should ===(10)
+
+      val zeros = ByteString(Array[Byte](0, 1, 0, 1))
+      zeros.lastIndexOf(0.toByte) should ===(2)
+      val neg = ByteString(Array[Byte](-1, 0, -1))
+      neg.lastIndexOf((-1).toByte) should ===(2)
+
+      val concat0 = makeMultiByteStringsSample()
+      concat0.lastIndexOf(0xFF.toByte) should ===(18)
+      concat0.lastIndexOf(0xFF.toByte, 18) should ===(18)
+      concat0.lastIndexOf(0xFF.toByte, 17) should ===(0)
+      concat0.lastIndexOf(0xFE.toByte) should ===(-1)
+
+      // Single-byte ByteString
+      val single = ByteString1(Array[Byte]('x'))
+      single.lastIndexOf('x'.toByte) should ===(0)
+      single.lastIndexOf('y'.toByte) should ===(-1)
+
+      // SWAR boundary: exactly 7 bytes (only tail, no full chunk)
+      val len7 = ByteString1.fromString("abcdefg")
+      len7.lastIndexOf('g'.toByte) should ===(6)
+      len7.lastIndexOf('a'.toByte) should ===(0)
+      len7.lastIndexOf('d'.toByte) should ===(3)
+      len7.lastIndexOf('z'.toByte) should ===(-1)
+
+      // SWAR boundary: exactly 8 bytes (one full chunk, no tail)
+      val len8 = ByteString1.fromString("abcdefgh")
+      len8.lastIndexOf('h'.toByte) should ===(7)
+      len8.lastIndexOf('a'.toByte) should ===(0)
+      len8.lastIndexOf('d'.toByte) should ===(3)
+      len8.lastIndexOf('z'.toByte) should ===(-1)
+
+      // SWAR boundary: exactly 9 bytes (1-byte tail + 1 full chunk)
+      val len9 = ByteString1.fromString("abcdefghi")
+      len9.lastIndexOf('i'.toByte) should ===(8) // found in tail
+      len9.lastIndexOf('a'.toByte) should ===(0) // found in chunk
+      len9.lastIndexOf('h'.toByte) should ===(7) // last byte of chunk
+      len9.lastIndexOf('z'.toByte) should ===(-1)
+
+      // SWAR boundary: exactly 16 bytes (2 full chunks, no tail)
+      val len16 = ByteString1.fromString("abcdefghijklmnop")
+      len16.lastIndexOf('p'.toByte) should ===(15) // last byte of rightmost chunk
+      len16.lastIndexOf('a'.toByte) should ===(0) // first byte of leftmost chunk
+      len16.lastIndexOf('h'.toByte) should ===(7) // last byte of leftmost chunk
+      len16.lastIndexOf('i'.toByte) should ===(8) // first byte of rightmost chunk
+
+      // All-same-byte array longer than 8: last index is the highest
+      val allSame = ByteString(Array[Byte](7, 7, 7, 7, 7, 7, 7, 7, 7)) // 9 bytes
+      allSame.lastIndexOf(7.toByte) should ===(8)
+      allSame.lastIndexOf(7.toByte, 5) should ===(5)
+      allSame.lastIndexOf(7.toByte, 0) should ===(0)
+
+      // ByteString1 with startIndex offset: find a byte residing in the SWAR chunk
+      val slicedLong = ByteString1.fromString("xxabcdefghijk").drop(2) // "abcdefghijk", 11 bytes
+      slicedLong.lastIndexOf('a'.toByte) should ===(0) // first byte, found via chunk scan
+      slicedLong.lastIndexOf('h'.toByte) should ===(7) // last byte of chunk
+
+      val long1 = ByteString1.fromString("abcdefghijklmnop") // 16 bytes
+      long1.lastIndexOf('a'.toByte) should ===(0)
+      long1.lastIndexOf('p'.toByte) should ===(15)
+      long1.lastIndexOf('h'.toByte, 7) should ===(7)
+      long1.lastIndexOf('h'.toByte, 6) should ===(-1)
+
+      val concat1 = makeMultiByteStringsWithEmptyComponents()
+      concat1.lastIndexOf(16.toByte) should ===(17)
     }
     "indexOf (specialized)" in {
       ByteString.empty.indexOf(5.toByte) should ===(-1)
@@ -853,6 +1031,15 @@ class ByteStringSpec extends AnyWordSpec with Matchers with Checkers {
       compact.indexOf('f'.toByte) should ===(4)
       compact.indexOf('g'.toByte) should ===(5)
 
+      val concat0 = makeMultiByteStringsSample()
+      concat0.indexOf(0xFF.toByte) should ===(0)
+      concat0.indexOf(16.toByte) should ===(17)
+      concat0.indexOf(0xFE.toByte) should ===(-1)
+
+      val concat1 = makeMultiByteStringsWithEmptyComponents()
+      concat1.indexOf(0xFF.toByte) should ===(0)
+      concat1.indexOf(16.toByte) should ===(17)
+      concat1.indexOf(0xFE.toByte) should ===(-1)
     }
     "indexOf (specialized) from offset" in {
       ByteString.empty.indexOf(5.toByte, -1) should ===(-1)
@@ -919,6 +1106,11 @@ class ByteStringSpec extends AnyWordSpec with Matchers with Checkers {
       byteStringLong.indexOf('m', 2) should ===(12)
       byteStringLong.indexOf('z', 2) should ===(25)
       byteStringLong.indexOf('a', 2) should ===(-1)
+
+      val concat0 = makeMultiByteStringsSample()
+      concat0.indexOf(0xFF.toByte, 0) should ===(0)
+      concat0.indexOf(0xFF.toByte, 17) should ===(18)
+      concat0.indexOf(0xFE.toByte, 17) should ===(-1)
     }
     "contains" in {
       ByteString.empty.contains(5) should ===(false)
@@ -1000,6 +1192,26 @@ class ByteStringSpec extends AnyWordSpec with Matchers with Checkers {
       byteStringLong.indexOf('z', 2, 26) should ===(25)
       byteStringLong.indexOf('z', 2, 24) should ===(-1)
       byteStringLong.indexOf('a', 2, 24) should ===(-1)
+
+      // Early-exit optimization: toIndex < length and searchLength < 8 (tail-only, longCount == 0)
+      // ByteString1C (compact): length=26, search range [0,5) has searchLength=5 < 8
+      val bsCompact = ByteString1.fromString("abcdefghijklmnopqrstuvwxyz").compact
+      bsCompact.indexOf('a'.toByte, 0, 5) should ===(0) // found within range
+      bsCompact.indexOf('e'.toByte, 0, 5) should ===(4) // found at last position in range
+      bsCompact.indexOf('f'.toByte, 0, 5) should ===(-1) // at toIndex, not in [0,5)
+      bsCompact.indexOf('z'.toByte, 0, 5) should ===(-1) // beyond toIndex, not in [0,5)
+      bsCompact.indexOf('c'.toByte, 2, 5) should ===(2) // found, from in middle of tail
+      bsCompact.indexOf('a'.toByte, 2, 5) should ===(-1) // before fromIndex, not in [2,5)
+
+      // ByteString1 with startIndex > 0: length=26, search range [0,5) has searchLength=5 < 8
+      val arrayLong = ("xyz" + "abcdefghijklmnopqrstuvwxyz").getBytes(StandardCharsets.UTF_8)
+      val bs1 = ByteString1(arrayLong, 3, 26)
+      bs1.indexOf('a'.toByte, 0, 5) should ===(0) // found within range
+      bs1.indexOf('e'.toByte, 0, 5) should ===(4) // found at last position in range
+      bs1.indexOf('f'.toByte, 0, 5) should ===(-1) // at toIndex, not in [0,5)
+      bs1.indexOf('z'.toByte, 0, 5) should ===(-1) // beyond toIndex, not in [0,5)
+      bs1.indexOf('c'.toByte, 2, 5) should ===(2) // found, from in middle of tail
+      bs1.indexOf('a'.toByte, 2, 5) should ===(-1) // before fromIndex, not in [2,5)
     }
     "copyToArray" in {
       val byteString = ByteString(1, 2) ++ ByteString(3) ++ ByteString(4)
@@ -1057,7 +1269,34 @@ class ByteStringSpec extends AnyWordSpec with Matchers with Checkers {
 
       val byteStringXxyz = ByteString1.fromString("xxyz")
       byteStringXxyz.indexOfSlice(slice0) should ===(1)
+      byteStringXxyz.indexOfSlice(slice0, -1) should ===(1)
       byteStringXxyz.indexOfSlice(slice0, 2) should ===(-1)
+      byteStringXxyz.indexOfSlice(Seq.empty) should ===(0)
+      byteStringXxyz.indexOfSlice(Seq.empty, -1) should ===(0)
+      byteStringXxyz.indexOfSlice(Seq.empty, 1) should ===(1)
+
+      // empty slice at from == length: should return length (consistent with Scala standard library)
+      byteStringXxyz.indexOfSlice(Seq.empty, 4) should ===(4)
+      // empty slice at from > length: should return -1
+      byteStringXxyz.indexOfSlice(Seq.empty, 5) should ===(-1)
+
+      // Empty source
+      ByteString.empty.indexOfSlice(Seq.empty) should ===(0)
+      ByteString.empty.indexOfSlice(ByteString1.fromString("a")) should ===(-1)
+
+      // Slice equals entire source
+      ByteString1.fromString("abc").indexOfSlice(ByteString1.fromString("abc")) should ===(0)
+
+      // Slice longer than source
+      ByteString1.fromString("ab").indexOfSlice(ByteString1.fromString("abc")) should ===(-1)
+
+      // Cross-segment match in ByteStrings: "bc" spans segment boundary of ("ab" ++ "cd")
+      ByteStrings(ByteString1.fromString("ab"), ByteString1.fromString("cd"))
+        .indexOfSlice(ByteString1.fromString("bc")) should ===(1)
+
+      // False match: first byte matches multiple times before the full slice matches
+      // "ab" in "aabc": 'a' at index 0 (check: bytes[1]='a' != 'b' ✗), then 'a' at 1 (bytes[2]='b' == 'b' ✓) -> 1
+      ByteString1.fromString("aabc").indexOfSlice(ByteString1.fromString("ab")) should ===(1)
     }
     "indexOfSlice (specialized)" in {
       val slice0 = "xyz".getBytes(StandardCharsets.UTF_8)
@@ -1079,11 +1318,203 @@ class ByteStringSpec extends AnyWordSpec with Matchers with Checkers {
 
       val byteStringXxyz = ByteString1.fromString("xxyz")
       byteStringXxyz.indexOfSlice(slice0) should ===(1)
+      byteStringXxyz.indexOfSlice(slice0, -1) should ===(1)
       byteStringXxyz.indexOfSlice(slice0, 2) should ===(-1)
+      byteStringXxyz.indexOfSlice(Seq.empty) should ===(0)
+      byteStringXxyz.indexOfSlice(Seq.empty, -1) should ===(0)
+      byteStringXxyz.indexOfSlice(Seq.empty, 1) should ===(1)
+
+      // empty slice at from == length: should return length (consistent with Scala standard library)
+      byteStringXxyz.indexOfSlice(Seq.empty, 4) should ===(4)
+      // empty slice at from > length: should return -1
+      byteStringXxyz.indexOfSlice(Seq.empty, 5) should ===(-1)
+
+      // Empty source
+      ByteString.empty.indexOfSlice(Array.empty[Byte]) should ===(0)
+      ByteString.empty.indexOfSlice(Array[Byte]('a')) should ===(-1)
+
+      // Slice equals entire source
+      ByteString1.fromString("abc").indexOfSlice("abc".getBytes(StandardCharsets.UTF_8)) should ===(0)
+
+      // Slice longer than source
+      ByteString1.fromString("ab").indexOfSlice("abc".getBytes(StandardCharsets.UTF_8)) should ===(-1)
+
+      // Cross-segment match in ByteStrings: "bc" spans segment boundary of ("ab" ++ "cd")
+      ByteStrings(ByteString1.fromString("ab"), ByteString1.fromString("cd"))
+        .indexOfSlice(Array[Byte]('b', 'c')) should ===(1)
+
+      // False match: first byte matches multiple times before the full slice matches
+      ByteString1.fromString("aabc").indexOfSlice(Array[Byte]('a', 'b')) should ===(1)
 
       val byteStringWithOffset = ByteString1(
         "abcdefghijklmnopqrstuvwxyz".getBytes(StandardCharsets.UTF_8), 2, 24)
       byteStringWithOffset.indexOfSlice(slice0) should ===(21)
+
+      val concat0 = makeMultiByteStringsWithEmptyComponents()
+      concat0.indexOfSlice(Array(15.toByte, 16.toByte)) should ===(16)
+      concat0.indexOfSlice(Array(16.toByte, 15.toByte)) should ===(-1)
+    }
+    "lastIndexOfSlice" in {
+      val slice0 = ByteString1.fromString("xyz")
+      val slice1 = ByteString1.fromString("xyzabc")
+      val notSlice = ByteString1.fromString("12345")
+      val pByte = ByteString1.fromString("p")
+      val byteStringLong = ByteString1.fromString("abcdefghijklmnopqrstuvwxyz")
+      val byteStrings = ByteStrings(byteStringLong, byteStringLong)
+      byteStringLong.lastIndexOfSlice(slice0) should ===(23)
+      byteStringLong.lastIndexOfSlice(slice1) should ===(-1)
+      byteStringLong.lastIndexOfSlice(notSlice) should ===(-1)
+      byteStringLong.lastIndexOfSlice(pByte) should ===(15)
+
+      byteStrings.lastIndexOfSlice(slice0) should ===(49)
+      byteStrings.lastIndexOfSlice(slice1) should ===(23)
+      byteStrings.lastIndexOfSlice(notSlice) should ===(-1)
+      byteStrings.lastIndexOfSlice(pByte) should ===(41)
+      byteStrings.lastIndexOfSlice(pByte, 40) should ===(15)
+
+      val byteStringXxyz = ByteString1.fromString("xxyz")
+      byteStringXxyz.lastIndexOfSlice(slice0) should ===(1)
+      byteStringXxyz.lastIndexOfSlice(slice0, 10) should ===(1)
+      byteStringXxyz.lastIndexOfSlice(slice0, 0) should ===(-1)
+      byteStringXxyz.lastIndexOfSlice(slice0, 2) should ===(1)
+      byteStringXxyz.lastIndexOfSlice(Seq.empty) should ===(4)
+      byteStringXxyz.lastIndexOfSlice(Seq.empty, 2) should ===(2)
+
+      val xyzx = ByteString1.fromString("xyzx")
+      xyzx.lastIndexOfSlice(slice0) should ===(0)
+
+      // Empty source with empty slice -> 0; with non-empty slice -> -1
+      ByteString.empty.lastIndexOfSlice(ByteString.empty) should ===(0)
+      ByteString.empty.lastIndexOfSlice(ByteString1.fromString("a")) should ===(-1)
+
+      // Slice equals entire source -> 0
+      ByteString1.fromString("abc").lastIndexOfSlice(ByteString1.fromString("abc")) should ===(0)
+
+      // Slice longer than source -> -1
+      ByteString1.fromString("ab").lastIndexOfSlice(ByteString1.fromString("abc")) should ===(-1)
+
+      // end = -1 for non-empty slice -> -1
+      ByteString1.fromString("abc").lastIndexOfSlice(ByteString1.fromString("a"), -1) should ===(-1)
+
+      // False-match retry: tail byte 'b' matches at index 2, but bytes[1]='b' != 'a'; retries, finds at index 1, bytes[0]='a' == 'a'
+      ByteString1.fromString("abb").lastIndexOfSlice(ByteString1.fromString("ab")) should ===(0)
+
+      // Repeated pattern: "aa" in "aaaa" -> last occurrence starts at index 2
+      ByteString1.fromString("aaaa").lastIndexOfSlice(ByteString1.fromString("aa")) should ===(2)
+
+      // Cross-segment match in ByteStrings: slice "bc" spans segment boundary of ("ab" ++ "cd")
+      ByteStrings(ByteString1.fromString("ab"), ByteString1.fromString("cd"))
+        .lastIndexOfSlice(ByteString1.fromString("bc")) should ===(1)
+    }
+    "lastIndexOfSlice (specialized)" in {
+      val slice0 = "xyz".getBytes(StandardCharsets.UTF_8)
+      val slice1 = "xyzabc".getBytes(StandardCharsets.UTF_8)
+      val notSlice = "12345".getBytes(StandardCharsets.UTF_8)
+      val pByte = Array('p'.toByte)
+      val byteStringLong = ByteString1.fromString("abcdefghijklmnopqrstuvwxyz")
+      val byteStrings = ByteStrings(byteStringLong, byteStringLong)
+      byteStringLong.lastIndexOfSlice(slice0) should ===(23)
+      byteStringLong.lastIndexOfSlice(slice1) should ===(-1)
+      byteStringLong.lastIndexOfSlice(notSlice) should ===(-1)
+      byteStringLong.lastIndexOfSlice(pByte) should ===(15)
+
+      byteStrings.lastIndexOfSlice(slice0) should ===(49)
+      byteStrings.lastIndexOfSlice(slice1) should ===(23)
+      byteStrings.lastIndexOfSlice(notSlice) should ===(-1)
+      byteStrings.lastIndexOfSlice(pByte) should ===(41)
+      byteStrings.lastIndexOfSlice(pByte, 40) should ===(15)
+
+      val byteStringXxyz = ByteString1.fromString("xxyz")
+      byteStringXxyz.lastIndexOfSlice(slice0) should ===(1)
+      byteStringXxyz.lastIndexOfSlice(slice0, 10) should ===(1)
+      byteStringXxyz.lastIndexOfSlice(slice0, 0) should ===(-1)
+      byteStringXxyz.lastIndexOfSlice(slice0, 2) should ===(1)
+      byteStringXxyz.lastIndexOfSlice(Seq.empty) should ===(4)
+      byteStringXxyz.lastIndexOfSlice(Seq.empty, 2) should ===(2)
+
+      val xyzx = ByteString1.fromString("xyzx")
+      xyzx.lastIndexOfSlice(slice0) should ===(0)
+
+      val byteStringWithOffset = ByteString1(
+        "abcdefghijklmnopqrstuvwxyz".getBytes(StandardCharsets.UTF_8), 2, 24)
+      byteStringWithOffset.lastIndexOfSlice(slice0) should ===(21)
+
+      val concat0 = makeMultiByteStringsSample()
+      concat0.lastIndexOfSlice(Array(16.toByte, 0xFF.toByte)) should ===(17)
+      concat0.lastIndexOfSlice(Array(16.toByte, 0xFE.toByte)) should ===(-1)
+
+      val concat1 = makeMultiByteStringsWithEmptyComponents()
+      concat1.lastIndexOfSlice(Array(15.toByte, 16.toByte)) should ===(16)
+      concat1.lastIndexOfSlice(Array(16.toByte, 15.toByte)) should ===(-1)
+
+      // Empty source with empty slice -> 0; with non-empty slice -> -1
+      ByteString.empty.lastIndexOfSlice(Array.empty[Byte]) should ===(0)
+      ByteString.empty.lastIndexOfSlice(Array[Byte]('a')) should ===(-1)
+
+      // Slice equals entire source -> 0
+      ByteString1.fromString("abc").lastIndexOfSlice("abc".getBytes(StandardCharsets.UTF_8)) should ===(0)
+
+      // Slice longer than source -> -1
+      ByteString1.fromString("ab").lastIndexOfSlice("abc".getBytes(StandardCharsets.UTF_8)) should ===(-1)
+
+      // end = -1 for non-empty slice -> -1
+      ByteString1.fromString("abc").lastIndexOfSlice(Array[Byte]('a'), -1) should ===(-1)
+
+      // False-match retry: tail byte 'b' matches at index 2, but bytes[1]='b' != 'a'; retries, finds at index 1
+      ByteString1.fromString("abb").lastIndexOfSlice(Array[Byte]('a', 'b')) should ===(0)
+
+      // Repeated pattern: "aa" in "aaaa" -> last occurrence starts at index 2
+      ByteString1.fromString("aaaa").lastIndexOfSlice(Array[Byte]('a', 'a')) should ===(2)
+
+      // Cross-segment match in ByteStrings: slice "bc" spans segment boundary of ("ab" ++ "cd")
+      ByteStrings(ByteString1.fromString("ab"), ByteString1.fromString("cd"))
+        .lastIndexOfSlice(Array[Byte]('b', 'c')) should ===(1)
+    }
+    "startsWith" in {
+      val slice0 = ByteString1.fromString("abcdefghijk")
+      val slice1 = ByteString1.fromString("xyz")
+      val slice2 = ByteString1.fromString("zabcdefghijk")
+      val notSlice = ByteString1.fromString("12345")
+      val byteStringLong = ByteString1.fromString("abcdefghijklmnopqrstuvwxyz")
+      val byteStrings = ByteStrings(byteStringLong, byteStringLong)
+      byteStringLong.startsWith(slice0) should ===(true)
+      byteStringLong.startsWith(slice1, 23) should ===(true)
+      byteStringLong.startsWith(notSlice) should ===(false)
+
+      byteStrings.startsWith(slice0) should ===(true)
+      byteStrings.startsWith(slice1, 23) should ===(true)
+      byteStrings.startsWith(slice2, 25) should ===(true)
+      byteStrings.startsWith(notSlice) should ===(false)
+
+      val byteStringWithOffset = ByteString1(
+        "abcdefghijklmnopqrstuvwxyz".getBytes(StandardCharsets.UTF_8), 2, 20)
+      val slice3 = ByteString1.fromString("cdefghijklmn")
+      byteStringWithOffset.startsWith(slice3) should ===(true)
+
+      // empty bytes array always returns true
+      byteStringLong.startsWith(Array.emptyByteArray) should ===(true)
+      byteStrings.startsWith(Array.emptyByteArray) should ===(true)
+
+      // exact match
+      val fullSliceText = "abcdefghijklmnopqrstuvwxyz"
+      val fullSlice = ByteString1.fromString(fullSliceText)
+      byteStringLong.startsWith(fullSlice) should ===(true)
+      byteStringLong.startsWith(fullSliceText) should ===(true)
+
+      // bytes longer than ByteString returns false
+      val tooLong = ByteString1.fromString("abcdefghijklmnopqrstuvwxyz1")
+      byteStringLong.startsWith(tooLong) should ===(false)
+
+      // ByteString1C
+      val byteString1C = ByteString1C("abcdefghijklmnopqrstuvwxyz".getBytes(StandardCharsets.UTF_8))
+      byteString1C.startsWith(slice0) should ===(true)
+      byteString1C.startsWith(notSlice) should ===(false)
+      byteString1C.startsWith(Array.emptyByteArray) should ===(true)
+
+      // empty ByteString
+      ByteString.empty.startsWith(Array.emptyByteArray) should ===(true)
+      ByteString.empty.startsWith(ByteString1.fromString("a")) should ===(false)
+      ByteString.empty.startsWith("a") should ===(false)
     }
     "startsWith (specialized)" in {
       val slice0 = "abcdefghijk".getBytes(StandardCharsets.UTF_8)
@@ -1105,8 +1536,605 @@ class ByteStringSpec extends AnyWordSpec with Matchers with Checkers {
         "abcdefghijklmnopqrstuvwxyz".getBytes(StandardCharsets.UTF_8), 2, 20)
       val slice3 = "cdefghijklmn".getBytes(StandardCharsets.UTF_8)
       byteStringWithOffset.startsWith(slice3) should ===(true)
+
+      // empty bytes array always returns true
+      byteStringLong.startsWith(Array.emptyByteArray) should ===(true)
+      byteStrings.startsWith(Array.emptyByteArray) should ===(true)
+
+      // exact match
+      val fullSlice = "abcdefghijklmnopqrstuvwxyz".getBytes(StandardCharsets.UTF_8)
+      byteStringLong.startsWith(fullSlice) should ===(true)
+
+      // bytes longer than ByteString returns false
+      val tooLong = "abcdefghijklmnopqrstuvwxyz1".getBytes(StandardCharsets.UTF_8)
+      byteStringLong.startsWith(tooLong) should ===(false)
+
+      // ByteString1C
+      val byteString1C = ByteString1C("abcdefghijklmnopqrstuvwxyz".getBytes(StandardCharsets.UTF_8))
+      byteString1C.startsWith(slice0) should ===(true)
+      byteString1C.startsWith(notSlice) should ===(false)
+      byteString1C.startsWith(Array.emptyByteArray) should ===(true)
+
+      // empty ByteString
+      ByteString.empty.startsWith(Array.emptyByteArray) should ===(true)
+      ByteString.empty.startsWith(Array[Byte]('a')) should ===(false)
+
+      val concat0 = makeMultiByteStringsWithEmptyComponents()
+      concat0.startsWith(Array(0xFF.toByte, 0.toByte, 1.toByte)) should ===(true)
+      concat0.startsWith(Array(0xFF.toByte, 1.toByte)) should ===(false)
+
+      // SWAR-optimised path: needles spanning full 8-byte chunks (ByteString1)
+      // exactly 8 bytes: one SWAR iteration, no tail
+      val exactly8 = "abcdefgh".getBytes(StandardCharsets.UTF_8)
+      byteStringLong.startsWith(exactly8) should ===(true)
+      byteStringLong.startsWith("12345678".getBytes(StandardCharsets.UTF_8)) should ===(false)
+      // 16 bytes: two SWAR iterations, no tail
+      val exactly16 = "abcdefghijklmnop".getBytes(StandardCharsets.UTF_8)
+      byteStringLong.startsWith(exactly16) should ===(true)
+      byteStringLong.startsWith("abcdefghijklmnop".reverse.getBytes(StandardCharsets.UTF_8)) should ===(false)
+      // 9 bytes: one SWAR iteration + 1-byte tail
+      val nine = "abcdefghi".getBytes(StandardCharsets.UTF_8)
+      byteStringLong.startsWith(nine) should ===(true)
+      // mismatch buried inside the 2nd 8-byte chunk
+      val mismatchInSecondChunk = "abcdefghijklmno_".getBytes(StandardCharsets.UTF_8)
+      byteStringLong.startsWith(mismatchInSecondChunk) should ===(false)
+      // ByteString1 with startsWith(Array[Byte], offset) exercising offset != 0
+      val bs1WithOffset = ByteString1("abcdefghijklmnopqrstuvwxyz".getBytes(StandardCharsets.UTF_8), 0, 26)
+      bs1WithOffset.startsWith("ijklmnop".getBytes(StandardCharsets.UTF_8), 8) should ===(true)
+      bs1WithOffset.startsWith("12345678".getBytes(StandardCharsets.UTF_8), 8) should ===(false)
+      // ByteString1C SWAR path
+      val bs1c = ByteString1C("abcdefghijklmnopqrstuvwxyz".getBytes(StandardCharsets.UTF_8))
+      bs1c.startsWith(exactly8) should ===(true)
+      bs1c.startsWith(exactly16) should ===(true)
+      bs1c.startsWith(nine) should ===(true)
+      bs1c.startsWith("12345678".getBytes(StandardCharsets.UTF_8)) should ===(false)
+      bs1c.startsWith("abcdefghi".getBytes(StandardCharsets.UTF_8), 0) should ===(true)
+      bs1c.startsWith("bcdefghi".getBytes(StandardCharsets.UTF_8), 1) should ===(true)
+      bs1c.startsWith("12345678".getBytes(StandardCharsets.UTF_8), 1) should ===(false)
+    }
+    "endsWith" in {
+      val suffix0 = ByteString1.fromString("uvwxyz")
+      val suffix1 = ByteString1.fromString("abcdefghijklmnopqrstuvwxyz")
+      val notSuffix = ByteString1.fromString("12345")
+      val byteStringLong = ByteString1.fromString("abcdefghijklmnopqrstuvwxyz")
+      val byteStrings = ByteStrings(byteStringLong, byteStringLong)
+
+      // ByteString1 basic cases
+      byteStringLong.endsWith(suffix0) should ===(true)
+      byteStringLong.endsWith(notSuffix) should ===(false)
+
+      // exact match
+      byteStringLong.endsWith(suffix1) should ===(true)
+
+      // bytes longer than ByteString returns false
+      val tooLong = ByteString1.fromString("0abcdefghijklmnopqrstuvwxyz")
+      byteStringLong.endsWith(tooLong) should ===(false)
+
+      // empty bytes array always returns true
+      byteStringLong.endsWith(Array.emptyByteArray) should ===(true)
+
+      // ByteStrings (multi-segment)
+      byteStrings.endsWith(suffix0) should ===(true)
+      byteStrings.endsWith(notSuffix) should ===(false)
+      byteStrings.endsWith(Array.emptyByteArray) should ===(true)
+
+      // suffix spanning the segment boundary
+      val crossBoundary = ByteString1.fromString("xyzabcdefghijklmnopqrstuvwxyz")
+      byteStrings.endsWith(crossBoundary) should ===(true)
+
+      // ByteString1C
+      val byteString1C = ByteString1C("abcdefghijklmnopqrstuvwxyz".getBytes(StandardCharsets.UTF_8))
+      byteString1C.endsWith(suffix0) should ===(true)
+      byteString1C.endsWith(notSuffix) should ===(false)
+      byteString1C.endsWith(Array.emptyByteArray) should ===(true)
+
+      // ByteString1 with internal offset
+      val byteStringWithOffset = ByteString1(
+        "abcdefghijklmnopqrstuvwxyz".getBytes(StandardCharsets.UTF_8), 2, 20)
+      // ByteString1(bytes, 2, 20) represents "cdefghijklmnopqrstuv"
+      val offsetSuffixText = "rstuv"
+      val offsetSuffix = ByteString1.fromString(offsetSuffixText)
+      byteStringWithOffset.endsWith(offsetSuffix) should ===(true)
+      byteStringWithOffset.endsWith(offsetSuffixText) should ===(true)
+      byteStringWithOffset.endsWith(notSuffix) should ===(false)
+
+      // empty ByteString
+      ByteString.empty.endsWith(Array.emptyByteArray) should ===(true)
+      ByteString.empty.endsWith(ByteString1.fromString("a")) should ===(false)
+      ByteString.empty.endsWith("a") should ===(false)
+    }
+    "endsWith (specialized)" in {
+      val suffix0 = "uvwxyz".getBytes(StandardCharsets.UTF_8)
+      val suffix1 = "abcdefghijklmnopqrstuvwxyz".getBytes(StandardCharsets.UTF_8)
+      val notSuffix = "12345".getBytes(StandardCharsets.UTF_8)
+      val byteStringLong = ByteString1.fromString("abcdefghijklmnopqrstuvwxyz")
+      val byteStrings = ByteStrings(byteStringLong, byteStringLong)
+
+      // ByteString1 basic cases
+      byteStringLong.endsWith(suffix0) should ===(true)
+      byteStringLong.endsWith(notSuffix) should ===(false)
+
+      // exact match
+      byteStringLong.endsWith(suffix1) should ===(true)
+
+      // bytes longer than ByteString returns false
+      val tooLong = "0abcdefghijklmnopqrstuvwxyz".getBytes(StandardCharsets.UTF_8)
+      byteStringLong.endsWith(tooLong) should ===(false)
+
+      // empty bytes array always returns true
+      byteStringLong.endsWith(Array.emptyByteArray) should ===(true)
+
+      // ByteStrings (multi-segment)
+      byteStrings.endsWith(suffix0) should ===(true)
+      byteStrings.endsWith(notSuffix) should ===(false)
+      byteStrings.endsWith(Array.emptyByteArray) should ===(true)
+
+      // suffix spanning the segment boundary
+      val crossBoundary = "xyzabcdefghijklmnopqrstuvwxyz".getBytes(StandardCharsets.UTF_8)
+      byteStrings.endsWith(crossBoundary) should ===(true)
+
+      // ByteString1C
+      val byteString1C = ByteString1C("abcdefghijklmnopqrstuvwxyz".getBytes(StandardCharsets.UTF_8))
+      byteString1C.endsWith(suffix0) should ===(true)
+      byteString1C.endsWith(notSuffix) should ===(false)
+      byteString1C.endsWith(Array.emptyByteArray) should ===(true)
+
+      // ByteString1 with internal offset
+      val byteStringWithOffset = ByteString1(
+        "abcdefghijklmnopqrstuvwxyz".getBytes(StandardCharsets.UTF_8), 2, 20)
+      // ByteString1(bytes, 2, 20) represents "cdefghijklmnopqrstuv"
+      val offsetSuffix = "rstuv".getBytes(StandardCharsets.UTF_8)
+      byteStringWithOffset.endsWith(offsetSuffix) should ===(true)
+      byteStringWithOffset.endsWith(notSuffix) should ===(false)
+
+      // empty ByteString
+      ByteString.empty.endsWith(Array.emptyByteArray) should ===(true)
+      ByteString.empty.endsWith(Array[Byte]('a')) should ===(false)
+
+      val concat1 = makeMultiByteStringsWithEmptyComponents()
+      concat1.endsWith(Array[Byte](16.toByte, 0xFF.toByte)) should ===(true)
+      concat1.endsWith(Array[Byte](15.toByte, 0xFF.toByte)) should ===(false)
+
+      // SWAR-optimised path: needles spanning full 8-byte chunks (ByteString1)
+      val byteStringLong2 = ByteString1.fromString("abcdefghijklmnopqrstuvwxyz")
+      // exactly 8 bytes: one SWAR iteration, no tail
+      val last8 = "stuvwxyz".getBytes(StandardCharsets.UTF_8)
+      byteStringLong2.endsWith(last8) should ===(true)
+      byteStringLong2.endsWith("12345678".getBytes(StandardCharsets.UTF_8)) should ===(false)
+      // 16 bytes: two SWAR iterations, no tail
+      val last16 = "klmnopqrstuvwxyz".getBytes(StandardCharsets.UTF_8)
+      byteStringLong2.endsWith(last16) should ===(true)
+      byteStringLong2.endsWith("klmnopqrstuvwxy_".getBytes(StandardCharsets.UTF_8)) should ===(false)
+      // 9 bytes: one SWAR iteration + 1-byte tail
+      val last9 = "rstuvwxyz".getBytes(StandardCharsets.UTF_8)
+      byteStringLong2.endsWith(last9) should ===(true)
+      // mismatch buried inside the first 8-byte chunk
+      val mismatchInFirstChunk = "_lmnopqrstuvwxyz".getBytes(StandardCharsets.UTF_8)
+      byteStringLong2.endsWith(mismatchInFirstChunk) should ===(false)
+      // ByteString1 with internal offset
+      val bs1WithOffset2 = ByteString1("abcdefghijklmnopqrstuvwxyz".getBytes(StandardCharsets.UTF_8), 2, 20)
+      // represents "cdefghijklmnopqrstuv"
+      bs1WithOffset2.endsWith("mnopqrstuv".getBytes(StandardCharsets.UTF_8)) should ===(true)
+      bs1WithOffset2.endsWith("12345678".getBytes(StandardCharsets.UTF_8)) should ===(false)
+      // ByteString1C SWAR path
+      val bs1c2 = ByteString1C("abcdefghijklmnopqrstuvwxyz".getBytes(StandardCharsets.UTF_8))
+      bs1c2.endsWith(last8) should ===(true)
+      bs1c2.endsWith(last16) should ===(true)
+      bs1c2.endsWith(last9) should ===(true)
+      bs1c2.endsWith("12345678".getBytes(StandardCharsets.UTF_8)) should ===(false)
+      bs1c2.endsWith(mismatchInFirstChunk) should ===(false)
+    }
+    "return same hashCode" in {
+      val slice0 = ByteString1.fromString("xyz")
+      val slice1 = ByteString1.fromString("xyzabc")
+      val slice2 = ByteString1.fromString("12345")
+      val byteStringLong = ByteString1.fromString("abcdefghijklmnopqrstuvwxyz")
+      val byteStringLong2 = ByteString1.fromString("abcdefghijklmnopqrstuvwxyz")
+      val byteStrings = ByteStrings(byteStringLong, byteStringLong)
+      val byteStrings2 = ByteStrings(byteStringLong, byteStringLong)
+      slice0.hashCode should ===(slice0.hashCode)
+      slice1.hashCode should ===(slice1.hashCode)
+      slice2.hashCode should ===(slice2.hashCode)
+      byteStringLong.hashCode should ===(byteStringLong.hashCode)
+      byteStringLong.hashCode should ===(byteStringLong2.hashCode)
+      byteStringLong2.equals(byteStringLong) should ===(true)
+      byteStrings.hashCode should ===(byteStrings.hashCode)
+      byteStrings.hashCode should ===(byteStrings2.hashCode)
+      byteStrings2.equals(byteStrings) should ===(true)
+    }
+  }
+
+  "ByteString.copyToArray with a source offset" must {
+    // Same content in every internal representation, so the new overload is exercised against
+    // the compacted, sliced, two-fragment and multi-fragment layouts.
+    def representations(bytes: Array[Byte]): List[(String, ByteString)] = {
+      val n = bytes.length
+      val whole = ByteString(bytes)
+      var result = List("compact" -> whole.compact, "whole" -> whole)
+      if (n >= 1) {
+        val padded = ByteString(Array[Byte](0x7F, 0x7F)) ++ whole ++ ByteString(Array[Byte](0x7F))
+        result ::= "sliced" -> padded.drop(2).dropRight(1)
+        result ::= "per-byte rope" -> bytes.map(b => ByteString(Array(b))).reduce(_ ++ _)
+      }
+      if (n >= 2) result ::= "two fragments" -> (ByteString(bytes.take(1)) ++ ByteString(bytes.drop(1)))
+      if (n >= 4) {
+        val q = n / 4
+        result ::= "four fragments" -> (ByteString(bytes.slice(0, q)) ++ ByteString(bytes.slice(q, 2 * q)) ++
+        ByteString(bytes.slice(2 * q, 3 * q)) ++ ByteString(bytes.slice(3 * q, n)))
+      }
+      result
     }
 
+    def sample(n: Int): Array[Byte] = Array.tabulate[Byte](n)(i => ((i * 31 + 7) % 251).toByte)
+
+    "copy the same bytes as slice(...).copyToArray, for every offset and length" in {
+      for (n <- List(0, 1, 2, 3, 8, 16, 17, 64)) {
+        val bytes = sample(n)
+        for {
+          (name, bs) <- representations(bytes)
+          srcOffset <- -1 to n
+          destOffset <- List(0, 1, 3)
+          len <- List(0, 1, 3, n, n + 5)
+        } withClue(s"size $n, $name, srcOffset $srcOffset, destOffset $destOffset, len $len: ") {
+          val destSize = n + 8
+          val actual = Array.fill[Byte](destSize)(0x7F.toByte)
+          val expected = Array.fill[Byte](destSize)(0x7F.toByte)
+          val expectedCopied =
+            if (srcOffset < 0 || len <= 0 || srcOffset >= n) 0
+            else math.max(0, math.min(math.min(len, n - srcOffset), destSize - destOffset))
+          if (expectedCopied > 0) System.arraycopy(bytes, srcOffset, expected, destOffset, expectedCopied)
+
+          bs.copyToArray(srcOffset, actual, destOffset, len) should ===(expectedCopied)
+          actual should ===(expected)
+        }
+      }
+    }
+
+    "clamp out of range arguments instead of throwing" in {
+      val bs = ByteString(sample(8))
+      val dest = new Array[Byte](8)
+      bs.copyToArray(-1, dest, 0, 4) should ===(0)
+      bs.copyToArray(0, dest, -1, 4) should ===(0)
+      bs.copyToArray(8, dest, 0, 4) should ===(0)
+      bs.copyToArray(100, dest, 0, 4) should ===(0)
+      bs.copyToArray(0, dest, 0, 0) should ===(0)
+      bs.copyToArray(0, dest, 0, -1) should ===(0)
+      bs.copyToArray(0, dest, 8, 4) should ===(0)
+    }
+
+    "not write past the end of the destination" in {
+      val bs = ByteString(sample(64))
+      val dest = Array.fill[Byte](10)(0x7F.toByte)
+      bs.copyToArray(0, dest, 6, 64) should ===(4)
+      dest.take(6) should ===(Array.fill[Byte](6)(0x7F.toByte))
+    }
+
+    "leave an empty ByteString as a no-op" in {
+      val dest = Array.fill[Byte](4)(0x7F.toByte)
+      ByteString.empty.copyToArray(0, dest, 0, 4) should ===(0)
+      dest should ===(Array.fill[Byte](4)(0x7F.toByte))
+    }
+
+    // A fragmented ByteString locates the starting fragment through a cached hint, which is only
+    // a shortcut when the next call lands on or after the remembered fragment. These walk a rope
+    // forwards, backwards and in a scattered order so the hit, resume-forward and rescan paths
+    // are all taken, and each result is checked against the same copy made from the flat bytes.
+    "copy correctly under repeated access on a fragmented ByteString" in {
+      val bytes = sample(200)
+      val rope = (0 until 200 by 7).map(i => ByteString(bytes.slice(i, math.min(i + 7, 200)))).reduce(_ ++ _)
+      val forwards = 0 until 200 by 3
+      val orders =
+        List("forwards" -> forwards, "backwards" -> forwards.reverse,
+          "scattered" -> forwards.sortBy(i => (i * 71) % 97))
+      for {
+        (orderName, offsets) <- orders
+        len <- List(1, 5, 20)
+        srcOffset <- offsets
+      } withClue(s"$orderName, srcOffset $srcOffset, len $len: ") {
+        val actual = Array.fill[Byte](len)(0x7F.toByte)
+        val expected = Array.fill[Byte](len)(0x7F.toByte)
+        val copied = math.min(len, 200 - srcOffset)
+        System.arraycopy(bytes, srcOffset, expected, 0, copied)
+
+        rope.copyToArray(srcOffset, actual, 0, len) should ===(copied)
+        actual should ===(expected)
+      }
+    }
+  }
+
+  "ByteString.decodeString over a range" must {
+    def representations(bytes: Array[Byte]): List[(String, ByteString)] = {
+      val n = bytes.length
+      val whole = ByteString(bytes)
+      var result = List("compact" -> whole.compact, "whole" -> whole)
+      if (n >= 1) {
+        val padded = ByteString(Array[Byte](0x7F, 0x7F)) ++ whole ++ ByteString(Array[Byte](0x7F))
+        result ::= "sliced" -> padded.drop(2).dropRight(1)
+        result ::= "per-byte rope" -> bytes.map(b => ByteString(Array(b))).reduce(_ ++ _)
+      }
+      if (n >= 2) result ::= "two fragments" -> (ByteString(bytes.take(1)) ++ ByteString(bytes.drop(1)))
+      result
+    }
+
+    val texts = List("", "a", "hello world", "Content-Type: application/json", "héllo wörld", "\u00e9\u00e8\u00ea")
+
+    "decode the same string as slice(...).decodeString" in {
+      for (text <- texts) {
+        val bytes = text.getBytes(StandardCharsets.UTF_8)
+        val n = bytes.length
+        for {
+          (name, bs) <- representations(bytes)
+          from <- -1 to n
+          until <- -1 to n + 1
+        } withClue(s"[$text], $name, from $from, until $until: ") {
+          val start = math.max(0, from)
+          val end = math.min(n, until)
+          val expected = if (start >= end) "" else new String(bytes, start, end - start, StandardCharsets.UTF_8)
+          bs.decodeString(StandardCharsets.UTF_8, from, until) should ===(expected)
+          bs.decodeString(StandardCharsets.UTF_8, from, until) should ===(bs.slice(start, end).decodeString(
+            StandardCharsets.UTF_8))
+        }
+      }
+    }
+
+    "return the empty string for an empty or inverted range" in {
+      val bs = ByteString("hello".getBytes(StandardCharsets.UTF_8))
+      bs.decodeString(StandardCharsets.UTF_8, 2, 2) should ===("")
+      bs.decodeString(StandardCharsets.UTF_8, 3, 1) should ===("")
+      bs.decodeString(StandardCharsets.UTF_8, 10, 20) should ===("")
+      bs.decodeString(StandardCharsets.UTF_8, -5, -1) should ===("")
+      ByteString.empty.decodeString(StandardCharsets.UTF_8, 0, 1) should ===("")
+    }
+
+    "clamp a range that runs past the end" in {
+      val bs = ByteString("hello".getBytes(StandardCharsets.UTF_8))
+      bs.decodeString(StandardCharsets.UTF_8, 3, 99) should ===("lo")
+      bs.decodeString(StandardCharsets.UTF_8, -3, 2) should ===("he")
+    }
+
+    "decode a multi-byte character that spans two fragments" in {
+      // 'é' is two bytes in UTF-8; split the ByteString between them
+      val bytes = "aéb".getBytes(StandardCharsets.UTF_8)
+      val split = ByteString(bytes.take(2)) ++ ByteString(bytes.drop(2))
+      split.decodeString(StandardCharsets.UTF_8, 0, bytes.length) should ===("aéb")
+      split.decodeString(StandardCharsets.UTF_8, 1, 3) should ===("é")
+    }
+
+    // A range that stays inside one fragment is decoded from that fragment's array directly,
+    // while one that straddles fragments has to gather the bytes first. Walk every range of a
+    // rope whose fragment boundaries fall inside multi-byte characters, so both paths are taken
+    // and are checked against decoding the same range out of the flat bytes.
+    "decode every range of a fragmented ByteString, within and across fragments" in {
+      val text = "Content-Type: application/json; charset=utf-8 \u00e9\u00e8\u00ea \u4f60\u597d"
+      val bytes = text.getBytes(StandardCharsets.UTF_8)
+      val n = bytes.length
+      for (fragSize <- List(1, 2, 3, 5, 16)) {
+        val rope = (0 until n by fragSize)
+          .map(i => ByteString(bytes.slice(i, math.min(i + fragSize, n))))
+          .reduce(_ ++ _)
+        for {
+          from <- 0 to n
+          until <- from to n
+        } withClue(s"fragSize $fragSize, from $from, until $until: ") {
+          rope.decodeString(StandardCharsets.UTF_8, from, until) should ===(
+            new String(bytes, from, until - from, StandardCharsets.UTF_8))
+        }
+      }
+    }
+  }
+
+  "ByteString equality" must {
+    // Builds the same content in every internal representation: compacted (ByteString1C),
+    // a slice of a larger array (ByteString1), a two-fragment pair (ByteString2) and a
+    // many-fragment rope (ByteStrings). equals must not depend on which one it is handed.
+    def allRepresentations(bytes: Array[Byte]): List[(String, ByteString)] = {
+      val n = bytes.length
+      val whole = ByteString(bytes)
+      var result = List("compact" -> whole.compact, "whole" -> whole)
+      if (n >= 1) {
+        val padded = ByteString(Array[Byte](0x7F, 0x7F)) ++ whole ++ ByteString(Array[Byte](0x7F))
+        result ::= "sliced" -> padded.drop(2).dropRight(1)
+        result ::= "per-byte rope" -> bytes.map(b => ByteString(Array(b))).reduce(_ ++ _)
+      }
+      if (n >= 2) result ::= "two fragments" -> (ByteString(bytes.take(1)) ++ ByteString(bytes.drop(1)))
+      if (n >= 4) {
+        val q = n / 4
+        result ::= "four fragments" -> (ByteString(bytes.slice(0, q)) ++ ByteString(bytes.slice(q, 2 * q)) ++
+        ByteString(bytes.slice(2 * q, 3 * q)) ++ ByteString(bytes.slice(3 * q, n)))
+        result ::= "uneven fragments" -> (ByteString(bytes.slice(0, 1)) ++ ByteString(bytes.slice(1, 3)) ++
+        ByteString(bytes.slice(3, n)))
+      }
+      result
+    }
+
+    val sizes = List(0, 1, 2, 3, 7, 8, 9, 15, 16, 17, 31, 32, 33, 64, 127, 128, 1000)
+
+    def sample(n: Int): Array[Byte] = Array.tabulate[Byte](n)(i => ((i * 31 + 7) % 251).toByte)
+
+    "hold between all internal representations of the same content" in {
+      for {
+        n <- sizes
+        bytes = sample(n)
+        (leftName, left) <- allRepresentations(bytes)
+        (rightName, right) <- allRepresentations(bytes)
+      } withClue(s"size $n, $leftName vs $rightName: ") {
+        left should ===(right)
+        right should ===(left)
+      }
+    }
+
+    "agree with hashCode for all internal representations" in {
+      for {
+        n <- sizes
+        bytes = sample(n)
+        (leftName, left) <- allRepresentations(bytes)
+        (rightName, right) <- allRepresentations(bytes)
+      } withClue(s"size $n, $leftName vs $rightName: ") {
+        left.hashCode should ===(right.hashCode)
+      }
+    }
+
+    "distinguish content that differs in the first byte" in {
+      for (n <- sizes if n > 0) {
+        val bytes = sample(n)
+        val differing = bytes.clone()
+        differing(0) = (differing(0) ^ 0xFF).toByte
+        for {
+          (leftName, left) <- allRepresentations(bytes)
+          (rightName, right) <- allRepresentations(differing)
+        } withClue(s"size $n, $leftName vs $rightName: ") {
+          left should !==(right)
+          right should !==(left)
+        }
+      }
+    }
+
+    "distinguish content that differs in the last byte" in {
+      for (n <- sizes if n > 0) {
+        val bytes = sample(n)
+        val differing = bytes.clone()
+        differing(n - 1) = (differing(n - 1) ^ 0xFF).toByte
+        for {
+          (leftName, left) <- allRepresentations(bytes)
+          (rightName, right) <- allRepresentations(differing)
+        } withClue(s"size $n, $leftName vs $rightName: ") {
+          left should !==(right)
+        }
+      }
+    }
+
+    "distinguish content of different lengths" in {
+      for (n <- sizes) {
+        val bytes = sample(n)
+        val longer = ByteString(bytes :+ 1.toByte)
+        for ((name, bs) <- allRepresentations(bytes)) withClue(s"size $n, $name: ") {
+          bs should !==(longer)
+          longer should !==(bs)
+        }
+      }
+    }
+
+    "hold against other Seq[Byte] implementations" in {
+      for {
+        n <- sizes
+        bytes = sample(n)
+        (name, bs) <- allRepresentations(bytes)
+      } withClue(s"size $n, $name: ") {
+        bs should ===(bytes.toVector)
+        bytes.toVector should ===(bs)
+        bs should ===(bytes.toList)
+        bs.hashCode should ===(bytes.toVector.hashCode)
+      }
+    }
+
+    "not consider a ByteString equal to a non-Seq value" in {
+      val bs = ByteString(sample(8))
+      bs.equals("not a ByteString") should ===(false)
+      bs.equals(null) should ===(false)
+      bs.equals(42) should ===(false)
+    }
+
+    "let equal ByteStrings of different representations share a Set entry" in {
+      for (n <- sizes if n > 0) {
+        val representations = allRepresentations(sample(n)).map(_._2)
+        withClue(s"size $n: ")(representations.toSet should have size 1)
+      }
+    }
+  }
+
+  "ByteStrings.byteAtUnchecked" must {
+    // byteAtUnchecked memoises the fragment resolved by the previous call, so these exercise
+    // forward, backward and random access as well as the transitions between them.
+    val fragmentLengths = List(1, 5, 2, 8, 1, 16, 3)
+    val expected: Array[Byte] = {
+      var next = 0
+      fragmentLengths.flatMap { len =>
+        val chunk = Array.tabulate[Byte](len)(i => (next + i).toByte)
+        next += len
+        chunk
+      }.toArray
+    }
+    val rope: ByteString = fragmentLengths
+      .foldLeft((ByteString.empty, 0)) { case ((acc, offset), len) =>
+        (acc ++ ByteString(expected.slice(offset, offset + len)), offset + len)
+      }
+      ._1
+
+    "return the right byte when read forwards" in {
+      for (i <- expected.indices) withClue(s"index $i: ")(rope(i) should ===(expected(i)))
+    }
+
+    "return the right byte when read backwards" in {
+      for (i <- expected.indices.reverse) withClue(s"index $i: ")(rope(i) should ===(expected(i)))
+    }
+
+    "return the right byte for repeated reads of the same index" in {
+      for (i <- expected.indices) {
+        rope(i) should ===(expected(i))
+        rope(i) should ===(expected(i))
+      }
+    }
+
+    "return the right byte when alternating between the ends" in {
+      val last = expected.length - 1
+      for (i <- 0 to last / 2) {
+        rope(i) should ===(expected(i))
+        rope(last - i) should ===(expected(last - i))
+      }
+    }
+
+    "produce the same bytes as toArray and the iterator" in {
+      rope.toArray should ===(expected)
+      rope.iterator.toArray should ===(expected)
+    }
+
+    "return the right byte when stepping backward onto fragment boundaries" in {
+      // the backward resume recomputes fragment starts by subtracting lengths, so land exactly
+      // on the first and last byte of every fragment, from a hint planted at the far end
+      val freshRope = fragmentLengths
+        .foldLeft((ByteString.empty, 0)) { case ((acc, offset), len) =>
+          (acc ++ ByteString(expected.slice(offset, offset + len)), offset + len)
+        }
+        ._1
+      val starts = fragmentLengths.scanLeft(0)(_ + _).init
+      val lasts = fragmentLengths.scanLeft(0)(_ + _).tail.map(_ - 1)
+      freshRope(expected.length - 1) should ===(expected(expected.length - 1))
+      for (s <- starts.reverse) withClue(s"fragment start $s: ")(freshRope(s) should ===(expected(s)))
+      freshRope(expected.length - 1) should ===(expected(expected.length - 1))
+      for (e <- lasts.reverse) withClue(s"fragment last byte $e: ")(freshRope(e) should ===(expected(e)))
+    }
+
+    "still reject out of range indices" in {
+      an[IndexOutOfBoundsException] should be thrownBy rope(-1)
+      an[IndexOutOfBoundsException] should be thrownBy rope(expected.length)
+    }
+
+    "return the right byte when read concurrently from several threads" in {
+      // The memoised fragment is shared mutable state read without synchronisation, so a torn
+      // or stale value must never produce a wrong byte.
+      val threads = 8
+      val readsPerThread = 20000
+      val mismatches = new java.util.concurrent.atomic.AtomicInteger(0)
+      val workers = (0 until threads).map { t =>
+        val thread = new Thread(() => {
+          val random = new scala.util.Random(t)
+          var read = 0
+          while (read < readsPerThread) {
+            val i = t % 3 match {
+              case 0 => random.nextInt(expected.length)
+              case 1 => read % expected.length
+              case _ => expected.length - 1 - (read % expected.length)
+            }
+            if (rope(i) != expected(i)) mismatches.incrementAndGet()
+            read += 1
+          }
+        })
+        thread.start()
+        thread
+      }
+      workers.foreach(_.join())
+      mismatches.get should ===(0)
+    }
   }
 
   "A ByteString" must {
@@ -1124,6 +2152,35 @@ class ByteStringSpec extends AnyWordSpec with Matchers with Checkers {
     "be sequential" when {
       "taking" in { check((a: ByteString, b: ByteString) => (a ++ b).take(a.size) == a) }
       "dropping" in { check((a: ByteString, b: ByteString) => (a ++ b).drop(a.size) == b) }
+    }
+
+    "preserve concatenation direction" when {
+      "creating ByteString2 from two simple fragments" in {
+        val compact = ByteString1C(Array[Byte](1, 2))
+        val sliced = ByteString1(Array[Byte](0, 3, 4, 5), 1, 2)
+
+        val forward = expectByteString2(compact ++ sliced)
+        forward should ===(ByteString(Array[Byte](1, 2, 3, 4)))
+        forward.asByteBuffers.map(_.remaining()).toSeq should ===(Seq(2, 2))
+
+        val reverse = expectByteString2(sliced ++ compact)
+        reverse should ===(ByteString(Array[Byte](3, 4, 1, 2)))
+        reverse.asByteBuffers.map(_.remaining()).toSeq should ===(Seq(2, 2))
+      }
+
+      "promoting ByteString2 to ByteStrings when prepending or appending another fragment" in {
+        val middle = expectByteString2(ByteString1C(Array[Byte](2, 3)) ++ ByteString1C(Array[Byte](4, 5)))
+        val prefix = ByteString1C(Array[Byte](1))
+        val suffix = ByteString1C(Array[Byte](6))
+
+        val prepended = expectByteStrings(prefix ++ middle)
+        prepended should ===(ByteString(Array[Byte](1, 2, 3, 4, 5)))
+
+        val appended = expectByteStrings(middle ++ suffix)
+        appended should ===(ByteString(Array[Byte](2, 3, 4, 5, 6)))
+
+        expectByteStrings(prepended ++ suffix) should ===(ByteString(Array[Byte](1, 2, 3, 4, 5, 6)))
+      }
     }
 
     "be equal to the original" when {
@@ -1384,6 +2441,59 @@ class ByteStringSpec extends AnyWordSpec with Matchers with Checkers {
 
         deserialize(serialize(original)) shouldEqual original
       }
+
+      "ByteString1C serializes via SerializationProxy not directly" in {
+        val bs1c = ByteString1C(Array[Byte](1, 2, 3))
+        val serialized = serialize(bs1c)
+        // The serialized form must use SerializationProxy, not serialize ByteString1C directly.
+        // When serialized directly the class descriptor "ByteString1C" appears in the stream;
+        // with writeReplace the proxy class name appears instead.
+        val streamContent = new String(serialized, StandardCharsets.ISO_8859_1)
+        (streamContent should not).include("ByteString1C")
+        deserialize(serialized) shouldEqual bs1c
+      }
+
+      "CompactByteString instances serialize via SerializationProxy" in {
+        val viaApply = CompactByteString(Array[Byte](10, 20, 30))
+        val viaString = CompactByteString("hello")
+        val serializedApply = serialize(viaApply)
+        val serializedString = serialize(viaString)
+        (new String(serializedApply, StandardCharsets.ISO_8859_1) should not).include("ByteString1C")
+        (new String(serializedString, StandardCharsets.ISO_8859_1) should not).include("ByteString1C")
+        deserialize(serializedApply) shouldEqual viaApply
+        deserialize(serializedString) shouldEqual viaString
+      }
+
+      "each ByteString concrete type round-trips via serialization" in {
+        val bs1c = ByteString1C(Array[Byte](1, 2, 3))
+        val bs1 = bs1c.toByteString1
+        val bss = bs1 ++ ByteString1C(Array[Byte](4, 5, 6))
+        deserialize(serialize(bs1c)) shouldEqual bs1c
+        deserialize(serialize(bs1)) shouldEqual bs1
+        deserialize(serialize(bss)) shouldEqual bss
+      }
+
+      "given ByteString2" in {
+        val original = expectByteString2(ByteString1C(Array[Byte](1, 2, 3)) ++ ByteString1C(Array[Byte](4, 5)))
+
+        deserialize(serialize(original)) match {
+          case deserialized: ByteString2 => deserialized shouldEqual original
+          case other                     => fail(s"Expected deserialized ByteString2, got [${other.getClass.getName}]")
+        }
+      }
+
+      "given ByteString2 with sliced fragments" in {
+        val left = ByteString1(Array[Byte](0, 1, 2, 3), 1, 2)
+        val right = ByteString1(Array[Byte](4, 5, 6, 0), 0, 3)
+        val original = expectByteString2(left ++ right)
+
+        deserialize(serialize(original)) match {
+          case deserialized: ByteString2 =>
+            deserialized shouldEqual ByteString(Array[Byte](1, 2, 4, 5, 6))
+            deserialized.asByteBuffers.map(_.remaining()).toSeq should ===(Seq(2, 3))
+          case other => fail(s"Expected deserialized ByteString2, got [${other.getClass.getName}]")
+        }
+      }
     }
 
     "unsafely wrap and unwrap bytes" in {
@@ -1396,6 +2506,492 @@ class ByteStringSpec extends AnyWordSpec with Matchers with Checkers {
       val combinedBs = bs ++ bs
       val combinedBytes = combinedBs.toArrayUnsafe()
       combinedBytes should ===(bytes ++ bytes)
+    }
+
+    "read short values" in {
+      val data = Array[Byte](1, 2, 3, 4)
+      val byteString1C = ByteString1C(data)
+      byteString1C.readShortBE(0) should ===(0x0102.toShort)
+      byteString1C.readShortLE(0) should ===(0x0201.toShort)
+      byteString1C.readShortBE(2) should ===(0x0304.toShort)
+      byteString1C.readShortLE(2) should ===(0x0403.toShort)
+
+      val arr = Array[Byte](0, 1, 2, 3, 4, 5)
+      val byteString1 = ByteString1(arr, 2, 4)
+      byteString1.readShortBE(0) should ===(0x0203.toShort)
+      byteString1.readShortLE(0) should ===(0x0302.toShort)
+      byteString1.readShortBE(2) should ===(0x0405.toShort)
+      byteString1.readShortLE(2) should ===(0x0504.toShort)
+
+      val byteStrings = ByteStrings(ByteString1.fromString("ab"), ByteString1.fromString("cd"))
+      byteStrings.readShortBE(0) should ===(0x6162.toShort)
+      byteStrings.readShortLE(0) should ===(0x6261.toShort)
+      byteStrings.readShortBE(2) should ===(0x6364.toShort)
+      byteStrings.readShortLE(2) should ===(0x6463.toShort)
+    }
+
+    "read int values" in {
+      val data = Array[Byte](1, 2, 3, 4, 5, 6, 7, 8)
+      val byteString1C = ByteString1C(data)
+      byteString1C.readIntBE(0) should ===(0x01020304)
+      byteString1C.readIntLE(0) should ===(0x04030201)
+      byteString1C.readIntBE(4) should ===(0x05060708)
+      byteString1C.readIntLE(4) should ===(0x08070605)
+
+      val arr = Array[Byte](0, 1, 2, 3, 4, 5, 6, 7, 8, 9)
+      val byteString1 = ByteString1(arr, 1, 8)
+      byteString1.readIntBE(0) should ===(0x01020304)
+      byteString1.readIntLE(0) should ===(0x04030201)
+      byteString1.readIntBE(4) should ===(0x05060708)
+      byteString1.readIntLE(4) should ===(0x08070605)
+
+      val byteStrings = ByteStrings(
+        ByteString1(Array[Byte](1, 2), 0, 2),
+        ByteString1(Array[Byte](3, 4, 5, 6, 7, 8), 0, 6))
+      byteStrings.readIntBE(0) should ===(0x01020304)
+      byteStrings.readIntLE(0) should ===(0x04030201)
+      byteStrings.readIntBE(4) should ===(0x05060708)
+      byteStrings.readIntLE(4) should ===(0x08070605)
+    }
+
+    "read long values" in {
+      val data = Array[Byte](1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
+      val byteString1C = ByteString1C(data)
+      byteString1C.readLongBE(0) should ===(0x0102030405060708L)
+      byteString1C.readLongLE(0) should ===(0x0807060504030201L)
+      byteString1C.readLongBE(8) should ===(0x090A0B0C0D0E0F10L)
+      byteString1C.readLongLE(8) should ===(0x100F0E0D0C0B0A09L)
+
+      val arr = Array[Byte](0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17)
+      val byteString1 = ByteString1(arr, 1, 16)
+      byteString1.readLongBE(0) should ===(0x0102030405060708L)
+      byteString1.readLongLE(0) should ===(0x0807060504030201L)
+      byteString1.readLongBE(8) should ===(0x090A0B0C0D0E0F10L)
+      byteString1.readLongLE(8) should ===(0x100F0E0D0C0B0A09L)
+
+      val byteStrings = ByteStrings(
+        ByteString1(Array[Byte](1, 2, 3, 4), 0, 4),
+        ByteString1(Array[Byte](5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16), 0, 12))
+      byteStrings.readLongBE(0) should ===(0x0102030405060708L)
+      byteStrings.readLongLE(0) should ===(0x0807060504030201L)
+      byteStrings.readLongBE(8) should ===(0x090A0B0C0D0E0F10L)
+      byteStrings.readLongLE(8) should ===(0x100F0E0D0C0B0A09L)
+    }
+
+    "read primitive values across ByteString2 fragment boundaries" in {
+      val byteString2 =
+        expectByteString2(ByteString1C(Array[Byte](1, 2, 3)) ++ ByteString1C(Array[Byte](4, 5, 6, 7, 8)))
+
+      byteString2.readShortBE(2) should ===(0x0304.toShort)
+      byteString2.readShortLE(2) should ===(0x0403.toShort)
+      byteString2.readIntBE(1) should ===(0x02030405)
+      byteString2.readIntLE(1) should ===(0x05040302)
+      byteString2.readLongBE(0) should ===(0x0102030405060708L)
+      byteString2.readLongLE(0) should ===(0x0807060504030201L)
+    }
+
+    "throw IndexOutOfBoundsException for readShortBE/LE with insufficient data" in {
+      val bs1C = ByteString1C(Array[Byte](1))
+      an[IndexOutOfBoundsException] should be thrownBy bs1C.readShortBE(0)
+      an[IndexOutOfBoundsException] should be thrownBy bs1C.readShortLE(0)
+      an[IndexOutOfBoundsException] should be thrownBy bs1C.readShortBE(-1)
+      an[IndexOutOfBoundsException] should be thrownBy bs1C.readShortLE(-1)
+
+      val bs1 = ByteString1(Array[Byte](0, 1, 2), 1, 1)
+      an[IndexOutOfBoundsException] should be thrownBy bs1.readShortBE(0)
+      an[IndexOutOfBoundsException] should be thrownBy bs1.readShortLE(0)
+      an[IndexOutOfBoundsException] should be thrownBy bs1.readShortBE(-1)
+      an[IndexOutOfBoundsException] should be thrownBy bs1.readShortLE(-1)
+
+      val bss = ByteStrings(ByteString1.fromString("a"), ByteString1.fromString("b"))
+      an[IndexOutOfBoundsException] should be thrownBy bss.readShortBE(1)
+      an[IndexOutOfBoundsException] should be thrownBy bss.readShortLE(1)
+      an[IndexOutOfBoundsException] should be thrownBy bss.readShortBE(-1)
+      an[IndexOutOfBoundsException] should be thrownBy bss.readShortLE(-1)
+    }
+
+    "throw IndexOutOfBoundsException for readIntBE/LE with insufficient data" in {
+      val bs1C = ByteString1C(Array[Byte](1, 2, 3))
+      an[IndexOutOfBoundsException] should be thrownBy bs1C.readIntBE(0)
+      an[IndexOutOfBoundsException] should be thrownBy bs1C.readIntLE(0)
+      an[IndexOutOfBoundsException] should be thrownBy bs1C.readIntBE(-1)
+      an[IndexOutOfBoundsException] should be thrownBy bs1C.readIntLE(-1)
+
+      val bs1 = ByteString1(Array[Byte](0, 1, 2, 3, 4), 1, 3)
+      an[IndexOutOfBoundsException] should be thrownBy bs1.readIntBE(0)
+      an[IndexOutOfBoundsException] should be thrownBy bs1.readIntLE(0)
+      an[IndexOutOfBoundsException] should be thrownBy bs1.readIntBE(-1)
+      an[IndexOutOfBoundsException] should be thrownBy bs1.readIntLE(-1)
+
+      val bss = ByteStrings(ByteString1.fromString("abc"), ByteString1.fromString("d"))
+      an[IndexOutOfBoundsException] should be thrownBy bss.readIntBE(1)
+      an[IndexOutOfBoundsException] should be thrownBy bss.readIntLE(1)
+      an[IndexOutOfBoundsException] should be thrownBy bss.readIntBE(-1)
+      an[IndexOutOfBoundsException] should be thrownBy bss.readIntLE(-1)
+    }
+
+    "throw IndexOutOfBoundsException for readLongBE/LE with insufficient data" in {
+      val bs1C = ByteString1C(Array[Byte](1, 2, 3, 4, 5, 6, 7))
+      an[IndexOutOfBoundsException] should be thrownBy bs1C.readLongBE(0)
+      an[IndexOutOfBoundsException] should be thrownBy bs1C.readLongLE(0)
+      an[IndexOutOfBoundsException] should be thrownBy bs1C.readLongBE(-1)
+      an[IndexOutOfBoundsException] should be thrownBy bs1C.readLongLE(-1)
+
+      val bs1 = ByteString1(Array[Byte](0, 1, 2, 3, 4, 5, 6, 7, 8), 1, 7)
+      an[IndexOutOfBoundsException] should be thrownBy bs1.readLongBE(0)
+      an[IndexOutOfBoundsException] should be thrownBy bs1.readLongLE(0)
+      an[IndexOutOfBoundsException] should be thrownBy bs1.readLongBE(-1)
+      an[IndexOutOfBoundsException] should be thrownBy bs1.readLongLE(-1)
+
+      val bss = ByteStrings(ByteString1.fromString("abcdef"), ByteString1.fromString("g"))
+      an[IndexOutOfBoundsException] should be thrownBy bss.readLongBE(0)
+      an[IndexOutOfBoundsException] should be thrownBy bss.readLongLE(0)
+      an[IndexOutOfBoundsException] should be thrownBy bss.readLongBE(-1)
+      an[IndexOutOfBoundsException] should be thrownBy bss.readLongLE(-1)
+    }
+
+    "have correct takeRight behaviour for boundary values" in {
+      // empty ByteString
+      ByteString.empty.takeRight(-1) should ===(ByteString.empty)
+      ByteString.empty.takeRight(0) should ===(ByteString.empty)
+      ByteString.empty.takeRight(1) should ===(ByteString.empty)
+      // n <= 0
+      ByteString1.fromString("abc").takeRight(-1) should ===(ByteString.empty)
+      ByteString1.fromString("abc").takeRight(0) should ===(ByteString.empty)
+      ByteString1C.fromString("abc").takeRight(-1) should ===(ByteString.empty)
+      ByteString1C.fromString("abc").takeRight(0) should ===(ByteString.empty)
+      val bssTR = ByteStrings(ByteString1.fromString("ab"), ByteString1.fromString("cd"))
+      bssTR.takeRight(-1) should ===(ByteString.empty)
+      bssTR.takeRight(0) should ===(ByteString.empty)
+      // n >= length
+      ByteString1.fromString("abc").takeRight(3) should ===(ByteString("abc"))
+      ByteString1.fromString("abc").takeRight(100) should ===(ByteString("abc"))
+      ByteString1C.fromString("abc").takeRight(3) should ===(ByteString("abc"))
+      ByteString1C.fromString("abc").takeRight(100) should ===(ByteString("abc"))
+      bssTR.takeRight(4) should ===(ByteString("abcd"))
+      bssTR.takeRight(100) should ===(ByteString("abcd"))
+      // n in range
+      ByteString1.fromString("abcde").takeRight(2) should ===(ByteString("de"))
+      ByteString1C.fromString("abcde").takeRight(2) should ===(ByteString("de"))
+      bssTR.takeRight(3) should ===(ByteString("bcd"))
+    }
+
+    "throw IndexOutOfBoundsException when apply is called with an out-of-bounds index" in {
+      val bs1C = ByteString1C(Array[Byte](1, 2, 3))
+      an[IndexOutOfBoundsException] should be thrownBy bs1C(-1)
+      an[IndexOutOfBoundsException] should be thrownBy bs1C(3)
+      val bs1 = ByteString1(Array[Byte](0, 1, 2, 3, 4), 1, 3)
+      an[IndexOutOfBoundsException] should be thrownBy bs1(-1)
+      an[IndexOutOfBoundsException] should be thrownBy bs1(3)
+      val bss = ByteStrings(ByteString1.fromString("ab"), ByteString1.fromString("cd"))
+      an[IndexOutOfBoundsException] should be thrownBy bss(-1)
+      an[IndexOutOfBoundsException] should be thrownBy bss(4)
+      an[IndexOutOfBoundsException] should be thrownBy ByteString.empty(0)
+    }
+
+    "return 0 from copyToArray when start >= destination length" in {
+      val bs1C = ByteString1C(Array[Byte](1, 2, 3))
+      val dest1C = new Array[Byte](3)
+      bs1C.copyToArray(dest1C, 3, 2) should ===(0)
+      bs1C.copyToArray(dest1C, 5, 2) should ===(0)
+      val bs1 = ByteString1(Array[Byte](0, 1, 2, 3, 4), 1, 3)
+      val dest1 = new Array[Byte](3)
+      bs1.copyToArray(dest1, 3, 2) should ===(0)
+      bs1.copyToArray(dest1, 5, 2) should ===(0)
+      val bss = ByteStrings(ByteString1.fromString("ab"), ByteString1.fromString("cd"))
+      val destBss = new Array[Byte](4)
+      bss.copyToArray(destBss, 4, 2) should ===(0)
+      bss.copyToArray(destBss, 6, 2) should ===(0)
+    }
+
+    "correctly handle sizeHint with value smaller than already committed bytes" in {
+      val builder = ByteString.newBuilder
+      builder.putBytes(Array[Byte](1, 2, 3, 4, 5, 6, 7, 8, 9, 10))
+      // sizeHint smaller than already written should not throw or shrink
+      noException should be thrownBy builder.sizeHint(3)
+      noException should be thrownBy builder.sizeHint(0)
+      noException should be thrownBy builder.sizeHint(-1)
+      builder.result().length should ===(10)
+    }
+
+    "correctly handle grouped with size larger than length" in {
+      val bs = ByteString1.fromString("abc")
+      bs.grouped(10).toList should ===(List(ByteString("abc")))
+      bs.grouped(3).toList should ===(List(ByteString("abc")))
+      ByteString.empty.grouped(5).toList should ===(List.empty)
+      val bss = ByteStrings(ByteString1.fromString("ab"), ByteString1.fromString("cd"))
+      bss.grouped(100).toList should ===(List(ByteString("abcd")))
+    }
+
+    "map bytes correctly on each concrete type" in {
+      val inc: Byte => Byte = b => (b + 1).toByte
+      // ByteString1C
+      ByteString1C(Array[Byte](1, 2, 3)).map(inc) should ===(ByteString(Array[Byte](2, 3, 4)))
+      // ByteString1 with offset
+      ByteString1(Array[Byte](0, 1, 2, 3, 4), 1, 3).map(inc) should ===(ByteString(Array[Byte](2, 3, 4)))
+      // ByteStrings (2 segments)
+      val bss = ByteStrings(ByteString1.fromString("ab"), ByteString1.fromString("cd"))
+      bss.map(b => (b + 1).toByte) should ===(ByteString("bcde"))
+      // ByteStrings (3 segments, including negative byte values)
+      val bss3 = ByteString1(Array[Byte](-1, -2)) ++ ByteString1(Array[Byte](0, 1)) ++ ByteString1(
+        Array[Byte](126, 127))
+      bss3.map(b => (b + 1).toByte) should ===(ByteString(Array[Byte](0, -1, 1, 2, 127, -128)))
+      // empty
+      ByteString.empty.map(inc) should ===(ByteString.empty)
+    }
+
+    "foreach visits each byte in order on each concrete type" in {
+      def collect(bs: ByteString): Seq[Byte] = {
+        val buf = scala.collection.mutable.ArrayBuffer.empty[Byte]
+        bs.foreach(buf += _)
+        buf.toSeq
+      }
+      // ByteString1C
+      collect(ByteString1C(Array[Byte](10, 20, 30))) should ===(Seq[Byte](10, 20, 30))
+      // ByteString1 with internal offset
+      collect(ByteString1(Array[Byte](0, 10, 20, 30, 40), 1, 3)) should ===(Seq[Byte](10, 20, 30))
+      // ByteStrings (multi-segment, 2 segments)
+      collect(ByteStrings(ByteString1.fromString("ab"), ByteString1.fromString("cd"))) should ===(
+        Seq[Byte]('a', 'b', 'c', 'd'))
+      // ByteStrings (multi-segment, 3+ segments, including negative byte values)
+      val bss3 = ByteString1(Array[Byte](-1, -128)) ++ ByteString1(Array[Byte](0)) ++ ByteString1(Array[Byte](127))
+      collect(bss3) should ===(Seq[Byte](-1, -128, 0, 127))
+      // empty
+      collect(ByteString.empty) should ===(Seq.empty[Byte])
+    }
+
+    "slice returns correct result on ByteString1 with all boundary combinations" in {
+      val bs = ByteString1.fromString("abcde")
+      bs.slice(0, 5) should ===(ByteString("abcde"))
+      (bs.slice(0, 5) eq bs) should ===(true) // identity when full range
+      bs.slice(1, 4) should ===(ByteString("bcd"))
+      bs.slice(0, 0) should ===(ByteString.empty)
+      bs.slice(-5, 3) should ===(ByteString("abc"))
+      bs.slice(3, 100) should ===(ByteString("de"))
+      bs.slice(-5, -1) should ===(ByteString.empty)
+      bs.slice(4, 2) should ===(ByteString.empty) // from > until
+      // ByteString1 with internal offset
+      val bs2 = ByteString1(Array[Byte](0, 1, 2, 3, 4, 5, 6), 2, 4) // [2,3,4,5]
+      bs2.slice(1, 3) should ===(ByteString(Array[Byte](3, 4)))
+      bs2.slice(0, 4) should ===(ByteString(Array[Byte](2, 3, 4, 5)))
+      (bs2.slice(0, 4) eq bs2) should ===(true)
+      bs2.slice(-1, 2) should ===(ByteString(Array[Byte](2, 3)))
+    }
+
+    "indexOfSlice handles non-Byte typed Seq safely" in {
+      // Seq[Int] is B >: Byte; should not throw ClassCastException
+      val bs = ByteString("abc")
+      // 'a'.toInt == 97 — value semantics comparison works for Byte == Int through ==
+      val result = bs.indexOfSlice(Seq[Int](97, 98)) // 'a'=97, 'b'=98
+      result should ===(0)
+      bs.indexOfSlice(Seq[Int](99)) should ===(2) // 'c'=99
+      bs.indexOfSlice(Seq[Int](100)) should ===(-1) // 'd'=100 not present
+    }
+
+    "lastIndexOfSlice handles non-Byte typed Seq safely" in {
+      val bs = ByteString("aabb")
+      val result = bs.lastIndexOfSlice(Seq[Int](97, 97)) // 'a'=97
+      result should ===(0)
+      bs.lastIndexOfSlice(Seq[Int](98)) should ===(3) // 'b'=98
+      bs.lastIndexOfSlice(Seq[Int](100)) should ===(-1) // 'd'=100 not present
+    }
+
+    "ByteString1.apply factory returns canonical empty for non-positive length" in {
+      (ByteString1(Array[Byte](1, 2, 3), 0, 0) should be).theSameInstanceAs(ByteString1.empty)
+      (ByteString1(Array[Byte](1, 2, 3), 0, -1) should be).theSameInstanceAs(ByteString1.empty)
+      (ByteString1(Array[Byte](1, 2, 3), 0, Int.MinValue) should be).theSameInstanceAs(ByteString1.empty)
+    }
+
+    "ByteStringBuilder.result hands over a mostly used temp buffer without copying" in {
+      val builder = ByteString.newBuilder
+      builder.sizeHint(64)
+      val data = Array.tabulate[Byte](40)(i => i.toByte)
+      builder.putBytes(data)
+      val result = builder.result()
+      result should ===(ByteString(data))
+      // the 64 byte buffer is wrapped rather than copied, so the result covers only part of its array
+      result.isCompact should ===(false)
+    }
+
+    "ByteStringBuilder.result hands over an exactly filled temp buffer without copying" in {
+      val builder = ByteString.newBuilder
+      builder.sizeHint(64)
+      val data = Array.tabulate[Byte](64)(i => i.toByte)
+      builder.putBytes(data)
+      val result = builder.result()
+      result should ===(ByteString(data))
+      result.isCompact should ===(true)
+    }
+
+    "ByteStringBuilder.result copies when only a small part of the temp buffer is used" in {
+      val builder = ByteString.newBuilder
+      builder.sizeHint(64)
+      val data = Array.tabulate[Byte](10)(i => i.toByte)
+      builder.putBytes(data)
+      val result = builder.result()
+      result should ===(ByteString(data))
+      // a small result must not retain the much larger buffer
+      result.isCompact should ===(true)
+      result.toArrayUnsafe().length should ===(10)
+    }
+
+    "ByteStringBuilder.result is not affected by later writes to the builder" in {
+      val builder = ByteString.newBuilder
+      builder.sizeHint(64)
+      val data = Array.fill[Byte](40)(1)
+      builder.putBytes(data)
+      val first = builder.result()
+      builder.clear()
+      builder.putBytes(Array.fill[Byte](40)(2))
+      val second = builder.result()
+      first should ===(ByteString(data))
+      second should ===(ByteString(Array.fill[Byte](40)(2)))
+    }
+
+    "ByteStringBuilder.result returns the written bytes for any fill level of the temp buffer" in {
+      for (n <- 0 to 200) {
+        val builder = ByteString.newBuilder
+        builder.sizeHint(128)
+        val data = Array.tabulate[Byte](n)(i => (i % 128).toByte)
+        builder.putBytes(data)
+        builder.result() should ===(ByteString(data))
+      }
+    }
+
+    "ByteStringBuilder.sizeHint does not shrink existing capacity" in {
+      val builder = ByteString.newBuilder
+      builder.sizeHint(100)
+      builder.putByte(42)
+      // sizeHint smaller than current capacity — should not fail or lose data
+      noException should be thrownBy builder.sizeHint(10)
+      noException should be thrownBy builder.sizeHint(0)
+      builder.result() should ===(ByteString(42.toByte))
+    }
+
+    "ByteString2 must behave exactly like ByteString1C across every read/transform op" in {
+      // Build identical bytes as ByteString1C (reference) and as ByteString2 with several split points;
+      // every public read or transform op MUST return the same value. This guards against regressions
+      // in the iterator/normalize path (e.g. the LazyList -> List fix on ByteString2.iterator).
+      val totalSize = 23 // odd, large enough to exercise short/int/long reads at every fragment boundary
+      val bytes = Array.tabulate[Byte](totalSize)(i => ((i * 31 + 7) & 0xFF).toByte)
+      val reference = ByteString1C(bytes)
+
+      // Try every possible non-empty split: bs2 has fragments [0, split) ++ [split, totalSize)
+      for (split <- 1 until totalSize) {
+        val left = ByteString1C(java.util.Arrays.copyOfRange(bytes, 0, split))
+        val right = ByteString1C(java.util.Arrays.copyOfRange(bytes, split, totalSize))
+        val bs2 = expectByteString2(left ++ right)
+
+        withClue(s"split=$split: ") {
+          // basic contract
+          bs2.size should ===(reference.size)
+          bs2 should ===(reference)
+          bs2.hashCode should ===(reference.hashCode)
+          bs2.asByteBuffers.map(_.remaining()).toSeq should ===(Seq(split, totalSize - split))
+
+          // apply(idx) at every index
+          for (i <- 0 until totalSize) bs2(i) should ===(reference(i))
+
+          // iterator: byte-by-byte equality with reference
+          val refIt = reference.iterator
+          val bs2It = bs2.iterator
+          var idx = 0
+          while (refIt.hasNext) {
+            withClue(s"byte at $idx: ") { bs2It.next() should ===(refIt.next()) }
+            idx += 1
+          }
+          bs2It.hasNext should ===(false)
+
+          // iterator.getShort/getInt/getLong at every valid starting offset, BE and LE
+          for (off <- 0 to totalSize - 2) {
+            val r = reference.iterator.drop(off)
+            val b = bs2.iterator.drop(off)
+            r.getShort(BIG_ENDIAN) should ===(b.getShort(BIG_ENDIAN))
+
+            val r2 = reference.iterator.drop(off)
+            val b2 = bs2.iterator.drop(off)
+            r2.getShort(LITTLE_ENDIAN) should ===(b2.getShort(LITTLE_ENDIAN))
+          }
+          for (off <- 0 to totalSize - 4) {
+            val r = reference.iterator.drop(off)
+            val b = bs2.iterator.drop(off)
+            r.getInt(BIG_ENDIAN) should ===(b.getInt(BIG_ENDIAN))
+
+            val r2 = reference.iterator.drop(off)
+            val b2 = bs2.iterator.drop(off)
+            r2.getInt(LITTLE_ENDIAN) should ===(b2.getInt(LITTLE_ENDIAN))
+          }
+          for (off <- 0 to totalSize - 8) {
+            val r = reference.iterator.drop(off)
+            val b = bs2.iterator.drop(off)
+            r.getLong(BIG_ENDIAN) should ===(b.getLong(BIG_ENDIAN))
+
+            val r2 = reference.iterator.drop(off)
+            val b2 = bs2.iterator.drop(off)
+            r2.getLong(LITTLE_ENDIAN) should ===(b2.getLong(LITTLE_ENDIAN))
+          }
+
+          // direct readShort/Int/Long at every valid offset, BE and LE
+          for (off <- 0 to totalSize - 2) {
+            bs2.readShortBE(off) should ===(reference.readShortBE(off))
+            bs2.readShortLE(off) should ===(reference.readShortLE(off))
+          }
+          for (off <- 0 to totalSize - 4) {
+            bs2.readIntBE(off) should ===(reference.readIntBE(off))
+            bs2.readIntLE(off) should ===(reference.readIntLE(off))
+          }
+          for (off <- 0 to totalSize - 8) {
+            bs2.readLongBE(off) should ===(reference.readLongBE(off))
+            bs2.readLongLE(off) should ===(reference.readLongLE(off))
+          }
+
+          // take/drop/slice at every cut, including fragment boundary
+          for (n <- 0 to totalSize) {
+            bs2.take(n) should ===(reference.take(n))
+            bs2.drop(n) should ===(reference.drop(n))
+            bs2.takeRight(n) should ===(reference.takeRight(n))
+            bs2.dropRight(n) should ===(reference.dropRight(n))
+          }
+          for {
+            from <- 0 to totalSize
+            until <- from to totalSize
+          } bs2.slice(from, until) should ===(reference.slice(from, until))
+
+          // copyToBuffer
+          val refBuf = ByteBuffer.allocate(totalSize)
+          val bs2Buf = ByteBuffer.allocate(totalSize)
+          val refCopied = reference.copyToBuffer(refBuf)
+          val bs2Copied = bs2.copyToBuffer(bs2Buf)
+          bs2Copied should ===(refCopied)
+          refBuf.flip(); bs2Buf.flip()
+          bs2Buf should ===(refBuf)
+
+          // copyToArray with various (start, len) windows
+          for {
+            start <- 0 to totalSize
+            len <- 0 to totalSize - start
+          } {
+            val refArr = new Array[Byte](totalSize)
+            val bs2Arr = new Array[Byte](totalSize)
+            val nRef = reference.copyToArray(refArr, start, len)
+            val nBs2 = bs2.copyToArray(bs2Arr, start, len)
+            nBs2 should ===(nRef)
+            bs2Arr.toSeq should ===(refArr.toSeq)
+          }
+
+          // indexOf for every distinct byte value present, plus a few absent
+          val present = bytes.toSet
+          val candidates = present ++ Set[Byte](Byte.MinValue, 0.toByte, Byte.MaxValue)
+          for (b <- candidates) {
+            bs2.indexOf(b) should ===(reference.indexOf(b))
+            for (from <- 0 to totalSize) bs2.indexOf(b, from) should ===(reference.indexOf(b, from))
+          }
+
+          // compact yields equivalent ByteString1C
+          bs2.compact should ===(reference)
+          bs2.compact.isCompact should ===(true)
+        }
+      }
     }
   }
 
@@ -1593,6 +3189,132 @@ class ByteStringSpec extends AnyWordSpec with Matchers with Checkers {
         }
       }
 
+      "copyToBuffer returns the number of bytes written and respects buffer capacity" in {
+        import java.nio.ByteBuffer
+        // ByteString1C — full copy
+        val bs1c = ByteString1C(Array[Byte](1, 2, 3, 4, 5))
+        val buf1 = ByteBuffer.allocate(5)
+        bs1c.copyToBuffer(buf1) should ===(5)
+        buf1.flip()
+        buf1.get() should ===(1.toByte)
+
+        // ByteString1C — partial copy when buffer is smaller
+        val buf2 = ByteBuffer.allocate(3)
+        bs1c.copyToBuffer(buf2) should ===(3)
+        buf2.flip()
+        buf2.get() should ===(1.toByte)
+        buf2.get() should ===(2.toByte)
+        buf2.get() should ===(3.toByte)
+
+        // ByteString1C — empty buffer, 0 bytes copied
+        val buf3 = ByteBuffer.allocate(0)
+        bs1c.copyToBuffer(buf3) should ===(0)
+
+        // ByteString1 with internal offset — full copy
+        val bs1 = ByteString1(Array[Byte](0, 10, 20, 30, 40, 50), 1, 4) // [10, 20, 30, 40]
+        val buf4 = ByteBuffer.allocate(4)
+        bs1.copyToBuffer(buf4) should ===(4)
+        buf4.flip()
+        buf4.get() should ===(10.toByte)
+
+        // ByteString1 with internal offset — partial copy
+        val buf5 = ByteBuffer.allocate(2)
+        bs1.copyToBuffer(buf5) should ===(2)
+        buf5.flip()
+        buf5.get() should ===(10.toByte)
+        buf5.get() should ===(20.toByte)
+
+        // ByteStrings — full copy, all segments visited
+        val bss = ByteStrings(ByteString1.fromString("abc"), ByteString1.fromString("def"))
+        val buf6 = ByteBuffer.allocate(6)
+        bss.copyToBuffer(buf6) should ===(6)
+        buf6.flip()
+        val result6 = new Array[Byte](6)
+        buf6.get(result6)
+        result6.toSeq should ===(Seq[Byte]('a', 'b', 'c', 'd', 'e', 'f'))
+
+        // ByteStrings — partial copy stops mid-segment-boundary
+        val buf7 = ByteBuffer.allocate(4)
+        bss.copyToBuffer(buf7) should ===(4)
+        buf7.flip()
+        val result7 = new Array[Byte](4)
+        buf7.get(result7)
+        result7.toSeq should ===(Seq[Byte]('a', 'b', 'c', 'd'))
+
+        // ByteStrings — partial copy that exactly fills after first segment
+        val bss2 = ByteStrings(ByteString1(Array[Byte](1, 2, 3)), ByteString1(Array[Byte](4, 5, 6)))
+        val buf8 = ByteBuffer.allocate(3) // exactly the first segment
+        bss2.copyToBuffer(buf8) should ===(3)
+        buf8.flip()
+        val result8 = new Array[Byte](3)
+        buf8.get(result8)
+        result8.toSeq should ===(Seq[Byte](1, 2, 3))
+
+        // Empty ByteString — 0 bytes copied
+        ByteString.empty.copyToBuffer(ByteBuffer.allocate(10)) should ===(0)
+      }
+
+      "copyToBuffer(buffer, offset) copies from the given offset for different ByteString types" in {
+        import java.nio.ByteBuffer
+
+        // ByteString1C — copy from offset 2
+        val bs1c = ByteString1C(Array[Byte](1, 2, 3, 4, 5))
+        val buf1 = ByteBuffer.allocate(5)
+        bs1c.copyToBuffer(buf1, 2) should ===(3)
+        buf1.flip()
+        val result1 = new Array[Byte](3)
+        buf1.get(result1)
+        result1.toSeq should ===(Seq[Byte](3, 4, 5))
+
+        // ByteString1C — offset beyond length copies nothing
+        val buf2 = ByteBuffer.allocate(5)
+        bs1c.copyToBuffer(buf2, 10) should ===(0)
+
+        // ByteString1C — offset 0 copies all
+        val buf3 = ByteBuffer.allocate(5)
+        bs1c.copyToBuffer(buf3, 0) should ===(5)
+
+        // ByteString1 — copy from offset 1 (internal startIndex + user offset)
+        val bs1 = ByteString1(Array[Byte](0, 10, 20, 30, 40, 50), 1, 4) // logical bytes [10, 20, 30, 40]
+        val buf4 = ByteBuffer.allocate(4)
+        bs1.copyToBuffer(buf4, 1) should ===(3)
+        buf4.flip()
+        val result4 = new Array[Byte](3)
+        buf4.get(result4)
+        result4.toSeq should ===(Seq[Byte](20, 30, 40))
+
+        // ByteString1 — offset 0 copies all logical bytes
+        val buf5 = ByteBuffer.allocate(4)
+        bs1.copyToBuffer(buf5, 0) should ===(4)
+        buf5.flip()
+        buf5.get() should ===(10.toByte)
+
+        // ByteStrings — copy from offset that skips first segment entirely
+        val bss = ByteStrings(ByteString1.fromString("abc"), ByteString1.fromString("def"))
+        val buf6 = ByteBuffer.allocate(10)
+        bss.copyToBuffer(buf6, 3) should ===(3)
+        buf6.flip()
+        val result6 = new Array[Byte](3)
+        buf6.get(result6)
+        result6.toSeq should ===(Seq[Byte]('d', 'e', 'f'))
+
+        // ByteStrings — copy from offset mid-first-segment
+        val buf7 = ByteBuffer.allocate(10)
+        bss.copyToBuffer(buf7, 1) should ===(5)
+        buf7.flip()
+        val result7 = new Array[Byte](5)
+        buf7.get(result7)
+        result7.toSeq should ===(Seq[Byte]('b', 'c', 'd', 'e', 'f'))
+
+        // ByteStrings — offset 0 copies all
+        val buf8 = ByteBuffer.allocate(6)
+        bss.copyToBuffer(buf8, 0) should ===(6)
+
+        // ByteString.empty — any offset copies nothing
+        ByteString.empty.copyToBuffer(ByteBuffer.allocate(10), 0) should ===(0)
+        ByteString.empty.copyToBuffer(ByteBuffer.allocate(10), 5) should ===(0)
+      }
+
       "copying chunks to an array" in {
         val iterator = (ByteString("123") ++ ByteString("456")).iterator
         val array = Array.ofDim[Byte](6)
@@ -1785,5 +3507,397 @@ class ByteStringSpec extends AnyWordSpec with Matchers with Checkers {
         }
       }
     }
+
+    "putInt" when {
+      "big-endian" in {
+        val builder = ByteString.newBuilder
+        builder.putInt(0x01020304)(BIG_ENDIAN)
+        builder.result().toSeq should ===(Seq[Byte](0x01, 0x02, 0x03, 0x04))
+      }
+      "little-endian" in {
+        val builder = ByteString.newBuilder
+        builder.putInt(0x01020304)(LITTLE_ENDIAN)
+        builder.result().toSeq should ===(Seq[Byte](0x04, 0x03, 0x02, 0x01))
+      }
+      "max value big-endian" in {
+        val builder = ByteString.newBuilder
+        builder.putInt(Int.MaxValue)(BIG_ENDIAN)
+        builder.result().toSeq should ===(Seq[Byte](0x7F, 0xFF.toByte, 0xFF.toByte, 0xFF.toByte))
+      }
+      "min value big-endian" in {
+        val builder = ByteString.newBuilder
+        builder.putInt(Int.MinValue)(BIG_ENDIAN)
+        builder.result().toSeq should ===(Seq[Byte](0x80.toByte, 0x00, 0x00, 0x00))
+      }
+      "max value little-endian" in {
+        val builder = ByteString.newBuilder
+        builder.putInt(Int.MaxValue)(LITTLE_ENDIAN)
+        builder.result().toSeq should ===(Seq[Byte](0xFF.toByte, 0xFF.toByte, 0xFF.toByte, 0x7F))
+      }
+      "min value little-endian" in {
+        val builder = ByteString.newBuilder
+        builder.putInt(Int.MinValue)(LITTLE_ENDIAN)
+        builder.result().toSeq should ===(Seq[Byte](0x00, 0x00, 0x00, 0x80.toByte))
+      }
+      "result has length 4" in {
+        val builder = ByteString.newBuilder
+        builder.putInt(42)(BIG_ENDIAN)
+        builder.length should ===(4)
+        builder.result().length should ===(4)
+      }
+      "multiple puts accumulate correctly" in {
+        val builder = ByteString.newBuilder
+        builder.putInt(0x01020304)(BIG_ENDIAN)
+        builder.putInt(0x05060708)(BIG_ENDIAN)
+        builder.result().toSeq should ===(Seq[Byte](0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08))
+      }
+      "round-trips with ByteBuffer big-endian" in {
+        check { (value: Int) =>
+          val builder = ByteString.newBuilder
+          builder.putInt(value)(BIG_ENDIAN)
+          val reference = new Array[Byte](4)
+          ByteBuffer.wrap(reference).order(BIG_ENDIAN).putInt(value)
+          builder.result().toSeq == reference.toSeq
+        }
+      }
+      "round-trips with ByteBuffer little-endian" in {
+        check { (value: Int) =>
+          val builder = ByteString.newBuilder
+          builder.putInt(value)(LITTLE_ENDIAN)
+          val reference = new Array[Byte](4)
+          ByteBuffer.wrap(reference).order(LITTLE_ENDIAN).putInt(value)
+          builder.result().toSeq == reference.toSeq
+        }
+      }
+    }
+
+    "putLong" when {
+      "big-endian" in {
+        val builder = ByteString.newBuilder
+        builder.putLong(0x0102030405060708L)(BIG_ENDIAN)
+        builder.result().toSeq should ===(
+          Seq[Byte](0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08))
+      }
+      "little-endian" in {
+        val builder = ByteString.newBuilder
+        builder.putLong(0x0102030405060708L)(LITTLE_ENDIAN)
+        builder.result().toSeq should ===(
+          Seq[Byte](0x08, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01))
+      }
+      "max value big-endian" in {
+        val builder = ByteString.newBuilder
+        builder.putLong(Long.MaxValue)(BIG_ENDIAN)
+        builder.result().toSeq should ===(
+          Seq[Byte](0x7F, 0xFF.toByte, 0xFF.toByte, 0xFF.toByte, 0xFF.toByte, 0xFF.toByte, 0xFF.toByte, 0xFF.toByte))
+      }
+      "min value big-endian" in {
+        val builder = ByteString.newBuilder
+        builder.putLong(Long.MinValue)(BIG_ENDIAN)
+        builder.result().toSeq should ===(
+          Seq[Byte](0x80.toByte, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00))
+      }
+      "max value little-endian" in {
+        val builder = ByteString.newBuilder
+        builder.putLong(Long.MaxValue)(LITTLE_ENDIAN)
+        builder.result().toSeq should ===(
+          Seq[Byte](0xFF.toByte, 0xFF.toByte, 0xFF.toByte, 0xFF.toByte, 0xFF.toByte, 0xFF.toByte, 0xFF.toByte, 0x7F))
+      }
+      "min value little-endian" in {
+        val builder = ByteString.newBuilder
+        builder.putLong(Long.MinValue)(LITTLE_ENDIAN)
+        builder.result().toSeq should ===(
+          Seq[Byte](0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80.toByte))
+      }
+      "result has length 8" in {
+        val builder = ByteString.newBuilder
+        builder.putLong(42L)(BIG_ENDIAN)
+        builder.length should ===(8)
+        builder.result().length should ===(8)
+      }
+      "multiple puts accumulate correctly" in {
+        val builder = ByteString.newBuilder
+        builder.putLong(0x0102030405060708L)(BIG_ENDIAN)
+        builder.putLong(0x090A0B0C0D0E0F10L)(BIG_ENDIAN)
+        builder.result().toSeq should ===(
+          Seq[Byte](0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
+            0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, 0x10))
+      }
+      "round-trips with ByteBuffer big-endian" in {
+        check { (value: Long) =>
+          val builder = ByteString.newBuilder
+          builder.putLong(value)(BIG_ENDIAN)
+          val reference = new Array[Byte](8)
+          ByteBuffer.wrap(reference).order(BIG_ENDIAN).putLong(value)
+          builder.result().toSeq == reference.toSeq
+        }
+      }
+      "round-trips with ByteBuffer little-endian" in {
+        check { (value: Long) =>
+          val builder = ByteString.newBuilder
+          builder.putLong(value)(LITTLE_ENDIAN)
+          val reference = new Array[Byte](8)
+          ByteBuffer.wrap(reference).order(LITTLE_ENDIAN).putLong(value)
+          builder.result().toSeq == reference.toSeq
+        }
+      }
+    }
+
+    "putFloat" when {
+      "big-endian" in {
+        val builder = ByteString.newBuilder
+        builder.putFloat(1.0f)(BIG_ENDIAN)
+        val reference = new Array[Byte](4)
+        ByteBuffer.wrap(reference).order(BIG_ENDIAN).putFloat(1.0f)
+        builder.result().toSeq should ===(reference.toSeq)
+      }
+      "little-endian" in {
+        val builder = ByteString.newBuilder
+        builder.putFloat(1.0f)(LITTLE_ENDIAN)
+        val reference = new Array[Byte](4)
+        ByteBuffer.wrap(reference).order(LITTLE_ENDIAN).putFloat(1.0f)
+        builder.result().toSeq should ===(reference.toSeq)
+      }
+      "max value big-endian" in {
+        val builder = ByteString.newBuilder
+        builder.putFloat(Float.MaxValue)(BIG_ENDIAN)
+        val reference = new Array[Byte](4)
+        ByteBuffer.wrap(reference).order(BIG_ENDIAN).putFloat(Float.MaxValue)
+        builder.result().toSeq should ===(reference.toSeq)
+      }
+      "min value big-endian" in {
+        val builder = ByteString.newBuilder
+        builder.putFloat(Float.MinValue)(BIG_ENDIAN)
+        val reference = new Array[Byte](4)
+        ByteBuffer.wrap(reference).order(BIG_ENDIAN).putFloat(Float.MinValue)
+        builder.result().toSeq should ===(reference.toSeq)
+      }
+      "max value little-endian" in {
+        val builder = ByteString.newBuilder
+        builder.putFloat(Float.MaxValue)(LITTLE_ENDIAN)
+        val reference = new Array[Byte](4)
+        ByteBuffer.wrap(reference).order(LITTLE_ENDIAN).putFloat(Float.MaxValue)
+        builder.result().toSeq should ===(reference.toSeq)
+      }
+      "min value little-endian" in {
+        val builder = ByteString.newBuilder
+        builder.putFloat(Float.MinValue)(LITTLE_ENDIAN)
+        val reference = new Array[Byte](4)
+        ByteBuffer.wrap(reference).order(LITTLE_ENDIAN).putFloat(Float.MinValue)
+        builder.result().toSeq should ===(reference.toSeq)
+      }
+      "NaN big-endian" in {
+        val builder = ByteString.newBuilder
+        builder.putFloat(Float.NaN)(BIG_ENDIAN)
+        val bits = floatToRawIntBits(Float.NaN)
+        builder.result().toSeq should ===(
+          Seq[Byte]((bits >>> 24).toByte, (bits >>> 16).toByte, (bits >>> 8).toByte, bits.toByte))
+      }
+      "result has length 4" in {
+        val builder = ByteString.newBuilder
+        builder.putFloat(42.0f)(BIG_ENDIAN)
+        builder.length should ===(4)
+        builder.result().length should ===(4)
+      }
+      "multiple puts accumulate correctly" in {
+        val builder = ByteString.newBuilder
+        builder.putFloat(1.0f)(BIG_ENDIAN)
+        builder.putFloat(2.0f)(BIG_ENDIAN)
+        builder.length should ===(8)
+        val reference = new Array[Byte](8)
+        val buf = ByteBuffer.wrap(reference).order(BIG_ENDIAN)
+        buf.putFloat(1.0f)
+        buf.putFloat(2.0f)
+        builder.result().toSeq should ===(reference.toSeq)
+      }
+      "round-trips with ByteBuffer big-endian" in {
+        check { (value: Float) =>
+          val builder = ByteString.newBuilder
+          builder.putFloat(value)(BIG_ENDIAN)
+          val reference = new Array[Byte](4)
+          ByteBuffer.wrap(reference).order(BIG_ENDIAN).putFloat(value)
+          builder.result().toSeq == reference.toSeq
+        }
+      }
+      "round-trips with ByteBuffer little-endian" in {
+        check { (value: Float) =>
+          val builder = ByteString.newBuilder
+          builder.putFloat(value)(LITTLE_ENDIAN)
+          val reference = new Array[Byte](4)
+          ByteBuffer.wrap(reference).order(LITTLE_ENDIAN).putFloat(value)
+          builder.result().toSeq == reference.toSeq
+        }
+      }
+    }
+
+    "putDouble" when {
+      "big-endian" in {
+        val builder = ByteString.newBuilder
+        builder.putDouble(1.0)(BIG_ENDIAN)
+        val reference = new Array[Byte](8)
+        ByteBuffer.wrap(reference).order(BIG_ENDIAN).putDouble(1.0)
+        builder.result().toSeq should ===(reference.toSeq)
+      }
+      "little-endian" in {
+        val builder = ByteString.newBuilder
+        builder.putDouble(1.0)(LITTLE_ENDIAN)
+        val reference = new Array[Byte](8)
+        ByteBuffer.wrap(reference).order(LITTLE_ENDIAN).putDouble(1.0)
+        builder.result().toSeq should ===(reference.toSeq)
+      }
+      "max value big-endian" in {
+        val builder = ByteString.newBuilder
+        builder.putDouble(Double.MaxValue)(BIG_ENDIAN)
+        val reference = new Array[Byte](8)
+        ByteBuffer.wrap(reference).order(BIG_ENDIAN).putDouble(Double.MaxValue)
+        builder.result().toSeq should ===(reference.toSeq)
+      }
+      "min value big-endian" in {
+        val builder = ByteString.newBuilder
+        builder.putDouble(Double.MinValue)(BIG_ENDIAN)
+        val reference = new Array[Byte](8)
+        ByteBuffer.wrap(reference).order(BIG_ENDIAN).putDouble(Double.MinValue)
+        builder.result().toSeq should ===(reference.toSeq)
+      }
+      "max value little-endian" in {
+        val builder = ByteString.newBuilder
+        builder.putDouble(Double.MaxValue)(LITTLE_ENDIAN)
+        val reference = new Array[Byte](8)
+        ByteBuffer.wrap(reference).order(LITTLE_ENDIAN).putDouble(Double.MaxValue)
+        builder.result().toSeq should ===(reference.toSeq)
+      }
+      "min value little-endian" in {
+        val builder = ByteString.newBuilder
+        builder.putDouble(Double.MinValue)(LITTLE_ENDIAN)
+        val reference = new Array[Byte](8)
+        ByteBuffer.wrap(reference).order(LITTLE_ENDIAN).putDouble(Double.MinValue)
+        builder.result().toSeq should ===(reference.toSeq)
+      }
+      "NaN big-endian" in {
+        val builder = ByteString.newBuilder
+        builder.putDouble(Double.NaN)(BIG_ENDIAN)
+        val bits = doubleToRawLongBits(Double.NaN)
+        builder.result().toSeq should ===(
+          Seq[Byte](
+            (bits >>> 56).toByte, (bits >>> 48).toByte, (bits >>> 40).toByte, (bits >>> 32).toByte,
+            (bits >>> 24).toByte, (bits >>> 16).toByte, (bits >>> 8).toByte, bits.toByte))
+      }
+      "result has length 8" in {
+        val builder = ByteString.newBuilder
+        builder.putDouble(42.0)(BIG_ENDIAN)
+        builder.length should ===(8)
+        builder.result().length should ===(8)
+      }
+      "multiple puts accumulate correctly" in {
+        val builder = ByteString.newBuilder
+        builder.putDouble(1.0)(BIG_ENDIAN)
+        builder.putDouble(2.0)(BIG_ENDIAN)
+        builder.length should ===(16)
+        val reference = new Array[Byte](16)
+        val buf = ByteBuffer.wrap(reference).order(BIG_ENDIAN)
+        buf.putDouble(1.0)
+        buf.putDouble(2.0)
+        builder.result().toSeq should ===(reference.toSeq)
+      }
+      "round-trips with ByteBuffer big-endian" in {
+        check { (value: Double) =>
+          val builder = ByteString.newBuilder
+          builder.putDouble(value)(BIG_ENDIAN)
+          val reference = new Array[Byte](8)
+          ByteBuffer.wrap(reference).order(BIG_ENDIAN).putDouble(value)
+          builder.result().toSeq == reference.toSeq
+        }
+      }
+      "round-trips with ByteBuffer little-endian" in {
+        check { (value: Double) =>
+          val builder = ByteString.newBuilder
+          builder.putDouble(value)(LITTLE_ENDIAN)
+          val reference = new Array[Byte](8)
+          ByteBuffer.wrap(reference).order(LITTLE_ENDIAN).putDouble(value)
+          builder.result().toSeq == reference.toSeq
+        }
+      }
+    }
+
+    "putShort" when {
+      "big-endian" in {
+        val builder = ByteString.newBuilder
+        builder.putShort(0x0102)(BIG_ENDIAN)
+        builder.result().toSeq should ===(Seq[Byte](0x01, 0x02))
+      }
+      "little-endian" in {
+        val builder = ByteString.newBuilder
+        builder.putShort(0x0102)(LITTLE_ENDIAN)
+        builder.result().toSeq should ===(Seq[Byte](0x02, 0x01))
+      }
+      "max value big-endian" in {
+        val builder = ByteString.newBuilder
+        builder.putShort(Short.MaxValue.toInt)(BIG_ENDIAN)
+        builder.result().toSeq should ===(Seq[Byte](0x7F, 0xFF.toByte))
+      }
+      "min value big-endian" in {
+        val builder = ByteString.newBuilder
+        builder.putShort(Short.MinValue.toInt)(BIG_ENDIAN)
+        builder.result().toSeq should ===(Seq[Byte](0x80.toByte, 0x00))
+      }
+      "max value little-endian" in {
+        val builder = ByteString.newBuilder
+        builder.putShort(Short.MaxValue.toInt)(LITTLE_ENDIAN)
+        builder.result().toSeq should ===(Seq[Byte](0xFF.toByte, 0x7F))
+      }
+      "min value little-endian" in {
+        val builder = ByteString.newBuilder
+        builder.putShort(Short.MinValue.toInt)(LITTLE_ENDIAN)
+        builder.result().toSeq should ===(Seq[Byte](0x00, 0x80.toByte))
+      }
+      "result has length 2" in {
+        val builder = ByteString.newBuilder
+        builder.putShort(42)(BIG_ENDIAN)
+        builder.length should ===(2)
+        builder.result().length should ===(2)
+      }
+      "multiple puts accumulate correctly" in {
+        val builder = ByteString.newBuilder
+        builder.putShort(0x0102)(BIG_ENDIAN)
+        builder.putShort(0x0304)(BIG_ENDIAN)
+        builder.result().toSeq should ===(Seq[Byte](0x01, 0x02, 0x03, 0x04))
+      }
+      "round-trips with ByteBuffer big-endian" in {
+        check { (value: Short) =>
+          val builder = ByteString.newBuilder
+          builder.putShort(value.toInt)(BIG_ENDIAN)
+          val reference = new Array[Byte](2)
+          ByteBuffer.wrap(reference).order(BIG_ENDIAN).putShort(value)
+          builder.result().toSeq == reference.toSeq
+        }
+      }
+      "round-trips with ByteBuffer little-endian" in {
+        check { (value: Short) =>
+          val builder = ByteString.newBuilder
+          builder.putShort(value.toInt)(LITTLE_ENDIAN)
+          val reference = new Array[Byte](2)
+          ByteBuffer.wrap(reference).order(LITTLE_ENDIAN).putShort(value)
+          builder.result().toSeq == reference.toSeq
+        }
+      }
+    }
+  }
+
+  private def makeMultiByteStringsSample(): ByteString = {
+    val byteStrings = Vector(
+      ByteString1(Array[Byte](0xFF.toByte)),
+      ByteString1(Array[Byte](0, 1, 2, 3)),
+      ByteString1(Array[Byte](4, 5)),
+      ByteString1(Array[Byte](6, 7, 8, 9)),
+      ByteString1(Array[Byte](10)),
+      ByteString1(Array[Byte](11, 12, 13, 14, 15, 16)),
+      ByteString1(Array[Byte](0xFF.toByte))
+    )
+    ByteStrings(byteStrings)
+  }
+
+  private def makeMultiByteStringsWithEmptyComponents(): ByteString = {
+    ByteString1(Array.emptyByteArray) ++
+    makeMultiByteStringsSample() ++
+    ByteString1(Array.emptyByteArray)
   }
 }

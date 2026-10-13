@@ -33,7 +33,10 @@ private[dns] object ResolvConfParser {
    */
   def parseFile(file: File): Try[ResolvConf] = {
     Try {
-      parseLines(Files.lines(file.toPath).iterator().asScala)
+      // the stream holds the file open until closed, and parseLines consumes it eagerly
+      val lines = Files.lines(file.toPath)
+      try parseLines(lines.iterator().asScala)
+      finally lines.close()
     }
   }
 

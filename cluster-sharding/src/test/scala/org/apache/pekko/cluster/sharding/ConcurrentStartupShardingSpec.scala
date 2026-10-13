@@ -78,7 +78,7 @@ class ConcurrentStartupShardingSpec extends PekkoSpec(ConcurrentStartupShardingS
   if (!log.isDebugEnabled)
     system.eventStream.publish(Mute(DeadLettersFilter[Any]))
 
-  // The intended usage is to start sharding in one (or a few) places when the the ActorSystem
+  // The intended usage is to start sharding in one (or a few) places when the ActorSystem
   // is started and not to do it concurrently from many threads. However, we can do our best and when using
   // FJP the Await will create additional threads when needed.
   "Concurrent Sharding startup" must {

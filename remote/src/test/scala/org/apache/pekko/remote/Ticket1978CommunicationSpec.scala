@@ -180,7 +180,7 @@ abstract class Ticket1978CommunicationSpec(val cipherConfig: CipherConfig)
         }
       }
 
-      "have random numbers that are not compressable, because then they are not random" in {
+      "have random numbers that are not compressible, because then they are not random" in {
         val provider = new ConfigSSLEngineProvider(system)
         val rng = provider.createSecureRandom()
 

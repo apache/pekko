@@ -74,7 +74,7 @@ import pekko.util.OptionVal
       }
 
       object Initializing extends InHandler with OutHandler {
-        // we don't expect a push since we bever pull upstream during initialization
+        // we don't expect a push since we never pull upstream during initialization
         override def onPush(): Unit = throw new IllegalStateException("unexpected push during initialization")
 
         var upstreamFailure = OptionVal.none[Throwable]

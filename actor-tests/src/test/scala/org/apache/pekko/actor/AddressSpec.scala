@@ -17,7 +17,8 @@
 
 package org.apache.pekko.actor
 
-import org.apache.pekko.testkit.PekkoSpec
+import org.apache.pekko
+import pekko.testkit.PekkoSpec
 
 class AddressSpec extends PekkoSpec {
   "Address ordering" must {

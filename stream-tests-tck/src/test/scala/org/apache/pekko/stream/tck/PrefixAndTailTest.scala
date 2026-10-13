@@ -26,7 +26,7 @@ class PrefixAndTailTest extends PekkoPublisherVerification[Int] {
 
   def createPublisher(elements: Long): Publisher[Int] = {
     val futureTailSource = Source(iterable(elements)).prefixAndTail(0).map { case (_, tail) => tail }.runWith(Sink.head)
-    val tailSource = Await.result(futureTailSource, 3.seconds)
+    val tailSource = Await.result(futureTailSource, Timeouts.materializerTimeoutMillis.millis)
     tailSource.runWith(Sink.asPublisher(false))
   }
 

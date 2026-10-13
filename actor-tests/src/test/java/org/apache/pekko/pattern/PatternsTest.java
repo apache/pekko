@@ -16,30 +16,29 @@ package org.apache.pekko.pattern;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.apache.pekko.pattern.Patterns.ask;
 import static org.apache.pekko.pattern.Patterns.pipe;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.time.Duration;
-import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.pekko.actor.*;
 import org.apache.pekko.dispatch.CompletionStages;
-import org.apache.pekko.dispatch.Futures;
-import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
+import org.apache.pekko.testkit.PekkoJUnitJupiterActorSystemResource;
 import org.apache.pekko.testkit.PekkoSpec;
 import org.apache.pekko.testkit.TestProbe;
 import org.apache.pekko.util.Timeout;
-import org.junit.ClassRule;
-import org.junit.Test;
-import org.scalatestplus.junit.JUnitSuite;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import scala.concurrent.Await;
 import scala.concurrent.ExecutionContext;
 import scala.concurrent.Future;
 import scala.concurrent.duration.FiniteDuration;
 
 /** Copyright (C) 2009-2018 Lightbend Inc. <https://www.lightbend.com> */
-public class PatternsTest extends JUnitSuite {
+public class PatternsTest {
 
   public static final class ExplicitAskTestActor extends AbstractActor {
 
@@ -71,9 +70,9 @@ public class PatternsTest extends JUnitSuite {
     }
   }
 
-  @ClassRule
-  public static PekkoJUnitActorSystemResource actorSystemResource =
-      new PekkoJUnitActorSystemResource("JavaAPI", PekkoSpec.testConf());
+  @RegisterExtension
+  static PekkoJUnitJupiterActorSystemResource actorSystemResource =
+      new PekkoJUnitJupiterActorSystemResource("JavaAPI", PekkoSpec.testConf());
 
   private final ActorSystem system = actorSystemResource.getSystem();
 
@@ -85,9 +84,9 @@ public class PatternsTest extends JUnitSuite {
     scala.concurrent.duration.Duration timeout =
         scala.concurrent.duration.Duration.create(3, "seconds");
     assertEquals(
-        "Ask should return expected answer",
         JavaAPITestActor.ANSWER,
-        Await.result(ask(testActor, "hey!", 3000), timeout));
+        Await.result(ask(testActor, "hey!", 3000), timeout),
+        "Ask should return expected answer");
   }
 
   @Test
@@ -99,7 +98,7 @@ public class PatternsTest extends JUnitSuite {
     ActorIdentity id =
         (ActorIdentity) Await.result(ask(selection, new Identify("yo!"), 3000), timeout);
     assertEquals(
-        "Ask (Identify) should return the proper ActorIdentity", testActor, id.getActorRef().get());
+        testActor, id.getActorRef().get(), "Ask (Identify) should return the proper ActorIdentity");
   }
 
   @Test
@@ -263,6 +262,28 @@ public class PatternsTest extends JUnitSuite {
   }
 
   @Test
+  public void testRetryCompletionStageNoDelayUsesAttemptsAfterInitialAttempt() {
+    final AtomicInteger counter = new AtomicInteger(0);
+
+    CompletionStage<String> retriedFuture =
+        Patterns.retry(
+            () -> {
+              final int attempt = counter.incrementAndGet();
+              final CompletableFuture<String> failed = new CompletableFuture<>();
+              failed.completeExceptionally(new RuntimeException(String.valueOf(attempt)));
+              return failed;
+            },
+            3,
+            ec);
+
+    ExecutionException exception =
+        assertThrows(
+            ExecutionException.class, () -> retriedFuture.toCompletableFuture().get(3, SECONDS));
+    assertEquals("4", exception.getCause().getMessage());
+    assertEquals(4, counter.get());
+  }
+
+  @Test
   public void testRetryCompletionStageRandomDelay() throws Exception {
     final String expected = "hello";
     final AtomicInteger counter = new AtomicInteger(0);
@@ -294,7 +315,7 @@ public class PatternsTest extends JUnitSuite {
 
     Future<String> retriedFuture =
         Patterns.retry(
-            () -> Futures.successful(expected),
+            () -> scala.concurrent.Future$.MODULE$.successful(expected),
             3,
             scala.concurrent.duration.Duration.apply(200, "millis"),
             system.scheduler(),
@@ -317,26 +338,61 @@ public class PatternsTest extends JUnitSuite {
     assertEquals(expected, actual);
   }
 
-  @Test(expected = IllegalStateException.class)
-  @SuppressWarnings("deprecation")
+  @Test
+  public void testShortCircuitRetry() throws Exception {
+    AtomicInteger failureCounter = new AtomicInteger();
+
+    final CompletableFuture<Object> ise = new CompletableFuture<>();
+    final CompletableFuture<Object> iae = new CompletableFuture<>();
+    ise.completeExceptionally(new IllegalStateException());
+    iae.completeExceptionally(new IllegalArgumentException());
+
+    CompletionStage<Object> retriedAttempts =
+        Patterns.retry(
+            () -> {
+              if ((failureCounter.getAndIncrement() % 3) < 2) {
+                return ise;
+              } else {
+                return iae;
+              }
+            },
+            (result, ex) -> !(ex instanceof IllegalArgumentException),
+            10,
+            ec);
+
+    try {
+      retriedAttempts.toCompletableFuture().get(3, SECONDS);
+      throw new AssertionError("future should have failed!");
+    } catch (java.util.concurrent.ExecutionException e) {
+      assertEquals(IllegalArgumentException.class, e.getCause().getClass());
+    }
+
+    assertEquals(3, failureCounter.get());
+  }
+
+  @Test
   public void testAfterFailedCallable() throws Exception {
     Callable<CompletionStage<String>> failedCallable =
-        () -> Futures.failedCompletionStage(new IllegalStateException("Illegal!"));
+        () -> CompletableFuture.failedStage(new IllegalStateException("Illegal!"));
 
     CompletionStage<String> delayedFuture =
         Patterns.after(Duration.ofMillis(200), system.scheduler(), ec, failedCallable);
 
     CompletionStage<String> resultFuture =
-        CompletionStages.firstCompletedOf(Arrays.asList(delayedFuture));
-    try {
-      resultFuture.toCompletableFuture().get(3, SECONDS);
-    } catch (ExecutionException e) {
-      throw (IllegalStateException) e.getCause();
-    }
+        CompletionStages.firstCompletedOf(List.of(delayedFuture));
+
+    assertThrows(
+        IllegalStateException.class,
+        () -> {
+          try {
+            resultFuture.toCompletableFuture().get(3, SECONDS);
+          } catch (ExecutionException e) {
+            throw (IllegalStateException) e.getCause();
+          }
+        });
   }
 
-  @Test(expected = IllegalStateException.class)
-  @SuppressWarnings("deprecation")
+  @Test
   public void testAfterFailedFuture() throws Exception {
 
     CompletionStage<String> delayedFuture =
@@ -344,15 +400,20 @@ public class PatternsTest extends JUnitSuite {
             Duration.ofMillis(200),
             system.scheduler(),
             ec,
-            () -> Futures.failedCompletionStage(new IllegalStateException("Illegal!")));
+            () -> CompletableFuture.failedStage(new IllegalStateException("Illegal!")));
 
     CompletionStage<String> resultFuture =
-        CompletionStages.firstCompletedOf(Arrays.asList(delayedFuture));
-    try {
-      resultFuture.toCompletableFuture().get(3, SECONDS);
-    } catch (ExecutionException e) {
-      throw (IllegalStateException) e.getCause();
-    }
+        CompletionStages.firstCompletedOf(List.of(delayedFuture));
+
+    assertThrows(
+        IllegalStateException.class,
+        () -> {
+          try {
+            resultFuture.toCompletableFuture().get(3, SECONDS);
+          } catch (ExecutionException e) {
+            throw (IllegalStateException) e.getCause();
+          }
+        });
   }
 
   @Test
@@ -368,7 +429,7 @@ public class PatternsTest extends JUnitSuite {
             () -> CompletableFuture.completedFuture(expected));
 
     CompletionStage<String> resultFuture =
-        CompletionStages.firstCompletedOf(Arrays.asList(delayedFuture));
+        CompletionStages.firstCompletedOf(List.of(delayedFuture));
     final String actual = resultFuture.toCompletableFuture().get(3, SECONDS);
 
     assertEquals(expected, actual);
@@ -387,7 +448,7 @@ public class PatternsTest extends JUnitSuite {
             () -> CompletableFuture.completedFuture(expected));
 
     CompletionStage<String> resultFuture =
-        CompletionStages.firstCompletedOf(Arrays.asList(delayedFuture));
+        CompletionStages.firstCompletedOf(List.of(delayedFuture));
 
     final String actual = resultFuture.toCompletableFuture().get(3, SECONDS);
     assertEquals(expected, actual);
@@ -408,13 +469,13 @@ public class PatternsTest extends JUnitSuite {
     CompletionStage<String> immediateFuture = CompletableFuture.completedFuture(expected);
 
     CompletionStage<String> resultFuture =
-        CompletionStages.firstCompletedOf(Arrays.asList(delayedFuture, immediateFuture));
+        CompletionStages.firstCompletedOf(List.of(delayedFuture, immediateFuture));
 
     final String actual = resultFuture.toCompletableFuture().get(3, SECONDS);
     assertEquals(expected, actual);
   }
 
-  @Test(expected = ExecutionException.class)
+  @Test
   public void testCSAfterFailedCallable() throws Exception {
     Callable<CompletionStage<String>> failedCallable =
         () -> {
@@ -426,10 +487,13 @@ public class PatternsTest extends JUnitSuite {
     CompletionStage<String> delayedStage =
         Patterns.after(Duration.ofMillis(200), system.scheduler(), ec, failedCallable);
 
-    delayedStage.toCompletableFuture().get(3, SECONDS);
+    ExecutionException exception =
+        assertThrows(
+            ExecutionException.class, () -> delayedStage.toCompletableFuture().get(3, SECONDS));
+    assertEquals("Illegal!", exception.getCause().getMessage());
   }
 
-  @Test(expected = ExecutionException.class)
+  @Test
   public void testCSAfterFailedFuture() throws Exception {
     Callable<CompletionStage<String>> failedFuture =
         () -> {
@@ -441,7 +505,10 @@ public class PatternsTest extends JUnitSuite {
     CompletionStage<String> delayedStage =
         Patterns.after(Duration.ofMillis(200), system.scheduler(), ec, failedFuture);
 
-    String result = delayedStage.toCompletableFuture().get(3, SECONDS);
+    ExecutionException exception =
+        assertThrows(
+            ExecutionException.class, () -> delayedStage.toCompletableFuture().get(3, SECONDS));
+    assertEquals("Illegal!", exception.getCause().getMessage());
   }
 
   @Test
@@ -529,7 +596,7 @@ public class PatternsTest extends JUnitSuite {
     try {
       delayedStage.toCompletableFuture().get(3, SECONDS);
     } catch (ExecutionException e) {
-      assertTrue(e.getCause() instanceof IllegalStateException);
+      assertInstanceOf(IllegalStateException.class, e.getCause());
       assertEquals("Illegal!", e.getCause().getMessage());
     }
   }
@@ -542,7 +609,7 @@ public class PatternsTest extends JUnitSuite {
     try {
       delayedStage.toCompletableFuture().get(3, SECONDS);
     } catch (ExecutionException e) {
-      assertTrue(e.getCause() instanceof TimeoutException);
+      assertInstanceOf(TimeoutException.class, e.getCause());
       assertEquals("Timeout of PT0.2S expired", e.getCause().getMessage());
     }
   }

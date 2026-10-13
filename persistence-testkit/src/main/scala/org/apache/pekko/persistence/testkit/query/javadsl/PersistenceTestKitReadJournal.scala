@@ -26,7 +26,12 @@ import pekko.persistence.query.javadsl.{
   ReadJournal
 }
 import pekko.persistence.query.typed
-import pekko.persistence.query.typed.javadsl.{ CurrentEventsBySliceQuery, EventsBySliceQuery }
+import pekko.persistence.query.typed.javadsl.{
+  CurrentEventsByPersistenceIdTypedQuery,
+  CurrentEventsBySliceQuery,
+  EventsByPersistenceIdTypedQuery,
+  EventsBySliceQuery
+}
 import pekko.persistence.testkit.query.scaladsl
 import pekko.stream.javadsl.Source
 
@@ -41,7 +46,9 @@ final class PersistenceTestKitReadJournal(delegate: scaladsl.PersistenceTestKitR
     with CurrentEventsByTagQuery
     with CurrentEventsBySliceQuery
     with EventsByTagQuery
-    with EventsBySliceQuery {
+    with EventsBySliceQuery
+    with EventsByPersistenceIdTypedQuery
+    with CurrentEventsByPersistenceIdTypedQuery {
 
   override def eventsByPersistenceId(
       persistenceId: String,
@@ -54,6 +61,18 @@ final class PersistenceTestKitReadJournal(delegate: scaladsl.PersistenceTestKitR
       fromSequenceNr: Long,
       toSequenceNr: Long): Source[EventEnvelope, NotUsed] =
     delegate.currentEventsByPersistenceId(persistenceId, fromSequenceNr, toSequenceNr).asJava
+
+  override def eventsByPersistenceIdTyped[Event](
+      persistenceId: String,
+      fromSequenceNr: Long,
+      toSequenceNr: Long): Source[typed.EventEnvelope[Event], NotUsed] =
+    delegate.eventsByPersistenceIdTyped(persistenceId, fromSequenceNr, toSequenceNr).asJava
+
+  override def currentEventsByPersistenceIdTyped[Event](
+      persistenceId: String,
+      fromSequenceNr: Long,
+      toSequenceNr: Long): Source[typed.EventEnvelope[Event], NotUsed] =
+    delegate.currentEventsByPersistenceIdTyped(persistenceId, fromSequenceNr, toSequenceNr).asJava
 
   override def currentEventsByTag(tag: String, offset: Offset): Source[EventEnvelope, NotUsed] =
     delegate.currentEventsByTag(tag, offset).asJava

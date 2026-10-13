@@ -14,21 +14,21 @@
 package org.apache.pekko.stream.javadsl;
 
 import org.apache.pekko.NotUsed;
-import org.apache.pekko.stream.StreamTest;
-import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
+import org.apache.pekko.stream.StreamTestJupiter;
+import org.apache.pekko.testkit.PekkoJUnitJupiterActorSystemResource;
 import org.apache.pekko.testkit.PekkoSpec;
 import org.apache.pekko.util.ByteString;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
-public class FramingTest extends StreamTest {
+public class FramingTest extends StreamTestJupiter {
   public FramingTest() {
     super(actorSystemResource);
   }
 
-  @ClassRule
-  public static PekkoJUnitActorSystemResource actorSystemResource =
-      new PekkoJUnitActorSystemResource("FramingTest", PekkoSpec.testConf());
+  @RegisterExtension
+  static PekkoJUnitJupiterActorSystemResource actorSystemResource =
+      new PekkoJUnitJupiterActorSystemResource("FramingTest", PekkoSpec.testConf());
 
   @Test
   public void mustBeAbleToUseFraming() throws Exception {

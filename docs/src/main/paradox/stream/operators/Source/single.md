@@ -10,7 +10,7 @@ Stream a single object once.
 
 ## Description
 
-Stream a single object once and complete after thereafter.
+Stream a single object once and complete thereafter.
 
 See also:
 

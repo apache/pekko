@@ -19,7 +19,9 @@ import scala.concurrent.duration._
 
 import org.apache.pekko
 import pekko.actor.ActorSystem
+import pekko.stream.ActorAttributes
 import pekko.stream.OverflowStrategy
+import pekko.stream.Supervision
 import pekko.stream.testkit.{ StreamSpec, TestPublisher, TestSubscriber }
 import pekko.testkit.{ ExplicitlyTriggeredScheduler, PekkoSpec }
 
@@ -32,7 +34,7 @@ class AggregateWithBoundarySpec extends StreamSpec {
 
   "split aggregator by size" in {
 
-    val stream = collection.immutable.Seq(1, 2, 3, 4, 5, 6, 7)
+    val stream = Seq(1, 2, 3, 4, 5, 6, 7)
     val groupSize = 3
     val result = Source(stream)
       .aggregateWithBoundary(allocate = () => ListBuffer.empty[Int])(aggregate = (buffer, i) => {
@@ -41,12 +43,12 @@ class AggregateWithBoundarySpec extends StreamSpec {
         }, harvest = buffer => buffer.toSeq, emitOnTimer = None)
       .runWith(Sink.collection)
 
-    Await.result(result, 10.seconds) should be(stream.grouped(groupSize).toSeq)
+    Await.result(result, 30.seconds) should be(stream.grouped(groupSize).toSeq)
 
   }
 
   "split aggregator by size and harvest" in {
-    val stream = collection.immutable.Seq(1, 2, 3, 4, 5, 6, 7)
+    val stream = Seq(1, 2, 3, 4, 5, 6, 7)
     val groupSize = 3
     val result = Source(stream)
       .aggregateWithBoundary(allocate = () => ListBuffer.empty[Int])(
@@ -58,12 +60,12 @@ class AggregateWithBoundarySpec extends StreamSpec {
         emitOnTimer = None)
       .runWith(Sink.collection)
 
-    Await.result(result, 10.seconds) should be(stream.grouped(groupSize).toSeq.map(seq => seq :+ -1))
+    Await.result(result, 30.seconds) should be(stream.grouped(groupSize).toSeq.map(seq => seq :+ -1))
 
   }
 
   "split aggregator by custom weight condition" in {
-    val stream = collection.immutable.Seq(1, 2, 3, 4, 5, 6, 7)
+    val stream = Seq(1, 2, 3, 4, 5, 6, 7)
     val weight = 10
 
     val result = Source(stream)
@@ -73,7 +75,95 @@ class AggregateWithBoundarySpec extends StreamSpec {
         }, harvest = buffer => buffer.toSeq, emitOnTimer = None)
       .runWith(Sink.collection)
 
-    Await.result(result, 10.seconds) should be(Seq(Seq(1, 2, 3, 4), Seq(5, 6), Seq(7)))
+    Await.result(result, 30.seconds) should be(Seq(Seq(1, 2, 3, 4), Seq(5, 6), Seq(7)))
+  }
+
+  "resume and reset aggregate state when aggregate throws" in {
+    val result = Source(1 to 4)
+      .aggregateWithBoundary(allocate = () => ListBuffer.empty[Int])(
+        aggregate = (buffer, i) => {
+          buffer += i
+          if (i == 3) throw new RuntimeException("boom")
+          (buffer, buffer.size >= 3)
+        },
+        harvest = _.toSeq,
+        emitOnTimer = None)
+      .withAttributes(ActorAttributes.supervisionStrategy(Supervision.resumingDecider))
+      .runWith(Sink.collection)
+
+    Await.result(result, 30.seconds) shouldBe Seq(Seq(4))
+  }
+
+  "restart and reset aggregate state when aggregate throws" in {
+    val result = Source(1 to 4)
+      .aggregateWithBoundary(allocate = () => ListBuffer.empty[Int])(
+        aggregate = (buffer, i) => {
+          buffer += i
+          if (i == 3) throw new RuntimeException("boom")
+          (buffer, buffer.size >= 3)
+        },
+        harvest = _.toSeq,
+        emitOnTimer = None)
+      .withAttributes(ActorAttributes.supervisionStrategy(Supervision.restartingDecider))
+      .runWith(Sink.collection)
+
+    Await.result(result, 30.seconds) shouldBe Seq(Seq(4))
+  }
+
+  "resume when allocate throws and drop failing element" in {
+    var allocationCount = 0
+    val result = Source(1 to 5)
+      .aggregateWithBoundary(allocate = () => {
+        allocationCount += 1
+        if (allocationCount == 1) throw new RuntimeException("boom")
+        ListBuffer.empty[Int]
+      })(
+        aggregate = (buffer, i) => {
+          buffer += i
+          (buffer, buffer.size >= 2)
+        },
+        harvest = _.toSeq,
+        emitOnTimer = None)
+      .withAttributes(ActorAttributes.supervisionStrategy(Supervision.resumingDecider))
+      .runWith(Sink.collection)
+
+    Await.result(result, 30.seconds) shouldBe Seq(Seq(2, 3), Seq(4, 5))
+  }
+
+  "resume when harvest throws and drop failing aggregate" in {
+    val result = Source(1 to 5)
+      .aggregateWithBoundary(allocate = () => ListBuffer.empty[Int])(
+        aggregate = (buffer, i) => {
+          buffer += i
+          (buffer, buffer.size >= 2)
+        },
+        harvest = buffer => {
+          if (buffer.contains(3)) throw new RuntimeException("boom")
+          buffer.toSeq
+        },
+        emitOnTimer = None)
+      .withAttributes(ActorAttributes.supervisionStrategy(Supervision.resumingDecider))
+      .runWith(Sink.collection)
+
+    Await.result(result, 30.seconds) shouldBe Seq(Seq(1, 2), Seq(5))
+  }
+
+  "resume when harvest throws on upstream finish and complete" in {
+    val result = Source(1 to 3)
+      .aggregateWithBoundary(allocate = () => ListBuffer.empty[Int])(
+        aggregate = (buffer, i) => {
+          buffer += i
+          (buffer, buffer.size >= 2)
+        },
+        harvest = buffer => {
+          if (buffer.contains(3)) throw new RuntimeException("boom")
+          buffer.toSeq
+        },
+        emitOnTimer = None)
+      .withAttributes(ActorAttributes.supervisionStrategy(Supervision.resumingDecider))
+      .runWith(Sink.collection)
+
+    Await.result(result, 30.seconds) shouldBe Seq(Seq(1, 2))
   }
 
 }
@@ -165,7 +255,7 @@ class AggregateWithTimeBoundaryAndSimulatedTimeSpec extends AnyWordSpecLike with
         maxGap = Some(maxGap), // elements with longer gap will put put to next aggregator
         maxDuration = None,
         currentTimeMs = schedulerTimeMs,
-        interval = 1.milli)
+        interval = 1.second)
       .buffer(1, OverflowStrategy.backpressure)
       .runWith(Sink.collection)
 
@@ -186,7 +276,7 @@ class AggregateWithTimeBoundaryAndSimulatedTimeSpec extends AnyWordSpecLike with
     p.sendNext(7)
     p.sendComplete()
 
-    Await.result(result, 10.seconds) should be(Seq(Seq(1, 2), Seq(3, 4), Seq(5, 6, 7)))
+    Await.result(result, 30.seconds) should be(Seq(Seq(1, 2), Seq(3, 4), Seq(5, 6, 7)))
 
   }
 
@@ -209,7 +299,7 @@ class AggregateWithTimeBoundaryAndSimulatedTimeSpec extends AnyWordSpecLike with
         maxGap = None,
         maxDuration = Some(maxDuration), // elements with longer gap will put put to next aggregator
         currentTimeMs = schedulerTimeMs,
-        interval = 1.milli)
+        interval = 1.second)
       .buffer(1, OverflowStrategy.backpressure)
       .runWith(Sink.collection)
 
@@ -227,7 +317,7 @@ class AggregateWithTimeBoundaryAndSimulatedTimeSpec extends AnyWordSpecLike with
     p.sendNext(7)
     p.sendComplete()
 
-    Await.result(result, 10.seconds) should be(Seq(Seq(1, 2, 3, 4), Seq(5, 6, 7)))
+    Await.result(result, 30.seconds) should be(Seq(Seq(1, 2, 3, 4), Seq(5, 6, 7)))
 
   }
 
@@ -283,5 +373,29 @@ class AggregateWithTimeBoundaryAndSimulatedTimeSpec extends AnyWordSpecLike with
     // since there is no pending push from upstream, onUpstreamFinish will be triggered to emit the queue and pending aggregator
     downstream.request(2).expectNext(Seq(4, 5, 6), Seq(7)) // clean up the emit queue and complete downstream
     downstream.expectComplete()
+  }
+
+  "drop current aggregate when timer predicate throws and supervision is Resume" in {
+    implicit val actorSystem = createActorSystem("4")
+
+    val p = TestPublisher.probe[Int]()
+    val result = Source
+      .fromPublisher(p)
+      .aggregateWithBoundary(allocate = () => ListBuffer.empty[Int])(
+        aggregate = (buffer, i) => {
+          buffer += i
+          (buffer, false)
+        },
+        harvest = _.toSeq,
+        emitOnTimer = Some((((_: ListBuffer[Int]) => throw new RuntimeException("boom")), 1.second)))
+      .withAttributes(ActorAttributes.supervisionStrategy(Supervision.resumingDecider))
+      .runWith(Sink.collection)
+
+    p.sendNext(1)
+    timePasses(1.second)
+    p.sendNext(2)
+    p.sendComplete()
+
+    Await.result(result, 30.seconds) shouldBe Seq(Seq(2))
   }
 }

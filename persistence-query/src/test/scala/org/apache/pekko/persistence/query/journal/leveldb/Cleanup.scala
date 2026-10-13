@@ -17,7 +17,8 @@ import java.io.File
 
 import org.apache.commons.io.FileUtils
 
-import org.apache.pekko.testkit.PekkoSpec
+import org.apache.pekko
+import pekko.testkit.PekkoSpec
 
 trait Cleanup { this: PekkoSpec =>
   val storageLocations =

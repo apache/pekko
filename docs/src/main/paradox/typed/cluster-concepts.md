@@ -31,7 +31,7 @@ and membership state transitions.
 ### Gossip
 
 The cluster membership used in Pekko is based on Amazon's [Dynamo](https://www.allthingsdistributed.com/files/amazon-dynamo-sosp2007.pdf) system and
-particularly the approach taken in Basho's' [Riak](https://en.wikipedia.org/wiki/Riak) distributed database.
+particularly the approach taken in Basho's [Riak](https://en.wikipedia.org/wiki/Riak) distributed database.
 Cluster membership is communicated using a [Gossip Protocol](https://en.wikipedia.org/wiki/Gossip_protocol), where the current
 state of the cluster is gossiped randomly through the cluster, with preference to
 members that have not seen the latest version.
@@ -72,7 +72,7 @@ To be able to survive sudden abnormalities, such as garbage collection pauses an
 transient network failures the failure detector is easily @ref:[configurable](cluster.md#using-the-failure-detector)
 for tuning to your environments and needs.
 
-In a cluster each node is monitored by a few (default maximum 5) other nodes.
+In a cluster each node is monitored by a few (default maximum 9) other nodes.
 The nodes to monitor are selected from neighbors in a hashed ordered node ring.
 This is to increase the likelihood to monitor across racks and data centers, but the order
 is the same on all nodes, which ensures full coverage.
@@ -87,7 +87,7 @@ the cluster, after gossip dissemination, will consider it as `reachable`.
 
 <a id="quarantined"></a>
 If system messages cannot be delivered to a node it will be quarantined and then it
-cannot come back from `unreachable`. This can happen if the there are too many
+cannot come back from `unreachable`. This can happen if there are too many
 unacknowledged system messages (e.g. watch, Terminated, remote actor deployment,
 failures of actors supervised by remote parent). Then the node needs to be moved
 to the `down` or `removed` states (see @ref:[Cluster Membership Lifecycle](cluster-membership.md#membership-lifecycle))

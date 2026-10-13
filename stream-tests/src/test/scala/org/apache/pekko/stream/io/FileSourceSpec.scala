@@ -24,9 +24,10 @@ import scala.concurrent.duration._
 import com.google.common.jimfs.{ Configuration, Jimfs }
 
 import org.apache.pekko
-import pekko.actor.ActorSystem
+import pekko.actor.ActorRef
 import pekko.stream._
 import pekko.stream.IOResult._
+import pekko.stream.SystemMaterializer
 import pekko.stream.impl.{ PhasedFusingActorMaterializer, StreamSupervisor }
 import pekko.stream.impl.StreamSupervisor.Children
 import pekko.stream.io.FileSourceSpec.Settings
@@ -42,9 +43,6 @@ object FileSourceSpec {
 
 @nowarn
 class FileSourceSpec extends StreamSpec(UnboundedMailboxConfig) {
-
-  val settings = ActorMaterializerSettings(system).withDispatcher("pekko.actor.default-dispatcher")
-  implicit val materializer: Materializer = ActorMaterializer(settings)
 
   val fs = Jimfs.newFileSystem("FileSourceSpec", Configuration.unix())
 
@@ -83,6 +81,23 @@ class FileSourceSpec extends StreamSpec(UnboundedMailboxConfig) {
     w.close()
     f
   }
+
+  def fileSourceChildren(): Set[ActorRef] = {
+    SystemMaterializer(system).materializer
+      .asInstanceOf[PhasedFusingActorMaterializer]
+      .supervisor
+      .tell(StreamSupervisor.GetChildren, testActor)
+    expectMsgType[Children].children.filter(_.path.toString contains "fileSource").toSet
+  }
+
+  def expectNewFileSource(before: Set[ActorRef]): ActorRef =
+    awaitAssert {
+      val newChildren = fileSourceChildren().diff(before)
+      withClue(newChildren) {
+        newChildren.size shouldBe 1
+        newChildren.head
+      }
+    }
 
   "FileSource" must {
     "read contents from a file" in {
@@ -261,39 +276,32 @@ class FileSourceSpec extends StreamSpec(UnboundedMailboxConfig) {
     }
 
     "use dedicated blocking-io-dispatcher by default" in {
-      val sys = ActorSystem("dispatcher-testing", UnboundedMailboxConfig)
-      val materializer = ActorMaterializer()(sys)
-      try {
-        val p = FileIO.fromPath(manyLines).runWith(TestSink())(materializer)
+      val before = fileSourceChildren()
+      val p = FileIO.fromPath(manyLines).runWith(TestSink())
+      val ref = expectNewFileSource(before)
 
-        materializer
-          .asInstanceOf[PhasedFusingActorMaterializer]
-          .supervisor
-          .tell(StreamSupervisor.GetChildren, testActor)
-        val ref = expectMsgType[Children].children.find(_.path.toString contains "fileSource").get
-        try assertDispatcher(ref, ActorAttributes.IODispatcher.dispatcher)
-        finally p.cancel()
-      } finally shutdown(sys)
+      try assertDispatcher(ref, ActorAttributes.IODispatcher.dispatcher)
+      finally {
+        watch(ref)
+        p.cancel()
+        expectTerminated(ref)
+      }
     }
 
     "allow overriding the dispatcher using Attributes" in {
-      val sys = ActorSystem("dispatcher-testing", UnboundedMailboxConfig)
-      val materializer = ActorMaterializer()(sys)
+      val before = fileSourceChildren()
+      val p = FileIO
+        .fromPath(manyLines)
+        .addAttributes(ActorAttributes.dispatcher("pekko.actor.default-dispatcher"))
+        .runWith(TestSink())
+      val ref = expectNewFileSource(before)
 
-      try {
-        val p = FileIO
-          .fromPath(manyLines)
-          .addAttributes(ActorAttributes.dispatcher("pekko.actor.default-dispatcher"))
-          .runWith(TestSink())(materializer)
-
-        materializer
-          .asInstanceOf[PhasedFusingActorMaterializer]
-          .supervisor
-          .tell(StreamSupervisor.GetChildren, testActor)
-        val ref = expectMsgType[Children].children.find(_.path.toString contains "fileSource").get
-        try assertDispatcher(ref, "pekko.actor.default-dispatcher")
-        finally p.cancel()
-      } finally shutdown(sys)
+      try assertDispatcher(ref, "pekko.actor.default-dispatcher")
+      finally {
+        watch(ref)
+        p.cancel()
+        expectTerminated(ref)
+      }
     }
 
     "not signal onComplete more than once" in {

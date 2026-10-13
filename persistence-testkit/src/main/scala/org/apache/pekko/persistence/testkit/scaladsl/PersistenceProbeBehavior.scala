@@ -21,7 +21,8 @@ import pekko.actor.typed.Behavior
 import pekko.annotation.DoNotInherit
 import pekko.persistence.testkit.internal.PersistenceProbeImpl
 
-sealed trait PersistenceProbeBehavior[Command, State] {
+/** Not for user extension */
+@DoNotInherit sealed trait PersistenceProbeBehavior[Command, State] {
   val behavior: Behavior[Command]
   lazy val behaviorTestKit = BehaviorTestKit(behavior)
 

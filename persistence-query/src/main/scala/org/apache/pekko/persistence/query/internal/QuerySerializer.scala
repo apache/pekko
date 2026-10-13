@@ -62,14 +62,14 @@ import pekko.serialization.Serializers
   private val timestampOffsetSeparator = ';'
 
   override def manifest(o: AnyRef): String = o match {
-    case _: EventEnvelope[_] => EventEnvelopeManifest
+    case _: EventEnvelope[?] => EventEnvelopeManifest
     case offset: Offset      => toStorageRepresentation(offset)._2
     case _                   =>
       throw new IllegalArgumentException(s"Can't serialize object of type ${o.getClass} in [${getClass.getName}]")
   }
 
   override def toBinary(o: AnyRef): Array[Byte] = o match {
-    case env: EventEnvelope[_] =>
+    case env: EventEnvelope[?] =>
       val builder = QueryMessages.EventEnvelope.newBuilder()
 
       val (offset, offsetManifest) = toStorageRepresentation(env.offset)
@@ -85,6 +85,16 @@ import pekko.serialization.Serializers
 
       env.eventOption.foreach(event => builder.setEvent(payloadBuilder(event, serialization, log)))
       env.eventMetadata.foreach(meta => builder.setMetadata(payloadBuilder(meta, serialization, log)))
+
+      if (env.filtered)
+        builder.setFiltered(true)
+      if (env.source.nonEmpty)
+        builder.setSource(env.source)
+
+      if (env.tags.nonEmpty) {
+        import scala.jdk.CollectionConverters._
+        builder.addAllTags(env.tags.asJava)
+      }
 
       builder.build().toByteArray()
 
@@ -108,6 +118,15 @@ import pekko.serialization.Serializers
         if (env.hasMetadata) Option(deserializePayload(env.getMetadata, serialization))
         else None
 
+      val filtered = env.hasFiltered && env.getFiltered
+      val source = if (env.hasSource) env.getSource else ""
+      val tags =
+        if (env.getTagsList.isEmpty) Set.empty[String]
+        else {
+          import scala.jdk.CollectionConverters._
+          env.getTagsList.iterator.asScala.toSet
+        }
+
       new EventEnvelope(
         offset,
         env.getPersistenceId,
@@ -116,7 +135,10 @@ import pekko.serialization.Serializers
         env.getTimestamp,
         metaOption,
         env.getEntityType,
-        env.getSlice)
+        env.getSlice,
+        filtered,
+        source,
+        tags)
 
     case _ =>
       fromStorageRepresentation(new String(bytes, UTF_8), manifest)

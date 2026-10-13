@@ -40,18 +40,10 @@ public class ActorWithMDC extends AbstractActor {
     logger.setMDC(mdc);
 
     switch (log.level()) {
-      case 1:
-        logger.error(log.message);
-        break;
-      case 2:
-        logger.warning(log.message);
-        break;
-      case 3:
-        logger.info(log.message);
-        break;
-      default:
-        logger.debug(log.message);
-        break;
+      case 1 -> logger.error(log.message);
+      case 2 -> logger.warning(log.message);
+      case 3 -> logger.info(log.message);
+      default -> logger.debug(log.message);
     }
 
     logger.clearMDC();

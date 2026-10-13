@@ -23,6 +23,8 @@ import scala.jdk.CollectionConverters._
 
 import org.apache.pekko
 import pekko.actor.ExtendedActorSystem
+import pekko.actor.typed.ActorRefResolver
+import pekko.actor.typed.scaladsl.adapter.ClassicActorSystemOps
 import pekko.annotation.InternalApi
 import pekko.persistence.typed.PersistenceId
 import pekko.persistence.typed.ReplicaId
@@ -74,6 +76,9 @@ import pekko.serialization.{ BaseSerializer, SerializerWithStringManifest }
     with BaseSerializer {
 
   private val wrappedSupport = new WrappedPayloadSupport(system)
+  // lazy because Serializers are initialized early on. `toTyped` might then try to
+  // initialize the classic ActorSystemAdapter extension.
+  private lazy val resolver = ActorRefResolver(system.toTyped)
 
   private val CrdtCounterManifest = "AA"
   private val CrdtCounterUpdatedManifest = "AB"
@@ -92,11 +97,11 @@ import pekko.serialization.{ BaseSerializer, SerializerWithStringManifest }
   private val PublishedEventManifest = "PA"
 
   def manifest(o: AnyRef) = o match {
-    case _: ORSet[_]                  => ORSetManifest
-    case _: ORSet.AddDeltaOp[_]       => ORSetAddManifest
-    case _: ORSet.RemoveDeltaOp[_]    => ORSetRemoveManifest
-    case _: ORSet.DeltaGroup[_]       => ORSetDeltaGroupManifest
-    case _: ORSet.FullStateDeltaOp[_] => ORSetFullManifest
+    case _: ORSet[?]                  => ORSetManifest
+    case _: ORSet.AddDeltaOp[?]       => ORSetAddManifest
+    case _: ORSet.RemoveDeltaOp[?]    => ORSetRemoveManifest
+    case _: ORSet.DeltaGroup[?]       => ORSetDeltaGroupManifest
+    case _: ORSet.FullStateDeltaOp[?] => ORSetFullManifest
 
     case _: Counter         => CrdtCounterManifest
     case _: Counter.Updated => CrdtCounterUpdatedManifest
@@ -117,11 +122,11 @@ import pekko.serialization.{ BaseSerializer, SerializerWithStringManifest }
 
     case m: VersionVector => versionVectorToProto(m).toByteArray
 
-    case m: ORSet[_]                  => orsetToProto(m).toByteArray
-    case m: ORSet.AddDeltaOp[_]       => orsetToProto(m.underlying).toByteArray
-    case m: ORSet.RemoveDeltaOp[_]    => orsetToProto(m.underlying).toByteArray
-    case m: ORSet.DeltaGroup[_]       => orsetDeltaGroupToProto(m).toByteArray
-    case m: ORSet.FullStateDeltaOp[_] => orsetToProto(m.underlying).toByteArray
+    case m: ORSet[?]                  => orsetToProto(m).toByteArray
+    case m: ORSet.AddDeltaOp[?]       => orsetToProto(m.underlying).toByteArray
+    case m: ORSet.RemoveDeltaOp[?]    => orsetToProto(m.underlying).toByteArray
+    case m: ORSet.DeltaGroup[?]       => orsetDeltaGroupToProto(m).toByteArray
+    case m: ORSet.FullStateDeltaOp[?] => orsetToProto(m.underlying).toByteArray
 
     case m: Counter         => counterToProtoByteArray(m)
     case m: Counter.Updated => counterUpdatedToProtoBufByteArray(m)
@@ -163,9 +168,7 @@ import pekko.serialization.{ BaseSerializer, SerializerWithStringManifest }
       .setPayload(wrappedSupport.payloadBuilder(impl.payload))
       .setTimestamp(impl.timestamp)
 
-    (impl.replicatedMetaData match {
-      case None =>
-        builder
+    impl.replicatedMetaData match {
       case Some(m) =>
         builder.setMetadata(
           ReplicatedEventSourcing.ReplicatedPublishedEventMetaData
@@ -173,7 +176,15 @@ import pekko.serialization.{ BaseSerializer, SerializerWithStringManifest }
             .setReplicaId(m.replicaId.id)
             .setVersionVector(versionVectorToProto(m.version))
             .build())
-    }).build().toByteArray
+      case None =>
+    }
+
+    impl.replyTo match {
+      case Some(ref) => builder.setReplyTo(resolver.toSerializationFormat(ref))
+      case None      =>
+    }
+
+    builder.build().toByteArray
   }
 
   def publishedEventFromBinary(bytes: Array[Byte]): PublishedEventImpl = {
@@ -189,7 +200,9 @@ import pekko.serialization.{ BaseSerializer, SerializerWithStringManifest }
           new ReplicatedPublishedEventMetaData(
             ReplicaId(protoMeta.getReplicaId),
             versionVectorFromProto(protoMeta.getVersionVector)))
-      } else None)
+      } else None,
+      if (!p.hasReplyTo) None
+      else Some(resolver.resolveActorRef(p.getReplyTo)))
   }
 
   def counterFromBinary(bytes: Array[Byte]): Counter =
@@ -212,7 +225,7 @@ import pekko.serialization.{ BaseSerializer, SerializerWithStringManifest }
       .build()
       .toByteArray
 
-  def orsetToProto(orset: ORSet[_]): ReplicatedEventSourcing.ORSet =
+  def orsetToProto(orset: ORSet[?]): ReplicatedEventSourcing.ORSet =
     orsetToProtoImpl(orset.asInstanceOf[ORSet[Any]])
 
   private def orsetToProtoImpl(orset: ORSet[Any]): ReplicatedEventSourcing.ORSet = {
@@ -238,7 +251,7 @@ import pekko.serialization.{ BaseSerializer, SerializerWithStringManifest }
         otherElementsMap = otherElementsMap.updated(enclosedMsg, other)
     }
 
-    def addDots(elements: ArrayList[_]): Unit = {
+    def addDots(elements: ArrayList[?]): Unit = {
       // add corresponding dots in same order
       val iter = elements.iterator
       while (iter.hasNext) {
@@ -313,8 +326,8 @@ import pekko.serialization.{ BaseSerializer, SerializerWithStringManifest }
   private def orsetFullFromBinary(bytes: Array[Byte]): ORSet.FullStateDeltaOp[Any] =
     new ORSet.FullStateDeltaOp(orsetFromProto(ReplicatedEventSourcing.ORSet.parseFrom(bytes)))
 
-  private def orsetDeltaGroupToProto(deltaGroup: ORSet.DeltaGroup[_]): ReplicatedEventSourcing.ORSetDeltaGroup = {
-    def createEntry(opType: ReplicatedEventSourcing.ORSetDeltaOp, u: ORSet[_]) = {
+  private def orsetDeltaGroupToProto(deltaGroup: ORSet.DeltaGroup[?]): ReplicatedEventSourcing.ORSetDeltaGroup = {
+    def createEntry(opType: ReplicatedEventSourcing.ORSetDeltaOp, u: ORSet[?]) = {
       ReplicatedEventSourcing.ORSetDeltaGroup.Entry.newBuilder().setOperation(opType).setUnderlying(orsetToProto(u))
     }
 
@@ -343,7 +356,7 @@ import pekko.serialization.{ BaseSerializer, SerializerWithStringManifest }
         else if (entry.getOperation == ReplicatedEventSourcing.ORSetDeltaOp.Full)
           ORSet.FullStateDeltaOp(orsetFromProto(entry.getUnderlying))
         else
-          throw new NotSerializableException(s"Unknow ORSet delta operation ${entry.getOperation}")
+          throw new NotSerializableException(s"Unknown ORSet delta operation ${entry.getOperation}")
       }.toVector
     ORSet.DeltaGroup(ops)
   }

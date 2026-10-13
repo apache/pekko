@@ -25,12 +25,17 @@ import com.typesafe.config.ConfigFactory
 
 object PersistentActorRecoveryTimeoutSpec {
   val journalId = "persistent-actor-recovery-timeout-spec"
+  val receiveTimeoutJournalId = "persistent-actor-recovery-timeout-spec-receive-timeout"
+  val receiveTimeoutJournalPluginId = "pekko.persistence.journal.stepping-inmem-receive-timeout"
 
   def config =
     SteppingInmemJournal
       .config(PersistentActorRecoveryTimeoutSpec.journalId)
-      .withFallback(ConfigFactory.parseString("""
-          |pekko.persistence.journal.stepping-inmem.recovery-event-timeout=1s
+      .withFallback(ConfigFactory.parseString(s"""
+          |pekko.persistence.journal.stepping-inmem.recovery-event-timeout=3s
+          |$receiveTimeoutJournalPluginId.class=${classOf[SteppingInmemJournal].getName}
+          |$receiveTimeoutJournalPluginId.instance-id="$receiveTimeoutJournalId"
+          |$receiveTimeoutJournalPluginId.recovery-event-timeout=500ms
         """.stripMargin))
       .withFallback(PersistenceSpec.config("stepping-inmem", "PersistentActorRecoveryTimeoutSpec"))
 
@@ -52,6 +57,8 @@ object PersistentActorRecoveryTimeoutSpec {
   class TestReceiveTimeoutActor(receiveTimeout: FiniteDuration, probe: ActorRef)
       extends NamedPersistentActor("recovery-timeout-actor-2")
       with ActorLogging {
+
+    override def journalPluginId: String = receiveTimeoutJournalPluginId
 
     override def preStart(): Unit = {
       context.setReceiveTimeout(receiveTimeout)
@@ -81,7 +88,7 @@ class PersistentActorRecoveryTimeoutSpec
     extends PekkoSpec(PersistentActorRecoveryTimeoutSpec.config)
     with ImplicitSender {
 
-  import PersistentActorRecoveryTimeoutSpec.journalId
+  import PersistentActorRecoveryTimeoutSpec.{ journalId, receiveTimeoutJournalId }
 
   "The recovery timeout" should {
 
@@ -111,7 +118,8 @@ class PersistentActorRecoveryTimeoutSpec
       // initial read highest
       SteppingInmemJournal.step(journal)
 
-      probe.expectMsgType[Failure].cause shouldBe a[RecoveryTimedOut]
+      // recovery-event-timeout is set to 3s; allow extra headroom for CI
+      probe.expectMsgType[Failure](10.seconds).cause shouldBe a[RecoveryTimedOut]
       expectTerminated(replaying)
 
       // avoid having it stuck in the next test from the
@@ -120,17 +128,17 @@ class PersistentActorRecoveryTimeoutSpec
     }
 
     "should not interfere with receive timeouts" in {
-      val timeout = 42.days
-
-      val probe = TestProbe()
+      val probe1 = TestProbe()
       val persisting =
-        system.actorOf(Props(classOf[PersistentActorRecoveryTimeoutSpec.TestReceiveTimeoutActor], timeout, probe.ref))
+        system.actorOf(
+          Props(classOf[PersistentActorRecoveryTimeoutSpec.TestReceiveTimeoutActor], 42.days, probe1.ref))
 
-      awaitAssert(SteppingInmemJournal.getRef(journalId), 3.seconds)
-      val journal = SteppingInmemJournal.getRef(journalId)
+      awaitAssert(SteppingInmemJournal.getRef(receiveTimeoutJournalId), 3.seconds)
+      val journal = SteppingInmemJournal.getRef(receiveTimeoutJournalId)
 
       // initial read highest
       SteppingInmemJournal.step(journal)
+      probe1.expectMsg(42.days)
 
       persisting ! "A"
       SteppingInmemJournal.step(journal)
@@ -140,19 +148,25 @@ class PersistentActorRecoveryTimeoutSpec
       system.stop(persisting)
       expectTerminated(persisting)
 
-      // now replay, but don't give the journal any tokens to replay events
-      // so that we cause the timeout to trigger
-      system.actorOf(Props(classOf[PersistentActorRecoveryTimeoutSpec.TestReceiveTimeoutActor], timeout, probe.ref))
+      // now replay with a short receive timeout to verify it doesn't trigger recovery timeout
+      val probe2 = TestProbe()
+      val timeout = 20.millis
+      val replaying =
+        system.actorOf(Props(classOf[PersistentActorRecoveryTimeoutSpec.TestReceiveTimeoutActor], timeout, probe2.ref))
 
+      probe2.expectNoMessage(50.millis) // longer than the receive timeout
       // initial read highest
       SteppingInmemJournal.step(journal)
+      probe2.expectNoMessage(100.millis) // receive timeout should not trigger recovery timeout
 
-      // read journal
+      // but waiting longer without SteppingInmemJournal.step will be recovery timeout
+      probe2.expectMsgType[Failure].cause shouldBe a[RecoveryTimedOut]
+      watch(replaying)
+      expectTerminated(replaying)
+
+      // avoid having it stuck in the next test from the
+      // last read request above
       SteppingInmemJournal.step(journal)
-
-      // we should get initial receive timeout back from actor when replay completes
-      probe.expectMsg(timeout)
-
     }
 
   }

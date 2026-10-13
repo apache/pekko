@@ -368,6 +368,23 @@ class ActorSelectionSpec extends PekkoSpec with DefaultTimeout {
       d.recipient.path.toStringWithoutAddress should ===("/user/missing")
     }
 
+    "deliver a wildcard selection promptly even when the pattern would make a regex backtrack" in {
+      val creator = TestProbe()
+      implicit def self: ActorRef = creator.ref
+      val top = system.actorOf(p, "backtrack")
+      // a 36 character child name, the length at which the old regex matching took tens of
+      // seconds for a 26 character pattern
+      val childName = "a" * 36
+      Await.result((top ? Create(childName)).mapTo[ActorRef], timeout.duration)
+
+      val probe = TestProbe()
+      val pattern = ("*a" * 12) + "*b" // cannot match: the name has no 'b'
+      val started = System.nanoTime()
+      system.actorSelection(s"/user/backtrack/$pattern").tell(Identify(4), probe.ref)
+      probe.expectMsg(3.seconds, ActorIdentity(4, None))
+      (System.nanoTime() - started) should be < 3.seconds.toNanos
+    }
+
     "identify actors with wildcard selection correctly" in {
       val creator = TestProbe()
       implicit def self: ActorRef = creator.ref

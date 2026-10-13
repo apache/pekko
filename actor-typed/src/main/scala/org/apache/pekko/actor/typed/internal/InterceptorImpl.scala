@@ -56,24 +56,24 @@ private[pekko] final class InterceptorImpl[O, I](
   import BehaviorInterceptor._
 
   private val preStartTarget: PreStartTarget[I] = new PreStartTarget[I] {
-    override def start(ctx: TypedActorContext[_]): Behavior[I] = {
+    override def start(ctx: TypedActorContext[?]): Behavior[I] = {
       Behavior.start[I](nestedBehavior, ctx.asInstanceOf[TypedActorContext[I]])
     }
     override def toString: String = s"PreStartTarget($nestedBehavior)"
   }
 
   private val receiveTarget: ReceiveTarget[I] = new ReceiveTarget[I] {
-    override def apply(ctx: TypedActorContext[_], msg: I): Behavior[I] =
+    override def apply(ctx: TypedActorContext[?], msg: I): Behavior[I] =
       Behavior.interpretMessage(nestedBehavior, ctx.asInstanceOf[TypedActorContext[I]], msg)
 
-    override def signalRestart(ctx: TypedActorContext[_]): Unit =
+    override def signalRestart(ctx: TypedActorContext[?]): Unit =
       Behavior.interpretSignal(nestedBehavior, ctx.asInstanceOf[TypedActorContext[I]], PreRestart)
 
     override def toString: String = s"ReceiveTarget($nestedBehavior)"
   }
 
   private val signalTarget = new SignalTarget[I] {
-    override def apply(ctx: TypedActorContext[_], signal: Signal): Behavior[I] =
+    override def apply(ctx: TypedActorContext[?], signal: Signal): Behavior[I] =
       Behavior.interpretSignal(nestedBehavior, ctx.asInstanceOf[TypedActorContext[I]], signal)
     override def toString: String = s"SignalTarget($nestedBehavior)"
   }
@@ -111,7 +111,7 @@ private[pekko] final class InterceptorImpl[O, I](
     } else {
       // returned behavior could be nested in setups, so we need to start before we deduplicate
       val duplicateInterceptExists = Behavior.existsInStack(started) {
-        case i: InterceptorImpl[_, _]
+        case i: InterceptorImpl[?, ?]
             if interceptor.isSame(i.interceptor.asInstanceOf[BehaviorInterceptor[Any, Any]]) =>
           true
         case _ => false

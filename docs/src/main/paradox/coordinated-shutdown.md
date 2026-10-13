@@ -55,7 +55,7 @@ Java
 
 In the above example, it may be more convenient to simply stop the actor when it's done shutting down, rather than send back a done message,
 and for the shutdown task to not complete until the actor is terminated. A convenience method is provided that adds a task that sends
-a message to the actor and then watches its termination (there is currently no corresponding functionality for the new actors API @github[see #29056](#29056)):
+a message to the actor and then watches its termination (there is currently no corresponding functionality for the new actors API):
 
 Scala
 :  @@snip [ActorDocSpec.scala](/docs/src/test/scala/docs/actor/ActorDocSpec.scala) { #coordinated-shutdown-addActorTerminationTask }

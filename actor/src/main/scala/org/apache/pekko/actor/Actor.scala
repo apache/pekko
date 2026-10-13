@@ -18,11 +18,12 @@ import java.util.Optional
 import scala.annotation.nowarn
 import scala.annotation.tailrec
 import scala.beans.BeanProperty
+import scala.jdk.DurationConverters._
 import scala.util.control.NoStackTrace
 
 import org.apache.pekko
 import pekko.PekkoException
-import pekko.annotation.InternalApi
+import pekko.annotation.{ DoNotInherit, InternalApi }
 import pekko.event.LoggingAdapter
 
 /**
@@ -144,19 +145,17 @@ private[pekko] final case class AddressTerminated(address: Address)
     with PossiblyHarmful
     with DeadLetterSuppression
 
-abstract class ReceiveTimeout extends PossiblyHarmful
-
 /**
- * When using ActorContext.setReceiveTimeout, the singleton instance of ReceiveTimeout will be sent
- * to the Actor when there hasn't been any message for that long.
+ * When using ActorContext.setReceiveTimeout, a ReceiveTimeout message carrying the configured
+ * timeout duration will be sent to the Actor when there hasn't been any message for that long.
  */
 @SerialVersionUID(1L)
-case object ReceiveTimeout extends ReceiveTimeout {
+final case class ReceiveTimeout(timeout: scala.concurrent.duration.FiniteDuration) extends PossiblyHarmful {
 
   /**
-   * Java API: get the singleton instance
+   * Java API: get the timeout duration
    */
-  def getInstance = this
+  def getTimeout: java.time.Duration = timeout.toJava
 }
 
 /**
@@ -304,13 +303,15 @@ final case class UnhandledMessage(
     with AllDeadLetters
 
 /**
- * Superseeded by [[pekko.pattern.StatusReply]], prefer that when possible.
+ * Superseded by [[pekko.pattern.StatusReply]], prefer that when possible.
  *
  * Classes for passing status back to the sender.
  * Used for internal ACKing protocol. But exposed as utility class for user-specific ACKing protocols as well.
  */
 object Status {
-  sealed trait Status extends Serializable
+
+  /** Not for user extension */
+  @DoNotInherit sealed trait Status extends Serializable
 
   /**
    * This class/message type is preferably used to indicate success of some operation performed.
@@ -339,7 +340,7 @@ object Status {
  * }}}
  */
 trait ActorLogging { this: Actor =>
-  private var _log: LoggingAdapter = _
+  private var _log: LoggingAdapter = null
 
   def log: LoggingAdapter = {
     // only used in Actor, i.e. thread safe
@@ -353,7 +354,7 @@ trait ActorLogging { this: Actor =>
 /**
  * Scala API: Mix in DiagnosticActorLogging into your Actor to easily obtain a reference to a logger with MDC support,
  * which is available under the name "log".
- * In the example bellow "the one who knocks" will be available under the key "iam" for using it in the logback pattern.
+ * In the example below "the one who knocks" will be available under the key "iam" for using it in the logback pattern.
  *
  * {{{
  * class MyActor extends Actor with DiagnosticActorLogging {
@@ -651,7 +652,7 @@ trait Actor {
    * <p/>
    * Is called when a message isn't handled by the current behavior of the actor
    * by default it fails with either a [[pekko.actor.DeathPactException]] (in
-   * case of an unhandled [[pekko.actor.Terminated]] message) or publishes an [[pekko.actor.UnhandledMessage]]
+   * case of an unhandled [[pekko.actor.Terminated]] message) or publishes a [[pekko.actor.UnhandledMessage]]
    * to the actor's system's [[pekko.event.EventStream]]
    */
   def unhandled(message: Any): Unit = {

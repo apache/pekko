@@ -7,7 +7,7 @@ A `Sink` that materializes this `Sink` itself as a `Source`, the returning `Sour
 ## Signature
 
 @apidoc[Sink.source](Sink$) { java="#source()" }
-@apidoc[Sink.source](Sink$) { scala="#source()" }
+@apidoc[Sink.source](Sink$) { scala="#source[T]:org.apache.pekko.stream.scaladsl.Sink[T,org.apache.pekko.stream.scaladsl.Source[T,org.apache.pekko.NotUsed]]" }
 
 
 ## Description

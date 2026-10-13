@@ -20,7 +20,7 @@ package org.apache.pekko.remote.artery.compress
  */
 private[remote] final case class DecompressionTable[T](originUid: Long, version: Byte, table: Array[T]) {
 
-  private[this] val length = table.length
+  private val length = table.length
 
   def get(idx: Int): T = {
     if (idx >= length)
@@ -44,7 +44,7 @@ private[remote] object DecompressionTable {
 
   val DisabledVersion: Byte = -1
 
-  private[this] val _empty = DecompressionTable(0, 0, Array.empty[Any])
+  private val _empty = DecompressionTable(0, 0, Array.empty[Any])
   def empty[T] = _empty.asInstanceOf[DecompressionTable[T]]
   def disabled[T] = empty[T].copy(version = DisabledVersion)
 }

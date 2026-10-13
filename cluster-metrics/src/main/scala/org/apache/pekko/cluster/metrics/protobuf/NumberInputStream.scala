@@ -45,7 +45,7 @@ private[protobuf] class NumberInputStream(
    * @return the Class object described by the ObjectStreamClass
    * @throws ClassNotFoundException if the Class cannot be found (or is rejected)
    */
-  override protected def resolveClass(objectStreamClass: ObjectStreamClass): Class[_] = {
+  override protected def resolveClass(objectStreamClass: ObjectStreamClass): Class[?] = {
     val clazz = super.resolveClass(objectStreamClass)
     if (clazz.isPrimitive() || (clazz.isArray() && clazz.getComponentType.isPrimitive) ||
       classOf[Number].isAssignableFrom(clazz) || clazz.getPackage.getName == "java.math") {

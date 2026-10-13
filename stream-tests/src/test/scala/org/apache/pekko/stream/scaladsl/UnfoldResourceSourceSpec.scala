@@ -35,7 +35,7 @@ import pekko.stream.testkit.StreamSpec
 import pekko.stream.testkit.TestSubscriber
 import pekko.stream.testkit.Utils._
 import pekko.stream.testkit.scaladsl.TestSink
-import pekko.testkit.EventFilter
+import pekko.testkit.{ EventFilter, TestProbe }
 import pekko.util.ByteString
 
 class UnfoldResourceSourceSpec extends StreamSpec(UnboundedMailboxConfig) {
@@ -196,18 +196,63 @@ class UnfoldResourceSourceSpec extends StreamSpec(UnboundedMailboxConfig) {
     "fail when close throws exception" in {
       val out = TestSubscriber.probe[String]()
 
-      EventFilter[TE](occurrences = 1).intercept {
-        Source
-          .unfoldResource[String, Iterator[String]](
-            () => Iterator("a"),
-            it => if (it.hasNext) Some(it.next()) else None,
-            _ => throw TE(""))
-          .runWith(Sink.fromSubscriber(out))
+      Source
+        .unfoldResource[String, Iterator[String]](
+          () => Iterator("a"),
+          it => if (it.hasNext) Some(it.next()) else None,
+          _ => throw TE(""))
+        .runWith(Sink.fromSubscriber(out))
 
-        out.request(61)
-        out.expectNext("a")
-        out.expectError(TE(""))
-      }
+      out.request(61)
+      out.expectNext("a")
+      out.expectError(TE(""))
+    }
+
+    "not close the resource twice when close fails during completion" in {
+      val closedCounter = new AtomicInteger(0)
+      val closeProbe = TestProbe()
+      val probe = Source
+        .unfoldResource[Int, Iterator[Int]](
+          () => Iterator.single(1),
+          it => if (it.hasNext) Some(it.next()) else None,
+          { _ =>
+            val closeCount = closedCounter.incrementAndGet()
+            closeProbe.ref ! closeCount
+            throw TE("close failed")
+          })
+        .runWith(TestSink[Int]())
+
+      probe.request(1)
+      probe.expectNext(1)
+      probe.request(1)
+      probe.expectError(TE("close failed"))
+
+      closeProbe.expectMsg(1)
+      closeProbe.expectNoMessage(200.millis)
+      closedCounter.get() should ===(1)
+    }
+
+    "not close the resource twice when close fails during downstream cancel" in {
+      val closedCounter = new AtomicInteger(0)
+      val closeProbe = TestProbe()
+      val probe = Source
+        .unfoldResource[Int, Iterator[Int]](
+          () => Iterator.continually(1),
+          it => Some(it.next()),
+          { _ =>
+            val closeCount = closedCounter.incrementAndGet()
+            closeProbe.ref ! closeCount
+            throw TE("close failed")
+          })
+        .runWith(TestSink[Int]())
+
+      probe.request(1)
+      probe.expectNext(1)
+      probe.cancel()
+      closeProbe.expectMsg(1)
+
+      closeProbe.expectNoMessage(200.millis)
+      closedCounter.get() should ===(1)
     }
 
     // issue #24924

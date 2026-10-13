@@ -13,7 +13,7 @@
 
 package jdocs.stream;
 
-import java.util.Arrays;
+import java.util.List;
 import jdocs.AbstractJavaTest;
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.actor.ActorSystem;
@@ -21,20 +21,20 @@ import org.apache.pekko.stream.*;
 import org.apache.pekko.stream.javadsl.*;
 import org.apache.pekko.stream.scaladsl.MergePreferred.MergePreferredShape;
 import org.apache.pekko.testkit.javadsl.TestKit;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 public class GraphCyclesDocTest extends AbstractJavaTest {
 
   static ActorSystem system;
 
-  @BeforeClass
+  @BeforeAll
   public static void setup() {
     system = ActorSystem.create("GraphCyclesDocTest");
   }
 
-  @AfterClass
+  @AfterAll
   public static void tearDown() {
     TestKit.shutdownActorSystem(system);
     system = null;
@@ -42,7 +42,7 @@ public class GraphCyclesDocTest extends AbstractJavaTest {
 
   static final SilenceSystemOut.System System = SilenceSystemOut.get();
 
-  final Source<Integer, NotUsed> source = Source.from(Arrays.asList(1, 2, 3, 4, 5));
+  final Source<Integer, NotUsed> source = Source.from(List.of(1, 2, 3, 4, 5));
 
   @Test
   public void demonstrateDeadlockedCycle() {

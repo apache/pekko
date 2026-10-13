@@ -14,7 +14,6 @@
 package org.apache.pekko.actor
 
 import scala.annotation.varargs
-import scala.collection.immutable
 import scala.reflect.ClassTag
 
 import org.apache.pekko
@@ -87,13 +86,13 @@ object Props extends AbstractProps {
   def apply[T <: Actor: ClassTag](creator: => T): Props =
     mkProps(implicitly[ClassTag[T]].runtimeClass, () => creator)
 
-  private def mkProps(classOfActor: Class[_], ctor: () => Actor): Props =
+  private def mkProps(classOfActor: Class[?], ctor: () => Actor): Props =
     Props(classOf[TypedCreatorFunctionConsumer], classOfActor, ctor)
 
   /**
    * Scala API: create a Props given a class and its constructor arguments.
    */
-  def apply(clazz: Class[_], args: Any*): Props = apply(defaultDeploy, clazz, args.toList)
+  def apply(clazz: Class[?], args: Any*): Props = apply(defaultDeploy, clazz, args.toList)
 
 }
 
@@ -121,17 +120,17 @@ object Props extends AbstractProps {
  * }}}
  */
 @SerialVersionUID(2L)
-final case class Props(deploy: Deploy, clazz: Class[_], args: immutable.Seq[Any]) {
+final case class Props(deploy: Deploy, clazz: Class[?], args: Seq[Any]) {
 
   Props.validate(clazz)
 
   // derived property, does not need to be serialized
   @transient
-  private[this] var _producer: IndirectActorProducer = _
+  private var _producer: IndirectActorProducer = null
 
   // derived property, does not need to be serialized
   @transient
-  private[this] var _cachedActorClass: Class[_ <: Actor] = _
+  private var _cachedActorClass: Class[? <: Actor] = null
 
   /**
    * INTERNAL API
@@ -143,7 +142,7 @@ final case class Props(deploy: Deploy, clazz: Class[_], args: immutable.Seq[Any]
     _producer
   }
 
-  private[this] def cachedActorClass: Class[_ <: Actor] = {
+  private def cachedActorClass: Class[? <: Actor] = {
     if (_cachedActorClass eq null)
       _cachedActorClass = producer.actorClass
 
@@ -223,7 +222,7 @@ final case class Props(deploy: Deploy, clazz: Class[_], args: immutable.Seq[Any]
    * the actor system to select special dispatchers or mailboxes in case
    * dependencies are encoded in the actor type.
    */
-  def actorClass(): Class[_ <: Actor] = cachedActorClass
+  def actorClass(): Class[? <: Actor] = cachedActorClass
 
   /**
    * INTERNAL API

@@ -11,7 +11,7 @@ Counts all incoming elements until upstream terminates.
 
 ## Description
 
-Counts values emitted from the stream, the count is available through a @scala[`Future`] @java[`CompletionStage`] or
+Counts values emitted from the stream, the count is available through a @scala[`Future`] @java[`CompletionStage`]
 which completes when the stream completes. 
 
 ## Example

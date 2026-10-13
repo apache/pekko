@@ -22,15 +22,15 @@ import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.stream.javadsl.Sink;
 import org.apache.pekko.stream.javadsl.Source;
 import org.apache.pekko.testkit.javadsl.TestKit;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 public class RecipeSourceFromFunction extends RecipeTest {
   static ActorSystem system;
 
-  @BeforeClass
+  @BeforeAll
   public static void setup() {
     system =
         ActorSystem.create(
@@ -40,7 +40,7 @@ public class RecipeSourceFromFunction extends RecipeTest {
                     + "pekko.loggers = [org.apache.pekko.testkit.TestEventListener]"));
   }
 
-  @AfterClass
+  @AfterAll
   public static void tearDown() {
     TestKit.shutdownActorSystem(system);
     system = null;
@@ -66,7 +66,7 @@ public class RecipeSourceFromFunction extends RecipeTest {
                 .toCompletableFuture()
                 .get(3, TimeUnit.SECONDS);
 
-        Assert.assertEquals(2, result.size());
+        Assertions.assertEquals(2, result.size());
       }
     };
   }

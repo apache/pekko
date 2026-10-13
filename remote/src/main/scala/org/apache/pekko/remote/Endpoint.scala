@@ -15,6 +15,7 @@ package org.apache.pekko.remote
 
 import java.io.NotSerializableException
 import java.util.concurrent.{ ConcurrentHashMap, TimeoutException }
+import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.locks.LockSupport
 
 import scala.annotation.nowarn
@@ -72,6 +73,16 @@ private[remote] class DefaultMessageDispatcher(
 
   private val remoteDaemon = provider.remoteDaemon
 
+  /**
+   * <p>
+   *   Opentelemetry Java Instrumentation relies on this method so avoid changing it. The agent makes the
+   *   received context current while the message is delivered. `EndpointReader.dispatchMessage` reads like
+   *   the natural hook but is inlined away by the compiler, so this is the method that is matched.
+   *   See https://github.com/apache/pekko/issues/3472
+   * </p>
+   */
+  // see https://github.com/open-telemetry/opentelemetry-java-instrumentation/pull/19823
+  @noinline // Not inlined so that the agent can match the method in the bytecode
   override def dispatch(
       recipient: InternalActorRef,
       recipientAddress: Address,
@@ -81,7 +92,7 @@ private[remote] class DefaultMessageDispatcher(
     import provider.remoteSettings._
 
     lazy val payload: AnyRef = MessageSerializer.deserialize(system, serializedMessage)
-    def payloadClass: Class[_] = if (payload eq null) null else payload.getClass
+    def payloadClass: Class[?] = if (payload eq null) null else payload.getClass
     val sender: ActorRef = senderOption.getOrElse(system.deadLetters)
     val originalReceiver = recipient.path
 
@@ -108,7 +119,8 @@ private[remote] class DefaultMessageDispatcher(
         logMessageReceived("local message")
         payload match {
           case sel: ActorSelectionMessage =>
-            if (UntrustedMode && (!TrustedSelectionPaths.contains(sel.elements.mkString("/", "/", "")) ||
+            if (UntrustedMode &&
+              (!TrustedSelectionPaths.contains(sel.elements.mkString("/", "/", "")) ||
               sel.msg.isInstanceOf[PossiblyHarmful] || l != provider.rootGuardian))
               log.debug(
                 LogMarker.Security,
@@ -223,8 +235,11 @@ private[remote] class OversizedPayloadException(msg: String) extends EndpointExc
  */
 private[remote] object ReliableDeliverySupervisor {
   case object Ungate
+  case object Reconnect
   case object AttemptSysMsgRedelivery
   final case class GotUid(uid: Int, remoteAddres: Address)
+  @nowarn("msg=deprecated")
+  final case class AckFromReader(readerUid: Int, ack: Ack) extends NoSerializationVerificationNeeded
 
   case object IsIdle
   case object Idle
@@ -305,6 +320,11 @@ private[remote] class ReliableDeliverySupervisor(
     bailoutAt = None
   }
 
+  private def prepareForReconnect(): Unit = {
+    currentHandle = None
+    uidConfirmed = false
+  }
+
   reset()
 
   def nextSeq(): SeqNo = {
@@ -362,25 +382,9 @@ private[remote] class ReliableDeliverySupervisor(
     case IsIdle  => // Do not reply, we will Terminate soon, or send a GotUid
     case s: Send =>
       handleSend(s)
-    case ack: Ack =>
-      // If we are not sure about the UID just ignore the ack. Ignoring is fine.
-      if (uidConfirmed) {
-        try resendBuffer = resendBuffer.acknowledge(ack)
-        catch {
-          case NonFatal(e) =>
-            throw new HopelessAssociation(
-              localAddress,
-              remoteAddress,
-              uid,
-              new IllegalStateException(
-                s"Error encountered while processing system message " +
-                s"acknowledgement buffer: $resendBuffer ack: $ack",
-                e))
-        }
-
-        resendNacked()
-      }
-    case AttemptSysMsgRedelivery =>
+    case AckFromReader(readerUid, ack) => handleAck(readerUid, ack)
+    case _: Ack                        => () // Ignore untagged ACKs. EndpointReader attaches its UID before forwarding ACKs.
+    case AttemptSysMsgRedelivery       =>
       if (uidConfirmed) resendAll()
     case Terminated(_) =>
       currentHandle = None
@@ -399,6 +403,14 @@ private[remote] class ReliableDeliverySupervisor(
 
     case s: EndpointWriter.StopReading =>
       writer.forward(s)
+
+    case Reconnect =>
+      prepareForReconnect()
+      context.stop(writer)
+      context.become(gated(writerTerminated = false, earlyUngateRequested = true))
+
+    case EndpointWriter.ResumeReading =>
+      writer ! EndpointWriter.ResumeReading
 
     case Ungate => // ok, not gated
   }
@@ -431,13 +443,28 @@ private[remote] class ReliableDeliverySupervisor(
         // Resending will be triggered by the incoming GotUid message after the connection finished
         goToActive()
       } else goToIdle()
-    case AttemptSysMsgRedelivery                => // Ignore
-    case s @ Send(_: SystemMessage, _, _, _)    => tryBuffer(s.copy(seqOpt = Some(nextSeq())))
-    case s: Send                                => context.system.deadLetters ! s
-    case EndpointWriter.FlushAndStop            => context.stop(self)
+    case AttemptSysMsgRedelivery             => // Ignore
+    case s @ Send(_: SystemMessage, _, _, _) => tryBuffer(s.copy(seqOpt = Some(nextSeq())))
+    case s: Send                             => context.system.deadLetters ! s
+    case EndpointWriter.FlushAndStop         => context.stop(self)
+    case EndpointWriter.ResumeReading        =>
+      if (!writerTerminated) {
+        writer ! EndpointWriter.ResumeReading
+        context.become(gated(writerTerminated = false, earlyUngateRequested = true))
+      } else {
+        writer = createWriter()
+        goToActive()
+      }
     case EndpointWriter.StopReading(w, replyTo) =>
       replyTo ! EndpointWriter.StoppedReading(w)
       sender() ! EndpointWriter.StoppedReading(w)
+    case Reconnect =>
+      prepareForReconnect()
+      if (writerTerminated) self ! Ungate
+      else {
+        context.stop(writer)
+        context.become(gated(writerTerminated = false, earlyUngateRequested = true))
+      }
   }
 
   def idle: Receive = {
@@ -461,9 +488,14 @@ private[remote] class ReliableDeliverySupervisor(
         new TimeoutException(
           "Remote system has been silent for too long. " +
           s"(more than ${settings.QuarantineSilentSystemTimeout.toCoarsest})"))
-    case EndpointWriter.FlushAndStop            => context.stop(self)
+    case EndpointWriter.FlushAndStop  => context.stop(self)
+    case EndpointWriter.ResumeReading =>
+      writer = createWriter()
+      goToActive()
     case EndpointWriter.StopReading(w, replyTo) =>
       replyTo ! EndpointWriter.StoppedReading(w)
+    case Reconnect =>
+      prepareForReconnect()
     case Ungate => // ok, not gated
   }
 
@@ -495,7 +527,8 @@ private[remote] class ReliableDeliverySupervisor(
       // and don't really know if they were properly delivered or not.
       resendBuffer = new AckedSendBuffer[Send](0)
       context.stop(self)
-    case _ => // Ignore
+    case EndpointWriter.ResumeReading => // Ignore while shutting down
+    case _                            => // Ignore
   }
 
   private def handleSend(send: Send): Unit =
@@ -515,6 +548,33 @@ private[remote] class ReliableDeliverySupervisor(
     resendNacked()
     resendBuffer.nonAcked.take(settings.SysResendLimit).foreach { writer ! _ }
   }
+
+  private def handleAck(readerUid: Int, ack: Ack): Unit =
+    // If we are not sure about the UID just ignore the ack. Ignoring is fine.
+    if (uidConfirmed && uid.contains(readerUid)) {
+      if (ack.cumulativeAck > resendBuffer.maxSeq)
+        log.warning(
+          "Ignoring stale system message acknowledgement from remote system [{}]. Highest SEQ so far was [{}] but cumulative ACK is [{}].",
+          remoteAddress,
+          resendBuffer.maxSeq,
+          ack.cumulativeAck)
+      else {
+        try resendBuffer = resendBuffer.acknowledge(ack)
+        catch {
+          case NonFatal(e) =>
+            throw new HopelessAssociation(
+              localAddress,
+              remoteAddress,
+              uid,
+              new IllegalStateException(
+                s"Error encountered while processing system message " +
+                s"acknowledgement buffer: $resendBuffer ack: $ack",
+                e))
+        }
+
+        resendNacked()
+      }
+    }
 
   private def tryBuffer(s: Send): Unit =
     try {
@@ -611,6 +671,7 @@ private[remote] object EndpointWriter {
   private case object FlushAndStopTimeout
   case object AckIdleCheckTimer
   final case class StopReading(writer: ActorRef, replyTo: ActorRef)
+  case object ResumeReading
   final case class StoppedReading(writer: ActorRef)
 
   final case class Handle(handle: PekkoProtocolHandle) extends NoSerializationVerificationNeeded
@@ -737,8 +798,10 @@ private[remote] class EndpointWriter(
   }
 
   val buffering: Receive = {
-    case s: Send      => enqueueInBuffer(s)
-    case BackoffTimer => sendBufferedMessages()
+    case s: Send       => enqueueInBuffer(s)
+    case BackoffTimer  => sendBufferedMessages()
+    case ResumeReading =>
+      reader.foreach(_ ! ResumeReading)
     case FlushAndStop =>
       // Flushing is postponed after the pending writes
       buffer.offer(FlushAndStop)
@@ -789,6 +852,9 @@ private[remote] class EndpointWriter(
         false
       case s @ StopReading(_, replyTo) =>
         reader.foreach(_.tell(s, replyTo))
+        true
+      case ResumeReading =>
+        reader.foreach(_ ! ResumeReading)
         true
       case unexpected =>
         throw new IllegalArgumentException(s"Unexpected message type: ${unexpected.getClass}")
@@ -887,6 +953,16 @@ private[remote] class EndpointWriter(
       trySendPureAck()
   }
 
+  /**
+   * <p>
+   *   Opentelemetry Java Instrumentation relies on this method so avoid changing it. The agent restores the
+   *   context captured by `EndpointManager.Send` while the message is serialized, which can happen much
+   *   later than the send when the endpoint buffers.
+   *   See https://github.com/apache/pekko/issues/3472
+   * </p>
+   */
+  // see https://github.com/open-telemetry/opentelemetry-java-instrumentation/pull/19823
+  @noinline // Not inlined so that the agent can match the method in the bytecode
   def writeSend(s: Send): Boolean =
     try {
       handle match {
@@ -912,7 +988,7 @@ private[remote] class EndpointWriter(
           if (pduSize > transport.maximumPayloadBytes) {
             val reasonText =
               s"Discarding oversized payload sent to ${s.recipient}: max allowed size ${transport
-                  .maximumPayloadBytes} bytes, actual size of encoded ${s.message.getClass} was ${pdu.size} bytes."
+                  .maximumPayloadBytes} bytes, actual size of encoded ${WrappedMessage.unwrap(s.message).getClass} was ${pdu.size} bytes."
             log.error(
               new OversizedPayloadException(reasonText),
               "Transient association error (association remains live)")
@@ -939,13 +1015,13 @@ private[remote] class EndpointWriter(
         log.error(
           e,
           "Serializer not defined for message type [{}]. Transient association error (association remains live)",
-          s.message.getClass)
+          WrappedMessage.unwrap(s.message).getClass)
         true
       case e: IllegalArgumentException =>
         log.error(
           e,
           "Serializer not defined for message type [{}]. Transient association error (association remains live)",
-          s.message.getClass)
+          WrappedMessage.unwrap(s.message).getClass)
         true
       case e: MessageSerializer.SerializationException =>
         log.error(e, "{} Transient association error (association remains live)", e.getMessage)
@@ -982,6 +1058,8 @@ private[remote] class EndpointWriter(
           // initializing, buffer and take care of it later when buffer is sent
           enqueueInBuffer(s)
       }
+    case ResumeReading =>
+      reader.foreach(_ ! ResumeReading)
     case TakeOver(newHandle, replyTo) =>
       // Shutdown old reader
       handle.foreach { _.disassociate("the association was replaced by a new one", log) }
@@ -1032,7 +1110,8 @@ private[remote] class EndpointWriter(
                 inbound,
                 handle.handshakeInfo.uid,
                 reliableDeliverySupervisor,
-                receiveBuffers))
+                receiveBuffers,
+                handle.inboundMessageDispatched))
             .withDeploy(Deploy.local),
           "endpointReader-" + AddressUrlEncoder(remoteAddress) + "-" + readerId.next()))
     handle.readHandlerPromise.success(ActorHandleEventListener(newReader))
@@ -1067,6 +1146,31 @@ private[remote] object EndpointReader {
       uid: Int,
       reliableDeliverySupervisor: Option[ActorRef],
       receiveBuffers: ConcurrentHashMap[Link, ResendState]): Props =
+    props(
+      localAddress,
+      remoteAddress,
+      transport,
+      settings,
+      codec,
+      msgDispatch,
+      inbound,
+      uid,
+      reliableDeliverySupervisor,
+      receiveBuffers,
+      new AtomicBoolean(false))
+
+  def props(
+      localAddress: Address,
+      remoteAddress: Address,
+      transport: Transport,
+      settings: RemoteSettings,
+      codec: PekkoPduCodec,
+      msgDispatch: InboundMessageDispatcher,
+      inbound: Boolean,
+      uid: Int,
+      reliableDeliverySupervisor: Option[ActorRef],
+      receiveBuffers: ConcurrentHashMap[Link, ResendState],
+      inboundMessageDispatched: AtomicBoolean): Props =
     Props(
       classOf[EndpointReader],
       localAddress,
@@ -1078,7 +1182,8 @@ private[remote] object EndpointReader {
       inbound,
       uid,
       reliableDeliverySupervisor,
-      receiveBuffers)
+      receiveBuffers,
+      inboundMessageDispatched)
 
 }
 
@@ -1096,13 +1201,39 @@ private[remote] class EndpointReader(
     val inbound: Boolean,
     val uid: Int,
     val reliableDeliverySupervisor: Option[ActorRef],
-    val receiveBuffers: ConcurrentHashMap[Link, ResendState])
+    val receiveBuffers: ConcurrentHashMap[Link, ResendState],
+    val inboundMessageDispatched: AtomicBoolean)
     extends EndpointActor(localAddress, remoteAddress, transport, settings, codec) {
 
-  import EndpointWriter.{ OutboundAck, StopReading, StoppedReading }
+  def this(
+      localAddress: Address,
+      remoteAddress: Address,
+      transport: Transport,
+      settings: RemoteSettings,
+      codec: PekkoPduCodec,
+      msgDispatch: InboundMessageDispatcher,
+      inbound: Boolean,
+      uid: Int,
+      reliableDeliverySupervisor: Option[ActorRef],
+      receiveBuffers: ConcurrentHashMap[Link, ResendState]) =
+    this(
+      localAddress,
+      remoteAddress,
+      transport,
+      settings,
+      codec,
+      msgDispatch,
+      inbound,
+      uid,
+      reliableDeliverySupervisor,
+      receiveBuffers,
+      new AtomicBoolean(false))
+
+  import EndpointWriter.{ OutboundAck, ResumeReading, StopReading, StoppedReading }
 
   val provider = RARP(context.system).provider
   var ackedReceiveBuffer = new AckedReceiveBuffer[Message]
+  private var suspendedMessages = Vector.empty[Message]
 
   override def preStart(): Unit = {
     receiveBuffers.get(Link(localAddress, remoteAddress)) match {
@@ -1143,7 +1274,8 @@ private[remote] class EndpointReader(
     case InboundPayload(p) if p.length <= transport.maximumPayloadBytes =>
       val (ackOption, msgOption) = tryDecodeMessageAndAck(p)
 
-      for (ack <- ackOption; reliableDelivery <- reliableDeliverySupervisor) reliableDelivery ! ack
+      for (ack <- ackOption; reliableDelivery <- reliableDeliverySupervisor)
+        reliableDelivery ! ReliableDeliverySupervisor.AckFromReader(uid, ack)
 
       msgOption match {
         case Some(msg) =>
@@ -1151,11 +1283,7 @@ private[remote] class EndpointReader(
             ackedReceiveBuffer = ackedReceiveBuffer.receive(msg)
             deliverAndAck()
           } else
-            try msgDispatch.dispatch(msg.recipient, msg.recipientAddress, msg.serializedMessage, msg.senderOption)
-            catch {
-              case e: NotSerializableException => logTransientSerializationError(msg, e)
-              case e: IllegalArgumentException => logTransientSerializationError(msg, e)
-            }
+            dispatchMessage(msg)
 
         case None =>
       }
@@ -1172,12 +1300,14 @@ private[remote] class EndpointReader(
       context.become(notReading)
       replyTo ! StoppedReading(writer)
 
+    case ResumeReading => // already reading
+
   }
 
-  private def logTransientSerializationError(msg: PekkoPduCodec.Message, error: Exception): Unit = {
+  private def logTransientSerializationError(msg: PekkoPduCodec.Message, error: Throwable): Unit = {
     val sm = msg.serializedMessage
     log.warning(
-      "Serializer not defined for message with serializer id [{}] and manifest [{}]. " +
+      "Could not deserialize message with serializer id [{}] and manifest [{}]. " +
       "Transient association error (association remains live). {}",
       sm.getSerializerId,
       if (sm.hasMessageManifest) sm.getMessageManifest.toStringUtf8 else "",
@@ -1190,17 +1320,31 @@ private[remote] class EndpointReader(
     case StopReading(writer, replyTo) =>
       replyTo ! StoppedReading(writer)
 
+    case ResumeReading =>
+      suspendedMessages.foreach(dispatchMessage)
+      suspendedMessages = Vector.empty
+      context.become(receive)
+
     case InboundPayload(p) if p.length <= transport.maximumPayloadBytes =>
       val (ackOption, msgOption) = tryDecodeMessageAndAck(p)
-      for (ack <- ackOption; reliableDelivery <- reliableDeliverySupervisor) reliableDelivery ! ack
+      for (ack <- ackOption; reliableDelivery <- reliableDeliverySupervisor)
+        reliableDelivery ! ReliableDeliverySupervisor.AckFromReader(uid, ack)
 
-      if (log.isWarningEnabled)
-        log.warning(
-          "Discarding inbound message to [{}] in read-only association to [{}]. " +
-          "If this happens often you may consider using pekko.remote.use-passive-connections=off " +
-          "or use Artery TCP.",
-          msgOption.map(_.recipient).getOrElse("unknown"),
-          remoteAddress)
+      msgOption.foreach { msg =>
+        if (!msg.reliableDeliveryEnabled) {
+          if (suspendedMessages.size < settings.PassiveConnectionBufferSize)
+            suspendedMessages :+= msg
+          else if (log.isWarningEnabled)
+            log.warning(
+              "Discarding inbound message to [{}] in read-only association to [{}] because the passive connection " +
+              "buffer of [{}] messages is full. If this happens often you may consider increasing " +
+              "pekko.remote.classic.passive-connection-buffer-size, setting " +
+              "pekko.remote.classic.use-passive-connections=off, or using Artery TCP.",
+              msg.recipient,
+              remoteAddress,
+              settings.PassiveConnectionBufferSize)
+        }
+      }
 
     case InboundPayload(oversized) =>
       log.error(
@@ -1236,10 +1380,16 @@ private[remote] class EndpointReader(
 
     // Notify writer that some messages can be acked
     context.parent ! OutboundAck(ack)
-    deliver.foreach { m =>
-      msgDispatch.dispatch(m.recipient, m.recipientAddress, m.serializedMessage, m.senderOption)
-    }
+    deliver.foreach(dispatchMessage)
   }
+
+  private def dispatchMessage(msg: Message): Unit =
+    try {
+      inboundMessageDispatched.set(true)
+      msgDispatch.dispatch(msg.recipient, msg.recipientAddress, msg.serializedMessage, msg.senderOption)
+    } catch {
+      case NonFatal(e) => logTransientSerializationError(msg, e)
+    }
 
   private def tryDecodeMessageAndAck(pdu: ByteString): (Option[Ack], Option[Message]) =
     try {

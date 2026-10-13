@@ -37,7 +37,7 @@ object FileIO {
    * You can configure the default dispatcher for this Source by changing the `pekko.stream.materializer.blocking-io-dispatcher` or
    * set it for a given Source by using [[pekko.stream.ActorAttributes]].
    *
-   * It materializes a [[Future]] of [[IOResult]] containing the number of bytes read from the source file upon completion,
+   * It materializes a `Future` of [[IOResult]] containing the number of bytes read from the source file upon completion,
    * and a possible exception if IO operation was not completed successfully. Note that bytes having been read by the source does
    * not give any guarantee that the bytes were seen by downstream stages.
    *
@@ -55,7 +55,7 @@ object FileIO {
    * You can configure the default dispatcher for this Source by changing the `pekko.stream.materializer.blocking-io-dispatcher` or
    * set it for a given Source by using [[pekko.stream.ActorAttributes]].
    *
-   * It materializes a [[Future]] of [[IOResult]] containing the number of bytes read from the source file upon completion,
+   * It materializes a `Future` of [[IOResult]] containing the number of bytes read from the source file upon completion,
    * and a possible exception if IO operation was not completed successfully. Note that bytes having been read by the source does
    * not give any guarantee that the bytes were seen by downstream stages.
    *
@@ -70,7 +70,7 @@ object FileIO {
    * Creates a Sink which writes incoming [[pekko.util.ByteString]] elements to the given file path. Overwrites existing files
    * by truncating their contents as default.
    *
-   * Materializes a [[Future]] of [[IOResult]] that will be completed with the size of the file (in bytes) at the streams completion,
+   * Materializes a `Future` of [[IOResult]] that will be completed with the size of the file (in bytes) at the streams completion,
    * and a possible exception if IO operation was not completed successfully.
    *
    * This source is backed by an Actor which will use the dedicated `pekko.stream.blocking-io-dispatcher`,
@@ -94,7 +94,7 @@ object FileIO {
    * Creates a Sink which writes incoming [[pekko.util.ByteString]] elements to the given file path. Overwrites existing files
    * by truncating their contents as default.
    *
-   * Materializes a [[Future]] of [[IOResult]] that will be completed with the size of the file (in bytes) at the streams completion,
+   * Materializes a `Future` of [[IOResult]] that will be completed with the size of the file (in bytes) at the streams completion,
    * and a possible exception if IO operation was not completed successfully.
    *
    * This source is backed by an Actor which will use the dedicated `pekko.stream.blocking-io-dispatcher`,

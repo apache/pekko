@@ -40,7 +40,7 @@ object MetadataCarryingSpy extends ExtensionId[MetadataCarryingSpy] with Extensi
 class MetadataCarryingSpy extends Extension {
   def ref: Option[ActorRef] = Option(_ref.get())
   def setProbe(bs: ActorRef): Unit = _ref.set(bs)
-  private[this] val _ref = new AtomicReference[ActorRef]()
+  private val _ref = new AtomicReference[ActorRef]()
 }
 
 class TestInstrument(system: ExtendedActorSystem) extends RemoteInstrument {

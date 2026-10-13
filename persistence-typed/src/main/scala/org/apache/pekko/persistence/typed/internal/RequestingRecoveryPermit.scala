@@ -24,7 +24,7 @@ import pekko.annotation.{ InternalApi, InternalStableApi }
 /**
  * INTERNAL API
  *
- * First (of four) behavior of an PersistentBehaviour.
+ * First (of four) behavior of an EventSourcedBehavior.
  *
  * Requests a permit to start replaying this actor; this is tone to avoid
  * hammering the journal with too many concurrently replaying actors.
@@ -79,10 +79,10 @@ private[pekko] class RequestingRecoveryPermit[C, E, S](override val setup: Behav
   }
 
   @InternalStableApi
-  def onRequestingRecoveryPermit(@nowarn("msg=never used") context: ActorContext[_]): Unit = ()
+  def onRequestingRecoveryPermit(@nowarn("msg=never used") context: ActorContext[?]): Unit = ()
 
   private def becomeReplaying(receivedPoisonPill: Boolean): Behavior[InternalProtocol] = {
-    setup.internalLogger.debug(s"Initializing snapshot recovery: {}", setup.recovery)
+    setup.internalLogger.debug("Initializing snapshot recovery: {}", setup.recovery)
 
     setup.holdingRecoveryPermit = true
     ReplayingSnapshot(setup, receivedPoisonPill)

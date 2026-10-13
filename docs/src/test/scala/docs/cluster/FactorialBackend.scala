@@ -16,11 +16,12 @@ package scala.docs.cluster
 import scala.annotation.tailrec
 import scala.concurrent.Future
 import com.typesafe.config.ConfigFactory
-import org.apache.pekko.actor.Actor
-import org.apache.pekko.actor.ActorLogging
-import org.apache.pekko.actor.ActorSystem
-import org.apache.pekko.actor.Props
-import org.apache.pekko.pattern.pipe
+import org.apache.pekko
+import pekko.actor.Actor
+import pekko.actor.ActorLogging
+import pekko.actor.ActorSystem
+import pekko.actor.Props
+import pekko.pattern.pipe
 
 //#backend
 class FactorialBackend extends Actor with ActorLogging {
@@ -28,7 +29,7 @@ class FactorialBackend extends Actor with ActorLogging {
   import context.dispatcher
 
   def receive = {
-    case (n: Int) =>
+    case n: Int =>
       Future(factorial(n))
         .map { result =>
           (n, result)

@@ -47,7 +47,8 @@ address part of an actor’s path determines how that actor is communicated with
 Storing a local actor path might be the right choice if the retrieval happens
 in the same logical context, but it is not enough when deserializing it on a
 different network host: for that it would need to include the system’s remote
-transport address.
+transport address. Typical systems have a single remote address, the default one
+used by cluster support, and you can include it like this:
 
 Scala
 :  @@snip [SerializationDocSpec.scala](/docs/src/test/scala/docs/serialization/SerializationDocSpec.scala) { #external-address-default }
@@ -69,13 +70,4 @@ storage of the reference, you can use `toStringWithAddress`, which doesn't
 include the unique id.
 
 @@@
-
-There is also a default remote address which is the one used by cluster support
-(and typical systems have just this one); you can get it like this:
-
-Scala
-:  @@snip [SerializationDocSpec.scala](/docs/src/test/scala/docs/serialization/SerializationDocSpec.scala) { #external-address-default }
-
-Java
-:  @@snip [SerializationDocTest.java](/docs/src/test/java/jdocs/serialization/SerializationDocTest.java) { #external-address-default }
 

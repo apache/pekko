@@ -41,7 +41,7 @@ object EventSourcedBehaviorRecoveryTimeoutSpec {
     SteppingInmemJournal
       .config(journalId)
       .withFallback(ConfigFactory.parseString("""
-        pekko.persistence.journal.stepping-inmem.recovery-event-timeout=1s
+        pekko.persistence.journal.stepping-inmem.recovery-event-timeout=3s
         """))
       .withFallback(ConfigFactory.parseString(s"""
         pekko.loglevel = INFO
@@ -69,7 +69,7 @@ class EventSourcedBehaviorRecoveryTimeoutSpec
   import EventSourcedBehaviorRecoveryTimeoutSpec._
 
   val pidCounter = new AtomicInteger(0)
-  private def nextPid(): PersistenceId = PersistenceId.ofUniqueId(s"c${pidCounter.incrementAndGet()})")
+  private def nextPid(): PersistenceId = PersistenceId.ofUniqueId(s"c${pidCounter.incrementAndGet()}")
 
   import org.apache.pekko.actor.typed.scaladsl.adapter._
   // needed for SteppingInmemJournal.step
@@ -106,7 +106,8 @@ class EventSourcedBehaviorRecoveryTimeoutSpec
           // initial read highest
           SteppingInmemJournal.step(journal)
 
-          probe.expectMessageType[RecoveryTimedOut]
+          // recovery-event-timeout is set to 3s; allow extra headroom for CI
+          probe.expectMessageType[RecoveryTimedOut](10.seconds)
           probe.expectTerminated(replaying)
         }
 

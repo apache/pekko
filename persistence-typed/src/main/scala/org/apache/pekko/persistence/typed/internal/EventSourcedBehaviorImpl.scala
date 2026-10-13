@@ -20,6 +20,7 @@ import java.util.concurrent.atomic.AtomicInteger
 import scala.annotation.nowarn
 
 import org.apache.pekko
+import pekko.Done
 import pekko.actor.typed
 import pekko.actor.typed.ActorRef
 import pekko.actor.typed.BackoffSupervisorStrategy
@@ -105,12 +106,12 @@ private[pekko] final case class EventSourcedBehaviorImpl[Command, Event, State](
     emptyState: State,
     commandHandler: EventSourcedBehavior.CommandHandler[Command, Event, State],
     eventHandler: EventSourcedBehavior.EventHandler[State, Event],
-    loggerClass: Class[_],
+    loggerClass: Class[?],
     journalPluginId: Option[String] = None,
     snapshotPluginId: Option[String] = None,
     journalPluginConfig: Option[Config] = None,
     snapshotPluginConfig: Option[Config] = None,
-    tagger: Event => Set[String] = (_: Event) => Set.empty[String],
+    tagger: (State, Event) => Set[String] = (_: State, _: Event) => Set.empty[String],
     eventAdapter: EventAdapter[Event, Any] = NoOpEventAdapter.instance[Event],
     snapshotAdapter: SnapshotAdapter[State] = NoOpSnapshotAdapter.instance[State],
     snapshotWhen: (State, Event, Long) => Boolean = ConstantFun.scalaAnyThreeToFalse,
@@ -134,7 +135,7 @@ private[pekko] final case class EventSourcedBehaviorImpl[Command, Event, State](
   override def apply(context: typed.TypedActorContext[Command]): Behavior[Command] = {
     val ctx = context.asScala
     val hasCustomLoggerName = ctx match {
-      case internalCtx: ActorContextImpl[_] => internalCtx.hasCustomLoggerName
+      case internalCtx: ActorContextImpl[?] => internalCtx.hasCustomLoggerName
       case _                                => false
     }
     if (!hasCustomLoggerName) ctx.setLoggerName(loggerClass)
@@ -161,7 +162,7 @@ private[pekko] final case class EventSourcedBehaviorImpl[Command, Event, State](
         internalLogger().debug("Save snapshot successful, snapshot metadata [{}].", meta)
       case (_, SnapshotFailed(meta, failure)) =>
         internalLogger()
-          .error(s"Save snapshot failed, snapshot metadata [$meta] due to: ${failure.getMessage}", failure)
+          .error("Save snapshot failed, snapshot metadata [{}] due to: {}", meta, failure.getMessage, failure)
       case (_, DeleteSnapshotsCompleted(DeletionTarget.Individual(meta))) =>
         internalLogger().debug("Persistent snapshot [{}] deleted successfully.", meta)
       case (_, DeleteSnapshotsCompleted(DeletionTarget.Criteria(criteria))) =>
@@ -208,7 +209,8 @@ private[pekko] final case class EventSourcedBehaviorImpl[Command, Event, State](
             stashState = stashState,
             replication = replication,
             publishEvents = publishEvents,
-            internalLoggerFactory = () => internalLogger())
+            internalLoggerFactory = () => internalLogger(),
+            retentionInProgress = false)
 
           // needs to accept Any since we also can get messages from the journal
           // not part of the user facing Command protocol
@@ -252,7 +254,7 @@ private[pekko] final case class EventSourcedBehaviorImpl[Command, Event, State](
   }
 
   @InternalStableApi
-  private[pekko] def initialize(@nowarn("msg=never used") context: ActorContext[_]): Unit = ()
+  private[pekko] def initialize(@nowarn("msg=never used") context: ActorContext[?]): Unit = ()
 
   override def receiveSignal(
       handler: PartialFunction[(State, Signal), Unit]): EventSourcedBehavior[Command, Event, State] =
@@ -283,9 +285,12 @@ private[pekko] final case class EventSourcedBehaviorImpl[Command, Event, State](
     copy(retention = criteria)
 
   override def withTagger(tagger: Event => Set[String]): EventSourcedBehavior[Command, Event, State] =
+    copy(tagger = (_, event) => tagger(event))
+
+  override def withTaggerForState(tagger: (State, Event) => Set[String]): EventSourcedBehavior[Command, Event, State] =
     copy(tagger = tagger)
 
-  override def eventAdapter(adapter: EventAdapter[Event, _]): EventSourcedBehavior[Command, Event, State] =
+  override def eventAdapter(adapter: EventAdapter[Event, ?]): EventSourcedBehavior[Command, Event, State] =
     copy(eventAdapter = adapter.asInstanceOf[EventAdapter[Event, Any]])
 
   override def snapshotAdapter(adapter: SnapshotAdapter[State]): EventSourcedBehavior[Command, Event, State] =
@@ -385,13 +390,14 @@ final class ReplicatedPublishedEventMetaData(val replicaId: ReplicaId, private[p
 /**
  * INTERNAL API
  */
-@InternalApi
+@InternalStableApi
 private[pekko] final case class PublishedEventImpl(
     persistenceId: PersistenceId,
     sequenceNumber: Long,
     payload: Any,
     timestamp: Long,
-    replicatedMetaData: Option[ReplicatedPublishedEventMetaData])
+    replicatedMetaData: Option[ReplicatedPublishedEventMetaData],
+    replyTo: Option[ActorRef[Done]])
     extends PublishedEvent
     with InternalProtocol {
   import scala.jdk.OptionConverters._
@@ -410,6 +416,8 @@ private[pekko] final case class PublishedEventImpl(
     case Tagged(event, _) => copy(payload = event)
     case _                => this
   }
+
+  def lossyTransport: Boolean = replyTo.isEmpty
 
   override def getReplicatedMetaData: Optional[ReplicatedPublishedEventMetaData] = replicatedMetaData.toJava
 }

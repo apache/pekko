@@ -13,7 +13,6 @@
 
 package org.apache.pekko.actor.testkit.typed.scaladsl
 
-import scala.collection.immutable
 import scala.concurrent.duration._
 import scala.reflect.ClassTag
 
@@ -52,10 +51,10 @@ object FishingOutcomes {
 }
 
 object TestProbe {
-  def apply[M]()(implicit system: ActorSystem[_]): TestProbe[M] =
+  def apply[M]()(implicit system: ActorSystem[?]): TestProbe[M] =
     apply(name = "testProbe")
 
-  def apply[M](name: String)(implicit system: ActorSystem[_]): TestProbe[M] =
+  def apply[M](name: String)(implicit system: ActorSystem[?]): TestProbe[M] =
     new TestProbeImpl[M](name, system)
 
 }
@@ -86,7 +85,7 @@ object TestProbe {
 
   /**
    * Obtain time remaining for execution of the innermost enclosing `within`
-   * block or throw an [[java.lang.AssertionError]] if no `within` block surrounds this
+   * block or throw a [[java.lang.AssertionError]] if no `within` block surrounds this
    * call.
    */
   def remaining: FiniteDuration
@@ -172,21 +171,21 @@ object TestProbe {
 
   /**
    * Receive one message of type `M`. Wait time is bounded by the `max` duration,
-   * with an [[java.lang.AssertionError]] raised in case of timeout.
+   * with a [[java.lang.AssertionError]] raised in case of timeout.
    */
   def receiveMessage(max: FiniteDuration): M
 
   /**
    * Same as `receiveMessages(n, remaining)` but using the default timeout as deadline.
    */
-  def receiveMessages(n: Int): immutable.Seq[M]
+  def receiveMessages(n: Int): Seq[M]
 
   /**
    * Receive `n` messages in a row before the given deadline.
    *
    * Note that the timeout is scaled using the configuration entry "pekko.actor.testkit.typed.timefactor".
    */
-  def receiveMessages(n: Int, max: FiniteDuration): immutable.Seq[M]
+  def receiveMessages(n: Int, max: FiniteDuration): Seq[M]
 
   /**
    * Allows for flexible matching of multiple messages within a timeout, the fisher function is fed each incoming
@@ -206,26 +205,26 @@ object TestProbe {
    *            The timeout is scaled using the configuration entry "pekko.actor.testkit.typed.timefactor".
    * @return The messages accepted in the order they arrived
    */
-  def fishForMessage(max: FiniteDuration, hint: String)(fisher: M => FishingOutcome): immutable.Seq[M]
+  def fishForMessage(max: FiniteDuration, hint: String)(fisher: M => FishingOutcome): Seq[M]
 
   /**
    * Same as `fishForMessage` but accepting a partial function and failing for non-matches
    */
-  def fishForMessagePF(max: FiniteDuration, hint: String)(fisher: PartialFunction[M, FishingOutcome]): immutable.Seq[M]
+  def fishForMessagePF(max: FiniteDuration, hint: String)(fisher: PartialFunction[M, FishingOutcome]): Seq[M]
 
   /**
    * Same as the other `fishForMessage` but with no hint
    */
-  def fishForMessage(max: FiniteDuration)(fisher: M => FishingOutcome): immutable.Seq[M]
+  def fishForMessage(max: FiniteDuration)(fisher: M => FishingOutcome): Seq[M]
 
   /**
    * Same as `fishForMessage` but with no hint, accepting a partial function and failing for non-matches
    */
-  def fishForMessagePF(max: FiniteDuration)(fisher: PartialFunction[M, FishingOutcome]): immutable.Seq[M]
+  def fishForMessagePF(max: FiniteDuration)(fisher: PartialFunction[M, FishingOutcome]): Seq[M]
 
   /**
    * Expect the given actor to be stopped or stop within the given timeout or
-   * throw an [[java.lang.AssertionError]].
+   * throw a [[java.lang.AssertionError]].
    */
   def expectTerminated[U](actorRef: ActorRef[U], max: FiniteDuration): Unit
 

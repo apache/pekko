@@ -73,6 +73,9 @@ final class Sink[-In, +Mat](override val traversalBuilder: LinearTraversalBuilde
    * that can be consume elements 'into' the pre-materialized one.
    *
    * Useful for when you need a materialized value of a Sink when handing it out to someone to materialize it for you.
+   *
+   * Note that `preMaterialize` is implemented through a reactive streams `Subscriber` which means that a buffer is
+   * introduced and that errors are not propagated upstream but are turned into cancellations without error details.
    */
   def preMaterialize()(implicit materializer: Materializer): (Mat, Sink[In, NotUsed]) = {
     val (sub, mat) = Source.asSubscriber.toMat(this)(Keep.both).run()
@@ -150,13 +153,7 @@ object Sink {
       case s: Sink[T, M]                                       => s
       case s: javadsl.Sink[T, M] @unchecked                    => s.asScala
       case g: GraphStageWithMaterializedValue[SinkShape[T], M] =>
-        // move these from the stage itself to make the returned source
-        // behave as it is the stage with regards to attributes
-        val attrs = g.traversalBuilder.attributes
-        val noAttrStage = g.withAttributes(Attributes.none)
-        new Sink(
-          LinearTraversalBuilder.fromBuilder(noAttrStage.traversalBuilder, noAttrStage.shape, Keep.right),
-          noAttrStage.shape).withAttributes(attrs)
+        new Sink(LinearTraversalBuilder.fromGraphStage(g), g.shape)
 
       case other =>
         new Sink(LinearTraversalBuilder.fromBuilder(other.traversalBuilder, other.shape, Keep.right), other.shape)
@@ -190,7 +187,7 @@ object Sink {
 
   /**
    * A `Sink` that materializes into a `Future` of the first value received.
-   * If the stream completes before signaling at least a single element, the Future will be failed with a [[NoSuchElementException]].
+   * If the stream completes before signaling at least a single element, the Future will be failed with a `NoSuchElementException`.
    * If the stream signals an error errors before signaling at least a single element, the Future will be failed with the streams exception.
    *
    * See also [[headOption]].
@@ -214,7 +211,7 @@ object Sink {
 
   /**
    * A `Sink` that materializes into a `Future` of the last value received.
-   * If the stream completes before signaling at least a single element, the Future will be failed with a [[NoSuchElementException]].
+   * If the stream completes before signaling at least a single element, the Future will be failed with a `NoSuchElementException`.
    * If the stream signals an error, the Future will be failed with the stream's exception.
    *
    * See also [[lastOption]], [[takeLast]].
@@ -240,13 +237,13 @@ object Sink {
   }
 
   /**
-   * A `Sink` that materializes into a `Future` of `immutable.Seq[T]` containing the last `n` collected elements.
+   * A `Sink` that materializes into a `Future` of `Seq[T]` containing the last `n` collected elements.
    *
    * If the stream completes before signaling at least n elements, the `Future` will complete with all elements seen so far.
    * If the stream never completes, the `Future` will never complete.
    * If there is a failure signaled in the stream the `Future` will be completed with failure.
    */
-  def takeLast[T](n: Int): Sink[T, Future[immutable.Seq[T]]] =
+  def takeLast[T](n: Int): Sink[T, Future[Seq[T]]] =
     Sink.fromGraph(new TakeLastStage[T](n)).withAttributes(DefaultAttributes.takeLastSink)
 
   /**
@@ -257,9 +254,9 @@ object Sink {
    * `Seq` is limited to `Int.MaxValue` elements, this Sink will cancel the stream
    * after having received that many elements.
    *
-   * See also [[Flow.limit]], [[Flow.limitWeighted]], [[Flow.take]], [[Flow.takeWithin]], [[Flow.takeWhile]]
+   * See also [[Flow.limit]], [[Flow.limitWeighted]], [[Flow.take]], [[Flow.takeWithin]], `Flow.takeWhile`
    */
-  def seq[T]: Sink[T, Future[immutable.Seq[T]]] = Sink.fromGraph(new SeqStage[T, Vector[T]])
+  def seq[T]: Sink[T, Future[Seq[T]]] = Sink.fromGraph(new SeqStage[T, Vector[T]])
 
   /**
    * A `Sink` that counts all incoming elements until upstream terminates.
@@ -277,7 +274,7 @@ object Sink {
    * @return a `Sink` that materializes to a `Future[Long]` with the element count
    * @since 1.3.0
    *
-   * See also [[Flow.limit]], [[Flow.limitWeighted]], [[Flow.take]], [[Flow.takeWithin]], [[Flow.takeWhile]]
+   * See also [[Flow.limit]], [[Flow.limitWeighted]], [[Flow.take]], [[Flow.takeWithin]], `Flow.takeWhile`
    */
   def count[T]: Sink[T, Future[Long]] = Sink.fromGraph(CountSink)
 
@@ -286,14 +283,14 @@ object Sink {
    * As upstream may be unbounded, `Flow[T].take` or the stricter `Flow[T].limit` (and their variants)
    * may be used to ensure boundedness.
    * Materializes into a `Future` of `That[T]` containing all the collected elements.
-   * `That[T]` is limited to the limitations of the CanBuildFrom associated with it. For example, `Seq` is limited to
+   * `That[T]` is limited to the limitations of the `Factory` associated with it. For example, `Seq` is limited to
    * `Int.MaxValue` elements. See [The Architecture of Scala 2.13's Collections](https://docs.scala-lang.org/overviews/core/architecture-of-scala-213-collections.html) for more info.
    * This Sink will cancel the stream after having received that many elements.
    *
-   * See also [[Flow.limit]], [[Flow.limitWeighted]], [[Flow.take]], [[Flow.takeWithin]], [[Flow.takeWhile]]
+   * See also [[Flow.limit]], [[Flow.limitWeighted]], [[Flow.take]], [[Flow.takeWithin]], `Flow.takeWhile`
    */
   def collection[T, That](
-      implicit cbf: scala.collection.Factory[T, That with immutable.Iterable[_]]): Sink[T, Future[That]] =
+      implicit cbf: scala.collection.Factory[T, That with immutable.Iterable[?]]): Sink[T, Future[That]] =
     Sink.fromGraph(new SeqStage[T, That])
 
   /**
@@ -308,9 +305,8 @@ object Sink {
    * reject any additional `Subscriber`s.
    */
   def asPublisher[T](fanout: Boolean): Sink[T, Publisher[T]] =
-    fromGraph(
-      if (fanout) new FanoutPublisherSink[T](DefaultAttributes.fanoutPublisherSink, shape("FanoutPublisherSink"))
-      else new PublisherSink[T](DefaultAttributes.publisherSink, shape("PublisherSink")))
+    if (fanout) Flow[T].async.toMat(Sink.fromGraph(new FanoutPublisherBridgeStage[T]))(Keep.right)
+    else fromGraph(new PublisherSink[T](DefaultAttributes.publisherSink, shape("PublisherSink")))
 
   /**
    * A `Sink` that materializes this `Sink` itself as a `Source`.
@@ -325,7 +321,7 @@ object Sink {
    */
   def source[T]: Sink[T, Source[T, NotUsed]] = _sourceSink.asInstanceOf[Sink[T, Source[T, NotUsed]]]
 
-  private[this] val _sourceSink = fromGraph(SourceSink)
+  private val _sourceSink = fromGraph(SourceSink)
 
   /**
    * A `Sink` that will consume the stream and discard the elements.
@@ -336,7 +332,7 @@ object Sink {
    * A [[Sink]] that will always backpressure never cancel and never consume any elements from the stream.
    */
   def never: Sink[Any, Future[Done]] = _never
-  private[this] val _never: Sink[Any, Future[Done]] = fromGraph(GraphStages.NeverSink)
+  private val _never: Sink[Any, Future[Done]] = fromGraph(GraphStages.NeverSink)
 
   /**
    * A `Sink` that will invoke the given procedure for each received element. The sink is materialized
@@ -359,7 +355,7 @@ object Sink {
   /**
    * Combine several sinks with fan-out strategy like `Broadcast` or `Balance` and returns `Sink`.
    */
-  def combine[T, U](first: Sink[U, _], second: Sink[U, _], rest: Sink[U, _]*)(
+  def combine[T, U](first: Sink[U, ?], second: Sink[U, ?], rest: Sink[U, ?]*)(
       fanOutStrategy: Int => Graph[UniformFanOutShape[T, U], NotUsed]): Sink[T, NotUsed] =
     Sink.fromGraph(GraphDSL.create() { implicit b =>
       import GraphDSL.Implicits._
@@ -367,7 +363,7 @@ object Sink {
       d.out(0) ~> first
       d.out(1) ~> second
 
-      @tailrec def combineRest(idx: Int, i: Iterator[Sink[U, _]]): SinkShape[T] =
+      @tailrec def combineRest(idx: Int, i: Iterator[Sink[U, ?]]): SinkShape[T] =
         if (i.hasNext) {
           d.out(idx) ~> i.next()
           combineRest(idx + 1, i)
@@ -396,12 +392,30 @@ object Sink {
    * The fanoutGraph's outlets size must match the provides sinks'.
    * @since 1.1.0
    */
-  def combine[T, U, M](sinks: immutable.Seq[Graph[SinkShape[U], M]])(
-      fanOutStrategy: Int => Graph[UniformFanOutShape[T, U], NotUsed]): Sink[T, immutable.Seq[M]] =
+  def combine[T, U, M](sinks: Seq[Graph[SinkShape[U], M]])(
+      fanOutStrategy: Int => Graph[UniformFanOutShape[T, U], NotUsed]): Sink[T, Seq[M]] =
     sinks match {
-      case immutable.Seq()     => Sink.cancelled.mapMaterializedValue(_ => Nil)
-      case immutable.Seq(sink) => sink.asInstanceOf[Sink[T, M]].mapMaterializedValue(_ :: Nil)
-      case _                   =>
+      case Seq()     => Sink.cancelled.mapMaterializedValue(_ => Nil)
+      case Seq(sink) =>
+        // Single-sink optimization: bypass the fan-out strategy if and only if the strategy
+        // is type-preserving (T == U), marked by the TypePreservingFanOut trait.
+        // For type-transforming strategies, we MUST route through the strategy even for a
+        // single sink. Same design as Source.combine — see #2723.
+        val strategyGraph = fanOutStrategy(1)
+        strategyGraph match {
+          case _: pekko.stream.TypePreservingFanOut =>
+            // Type-preserving (T == U): safe to bypass the strategy with a direct pass-through.
+            Sink.fromGraph(sink).asInstanceOf[Sink[T, M]].mapMaterializedValue(_ :: Nil)
+          case _ =>
+            // Not type-preserving or unknown: route through the fan-out strategy.
+            Sink.fromGraph(GraphDSL.create(sinks) { implicit b => shapes =>
+              import GraphDSL.Implicits._
+              val c = b.add(strategyGraph)
+              c.out(0) ~> shapes.head
+              SinkShape(c.in)
+            })
+        }
+      case _ =>
         Sink.fromGraph(GraphDSL.create(sinks) { implicit b => shapes =>
           import GraphDSL.Implicits._
           val c = b.add(fanOutStrategy(sinks.size))
@@ -529,7 +543,7 @@ object Sink {
    * if there is a failure signaled in the stream.
    *
    * If the stream is empty (i.e. completes before signalling any elements),
-   * the reduce operator will fail its downstream with a [[NoSuchElementException]],
+   * the reduce operator will fail its downstream with a `NoSuchElementException`,
    * which is semantically in-line with that Scala's standard library collections
    * do in such situations.
    *
@@ -684,7 +698,7 @@ object Sink {
     actorRefWithAck(ref, _ => identity, _ => onInitMessage, None, onCompleteMessage, onFailureMessage)
 
   /**
-   * Creates a `Sink` that is materialized as an [[pekko.stream.scaladsl.SinkQueueWithCancel]].
+   * Creates a `Sink` that is materialized as a [[pekko.stream.scaladsl.SinkQueueWithCancel]].
    * [[pekko.stream.scaladsl.SinkQueueWithCancel.pull]] method is pulling element from the stream and returns ``Future[Option[T]``.
    * `Future` completes when element is available.
    *
@@ -705,7 +719,7 @@ object Sink {
     Sink.fromGraph(new QueueSink(maxConcurrentPulls))
 
   /**
-   * Creates a `Sink` that is materialized as an [[pekko.stream.scaladsl.SinkQueueWithCancel]].
+   * Creates a `Sink` that is materialized as a [[pekko.stream.scaladsl.SinkQueueWithCancel]].
    * [[pekko.stream.scaladsl.SinkQueueWithCancel.pull]] method is pulling element from the stream and returns ``Future[Option[T]]``.
    * `Future` completes when element is available.
    *
@@ -732,6 +746,24 @@ object Sink {
    */
   def futureSink[T, M](future: Future[Sink[T, M]]): Sink[T, Future[M]] =
     lazyFutureSink[T, M](() => future)
+
+  /**
+   * Turn a `Future[Sink]` into a Sink that will consume the values of the source when the future completes
+   * successfully. If the `Future` is completed with a failure the stream is failed.
+   *
+   * Unlike [[futureSink]] and [[lazyFutureSink]], this operator materializes the inner sink as soon as the future
+   * completes, even if no elements have arrived yet. This means empty streams complete normally rather than failing
+   * with [[NeverMaterializedException]]. At most one element that arrives before the future completes is buffered.
+   *
+   * The materialized future value is completed with the materialized value of the inner sink once it has been
+   * materialized, or failed if the future itself fails or if materialization of the inner sink fails. Upstream
+   * failures or downstream cancellations that occur before the inner sink is materialized are propagated through
+   * the inner sink rather than failing the materialized value directly.
+   *
+   * @since 1.5.0
+   */
+  def eagerFutureSink[T, M](future: Future[Sink[T, M]]): Sink[T, Future[M]] =
+    Sink.fromGraph(new EagerFutureSink(future))
 
   /**
    * Defers invoking the `create` function to create a sink until there is a first element passed from upstream.

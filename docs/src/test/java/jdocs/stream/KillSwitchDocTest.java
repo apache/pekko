@@ -13,11 +13,11 @@
 
 package jdocs.stream;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.TimeUnit;
 import jdocs.AbstractJavaTest;
@@ -29,20 +29,20 @@ import org.apache.pekko.stream.javadsl.Keep;
 import org.apache.pekko.stream.javadsl.Sink;
 import org.apache.pekko.stream.javadsl.Source;
 import org.apache.pekko.testkit.javadsl.TestKit;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 class KillSwitchDocTest extends AbstractJavaTest {
 
   static ActorSystem system;
 
-  @BeforeClass
+  @BeforeAll
   public static void setup() {
     system = ActorSystem.create("GraphDSLDocTest");
   }
 
-  @AfterClass
+  @AfterAll
   public static void tearDown() {
     TestKit.shutdownActorSystem(system);
     system = null;
@@ -54,7 +54,7 @@ class KillSwitchDocTest extends AbstractJavaTest {
   public void uniqueKillSwitchShutdownExample() throws Exception {
     // #unique-shutdown
     final Source<Integer, NotUsed> countingSrc =
-        Source.from(new ArrayList<>(Arrays.asList(1, 2, 3, 4)))
+        Source.from(new ArrayList<>(List.of(1, 2, 3, 4)))
             .delay(Duration.ofSeconds(1), DelayOverflowStrategy.backpressure());
     final Sink<Integer, CompletionStage<Integer>> lastSnk = Sink.last();
 
@@ -78,7 +78,7 @@ class KillSwitchDocTest extends AbstractJavaTest {
   public static void uniqueKillSwitchAbortExample() throws Exception {
     // #unique-abort
     final Source<Integer, NotUsed> countingSrc =
-        Source.from(new ArrayList<>(Arrays.asList(1, 2, 3, 4)))
+        Source.from(new ArrayList<>(List.of(1, 2, 3, 4)))
             .delay(Duration.ofSeconds(1), DelayOverflowStrategy.backpressure());
     final Sink<Integer, CompletionStage<Integer>> lastSnk = Sink.last();
 
@@ -103,7 +103,7 @@ class KillSwitchDocTest extends AbstractJavaTest {
   public void sharedKillSwitchShutdownExample() throws Exception {
     // #shared-shutdown
     final Source<Integer, NotUsed> countingSrc =
-        Source.from(new ArrayList<>(Arrays.asList(1, 2, 3, 4)))
+        Source.from(new ArrayList<>(List.of(1, 2, 3, 4)))
             .delay(Duration.ofSeconds(1), DelayOverflowStrategy.backpressure());
     final Sink<Integer, CompletionStage<Integer>> lastSnk = Sink.last();
     final SharedKillSwitch killSwitch = KillSwitches.shared("my-kill-switch");
@@ -135,7 +135,7 @@ class KillSwitchDocTest extends AbstractJavaTest {
   public static void sharedKillSwitchAbortExample() throws Exception {
     // #shared-abort
     final Source<Integer, NotUsed> countingSrc =
-        Source.from(new ArrayList<>(Arrays.asList(1, 2, 3, 4)))
+        Source.from(new ArrayList<>(List.of(1, 2, 3, 4)))
             .delay(Duration.ofSeconds(1), DelayOverflowStrategy.backpressure());
     final Sink<Integer, CompletionStage<Integer>> lastSnk = Sink.last();
     final SharedKillSwitch killSwitch = KillSwitches.shared("my-kill-switch");

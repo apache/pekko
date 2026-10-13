@@ -51,7 +51,7 @@ class StatsAggregator(expectedResults: Int, replyTo: ActorRef) extends Actor {
         replyTo ! StatsResult(meanWordLength)
         context.stop(self)
       }
-    case ReceiveTimeout =>
+    case _: ReceiveTimeout =>
       replyTo ! JobFailed("Service unavailable, try again later")
       context.stop(self)
   }

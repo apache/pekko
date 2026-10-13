@@ -58,17 +58,19 @@ class ExamplePersistentActor extends PersistentActor {
 }
 //#persistent-actor-example
 
-object PersistentActorExample extends App {
+object PersistentActorExample {
+  def main(args: Array[String]): Unit = {
 
-  val system = ActorSystem("example")
-  val persistentActor = system.actorOf(Props[ExamplePersistentActor](), "persistentActor-4-scala")
+    val system = ActorSystem("example")
+    val persistentActor = system.actorOf(Props[ExamplePersistentActor](), "persistentActor-4-scala")
 
-  persistentActor ! Cmd("foo")
-  persistentActor ! Cmd("baz")
-  persistentActor ! Cmd("bar")
-  persistentActor ! Cmd("buzz")
-  persistentActor ! "print"
+    persistentActor ! Cmd("foo")
+    persistentActor ! Cmd("baz")
+    persistentActor ! Cmd("bar")
+    persistentActor ! Cmd("buzz")
+    persistentActor ! "print"
 
-  Thread.sleep(10000)
-  system.terminate()
+    Thread.sleep(10000)
+    system.terminate()
+  }
 }

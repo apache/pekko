@@ -15,6 +15,7 @@ package org.apache.pekko.cluster.pubsub
 
 import java.net.URLDecoder
 import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 import java.util.concurrent.ThreadLocalRandom
 
 import scala.collection.immutable
@@ -218,7 +219,8 @@ object DistributedPubSubMediator {
     override def message: Any = msg
   }
 
-  sealed abstract class GetTopics
+  /** Not for user extension */
+  @DoNotInherit sealed abstract class GetTopics
 
   /**
    * Send this message to the mediator and it will reply with
@@ -250,7 +252,8 @@ object DistributedPubSubMediator {
     }
   }
 
-  sealed abstract class Count
+  /** Not for user extension */
+  @DoNotInherit sealed abstract class Count
 
   /**
    * Scala API: Send this message to the mediator and it will reply with an `Int` of
@@ -341,7 +344,7 @@ object DistributedPubSubMediator {
       override def message = msg
     }
 
-    def encName(s: String) = URLEncoder.encode(s, "utf-8")
+    def encName(s: String) = URLEncoder.encode(s, StandardCharsets.UTF_8)
 
     def mkKey(ref: ActorRef): String = mkKey(ref.path)
 
@@ -831,9 +834,10 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
   def put(key: String, valueOption: Option[ActorRef]): Unit = {
     val bucket = registry(selfAddress)
     val v = nextVersion()
-    registry += (selfAddress -> bucket.copy(
-      version = v,
-      content = bucket.content + (key -> ValueHolder(v, valueOption))))
+    registry +=
+      (selfAddress -> bucket.copy(
+        version = v,
+        content = bucket.content + (key -> ValueHolder(v, valueOption))))
   }
 
   def getCurrentTopics(): Set[String] = {
@@ -844,7 +848,7 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
       if key.startsWith(topicPrefix)
       topic = key.substring(topicPrefix.length + 1)
       if !topic.contains('/') // exclude group topics
-    } yield URLDecoder.decode(topic, "utf-8")).toSet
+    } yield URLDecoder.decode(topic, StandardCharsets.UTF_8)).toSet
   }
 
   def registerTopic(ref: ActorRef): Unit = {

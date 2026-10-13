@@ -1,6 +1,6 @@
 # splitWhen
 
-Split off elements into a new substream whenever a predicate function return `true`.
+Split off elements into a new substream whenever a predicate function returns `true`.
 
 @ref[Nesting and flattening operators](../index.md#nesting-and-flattening-operators)
 
@@ -14,7 +14,7 @@ The `splitWhen` operator adheres to the ActorAttributes.SupervisionStrategy attr
 
 ## Description
 
-Split off elements into a new substream whenever a predicate function return `true`.
+Split off elements into a new substream whenever a predicate function returns `true`.
 
 ## Example
 

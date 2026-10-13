@@ -13,21 +13,23 @@
 
 package org.apache.pekko.japi;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
 
 public class ThrowablesTest {
   @Test
   public void testIsNonFatal() {
-    Assert.assertTrue(Throwables.isNonFatal(new IllegalArgumentException("isNonFatal")));
+    assertTrue(Throwables.isNonFatal(new IllegalArgumentException("isNonFatal")));
   }
 
   @Test
   public void testIsFatal() {
-    Assert.assertTrue(Throwables.isFatal(new StackOverflowError("fatal")));
-    Assert.assertTrue(Throwables.isFatal(new ThreadDeath()));
-    Assert.assertTrue(Throwables.isFatal(new InterruptedException("fatal")));
-    Assert.assertTrue(Throwables.isFatal(new LinkageError("fatal")));
+    assertTrue(Throwables.isFatal(new StackOverflowError("fatal")));
+    assertTrue(Throwables.isFatal(new ThreadDeath()));
+    assertTrue(Throwables.isFatal(new InterruptedException("fatal")));
+    assertTrue(Throwables.isFatal(new LinkageError("fatal")));
   }
 
   private void doSneakyThrow() {
@@ -36,6 +38,6 @@ public class ThrowablesTest {
 
   @Test
   public void testSneakyThrow() {
-    Assert.assertThrows("sneaky", Exception.class, this::doSneakyThrow);
+    assertThrows(Exception.class, this::doSneakyThrow);
   }
 }

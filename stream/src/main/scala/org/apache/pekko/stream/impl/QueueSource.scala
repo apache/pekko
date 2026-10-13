@@ -20,6 +20,7 @@ import pekko.Done
 import pekko.annotation.InternalApi
 import pekko.stream._
 import pekko.stream.OverflowStrategies._
+import pekko.stream.impl.Stages.DefaultAttributes
 import pekko.stream.scaladsl.SourceQueueWithComplete
 import pekko.stream.stage._
 
@@ -49,6 +50,7 @@ import pekko.stream.stage._
 
   val out = Outlet[T]("queueSource.out")
   override val shape: SourceShape[T] = SourceShape.of(out)
+  override def initialAttributes: Attributes = DefaultAttributes.queueSource
 
   @scala.annotation.nowarn("msg=inferred structural type")
   override def createLogicAndMaterializedValue(inheritedAttributes: Attributes) = {
@@ -56,7 +58,7 @@ import pekko.stream.stage._
     val name = inheritedAttributes.nameOrDefault(getClass.toString)
 
     val stageLogic = new GraphStageLogic(shape) with OutHandler with SourceQueueWithComplete[T] with StageLogging {
-      override protected def logSource: Class[_] = classOf[QueueSource[_]]
+      override protected def logSource: Class[?] = classOf[QueueSource[?]]
 
       var buffer: Buffer[T] = _
       var pendingOffers: Buffer[Offer[T]] = _

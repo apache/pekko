@@ -55,8 +55,7 @@ object ManyRecoveriesSpec {
         Behaviors.same
     }
 
-  def forN(n: Int)(mapper: Int => String): Set[String] =
-    (1 to n).map(mapper).toSet
+  def forN(n: Int)(mapper: Int => String): Set[String] = (1 to n).map(mapper).toSet
 }
 
 class ManyRecoveriesSpec extends ScalaTestWithActorTestKit(s"""

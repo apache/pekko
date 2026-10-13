@@ -17,7 +17,8 @@ import scala.annotation.tailrec
 import scala.util.Random
 import scala.util.control.NonFatal
 
-import org.apache.pekko.testkit.PekkoSpec
+import org.apache.pekko
+import pekko.testkit.PekkoSpec
 
 /*
  * This test is a simulation of the actual concurrent rolling log implemented in SnapshottableRollingEventLog. It

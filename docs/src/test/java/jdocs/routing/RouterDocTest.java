@@ -13,20 +13,19 @@
 
 package jdocs.routing;
 
-import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
+import org.apache.pekko.testkit.PekkoJUnitJupiterActorSystemResource;
 
 import jdocs.AbstractJavaTest;
 import org.apache.pekko.testkit.javadsl.TestKit;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.typesafe.config.ConfigFactory;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.time.Duration;
@@ -75,9 +74,9 @@ import org.apache.pekko.routing.TailChoppingPool;
 
 public class RouterDocTest extends AbstractJavaTest {
 
-  @ClassRule
-  public static PekkoJUnitActorSystemResource actorSystemResource =
-      new PekkoJUnitActorSystemResource(
+  @RegisterExtension
+  static PekkoJUnitJupiterActorSystemResource actorSystemResource =
+      new PekkoJUnitJupiterActorSystemResource(
           "RouterDocTest", ConfigFactory.parseString(docs.routing.RouterDocSpec.config()));
 
   private final ActorSystem system = actorSystemResource.getSystem();
@@ -173,6 +172,7 @@ public class RouterDocTest extends AbstractJavaTest {
       getContext().actorOf(Props.create(Worker.class), "w2");
       getContext().actorOf(Props.create(Worker.class), "w3");
     }
+
     // ...
     // #create-worker-actors
 
@@ -185,7 +185,7 @@ public class RouterDocTest extends AbstractJavaTest {
   public static class Parent extends AbstractActor {
 
     // #paths
-    List<String> paths = Arrays.asList("/user/workers/w1", "/user/workers/w2", "/user/workers/w3");
+    List<String> paths = List.of("/user/workers/w1", "/user/workers/w2", "/user/workers/w3");
     // #paths
 
     // #round-robin-pool-1
@@ -357,6 +357,7 @@ public class RouterDocTest extends AbstractJavaTest {
     ActorRef router31 =
         getContext()
             .actorOf(FromConfig.getInstance().props(Props.create(Worker.class)), "router31");
+
     // #optimal-size-exploring-resize-pool
 
     @Override

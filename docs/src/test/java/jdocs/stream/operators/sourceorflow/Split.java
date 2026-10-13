@@ -17,7 +17,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.Collections;
+import java.util.Set;
 import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.japi.Pair;
 import org.apache.pekko.japi.function.Function;
@@ -48,7 +48,7 @@ public class Split {
                   LocalDateTime bucket = time.withNano(0);
                   boolean newBucket = !bucket.equals(currentTimeBucket);
                   if (newBucket) currentTimeBucket = bucket;
-                  return Collections.singleton(new Pair<>(elemTimestamp.first(), newBucket));
+                  return Set.of(new Pair<>(elemTimestamp.first(), newBucket));
                 }
               };
             })

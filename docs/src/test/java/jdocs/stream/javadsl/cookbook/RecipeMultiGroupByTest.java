@@ -13,11 +13,9 @@
 
 package jdocs.stream.javadsl.cookbook;
 
-import static java.util.stream.Collectors.toList;
-import static junit.framework.TestCase.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.TimeUnit;
@@ -29,19 +27,19 @@ import org.apache.pekko.stream.javadsl.Sink;
 import org.apache.pekko.stream.javadsl.Source;
 import org.apache.pekko.stream.javadsl.SubSource;
 import org.apache.pekko.testkit.javadsl.TestKit;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 public class RecipeMultiGroupByTest extends RecipeTest {
   static ActorSystem system;
 
-  @BeforeClass
+  @BeforeAll
   public static void setup() {
     system = ActorSystem.create("RecipeMultiGroupBy");
   }
 
-  @AfterClass
+  @AfterAll
   public static void tearDown() {
     TestKit.shutdownActorSystem(system);
     system = null;
@@ -96,7 +94,7 @@ public class RecipeMultiGroupByTest extends RecipeTest {
 
       {
         final Source<Message, NotUsed> elems =
-            Source.from(Arrays.asList("1: a", "1: b", "all: c", "all: d", "1: e"))
+            Source.from(List.of("1: a", "1: b", "all: c", "all: d", "1: e"))
                 .map(s -> new Message(s));
 
         // #multi-groupby
@@ -111,7 +109,7 @@ public class RecipeMultiGroupByTest extends RecipeTest {
                   // the message belongs to
                   return topicsForMessage.stream()
                       .map(topic -> new Pair<Message, Topic>(msg, topic))
-                      .collect(toList());
+                      .toList();
                 });
 
         SubSource<Pair<Message, Topic>, NotUsed> multiGroups =
@@ -138,10 +136,7 @@ public class RecipeMultiGroupByTest extends RecipeTest {
                       Topic topic = pair.get(0).second();
                       return topic.name
                           + mkString(
-                              pair.stream().map(p -> p.first().msg).collect(toList()),
-                              "[",
-                              ", ",
-                              "]");
+                              pair.stream().map(p -> p.first().msg).toList(), "[", ", ", "]");
                     })
                 .grouped(10)
                 .runWith(Sink.head(), system);

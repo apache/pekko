@@ -15,7 +15,6 @@ package org.apache.pekko.remote.testkit
 
 import java.net.{ InetAddress, InetSocketAddress }
 
-import scala.collection.immutable
 import scala.concurrent.{ Await, Awaitable }
 import scala.concurrent.duration._
 import scala.util.control.NonFatal
@@ -46,7 +45,7 @@ abstract class MultiNodeConfig {
   private var _commonConf: Option[Config] = None
   private var _nodeConf = Map[RoleName, Config]()
   private var _roles = Vector[RoleName]()
-  private var _deployments = Map[RoleName, immutable.Seq[String]]()
+  private var _deployments = Map[RoleName, Seq[String]]()
   private var _allDeploy = Vector[String]()
   private var _testTransport = false
 
@@ -131,10 +130,10 @@ abstract class MultiNodeConfig {
     configs.reduceLeft(_.withFallback(_))
   }
 
-  private[testkit] def deployments(node: RoleName): immutable.Seq[String] =
+  private[testkit] def deployments(node: RoleName): Seq[String] =
     (_deployments.get(node).getOrElse(Nil)) ++ _allDeploy
 
-  private[testkit] def roles: immutable.Seq[RoleName] = _roles
+  private[testkit] def roles: Seq[RoleName] = _roles
 
 }
 
@@ -313,7 +312,7 @@ object MultiNodeSpec {
 abstract class MultiNodeSpec(
     val myself: RoleName,
     _system: ActorSystem,
-    _roles: immutable.Seq[RoleName],
+    _roles: Seq[RoleName],
     deployments: RoleName => Seq[String])
     extends TestKit(_system)
     with MultiNodeSpecCallbacks {
@@ -342,7 +341,7 @@ abstract class MultiNodeSpec(
           }
       })
 
-  val log: LoggingAdapter = Logging(system, this)(_.getClass.getName)
+  val log: LoggingAdapter = Logging(system, classOf[MultiNodeSpec])
 
   /**
    * Enrich `.await()` onto all Awaitables, using remaining duration from the innermost
@@ -397,7 +396,7 @@ abstract class MultiNodeSpec(
   /**
    * All registered roles
    */
-  def roles: immutable.Seq[RoleName] = _roles
+  def roles: Seq[RoleName] = _roles
 
   /**
    * TO BE DEFINED BY USER: Defines the number of participants required for starting the test. This
@@ -443,7 +442,7 @@ abstract class MultiNodeSpec(
   def enterBarrier(name: String*): Unit =
     testConductor.enter(
       Timeout.durationToTimeout(remainingOr(testConductor.Settings.BarrierTimeout.duration)),
-      name.to(immutable.Seq))
+      name.to(Seq))
 
   /**
    * Enter the named barriers in the order given. Use the remaining duration from
@@ -453,7 +452,7 @@ abstract class MultiNodeSpec(
    * which uses the configuration entry "pekko.test.timefactor".
    */
   def enterBarrier(max: FiniteDuration, name: String*): Unit =
-    testConductor.enter(Timeout.durationToTimeout(remainingOr(max.dilated)), name.to(immutable.Seq))
+    testConductor.enter(Timeout.durationToTimeout(remainingOr(max.dilated)), name.to(Seq))
 
   /**
    * Query the controller for the transport address of the given node (by role name) and
@@ -465,9 +464,9 @@ abstract class MultiNodeSpec(
    */
   def node(role: RoleName): ActorPath = RootActorPath(testConductor.getAddressFor(role).await)
 
-  def muteDeadLetters(messageClasses: Class[_]*)(sys: ActorSystem = system): Unit =
+  def muteDeadLetters(messageClasses: Class[?]*)(sys: ActorSystem = system): Unit =
     if (!sys.log.isDebugEnabled) {
-      def mute(clazz: Class[_]): Unit =
+      def mute(clazz: Class[?]): Unit =
         sys.eventStream.publish(Mute(DeadLettersFilter(clazz)(occurrences = Int.MaxValue)))
       if (messageClasses.isEmpty) mute(classOf[AnyRef])
       else messageClasses.foreach(mute)

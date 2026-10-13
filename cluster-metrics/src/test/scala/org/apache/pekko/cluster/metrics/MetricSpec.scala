@@ -27,16 +27,35 @@ import pekko.testkit.PekkoSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
-@nowarn
 class MetricNumericConverterSpec extends AnyWordSpec with Matchers with MetricNumericConverter {
 
   "MetricNumericConverter" must {
 
     "convert" in {
-      convertNumber(0).isLeft should ===(true)
-      convertNumber(1).left.get should ===(1)
-      convertNumber(1L).isLeft should ===(true)
-      convertNumber(0.0).isRight should ===(true)
+      convertNumber(0) should ===(Left(0L))
+      convertNumber(1) should ===(Left(1L))
+      convertNumber(1L) should ===(Left(1L))
+      convertNumber(0.0) should ===(Right(0.0))
+    }
+
+    "convert java.math.BigInteger and java.math.BigDecimal" in {
+      convertNumber(java.math.BigInteger.valueOf(42)) should ===(Left(42L))
+      convertNumber(new java.math.BigDecimal("3.14")).toOption.get should ===(3.14 +- 0.0001)
+    }
+
+    "convert any Number subtype" in {
+      convertNumber(42.toShort) should ===(Left(42L))
+      convertNumber(7.toByte) should ===(Left(7L))
+      convertNumber(new java.util.concurrent.atomic.AtomicInteger(99)) should ===(Left(99L))
+      convertNumber(new java.util.concurrent.atomic.AtomicLong(1234L)) should ===(Left(1234L))
+    }
+
+    "define a metric with java.math.BigInteger and java.math.BigDecimal values" in {
+      val Some(intMetric) = Metric.create("big-int", java.math.BigInteger.valueOf(1024L), None): @unchecked
+      intMetric.value should ===(java.math.BigInteger.valueOf(1024L))
+
+      val Some(decMetric) = Metric.create("big-dec", new java.math.BigDecimal("99.9"), None): @unchecked
+      decMetric.value should ===(new java.math.BigDecimal("99.9"))
     }
 
     "define a new metric" in {

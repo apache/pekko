@@ -82,14 +82,15 @@ import pekko.stream.stage._
         open = true
       }
 
-      private def closeStage(): Unit =
+      private def closeStage(): Unit = {
+        open = false
         try {
           close(resource)
-          open = false
           completeStage()
         } catch {
           case NonFatal(ex) => failStage(ex)
         }
+      }
 
       override def postStop(): Unit = {
         if (open) close(resource)

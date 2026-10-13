@@ -31,13 +31,10 @@ import io.aeron.status.ChannelEndpointStatus;
 import java.io.File;
 import java.io.PrintStream;
 import java.nio.MappedByteBuffer;
-import java.util.Date;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
 import org.agrona.DirectBuffer;
 import org.agrona.IoUtil;
-import org.agrona.concurrent.SigInt;
 import org.agrona.concurrent.status.CountersReader;
 
 /**
@@ -144,73 +141,6 @@ public class AeronStat {
         createCountersValuesBuffer(cncByteBuffer, cncMetaData));
   }
 
-  public static void main(final String[] args) throws Exception {
-    Pattern typeFilter = null;
-    Pattern identityFilter = null;
-    Pattern sessionFilter = null;
-    Pattern streamFilter = null;
-    Pattern channelFilter = null;
-
-    if (0 != args.length) {
-      checkForHelp(args);
-
-      for (final String arg : args) {
-        final int equalsIndex = arg.indexOf('=');
-        if (-1 == equalsIndex) {
-          System.out.println("Arguments must be in name=pattern format: Invalid '" + arg + "'");
-          return;
-        }
-
-        final String argName = arg.substring(0, equalsIndex);
-        final String argValue = arg.substring(equalsIndex + 1);
-
-        switch (argName) {
-          case COUNTER_TYPE_ID:
-            typeFilter = Pattern.compile(argValue);
-            break;
-
-          case COUNTER_IDENTITY:
-            identityFilter = Pattern.compile(argValue);
-            break;
-
-          case COUNTER_SESSION_ID:
-            sessionFilter = Pattern.compile(argValue);
-            break;
-
-          case COUNTER_STREAM_ID:
-            streamFilter = Pattern.compile(argValue);
-            break;
-
-          case COUNTER_CHANNEL:
-            channelFilter = Pattern.compile(argValue);
-            break;
-
-          default:
-            System.out.println("Unrecognised argument: '" + arg + "'");
-            return;
-        }
-      }
-    }
-
-    final AeronStat aeronStat =
-        new AeronStat(
-            mapCounters(), typeFilter, identityFilter, sessionFilter, streamFilter, channelFilter);
-    final AtomicBoolean running = new AtomicBoolean(true);
-    SigInt.register(() -> running.set(false));
-
-    while (running.get()) {
-      System.out.print("\033[H\033[2J");
-
-      System.out.format("%1$tH:%1$tM:%1$tS - Aeron Stat%n", new Date());
-      System.out.println("=========================");
-
-      aeronStat.print(System.out);
-      System.out.println("--");
-
-      Thread.sleep(ONE_SECOND);
-    }
-  }
-
   public void print(final PrintStream out) {
     counters.forEach(
         (counterId, typeId, keyBuffer, label) -> {
@@ -219,23 +149,6 @@ public class AeronStat {
             out.format("%3d: %,20d - %s%n", counterId, value, label);
           }
         });
-  }
-
-  private static void checkForHelp(final String[] args) {
-    for (final String arg : args) {
-      if ("-?".equals(arg) || "-h".equals(arg) || "-help".equals(arg)) {
-        System.out.format(
-            "Usage: [-Daeron.dir=<directory containing CnC file>] AeronStat%n"
-                + "\tfilter by optional regex patterns:%n"
-                + "\t[type=<pattern>]%n"
-                + "\t[identity=<pattern>]%n"
-                + "\t[sessionId=<pattern>]%n"
-                + "\t[streamId=<pattern>]%n"
-                + "\t[channel=<pattern>]%n");
-
-        System.exit(0);
-      }
-    }
   }
 
   private boolean filter(final int typeId, final DirectBuffer keyBuffer) {

@@ -14,6 +14,7 @@
 package org.apache.pekko.cluster.sharding
 
 import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 import scala.annotation.tailrec
 import scala.collection.immutable
@@ -26,8 +27,7 @@ import scala.util.{ Failure, Success }
 import org.apache.pekko
 import pekko.Done
 import pekko.actor._
-import pekko.annotation.{ InternalApi, InternalStableApi }
-import pekko.annotation.ApiMayChange
+import pekko.annotation.{ DoNotInherit, InternalApi, InternalStableApi }
 import pekko.cluster.Cluster
 import pekko.cluster.ClusterEvent._
 import pekko.cluster.ClusterSettings
@@ -37,6 +37,7 @@ import pekko.cluster.MemberStatus
 import pekko.cluster.sharding.ClusterShardingSettings.PassivationStrategy
 import pekko.cluster.sharding.Shard.ShardStats
 import pekko.cluster.sharding.internal.RememberEntitiesProvider
+import pekko.cluster.sharding.internal.RememberEntityStarterManager
 import pekko.event.Logging
 import pekko.pattern.ask
 import pekko.pattern.pipe
@@ -50,7 +51,7 @@ object ShardRegion {
 
   /**
    * INTERNAL API
-   * Factory method for the [[pekko.actor.Props]] of the [[ShardRegion]] actor.
+   * Factory method for the [[pekko.actor.Props]] of the `ShardRegion` actor.
    */
   private[pekko] def props(
       typeName: String,
@@ -75,7 +76,7 @@ object ShardRegion {
 
   /**
    * INTERNAL API
-   * Factory method for the [[pekko.actor.Props]] of the [[ShardRegion]] actor
+   * Factory method for the [[pekko.actor.Props]] of the `ShardRegion` actor
    * when using it in proxy only mode.
    */
   private[pekko] def proxyProps(
@@ -113,7 +114,7 @@ object ShardRegion {
   type Msg = Any
 
   /**
-   * Interface of the partial function used by the [[ShardRegion]] to
+   * Interface of the partial function used by the `ShardRegion` to
    * extract the entity id and the message to send to the entity from an
    * incoming message. The implementation is application specific.
    * If the partial function does not match the message will be
@@ -125,7 +126,7 @@ object ShardRegion {
   type ExtractEntityId = PartialFunction[Msg, (EntityId, Msg)]
 
   /**
-   * Interface of the function used by the [[ShardRegion]] to
+   * Interface of the function used by the `ShardRegion` to
    * extract the shard id from an incoming message.
    * Only messages that passed the [[ExtractEntityId]] will be used
    * as input to this function.
@@ -193,7 +194,8 @@ object ShardRegion {
     }
   }
 
-  sealed trait ShardRegionCommand
+  /** Not for user extension */
+  @DoNotInherit sealed trait ShardRegionCommand
 
   /**
    * If the state of the entities are persistent you may stop entities that are not used to
@@ -234,7 +236,8 @@ object ShardRegion {
    */
   final case class ShardInitialized(shardId: ShardId)
 
-  sealed trait ShardRegionQuery
+  /** Not for user extension */
+  @DoNotInherit sealed trait ShardRegionQuery
 
   /**
    * Send this message to the `ShardRegion` actor to request for [[CurrentRegions]],
@@ -500,11 +503,8 @@ object ShardRegion {
       with DeadLetterSuppression
 
   /**
-   * API MAY CHANGE: Messages for passivation strategies may change after additional testing and feedback.
-   *
    * When limit-based automatic passivation is enabled, set a new active entity limit for a shard region.
    */
-  @ApiMayChange
   final case class SetActiveEntityLimit(perRegionLimit: Int)
 
   /**
@@ -640,7 +640,11 @@ private[pekko] class ShardRegion(
 
   // sort by age, oldest first
   val ageOrdering = Member.ageOrdering
-  var membersByAge: immutable.SortedSet[Member] = immutable.SortedSet.empty(ageOrdering)
+  // membersByAge is only used for tracking where coordinator is running
+  var membersByAge: immutable.SortedSet[Member] = {
+    implicit val ord: Ordering[Member] = ageOrdering
+    immutable.SortedSet.empty[Member]
+  }
   // membersByAge contains members with these status
   private val memberStatusOfInterest: Set[MemberStatus] =
     Set(MemberStatus.Up, MemberStatus.Leaving, MemberStatus.Exiting)
@@ -673,6 +677,14 @@ private[pekko] class ShardRegion(
       }
     }
 
+  // When rememberEntities is enabled, create a manager to throttle entity starting across
+  // all shards in this region (per entity type) rather than per shard
+  private val rememberEntityStarterManager: ActorRef =
+    if (rememberEntitiesProvider.isDefined)
+      context.actorOf(RememberEntityStarterManager.props(context.self, settings), "RememberEntityStarter")
+    else
+      context.system.deadLetters
+
   // subscribe to MemberEvent, re-subscribe when restart
   override def preStart(): Unit = {
     cluster.subscribe(self, classOf[MemberEvent])
@@ -690,12 +702,6 @@ private[pekko] class ShardRegion(
   }
 
   private def logPassivationStrategy(): Unit = {
-    if (settings.passivationStrategySettings.oldSettingUsed) {
-      log.warning(
-        "The `pekko.cluster.sharding.passivate-idle-entity-after` setting and associated methods are deprecated. " +
-        "Use the `pekko.cluster.sharding.passivation.default-idle-strategy.idle-entity.timeout` setting instead. " +
-        "See the documentation and reference config for more information on automatic passivation strategies.")
-    }
     if (settings.rememberEntities) {
       log.debug("{}: Entities will not be passivated automatically because 'rememberEntities' is enabled.", typeName)
     } else {
@@ -712,8 +718,8 @@ private[pekko] class ShardRegion(
     case None    => ClusterSettings.DcRolePrefix + cluster.settings.SelfDataCenter
   }
 
-  def matchingRole(member: Member): Boolean =
-    member.hasRole(targetDcRole) && role.forall(member.hasRole)
+  def matchingCoordinatorRole(member: Member): Boolean =
+    member.hasRole(targetDcRole) && settings.coordinatorSingletonRole.forall(member.hasRole)
 
   /**
    * When leaving the coordinator singleton is started rather quickly on next
@@ -765,16 +771,18 @@ private[pekko] class ShardRegion(
     case msg: RestartShard                       => deliverMessage(msg, sender())
     case msg: StartEntity                        => deliverStartEntity(msg, sender())
     case msg: SetActiveEntityLimit               => deliverToAllShards(msg, sender())
+    case cmd: CoordinatorCommand                 => deliverCoordinatorCommand(cmd, sender())
     case msg if extractEntityId.isDefinedAt(msg) => deliverMessage(msg, sender())
     case unknownMsg                              =>
       log.warning("{}: Message does not have an extractor defined in shard so it was ignored: {}", typeName, unknownMsg)
   }
 
   def receiveClusterState(state: CurrentClusterState): Unit = {
+    implicit val ord: Ordering[Member] = ageOrdering
     changeMembers(
       immutable.SortedSet
-        .empty(ageOrdering)
-        .union(state.members.filter(m => memberStatusOfInterest(m.status) && matchingRole(m))))
+        .empty[Member]
+        .union(state.members.filter(m => memberStatusOfInterest(m.status) && matchingCoordinatorRole(m))))
   }
 
   def receiveClusterEvent(evt: ClusterDomainEvent): Unit = evt match {
@@ -788,7 +796,7 @@ private[pekko] class ShardRegion(
     case MemberRemoved(m, _) =>
       if (m.uniqueAddress == cluster.selfUniqueAddress)
         context.stop(self)
-      else if (matchingRole(m))
+      else if (matchingCoordinatorRole(m))
         changeMembers(membersByAge.filterNot(_.uniqueAddress == m.uniqueAddress))
 
     case MemberDowned(m) =>
@@ -808,7 +816,7 @@ private[pekko] class ShardRegion(
   }
 
   private def addMember(m: Member): Unit = {
-    if (matchingRole(m) && memberStatusOfInterest(m.status)) {
+    if (matchingCoordinatorRole(m) && memberStatusOfInterest(m.status)) {
       // replace, it's possible that the status, or upNumber is changed
       changeMembers(membersByAge.filterNot(_.uniqueAddress == m.uniqueAddress) + m)
     }
@@ -958,6 +966,10 @@ private[pekko] class ShardRegion(
     case _ => unhandled(cmd)
   }
 
+  def deliverCoordinatorCommand(cmd: CoordinatorCommand, snd: ActorRef): Unit = {
+    coordinator.foreach(_.tell(cmd, snd))
+  }
+
   def receiveQuery(query: ShardRegionQuery): Unit = query match {
     case GetCurrentRegions =>
       coordinator match {
@@ -1005,7 +1017,8 @@ private[pekko] class ShardRegion(
       shardsByRef = shardsByRef - ref
       shards = shards - shardId
       startingShards -= shardId
-      if (settings.passivationStrategy != ClusterShardingSettings.NoPassivationStrategy && !gracefulShutdownInProgress) {
+      if (settings.passivationStrategy != ClusterShardingSettings.NoPassivationStrategy &&
+        !gracefulShutdownInProgress) {
         val update = ShardsUpdated(shards.size)
         shards.values.foreach(_ ! update)
       }
@@ -1073,24 +1086,23 @@ private[pekko] class ShardRegion(
    *
    * Logs a warning if any of the group timed out.
    *
-   * To check subset unresponsive: {{{ queryShards[T](shards.filterKeys(u.contains), shardQuery) }}}
+   * To check subset unresponsive: {{{ queryShards[T](shards.filter { case (id, _) => u.contains(id) }, shardQuery) }}}
    */
   def queryShards[T: ClassTag](shards: Map[ShardId, ActorRef], msg: Any): Future[ShardsQueryResult[T]] = {
     implicit val timeout: Timeout = settings.shardRegionQueryTimeout
 
     Future.traverse(shards.toSeq) { case (shardId, shard) => askOne(shard, msg, shardId) }.map { ps =>
       val qr = ShardsQueryResult[T](ps, this.shards.size, timeout.duration)
-      if (qr.failed.nonEmpty) log.warning(s"{}: $qr", typeName)
+      if (qr.failed.nonEmpty) log.warning("{}: {}", typeName, qr)
       qr
     }
   }
 
   private def askOne[T: ClassTag](shard: ActorRef, msg: Any, shardId: ShardId)(
-      implicit timeout: Timeout): Future[Either[ShardId, T]] =
-    (shard ? msg).mapTo[T].transform {
-      case Success(t) => Success(Right(t))
-      case Failure(_) => Success(Left(shardId))
-    }
+      implicit timeout: Timeout): Future[Either[ShardId, T]] = (shard ? msg).mapTo[T].transform {
+    case Success(t) => Success(Right(t))
+    case Failure(_) => Success(Left(shardId))
+  }
 
   private def tryCompleteGracefulShutdownIfInProgress(): Unit =
     if (gracefulShutdownInProgress && shards.isEmpty && shardBuffers.isEmpty) {
@@ -1332,7 +1344,7 @@ private[pekko] class ShardRegion(
         .orElse(entityProps match {
           case Some(props) if !shardsByRef.values.exists(_ == id) =>
             log.debug(ShardingLogMarker.shardStarted(typeName, id), "{}: Starting shard [{}] in region", typeName, id)
-            val name = URLEncoder.encode(id, "utf-8")
+            val name = URLEncoder.encode(id, StandardCharsets.UTF_8)
             val shard = context.watch(
               context.actorOf(
                 Shard
@@ -1344,7 +1356,8 @@ private[pekko] class ShardRegion(
                     extractEntityId,
                     extractShardId,
                     handOffStopMessage,
-                    rememberEntitiesProvider)
+                    rememberEntitiesProvider,
+                    rememberEntityStarterManager)
                   .withDispatcher(context.props.dispatcher),
                 name))
             shardsByRef = shardsByRef.updated(shard, id)

@@ -18,7 +18,8 @@ import java.util.concurrent.ThreadLocalRandom
 import scala.annotation.nowarn
 import scala.concurrent.duration._
 
-import org.apache.pekko.testkit.{ LongRunningTest, PekkoSpec }
+import org.apache.pekko
+import pekko.testkit.{ LongRunningTest, PekkoSpec }
 
 @nowarn
 class EWMASpec extends PekkoSpec(MetricsConfig.defaultEnabled) with MetricsCollectorFactory {

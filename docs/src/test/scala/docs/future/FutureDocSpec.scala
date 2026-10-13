@@ -521,7 +521,7 @@ class FutureDocSpec extends PekkoSpec {
       } else Future.successful(5)
     }
 
-    // Return a new future that will retry up to 10 times
+    // Return a new future with up to 10 retry attempts after the initial attempt
     val retried: Future[Int] = pekko.pattern.retry(() => futureToAttempt(), attempts = 10, 100.milliseconds)
     // #retry
 

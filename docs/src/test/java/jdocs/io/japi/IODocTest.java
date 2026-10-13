@@ -13,11 +13,11 @@
 
 package jdocs.io.japi;
 
-import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
+import org.apache.pekko.testkit.PekkoJUnitJupiterActorSystemResource;
 import jdocs.AbstractJavaTest;
 import org.apache.pekko.testkit.javadsl.TestKit;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
+import org.junit.jupiter.api.Test;
 
 // #imports
 import java.net.InetSocketAddress;
@@ -37,8 +37,8 @@ import org.apache.pekko.util.ByteString;
 
 import org.apache.pekko.testkit.PekkoSpec;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class IODocTest extends AbstractJavaTest {
 
@@ -86,6 +86,7 @@ public class IODocTest extends AbstractJavaTest {
           .build();
     }
   }
+
   // #server
 
   public
@@ -109,6 +110,7 @@ public class IODocTest extends AbstractJavaTest {
           .build();
     }
   }
+
   // #simplistic-handler
 
   public
@@ -179,11 +181,12 @@ public class IODocTest extends AbstractJavaTest {
           .build();
     }
   }
+
   // #client
 
-  @ClassRule
-  public static PekkoJUnitActorSystemResource actorSystemResource =
-      new PekkoJUnitActorSystemResource("IODocTest", PekkoSpec.testConf());
+  @RegisterExtension
+  static PekkoJUnitJupiterActorSystemResource actorSystemResource =
+      new PekkoJUnitJupiterActorSystemResource("IODocTest", PekkoSpec.testConf());
 
   private final ActorSystem system = actorSystemResource.getSystem();
 

@@ -16,7 +16,7 @@ To use Pekko Streams, add the module to your project:
 @@@ note
 
 Both the Java and Scala DSLs of Pekko Streams are bundled in the same JAR. For a smooth development experience, when using an IDE such as Eclipse or IntelliJ, you can disable the auto-importer from suggesting `javadsl` imports when working in Scala,
-or viceversa. See @ref:[IDE Tips](../additional/ide.md). 
+or vice versa. See @ref:[IDE Tips](../additional/ide.md). 
 @@@
 
 ## First steps
@@ -251,7 +251,7 @@ more advanced operators to finally be consumed by a @scala[`Sink[In,M3]`]@java[`
 and `M3` for now, they are not relevant to the types of the elements produced/consumed by these classes – they are
 "materialized types", which we'll talk about @ref:[below](#materialized-values-quick))]@java[. The first type parameter—`Tweet` in this case—designates the kind of elements produced
 by the source while the `M` type parameters describe the object that is created during
-materialization ([see below](#materialized-values-quick))—`NotUsed` (from the `scala.runtime`
+materialization ([see below](#materialized-values-quick))—`NotUsed` (from the `org.apache.pekko`
 package) means that no value is produced, it is the generic equivalent of `void`.]
 
 
@@ -299,7 +299,7 @@ Java
 ## Flattening sequences in streams
 
 In the previous section we were working on 1:1 relationships of elements which is the most common case, but sometimes
-we might want to map from one element to a number of elements and receive a "flattened" stream, similarly like `flatMap`
+we might want to map from one element to a number of elements and receive a "flattened" stream, similar to how `flatMap`
 works on Scala Collections. In order to get a flattened stream of hashtags from our stream of tweets we can use the @apidoc[mapConcat](stream.*.Source) {scala="#mapConcat[T](f:Out=%3EIterableOnce[T]):FlowOps.this.Repr[T]" java="#mapConcat(org.apache.pekko.japi.function.Function)"}
 operator:
 
@@ -311,12 +311,13 @@ Java
 
 @@@ note
 
-The name `flatMap` was consciously avoided due to its proximity with for-comprehensions and monadic composition.
+The name `flatMap` was originally avoided for this operator due to its proximity with for-comprehensions and monadic composition.
 It is problematic for two reasons: @scala[first]@java[firstly], flattening by concatenation is often undesirable in bounded stream processing
 due to the risk of deadlock (with merge being the preferred strategy), and @scala[second]@java[secondly], the monad laws would not hold for
-our implementation of flatMap (due to the liveness issues).
+an implementation of flatMap on streams (due to the liveness issues).
+@scala[The Scala API does provide `flatMap`, but only as an alias for @ref:[flatMapConcat](operators/Source-or-Flow/flatMapConcat.md) that was added (as an API that may change) to enable for-comprehensions; it operates on streams (the supplied function returns a `Source`), not on collections.]
 
-Please note that the @apidoc[mapConcat](stream.*.Source) {scala="#mapConcat[T](f:Out=%3EIterableOnce[T]):FlowOps.this.Repr[T]" java="#mapConcat(org.apache.pekko.japi.function.Function)"} requires the supplied function to return @scala[an iterable (`f: Out => immutable.Iterable[T]`]@java[a strict collection (`Out f -> java.util.List<T>`)],
+Please note that the @apidoc[mapConcat](stream.*.Source) {scala="#mapConcat[T](f:Out=%3EIterableOnce[T]):FlowOps.this.Repr[T]" java="#mapConcat(org.apache.pekko.japi.function.Function)"} requires the supplied function to return @scala[an iterable (`f: Out => IterableOnce[T]`)]@java[an iterable (`Out f -> java.lang.Iterable<T>`)],
 whereas `flatMap` would have to operate on streams all the way through.
 
 @@@
@@ -393,7 +394,7 @@ While this question is not as obvious to give an answer to in case of an infinit
 this question in a streaming setting would be to create a stream of counts described as "*up until now*, we've processed N tweets"),
 but in general it is possible to deal with finite streams and come up with a nice result such as a total count of elements.
 
-First, let's write such an element counter using @scala[@scaladoc[Sink.fold](pekko.stream.scaladsl.Sink$#fold[U,T](zero:U)(f:(U,T)=%3EU):org.apache.pekko.stream.scaladsl.Sink[T,scala.concurrent.Future[U]]) and]@java[@javadoc[Flow.of(Class)](pekko.stream.javadsl.Flow#of(java.lang.Class)) and @javadoc[Sink.fold](pekko.stream.javadsl.Sink$#fold(U,org.apache.pekko.japi.function.Function2)) to]  see how the types look like:
+First, let's write such an element counter using @scala[@scaladoc[Sink.fold](pekko.stream.scaladsl.Sink$#fold[U,T](zero:U)(f:(U,T)=%3EU):org.apache.pekko.stream.scaladsl.Sink[T,scala.concurrent.Future[U]]) and]@java[@javadoc[Flow.of(Class)](pekko.stream.javadsl.Flow#of(java.lang.Class)) and @javadoc[Sink.fold](pekko.stream.javadsl.Sink$#fold(U,org.apache.pekko.japi.function.Function2)) to]  see what the types look like:
 
 Scala
 :   @@snip [TwitterStreamQuickstartDocSpec.scala](/docs/src/test/scala/docs/stream/TwitterStreamQuickstartDocSpec.scala) { #tweets-fold-count }

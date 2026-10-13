@@ -30,7 +30,7 @@ object ReplicatorSettings {
    * Create settings from the default configuration
    * `pekko.cluster.distributed-data`.
    */
-  def apply(system: ActorSystem[_]): ReplicatorSettings =
+  def apply(system: ActorSystem[?]): ReplicatorSettings =
     dd.ReplicatorSettings(system.toClassic)
 
   /**
@@ -44,6 +44,6 @@ object ReplicatorSettings {
    * INTERNAL API
    * The name of the actor used in DistributedData extensions.
    */
-  @InternalApi private[pekko] def name(system: ActorSystem[_]): String =
+  @InternalApi private[pekko] def name(system: ActorSystem[?]): String =
     dd.ReplicatorSettings.name(system.toClassic, Some("typed"))
 }

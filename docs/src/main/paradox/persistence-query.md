@@ -1,7 +1,7 @@
 ---
 project.description: Query side to Apache Pekko Persistence allowing for building CQRS applications.
 ---
-# Apache Persistence Query
+# Pekko Persistence Query
 
 ## Dependency
 
@@ -59,11 +59,11 @@ Java
 :  @@snip [PersistenceQueryDocTest.java](/docs/src/test/java/jdocs/persistence/PersistenceQueryDocTest.java) { #basic-usage }
 
 Journal implementers are encouraged to put this identifier in a variable known to the user, such that one can access it via
-@scala[@scaladoc[readJournalFor[NoopJournal](NoopJournal.identifier)](pekko.persistence.query.PersistenceQuery#readJournalFor[T%3C:org.apache.pekko.persistence.query.scaladsl.ReadJournal](readJournalPluginId:String):T)]@java[@javadoc[getJournalFor(NoopJournal.class, NoopJournal.identifier)](pekko.persistence.query.PersistenceQuery#getReadJournalFor(java.lang.Class,java.lang.String))], however this is not enforced.
+@scala[@scaladoc[readJournalFor[NoopJournal](NoopJournal.identifier)](pekko.persistence.query.PersistenceQuery#readJournalFor[T%3C:org.apache.pekko.persistence.query.scaladsl.ReadJournal](readJournalPluginId:String):T)]@java[@javadoc[getReadJournalFor(NoopJournal.class, NoopJournal.identifier)](pekko.persistence.query.PersistenceQuery#getReadJournalFor(java.lang.Class,java.lang.String))], however this is not enforced.
 
 ### Predefined queries
 
-Pekko persistence query comes with a number of query interfaces built in and suggests Journal implementors to implement
+Pekko persistence query comes with a number of query interfaces built in and suggests Journal implementers to implement
 them according to the semantics described below. It is important to notice that while these query types are very common
 a journal is not obliged to implement all of them - for example because in a given journal such query would be
 significantly inefficient.
@@ -157,9 +157,9 @@ Java
 
 As you can see, we can use all the usual stream operators available from @ref:[Streams](stream/index.md) on the resulting query stream,
 including for example taking the first 10 and cancelling the stream. It is worth pointing out that the built-in `EventsByTag`
-query has an optionally supported offset parameter (of type `Long`) which the journals can use to implement resumable-streams.
+query has an optionally supported offset parameter (of type `Offset`) which the journals can use to implement resumable-streams.
 For example a journal may be able to use a WHERE clause to begin the read starting from a specific row, or in a datastore
-that is able to order events by insertion time it could treat the Long as a timestamp and select only older events.
+that is able to order events by insertion time it could treat the offset as a timestamp and select only newer events.
 
 If your usage does not require a live stream, you can use the @apidoc[currentEventsByTag](query.*.CurrentEventsByTagQuery) query.
 
@@ -168,7 +168,14 @@ If your usage does not require a live stream, you can use the @apidoc[currentEve
 Query events for given entity type and slices. A slice is deterministically defined based on the persistence id.
 The purpose is to evenly distribute all persistence ids over the slices.
 
-See @apidoc[persistence.query.typed.*.EventsBySliceQuery] and @apidoc[persistence.query.typed.*.CurrentEventsBySliceQuery]. 
+See @apidoc[pekko.persistence.query.typed.*.EventsBySliceQuery] and @apidoc[pekko.persistence.query.typed.*.CurrentEventsBySliceQuery]. 
+
+A variation of these are @apidoc[pekko.persistence.query.typed.*.EventsBySliceStartingFromSnapshotsQuery] and @apidoc[pekko.persistence.query.typed.*.CurrentEventsBySliceStartingFromSnapshotsQuery].
+
+@apidoc[pekko.persistence.query.typed.*.EventsBySliceFirehoseQuery] can give better scalability when many
+consumers retrieve the same events, for example many Projections of the same entity type. The purpose is
+to share the stream of events from the database and fan out to connected consumer streams. Thereby fewer queries
+and loading of events from the database. It is typically used together with @ref:[Sharded Daemon Process with colocated processes](typed/cluster-sharded-daemon-process.md#colocate-processes).
 
 ### Materialized values of queries
 
@@ -282,7 +289,7 @@ their exposed semantics as well as handled query scenarios.
 
 ### ReadJournal plugin API
 
-A read journal plugin must implement @apidoc[pekko.query.ReadJournalProvider](persistence.query.ReadJournalProvider) which
+A read journal plugin must implement @apidoc[pekko.persistence.query.ReadJournalProvider](persistence.query.ReadJournalProvider) which
 creates instances of @scaladoc[pekko.persistence.query.scaladsl.ReadJournal](pekko.persistence.query.scaladsl.ReadJournal) and
 @javadoc[persistence.query.javadsl.ReadJournal](pekko.persistence.query.javadsl.ReadJournal). The plugin must implement both the `scaladsl`
 and the `javadsl` @scala[traits]@java[interfaces] because the @scaladoc[pekko.stream.scaladsl.Source](pekko.stream.scaladsl.Source) and 

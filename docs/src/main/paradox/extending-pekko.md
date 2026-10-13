@@ -12,7 +12,7 @@ Details on how to make that happens are below, in the @ref:[Loading from Configu
 
 @@@ warning
 
-Since an extension is a way to hook into Pekko itself, the implementor of the extension needs to
+Since an extension is a way to hook into Pekko itself, the implementer of the extension needs to
 ensure the thread safety of his/her extension.
 
 @@@
@@ -113,7 +113,7 @@ Java
 
 ## Library extensions
 
-A third part library may register its extension for auto-loading on actor system startup by appending it to
+A third-party library may register its extension for auto-loading on actor system startup by appending it to
 `pekko.library-extensions` in its `reference.conf`.
 
 ```
@@ -126,7 +126,7 @@ this could be important is in tests.
 
 @@@ warning
 
-The``pekko.library-extensions`` must never be assigned (`= ["Extension"]`) instead of appending as this will break
+The `pekko.library-extensions` must never be assigned (`= ["Extension"]`) instead of appending as this will break
 the library-extension mechanism and make behavior depend on class path ordering.
 
 @@@

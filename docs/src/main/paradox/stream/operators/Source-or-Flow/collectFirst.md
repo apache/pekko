@@ -1,6 +1,6 @@
 # collectFirst
 
-Transform this stream by applying the given partial function to the first element on which the function is defined as it pass through this processing step, and cancel the upstream publisher after the first element is emitted.
+Transform this stream by applying the given partial function to the first element on which the function is defined as it passes through this processing step, and cancel the upstream publisher after the first element is emitted.
 
 @ref[Simple operators](../index.md#simple-operators)
 

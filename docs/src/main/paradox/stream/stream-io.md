@@ -38,8 +38,10 @@ Java
 Next, we handle *each* incoming connection using a @apidoc[stream.*.Flow] which will be used as the operator
 to handle and emit @apidoc[util.ByteString] s from and to the TCP Socket. Since one `ByteString` does not have to necessarily
 correspond to exactly one line of text (the client might be sending the line in chunks) we use the @apidoc[Framing.delimiter](stream.*.Framing$) {scala="#delimiter(delimiter:org.apache.pekko.util.ByteString,maximumFrameLength:Int,allowTruncation:Boolean):org.apache.pekko.stream.scaladsl.Flow[org.apache.pekko.util.ByteString,org.apache.pekko.util.ByteString,org.apache.pekko.NotUsed]" java="#delimiter(org.apache.pekko.util.ByteString,int,org.apache.pekko.stream.javadsl.FramingTruncation)"}
-helper Flow to chunk the inputs up into actual lines of text. The last boolean
-argument indicates that we require an explicit line ending even for the last message before the connection is closed.
+helper Flow to chunk the inputs up into actual lines of text. The last argument controls whether an explicit line ending
+is required for the last message before the connection is closed: @scala[`allowTruncation = true` means that the last message
+is emitted even without a trailing line ending]@java[`FramingTruncation.DISALLOW` means that an explicit line ending is required
+even for the last message].
 In this example we add exclamation marks to each incoming text message and push it through the flow:
 
 Scala
@@ -100,7 +102,7 @@ however in client-server scenarios it is often the simplest to make either side 
 @@@ note
 
 In case of back-pressured cycles (which can occur even between different systems) sometimes you have to decide
-which of the sides has start the conversation in order to kick it off. This can be often done by injecting an
+which of the sides has to start the conversation in order to kick it off. This can be often done by injecting an
 initial message from one of the sides–a conversation starter.
 
 @@@
@@ -121,7 +123,7 @@ To emit the initial message we merge a @apidoc[stream.*.Source] with a single el
 framing and transformation to @apidoc[util.ByteString] s this way we do not have to repeat such logic.
 
 In this example both client and server may need to close the stream based on a parsed command - `BYE` in the case
-of the server, and `q` in the case of the client. This is implemented by @scala[taking from the stream until `q` and
+of the server, and `q` in the case of the client. This is implemented by @scala[taking from the stream until `q`
 and concatenating a `Source` with a single `BYE` element which will then be sent after the original source completed]@java[using a custom operator extending @ref[`GraphStage`](stream-customize.md)
 which completes the stream once it encounters such command].
 

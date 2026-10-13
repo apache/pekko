@@ -31,7 +31,7 @@ import org.apache.pekko.testkit.EventFilter;
 import org.apache.pekko.testkit.TestEvent;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.apache.pekko.japi.Util.immutableSeq;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import scala.concurrent.Await;
 
@@ -43,9 +43,9 @@ import org.apache.pekko.actor.SupervisorStrategy;
 
 // #supervisor
 
-import org.junit.Test;
-import org.junit.BeforeClass;
-import org.junit.AfterClass;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.AfterAll;
 
 // #testkit
 public class FaultHandlingTest extends AbstractJavaTest {
@@ -162,12 +162,12 @@ public class FaultHandlingTest extends AbstractJavaTest {
   scala.concurrent.duration.Duration timeout =
       scala.concurrent.duration.Duration.create(5, SECONDS);
 
-  @BeforeClass
+  @BeforeAll
   public static void start() {
     system = ActorSystem.create("FaultHandlingTest", config);
   }
 
-  @AfterClass
+  @AfterAll
   public static void cleanup() {
     TestKit.shutdownActorSystem(system);
     system = null;

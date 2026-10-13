@@ -47,7 +47,7 @@ Java
 
 If the resource produces more than one element at a time, combining `unfoldResource` with 
 @scala[`mapConcat(identity)`]@java[`mapConcat(elems -> elems)`] will give you a stream of individual elements.
-See @ref:[mapConcat](../Source-or-Flow/mapConcat.md)) for details.
+See @ref:[mapConcat](../Source-or-Flow/mapConcat.md) for details.
 
 ## Reactive Streams semantics
 

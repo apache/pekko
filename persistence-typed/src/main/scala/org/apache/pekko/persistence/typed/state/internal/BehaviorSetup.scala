@@ -30,6 +30,8 @@ import pekko.persistence.typed.state.internal.InternalProtocol.RecoveryTimeout
 import pekko.persistence.typed.state.scaladsl.DurableStateBehavior
 import pekko.util.OptionVal
 
+import com.typesafe.config.ConfigFactory
+
 import org.slf4j.Logger
 import org.slf4j.MDC
 
@@ -57,7 +59,9 @@ private[pekko] final class BehaviorSetup[C, S](
   // Any instead S because adapter may change the type
   val durableStateStore: DurableStateUpdateStore[Any] =
     DurableStateStoreRegistry(context.system.toClassic)
-      .durableStateStoreFor[DurableStateUpdateStore[Any]](settings.durableStateStorePluginId)
+      .durableStateStoreFor[DurableStateUpdateStore[Any]](
+        settings.durableStateStorePluginId,
+        settings.durableStateStorePluginConfig.getOrElse(ConfigFactory.empty))
 
   def selfClassic: ClassicActorRef = context.self.toClassic
 
@@ -104,11 +108,11 @@ private[pekko] final class BehaviorSetup[C, S](
     } catch {
       case NonFatal(ex) =>
         if (catchAndLog) {
-          internalLogger.error(s"Error while processing signal [$signal]: $ex", ex)
+          internalLogger.error("Error while processing signal [{}]", signal, ex)
           true
         } else {
           if (internalLogger.isDebugEnabled)
-            internalLogger.debug(s"Error while processing signal [$signal]: $ex", ex)
+            internalLogger.debug("Error while processing signal [{}]", signal, ex)
           throw ex
         }
     }

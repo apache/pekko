@@ -63,17 +63,17 @@ object Helpers {
    * consistent with equals, otherwise it would not be an enhancement over
    * the identityHashCode.
    */
-  def identityHashComparator[T <: AnyRef](comp: Comparator[T]): Comparator[T] = new Comparator[T] {
-    def compare(a: T, b: T): Int = compareIdentityHash(a, b) match {
-      case 0 if a != b => comp.compare(a, b)
-      case x           => x
-    }
-  }
+  def identityHashComparator[T <: AnyRef](comp: Comparator[T]): Comparator[T] =
+    (a: T, b: T) =>
+      compareIdentityHash(a, b) match {
+        case 0 if a != b => comp.compare(a, b)
+        case x           => x
+      }
 
   /**
    * Converts a "currentTimeMillis"-obtained timestamp accordingly:
    * {{{
-   *   "$hours%02d:$minutes%02d:$seconds%02d.$ms%03dUTC"
+   *   "%%02d:%%02d:%%02d.%%03dUTC" (hours, minutes, seconds, ms)
    * }}}
    *
    * @param timestamp a "currentTimeMillis"-obtained timestamp

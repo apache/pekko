@@ -122,7 +122,7 @@ public class FSMStopBuilder<S, D> {
   }
 
   /**
-   * Build a {@link scala.PartialFunction} from this builder. After this call the builder will be
+   * Build a {@code scala.PartialFunction} from this builder. After this call the builder will be
    * reset.
    *
    * @return a PartialFunction for this builder.

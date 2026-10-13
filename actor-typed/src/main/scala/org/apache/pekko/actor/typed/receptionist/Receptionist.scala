@@ -104,8 +104,8 @@ abstract class ServiceKey[T] extends AbstractServiceKey { key =>
  * The receptionist is easiest accessed through the system: [[ActorSystem.receptionist]]
  */
 object Receptionist extends ExtensionId[Receptionist] {
-  def createExtension(system: ActorSystem[_]): Receptionist = new ReceptionistImpl(system)
-  def get(system: ActorSystem[_]): Receptionist = apply(system)
+  def createExtension(system: ActorSystem[?]): Receptionist = new ReceptionistImpl(system)
+  def get(system: ActorSystem[?]): Receptionist = apply(system)
 
   /**
    * The set of commands accepted by a Receptionist.
@@ -172,13 +172,13 @@ object Receptionist extends ExtensionId[Receptionist] {
   @DoNotInherit
   trait Registered {
 
-    def isForKey(key: ServiceKey[_]): Boolean
+    def isForKey(key: ServiceKey[?]): Boolean
 
     /** Scala API */
-    def key: ServiceKey[_]
+    def key: ServiceKey[?]
 
     /** Java API */
-    def getKey: ServiceKey[_] = key
+    def getKey: ServiceKey[?] = key
 
     /**
      * Scala API
@@ -255,13 +255,13 @@ object Receptionist extends ExtensionId[Receptionist] {
   @DoNotInherit
   trait Deregistered {
 
-    def isForKey(key: ServiceKey[_]): Boolean
+    def isForKey(key: ServiceKey[?]): Boolean
 
     /** Scala API */
-    def key: ServiceKey[_]
+    def key: ServiceKey[?]
 
     /** Java API */
-    def getKey: ServiceKey[_] = key
+    def getKey: ServiceKey[?] = key
 
     /**
      * Scala API
@@ -354,12 +354,12 @@ object Receptionist extends ExtensionId[Receptionist] {
   trait Listing {
 
     /** Scala API */
-    def key: ServiceKey[_]
+    def key: ServiceKey[?]
 
     /** Java API */
-    def getKey: ServiceKey[_] = key
+    def getKey: ServiceKey[?] = key
 
-    def isForKey(key: ServiceKey[_]): Boolean
+    def isForKey(key: ServiceKey[?]): Boolean
 
     /**
      * Scala API: Return the reachable service instances.
@@ -463,7 +463,7 @@ object Receptionist extends ExtensionId[Receptionist] {
 }
 
 object ReceptionistSetup {
-  def apply[T <: Extension](createExtension: ActorSystem[_] => Receptionist): ReceptionistSetup =
+  def apply[T <: Extension](createExtension: ActorSystem[?] => Receptionist): ReceptionistSetup =
     new ReceptionistSetup(createExtension(_))
 
 }
@@ -473,5 +473,5 @@ object ReceptionistSetup {
  * to replace the default implementation of the [[Receptionist]] extension. Intended
  * for tests that need to replace extension with stub/mock implementations.
  */
-final class ReceptionistSetup(createExtension: java.util.function.Function[ActorSystem[_], Receptionist])
+final class ReceptionistSetup(createExtension: java.util.function.Function[ActorSystem[?], Receptionist])
     extends ExtensionSetup[Receptionist](Receptionist, createExtension)

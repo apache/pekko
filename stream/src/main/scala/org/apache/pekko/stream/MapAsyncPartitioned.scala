@@ -25,7 +25,10 @@ import scala.util.control.{ NoStackTrace, NonFatal }
 
 import org.apache.pekko
 import pekko.annotation.InternalApi
+import pekko.event.Logging
+import pekko.event.Logging.LogLevel
 import pekko.stream.ActorAttributes.SupervisionStrategy
+import pekko.stream.Attributes.LogLevels
 import pekko.stream.stage._
 import pekko.util.OptionVal
 
@@ -82,8 +85,10 @@ private[stream] final class MapAsyncPartitioned[In, Out, Partition](
   override val shape: FlowShape[In, Out] = FlowShape(in, out)
 
   override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =
-    new GraphStageLogic(shape) with InHandler with OutHandler {
+    new GraphStageLogic(shape) with InHandler with OutHandler with StageLogging {
       private val contextPropagation = pekko.stream.impl.ContextPropagation()
+
+      override protected def logSource: Class[?] = classOf[MapAsyncPartitioned[?, ?, ?]]
 
       private final class Contextual[T](context: AnyRef, val element: T) {
         private var suspended = false
@@ -106,6 +111,30 @@ private[stream] final class MapAsyncPartitioned[In, Out, Partition](
 
       private var partitionsInProgress: mutable.Set[Partition] = _
       private var buffer: mutable.Queue[(Partition, Contextual[Holder[In, Out]])] = _
+
+      private def logSupervisionFailure(ex: Throwable): Unit = {
+        val logAt: LogLevel = inheritedAttributes.get[LogLevels] match {
+          case Some(levels) => levels.onFailure
+          case None         => LogLevels.defaultErrorLevel(materializer.system)
+        }
+        logAt match {
+          case Logging.ErrorLevel =>
+            log.error(ex, "Supervision strategy resumed after exception in MapAsyncPartitioned: {}", ex.getMessage)
+          case Logging.WarningLevel =>
+            log.warning(ex, "Supervision strategy resumed after exception in MapAsyncPartitioned: {}", ex.getMessage)
+          case Logging.InfoLevel =>
+            log.info(
+              "Supervision strategy resumed after exception in MapAsyncPartitioned: {}: {}",
+              Logging.simpleName(ex.getClass),
+              ex.getMessage)
+          case Logging.DebugLevel =>
+            log.debug(
+              "Supervision strategy resumed after exception in MapAsyncPartitioned: {}: {}",
+              Logging.simpleName(ex.getClass),
+              ex.getMessage)
+          case _ => // Off, nop
+        }
+      }
 
       private val futureCB = getAsyncCallback[Holder[In, Out]](holder =>
         holder.out match {
@@ -142,7 +171,9 @@ private[stream] final class MapAsyncPartitioned[In, Out, Partition](
             wrappedInput.suspend()
           }
         } catch {
-          case NonFatal(ex) => if (decider(ex) == Supervision.Stop) failStage(ex)
+          case NonFatal(ex) =>
+            if (decider(ex) == Supervision.Stop) failStage(ex)
+            else logSupervisionFailure(ex)
         }
 
         pullIfNeeded()
@@ -174,24 +205,58 @@ private[stream] final class MapAsyncPartitioned[In, Out, Partition](
         if (orderedOutput) pushNextIfPossibleOrdered _
         else pushNextIfPossibleUnordered _
 
-      private def pushNextIfPossibleOrdered(): Unit =
-        if (partitionsInProgress.isEmpty) {
-          drainQueue()
-          pullIfNeeded()
-        } else {
-          while (buffer.nonEmpty && !(buffer.front._2.element.out eq NotYetThere) && isAvailable(out)) {
-            val (partition, wrappedInput) = buffer.dequeue()
-            import wrappedInput.{ element => holder }
+      private def pushNextIfPossibleOrdered(): Unit = {
+        while (buffer.nonEmpty && !(buffer.front._2.element.out eq NotYetThere) && isAvailable(out)) {
+          val (partition, wrappedInput) = buffer.dequeue()
+          import wrappedInput.{ element => holder }
+          partitionsInProgress -= partition
+
+          holder.out match {
+            case Success(elem) =>
+              if (elem != null) {
+                push(out, elem)
+                pullIfNeeded()
+              } else {
+                // elem is null
+                pullIfNeeded()
+              }
+
+            case Failure(NonFatal(ex)) =>
+              holder.supervisionDirectiveFor(decider, ex) match {
+                // this could happen if we are looping in pushNextIfPossible and end up on a failed future before the
+                // onComplete callback has run
+                case Supervision.Stop =>
+                  failStage(ex)
+                case _ =>
+                  // try next element
+                  logSupervisionFailure(ex)
+              }
+            case Failure(ex) =>
+              // fatal exception in buffer, not sure that it can actually happen, but for good measure
+              throw ex
+          }
+        }
+        drainQueue()
+        // The while-loop's Failure (resume) branch dequeues elements without calling pullIfNeeded(),
+        // so when the final buffered elements are resumed failures the buffer empties here without any
+        // completion check. pullIfNeeded() is the only path that runs completeStage() once upstream has
+        // finished, so it must run after draining or the stage hangs forever (mirrors the unordered branch).
+        pullIfNeeded()
+      }
+
+      private def pushNextIfPossibleUnordered(): Unit = {
+        buffer = buffer.filter { case (partition, wrappedInput) =>
+          import wrappedInput.{ element => holder }
+
+          if ((holder.out eq NotYetThere) || !isAvailable(out)) {
+            true
+          } else {
             partitionsInProgress -= partition
 
             holder.out match {
               case Success(elem) =>
                 if (elem != null) {
                   push(out, elem)
-                  pullIfNeeded()
-                } else {
-                  // elem is null
-                  pullIfNeeded()
                 }
 
               case Failure(NonFatal(ex)) =>
@@ -201,60 +266,33 @@ private[stream] final class MapAsyncPartitioned[In, Out, Partition](
                   case Supervision.Stop =>
                     failStage(ex)
                   case _ =>
-                  // try next element
+                    // try next element
+                    logSupervisionFailure(ex)
                 }
               case Failure(ex) =>
                 // fatal exception in buffer, not sure that it can actually happen, but for good measure
                 throw ex
             }
+            false
           }
-          drainQueue()
         }
-
-      private def pushNextIfPossibleUnordered(): Unit =
-        if (partitionsInProgress.isEmpty) {
-          drainQueue()
-          pullIfNeeded()
-        } else {
-          buffer = buffer.filter { case (partition, wrappedInput) =>
-            import wrappedInput.{ element => holder }
-
-            if ((holder.out eq NotYetThere) || !isAvailable(out)) {
-              true
-            } else {
-              partitionsInProgress -= partition
-
-              holder.out match {
-                case Success(elem) =>
-                  if (elem != null) {
-                    push(out, elem)
-                  }
-
-                case Failure(NonFatal(ex)) =>
-                  holder.supervisionDirectiveFor(decider, ex) match {
-                    // this could happen if we are looping in pushNextIfPossible and end up on a failed future before the
-                    // onComplete callback has run
-                    case Supervision.Stop =>
-                      failStage(ex)
-                    case _ =>
-                    // try next element
-                  }
-                case Failure(ex) =>
-                  // fatal exception in buffer, not sure that it can actually happen, but for good measure
-                  throw ex
-              }
-              false
-            }
-          }
-          pullIfNeeded()
-          drainQueue()
-        }
+        pullIfNeeded()
+        drainQueue()
+      }
 
       private def drainQueue(): Unit = {
         if (buffer.nonEmpty) {
-          buffer.foreach {
+          // Snapshot the buffer because processElement may complete a Future synchronously
+          // (the #20217 optimization), which re-enters pushNextIfPossible and either
+          // dequeues from the buffer (ordered) or rebuilds it via filter (unordered),
+          // invalidating any in-flight iterator over `buffer`. Items already started or
+          // already pushed during re-entry have holder.out set, so the NotYetThere
+          // guard ensures we never invoke processElement twice for the same Holder.
+          val snapshot = buffer.toList
+          snapshot.foreach {
             case (partition, wrappedInput) =>
-              if (canStartNextElement(partition)) {
+              val holder = wrappedInput.element
+              if ((holder.out eq NotYetThere) && canStartNextElement(partition)) {
                 wrappedInput.resume()
                 processElement(partition, wrappedInput)
               }

@@ -18,16 +18,7 @@ import scala.concurrent.duration._
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
-object RecencyListSpec {
-  // controlled clock for testing recency windows
-  // durations are always in seconds
-  class TestClock extends RecencyList.Clock {
-    private var time = 0L
-    def tick(): Unit = time += 1
-    override def currentTime(): Long = time
-    override def earlierTime(duration: FiniteDuration): Long = currentTime() - duration.toSeconds
-  }
-}
+object RecencyListSpec {}
 
 class RecencyListSpec extends AnyWordSpec with Matchers {
 
@@ -41,8 +32,8 @@ class RecencyListSpec extends AnyWordSpec with Matchers {
   "RecencyList" must {
 
     "track recency of elements" in {
-      val clock = new RecencyListSpec.TestClock
-      val recency = new RecencyList[String](clock)
+      val clock = new TestClock
+      val recency = RecencyList[String](clock)
 
       check(recency, Nil)
 

@@ -196,13 +196,15 @@ abstract class MultiDcHeartbeatTakingOverSpec extends MultiNodeClusterSpec(Multi
    * strongly guarantee the order of "oldest" members, as they're linearized by the order in which they become Up
    * (since marking that transition is a Leader action).
    */
-  private def membersByAge(dataCenter: ClusterSettings.DataCenter): immutable.SortedSet[Member] =
+  private def membersByAge(dataCenter: ClusterSettings.DataCenter): immutable.SortedSet[Member] = {
+    implicit val memberOrdering: Ordering[Member] = Member.ageOrdering
     SortedSet
-      .empty(Member.ageOrdering)
+      .empty[Member]
       .union(
         cluster.state.members.filter(m =>
           m.dataCenter == dataCenter &&
           m.status != MemberStatus.Joining && m.status != MemberStatus.WeaklyUp))
+  }
 
   /** INTERNAL API */
   @InternalApi

@@ -15,7 +15,8 @@ package org.apache.pekko.remote.artery
 
 import scala.util.Random
 
-import org.apache.pekko.util.OptionVal
+import org.apache.pekko
+import pekko.util.OptionVal
 
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
@@ -78,7 +79,8 @@ class ImmutableLongMapSpec extends AnyWordSpec with Matchers {
       ImmutableLongMap.empty[String].updated(10L, "10").updated(20, "20").updated(30, "30").hashCode should be(
         ImmutableLongMap.empty[String].updated(10L, "10").updated(20, "20").updated(30, "30").hashCode)
 
-      ImmutableLongMap.empty[String].updated(10L, "10").updated(20, "20") should not be (ImmutableLongMap
+      ImmutableLongMap.empty[String].updated(10L, "10").updated(20, "20") should not be
+      (ImmutableLongMap
         .empty[String]
         .updated(10L, "10"))
 
@@ -86,7 +88,8 @@ class ImmutableLongMapSpec extends AnyWordSpec with Matchers {
         .empty[String]
         .updated(10L, "10")
         .updated(20, "20")
-        .updated(30, "30") should not be (ImmutableLongMap
+        .updated(30, "30") should not be
+      (ImmutableLongMap
         .empty[String]
         .updated(10L, "10")
         .updated(20, "20b")
@@ -96,7 +99,8 @@ class ImmutableLongMapSpec extends AnyWordSpec with Matchers {
         .empty[String]
         .updated(10L, "10")
         .updated(20, "20")
-        .updated(30, "30") should not be (ImmutableLongMap
+        .updated(30, "30") should not be
+      (ImmutableLongMap
         .empty[String]
         .updated(10L, "10")
         .updated(20, "20b")

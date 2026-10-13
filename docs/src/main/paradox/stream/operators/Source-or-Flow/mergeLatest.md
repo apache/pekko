@@ -6,7 +6,7 @@ Merge multiple sources.
 
 ## Signature
 
-@apidoc[Flow.mergeLatest](Flow) { scala="#mergeLatest[U%3E:Out,M](that:org.apache.pekko.stream.Graph[org.apache.pekko.stream.SourceShape[U],M],eagerComplete:Boolean):FlowOps.this.Repr[scala.collection.immutable.Seq[U]]" java="#mergeLatest(org.apache.pekko.stream.Graph,boolean)" } 
+@apidoc[Flow.mergeLatest](Flow) { scala="#mergeLatest[U%3E:Out,M](that:org.apache.pekko.stream.Graph[org.apache.pekko.stream.SourceShape[U],M],eagerComplete:Boolean):FlowOps.this.Repr[Seq[U]]" java="#mergeLatest(org.apache.pekko.stream.Graph,boolean)" } 
 
 ## Description
 
@@ -19,8 +19,8 @@ completes otherwise when all upstreams complete.
 
 ## Example
 
-This example takes a stream of prices and quantities and emits the price each time the
-price of quantity changes:
+This example takes a stream of prices and quantities and emits the price multiplied by the quantity each time
+the price or the quantity changes:
 
 Scala
 :   @@snip [MergeLatest.scala](/docs/src/test/scala/docs/stream/operators/sourceorflow/MergeLatest.scala) { #mergeLatest }
@@ -35,6 +35,6 @@ Java
 
 **emits** when element is available from some input and each input emits at least one element from stream start
 
-**completes** all upstreams complete (eagerClose=false) or one upstream completes (eagerClose=true)
+**completes** when all upstreams complete (`eagerComplete=false`) or one upstream completes (`eagerComplete=true`)
 @@@
 

@@ -27,9 +27,9 @@ private[cluster] object Reachability {
   def apply(records: immutable.IndexedSeq[Record], versions: Map[UniqueAddress, Long]): Reachability =
     new Reachability(records, versions)
 
-  def create(records: immutable.Seq[Record], versions: Map[UniqueAddress, Long]): Reachability = records match {
-    case r: immutable.IndexedSeq[Record] => apply(r, versions)
-    case _                               => apply(records.toVector, versions)
+  def create(records: Seq[Record], versions: Map[UniqueAddress, Long]): Reachability = records match {
+    case r: (immutable.IndexedSeq[Record] @unchecked) => apply(r, versions)
+    case _                                            => apply(records.toVector, versions)
   }
 
   @SerialVersionUID(1L)

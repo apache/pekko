@@ -13,10 +13,9 @@
 
 package jdocs.stream;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.time.Duration;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -34,20 +33,20 @@ import org.apache.pekko.japi.Pair;
 import org.apache.pekko.stream.*;
 import org.apache.pekko.stream.javadsl.*;
 import org.apache.pekko.testkit.javadsl.TestKit;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 public class FlowDocTest extends AbstractJavaTest {
 
   static ActorSystem system;
 
-  @BeforeClass
+  @BeforeAll
   public static void setup() {
     system = ActorSystem.create("FlowDocTest");
   }
 
-  @AfterClass
+  @AfterAll
   public static void tearDown() {
     TestKit.shutdownActorSystem(system);
     system = null;
@@ -56,8 +55,7 @@ public class FlowDocTest extends AbstractJavaTest {
   @Test
   public void sourceIsImmutable() throws Exception {
     // #source-immutable
-    final Source<Integer, NotUsed> source =
-        Source.from(Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
+    final Source<Integer, NotUsed> source = Source.from(List.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
     source.map(x -> 0); // has no effect on source, since it's immutable
     source.runWith(Sink.fold(0, Integer::sum), system); // 55
 
@@ -74,8 +72,7 @@ public class FlowDocTest extends AbstractJavaTest {
   @Test
   public void materializationInSteps() throws Exception {
     // #materialization-in-steps
-    final Source<Integer, NotUsed> source =
-        Source.from(Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
+    final Source<Integer, NotUsed> source = Source.from(List.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
     // note that the Future is scala.concurrent.Future
     final Sink<Integer, CompletionStage<Integer>> sink = Sink.fold(0, Integer::sum);
 
@@ -93,8 +90,7 @@ public class FlowDocTest extends AbstractJavaTest {
   @Test
   public void materializationRunWith() throws Exception {
     // #materialization-runWith
-    final Source<Integer, NotUsed> source =
-        Source.from(Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
+    final Source<Integer, NotUsed> source = Source.from(List.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
     final Sink<Integer, CompletionStage<Integer>> sink = Sink.fold(0, Integer::sum);
 
     // materialize the flow, getting the Sink's materialized value
@@ -111,7 +107,7 @@ public class FlowDocTest extends AbstractJavaTest {
     // connect the Source to the Sink, obtaining a RunnableGraph
     final Sink<Integer, CompletionStage<Integer>> sink = Sink.fold(0, Integer::sum);
     final RunnableGraph<CompletionStage<Integer>> runnable =
-        Source.from(Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)).toMat(sink, Keep.right());
+        Source.from(List.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)).toMat(sink, Keep.right());
 
     // get the materialized value of the FoldSink
     final CompletionStage<Integer> sum1 = runnable.run(system);
@@ -185,19 +181,18 @@ public class FlowDocTest extends AbstractJavaTest {
   public void variousWaysOfConnecting() throws Exception {
     // #flow-connecting
     // Explicitly creating and wiring up a Source, Sink and Flow
-    Source.from(Arrays.asList(1, 2, 3, 4))
+    Source.from(List.of(1, 2, 3, 4))
         .via(Flow.of(Integer.class).map(elem -> elem * 2))
         .to(Sink.foreach(System.out::println));
 
     // Starting from a Source
-    final Source<Integer, NotUsed> source =
-        Source.from(Arrays.asList(1, 2, 3, 4)).map(elem -> elem * 2);
+    final Source<Integer, NotUsed> source = Source.from(List.of(1, 2, 3, 4)).map(elem -> elem * 2);
     source.to(Sink.foreach(System.out::println));
 
     // Starting from a Sink
     final Sink<Integer, NotUsed> sink =
         Flow.of(Integer.class).map(elem -> elem * 2).to(Sink.foreach(System.out::println));
-    Source.from(Arrays.asList(1, 2, 3, 4)).to(sink);
+    Source.from(List.of(1, 2, 3, 4)).to(sink);
     // #flow-connecting
   }
 

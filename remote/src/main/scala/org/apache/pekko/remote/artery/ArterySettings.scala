@@ -14,6 +14,7 @@
 package org.apache.pekko.remote.artery
 
 import java.net.InetAddress
+import java.nio.charset.StandardCharsets
 
 import scala.annotation.nowarn
 import scala.concurrent.duration._
@@ -22,6 +23,7 @@ import scala.jdk.CollectionConverters._
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.io.dns.internal.AsyncDnsResolver
+import pekko.util.ByteString
 import pekko.stream.ActorMaterializerSettings
 import pekko.util.Helpers.ConfigOps
 import pekko.util.Helpers.Requiring
@@ -117,6 +119,28 @@ private[pekko] final class ArterySettings private (config: Config) {
     import config._
 
     val TestMode: Boolean = getBoolean("test-mode")
+    private val tcpMagicList: Seq[String] = {
+      val list = getStringList("tcp-magic").asScala.toSeq
+      require(list.nonEmpty, "tcp-magic must not be empty")
+      list
+    }
+    val TcpMagic: ByteString = {
+      val first = tcpMagicList.head
+      val bytes = ByteString(first.getBytes(StandardCharsets.UTF_8))
+      require(bytes.length >= 4,
+        s"tcp-magic value [$first] must produce at least 4 UTF-8 bytes, but produced [${bytes.length}] bytes")
+      bytes.take(4)
+    }
+    // A Seq rather than a Set: a Set hashes its members, and hashing a ByteString walks all its
+    // bytes, where comparing this handful of 4-byte values is a couple of cheap equality checks.
+    val TcpMagicValues: Seq[ByteString] = {
+      tcpMagicList.map { s =>
+        val bytes = ByteString(s.getBytes(StandardCharsets.UTF_8))
+        require(bytes.length >= 4,
+          s"tcp-magic value [$s] must produce at least 4 UTF-8 bytes, but produced [${bytes.length}] bytes")
+        bytes.take(4)
+      }.distinct.toList
+    }
     val Dispatcher: String = getString("use-dispatcher")
     val ControlStreamDispatcher: String = getString("use-control-stream-dispatcher")
     @nowarn("msg=deprecated")
@@ -175,6 +199,10 @@ private[pekko] final class ArterySettings private (config: Config) {
       config
         .getMillisDuration("shutdown-flush-timeout")
         .requiring(timeout => timeout > Duration.Zero, "shutdown-flush-timeout must be more than zero")
+    val ShutdownStreamsTimeout: FiniteDuration =
+      config
+        .getMillisDuration("shutdown-streams-timeout")
+        .requiring(timeout => timeout > Duration.Zero, "shutdown-streams-timeout must be more than zero")
     val DeathWatchNotificationFlushTimeout: FiniteDuration = {
       toRootLowerCase(config.getString("death-watch-notification-flush-timeout")) match {
         case "off" => Duration.Zero
@@ -277,6 +305,12 @@ private[pekko] object ArterySettings {
     import config._
 
     private[pekko] final val Enabled = ActorRefs.Enabled || Manifests.Enabled
+
+    val FrequencySketchImplementation: String = toRootLowerCase(getString("frequency-sketch-implementation")) match {
+      case "count-min-sketch"      => "count-min-sketch"
+      case "fast-frequency-sketch" => "fast-frequency-sketch"
+      case other                   => throw new IllegalArgumentException(s"Unknown frequency-sketch-implementation: $other")
+    }
 
     object ActorRefs {
       val config: Config = getConfig("actor-refs")

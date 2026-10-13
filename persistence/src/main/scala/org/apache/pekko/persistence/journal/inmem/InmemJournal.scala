@@ -13,8 +13,9 @@
 
 package org.apache.pekko.persistence.journal.inmem
 
-import scala.collection.immutable
 import scala.concurrent.Future
+import scala.concurrent.duration.Duration
+import scala.jdk.DurationConverters._
 import scala.util.Try
 import scala.util.control.NonFatal
 
@@ -23,6 +24,7 @@ import pekko.actor.ActorRef
 import pekko.annotation.ApiMayChange
 import pekko.annotation.InternalApi
 import pekko.event.Logging
+import pekko.pattern.after
 import pekko.persistence.AtomicWrite
 import pekko.persistence.JournalProtocol.RecoverySuccess
 import pekko.persistence.PersistentRepr
@@ -77,11 +79,17 @@ object InmemJournal {
     else false
   }
 
+  private val delayWrites = {
+    val key = "delay-writes"
+    if (cfg.hasPath(key)) cfg.getDuration(key).toScala
+    else Duration.Zero
+  }
+
   private val serialization = SerializationExtension(context.system)
 
   private val eventStream = context.system.eventStream
 
-  override def asyncWriteMessages(messages: immutable.Seq[AtomicWrite]): Future[immutable.Seq[Try[Unit]]] = {
+  override def asyncWriteMessages(messages: Seq[AtomicWrite]): Future[Seq[Try[Unit]]] = {
     try {
       for (w <- messages; p <- w.payload) {
         val payload = p.payload match {
@@ -92,7 +100,10 @@ object InmemJournal {
         add(p)
         eventStream.publish(InmemJournal.Write(p.payload, p.persistenceId, p.sequenceNr))
       }
-      Future.successful(Nil) // all good
+      if (delayWrites.length > 0)
+        after(delayWrites, context.system.scheduler) { Future.successful(Nil) }(context.dispatcher)
+      else
+        Future.successful(Nil) // all good
     } catch {
       case NonFatal(e) =>
         // serialization problem
@@ -164,10 +175,11 @@ object InmemJournal {
       case _                  => (p.withTimestamp(System.currentTimeMillis()), OptionVal.None)
     }
 
-    messages = messages + (messages.get(p.persistenceId) match {
-      case Some(ms) => p.persistenceId -> (ms :+ pr)
-      case None     => p.persistenceId -> Vector(pr)
-    })
+    messages = messages +
+      (messages.get(p.persistenceId) match {
+        case Some(ms) => p.persistenceId -> (ms :+ pr)
+        case None     => p.persistenceId -> Vector(pr)
+      })
     highestSequenceNumbers =
       highestSequenceNumbers.updated(p.persistenceId, math.max(highestSequenceNr(p.persistenceId), p.sequenceNr))
   }
@@ -177,7 +189,7 @@ object InmemJournal {
     case None     => messages
   }
 
-  def read(pid: String, fromSnr: Long, toSnr: Long, max: Long): immutable.Seq[(PersistentRepr, OptionVal[Any])] =
+  def read(pid: String, fromSnr: Long, toSnr: Long, max: Long): Seq[(PersistentRepr, OptionVal[Any])] =
     messages.get(pid) match {
       case Some(ms) => ms.filter(m => m._1.sequenceNr >= fromSnr && m._1.sequenceNr <= toSnr).take(safeLongToInt(max))
       case None     => Nil

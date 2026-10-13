@@ -43,7 +43,7 @@ object RestartSource {
    * @param settings [[RestartSettings]] defining restart configuration
    * @param sourceFactory A factory for producing the [[Source]] to wrap.
    */
-  def withBackoff[T](settings: RestartSettings)(sourceFactory: () => Source[T, _]): Source[T, NotUsed] =
+  def withBackoff[T](settings: RestartSettings)(sourceFactory: () => Source[T, ?]): Source[T, NotUsed] =
     Source.fromGraph(new RestartWithBackoffSource(sourceFactory, settings, onlyOnFailures = false))
 
   /**
@@ -61,12 +61,12 @@ object RestartSource {
    * @param settings [[RestartSettings]] defining restart configuration
    * @param sourceFactory A factory for producing the [[Source]] to wrap.
    */
-  def onFailuresWithBackoff[T](settings: RestartSettings)(sourceFactory: () => Source[T, _]): Source[T, NotUsed] =
+  def onFailuresWithBackoff[T](settings: RestartSettings)(sourceFactory: () => Source[T, ?]): Source[T, NotUsed] =
     Source.fromGraph(new RestartWithBackoffSource(sourceFactory, settings, onlyOnFailures = true))
 }
 
 private final class RestartWithBackoffSource[T](
-    sourceFactory: () => Source[T, _],
+    sourceFactory: () => Source[T, ?],
     settings: RestartSettings,
     onlyOnFailures: Boolean)
     extends GraphStage[SourceShape[T]] { self =>

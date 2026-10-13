@@ -32,7 +32,7 @@ See @ref:[Rolling Updates, Cluster Shutdown and Coordinated Shutdown](../additio
 
 There are several management tools for the cluster. 
 Complete information on running and managing Pekko applications can be found in 
-the @exref:[Pekko Management](pekko-management:) project documentation.
+the @extref:[Pekko Management](pekko-management:) project documentation.
 
 <a id="cluster-http"></a>
 ### HTTP
@@ -43,12 +43,12 @@ See documentation of @extref:[Pekko Management](pekko-management:).
 <a id="cluster-jmx"></a>
 ### JMX
 
-Information and management of the cluster is available as JMX MBeans with the root name `org.apache.pekko.Cluster`.
+Information and management of the cluster is available as JMX MBeans with the root name `pekko:type=Cluster` (or `pekko:type=Cluster,port=<port>` when `pekko.cluster.jmx.multi-mbeans-in-same-jvm` is enabled).
 The JMX information can be displayed with an ordinary JMX console such as JConsole or JVisualVM.
 
 From JMX you can:
 
- * see what members that are part of the cluster
+ * see which members are part of the cluster
  * see status of this node
  * see roles of each member
  * join this node to another node in cluster

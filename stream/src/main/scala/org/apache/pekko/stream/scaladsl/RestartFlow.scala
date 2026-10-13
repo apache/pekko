@@ -55,7 +55,7 @@ object RestartFlow {
    * @param settings [[RestartSettings]] defining restart configuration
    * @param flowFactory A factory for producing the [[Flow]] to wrap.
    */
-  def withBackoff[In, Out](settings: RestartSettings)(flowFactory: () => Flow[In, Out, _]): Flow[In, Out, NotUsed] =
+  def withBackoff[In, Out](settings: RestartSettings)(flowFactory: () => Flow[In, Out, ?]): Flow[In, Out, NotUsed] =
     Flow.fromGraph(new RestartWithBackoffFlow(flowFactory, settings, onlyOnFailures = false))
 
   /**
@@ -78,13 +78,13 @@ object RestartFlow {
    * @param flowFactory A factory for producing the [[Flow]] to wrap.
    */
   def onFailuresWithBackoff[In, Out](settings: RestartSettings)(
-      flowFactory: () => Flow[In, Out, _]): Flow[In, Out, NotUsed] =
+      flowFactory: () => Flow[In, Out, ?]): Flow[In, Out, NotUsed] =
     Flow.fromGraph(new RestartWithBackoffFlow(flowFactory, settings, onlyOnFailures = true))
 
 }
 
 private final class RestartWithBackoffFlow[In, Out](
-    flowFactory: () => Flow[In, Out, _],
+    flowFactory: () => Flow[In, Out, ?],
     settings: RestartSettings,
     onlyOnFailures: Boolean)
     extends GraphStage[FlowShape[In, Out]] { self =>
@@ -160,14 +160,16 @@ private abstract class RestartWithBackoffLogic[S <: Shape](
   // don't want to restart the sub inlet when it finishes, we just finish normally.
   var finishing = false
 
-  override protected def logSource: Class[_] = classOf[RestartWithBackoffLogic[_]]
+  override protected def logSource: Class[?] = classOf[RestartWithBackoffLogic[?]]
 
   protected def startGraph(): Unit
   protected def backoff(): Unit
 
   private def loggingEnabled = inheritedAttributes.get[LogLevels] match {
     case Some(levels) => levels.onFailure != LogLevels.Off
-    case None         => true
+    case None         =>
+      // Allows for system wide disable at least
+      LogLevels.defaultErrorLevel(materializer.system) != LogLevels.Off
   }
 
   /**
@@ -353,7 +355,7 @@ object RestartWithBackoffFlow {
 
     override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =
       new TimerGraphStageLogic(shape) with InHandler with OutHandler with StageLogging {
-        override protected def logSource: Class[_] = classOf[DelayCancellationStage[_]]
+        override protected def logSource: Class[?] = classOf[DelayCancellationStage[?]]
 
         private var cause: OptionVal[Throwable] = OptionVal.None
 
@@ -369,7 +371,7 @@ object RestartWithBackoffFlow {
         }
 
         override protected def onTimer(timerKey: Any): Unit = {
-          log.debug(s"Stage was canceled after delay of $delay")
+          log.debug("Stage was canceled after delay of {}", delay)
           cause match {
             case OptionVal.Some(ex) =>
               cancelStage(ex)

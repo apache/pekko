@@ -51,8 +51,8 @@ interface AsyncRecoveryPlugin {
    * Java API, Plugin API: asynchronously reads the highest stored sequence number for the given
    * `persistenceId`. The persistent actor will use the highest sequence number after recovery as
    * the starting point when persisting new events. This sequence number is also used as
-   * `toSequenceNr` in subsequent call to [[#asyncReplayMessages]] unless the user has specified a
-   * lower `toSequenceNr`.
+   * `toSequenceNr` in subsequent call to {@code #asyncReplayMessages} unless the user has specified
+   * a lower `toSequenceNr`.
    *
    * @param persistenceId id of the persistent actor.
    * @param fromSequenceNr hint where to start searching for the highest sequence number.

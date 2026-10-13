@@ -59,12 +59,13 @@ object EventStream {
     /**
      * Java API.
      */
-    def this(clazz: Class[E], subscriber: ActorRef[E]) = this(subscriber)(ClassTag(clazz))
+    def this(clazz: Class[E], subscriber: ActorRef[E]) =
+      this(subscriber)(ClassTag(clazz))
 
     /**
      * INTERNAL API
      */
-    @InternalApi private[pekko] def topic: Class[_] = classTag.runtimeClass
+    @InternalApi private[pekko] def topic: Class[?] = classTag.runtimeClass
   }
 
   /**

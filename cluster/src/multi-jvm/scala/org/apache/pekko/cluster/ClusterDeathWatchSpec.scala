@@ -162,7 +162,8 @@ abstract class ClusterDeathWatchSpec
 
     }
 
-    "not be able to watch an actor before node joins cluster, ClusterRemoteWatcher takes over from RemoteWatcher" in within(
+    "not be able to watch an actor before node joins cluster, ClusterRemoteWatcher takes over from RemoteWatcher" in
+    within(
       20.seconds) {
       runOn(fifth) {
         system.actorOf(

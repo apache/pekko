@@ -47,6 +47,7 @@ class RemoteConfigSpec extends PekkoSpec("""
       RetryGateClosedFor should ===(5.seconds)
       Dispatcher should ===("pekko.remote.default-remote-dispatcher")
       UsePassiveConnections should ===(true)
+      PassiveConnectionBufferSize should ===(128)
       BackoffPeriod should ===(5.millis)
       LogBufferSizeExceeding should ===(50000)
       SysMsgAckTimeout should ===(0.3.seconds)

@@ -13,9 +13,10 @@
 
 package docs.actor.typed
 
-import org.apache.pekko.actor.typed.scaladsl._
-import org.apache.pekko.actor.typed.{ ActorRef, Behavior }
-import org.apache.pekko.util.Timeout
+import org.apache.pekko
+import pekko.actor.typed.scaladsl._
+import pekko.actor.typed.{ ActorRef, Behavior }
+import pekko.util.Timeout
 
 import scala.collection.mutable
 import scala.concurrent.Future
@@ -27,7 +28,7 @@ class SharedMutableStateDocSpec {
   def expensiveCalculation(): Future[String] = ???
 
   object MyActor {
-    trait Command
+    sealed trait Command
     case class Message(msg: String, replyTo: ActorRef[Any]) extends Command
     case class UpdateState(newState: String) extends Command
 

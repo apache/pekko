@@ -12,7 +12,7 @@ Never emit any elements, never complete and never fail.
 
 ## Description
 
-Create a source which never emits any elements, never completes and never failes. Useful for tests.
+Create a source which never emits any elements, never completes and never fails. Useful for tests.
 
 ## Reactive Streams semantics
 

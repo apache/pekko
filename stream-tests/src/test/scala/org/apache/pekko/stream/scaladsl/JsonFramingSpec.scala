@@ -13,7 +13,6 @@
 
 package org.apache.pekko.stream.scaladsl
 
-import scala.collection.immutable.Seq
 import scala.concurrent.Await
 import scala.concurrent.duration._
 

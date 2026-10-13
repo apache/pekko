@@ -13,35 +13,34 @@
 
 package org.apache.pekko.stream.io;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.apache.pekko.stream.StreamTest;
+import org.apache.pekko.stream.StreamTestJupiter;
 import org.apache.pekko.stream.javadsl.Sink;
 import org.apache.pekko.stream.javadsl.Source;
 import org.apache.pekko.stream.javadsl.StreamConverters;
 import org.apache.pekko.stream.testkit.Utils;
-import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.apache.pekko.testkit.PekkoJUnitJupiterActorSystemResource;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
-public class SinkAsJavaSourceTest extends StreamTest {
+public class SinkAsJavaSourceTest extends StreamTestJupiter {
   public SinkAsJavaSourceTest() {
     super(actorSystemResource);
   }
 
-  @ClassRule
-  public static PekkoJUnitActorSystemResource actorSystemResource =
-      new PekkoJUnitActorSystemResource("SinkAsJavaSourceTest", Utils.UnboundedMailboxConfig());
+  @RegisterExtension
+  static PekkoJUnitJupiterActorSystemResource actorSystemResource =
+      new PekkoJUnitJupiterActorSystemResource(
+          "SinkAsJavaSourceTest", Utils.UnboundedMailboxConfig());
 
   @Test
   public void mustBeAbleToUseAsJavaStream() throws Exception {
-    final List<Integer> list = Arrays.asList(1, 2, 3);
+    final List<Integer> list = List.of(1, 2, 3);
     final Sink<Integer, Stream<Integer>> streamSink = StreamConverters.asJavaStream();
     java.util.stream.Stream<Integer> javaStream = Source.from(list).runWith(streamSink, system);
-    assertEquals(list, javaStream.collect(Collectors.toList()));
+    assertEquals(list, javaStream.toList());
   }
 }

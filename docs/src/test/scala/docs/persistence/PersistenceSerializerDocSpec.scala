@@ -17,9 +17,10 @@ import com.typesafe.config._
 
 import scala.concurrent.duration._
 import org.scalatest.wordspec.AnyWordSpec
-import org.apache.pekko.actor.ActorSystem
-import org.apache.pekko.serialization.{ SerializationExtension, Serializer }
-import org.apache.pekko.testkit.TestKit
+import org.apache.pekko
+import pekko.actor.ActorSystem
+import pekko.serialization.{ SerializationExtension, Serializer }
+import pekko.testkit.TestKit
 
 class PersistenceSerializerDocSpec extends AnyWordSpec {
 
@@ -54,12 +55,12 @@ class MyPayloadSerializer extends Serializer {
   def identifier: Int = 77124
   def includeManifest: Boolean = false
   def toBinary(o: AnyRef): Array[Byte] = ???
-  def fromBinary(bytes: Array[Byte], manifest: Option[Class[_]]): AnyRef = ???
+  def fromBinary(bytes: Array[Byte], manifest: Option[Class[?]]): AnyRef = ???
 }
 
 class MySnapshotSerializer extends Serializer {
   def identifier: Int = 77125
   def includeManifest: Boolean = false
   def toBinary(o: AnyRef): Array[Byte] = ???
-  def fromBinary(bytes: Array[Byte], manifest: Option[Class[_]]): AnyRef = ???
+  def fromBinary(bytes: Array[Byte], manifest: Option[Class[?]]): AnyRef = ???
 }

@@ -13,7 +13,6 @@
 
 package jdocs.org.apache.pekko.persistence.typed;
 
-import java.util.Collections;
 import java.util.Set;
 import org.apache.pekko.actor.typed.ActorRef;
 import org.apache.pekko.actor.typed.Behavior;
@@ -35,35 +34,17 @@ interface ReplicatedMovieExample {
 
     interface Command {}
 
-    public static class AddMovie implements Command {
-      public final String movieId;
+    public record AddMovie(String movieId) implements Command {}
 
-      public AddMovie(String movieId) {
-        this.movieId = movieId;
-      }
-    }
+    public record RemoveMovie(String movieId) implements Command {}
 
-    public static class RemoveMovie implements Command {
-      public final String movieId;
-
-      public RemoveMovie(String movieId) {
-        this.movieId = movieId;
-      }
-    }
-
-    public static class GetMovieList implements Command {
-      public final ActorRef<MovieList> replyTo;
-
-      public GetMovieList(ActorRef<MovieList> replyTo) {
-        this.replyTo = replyTo;
-      }
-    }
+    public record GetMovieList(ActorRef<MovieList> replyTo) implements Command {}
 
     public static class MovieList {
       public final Set<String> movieIds;
 
       public MovieList(Set<String> movieIds) {
-        this.movieIds = Collections.unmodifiableSet(movieIds);
+        this.movieIds = Set.copyOf(movieIds);
       }
     }
 
@@ -90,14 +71,14 @@ interface ReplicatedMovieExample {
       return newCommandHandlerBuilder()
           .forAnyState()
           .onCommand(
-              AddMovie.class, (state, command) -> Effect().persist(state.add(command.movieId)))
+              AddMovie.class, (state, command) -> Effect().persist(state.add(command.movieId())))
           .onCommand(
               RemoveMovie.class,
-              (state, command) -> Effect().persist(state.remove(command.movieId)))
+              (state, command) -> Effect().persist(state.remove(command.movieId())))
           .onCommand(
               GetMovieList.class,
               (state, command) -> {
-                command.replyTo.tell(new MovieList(state.getElements()));
+                command.replyTo().tell(new MovieList(state.getElements()));
                 return Effect().none();
               })
           .build();

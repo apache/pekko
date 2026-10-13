@@ -39,7 +39,7 @@ import pekko.util.Timeout
 
 object ClusterSharding extends ExtensionId[ClusterSharding] {
 
-  override def createExtension(system: ActorSystem[_]): ClusterSharding =
+  override def createExtension(system: ActorSystem[?]): ClusterSharding =
     new ClusterShardingImpl(system)
 
   /**
@@ -85,7 +85,7 @@ object ClusterSharding extends ExtensionId[ClusterSharding] {
  * in the cluster, registering the supported entity types with the [[ClusterSharding#init]]
  * method, which returns the `ShardRegion` actor reference for a named entity type.
  * Messages to the entities are always sent via that `ActorRef`, i.e. the local `ShardRegion`.
- * Messages can also be sent via the [[EntityRef]] retrieved with [[ClusterSharding#entityRefFor]],
+ * Messages can also be sent via the [[EntityRef]] retrieved with `entityRefFor`,
  * which will also send via the local `ShardRegion`.
  *
  * Some settings can be configured as described in the `pekko.cluster.sharding`
@@ -129,7 +129,7 @@ object ClusterSharding extends ExtensionId[ClusterSharding] {
  * persistent (durable), e.g. with `pekko-persistence`, so that it can be recovered at the new
  * location.
  *
- * The logic that decides which shards to rebalance is defined in a plugable shard
+ * The logic that decides which shards to rebalance is defined in a pluggable shard
  * allocation strategy. The default implementation [[pekko.cluster.sharding.ShardCoordinator.LeastShardAllocationStrategy]]
  * picks shards for handoff from the `ShardRegion` with most number of previously allocated shards.
  * They will then be allocated to the `ShardRegion` with least number of previously allocated shards,
@@ -417,7 +417,7 @@ object EntityTypeKey {
 /**
  * A reference to an sharded Entity, which allows `ActorRef`-like usage.
  *
- * An [[EntityRef]] is NOT an [[pekko.actor.typed.ActorRef ActorRef]]–by design–in order to be explicit about the fact that the life-cycle
+ * An [[EntityRef]] is NOT a [[pekko.actor.typed.ActorRef ActorRef]]–by design–in order to be explicit about the fact that the life-cycle
  * of a sharded Entity is very different than a plain Actors. Most notably, this is shown by features of Entities
  * such as re-balancing (an active Entity to a different node) or passivation. Both of which are aimed to be completely
  * transparent to users of such Entity. In other words, if this were to be a plain ActorRef, it would be possible to
@@ -539,7 +539,7 @@ object EntityTypeKey {
 }
 
 object ClusterShardingSetup {
-  def apply[T <: Extension](createExtension: ActorSystem[_] => ClusterSharding): ClusterShardingSetup =
+  def apply[T <: Extension](createExtension: ActorSystem[?] => ClusterSharding): ClusterShardingSetup =
     new ClusterShardingSetup(createExtension(_))
 
 }
@@ -549,5 +549,5 @@ object ClusterShardingSetup {
  * to replace the default implementation of the [[ClusterSharding]] extension. Intended
  * for tests that need to replace extension with stub/mock implementations.
  */
-final class ClusterShardingSetup(createExtension: java.util.function.Function[ActorSystem[_], ClusterSharding])
+final class ClusterShardingSetup(createExtension: java.util.function.Function[ActorSystem[?], ClusterSharding])
     extends ExtensionSetup[ClusterSharding](ClusterSharding, createExtension)

@@ -210,6 +210,27 @@ object Broadcast {
     scaladsl.Broadcast(outputCount, eagerCancel = eagerCancel)
 
   /**
+   * Create a new `Broadcast` operator with the specified input type and per-output cancellation behavior.
+   *
+   * @param outputCount number of output ports
+   * @param eagerCancel if true, broadcast cancels upstream if any of its downstreams cancel
+   *                    (except those listed in `nonEagerCancelOutputs`).
+   * @param nonEagerCancelOutputs set of output port indices whose cancellation should not
+   *                              trigger upstream cancellation. These outputs are silently
+   *                              removed from the broadcast when they cancel, and elements
+   *                              continue flowing to the remaining outputs.
+   * @since 2.0.0
+   */
+  def create[T](
+      outputCount: Int,
+      eagerCancel: Boolean,
+      nonEagerCancelOutputs: util.Set[java.lang.Integer]): Graph[UniformFanOutShape[T, T], NotUsed] =
+    scaladsl.Broadcast(
+      outputCount,
+      eagerCancel = eagerCancel,
+      nonEagerCancelOutputs = nonEagerCancelOutputs.asScala.iterator.map(_.intValue()).toSet)
+
+  /**
    * Create a new `Broadcast` operator with the specified input type.
    *
    * @param outputCount number of output ports
@@ -479,7 +500,7 @@ object Zip {
   def create[A, B]: Graph[FanInShape2[A, B, A Pair B], NotUsed] =
     ZipWith.create(_toPair.asInstanceOf[Function2[A, B, A Pair B]])
 
-  private[this] final val _toPair: Function2[Any, Any, Any Pair Any] = (a: Any, b: Any) => new Pair(a, b)
+  private final val _toPair: Function2[Any, Any, Any Pair Any] = (a: Any, b: Any) => new Pair(a, b)
 }
 
 /**
@@ -507,7 +528,7 @@ object ZipLatest {
   def create[A, B]: Graph[FanInShape2[A, B, A Pair B], NotUsed] =
     ZipLatestWith.create(_toPair.asInstanceOf[Function2[A, B, A Pair B]])
 
-  private[this] final val _toPair: Function2[Any, Any, Any Pair Any] = (a: Any, b: Any) => new Pair(a, b)
+  private final val _toPair: Function2[Any, Any, Any Pair Any] = (a: Any, b: Any) => new Pair(a, b)
 }
 
 /**
@@ -726,7 +747,7 @@ object GraphDSL extends GraphCreate {
       : Graph[S, java.util.List[M]] = {
     require(!graphs.isEmpty, "The input list must have one or more Graph elements")
     val gbuilder = builder[java.util.List[M]]()
-    val toList = (m1: M) => new util.ArrayList(util.Arrays.asList(m1))
+    val toList = (m1: M) => util.List.of(m1)
     val combine = (s: java.util.List[M], m2: M) => {
       val newList = new util.ArrayList(s)
       newList.add(m2)
@@ -751,7 +772,7 @@ object GraphDSL extends GraphCreate {
      * materialized value and returning the copied Ports that are now to be
      * connected.
      */
-    def add[S <: Shape](graph: Graph[S, _]): S = delegate.add(graph)
+    def add[S <: Shape](graph: Graph[S, ?]): S = delegate.add(graph)
 
     /**
      * Returns an [[Outlet]] that gives access to the materialized value of this graph. Once the graph is materialized
@@ -782,24 +803,24 @@ object GraphDSL extends GraphCreate {
     def to[I, O](j: UniformFanOutShape[I, O]): ReverseOps[I] = new ReverseOps(j.in)
 
     final class ForwardOps[T](_out: Outlet[T]) {
-      def toInlet(in: Inlet[_ >: T]): Builder[Mat] = { _out ~> in; self }
-      def to(dst: SinkShape[_ >: T]): Builder[Mat] = { _out ~> dst; self }
-      def toFanIn[U](j: UniformFanInShape[_ >: T, U]): Builder[Mat] = { _out ~> j; self }
-      def toFanOut[U](j: UniformFanOutShape[_ >: T, U]): Builder[Mat] = { _out ~> j; self }
-      def via[U](f: FlowShape[_ >: T, U]): ForwardOps[U] = from((_out ~> f).outlet)
-      def viaFanIn[U](j: UniformFanInShape[_ >: T, U]): ForwardOps[U] = from((_out ~> j).outlet)
-      def viaFanOut[U](j: UniformFanOutShape[_ >: T, U]): ForwardOps[U] = from((_out ~> j).outlet)
+      def toInlet(in: Inlet[? >: T]): Builder[Mat] = { _out ~> in; self }
+      def to(dst: SinkShape[? >: T]): Builder[Mat] = { _out ~> dst; self }
+      def toFanIn[U](j: UniformFanInShape[? >: T, U]): Builder[Mat] = { _out ~> j; self }
+      def toFanOut[U](j: UniformFanOutShape[? >: T, U]): Builder[Mat] = { _out ~> j; self }
+      def via[U](f: FlowShape[? >: T, U]): ForwardOps[U] = from((_out ~> f).outlet)
+      def viaFanIn[U](j: UniformFanInShape[? >: T, U]): ForwardOps[U] = from((_out ~> j).outlet)
+      def viaFanOut[U](j: UniformFanOutShape[? >: T, U]): ForwardOps[U] = from((_out ~> j).outlet)
       def out(): Outlet[T] = _out
     }
 
     final class ReverseOps[T](out: Inlet[T]) {
-      def fromOutlet(dst: Outlet[_ <: T]): Builder[Mat] = { out <~ dst; self }
-      def from(dst: SourceShape[_ <: T]): Builder[Mat] = { out <~ dst; self }
-      def fromFanIn[U](j: UniformFanInShape[U, _ <: T]): Builder[Mat] = { out <~ j; self }
-      def fromFanOut[U](j: UniformFanOutShape[U, _ <: T]): Builder[Mat] = { out <~ j; self }
-      def via[U](f: FlowShape[U, _ <: T]): ReverseOps[U] = to((out <~ f).inlet)
-      def viaFanIn[U](j: UniformFanInShape[U, _ <: T]): ReverseOps[U] = to((out <~ j).inlet)
-      def viaFanOut[U](j: UniformFanOutShape[U, _ <: T]): ReverseOps[U] = to((out <~ j).inlet)
+      def fromOutlet(dst: Outlet[? <: T]): Builder[Mat] = { out <~ dst; self }
+      def from(dst: SourceShape[? <: T]): Builder[Mat] = { out <~ dst; self }
+      def fromFanIn[U](j: UniformFanInShape[U, ? <: T]): Builder[Mat] = { out <~ j; self }
+      def fromFanOut[U](j: UniformFanOutShape[U, ? <: T]): Builder[Mat] = { out <~ j; self }
+      def via[U](f: FlowShape[U, ? <: T]): ReverseOps[U] = to((out <~ f).inlet)
+      def viaFanIn[U](j: UniformFanInShape[U, ? <: T]): ReverseOps[U] = to((out <~ j).inlet)
+      def viaFanOut[U](j: UniformFanOutShape[U, ? <: T]): ReverseOps[U] = to((out <~ j).inlet)
     }
   }
 }

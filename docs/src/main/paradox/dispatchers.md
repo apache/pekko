@@ -40,13 +40,26 @@ is to configure the dispatcher:
 Note that the `parallelism-max` does not set the upper bound on the total number of threads
 allocated by the ForkJoinPool. It is a setting specifically talking about the number of *hot*
 threads the pool keep running in order to reduce the latency of handling a new incoming task.
-You can read more about parallelism in the JDK's [ForkJoinPool documentation](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ForkJoinPool.html).
+You can read more about parallelism in the JDK's [ForkJoinPool documentation](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/ForkJoinPool.html).
 
-When Running on Java 9+, you can use `maximum-pool-size` to set the upper bound on the total number of threads allocated by the ForkJoinPool.
+You can use `maximum-pool-size` to set the upper bound on the total number of threads allocated by the ForkJoinPool.
+
+When running on Java 25+, the `minimum-runnable` setting for the `fork-join-executor` defaults to a JDK-aware value
+(`min(8, max(1, parallelism / 2))`) instead of the historical `1`. This raises the number of compensation threads the
+pool will create when workers block, mitigating the asyncMode (FIFO) compensation regression tracked in
+[JDK-8300995](https://bugs.openjdk.org/browse/JDK-8300995) / [JDK-8321335](https://bugs.openjdk.org/browse/JDK-8321335)
+that, in Pekko nightly tests, surfaces most clearly on the JDK 25 line and can cause actor-heavy workloads to starve.
+Set `minimum-runnable` explicitly (any non-negative integer) to opt out of the auto-selection — for example
+`minimum-runnable = 1` restores the previous default, and `minimum-runnable = 0` disables compensation entirely.
 
 **Experimental**: When Running on Java 21+, you can use `virtualize=on` to enable the virtual threads feature.
-When using virtual threads, all virtual threads will use the same `unparker`, so you may want to 
-increase the number of `jdk.unparker.maxPoolSize`. 
+When `virtualize=on` is used with a dispatcher executor such as `fork-join-executor` or `thread-pool-executor`, Pekko
+uses that dispatcher's own executor as the virtual-thread scheduler. This preserves dispatcher isolation instead of
+routing all virtual threads through the JVM-wide default virtual-thread scheduler. The JVM still uses a shared
+`unparker`, so you may want to increase the number of `jdk.unparker.maxPoolSize`.
+The setting can also be enabled with a system property such as
+`-Dpekko.actor.default-dispatcher.fork-join-executor.virtualize=on`. Pekko's reference configuration keeps it `off` by
+default; use an explicit application or test configuration when opting in.
 
 #### Requirements
 
@@ -64,7 +77,7 @@ Another example that uses the "thread-pool-executor":
 @@@ note
 
 The thread pool executor dispatcher is implemented using a @javadoc[java.util.concurrent.ThreadPoolExecutor](java.util.concurrent.ThreadPoolExecutor).
-You can read more about it in the JDK's [ThreadPoolExecutor documentation](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ThreadPoolExecutor.html).
+You can read more about it in the JDK's [ThreadPoolExecutor documentation](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/ThreadPoolExecutor.html).
 
 @@@
 
@@ -99,4 +112,3 @@ So in this example it's a top-level section, but you could for instance put it a
 where you'd use periods to denote sub-sections, like this: `"foo.bar.my-dispatcher"`
 
 @@@
-

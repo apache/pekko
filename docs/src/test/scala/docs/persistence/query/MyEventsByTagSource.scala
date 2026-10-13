@@ -13,10 +13,11 @@
 
 package docs.persistence.query
 
-import org.apache.pekko.persistence.query.{ EventEnvelope, Offset }
-import org.apache.pekko.serialization.SerializationExtension
-import org.apache.pekko.stream.{ ActorAttributes, ActorMaterializer, Attributes, Outlet, SourceShape }
-import org.apache.pekko.stream.stage.{ GraphStage, GraphStageLogic, OutHandler, TimerGraphStageLogic }
+import org.apache.pekko
+import pekko.persistence.query.{ EventEnvelope, Offset }
+import pekko.serialization.SerializationExtension
+import pekko.stream.{ ActorAttributes, ActorMaterializer, Attributes, Outlet, SourceShape }
+import pekko.stream.stage.{ GraphStage, GraphStageLogic, OutHandler, TimerGraphStageLogic }
 
 import scala.concurrent.duration.FiniteDuration
 import scala.util.control.NonFatal

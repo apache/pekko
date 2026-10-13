@@ -13,7 +13,8 @@
 
 package org.apache.pekko.persistence.journal.leveldb
 
-import org.apache.pekko.actor.{ Actor, ActorLogging }
+import org.apache.pekko
+import pekko.actor.{ Actor, ActorLogging }
 
 private[persistence] object LeveldbCompaction {
 
@@ -71,7 +72,7 @@ private[persistence] trait CompactionSegmentManagement {
 
   import CompactionSegmentManagement._
 
-  private[this] var latestCompactionSegments = Map.empty[String, Long]
+  private var latestCompactionSegments = Map.empty[String, Long]
 
   def compactionIntervals: Map[String, Long]
 

@@ -6,12 +6,12 @@ Map elements with the help of a resource that can be opened, transform each elem
 
 ## Signature
 
-@apidoc[Flow.mapWithResource](Flow) { scala="#mapWithResource[S,T](create:()=%3ES)(f:(S,Out)=%3ET,close:S=%3EOption[T]):Repr[T]" java="#mapWithResource(org.apache.pekko.japi.function.Creator,org.apache.pekko.japi.function.Function2,org.apache.pekko.japi.function.Function)" }
+@apidoc[Flow.mapWithResource](Flow) { scala="#mapWithResource[R,T](create:()=%3ER)(f:(R,Out)=%3ET,close:R=%3EOption[T]):Repr[T]" java="#mapWithResource(org.apache.pekko.japi.function.Creator,org.apache.pekko.japi.function.Function2,org.apache.pekko.japi.function.Function)" }
 1. `create`: Open or Create the resource.
 2. `f`: Transform each element inputs with the help of resource.
 3. `close`: Close the resource, invoked on end of stream or if the stream fails, optionally outputting a last element.
 
-@apidoc[Flow.mapWithResource](Flow) { scala="#mapWithResource[S%3C:AutoCloseable,T](create:()=%3ES,f:(S,Out)=%3ET):Repr[T]" java="#mapWithResource(org.apache.pekko.japi.function.Creator,org.apache.pekko.japi.function.Function2)" }
+@apidoc[Flow.mapWithResource](Flow) { scala="#mapWithResource[R%3C:AutoCloseable,T](create:()=%3ER,f:(R,Out)=%3ET):Repr[T]" java="#mapWithResource(org.apache.pekko.japi.function.Creator,org.apache.pekko.japi.function.Function2)" }
 1. `create`: Open or Create the autocloseable resource.
 2. `f`: Transform each element inputs with the help of resource.
 
@@ -32,8 +32,8 @@ Early completion can be done with combination of the @apidoc[Flow.takeWhile](Flo
 
 See also @ref:[unfoldResource](../Source/unfoldResource.md), @ref:[unfoldResourceAsync](../Source/unfoldResourceAsync.md).
 
-You can configure the default dispatcher for this Source by changing the `org.apache.pekko.stream.materializer.blocking-io-dispatcher`
-or set it for a given Source by using ActorAttributes.
+You can configure the default dispatcher for this Flow by changing the `pekko.stream.materializer.blocking-io-dispatcher`
+or set it for a given Flow by using ActorAttributes.
 
 ## Examples
 
@@ -54,7 +54,7 @@ Scala
 Java
 :   @@snip [UnfoldResource.java](/docs/src/test/java/jdocs/stream/operators/sourceorflow/MapWithResource.java) { #mapWithResource }
 
-In this example we retrieve data form two tables with the same shared connection, and transform the results
+In this example we retrieve data from two tables with the same shared connection, and transform the results
 to individual records with @scala[`mapConcat(identity)`]@java[`mapConcat(elems -> elems)`], once done the connection is closed.
 
 

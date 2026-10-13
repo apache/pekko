@@ -13,17 +13,17 @@
 
 package org.apache.pekko.actor;
 
-import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
+import org.apache.pekko.testkit.PekkoJUnitJupiterActorSystemResource;
 import org.apache.pekko.testkit.TestProbe;
-import org.junit.ClassRule;
-import org.junit.Test;
-import org.scalatestplus.junit.JUnitSuite;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
-public class StashJavaAPI extends JUnitSuite {
+public class StashJavaAPI {
 
-  @ClassRule
-  public static PekkoJUnitActorSystemResource actorSystemResource =
-      new PekkoJUnitActorSystemResource("StashJavaAPI", ActorWithBoundedStashSpec.testConf());
+  @RegisterExtension
+  static PekkoJUnitJupiterActorSystemResource actorSystemResource =
+      new PekkoJUnitJupiterActorSystemResource(
+          "StashJavaAPI", ActorWithBoundedStashSpec.testConf());
 
   private final ActorSystem system = actorSystemResource.getSystem();
 

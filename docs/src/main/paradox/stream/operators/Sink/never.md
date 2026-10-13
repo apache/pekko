@@ -7,7 +7,7 @@ Always backpressure never cancel and never consume any elements from the stream.
 ## Signature
 
 @apidoc[Sink.never](Sink$) { java="#never()" }
-@apidoc[Sink.never](Sink$) { scala="#never()" }
+@apidoc[Sink.never](Sink$) { scala="#never:org.apache.pekko.stream.scaladsl.Sink[Any,scala.concurrent.Future[org.apache.pekko.Done]]" }
 
 
 ## Description

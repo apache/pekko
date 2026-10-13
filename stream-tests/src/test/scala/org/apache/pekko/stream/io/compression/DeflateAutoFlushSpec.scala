@@ -17,10 +17,11 @@
 
 package org.apache.pekko.stream.io.compression
 
-import org.apache.pekko.stream.scaladsl.{ Compression, Flow }
-import org.apache.pekko.util.ByteString
-
 import java.util.zip.Deflater
+
+import org.apache.pekko
+import pekko.stream.scaladsl.{ Compression, Flow }
+import pekko.util.ByteString
 
 class DeflateAutoFlushSpec extends DeflateSpec {
   override protected val encoderFlow: Flow[ByteString, ByteString, Any] =

@@ -24,7 +24,7 @@ import pekko.annotation.InternalApi
 /**
  * INTERNAL API
  */
-@InternalApi private[pekko] class ReceptionistImpl(system: ActorSystem[_]) extends Receptionist {
+@InternalApi private[pekko] class ReceptionistImpl(system: ActorSystem[?]) extends Receptionist {
 
   override val ref: ActorRef[Receptionist.Command] = {
     val provider: ReceptionistBehaviorProvider =

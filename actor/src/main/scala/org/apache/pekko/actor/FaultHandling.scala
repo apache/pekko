@@ -25,7 +25,7 @@ import scala.language.implicitConversions
 import scala.util.control.NonFatal
 
 import org.apache.pekko
-import pekko.annotation.InternalApi
+import pekko.annotation.{ DoNotInherit, InternalApi }
 import pekko.event.Logging
 import pekko.event.Logging.{ Error, LogEvent, LogLevel }
 import pekko.japi.Util.immutableSeq
@@ -113,7 +113,9 @@ trait SupervisorStrategyLowPriorityImplicits { this: SupervisorStrategy.type =>
 }
 
 object SupervisorStrategy extends SupervisorStrategyLowPriorityImplicits {
-  sealed trait Directive {
+
+  /** Not for user extension */
+  @DoNotInherit sealed trait Directive {
 
     /** INTERNAL API */
     @InternalApi
@@ -244,17 +246,17 @@ object SupervisorStrategy extends SupervisorStrategyLowPriorityImplicits {
    * Implicit conversion from `Seq` of Throwables to a `Decider`.
    * This maps the given Throwables to restarts, otherwise escalates.
    */
-  implicit def seqThrowable2Decider(trapExit: immutable.Seq[Class[_ <: Throwable]]): Decider = makeDecider(trapExit)
+  implicit def seqThrowable2Decider(trapExit: Seq[Class[? <: Throwable]]): Decider = makeDecider(trapExit)
 
   type Decider = PartialFunction[Throwable, Directive]
   type JDecider = pekko.japi.function.Function[Throwable, Directive]
-  type CauseDirective = (Class[_ <: Throwable], Directive)
+  type CauseDirective = (Class[? <: Throwable], Directive)
 
   /**
    * Decider builder which just checks whether one of
    * the given Throwables matches the cause and restarts, otherwise escalates.
    */
-  def makeDecider(trapExit: immutable.Seq[Class[_ <: Throwable]]): Decider = {
+  def makeDecider(trapExit: Seq[Class[? <: Throwable]]): Decider = {
     case x => if (trapExit.exists(_.isInstance(x))) Restart else Escalate
   }
 
@@ -262,7 +264,7 @@ object SupervisorStrategy extends SupervisorStrategyLowPriorityImplicits {
    * Decider builder which just checks whether one of
    * the given Throwables matches the cause and restarts, otherwise escalates.
    */
-  def makeDecider(trapExit: JIterable[Class[_ <: Throwable]]): Decider = makeDecider(immutableSeq(trapExit))
+  def makeDecider(trapExit: JIterable[Class[? <: Throwable]]): Decider = makeDecider(immutableSeq(trapExit))
 
   /**
    * Decider builder for Iterables of cause-directive pairs, e.g. a map obtained
@@ -287,7 +289,7 @@ object SupervisorStrategy extends SupervisorStrategyLowPriorityImplicits {
    *
    * INTERNAL API
    */
-  private[pekko] def sort(in: Iterable[CauseDirective]): immutable.Seq[CauseDirective] =
+  private[pekko] def sort(in: Iterable[CauseDirective]): Seq[CauseDirective] =
     in.foldLeft(new ArrayBuffer[CauseDirective](in.size)) { (buf, ca) =>
       buf.indexWhere(_._1.isAssignableFrom(ca._1)) match {
         case -1 => buf.append(ca)
@@ -459,7 +461,7 @@ abstract class SupervisorStrategy {
  *   if the limit is exceeded the child actor is stopped
  * @param withinTimeRange duration of the time window for maxNrOfRetries, Duration.Inf means no window
  * @param decider mapping from Throwable to [[pekko.actor.SupervisorStrategy.Directive]], you can also use a
- *   [[scala.collection.immutable.Seq]] of Throwables which maps the given Throwables to restarts, otherwise escalates.
+ *   [[Seq]] of Throwables which maps the given Throwables to restarts, otherwise escalates.
  * @param loggingEnabled the strategy logs the failure if this is enabled (true), by default it is enabled
  */
 case class AllForOneStrategy(
@@ -505,13 +507,13 @@ case class AllForOneStrategy(
   /**
    * Java API
    */
-  def this(maxNrOfRetries: Int, withinTimeRange: Duration, trapExit: JIterable[Class[_ <: Throwable]]) =
+  def this(maxNrOfRetries: Int, withinTimeRange: Duration, trapExit: JIterable[Class[? <: Throwable]]) =
     this(maxNrOfRetries, withinTimeRange)(SupervisorStrategy.makeDecider(trapExit))
 
   /**
    * Java API
    */
-  def this(maxNrOfRetries: Int, withinTimeRange: java.time.Duration, trapExit: JIterable[Class[_ <: Throwable]]) =
+  def this(maxNrOfRetries: Int, withinTimeRange: java.time.Duration, trapExit: JIterable[Class[? <: Throwable]]) =
     this(maxNrOfRetries, withinTimeRange.toScala)(SupervisorStrategy.makeDecider(trapExit))
 
   /**
@@ -544,7 +546,8 @@ case class AllForOneStrategy(
    *  across actors and thus this field does not take up much space
    */
   private val retriesWindow =
-    (maxNrOfRetriesOption(maxNrOfRetries), withinTimeRangeOption(withinTimeRange).map(_.toMillis.toInt))
+    (maxNrOfRetriesOption(maxNrOfRetries),
+      withinTimeRangeOption(withinTimeRange).map(d => math.min(Int.MaxValue.toLong, d.toMillis).toInt))
 
   def handleChildTerminated(context: ActorContext, child: ActorRef, children: Iterable[ActorRef]): Unit = ()
 
@@ -573,7 +576,7 @@ case class AllForOneStrategy(
  *  if the duration is infinite. If the limit is exceeded the child actor is stopped
  * @param withinTimeRange duration of the time window for maxNrOfRetries, Duration.Inf means no window
  * @param decider mapping from Throwable to [[pekko.actor.SupervisorStrategy.Directive]], you can also use a
- *   [[scala.collection.immutable.Seq]] of Throwables which maps the given Throwables to restarts, otherwise escalates.
+ *   [[Seq]] of Throwables which maps the given Throwables to restarts, otherwise escalates.
  * @param loggingEnabled the strategy logs the failure if this is enabled (true), by default it is enabled
  */
 case class OneForOneStrategy(
@@ -617,13 +620,13 @@ case class OneForOneStrategy(
   /**
    * Java API
    */
-  def this(maxNrOfRetries: Int, withinTimeRange: Duration, trapExit: JIterable[Class[_ <: Throwable]]) =
+  def this(maxNrOfRetries: Int, withinTimeRange: Duration, trapExit: JIterable[Class[? <: Throwable]]) =
     this(maxNrOfRetries, withinTimeRange)(SupervisorStrategy.makeDecider(trapExit))
 
   /**
    * Java API
    */
-  def this(maxNrOfRetries: Int, withinTimeRange: java.time.Duration, trapExit: JIterable[Class[_ <: Throwable]]) =
+  def this(maxNrOfRetries: Int, withinTimeRange: java.time.Duration, trapExit: JIterable[Class[? <: Throwable]]) =
     this(maxNrOfRetries, withinTimeRange.toScala)(SupervisorStrategy.makeDecider(trapExit))
 
   /**
@@ -656,7 +659,8 @@ case class OneForOneStrategy(
    */
   private val retriesWindow = (
     SupervisorStrategy.maxNrOfRetriesOption(maxNrOfRetries),
-    SupervisorStrategy.withinTimeRangeOption(withinTimeRange).map(_.toMillis.toInt))
+    SupervisorStrategy.withinTimeRangeOption(withinTimeRange).map(d =>
+      math.min(Int.MaxValue.toLong, d.toMillis).toInt))
 
   def handleChildTerminated(context: ActorContext, child: ActorRef, children: Iterable[ActorRef]): Unit = ()
 

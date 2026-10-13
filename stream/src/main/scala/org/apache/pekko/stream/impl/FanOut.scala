@@ -14,7 +14,6 @@
 package org.apache.pekko.stream.impl
 
 import scala.annotation.nowarn
-import scala.collection.immutable
 
 import org.apache.pekko
 import pekko.actor._
@@ -48,7 +47,7 @@ import org.reactivestreams.Subscription
     override def createSubscription(): Subscription = new SubstreamSubscription(actor, id)
   }
 
-  final case class ExposedPublishers(publishers: immutable.Seq[ActorPublisher[Any]])
+  final case class ExposedPublishers(publishers: Seq[ActorPublisher[Any]])
       extends DeadLetterSuppression
       with NoSerializationVerificationNeeded
 
@@ -312,38 +311,4 @@ import org.reactivestreams.Subscription
   }
 
   def receive = primaryInputs.subreceive.orElse[Any, Unit](outputBunch.subreceive)
-}
-
-/**
- * INTERNAL API
- */
-@InternalApi private[pekko] object Unzip {
-  def props(attributes: Attributes): Props =
-    Props(new Unzip(attributes)).withDeploy(Deploy.local)
-}
-
-/**
- * INTERNAL API
- */
-@InternalApi private[pekko] class Unzip(attributes: Attributes) extends FanOut(attributes, outputCount = 2) {
-  outputBunch.markAllOutputs()
-
-  initialPhase(
-    1,
-    TransferPhase(primaryInputs.NeedsInput && outputBunch.AllOfMarkedOutputs) { () =>
-      primaryInputs.dequeueInputElement() match {
-        case (a, b) =>
-          outputBunch.enqueue(0, a)
-          outputBunch.enqueue(1, b)
-
-        case t: pekko.japi.Pair[_, _] =>
-          outputBunch.enqueue(0, t.first)
-          outputBunch.enqueue(1, t.second)
-
-        case t =>
-          throw new IllegalArgumentException(
-            s"Unable to unzip elements of type ${t.getClass.getName}, " +
-            s"can only handle Tuple2 and org.apache.pekko.japi.Pair!")
-      }
-    })
 }

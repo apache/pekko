@@ -20,6 +20,7 @@ import pekko.Done
 import pekko.actor.testkit.typed.scaladsl.{ LogCapturing, ScalaTestWithActorTestKit }
 import pekko.actor.typed.ActorRef
 import pekko.persistence.query.{ EventEnvelope, PersistenceQuery }
+import pekko.persistence.query.Sequence
 import pekko.persistence.testkit.PersistenceTestKitPlugin
 import pekko.persistence.testkit.query.scaladsl.PersistenceTestKitReadJournal
 import pekko.persistence.typed.PersistenceId
@@ -41,7 +42,7 @@ object EventsByPersistenceIdSpec {
   case class Command(evt: String, ack: ActorRef[Done])
   case class State()
 
-  def testBehaviour(persistenceId: String) = {
+  def testBehavior(persistenceId: String) = {
     EventSourcedBehavior[Command, String, State](
       PersistenceId.ofUniqueId(persistenceId),
       State(),
@@ -49,7 +50,7 @@ object EventsByPersistenceIdSpec {
         Effect.persist(command.evt).thenRun { _ =>
           command.ack ! Done
         },
-      (state, _) => state)
+      (state, _) => state).withTagger(evt => if (evt.startsWith("tag-me-")) Set("tag") else Set.empty)
   }
 
 }
@@ -78,7 +79,7 @@ class EventsByPersistenceIdSpec
   }
 
   def setupEmpty(persistenceId: String): ActorRef[Command] = {
-    spawn(testBehaviour(persistenceId))
+    spawn(testBehavior(persistenceId))
   }
 
   "Persistent test kit live query EventsByPersistenceId" must {
@@ -126,7 +127,9 @@ class EventsByPersistenceIdSpec
       val probe = src.runWith(TestSink[EventEnvelope]())
 
       probe.request(5)
-      probe.expectNext().timestamp should be > 0L
+      val envelope = probe.expectNext()
+      envelope.timestamp should be > 0L
+      envelope.offset shouldBe a[Sequence]
       probe.expectNext().timestamp should be > 0L
       probe.cancel()
     }
@@ -143,6 +146,22 @@ class EventsByPersistenceIdSpec
       ref ! Command("o-1", ackProbe.ref)
       ackProbe.expectMessage(Done)
 
+      probe.cancel()
+    }
+  }
+
+  "Persistent test kit query currentEventsByPersistenceId" must {
+    "include timestamp in EventEnvelope" in {
+      setup("n")
+
+      val src = queries.currentEventsByPersistenceId("n", 0L, Long.MaxValue)
+      val probe = src.runWith(TestSink[EventEnvelope]())
+
+      probe.request(5)
+      val envelope = probe.expectNext()
+      envelope.timestamp should be > 0L
+      envelope.offset shouldBe a[Sequence]
+      probe.expectNext().timestamp should be > 0L
       probe.cancel()
     }
   }

@@ -306,13 +306,13 @@ object DistributedPubSubExample {
         pekko.loggers = ["org.apache.pekko.testkit.TestEventListener"]
     """)
 
-  def createCluster(nodes: List[ActorSystem[_]]): Unit = {
-    val clusterUp = (nodes: List[ActorSystem[_]], expected: Int) =>
+  def createCluster(nodes: List[ActorSystem[?]]): Unit = {
+    val clusterUp = (nodes: List[ActorSystem[?]], expected: Int) =>
       nodes.forall { s =>
         Cluster(s).state.members.count(_.status == MemberStatus.up) == expected
       }
 
-    val awaitClusterUp = (nodes: List[ActorSystem[_]], expected: Int) =>
+    val awaitClusterUp = (nodes: List[ActorSystem[?]], expected: Int) =>
       while (!clusterUp(nodes, expected)) {
         Thread.sleep(1000)
       }

@@ -249,6 +249,41 @@ class ResizerSpec extends PekkoSpec(ResizerSpec.config) with DefaultTimeout with
 
     }
 
+    "clamp AdjustPoolSize growth to upperBound" in {
+      val resizer = DefaultResizer(lowerBound = 2, upperBound = 5, messagesPerResize = 100)
+      val router = system.actorOf(
+        RoundRobinPool(nrOfInstances = 0, resizer = Some(resizer)).props(Props[TestActor]()))
+
+      val latch = new TestLatch(2)
+      router ! latch
+      router ! latch
+      Await.ready(latch, remainingOrDefault)
+
+      routeeSize(router) should ===(2)
+
+      router ! AdjustPoolSize(10)
+      routeeSize(router) should ===(5)
+    }
+
+    "clamp AdjustPoolSize shrink to lowerBound" in {
+      val resizer = DefaultResizer(lowerBound = 2, upperBound = 5, messagesPerResize = 100)
+      val router = system.actorOf(
+        RoundRobinPool(nrOfInstances = 0, resizer = Some(resizer)).props(Props[TestActor]()))
+
+      val latch = new TestLatch(2)
+      router ! latch
+      router ! latch
+      Await.ready(latch, remainingOrDefault)
+
+      routeeSize(router) should ===(2)
+
+      router ! AdjustPoolSize(2)
+      routeeSize(router) should ===(4)
+
+      router ! AdjustPoolSize(-10)
+      routeeSize(router) should ===(2)
+    }
+
   }
 
 }

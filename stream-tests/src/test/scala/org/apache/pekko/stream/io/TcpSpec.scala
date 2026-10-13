@@ -84,7 +84,7 @@ class FailingDnsResolver extends DnsProvider {
         request: DnsProtocol.Resolve,
         system: ActorSystem,
         sender: ActorRef): Option[DnsProtocol.Resolved] = {
-      sender ! DnsProtocol.Resolved(request.name, immutable.Seq.empty, immutable.Seq.empty)
+      sender ! DnsProtocol.Resolved(request.name, Seq.empty, Seq.empty)
       None
     }
   }
@@ -519,6 +519,31 @@ class TcpSpec extends StreamSpec("""
       binding.unbind()
     }
 
+    "not throw a NullPointerException when full-close is requested and upstream finishes before the connection is established (#3255)" in {
+      val binding =
+        Tcp()
+          .bind("127.0.0.1", 0)
+          .toMat(Sink.foreach { conn =>
+            conn.flow.join(Flow[ByteString]).run()
+          })(Keep.left)
+          .run()
+          .futureValue
+
+      // `Source.empty` completes synchronously during materialization, i.e. before the outbound
+      // connection is established (the connection ActorRef is still null at that point). With
+      // half-close disabled the upstream-finished handler used to dereference that null connection
+      // (`connection ! Close`) and fail the stage with a NullPointerException. The fix defers the
+      // close until the connection is established, so the stream must complete normally here.
+      val result = Source
+        .empty[ByteString]
+        .via(Tcp().outgoingConnection(binding.localAddress, halfClose = false))
+        .runWith(Sink.ignore)
+
+      result.futureValue should ===(Done)
+
+      binding.unbind()
+    }
+
     "Echo should work even if server is in full close mode" in {
       val serverAddress = temporaryServerAddress()
 
@@ -937,7 +962,10 @@ class TcpSpec extends StreamSpec("""
 
       // trust store and keys in one keystore
       val keyStore = KeyStore.getInstance("PKCS12")
-      keyStore.load(getClass.getResourceAsStream("/tcp-spec-keystore.p12"), password)
+      // KeyStore.load does not close the stream it is given
+      val keyStoreStream = getClass.getResourceAsStream("/tcp-spec-keystore.p12")
+      try keyStore.load(keyStoreStream, password)
+      finally if (keyStoreStream ne null) keyStoreStream.close()
 
       val trustManagerFactory = TrustManagerFactory.getInstance("SunX509")
       trustManagerFactory.init(keyStore)

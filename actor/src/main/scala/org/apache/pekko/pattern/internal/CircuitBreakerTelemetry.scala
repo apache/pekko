@@ -25,7 +25,7 @@ import pekko.annotation.{ InternalApi, InternalStableApi }
  * Service Provider Interface (SPI) for collecting metrics from Circuit Breaker.
  *
  * Implementations must include a single constructor with two arguments: Circuit Breaker id
- * and [[ExtendedActorSystem]]. To setup your implementation, add a setting in your `application.conf`:
+ * and `ExtendedActorSystem`. To setup your implementation, add a setting in your `application.conf`:
  *
  * {{{
  * pekko.circuit-breaker.telemetry.implementations += com.example.MyMetrics
@@ -80,7 +80,7 @@ trait CircuitBreakerTelemetry {
 
   /**
    * Called when the circuit breaker is removed, e.g. expired due to inactivity. It is also called
-   * if the circuit breaker is re-configured, before calling [[CircuitBreakerTelemetryProvider#start]].
+   * if the circuit breaker is re-configured, before calling `CircuitBreakerTelemetryProvider.start`.
    */
   def stopped(): Unit
 }

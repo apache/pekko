@@ -15,7 +15,9 @@ import com.lightbend.paradox.sbt.ParadoxPlugin
 import com.lightbend.paradox.sbt.ParadoxPlugin.autoImport._
 import com.lightbend.paradox.apidoc.ApidocPlugin
 import com.lightbend.paradox.projectinfo.ParadoxProjectInfoPluginKeys.projectInfoVersion
-import org.apache.pekko.PekkoParadoxPlugin.autoImport._
+import org.apache.pekko
+import pekko.PekkoParadoxPlugin.autoImport._
+
 import sbt.Keys._
 import sbt._
 import sbtlicensereport.SbtLicenseReport.autoImportImpl.dumpLicenseReportAggregate
@@ -27,10 +29,12 @@ object Paradox {
   lazy val propertiesSettings = Seq(
     Compile / paradoxProperties ++= Map(
       "canonical.base_url" -> s"$pekkoBaseURL/docs/pekko/current",
-      "github.base_url" -> GitHub
+      "github.base_url" ->
+      GitHub
         .url(version.value), // for links like this: @github[#1](#1) or @github[83986f9](83986f9)
       "extref.pekko.http.base_url" -> s"$pekkoBaseURL/docs/pekko-http/current/%s",
-      "extref.pekko-management.base_url" -> s"$pekkoBaseURL/docs/pekko-management/current/%s",
+      "extref.pekko-management.base_url" -> s"$pekkoBaseURL/docs/pekko-management/2.0/%s",
+      "extref.pekko-management-snapshot.base_url" -> s"$pekkoBaseURL/docs/pekko-management/snapshot/%s",
       "extref.platform-guide.base_url" -> "https://developer.lightbend.com/docs/akka-platform-guide/%s",
       "extref.wikipedia.base_url" -> "https://en.wikipedia.org/wiki/%s",
       "extref.github.base_url" -> (GitHub.url(version.value) + "/%s"), // for links to our sources
@@ -50,9 +54,11 @@ object Paradox {
       "javadoc.org.apache.pekko.link_style" -> "direct",
       "javadoc.org.apache.pekko.http.base_url" -> s"$pekkoBaseURL/japi/pekko-http/current",
       "javadoc.org.apache.pekko.http.link_style" -> "frames",
-      "javadoc.com.fasterxml.jackson.annotation.base_url" -> "https://javadoc.io/doc/com.fasterxml.jackson.core/jackson-annotations/latest/",
+      "javadoc.com.fasterxml.jackson.annotation.base_url" ->
+      "https://javadoc.io/doc/com.fasterxml.jackson.core/jackson-annotations/latest/",
       "javadoc.com.fasterxml.jackson.annotation.link_style" -> "direct",
-      "javadoc.com.fasterxml.jackson.databind.base_url" -> "https://javadoc.io/doc/com.fasterxml.jackson.core/jackson-databind/latest/",
+      "javadoc.com.fasterxml.jackson.databind.base_url" ->
+      "https://javadoc.io/doc/com.fasterxml.jackson.core/jackson-databind/latest/",
       "javadoc.com.fasterxml.jackson.databind.link_style" -> "direct",
       "javadoc.com.google.protobuf.base_url" -> "https://javadoc.io/doc/com.google.protobuf/protobuf-java/latest/",
       "javadoc.com.google.protobuf.link_style" -> "direct",
@@ -72,7 +78,7 @@ object Paradox {
   lazy val rootsSettings = Seq(
     paradoxRoots := List(
       "index.html",
-      // TODO page not linked to
+      // linked from fault-tolerance.md, not in the TOC
       "fault-tolerance-sample.html"))
 
   lazy val themeSettings = Seq(

@@ -63,8 +63,7 @@ stored events is provided by `currentEventsByPersistenceId`.
 
 The LevelDB write journal is notifying the query side as soon as events are persisted, but for
 efficiency reasons the query side retrieves the events in batches that sometimes can
-be delayed up to the configured `refresh-interval` or given `RefreshInterval`
-hint.
+be delayed up to the configured `refresh-interval`.
 
 The stream is completed with failure if there is a failure in executing the query in the
 backend journal.
@@ -145,8 +144,7 @@ stored events is provided by `currentEventsByTag`.
 
 The LevelDB write journal is notifying the query side as soon as tagged events are persisted, but for
 efficiency reasons the query side retrieves the events in batches that sometimes can
-be delayed up to the configured `refresh-interval` or given `RefreshInterval`
-hint.
+be delayed up to the configured `refresh-interval`.
 
 The stream is completed with failure if there is a failure in executing the query in the
 backend journal.

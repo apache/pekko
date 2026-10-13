@@ -1,6 +1,6 @@
 # limit
 
-Limit number of element from upstream to given `max` number.
+Limit number of elements from upstream to given `max` number.
 
 @ref[Simple operators](../index.md#simple-operators)
 

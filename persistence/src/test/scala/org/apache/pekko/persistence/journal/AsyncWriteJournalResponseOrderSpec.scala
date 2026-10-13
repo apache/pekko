@@ -17,13 +17,14 @@
 
 package org.apache.pekko.persistence.journal
 
-import org.apache.pekko.persistence.journal.AsyncWriteJournalResponseOrderSpec._
-
-import scala.collection.{ immutable, mutable }
+import scala.collection.mutable
 import scala.concurrent.{ ExecutionContext, Future, Promise }
 import scala.util.Try
-import org.apache.pekko.persistence.{ AtomicWrite, JournalProtocol, PersistenceSpec, PersistentRepr }
-import org.apache.pekko.testkit.ImplicitSender
+
+import org.apache.pekko
+import pekko.persistence.{ AtomicWrite, JournalProtocol, PersistenceSpec, PersistentRepr }
+import pekko.persistence.journal.AsyncWriteJournalResponseOrderSpec._
+import pekko.testkit.ImplicitSender
 
 /**
  * Verifies write response ordering logic for [[AsyncWriteJournal]].
@@ -129,7 +130,7 @@ private object AsyncWriteJournalResponseOrderSpec {
         }
     }
 
-    override def asyncWriteMessages(messages: immutable.Seq[AtomicWrite]): Future[immutable.Seq[Try[Unit]]] = {
+    override def asyncWriteMessages(messages: Seq[AtomicWrite]): Future[Seq[Try[Unit]]] = {
       val responsePromise = Promise[Unit]()
       pendingOps.put(messages.head.persistenceId.toInt, responsePromise)
       responsePromise.future.map(_ => Vector.empty)

@@ -22,21 +22,17 @@ import pekko.actor.ExtendedActorSystem
 import pekko.actor.Extension
 import pekko.actor.ExtensionId
 import pekko.actor.ExtensionIdProvider
-import pekko.annotation.ApiMayChange
 import pekko.cluster.sharding.external.internal.ExternalShardAllocationClientImpl
 
 /**
  * API May Change
  */
-@ApiMayChange
 final class ExternalShardAllocation(system: ExtendedActorSystem) extends Extension {
 
   private val clients = new ConcurrentHashMap[String, ExternalShardAllocationClientImpl]
 
-  private val factory = new JFunction[String, ExternalShardAllocationClientImpl] {
-    override def apply(typeName: String): ExternalShardAllocationClientImpl =
-      new ExternalShardAllocationClientImpl(system, typeName)
-  }
+  private val factory: JFunction[String, ExternalShardAllocationClientImpl] =
+    (typeName: String) => new ExternalShardAllocationClientImpl(system, typeName)
 
   /**
    * Scala API

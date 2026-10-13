@@ -14,6 +14,7 @@
 package org.apache.pekko.cluster.client
 
 import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 import scala.collection.immutable
 import scala.collection.immutable.{ HashMap, HashSet }
@@ -41,6 +42,7 @@ import pekko.actor.NoSerializationVerificationNeeded
 import pekko.actor.Props
 import pekko.actor.ReceiveTimeout
 import pekko.actor.Terminated
+import pekko.annotation.DoNotInherit
 import pekko.cluster.Cluster
 import pekko.cluster.ClusterEvent._
 import pekko.cluster.Member
@@ -210,8 +212,10 @@ final class ClusterClientSettings(
 /**
  * Declares a super type for all events emitted by the `ClusterClient`
  * in relation to contact points being added or removed.
+ *
+ * Not for user extension
  */
-sealed trait ContactPointChange {
+@DoNotInherit sealed trait ContactPointChange {
   val contactPoint: ActorPath
 }
 
@@ -227,7 +231,8 @@ final case class ContactPointAdded(override val contactPoint: ActorPath) extends
  */
 final case class ContactPointRemoved(override val contactPoint: ActorPath) extends ContactPointChange
 
-sealed abstract class SubscribeContactPoints
+/** Not for user extension */
+@DoNotInherit sealed abstract class SubscribeContactPoints
 
 /**
  * Subscribe to a cluster client's contact point changes where
@@ -245,7 +250,8 @@ case object SubscribeContactPoints extends SubscribeContactPoints {
   def getInstance = this
 }
 
-sealed abstract class UnsubscribeContactPoints
+/** Not for user extension */
+@DoNotInherit sealed abstract class UnsubscribeContactPoints
 
 /**
  * Explicitly unsubscribe from contact point change events.
@@ -258,7 +264,8 @@ case object UnsubscribeContactPoints extends UnsubscribeContactPoints {
   def getInstance = this
 }
 
-sealed abstract class GetContactPoints
+/** Not for user extension */
+@DoNotInherit sealed abstract class GetContactPoints
 
 /**
  * Get the contact points known to this client. A ``ContactPoints`` message
@@ -516,7 +523,7 @@ final class ClusterClient(settings: ClusterClientSettings) extends Actor with Ac
       else if (contacts.size == 1) initialContactsSel.union(contacts)
       else contacts
     if (log.isDebugEnabled)
-      log.debug(s"""Sending GetContacts to [${sendTo.mkString(",")}]""")
+      log.debug("Sending GetContacts to [{}]", sendTo.mkString(","))
     sendTo.foreach { _ ! GetContacts }
   }
 
@@ -786,14 +793,18 @@ final class ClusterReceptionistSettings(
 
 /**
  * Marker trait for remote messages with special serializer.
+ *
+ * Not for user extension
  */
-sealed trait ClusterClientMessage extends Serializable
+@DoNotInherit sealed trait ClusterClientMessage extends Serializable
 
 /**
  * Declares a super type for all events emitted by the `ClusterReceptionist`.
  * in relation to cluster clients being interacted with.
+ *
+ * Not for user extension
  */
-sealed trait ClusterClientInteraction {
+@DoNotInherit sealed trait ClusterClientInteraction {
   val clusterClient: ActorRef
 }
 
@@ -809,7 +820,8 @@ final case class ClusterClientUp(override val clusterClient: ActorRef) extends C
  */
 final case class ClusterClientUnreachable(override val clusterClient: ActorRef) extends ClusterClientInteraction
 
-sealed abstract class SubscribeClusterClients
+/** Not for user extension */
+@DoNotInherit sealed abstract class SubscribeClusterClients
 
 /**
  * Subscribe to a cluster receptionist's client interactions where
@@ -827,7 +839,8 @@ case object SubscribeClusterClients extends SubscribeClusterClients {
   def getInstance = this
 }
 
-sealed abstract class UnsubscribeClusterClients
+/** Not for user extension */
+@DoNotInherit sealed abstract class UnsubscribeClusterClients
 
 /**
  * Explicitly unsubscribe from client interaction events.
@@ -840,7 +853,8 @@ case object UnsubscribeClusterClients extends UnsubscribeClusterClients {
   def getInstance = this
 }
 
-sealed abstract class GetClusterClients
+/** Not for user extension */
+@DoNotInherit sealed abstract class GetClusterClients
 
 /**
  * Get the cluster clients known to this receptionist. A ``ClusterClients`` message
@@ -910,8 +924,8 @@ object ClusterReceptionist {
       }
 
       def receive = {
-        case Ping           => // keep alive from client
-        case ReceiveTimeout =>
+        case Ping              => // keep alive from client
+        case _: ReceiveTimeout =>
           log.debug("ClientResponseTunnel for client [{}] stopped due to inactivity", client.path)
           context.stop(self)
         case msg =>
@@ -1007,7 +1021,7 @@ final class ClusterReceptionist(pubSubMediator: ActorRef, settings: ClusterRecep
   def matchingRole(m: Member): Boolean = role.forall(m.hasRole)
 
   def responseTunnel(client: ActorRef): ActorRef = {
-    val encName = URLEncoder.encode(client.path.toSerializationFormat, "utf-8")
+    val encName = URLEncoder.encode(client.path.toSerializationFormat, StandardCharsets.UTF_8)
     context.child(encName) match {
       case Some(tunnel) => tunnel
       case None         =>

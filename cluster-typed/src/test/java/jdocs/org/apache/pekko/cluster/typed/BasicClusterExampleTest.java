@@ -36,7 +36,7 @@ import java.util.List;
 import java.util.Set;
 
 // FIXME use awaitAssert to await cluster forming like in BasicClusterExampleSpec
-public class BasicClusterExampleTest { // extends JUnitSuite {
+public class BasicClusterExampleTest { // {
 
   private Config clusterConfig =
       ConfigFactory.parseString(

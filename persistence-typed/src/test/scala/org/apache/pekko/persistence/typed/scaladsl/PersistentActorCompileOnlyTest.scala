@@ -76,7 +76,7 @@ object PersistentActorCompileOnlyTest {
     def performSideEffect(sender: ActorRef[AcknowledgeSideEffect], correlationId: Int, data: String): Unit = {
       import pekko.actor.typed.scaladsl.AskPattern._
       implicit val timeout: pekko.util.Timeout = 1.second
-      implicit val system: ActorSystem[_] = ???
+      implicit val system: ActorSystem[?] = ???
       implicit val ec: ExecutionContext = ???
 
       val response: Future[RecoveryComplete.Response] =

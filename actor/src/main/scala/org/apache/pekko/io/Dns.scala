@@ -15,7 +15,6 @@ package org.apache.pekko.io
 
 import java.net.{ Inet4Address, Inet6Address, InetAddress }
 import java.util.concurrent.ConcurrentHashMap
-import java.util.function.{ Function => JFunction }
 
 import scala.annotation.nowarn
 
@@ -47,7 +46,9 @@ abstract class Dns {
 }
 
 object Dns extends ExtensionId[DnsExt] with ExtensionIdProvider {
-  sealed trait Command
+
+  /** Not for user extension */
+  @DoNotInherit sealed trait Command
 
   /**
    * Lookup if a DNS resolved is cached. The exact behavior of caching will depend on
@@ -96,25 +97,23 @@ class DnsExt private[pekko] (val system: ExtendedActorSystem, resolverName: Stri
     // This can't pass in `this` as then AsyncDns would pick up the system settings
     asyncDns.computeIfAbsent(
       managerName,
-      new JFunction[String, ActorRef] {
-        override def apply(r: String): ActorRef = {
-          val settings =
-            new Settings(system.settings.config.getConfig("pekko.io.dns"), "async-dns")
-          val provider = system.dynamicAccess.createInstanceFor[DnsProvider](settings.ProviderObjectName, Nil).get
-          Logging(system, classOf[DnsExt])
-            .info("Creating async dns resolver {} with manager name {}", settings.Resolver, managerName)
+      (_: String) => {
+        val settings =
+          new Settings(system.settings.config.getConfig("pekko.io.dns"), "async-dns")
+        val provider = system.dynamicAccess.createInstanceFor[DnsProvider](settings.ProviderObjectName, Nil).get
+        Logging(system, classOf[DnsExt])
+          .info("Creating async dns resolver {} with manager name {}", settings.Resolver, managerName)
 
-          system.systemActorOf(
-            props = Props(
-              provider.managerClass,
-              settings.Resolver,
-              system,
-              settings.ResolverConfig,
-              provider.cache,
-              settings.Dispatcher,
-              provider).withDeploy(Deploy.local).withDispatcher(settings.Dispatcher),
-            name = managerName)
-        }
+        system.systemActorOf(
+          props = Props(
+            provider.managerClass,
+            settings.Resolver,
+            system,
+            settings.ResolverConfig,
+            provider.cache,
+            settings.Dispatcher,
+            provider).withDeploy(Deploy.local).withDispatcher(settings.Dispatcher),
+          name = managerName)
       })
   }
 

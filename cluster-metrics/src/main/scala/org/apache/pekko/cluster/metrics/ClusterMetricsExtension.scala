@@ -13,8 +13,6 @@
 
 package org.apache.pekko.cluster.metrics
 
-import scala.collection.immutable
-
 import org.apache.pekko
 import pekko.actor.ActorRef
 import pekko.actor.ActorSystem
@@ -60,11 +58,11 @@ class ClusterMetricsExtension(system: ExtendedActorSystem) extends Extension {
   private[metrics] val strategy = system.dynamicAccess
     .createInstanceFor[SupervisorStrategy](
       SupervisorStrategyProvider,
-      immutable.Seq(classOf[Config] -> SupervisorStrategyConfiguration))
+      Seq(classOf[Config] -> SupervisorStrategyConfiguration))
     .getOrElse {
       val log: LoggingAdapter = Logging(system, classOf[ClusterMetricsExtension])
-      log.error(s"Configured strategy provider $SupervisorStrategyProvider failed to load, using default ${classOf[
-          ClusterMetricsStrategy].getName}.")
+      log.error("Configured strategy provider {} failed to load, using default {}.",
+        SupervisorStrategyProvider, classOf[ClusterMetricsStrategy].getName)
       new ClusterMetricsStrategy(SupervisorStrategyConfiguration)
     }
 

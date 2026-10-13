@@ -13,10 +13,11 @@
 
 package org.apache.pekko.util
 
-import scala.collection.{ immutable, mutable }
+import scala.collection.mutable
 import scala.concurrent.duration.FiniteDuration
 
-import org.apache.pekko.annotation.InternalApi
+import org.apache.pekko
+import pekko.annotation.InternalApi
 
 /**
  * INTERNAL API
@@ -27,8 +28,8 @@ private[pekko] object FrequencyList {
     new FrequencyList[A](dynamicAging, clock = OptionVal.None)
 
   object withOverallRecency {
-    def empty[A](dynamicAging: Boolean = false): FrequencyList[A] =
-      new FrequencyList[A](dynamicAging, OptionVal.Some(new RecencyList.NanoClock))
+    def empty[A](clock: Clock, dynamicAging: Boolean = false): FrequencyList[A] =
+      new FrequencyList[A](dynamicAging, OptionVal.Some(clock))
   }
 
   private final class FrequencyNode[A](val priority: Long) {
@@ -60,7 +61,7 @@ private[pekko] object FrequencyList {
  * Dynamic aging can be enabled for least frequently used policies, to automatically 'age' the whole cache on evictions.
  */
 @InternalApi
-private[pekko] final class FrequencyList[A](dynamicAging: Boolean, clock: OptionVal[RecencyList.Clock]) {
+private[pekko] final class FrequencyList[A](dynamicAging: Boolean, clock: OptionVal[Clock]) {
   import FrequencyList.{ FrequencyNode, Node }
 
   private val frequency = new DoubleLinkedList[FrequencyNode[A]](
@@ -131,14 +132,14 @@ private[pekko] final class FrequencyList[A](dynamicAging: Boolean, clock: Option
 
   def mostToLeastFrequent: Iterator[A] = backwardIterator.map(_.value)
 
-  def removeLeastFrequent(n: Int): immutable.Seq[A] =
+  def removeLeastFrequent(n: Int): Seq[A] =
     if (n == 1) removeLeastFrequent() // optimised removal of just 1 node
     else forwardIterator.take(n).map(removeLeastFrequentNode).toList
 
-  def removeLeastFrequent(n: Int = 1, skip: OptionVal[A]): immutable.Seq[A] =
+  def removeLeastFrequent(n: Int = 1, skip: OptionVal[A]): Seq[A] =
     forwardIterator.filterNot(node => skip.contains(node.value)).take(n).map(removeLeastFrequentNode).toList
 
-  def removeLeastFrequent(): immutable.Seq[A] = frequency.getFirst match {
+  def removeLeastFrequent(): Seq[A] = frequency.getFirst match {
     case OptionVal.Some(least) =>
       least.nodes.getFirst match {
         case OptionVal.Some(first) => List(removeLeastFrequentNode(first))
@@ -147,14 +148,14 @@ private[pekko] final class FrequencyList[A](dynamicAging: Boolean, clock: Option
     case _ => Nil
   }
 
-  def removeMostFrequent(n: Int): immutable.Seq[A] =
+  def removeMostFrequent(n: Int): Seq[A] =
     if (n == 1) removeMostFrequent() // optimised removal of just 1 node
     else backwardIterator.take(n).map(removeNode).toList
 
-  def removeMostFrequent(n: Int = 1, skip: OptionVal[A]): immutable.Seq[A] =
+  def removeMostFrequent(n: Int = 1, skip: OptionVal[A]): Seq[A] =
     backwardIterator.filterNot(node => skip.contains(node.value)).take(n).map(removeNode).toList
 
-  def removeMostFrequent(): immutable.Seq[A] = frequency.getLast match {
+  def removeMostFrequent(): Seq[A] = frequency.getLast match {
     case OptionVal.Some(most) =>
       most.nodes.getLast match {
         case OptionVal.Some(last) => List(removeNode(last))
@@ -167,23 +168,23 @@ private[pekko] final class FrequencyList[A](dynamicAging: Boolean, clock: Option
 
   def overallMostToLeastRecent: Iterator[A] = overallRecency.backwardIterator.map(_.value)
 
-  def removeOverallLeastRecent(n: Int = 1): immutable.Seq[A] = {
+  def removeOverallLeastRecent(n: Int = 1): Seq[A] = {
     if (clock.isEmpty) throw new UnsupportedOperationException("Overall recency is not enabled for this FrequencyList")
     overallRecency.forwardIterator.take(n).map(removeNode).toList
   }
 
-  def removeOverallMostRecent(n: Int = 1): immutable.Seq[A] = {
+  def removeOverallMostRecent(n: Int = 1): Seq[A] = {
     if (clock.isEmpty) throw new UnsupportedOperationException("Overall recency is not enabled for this FrequencyList")
     overallRecency.backwardIterator.take(n).map(removeNode).toList
   }
 
-  def removeOverallLeastRecentOutside(duration: FiniteDuration): immutable.Seq[A] = {
+  def removeOverallLeastRecentOutside(duration: FiniteDuration): Seq[A] = {
     if (clock.isEmpty) throw new UnsupportedOperationException("Overall recency is not enabled for this FrequencyList")
     val min = clock.get.earlierTime(duration)
     overallRecency.forwardIterator.takeWhile(_.timestamp < min).map(removeNode).toList
   }
 
-  def removeOverallMostRecentWithin(duration: FiniteDuration): immutable.Seq[A] = {
+  def removeOverallMostRecentWithin(duration: FiniteDuration): Seq[A] = {
     if (clock.isEmpty) throw new UnsupportedOperationException("Overall recency is not enabled for this FrequencyList")
     val max = clock.get.earlierTime(duration)
     overallRecency.backwardIterator.takeWhile(_.timestamp > max).map(removeNode).toList

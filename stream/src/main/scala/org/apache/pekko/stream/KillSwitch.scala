@@ -171,8 +171,8 @@ private[stream] final class TerminationSignal {
     def unregister(): Unit = removeListener(this)
   }
 
-  private[this] val _listeners = TrieMap.empty[Listener, NotUsed]
-  private[this] val _completedWith: AtomicReference[Option[Try[Done]]] = new AtomicReference(None)
+  private val _listeners = TrieMap.empty[Listener, NotUsed]
+  private val _completedWith: AtomicReference[Option[Try[Done]]] = new AtomicReference(None)
 
   def tryComplete(result: Try[Done]): Unit = {
     if (_completedWith.compareAndSet(None, Some(result))) {
@@ -255,8 +255,8 @@ final class UniqueKillSwitch private[stream] (private val promise: Promise[Done]
  * This class is thread-safe, the instance can be passed safely among threads and its methods may be invoked concurrently.
  */
 final class SharedKillSwitch private[stream] (val name: String) extends KillSwitch {
-  private[this] val terminationSignal = new TerminationSignal
-  private[this] val _flow: Graph[FlowShape[Any, Any], SharedKillSwitch] = new SharedKillSwitchFlow
+  private val terminationSignal = new TerminationSignal
+  private val _flow: Graph[FlowShape[Any, Any], SharedKillSwitch] = new SharedKillSwitchFlow
 
   /**
    * After calling [[SharedKillSwitch#shutdown]] all materialized, running instances of all [[Graph]]s provided by the

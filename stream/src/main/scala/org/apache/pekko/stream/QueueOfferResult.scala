@@ -13,7 +13,8 @@
 
 package org.apache.pekko.stream
 
-import org.apache.pekko.annotation.DoNotInherit
+import org.apache.pekko
+import pekko.annotation.DoNotInherit
 
 /**
  * Not for user extension

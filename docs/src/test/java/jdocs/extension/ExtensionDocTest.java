@@ -20,7 +20,7 @@ import java.util.concurrent.atomic.AtomicLong;
 // #imports
 
 import jdocs.AbstractJavaTest;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ExtensionDocTest extends AbstractJavaTest {
 

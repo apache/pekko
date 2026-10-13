@@ -44,5 +44,23 @@ class MarkerLoggingSpec extends PekkoSpec with ImplicitSender {
 
       expectMsgType[Error].cause.getMessage should be("Security Exception")
     }
+
+    "expand a non-primitive Array argument into separate template placeholders (#3257)" in {
+      system.eventStream.subscribe(self, classOf[Info])
+      system.eventStream.publish(TestEvent.Mute(EventFilter.info()))
+
+      markerLogging.info(LogMarker.Security, "{} {} {}", Array("a", "b", "c"))
+
+      expectMsgType[Info3].message should be("a b c")
+    }
+
+    "expand a primitive Array argument into separate template placeholders (#3257)" in {
+      system.eventStream.subscribe(self, classOf[Info])
+      system.eventStream.publish(TestEvent.Mute(EventFilter.info()))
+
+      markerLogging.info(LogMarker.Security, "{} {} {}", Array(1, 2, 3))
+
+      expectMsgType[Info3].message should be("1 2 3")
+    }
   }
 }

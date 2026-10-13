@@ -15,7 +15,6 @@ package jdocs.org.apache.pekko.cluster.sharding.typed;
 
 import static jdocs.org.apache.pekko.cluster.sharding.typed.ShardingCompileOnlyTest.Counter;
 
-import java.time.Duration;
 import java.util.concurrent.CompletionStage;
 import org.apache.pekko.Done;
 import org.apache.pekko.actor.Address;
@@ -43,8 +42,7 @@ public class ExternalShardAllocationCompileOnlyTest {
         sharding.init(
             Entity.of(typeKey, ctx -> Counter.create(ctx.getEntityId()))
                 .withAllocationStrategy(
-                    ExternalShardAllocationStrategy.create(
-                        system, typeKey.name(), Duration.ofSeconds(5))));
+                    ExternalShardAllocationStrategy.create(system, typeKey.name())));
     // #entity
 
     // #client

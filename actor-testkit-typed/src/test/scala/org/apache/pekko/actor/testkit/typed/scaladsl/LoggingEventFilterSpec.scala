@@ -13,7 +13,8 @@
 
 package org.apache.pekko.actor.testkit.typed.scaladsl
 
-import org.apache.pekko.actor.testkit.typed.LoggingEvent
+import org.apache.pekko
+import pekko.actor.testkit.typed.LoggingEvent
 
 import org.scalatest.wordspec.AnyWordSpecLike
 

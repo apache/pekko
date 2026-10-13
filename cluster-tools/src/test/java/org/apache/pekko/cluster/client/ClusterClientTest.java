@@ -14,20 +14,18 @@
 package org.apache.pekko.cluster.client;
 
 import com.typesafe.config.ConfigFactory;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import org.apache.pekko.actor.*;
-import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
-import org.junit.ClassRule;
-import org.junit.Test;
-import org.scalatestplus.junit.JUnitSuite;
+import org.apache.pekko.testkit.PekkoJUnitJupiterActorSystemResource;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
-public class ClusterClientTest extends JUnitSuite {
+public class ClusterClientTest {
 
-  @ClassRule
-  public static PekkoJUnitActorSystemResource actorSystemResource =
-      new PekkoJUnitActorSystemResource(
+  @RegisterExtension
+  static PekkoJUnitJupiterActorSystemResource actorSystemResource =
+      new PekkoJUnitJupiterActorSystemResource(
           "DistributedPubSubMediatorTest",
           ConfigFactory.parseString(
               "pekko.actor.provider = \"cluster\"\n"
@@ -38,10 +36,9 @@ public class ClusterClientTest extends JUnitSuite {
 
   // #initialContacts
   Set<ActorPath> initialContacts() {
-    return new HashSet<ActorPath>(
-        Arrays.asList(
-            ActorPaths.fromString("pekko://OtherSys@host1:7355/system/receptionist"),
-            ActorPaths.fromString("pekko://OtherSys@host2:7355/system/receptionist")));
+    return Set.of(
+        ActorPaths.fromString("pekko://OtherSys@host1:7355/system/receptionist"),
+        ActorPaths.fromString("pekko://OtherSys@host2:7355/system/receptionist"));
   }
 
   // #initialContacts

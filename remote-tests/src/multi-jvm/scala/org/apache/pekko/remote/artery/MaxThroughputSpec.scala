@@ -208,7 +208,7 @@ object MaxThroughputSpec extends MultiNodeConfig {
           runWarmup()
         } else
           target.tell(Warmup(payload), self)
-      case ReceiveTimeout =>
+      case _: ReceiveTimeout =>
         target.tell(Warmup(payload), self)
     }
 

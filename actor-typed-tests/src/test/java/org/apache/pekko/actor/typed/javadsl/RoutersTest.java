@@ -13,28 +13,30 @@
 
 package org.apache.pekko.actor.typed.javadsl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
-import org.apache.pekko.actor.testkit.typed.javadsl.LogCapturing;
-import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJunitResource;
+import org.apache.pekko.actor.testkit.typed.annotations.JUnitJupiterTestKit;
+import org.apache.pekko.actor.testkit.typed.javadsl.ActorTestKit;
+import org.apache.pekko.actor.testkit.typed.javadsl.JUnitJupiterTestKitBuilder;
+import org.apache.pekko.actor.testkit.typed.javadsl.LogCapturingExtension;
+import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJUnitJupiterExtension;
 import org.apache.pekko.actor.testkit.typed.javadsl.TestProbe;
 import org.apache.pekko.actor.typed.ActorRef;
 import org.apache.pekko.actor.typed.Behavior;
 import org.apache.pekko.actor.typed.receptionist.ServiceKey;
 import org.apache.pekko.testkit.PekkoSpec;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
-import org.scalatestplus.junit.JUnitSuite;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
-public class RoutersTest extends JUnitSuite {
+@ExtendWith(TestKitJUnitJupiterExtension.class)
+@ExtendWith(LogCapturingExtension.class)
+public class RoutersTest {
 
-  @ClassRule
-  public static final TestKitJunitResource testKit = new TestKitJunitResource(PekkoSpec.testConf());
-
-  @Rule public final LogCapturing logCapturing = new LogCapturing();
+  @JUnitJupiterTestKit
+  public ActorTestKit testKit =
+      new JUnitJupiterTestKitBuilder().withCustomConfig(PekkoSpec.testConf()).build();
 
   public void compileOnlyApiTest() {
 
@@ -67,10 +69,10 @@ public class RoutersTest extends JUnitSuite {
     pool.tell(broadcastMsg);
 
     List<String> messages = probe.receiveSeveralMessages(5);
-    assertTrue("non-broadcast message arrives", messages.contains(notBroadcastMsg));
+    assertTrue(messages.contains(notBroadcastMsg), "non-broadcast message arrives");
 
     int broadcast = 0;
     for (String msg : messages) if (msg == broadcastMsg) broadcast++;
-    assertEquals("broadcast message arrives 4 times", broadcast, 4);
+    assertEquals(4, broadcast, "broadcast message arrives 4 times");
   }
 }

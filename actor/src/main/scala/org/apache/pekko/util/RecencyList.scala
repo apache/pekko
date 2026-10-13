@@ -13,31 +13,26 @@
 
 package org.apache.pekko.util
 
-import scala.collection.{ immutable, mutable }
+import scala.collection.mutable
 import scala.concurrent.duration.FiniteDuration
 
-import org.apache.pekko.annotation.InternalApi
+import org.apache.pekko
+import pekko.annotation.InternalApi
 
 /**
  * INTERNAL API
  */
 @InternalApi
 private[pekko] object RecencyList {
-  def empty[A]: RecencyList[A] = new RecencyList[A](new NanoClock)
+  def emptyWithNanoClock[A]: RecencyList[A] =
+    RecencyList[A](new NanoClock)
+
+  def apply[A](clock: Clock): RecencyList[A] =
+    new RecencyList[A](clock)
 
   private final class Node[A](val value: A) {
     var lessRecent, moreRecent: OptionVal[Node[A]] = OptionVal.None
     var timestamp: Long = 0L
-  }
-
-  trait Clock {
-    def currentTime(): Long
-    def earlierTime(duration: FiniteDuration): Long
-  }
-
-  final class NanoClock extends Clock {
-    override def currentTime(): Long = System.nanoTime()
-    override def earlierTime(duration: FiniteDuration): Long = currentTime() - duration.toNanos
   }
 }
 
@@ -49,7 +44,7 @@ private[pekko] object RecencyList {
  * Implemented using a doubly-linked list plus hash map for lookup, so that all operations are constant time.
  */
 @InternalApi
-private[pekko] final class RecencyList[A](clock: RecencyList.Clock) {
+private[pekko] final class RecencyList[A] private (clock: Clock) {
   import RecencyList.Node
 
   private val recency = new DoubleLinkedList[Node[A]](
@@ -99,36 +94,36 @@ private[pekko] final class RecencyList[A](clock: RecencyList.Clock) {
 
   def mostToLeastRecent: Iterator[A] = recency.backwardIterator.map(_.value)
 
-  def removeLeastRecent(n: Int): immutable.Seq[A] =
+  def removeLeastRecent(n: Int): Seq[A] =
     if (n == 1) removeLeastRecent() // optimised removal of just 1 node
     else recency.forwardIterator.take(n).map(removeNode).toList
 
-  def removeLeastRecent(n: Int, skip: Int): immutable.Seq[A] =
+  def removeLeastRecent(n: Int, skip: Int): Seq[A] =
     recency.forwardIterator.slice(skip, skip + n).map(removeNode).toList
 
-  def removeLeastRecent(): immutable.Seq[A] = recency.getFirst match {
+  def removeLeastRecent(): Seq[A] = recency.getFirst match {
     case OptionVal.Some(first) => List(removeNode(first))
     case _                     => Nil
   }
 
-  def removeMostRecent(n: Int): immutable.Seq[A] =
+  def removeMostRecent(n: Int): Seq[A] =
     if (n == 1) removeMostRecent() // optimised removal of just 1 node
     else recency.backwardIterator.take(n).map(removeNode).toList
 
-  def removeMostRecent(n: Int, skip: Int): immutable.Seq[A] =
+  def removeMostRecent(n: Int, skip: Int): Seq[A] =
     recency.backwardIterator.slice(skip, skip + n).map(removeNode).toList
 
-  def removeMostRecent(): immutable.Seq[A] = recency.getLast match {
+  def removeMostRecent(): Seq[A] = recency.getLast match {
     case OptionVal.Some(last) => List(removeNode(last))
     case _                    => Nil
   }
 
-  def removeLeastRecentOutside(duration: FiniteDuration): immutable.Seq[A] = {
+  def removeLeastRecentOutside(duration: FiniteDuration): Seq[A] = {
     val min = clock.earlierTime(duration)
     recency.forwardIterator.takeWhile(_.timestamp < min).map(removeNode).toList
   }
 
-  def removeMostRecentWithin(duration: FiniteDuration): immutable.Seq[A] = {
+  def removeMostRecentWithin(duration: FiniteDuration): Seq[A] = {
     val max = clock.earlierTime(duration)
     recency.backwardIterator.takeWhile(_.timestamp > max).map(removeNode).toList
   }

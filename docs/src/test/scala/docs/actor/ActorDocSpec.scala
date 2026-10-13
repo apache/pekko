@@ -278,15 +278,17 @@ class Swapper extends Actor {
   }
 }
 
-object SwapperApp extends App {
-  val system = ActorSystem("SwapperSystem")
-  val swap = system.actorOf(Props[Swapper](), name = "swapper")
-  swap ! Swap // logs Hi
-  swap ! Swap // logs Ho
-  swap ! Swap // logs Hi
-  swap ! Swap // logs Ho
-  swap ! Swap // logs Hi
-  swap ! Swap // logs Ho
+object SwapperApp {
+  def main(args: Array[String]): Unit = {
+    val system = ActorSystem("SwapperSystem")
+    val swap = system.actorOf(Props[Swapper](), name = "swapper")
+    swap ! Swap // logs Hi
+    swap ! Swap // logs Ho
+    swap ! Swap // logs Hi
+    swap ! Swap // logs Ho
+    swap ! Swap // logs Hi
+    swap ! Swap // logs Ho
+  }
 }
 //#swapper
 
@@ -332,7 +334,7 @@ final case class Give(thing: Any)
 
 //#receive-orElse
 
-import org.apache.pekko.actor.{ Actor, ActorRef, ActorSystem, PoisonPill, Props }
+import pekko.actor.{ Actor, ActorRef, ActorSystem, PoisonPill, Props }
 import scala.concurrent.duration._
 
 case object Ping
@@ -553,7 +555,7 @@ class ActorDocSpec extends PekkoSpec("""
         case "Hello" =>
           // To set in a response to a message
           context.setReceiveTimeout(100.milliseconds)
-        case ReceiveTimeout =>
+        case _: ReceiveTimeout =>
           // To turn it off
           context.setReceiveTimeout(Duration.Undefined)
           throw new RuntimeException("Receive timed out")

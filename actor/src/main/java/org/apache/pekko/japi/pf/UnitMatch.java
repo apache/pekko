@@ -20,8 +20,8 @@ import scala.PartialFunction;
 import scala.runtime.BoxedUnit;
 
 /**
- * Version of {@link scala.PartialFunction} that can be built during runtime from Java. This is a
- * specialized version of {@link UnitMatch} to map java void methods to {@link
+ * Version of {@code scala.PartialFunction} that can be built during runtime from Java. This is a
+ * specialized version of {@link UnitMatch} to map java void methods to {@code
  * scala.runtime.BoxedUnit}.
  *
  * @param <I> the input type, that this PartialFunction will be applied to

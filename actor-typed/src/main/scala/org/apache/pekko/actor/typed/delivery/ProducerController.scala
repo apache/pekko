@@ -29,6 +29,7 @@ import pekko.actor.typed.delivery.internal.DeliverySerializable
 import pekko.actor.typed.delivery.internal.ProducerControllerImpl
 import pekko.actor.typed.scaladsl.Behaviors
 import pekko.annotation.ApiMayChange
+import pekko.annotation.DoNotInherit
 import pekko.annotation.InternalApi
 import pekko.util.Helpers.Requiring
 import pekko.util.Helpers.toRootLowerCase
@@ -99,7 +100,8 @@ object ProducerController {
 
   type SeqNr = Long
 
-  sealed trait Command[A] extends UnsealedInternalCommand
+  /** Not for user extension */
+  @DoNotInherit sealed trait Command[A] extends UnsealedInternalCommand
 
   /**
    * Initial message from the producer actor. The `producer` is typically constructed
@@ -157,7 +159,7 @@ object ProducerController {
      * Scala API: Factory method from config `pekko.reliable-delivery.producer-controller`
      * of the `ActorSystem`.
      */
-    def apply(system: ActorSystem[_]): Settings =
+    def apply(system: ActorSystem[?]): Settings =
       apply(system.settings.config.getConfig("pekko.reliable-delivery.producer-controller"))
 
     /**
@@ -181,7 +183,7 @@ object ProducerController {
      * Java API: Factory method from config `pekko.reliable-delivery.producer-controller`
      * of the `ActorSystem`.
      */
-    def create(system: ActorSystem[_]): Settings =
+    def create(system: ActorSystem[?]): Settings =
       apply(system)
 
     /**
@@ -294,7 +296,8 @@ object ProducerController {
       messageClass: Class[A],
       producerId: String,
       durableQueueBehavior: Optional[Behavior[DurableProducerQueue.Command[A]]]): Behavior[Command[A]] = {
-    apply(producerId, durableQueueBehavior.toScala)(ClassTag(messageClass))
+    implicit val ct: ClassTag[A] = ClassTag(messageClass)
+    apply(producerId, durableQueueBehavior.toScala)
   }
 
   /**
@@ -305,7 +308,8 @@ object ProducerController {
       producerId: String,
       durableQueueBehavior: Optional[Behavior[DurableProducerQueue.Command[A]]],
       settings: Settings): Behavior[Command[A]] = {
-    apply(producerId, durableQueueBehavior.toScala, settings)(ClassTag(messageClass))
+    implicit val ct: ClassTag[A] = ClassTag(messageClass)
+    apply(producerId, durableQueueBehavior.toScala, settings)
   }
 
 }

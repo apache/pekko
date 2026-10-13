@@ -51,7 +51,10 @@ private[pekko] trait Dispatch { this: ActorCell =>
   }
 
   final def mailbox: Mailbox =
-    AbstractActorCell.mailboxHandle.get(this)
+    // volatile read: the mailbox is published across threads via the compareAndSet in
+    // swapMailbox; a plain VarHandle.get could observe a stale mailbox (restores the
+    // getObjectVolatile semantics this had before the VarHandle migration)
+    AbstractActorCell.mailboxHandle.getVolatile(this)
 
   @tailrec
   final def swapMailbox(newMailbox: Mailbox): Mailbox = {
@@ -88,7 +91,7 @@ private[pekko] trait Dispatch { this: ActorCell =>
     // it properly in the normal way
     val actorClass = props.actorClass()
     val createMessage = mailboxType match {
-      case _: ProducesMessageQueue[_] if system.mailboxes.hasRequiredType(actorClass) =>
+      case _: ProducesMessageQueue[?] if system.mailboxes.hasRequiredType(actorClass) =>
         val req = system.mailboxes.getRequiredType(actorClass)
         if (req.isInstance(mbox.messageQueue)) Create(None)
         else {

@@ -102,7 +102,7 @@ object BehaviorInterceptor {
    */
   @DoNotInherit
   trait PreStartTarget[T] {
-    def start(ctx: TypedActorContext[_]): Behavior[T]
+    def start(ctx: TypedActorContext[?]): Behavior[T]
   }
 
   /**
@@ -112,7 +112,7 @@ object BehaviorInterceptor {
    */
   @DoNotInherit
   trait ReceiveTarget[T] {
-    def apply(ctx: TypedActorContext[_], msg: T): Behavior[T]
+    def apply(ctx: TypedActorContext[?], msg: T): Behavior[T]
 
     /**
      * INTERNAL API
@@ -123,7 +123,7 @@ object BehaviorInterceptor {
      * is taking place.
      */
     @InternalApi
-    private[pekko] def signalRestart(ctx: TypedActorContext[_]): Unit
+    private[pekko] def signalRestart(ctx: TypedActorContext[?]): Unit
   }
 
   /**
@@ -133,7 +133,7 @@ object BehaviorInterceptor {
    */
   @DoNotInherit
   trait SignalTarget[T] {
-    def apply(ctx: TypedActorContext[_], signal: Signal): Behavior[T]
+    def apply(ctx: TypedActorContext[?], signal: Signal): Behavior[T]
   }
 
 }

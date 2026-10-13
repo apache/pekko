@@ -14,7 +14,6 @@
 package org.apache.pekko.remote.classic
 
 import scala.annotation.nowarn
-import scala.collection.immutable
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
@@ -47,7 +46,7 @@ object ActorsLeakSpec {
        pekko.actor.warn-about-java-serializer-usage = off
       """)
 
-  def collectLiveActors(root: Option[ActorRef]): immutable.Seq[ActorRef] = {
+  def collectLiveActors(root: Option[ActorRef]): Seq[ActorRef] = {
 
     def recurse(node: ActorRef): List[ActorRef] = {
       val children: List[ActorRef] = node match {
@@ -68,7 +67,7 @@ object ActorsLeakSpec {
 
     root match {
       case Some(node) => recurse(node)
-      case None       => immutable.Seq.empty
+      case None       => Seq.empty
     }
   }
 

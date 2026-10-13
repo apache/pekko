@@ -21,12 +21,12 @@ import static jdocs.actor.fsm.Events.*;
 
 // #simple-imports
 import java.time.Duration;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.pekko.actor.AbstractFSM;
 import org.apache.pekko.actor.ActorRef;
 import org.apache.pekko.japi.pf.UnitMatch;
+
 // #simple-imports
 
 // #simple-fsm
@@ -72,7 +72,7 @@ public class Buncher extends AbstractFSM<State, Data> {
         Active,
         Duration.ofSeconds(1L),
         matchEvent(
-            Arrays.asList(Flush.class, StateTimeout()),
+            List.of(Flush.class, StateTimeout()),
             Todo.class,
             (event, todo) -> goTo(Idle).using(todo.copy(new LinkedList<>()))));
 

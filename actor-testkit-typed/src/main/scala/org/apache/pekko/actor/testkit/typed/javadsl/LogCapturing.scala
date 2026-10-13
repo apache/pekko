@@ -19,7 +19,8 @@ import org.junit.rules.TestRule
 import org.junit.runner.Description
 import org.junit.runners.model.Statement
 
-import org.apache.pekko.actor.testkit.typed.internal.CapturingAppender
+import org.apache.pekko
+import pekko.actor.testkit.typed.internal.CapturingAppender
 
 import org.slf4j.LoggerFactory
 
@@ -55,10 +56,12 @@ final class LogCapturing extends TestRule {
     new Statement {
       override def evaluate(): Unit = {
         try {
-          myLogger.info(s"Logging started for test [${description.getClassName}: ${description.getMethodName}]")
+          myLogger.info("Logging started for test [{}: {}]", description.getClassName, description.getMethodName)
           base.evaluate()
           myLogger.info(
-            s"Logging finished for test [${description.getClassName}: ${description.getMethodName}] that was successful")
+            "Logging finished for test [{}: {}] that was successful",
+            description.getClassName,
+            description.getMethodName)
         } catch {
           case NonFatal(e) =>
             println(

@@ -2,7 +2,7 @@
  
 ## Configure the auto-importer in IntelliJ / Eclipse 
 
-For a smooth development experience, when using an IDE such as Eclipse or IntelliJ, you can disable the auto-importer from suggesting `javadsl` imports when working in Scala, or viceversa.
+For a smooth development experience, when using an IDE such as Eclipse or IntelliJ, you can disable the auto-importer from suggesting `javadsl` imports when working in Scala, or vice versa.
 
 In IntelliJ, the auto-importer settings are under "Editor" / "General" / "Auto Import". Use a name mask such as `org.apache.pekko.stream.javadsl*` or `org.apache.pekko.stream.scaladsl*` or `*javadsl*` or `*scaladsl*` to indicate the DSL you want to exclude from import/completion. See screenshot below: 
 

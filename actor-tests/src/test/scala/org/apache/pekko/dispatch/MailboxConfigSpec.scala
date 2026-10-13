@@ -128,7 +128,7 @@ abstract class MailboxSpec extends PekkoSpec with BeforeAndAfterAll with BeforeA
   def ensureInitialMailboxState(config: MailboxType, q: MessageQueue): Unit = {
     q should not be null
     q match {
-      case aQueue: BlockingQueue[_] =>
+      case aQueue: BlockingQueue[?] =>
         config match {
           case BoundedMailbox(capacity, _) => aQueue.remainingCapacity should ===(capacity)
           case UnboundedMailbox()          => aQueue.remainingCapacity should ===(Int.MaxValue)

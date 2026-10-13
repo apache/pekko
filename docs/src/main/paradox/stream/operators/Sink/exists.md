@@ -13,7 +13,7 @@ A `Sink` that will test the given predicate `p` for every received element and c
 
 It materializes into a `Future` (in Scala) or a `CompletionStage` (in Java) that completes with the last state when the stream has finished.
 
-Notes that if source is empty, it will return false
+Note that if source is empty, it will return false
 
 A `Sink` that will test the given predicate `p` for every received element and
 

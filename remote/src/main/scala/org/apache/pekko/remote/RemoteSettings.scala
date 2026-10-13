@@ -14,7 +14,6 @@
 package org.apache.pekko.remote
 
 import scala.annotation.nowarn
-import scala.collection.immutable
 import scala.concurrent.duration._
 
 import org.apache.pekko
@@ -47,7 +46,7 @@ final class RemoteSettings(val config: Config) {
 
   @deprecated("Classic remoting is deprecated, use Artery", "Akka 2.6.0")
   val LogFrameSizeExceeding: Option[Int] = {
-    if (config.getString("pekko.remote.classic.log-frame-size-exceeding").toLowerCase == "off") None
+    if (toRootLowerCase(config.getString("pekko.remote.classic.log-frame-size-exceeding")) == "off") None
     else Some(getBytes("pekko.remote.classic.log-frame-size-exceeding").toInt)
   }
 
@@ -111,6 +110,11 @@ final class RemoteSettings(val config: Config) {
   val UsePassiveConnections: Boolean = getBoolean("pekko.remote.classic.use-passive-connections")
 
   @deprecated("Classic remoting is deprecated, use Artery", "Akka 2.6.0")
+  val PassiveConnectionBufferSize: Int = {
+    getInt("pekko.remote.classic.passive-connection-buffer-size")
+  }.requiring(_ >= 0, "passive-connection-buffer-size must be >= 0")
+
+  @deprecated("Classic remoting is deprecated, use Artery", "Akka 2.6.0")
   val BackoffPeriod: FiniteDuration = {
     config.getMillisDuration("pekko.remote.classic.backoff-interval")
   }.requiring(_ > Duration.Zero, "backoff-interval must be > 0")
@@ -118,7 +122,7 @@ final class RemoteSettings(val config: Config) {
   @deprecated("Classic remoting is deprecated, use Artery", "Akka 2.6.0")
   val LogBufferSizeExceeding: Int = {
     val key = "pekko.remote.classic.log-buffer-size-exceeding"
-    config.getString(key).toLowerCase match {
+    toRootLowerCase(config.getString(key)) match {
       case "off" | "false" => Int.MaxValue
       case _               => config.getInt(key)
     }
@@ -152,7 +156,7 @@ final class RemoteSettings(val config: Config) {
   @deprecated("Classic remoting is deprecated, use Artery", "Akka 2.6.0")
   val QuarantineSilentSystemTimeout: FiniteDuration = {
     val key = "pekko.remote.classic.quarantine-after-silence"
-    config.getString(key).toLowerCase match {
+    toRootLowerCase(config.getString(key)) match {
       case "off" | "false" => Duration.Zero
       case _               =>
         config.getMillisDuration(key).requiring(_ > Duration.Zero, "quarantine-after-silence must be > 0")
@@ -188,7 +192,7 @@ final class RemoteSettings(val config: Config) {
     WatchFailureDetectorConfig.getMillisDuration("expected-response-after")
   }.requiring(_ > Duration.Zero, "watch-failure-detector.expected-response-after > 0")
 
-  val Transports: immutable.Seq[(String, immutable.Seq[String], Config)] = transportNames.map { name =>
+  val Transports: Seq[(String, Seq[String], Config)] = transportNames.map { name =>
     val transportConfig = transportConfigFor(name)
     (
       transportConfig.getString("transport-class"),
@@ -224,7 +228,7 @@ final class RemoteSettings(val config: Config) {
     set
   }
 
-  private def transportNames: immutable.Seq[String] =
+  private def transportNames: Seq[String] =
     immutableSeq(getStringList("pekko.remote.classic.enabled-transports"))
 
   private def transportConfigFor(transportName: String): Config = getConfig(transportName)

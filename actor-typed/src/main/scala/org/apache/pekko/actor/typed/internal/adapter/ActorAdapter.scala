@@ -72,7 +72,7 @@ import pekko.util.OptionVal
   // when the adapter is used for the user guardian (which avoids touching context until it is safe)
   private var _ctx: ActorContextAdapter[T] = _
   def ctx: ActorContextAdapter[T] = {
-    if (_ctx eq null) _ctx = new ActorContextAdapter[T](context, this)
+    if (_ctx eq null) _ctx = new ActorContextAdapter[T](this)
     _ctx
   }
 
@@ -99,8 +99,12 @@ import pekko.util.OptionVal
               ChildFailed(ActorRefAdapter(ref), ex)
             } else Terminated(ActorRefAdapter(ref))
           handleSignal(msg)
-        case classic.ReceiveTimeout =>
-          handleMessage(ctx.receiveTimeoutMsg)
+        case _: classic.ReceiveTimeout =>
+          // cancelReceiveTimeout() sets receiveTimeoutMsg to null, but a classic ReceiveTimeout
+          // that was already enqueued in the mailbox before the cancel cannot be retracted.
+          // Discard the stale timeout to avoid passing null into the typed behavior stack (#3084).
+          val timeoutMsg = ctx.receiveTimeoutMsg
+          if (timeoutMsg != null) handleMessage(timeoutMsg)
         case wrapped: AdaptMessage[Any, T] @unchecked =>
           withSafelyAdapted(() => wrapped.adapt()) {
             case AdaptWithRegisteredMessageAdapter(msg) =>
@@ -180,7 +184,7 @@ import pekko.util.OptionVal
   }
 
   private def adaptAndHandle(msg: Any): Unit = {
-    @tailrec def handle(adapters: List[(Class[_], Any => T)]): Unit = {
+    @tailrec def handle(adapters: List[(Class[?], Any => T)]): Unit = {
       adapters match {
         case Nil =>
           // no adapter function registered for message class
@@ -229,7 +233,7 @@ import pekko.util.OptionVal
       super.unhandled(other)
   }
 
-  override val supervisorStrategy = classic.OneForOneStrategy(loggingEnabled = false) {
+  final override def supervisorStrategy = classic.OneForOneStrategy(loggingEnabled = false) {
     case ex =>
       ctx.setCurrentActorThread()
       try ex match {
@@ -240,7 +244,7 @@ import pekko.util.OptionVal
           case _ =>
             val isTypedActor = sender() match {
               case afwc: ActorRefWithCell =>
-                afwc.underlying.props.producer.actorClass == classOf[ActorAdapter[_]]
+                afwc.underlying.props.producer.actorClass == classOf[ActorAdapter[?]]
               case _ =>
                 false
             }
@@ -326,7 +330,7 @@ import pekko.util.OptionVal
     try {
       ctx.cancelAllTimers()
       behavior match {
-        case _: DeferredBehavior[_] =>
+        case _: DeferredBehavior[?] =>
         // Do not undefer a DeferredBehavior as that may cause creation side-effects, which we do not want on termination.
         case b => Behavior.interpretSignal(b, ctx, PostStop)
       }
@@ -352,7 +356,7 @@ import pekko.util.OptionVal
     // first pass the signal to the previous behavior, so that it and potential interceptors
     // will get the PostStop signal, unless it is deferred, we don't start a behavior while stopping
     lastBehavior match {
-      case _: DeferredBehavior[_] => // no starting of behaviors on actor stop
+      case _: DeferredBehavior[?] => // no starting of behaviors on actor stop
       case nonDeferred            => Behavior.interpretSignal(nonDeferred, ctx, PostStop)
     }
     // and then to the potential stop hook, which can have a call back or not

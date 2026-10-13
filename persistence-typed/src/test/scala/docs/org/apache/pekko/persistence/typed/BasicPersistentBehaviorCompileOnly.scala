@@ -28,14 +28,11 @@ import pekko.persistence.typed.EventSeq
 import pekko.persistence.typed.scaladsl.Recovery
 //#structure
 //#behavior
-import org.apache.pekko
 import pekko.persistence.typed.scaladsl.EventSourcedBehavior
 import pekko.persistence.typed.PersistenceId
 
 //#behavior
 //#structure
-import org.apache.pekko
-import pekko.persistence.typed.RecoveryCompleted
 import pekko.persistence.typed.SnapshotFailed
 import scala.annotation.nowarn
 
@@ -128,7 +125,7 @@ object BasicPersistentBehaviorCompileOnly {
         commandHandler = (state, cmd) => throw new NotImplementedError("TODO: process the command & return an Effect"),
         eventHandler = (state, evt) => throw new NotImplementedError("TODO: process the event return the next state"))
         .receiveSignal {
-          case (state, RecoveryCompleted) =>
+          case (state, pekko.persistence.typed.RecoveryCompleted) =>
             throw new NotImplementedError("TODO: add some end-of-recovery side-effect here")
         }
     // #recovery
@@ -216,7 +213,6 @@ object BasicPersistentBehaviorCompileOnly {
 
   object BehaviorWithContext {
     // #actor-context
-    import org.apache.pekko
     import pekko.persistence.typed.scaladsl.Effect
     import pekko.persistence.typed.scaladsl.EventSourcedBehavior.CommandHandler
 

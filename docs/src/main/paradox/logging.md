@@ -94,8 +94,8 @@ does not necessarily indicate a problem, but they are logged by default for the 
 After a few messages this logging is turned off, to avoid flooding the logs.
 You can disable this logging completely or adjust how many dead letters are
 logged. During system shutdown it is likely that you see dead letters, since pending
-messages in the actor mailboxes are sent to dead letters. You can also disable logging
-of dead letters during shutdown.
+messages in the actor mailboxes are sent to dead letters. Logging of dead letters during shutdown is disabled by default,
+but it can be enabled.
 
 ```ruby
 pekko {
@@ -599,4 +599,4 @@ It is also possible to use the @javadoc[org.slf4j.Marker](org.slf4j.Marker) with
 Since the pekko-actor library avoids depending on any specific logging library, the support for this is included in `pekko-slf4j`,
 which provides the @apidoc[Slf4jLogMarker] type which can be passed in as first argument instead of the logging framework agnostic LogMarker
 type from `pekko-actor`. The most notable difference between the two is that slf4j's Markers can have child markers, so one can
-rely more information using them rather than just a single string.
+relay more information using them rather than just a single string.

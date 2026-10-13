@@ -14,6 +14,7 @@
 package org.apache.pekko.serialization.jackson3
 
 import java.lang
+import java.io.NotSerializableException
 import java.nio.charset.StandardCharsets
 import java.time.{ Duration, Instant, LocalDateTime }
 import java.time.temporal.ChronoUnit
@@ -21,7 +22,6 @@ import java.util.{ Arrays, Optional, UUID }
 import java.util.logging.FileHandler
 
 import scala.annotation.nowarn
-import scala.collection.immutable
 import scala.concurrent.duration._
 import scala.concurrent.duration.FiniteDuration
 
@@ -164,7 +164,7 @@ class JacksonJsonSerializerSpec extends JacksonSerializerSpec("jackson-json") {
 
   def serializeToJsonString(obj: AnyRef, sys: ActorSystem = system): String = {
     val blob = serializeToBinary(obj, sys)
-    new String(blob, "utf-8")
+    new String(blob, StandardCharsets.UTF_8)
   }
 
   def deserializeFromJsonString(
@@ -172,7 +172,7 @@ class JacksonJsonSerializerSpec extends JacksonSerializerSpec("jackson-json") {
       serializerId: Int,
       manifest: String,
       sys: ActorSystem = system): AnyRef = {
-    val blob = json.getBytes("utf-8")
+    val blob = json.getBytes(StandardCharsets.UTF_8)
     deserializeFromBinary(blob, serializerId, manifest, sys)
   }
 
@@ -459,8 +459,8 @@ class JacksonJsonSerializerSpec extends JacksonSerializerSpec("jackson-json") {
 
         override def overrideConfiguredSerializationFeatures(
             bindingName: String,
-            configuredFeatures: immutable.Seq[(SerializationFeature, Boolean)])
-            : immutable.Seq[(SerializationFeature, Boolean)] = {
+            configuredFeatures: Seq[(SerializationFeature, Boolean)])
+            : Seq[(SerializationFeature, Boolean)] = {
           if (bindingName == "jackson-json")
             configuredFeatures :+ (SerializationFeature.INDENT_OUTPUT -> true)
           else
@@ -469,7 +469,7 @@ class JacksonJsonSerializerSpec extends JacksonSerializerSpec("jackson-json") {
 
         override def overrideConfiguredModules(
             bindingName: String,
-            configuredModules: immutable.Seq[JacksonModule]): immutable.Seq[JacksonModule] =
+            configuredModules: Seq[JacksonModule]): Seq[JacksonModule] =
           if (bindingName == "jackson-json")
             configuredModules :+ customJavaTimeModule
           else
@@ -477,7 +477,7 @@ class JacksonJsonSerializerSpec extends JacksonSerializerSpec("jackson-json") {
 
         override def overrideConfiguredMapperFeatures(
             bindingName: String,
-            configuredFeatures: immutable.Seq[(MapperFeature, Boolean)]): immutable.Seq[(MapperFeature, Boolean)] =
+            configuredFeatures: Seq[(MapperFeature, Boolean)]): Seq[(MapperFeature, Boolean)] =
           if (bindingName == "jackson-json")
             configuredFeatures :+ (MapperFeature.SORT_PROPERTIES_ALPHABETICALLY -> true)
           else
@@ -485,8 +485,8 @@ class JacksonJsonSerializerSpec extends JacksonSerializerSpec("jackson-json") {
 
         override def overrideConfiguredJsonParserFeatures(
             bindingName: String,
-            configuredFeatures: immutable.Seq[(StreamReadFeature, Boolean)])
-            : immutable.Seq[(StreamReadFeature, Boolean)] =
+            configuredFeatures: Seq[(StreamReadFeature, Boolean)])
+            : Seq[(StreamReadFeature, Boolean)] =
           if (bindingName == "jackson-json")
             configuredFeatures
           // configuredFeatures :+ (StreamReadFeature.ALLOW_SINGLE_QUOTES -> true)
@@ -495,8 +495,8 @@ class JacksonJsonSerializerSpec extends JacksonSerializerSpec("jackson-json") {
 
         override def overrideConfiguredJsonGeneratorFeatures(
             bindingName: String,
-            configuredFeatures: immutable.Seq[(StreamWriteFeature, Boolean)])
-            : immutable.Seq[(StreamWriteFeature, Boolean)] =
+            configuredFeatures: Seq[(StreamWriteFeature, Boolean)])
+            : Seq[(StreamWriteFeature, Boolean)] =
           if (bindingName == "jackson-json")
             configuredFeatures :+ (StreamWriteFeature.WRITE_BIGDECIMAL_AS_PLAIN -> true)
           else
@@ -597,6 +597,76 @@ class JacksonJsonSerializerSpec extends JacksonSerializerSpec("jackson-json") {
       }
       check(SimpleCommand("Bob"), false)
       check(new SimpleCommandNotCaseClass("Bob"), false)
+    }
+
+    "reject a gzip payload that decompresses beyond max-decompressed-size" in withSystem("""
+        pekko.serialization.jackson3.jackson-json.compression {
+          algorithm = gzip
+          compress-larger-than = 0 KiB
+          max-decompressed-size = 1 KiB
+        }
+      """) { sys =>
+      val msg = SimpleCommand("0" * (8 * 1024))
+      val serializer = serializerFor(msg, sys)
+      val blob = serializeToBinary(msg, sys)
+      JacksonSerializer.isGZipped(blob) should ===(true)
+      val ex = intercept[IllegalArgumentException] {
+        deserializeFromBinary(blob, serializer.identifier, serializer.manifest(msg), sys)
+      }
+      ex.getMessage should include("max-decompressed-size")
+    }
+
+    "reject an lz4 payload that declares a size beyond max-decompressed-size" in withSystem("""
+        pekko.serialization.jackson3.jackson-json.compression {
+          algorithm = lz4
+          compress-larger-than = 0 KiB
+          max-decompressed-size = 1 KiB
+        }
+      """) { sys =>
+      val msg = SimpleCommand("0" * (8 * 1024))
+      val serializer = serializerFor(msg, sys)
+      val blob = serializeToBinary(msg, sys)
+      JacksonSerializer.isLZ4(blob) should ===(true)
+      val ex = intercept[IllegalArgumentException] {
+        deserializeFromBinary(blob, serializer.identifier, serializer.manifest(msg), sys)
+      }
+      ex.getMessage should include("max-decompressed-size")
+    }
+
+    "apply no gzip decompression limit when max-decompressed-size is -1" in withSystem("""
+        pekko.serialization.jackson3.jackson-json.compression {
+          algorithm = gzip
+          compress-larger-than = 0 KiB
+          max-decompressed-size = -1
+        }
+      """) { sys =>
+      val msg = SimpleCommand("0" * (8 * 1024))
+      JacksonSerializer.isGZipped(serializeToBinary(msg, sys)) should ===(true)
+      checkSerialization(msg, sys)
+    }
+
+    "apply no lz4 decompression limit when max-decompressed-size is -1" in withSystem("""
+        pekko.serialization.jackson3.jackson-json.compression {
+          algorithm = lz4
+          compress-larger-than = 0 KiB
+          max-decompressed-size = -1
+        }
+      """) { sys =>
+      val msg = SimpleCommand("0" * (8 * 1024))
+      JacksonSerializer.isLZ4(serializeToBinary(msg, sys)) should ===(true)
+      checkSerialization(msg, sys)
+    }
+
+    "apply no decompression limit when max-decompressed-size is unlimited" in withSystem("""
+        pekko.serialization.jackson3.jackson-json.compression {
+          algorithm = gzip
+          compress-larger-than = 0 KiB
+          max-decompressed-size = unlimited
+        }
+      """) { sys =>
+      val msg = SimpleCommand("0" * (8 * 1024))
+      JacksonSerializer.isGZipped(serializeToBinary(msg, sys)) should ===(true)
+      checkSerialization(msg, sys)
     }
   }
 
@@ -766,6 +836,9 @@ abstract class JacksonSerializerSpec(serializerName: String)
     // TransportInformation added by serialization.deserialize
     serialization(sys).deserialize(blob, serializerId, manifest).get
   }
+
+  // referenced by name only: mentioning the object in code would initialize it
+  val NotAllowedCaseObjectName = "org.apache.pekko.serialization.jackson3.NotAllowedCaseObject$"
 
   def serializerFor(obj: AnyRef, sys: ActorSystem = system): JacksonSerializer =
     serialization(sys).findSerializerFor(obj) match {
@@ -1220,6 +1293,50 @@ abstract class JacksonSerializerSpec(serializerName: String)
           serializer.fromBinary(blob, classOf[Status.Success].getName)
         }.getMessage.toLowerCase should include("allowed-class-prefix")
       }
+    }
+
+    "not allow deserialization of a case object that is not in serialization-bindings" in {
+      withTransportInformation() { () =>
+        val msg = SimpleCommand("ok")
+        val serializer = serializerFor(msg)
+        val blob = serializer.toBinary(msg)
+        intercept[IllegalArgumentException] {
+          // maliciously changing manifest to a case object
+          serializer.fromBinary(blob, NotAllowedCaseObjectName)
+        }.getMessage.toLowerCase should include("allowed-class-prefix")
+      }
+    }
+
+    "not initialize a case object class it goes on to reject" in {
+      withTransportInformation() { () =>
+        val msg = SimpleCommand("ok")
+        val serializer = serializerFor(msg)
+        val blob = serializer.toBinary(msg)
+        CaseObjectInitializationProbe.initialized should ===(false)
+        intercept[IllegalArgumentException] {
+          serializer.fromBinary(blob, NotAllowedCaseObjectName)
+        }
+        // reading MODULE$ would have run the object's body
+        CaseObjectInitializationProbe.initialized should ===(false)
+      }
+    }
+
+    "reject a manifest whose version is not a number" in {
+      withTransportInformation() { () =>
+        val msg = SimpleCommand("ok")
+        val serializer = serializerFor(msg)
+        val blob = serializer.toBinary(msg)
+        intercept[NotSerializableException] {
+          serializer.fromBinary(blob, classOf[SimpleCommand].getName + "#not-a-number")
+        }.getMessage should include("numeric version")
+      }
+    }
+
+    "not underflow on a payload that is only as long as the LZ4 magic" in {
+      // the LZ4 header is the magic plus a 4 byte length, so 4 bytes cannot be an LZ4 payload
+      JacksonSerializer.isLZ4(Array(0x87, 0xD9, 0x6D, 0xF6).map(_.toByte)) should ===(false)
+      JacksonSerializer.isLZ4(JacksonSerializer.LZ4Meta(Array.emptyByteArray).prependTo(Array.emptyByteArray)) should
+      ===(true)
     }
 
     "not allow serialization-bindings of open-ended types" in {

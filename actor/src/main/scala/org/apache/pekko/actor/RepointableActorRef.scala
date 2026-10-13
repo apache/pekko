@@ -64,8 +64,11 @@ private[pekko] class RepointableActorRef(
     _lookupDoNotCallMeDirectly
   }
 
-  def underlying: Cell = cellHandle.get(this)
-  def lookup: Cell = lookupHandle.get(this)
+  // volatile reads: cell/lookup are published across threads via compareAndSet in
+  // swapCell/swapLookup; restores the getObjectVolatile semantics these had before
+  // the VarHandle migration
+  def underlying: Cell = cellHandle.getVolatile(this)
+  def lookup: Cell = lookupHandle.getVolatile(this)
 
   @tailrec
   final def swapCell(next: Cell): Cell = {
@@ -148,14 +151,13 @@ private[pekko] class RepointableActorRef(
 
   def restart(cause: Throwable): Unit = underlying.restart(cause)
 
+  override private[pekko] def isTerminated: Boolean = underlying.isTerminated
+
   def isStarted: Boolean = underlying match {
     case _: UnstartedCell => false
     case null             => throw new IllegalStateException("isStarted called before initialized")
     case _                => true
   }
-
-  @deprecated("Use context.watch(actor) and receive Terminated(actor)", "Akka 2.2") def isTerminated: Boolean =
-    underlying.isTerminated
 
   def provider: ActorRefProvider = system.provider
 
@@ -209,13 +211,13 @@ private[pekko] class UnstartedCell(
    * This lock protects all accesses to this cell’s queues. It also ensures
    * safe switching to the started ActorCell.
    */
-  private[this] final val lock = new ReentrantLock
+  private final val lock = new ReentrantLock
 
   // use Envelope to keep on-send checks in the same place ACCESS MUST BE PROTECTED BY THE LOCK
-  private[this] final val queue = new JLinkedList[Envelope]()
+  private final val queue = new JLinkedList[Envelope]()
 
   // ACCESS MUST BE PROTECTED BY THE LOCK
-  private[this] var sysmsgQueue: LatestFirstSystemMessageList = SystemMessageList.LNil
+  private var sysmsgQueue: LatestFirstSystemMessageList = SystemMessageList.LNil
 
   import systemImpl.settings.UnstartedPushTimeout.{ duration => timeout }
 
@@ -302,7 +304,7 @@ private[pekko] class UnstartedCell(
 
   def isLocal = true
 
-  private[this] final def cellIsReady(cell: Cell): Boolean = (cell ne this) && (cell ne null)
+  private final def cellIsReady(cell: Cell): Boolean = (cell ne this) && (cell ne null)
 
   def hasMessages: Boolean = locked {
     val cell = self.underlying
@@ -314,7 +316,7 @@ private[pekko] class UnstartedCell(
     if (cellIsReady(cell)) cell.numberOfMessages else queue.size
   }
 
-  private[this] final def locked[T](body: => T): T = {
+  private final def locked[T](body: => T): T = {
     lock.lock()
     try body
     finally lock.unlock()

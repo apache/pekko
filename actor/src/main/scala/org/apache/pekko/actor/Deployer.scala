@@ -182,7 +182,7 @@ trait Scope {
   def withFallback(other: Scope): Scope
 }
 
-@nowarn("msg=@SerialVersionUID has no effect")
+@nowarn("msg=@SerialVersionUID (has no effect|does nothing)")
 @SerialVersionUID(1L)
 abstract class LocalScope extends Scope
 
@@ -191,7 +191,7 @@ abstract class LocalScope extends Scope
  * which do not set a different scope. It is also the only scope handled by
  * the LocalActorRefProvider.
  */
-@nowarn("msg=@SerialVersionUID has no effect")
+@nowarn("msg=@SerialVersionUID (has no effect|does nothing)")
 @SerialVersionUID(1L)
 case object LocalScope extends LocalScope {
 
@@ -206,7 +206,7 @@ case object LocalScope extends LocalScope {
 /**
  * This is the default value and as such allows overrides.
  */
-@nowarn("msg=@SerialVersionUID has no effect")
+@nowarn("msg=@SerialVersionUID (has no effect|does nothing)")
 @SerialVersionUID(1L)
 abstract class NoScopeGiven extends Scope
 @SerialVersionUID(1L)
@@ -293,7 +293,7 @@ private[pekko] class Deployer(val settings: ActorSystem.Settings, val dynamicAcc
 
       val fqn = routerTypeMapping.getOrElse(routerType, routerType)
 
-      def throwCannotInstantiateRouter(args: Seq[(Class[_], AnyRef)], cause: Throwable) =
+      def throwCannotInstantiateRouter(args: Seq[(Class[?], AnyRef)], cause: Throwable) =
         throw new IllegalArgumentException(
           s"Cannot instantiate router [$fqn], defined in [$key], " +
           s"make sure it extends [${classOf[RouterConfig]}] and has constructor with " +

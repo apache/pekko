@@ -56,7 +56,7 @@ private[pekko] final class InputStreamSource(factory: () => InputStream, chunkSi
       private var inputStream: InputStream = _
       private def isClosed = mat.isCompleted
 
-      override protected def logSource: Class[_] = classOf[InputStreamSource]
+      override protected def logSource: Class[?] = classOf[InputStreamSource]
 
       override def preStart(): Unit = {
         try {
@@ -101,6 +101,13 @@ private[pekko] final class InputStreamSource(factory: () => InputStream, chunkSi
 
       override def postStop(): Unit = {
         if (!isClosed) {
+          // abrupt termination skips the handlers, so this is the last chance to release the stream.
+          // The stage is already torn down here, so a close failure is not routed through failStage.
+          try {
+            if (inputStream ne null) inputStream.close()
+          } catch {
+            case NonFatal(ex) => log.debug("Failed to close input stream on abrupt termination: {}", ex.getMessage)
+          }
           mat.tryFailure(new AbruptStageTerminationException(this))
         }
       }

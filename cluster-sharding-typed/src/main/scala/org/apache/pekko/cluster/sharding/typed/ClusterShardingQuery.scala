@@ -18,14 +18,17 @@ import scala.jdk.DurationConverters._
 
 import org.apache.pekko
 import pekko.actor.typed.ActorRef
+import pekko.annotation.DoNotInherit
 import pekko.cluster.sharding.ShardRegion.ClusterShardingStats
 import pekko.cluster.sharding.ShardRegion.CurrentShardRegionState
 import pekko.cluster.sharding.typed.scaladsl.EntityTypeKey
 
 /**
  * Protocol for querying sharding state e.g. A ShardRegion's state
+ *
+ * Not for user extension
  */
-sealed trait ClusterShardingQuery
+@DoNotInherit sealed trait ClusterShardingQuery
 
 /**
  * Query the ShardRegion state for the given entity type key. This will get the state of the
@@ -36,7 +39,7 @@ sealed trait ClusterShardingQuery
  *
  * For the statistics for the entire cluster, see [[GetClusterShardingStats]].
  */
-final case class GetShardRegionState(entityTypeKey: EntityTypeKey[_], replyTo: ActorRef[CurrentShardRegionState])
+final case class GetShardRegionState(entityTypeKey: EntityTypeKey[?], replyTo: ActorRef[CurrentShardRegionState])
     extends ClusterShardingQuery {
 
   /**
@@ -45,7 +48,7 @@ final case class GetShardRegionState(entityTypeKey: EntityTypeKey[_], replyTo: A
    * Query the ShardRegion state for the given entity type key. This will get the state of the
    * local ShardRegion's state.
    */
-  def this(entityTypeKey: javadsl.EntityTypeKey[_], replyTo: ActorRef[CurrentShardRegionState]) =
+  def this(entityTypeKey: javadsl.EntityTypeKey[?], replyTo: ActorRef[CurrentShardRegionState]) =
     this(entityTypeKey.asScala, replyTo)
 }
 
@@ -61,7 +64,7 @@ final case class GetShardRegionState(entityTypeKey: EntityTypeKey[_], replyTo: A
  * @param replyTo the actor to send the result to
  */
 final case class GetClusterShardingStats(
-    entityTypeKey: EntityTypeKey[_],
+    entityTypeKey: EntityTypeKey[?],
     timeout: FiniteDuration,
     replyTo: ActorRef[ClusterShardingStats])
     extends ClusterShardingQuery {
@@ -74,7 +77,7 @@ final case class GetClusterShardingStats(
    * shard regions the reply will contain an empty map of regions.
    */
   def this(
-      entityTypeKey: javadsl.EntityTypeKey[_],
+      entityTypeKey: javadsl.EntityTypeKey[?],
       timeout: java.time.Duration,
       replyTo: ActorRef[ClusterShardingStats]) =
     this(entityTypeKey.asScala, timeout.toScala, replyTo)

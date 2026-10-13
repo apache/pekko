@@ -33,7 +33,7 @@ An alternative way of implementing this is shown in @ref:[splitWhen example](spl
 
 @@@div { .callout }
 
-**emits** when an element passes through. When the provided predicate is true it emits the element * and opens a new substream for subsequent element
+**emits** when an element passes through. When the provided predicate is true it emits the element and opens a new substream for subsequent element
 
 **backpressures** when there is an element pending for the next substream, but the previous is not fully consumed yet, or the substream backpressures
 

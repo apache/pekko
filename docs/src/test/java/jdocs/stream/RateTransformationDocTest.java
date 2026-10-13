@@ -13,14 +13,13 @@
 
 package jdocs.stream;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
 import java.util.stream.Stream;
 import jdocs.AbstractJavaTest;
@@ -38,9 +37,9 @@ import org.apache.pekko.stream.testkit.javadsl.TestSink;
 import org.apache.pekko.stream.testkit.javadsl.TestSource;
 import org.apache.pekko.testkit.TestLatch;
 import org.apache.pekko.testkit.javadsl.TestKit;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import scala.concurrent.Await;
 import scala.concurrent.duration.Duration;
 import scala.util.Random;
@@ -49,12 +48,12 @@ public class RateTransformationDocTest extends AbstractJavaTest {
 
   static ActorSystem system;
 
-  @BeforeClass
+  @BeforeAll
   public static void setup() {
     system = ActorSystem.create("RateTransformationDocTest");
   }
 
-  @AfterClass
+  @AfterAll
   public static void tearDown() {
     TestKit.shutdownActorSystem(system);
     system = null;
@@ -68,10 +67,9 @@ public class RateTransformationDocTest extends AbstractJavaTest {
     final Flow<Double, Tuple3<Double, Double, Integer>, NotUsed> statsFlow =
         Flow.of(Double.class)
             .conflateWithSeed(
-                elem -> Collections.singletonList(elem),
+                elem -> List.of(elem),
                 (acc, elem) -> {
-                  return Stream.concat(acc.stream(), Collections.singletonList(elem).stream())
-                      .collect(Collectors.toList());
+                  return Stream.concat(acc.stream(), List.of(elem).stream()).toList();
                 })
             .map(
                 s -> {
@@ -99,11 +97,10 @@ public class RateTransformationDocTest extends AbstractJavaTest {
     final Flow<Double, Double, NotUsed> sampleFlow =
         Flow.of(Double.class)
             .conflateWithSeed(
-                elem -> Collections.singletonList(elem),
+                elem -> List.of(elem),
                 (acc, elem) -> {
                   if (r.nextDouble() < p) {
-                    return Stream.concat(acc.stream(), Collections.singletonList(elem).stream())
-                        .collect(Collectors.toList());
+                    return Stream.concat(acc.stream(), List.of(elem).stream()).toList();
                   }
                   return acc;
                 })
@@ -136,8 +133,8 @@ public class RateTransformationDocTest extends AbstractJavaTest {
     final CompletionStage<List<Double>> fut = probeFut.second();
     probe.sendNext(1.0);
     final List<Double> extrapolated = fut.toCompletableFuture().get(1, TimeUnit.SECONDS);
-    assertEquals(extrapolated.size(), 10);
-    assertEquals(extrapolated.stream().mapToDouble(d -> d).sum(), 10, 0.1);
+    assertEquals(10, extrapolated.size());
+    assertEquals(10, extrapolated.stream().mapToDouble(d -> d).sum(), 0.1);
   }
 
   @Test
@@ -156,8 +153,8 @@ public class RateTransformationDocTest extends AbstractJavaTest {
             .run(system);
 
     final List<Double> extrapolated = fut.toCompletableFuture().get(1, TimeUnit.SECONDS);
-    assertEquals(extrapolated.size(), 10);
-    assertEquals(extrapolated.stream().mapToDouble(d -> d).sum(), 10 * initial, 0.1);
+    assertEquals(10, extrapolated.size());
+    assertEquals(10 * initial, extrapolated.stream().mapToDouble(d -> d).sum(), 0.1);
   }
 
   @Test

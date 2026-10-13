@@ -29,7 +29,7 @@ private[pekko] case class CacheStatistics(entries: Int, maxProbeDistance: Int, a
  * with backshift (https://codecapsule.com/2013/11/17/robin-hood-hashing-backward-shift-deletion/).
  *
  * The main modification compared to an RH hashmap is that it never grows the map (no rehashes) instead it is allowed
- * to kick out entires that are considered old. The implementation tries to keep the map close to full, only evicting
+ * to kick out entries that are considered old. The implementation tries to keep the map close to full, only evicting
  * old entries when needed.
  */
 private[pekko] abstract class LruBoundedCache[K <: AnyRef: ClassTag, V <: AnyRef: ClassTag](
@@ -39,15 +39,15 @@ private[pekko] abstract class LruBoundedCache[K <: AnyRef: ClassTag, V <: AnyRef
   require((capacity & (capacity - 1)) == 0, "Capacity must be power of two")
   require(evictAgeThreshold <= capacity, "Age threshold must be less than capacity.")
 
-  private[this] val Mask = capacity - 1
+  private val Mask = capacity - 1
 
   // Practically guarantee an overflow
-  private[this] var epoch = Int.MaxValue - 1
+  private var epoch = Int.MaxValue - 1
 
-  private[this] val keys = Array.ofDim[K](capacity)
-  private[this] val values = Array.ofDim[V](capacity)
-  private[this] val hashes = new Array[Int](capacity)
-  private[this] val epochs = Array.fill[Int](capacity)(epoch - evictAgeThreshold) // Guarantee existing "values" are stale
+  private val keys = Array.ofDim[K](capacity)
+  private val values = Array.ofDim[V](capacity)
+  private val hashes = new Array[Int](capacity)
+  private val epochs = Array.fill[Int](capacity)(epoch - evictAgeThreshold) // Guarantee existing "values" are stale
 
   final def get(k: K): Option[V] = {
     val h = hash(k)

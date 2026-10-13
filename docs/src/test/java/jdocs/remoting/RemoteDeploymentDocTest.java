@@ -13,11 +13,11 @@
 
 package jdocs.remoting;
 
-import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
+import org.apache.pekko.testkit.PekkoJUnitJupiterActorSystemResource;
 import org.apache.pekko.testkit.PekkoSpec;
 import jdocs.AbstractJavaTest;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
+import org.junit.jupiter.api.Test;
 
 import com.typesafe.config.ConfigFactory;
 
@@ -33,7 +33,7 @@ import org.apache.pekko.remote.RemoteScope;
 
 import org.apache.pekko.actor.AbstractActor;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class RemoteDeploymentDocTest extends AbstractJavaTest {
 
@@ -44,9 +44,9 @@ public class RemoteDeploymentDocTest extends AbstractJavaTest {
     }
   }
 
-  @ClassRule
-  public static PekkoJUnitActorSystemResource actorSystemResource =
-      new PekkoJUnitActorSystemResource(
+  @RegisterExtension
+  static PekkoJUnitJupiterActorSystemResource actorSystemResource =
+      new PekkoJUnitJupiterActorSystemResource(
           "RemoteDeploymentDocTest",
           ConfigFactory.parseString(
                   "   pekko.actor.provider = remote\n"

@@ -49,7 +49,7 @@ private[pekko] object SubscriberManagement {
 private[pekko] trait SubscriptionWithCursor[T] extends Subscription with ResizableMultiReaderRingBuffer.Cursor {
   import ReactiveStreamsCompliance._
 
-  def subscriber: Subscriber[_ >: T]
+  def subscriber: Subscriber[? >: T]
 
   def dispatch(element: T): Unit = tryOnNext(subscriber, element)
 
@@ -91,20 +91,20 @@ private[pekko] trait SubscriberManagement[T] extends ResizableMultiReaderRingBuf
   /**
    * Use to register a subscriber
    */
-  protected def createSubscription(subscriber: Subscriber[_ >: T]): S
+  protected def createSubscription(subscriber: Subscriber[? >: T]): S
 
-  private[this] val buffer = new ResizableMultiReaderRingBuffer[T](initialBufferSize, maxBufferSize, this)
+  private val buffer = new ResizableMultiReaderRingBuffer[T](initialBufferSize, maxBufferSize, this)
 
   protected def bufferDebug: String = buffer.toString
 
   // optimize for small numbers of subscribers by keeping subscribers in a plain list
-  private[this] var subscriptions: Subscriptions = Nil
+  private var subscriptions: Subscriptions = Nil
 
   // number of elements already requested but not yet received from upstream
-  private[this] var pendingFromUpstream: Long = 0
+  private var pendingFromUpstream: Long = 0
 
   // if non-null, holds the end-of-stream state
-  private[this] var endOfStream: EndOfStream = NotReached
+  private var endOfStream: EndOfStream = NotReached
 
   def cursors = subscriptions
 
@@ -158,7 +158,7 @@ private[pekko] trait SubscriberManagement[T] extends ResizableMultiReaderRingBuf
       }
     }
 
-  private[this] final def requestFromUpstreamIfRequired(): Unit = {
+  private final def requestFromUpstreamIfRequired(): Unit = {
     @tailrec def maxRequested(remaining: Subscriptions, result: Long = 0): Long =
       remaining match {
         case head :: tail => maxRequested(tail, math.max(head.totalDemand, result))
@@ -232,7 +232,7 @@ private[pekko] trait SubscriberManagement[T] extends ResizableMultiReaderRingBuf
   /**
    * Register a new subscriber.
    */
-  protected def registerSubscriber(subscriber: Subscriber[_ >: T]): Unit = endOfStream match {
+  protected def registerSubscriber(subscriber: Subscriber[? >: T]): Unit = endOfStream match {
     case NotReached if subscriptions.exists(_.subscriber == subscriber) =>
       ReactiveStreamsCompliance.rejectDuplicateSubscriber(subscriber)
     case NotReached                   => addSubscription(subscriber)
@@ -240,7 +240,7 @@ private[pekko] trait SubscriberManagement[T] extends ResizableMultiReaderRingBuf
     case eos                          => eos(subscriber)
   }
 
-  private def addSubscription(subscriber: Subscriber[_ >: T]): Unit = {
+  private def addSubscription(subscriber: Subscriber[? >: T]): Unit = {
     import ReactiveStreamsCompliance._
     val newSubscription = createSubscription(subscriber)
     subscriptions ::= newSubscription

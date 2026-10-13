@@ -19,7 +19,6 @@ import java.util.concurrent._
 import java.util.concurrent.atomic.AtomicReference
 
 import scala.annotation.tailrec
-import scala.collection.immutable
 import scala.concurrent.{ Await, ExecutionContext, ExecutionContextExecutor, Future, Promise }
 import scala.concurrent.blocking
 import scala.concurrent.duration.Duration
@@ -349,8 +348,10 @@ object ActorSystem {
       val configuredLoggingFilter = config.getString(loggingFilterConfKey)
 
       val loggingFilterAlreadyConfigured =
-        configuredLoggingFilter == slf4jLoggingFilterClassName || configuredLoggingFilter != classOf[
-          DefaultLoggingFilter].getName
+        configuredLoggingFilter == slf4jLoggingFilterClassName ||
+        configuredLoggingFilter !=
+          classOf[
+            DefaultLoggingFilter].getName
 
       def newLoggingFilterConfStr = s"""$loggingFilterConfKey = "$slf4jLoggingFilterClassName""""
 
@@ -431,7 +432,7 @@ object ActorSystem {
 
     final val LogLevel: String = getString("pekko.loglevel")
     final val StdoutLogLevel: String = getString("pekko.stdout-loglevel")
-    final val Loggers: immutable.Seq[String] = immutableSeq(getStringList("pekko.loggers"))
+    final val Loggers: Seq[String] = immutableSeq(getStringList("pekko.loggers"))
     final val LoggersDispatcher: String = getString("pekko.loggers-dispatcher")
     final val LoggingFilter: String = getString("pekko.logging-filter")
     final val LoggerStartTimeout: Timeout = Timeout(config.getMillisDuration("pekko.logger-startup-timeout"))
@@ -545,7 +546,7 @@ abstract class ActorSystem extends ActorRefFactory with ClassicActorSystemProvid
   def logConfiguration(): Unit
 
   /**
-   * Construct a path below the application guardian to be used with [[ActorSystem#actorSelection]].
+   * Construct a path below the application guardian to be used with `actorSelection`.
    */
   def /(name: String): ActorPath
 
@@ -555,7 +556,7 @@ abstract class ActorSystem extends ActorRefFactory with ClassicActorSystemProvid
   def child(child: String): ActorPath = /(child)
 
   /**
-   * Construct a path below the application guardian to be used with [[ActorSystem#actorSelection]].
+   * Construct a path below the application guardian to be used with `actorSelection`.
    */
   def /(name: Iterable[String]): ActorPath
 
@@ -671,7 +672,7 @@ abstract class ActorSystem extends ActorRefFactory with ClassicActorSystemProvid
    * This will stop the guardian actor, which in turn
    * will recursively stop all its child actors, and finally the system guardian
    * (below which the logging actors reside) and then execute all registered
-   * termination handlers (see [[ActorSystem#registerOnTermination]]).
+   * termination handlers (see `registerOnTermination`).
    * Be careful to not schedule any operations on completion of the returned future
    * using the dispatcher of this actor system as it will have been shut down before the
    * future completes.
@@ -683,7 +684,7 @@ abstract class ActorSystem extends ActorRefFactory with ClassicActorSystemProvid
    * [[CoordinatedShutdown.ActorSystemTerminateReason]]. This method will block
    * until either the actor system is terminated or
    * `pekko.coordinated-shutdown.close-actor-system-timeout` timeout duration is
-   * passed, in which case a [[TimeoutException]] is thrown.
+   * passed, in which case a [[java.util.concurrent.TimeoutException]] is thrown.
    *
    * If `pekko.coordinated-shutdown.run-by-actor-system-terminate` is configured to `off`
    * it will not run `CoordinatedShutdown`, but the `ActorSystem` and its actors
@@ -692,7 +693,7 @@ abstract class ActorSystem extends ActorRefFactory with ClassicActorSystemProvid
    * This will stop the guardian actor, which in turn
    * will recursively stop all its child actors, and finally the system guardian
    * (below which the logging actors reside) and then execute all registered
-   * termination handlers (see [[ActorSystem#registerOnTermination]]).
+   * termination handlers (see `registerOnTermination`).
    * @since 1.3.0
    */
   @throws(classOf[TimeoutException])
@@ -701,7 +702,7 @@ abstract class ActorSystem extends ActorRefFactory with ClassicActorSystemProvid
   /**
    * Returns a Future which will be completed after the ActorSystem has been terminated
    * and termination hooks have been executed. If you registered any callback with
-   * [[ActorSystem#registerOnTermination]], the returned Future from this method will not complete
+   * `registerOnTermination`, the returned Future from this method will not complete
    * until all the registered callbacks are finished. Be careful to not schedule any operations,
    * such as `onComplete`, on the dispatchers (`ExecutionContext`) of this actor system as they
    * will have been shut down before this future completes.
@@ -711,7 +712,7 @@ abstract class ActorSystem extends ActorRefFactory with ClassicActorSystemProvid
   /**
    * Returns a CompletionStage which will be completed after the ActorSystem has been terminated
    * and termination hooks have been executed. If you registered any callback with
-   * [[ActorSystem#registerOnTermination]], the returned CompletionStage from this method will not complete
+   * `registerOnTermination`, the returned CompletionStage from this method will not complete
    * until all the registered callbacks are finished. Be careful to not schedule any operations,
    * such as `thenRunAsync`, on the dispatchers (`Executor`) of this actor system as they
    * will have been shut down before this CompletionStage completes.
@@ -737,7 +738,7 @@ abstract class ActorSystem extends ActorRefFactory with ClassicActorSystemProvid
    * Returns whether the specified extension is already registered, this method can potentially block, waiting for the initialization
    * of the payload, if is in the process of registration from another Thread of execution
    */
-  def hasExtension(ext: ExtensionId[_ <: Extension]): Boolean
+  def hasExtension(ext: ExtensionId[? <: Extension]): Boolean
 }
 
 /**
@@ -846,6 +847,13 @@ private[pekko] class ActorSystemImpl(
 
   private val _dynamicAccess: DynamicAccess = createDynamicAccess()
 
+  /**
+   * Optimistic optimization: Tries to avoid going through the extension infrastructure if possible when using
+   * the typed system. Will contain a org.apache.pekko.actor.typed.ActorSystem if set, should not be touched by
+   * anything but the typed ActorSystemAdapter.
+   */
+  private[pekko] var typedSystem: OptionVal[AnyRef] = OptionVal.None
+
   final val settings: Settings = {
     val config = Settings.amendSlf4jConfig(
       applicationConfig.withFallback(ConfigFactory.defaultReference(classLoader)),
@@ -924,15 +932,29 @@ private[pekko] class ActorSystemImpl(
 
   def actorOf(props: Props, name: String): ActorRef =
     if (guardianProps.isEmpty) guardian.underlying.attachChild(props, name, systemService = false)
-    else
-      throw new UnsupportedOperationException(
-        s"cannot create top-level actor [$name] from the outside on ActorSystem with custom user guardian")
+    else {
+      val message =
+        if (isTypedGuardian)
+          s"cannot create top-level actor [$name] from the outside on a typed ActorSystem.  In a typed ActorSystem, " +
+          "top-level actors should be spawned as children of the guardian behavior; if this is not possible (e.g. this " +
+          "actorOf call is in a library), a classic ActorSystem should be created and used to spawn top-level actors."
+        else s"cannot create top-level actor [$name] from the outside on ActorSystem with custom user guardian"
+
+      throw new UnsupportedOperationException(message)
+    }
 
   def actorOf(props: Props): ActorRef =
     if (guardianProps.isEmpty) guardian.underlying.attachChild(props, systemService = false)
-    else
-      throw new UnsupportedOperationException(
-        "cannot create top-level actor from the outside on ActorSystem with custom user guardian")
+    else {
+      val message =
+        if (isTypedGuardian)
+          "cannot create top-level actor from the outside on a typed ActorSystem.  In a typed ActorSystem, " +
+          "top-level actors should be spawned as children of the guardian behavior; if this is not possible (e.g. this " +
+          "actorOf call is in a library), a classic ActorSystem should be created and used to spawn top-level actors."
+        else "cannot create top-level actor from the outside on ActorSystem with custom user guardian"
+
+      throw new UnsupportedOperationException(message)
+    }
 
   def stop(actor: ActorRef): Unit = {
     val path = actor.path
@@ -956,7 +978,7 @@ private[pekko] class ActorSystemImpl(
     dynamicAccess.createInstanceFor[LoggingFilter](LoggingFilter, arguments).get
   }
 
-  private[this] val markerLogging =
+  private val markerLogging =
     new MarkerLoggingAdapter(eventStream, getClass.getName + "(" + name + ")", this.getClass, logFilter)
   val log: LoggingAdapter = markerLogging
 
@@ -995,7 +1017,7 @@ private[pekko] class ActorSystemImpl(
 
   val dispatcher: ExecutionContextExecutor = dispatchers.defaultGlobalDispatcher
 
-  private[this] final val terminationCallbacks = new TerminationCallbacks(provider.terminationFuture)(dispatcher)
+  private final val terminationCallbacks = new TerminationCallbacks(provider.terminationFuture)(dispatcher)
 
   override def whenTerminated: Future[Terminated] = terminationCallbacks.terminationFuture
   override def getWhenTerminated: CompletionStage[Terminated] = whenTerminated.asJava
@@ -1079,7 +1101,7 @@ private[pekko] class ActorSystemImpl(
     }
 
   def start(): this.type = _start
-  def registerOnTermination[T](code: => T): Unit = { registerOnTermination(new Runnable { def run() = code }) }
+  def registerOnTermination[T](code: => T): Unit = { registerOnTermination((() => code): Runnable) }
   def registerOnTermination(code: Runnable): Unit = { terminationCallbacks.add(code) }
 
   @volatile private var terminating = false
@@ -1145,7 +1167,7 @@ private[pekko] class ActorSystemImpl(
     dynamicAccess
       .createInstanceFor[Scheduler](
         settings.SchedulerClass,
-        immutable.Seq(
+        Seq(
           classOf[Config] -> settings.config,
           classOf[LoggingAdapter] -> log,
           classOf[ThreadFactory] -> threadFactory.withName(threadFactory.name + "-scheduler")))
@@ -1166,7 +1188,7 @@ private[pekko] class ActorSystemImpl(
   // 1) a CountDownLatch (if it's still in the process of being registered),
   // 2) a Throwable (if it failed initializing), or
   // 3) the registered extension.
-  private val extensions = new ConcurrentHashMap[ExtensionId[_], AnyRef]
+  private val extensions = new ConcurrentHashMap[ExtensionId[?], AnyRef]
 
   /**
    * Returns any extension registered to the specified Extension or returns null if not registered
@@ -1223,7 +1245,7 @@ private[pekko] class ActorSystemImpl(
     case some => some.asInstanceOf[T]
   }
 
-  def hasExtension(ext: ExtensionId[_ <: Extension]): Boolean = findExtension(ext) != null
+  def hasExtension(ext: ExtensionId[? <: Extension]): Boolean = findExtension(ext) != null
 
   private def loadExtensions(): Unit = {
 
@@ -1241,7 +1263,7 @@ private[pekko] class ActorSystemImpl(
         } match {
           case Success(p: ExtensionIdProvider) =>
             registerExtension(p.lookup)
-          case Success(p: ExtensionId[_]) =>
+          case Success(p: ExtensionId[?]) =>
             registerExtension(p)
           case Success(_) =>
             if (!throwOnLoadFail) log.error("[{}] is not an 'ExtensionIdProvider' or 'ExtensionId', skipping...", fqcn)
@@ -1276,7 +1298,8 @@ private[pekko] class ActorSystemImpl(
             case real: ActorCell => " status=" + real.mailbox.currentStatus
             case _               => ""
           }) +
-          " " + (cell.childrenRefs match {
+          " " +
+          (cell.childrenRefs match {
             case ChildrenContainer.TerminatingChildrenContainer(_, toDie, reason) =>
               "Terminating(" + reason + ")" +
               (toDie.toSeq.sorted.mkString("\n" + indent + "   |    toDie: ", "\n" + indent + "   |           ", ""))
@@ -1299,8 +1322,8 @@ private[pekko] class ActorSystemImpl(
   }
 
   final class TerminationCallbacks[T](upStreamTerminated: Future[T])(implicit ec: ExecutionContext) {
-    private[this] final val done = Promise[T]()
-    private[this] final val ref = new AtomicReference(done)
+    private final val done = Promise[T]()
+    private final val ref = new AtomicReference(done)
 
     // onComplete never fires twice so safe to avoid null check
     upStreamTerminated.onComplete { t =>
@@ -1328,4 +1351,7 @@ private[pekko] class ActorSystemImpl(
      */
     def terminationFuture: Future[T] = done.future
   }
+
+  private def isTypedGuardian: Boolean =
+    guardianProps.exists(_.clazz.getName == "org.apache.pekko.actor.TypedCreatorFunctionConsumer")
 }

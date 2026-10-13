@@ -125,6 +125,16 @@ class RoundRobinSpec extends PekkoSpec with DefaultTimeout with ImplicitSender {
       actor ! RemoveRoutee(other)
       routeeSize(actor) should ===(5)
     }
+
+    "not shrink below 1 routee with AdjustPoolSize" in {
+      val actor = system.actorOf(RoundRobinPool(3).props(routeeProps = Props(new Actor {
+          def receive = Actor.emptyBehavior
+        })), "round-robin-min-one")
+
+      routeeSize(actor) should ===(3)
+      actor ! AdjustPoolSize(-10)
+      routeeSize(actor) should ===(1)
+    }
   }
 
   "round robin group" must {

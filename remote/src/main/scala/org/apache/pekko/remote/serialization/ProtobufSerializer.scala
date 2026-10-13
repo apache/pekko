@@ -13,10 +13,10 @@
 
 package org.apache.pekko.remote.serialization
 
-import java.lang.reflect.Method
-import java.util.concurrent.atomic.AtomicReference
+import java.lang.invoke.{ MethodHandle, MethodHandles, MethodType }
+import java.lang.reflect.InvocationTargetException
+import java.util.concurrent.ConcurrentHashMap
 
-import scala.annotation.tailrec
 import scala.util.control.NonFatal
 
 import org.apache.pekko
@@ -28,10 +28,57 @@ import pekko.serialization.{ BaseSerializer, Serialization }
 import pekko.serialization.SerializationExtension
 
 object ProtobufSerializer {
-  private val ARRAY_OF_BYTE_ARRAY = Array[Class[_]](classOf[Array[Byte]])
+  private val lookup = MethodHandles.lookup()
+  private val publicLookup = MethodHandles.publicLookup()
+  private val toByteArrayMethodType = MethodType.methodType(classOf[Array[Byte]])
+  private val parsingInvokerType = MethodType.methodType(classOf[AnyRef], classOf[Array[Byte]])
+  private val toByteArrayInvokerType = MethodType.methodType(classOf[AnyRef], classOf[AnyRef])
+  private val invocationTargetExceptionConstructor =
+    lookup.findConstructor(
+      classOf[InvocationTargetException],
+      MethodType.methodType(Void.TYPE, classOf[Throwable]))
+
+  private def parsingHandle(clazz: Class[?]): MethodHandle = {
+    val methodType = MethodType.methodType(clazz, classOf[Array[Byte]])
+    val handle =
+      try lookup.findStatic(clazz, "parseFrom", methodType)
+      catch {
+        case _: IllegalAccessException => publicLookup.findStatic(clazz, "parseFrom", methodType)
+      }
+    val invoker = wrapTargetException(handle).asType(parsingInvokerType)
+    ensureInitialized(clazz)
+    invoker
+  }
+
+  private def toByteArrayHandle(clazz: Class[?]): MethodHandle = {
+    val handle =
+      try lookup.findVirtual(clazz, "toByteArray", toByteArrayMethodType)
+      catch {
+        case _: IllegalAccessException => publicLookup.findVirtual(clazz, "toByteArray", toByteArrayMethodType)
+      }
+    val invoker = wrapTargetException(handle).asType(toByteArrayInvokerType)
+    ensureInitialized(clazz)
+    invoker
+  }
+
+  private def wrapTargetException(target: MethodHandle): MethodHandle = {
+    val exceptionThrower =
+      MethodHandles.throwException(target.`type`().returnType(), classOf[InvocationTargetException])
+    val handler = MethodHandles.filterArguments(exceptionThrower, 0, invocationTargetExceptionConstructor)
+    val handlerWithArguments = MethodHandles.dropArguments(handler, 1, target.`type`().parameterList())
+    MethodHandles.catchException(target, classOf[Throwable], handlerWithArguments)
+  }
+
+  private def ensureInitialized(clazz: Class[?]): Unit = {
+    try lookup.ensureInitialized(clazz)
+    catch {
+      case _: IllegalAccessException =>
+        publicLookup.ensureInitialized(clazz)
+    }
+  }
 
   /**
-   * Helper to serialize an [[pekko.actor.ActorRef]] to Pekko's
+   * Helper to serialize a [[pekko.actor.ActorRef]] to Pekko's
    * protobuf representation.
    */
   def serializeActorRef(ref: ActorRef): ActorRefData = {
@@ -39,7 +86,7 @@ object ProtobufSerializer {
   }
 
   /**
-   * Helper to materialize (lookup) an [[pekko.actor.ActorRef]]
+   * Helper to materialize (lookup) a [[pekko.actor.ActorRef]]
    * from Pekko's protobuf representation in the supplied
    * [[pekko.actor.ActorSystem]].
    */
@@ -56,8 +103,8 @@ object ProtobufSerializer {
  */
 class ProtobufSerializer(val system: ExtendedActorSystem) extends BaseSerializer {
 
-  private val parsingMethodBindingRef = new AtomicReference[Map[Class[_], Method]](Map.empty)
-  private val toByteArrayMethodBindingRef = new AtomicReference[Map[Class[_], Method]](Map.empty)
+  private val parsingMethodBindings = new ConcurrentHashMap[Class[?], MethodHandle]
+  private val toByteArrayMethodBindings = new ConcurrentHashMap[Class[?], MethodHandle]
 
   private val allowedClassNames: Set[String] = {
     import scala.jdk.CollectionConverters._
@@ -71,28 +118,21 @@ class ProtobufSerializer(val system: ExtendedActorSystem) extends BaseSerializer
 
   override def includeManifest: Boolean = true
 
-  override def fromBinary(bytes: Array[Byte], manifest: Option[Class[_]]): AnyRef = {
+  override def fromBinary(bytes: Array[Byte], manifest: Option[Class[?]]): AnyRef = {
     manifest match {
       case Some(clazz) =>
-        @tailrec
-        def parsingMethod(method: Method = null): Method = {
-          val parsingMethodBinding = parsingMethodBindingRef.get()
-          parsingMethodBinding.get(clazz) match {
-            case Some(cachedParsingMethod) => cachedParsingMethod
-            case None                      =>
-              checkAllowedClass(clazz)
-              val unCachedParsingMethod =
-                if (method eq null) clazz.getDeclaredMethod("parseFrom", ProtobufSerializer.ARRAY_OF_BYTE_ARRAY: _*)
-                else method
-              if (parsingMethodBindingRef.compareAndSet(
-                  parsingMethodBinding,
-                  parsingMethodBinding.updated(clazz, unCachedParsingMethod)))
-                unCachedParsingMethod
-              else
-                parsingMethod(unCachedParsingMethod)
+        def parsingMethod(): MethodHandle = {
+          val cached = parsingMethodBindings.get(clazz)
+          if (cached ne null) cached
+          else {
+            checkAllowedClass(clazz)
+            val handle = ProtobufSerializer.parsingHandle(clazz)
+            val existing = parsingMethodBindings.putIfAbsent(clazz, handle)
+            if (existing eq null) handle else existing
           }
         }
-        parsingMethod().invoke(null, bytes)
+        val result: AnyRef = parsingMethod().invokeExact(bytes)
+        result
 
       case None =>
         throw new IllegalArgumentException("Need a protobuf message class to be able to serialize bytes using protobuf")
@@ -101,27 +141,20 @@ class ProtobufSerializer(val system: ExtendedActorSystem) extends BaseSerializer
 
   override def toBinary(obj: AnyRef): Array[Byte] = {
     val clazz = obj.getClass
-    @tailrec
-    def toByteArrayMethod(method: Method = null): Method = {
-      val toByteArrayMethodBinding = toByteArrayMethodBindingRef.get()
-      toByteArrayMethodBinding.get(clazz) match {
-        case Some(cachedtoByteArrayMethod) => cachedtoByteArrayMethod
-        case None                          =>
-          val unCachedtoByteArrayMethod =
-            if (method eq null) clazz.getMethod("toByteArray")
-            else method
-          if (toByteArrayMethodBindingRef.compareAndSet(
-              toByteArrayMethodBinding,
-              toByteArrayMethodBinding.updated(clazz, unCachedtoByteArrayMethod)))
-            unCachedtoByteArrayMethod
-          else
-            toByteArrayMethod(unCachedtoByteArrayMethod)
+    def toByteArrayMethod(): MethodHandle = {
+      val cached = toByteArrayMethodBindings.get(clazz)
+      if (cached ne null) cached
+      else {
+        val handle = ProtobufSerializer.toByteArrayHandle(clazz)
+        val existing = toByteArrayMethodBindings.putIfAbsent(clazz, handle)
+        if (existing eq null) handle else existing
       }
     }
-    toByteArrayMethod().invoke(obj).asInstanceOf[Array[Byte]]
+    val result: AnyRef = toByteArrayMethod().invokeExact(obj)
+    result.asInstanceOf[Array[Byte]]
   }
 
-  private def checkAllowedClass(clazz: Class[_]): Unit = {
+  private def checkAllowedClass(clazz: Class[?]): Unit = {
     if (!isInAllowList(clazz)) {
       val warnMsg = s"Can't deserialize object of type [${clazz.getName}] in [${getClass.getName}]. " +
         "Only classes that are on the allow list are allowed for security reasons. " +
@@ -147,11 +180,14 @@ class ProtobufSerializer(val system: ExtendedActorSystem) extends BaseSerializer
    * That is also possible when changing a binding from a ProtobufSerializer to another serializer (e.g. Jackson)
    * and still bind with the same class (interface).
    */
-  private def isInAllowList(clazz: Class[_]): Boolean = {
-    isBoundToProtobufSerializer(clazz) || isInAllowListClassName(clazz)
+  private def isInAllowList(clazz: Class[?]): Boolean = {
+    // The name check comes first because it cannot throw: `isBoundToProtobufSerializer` calls
+    // `serializerFor`, which raises (and fills in the stack trace of) a NotSerializableException
+    // for a class that is not bound.
+    isInAllowListClassName(clazz) || isBoundToProtobufSerializer(clazz)
   }
 
-  private def isBoundToProtobufSerializer(clazz: Class[_]): Boolean = {
+  private def isBoundToProtobufSerializer(clazz: Class[?]): Boolean = {
     try {
       val boundSerializer = serialization.serializerFor(clazz)
       boundSerializer.isInstanceOf[ProtobufSerializer]
@@ -160,9 +196,11 @@ class ProtobufSerializer(val system: ExtendedActorSystem) extends BaseSerializer
     }
   }
 
-  private def isInAllowListClassName(clazz: Class[_]): Boolean = {
+  private def isInAllowListClassName(clazz: Class[?]): Boolean = {
+    // getSuperclass is null for an interface, for Object and for a primitive, and the manifest
+    // class comes off the wire, so it can be any of those
     allowedClassNames(clazz.getName) ||
-    allowedClassNames(clazz.getSuperclass.getName) ||
+    ((clazz.getSuperclass ne null) && allowedClassNames(clazz.getSuperclass.getName)) ||
     clazz.getInterfaces.exists(c => allowedClassNames(c.getName))
   }
 }

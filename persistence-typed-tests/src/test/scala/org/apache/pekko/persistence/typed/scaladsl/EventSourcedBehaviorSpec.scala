@@ -13,6 +13,7 @@
 
 package org.apache.pekko.persistence.typed.scaladsl
 
+import java.time.Instant
 import java.util.UUID
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -37,12 +38,14 @@ import pekko.actor.typed.scaladsl.ActorContext
 import pekko.actor.typed.scaladsl.Behaviors
 import pekko.persistence.{ SnapshotMetadata => ClassicSnapshotMetadata }
 import pekko.persistence.{ SnapshotSelectionCriteria => ClassicSnapshotSelectionCriteria }
+import pekko.persistence.FilteredPayload
 import pekko.persistence.SelectedSnapshot
 import pekko.persistence.journal.inmem.InmemJournal
-import pekko.persistence.query.EventEnvelope
+import pekko.persistence.typed.EventAdapter
+import pekko.persistence.typed.EventSeq
 import pekko.persistence.query.Offset
 import pekko.persistence.query.PersistenceQuery
-import pekko.persistence.query.Sequence
+import pekko.persistence.query.TimestampOffset
 import pekko.persistence.snapshot.SnapshotStore
 import pekko.persistence.testkit.PersistenceTestKitPlugin
 import pekko.persistence.testkit.query.scaladsl.PersistenceTestKitReadJournal
@@ -55,6 +58,7 @@ import pekko.persistence.typed.SnapshotSelectionCriteria
 import pekko.serialization.jackson.CborSerializable
 import pekko.stream.scaladsl.Sink
 
+import org.scalatest.Inside.inside
 import org.scalatest.wordspec.AnyWordSpecLike
 
 import com.typesafe.config.Config
@@ -120,9 +124,12 @@ object EventSourcedBehaviorSpec {
   case object LogThenStop extends Command
   case object Fail extends Command
   case object StopIt extends Command
+  case object PersistFilteredEvent extends Command
+  final case class GetLastSequenceNumber(replyTo: ActorRef[Long]) extends Command
 
   sealed trait Event extends CborSerializable
   final case class Incremented(delta: Int) extends Event
+  case object FilteredEvent extends Event
 
   final case class State(value: Int, history: Vector[Int]) extends CborSerializable
 
@@ -131,15 +138,15 @@ object EventSourcedBehaviorSpec {
   val firstLogging = "first logging"
   val secondLogging = "second logging"
 
-  def counter(persistenceId: PersistenceId)(implicit system: ActorSystem[_]): Behavior[Command] =
+  def counter(persistenceId: PersistenceId)(implicit system: ActorSystem[?]): Behavior[Command] =
     Behaviors.setup(ctx => counter(ctx, persistenceId))
 
   def counter(persistenceId: PersistenceId, logging: ActorRef[String])(
-      implicit system: ActorSystem[_]): Behavior[Command] =
+      implicit system: ActorSystem[?]): Behavior[Command] =
     Behaviors.setup(ctx => counter(ctx, persistenceId, logging))
 
   def counter(ctx: ActorContext[Command], persistenceId: PersistenceId)(
-      implicit system: ActorSystem[_]): EventSourcedBehavior[Command, Event, State] =
+      implicit system: ActorSystem[?]): EventSourcedBehavior[Command, Event, State] =
     counter(
       ctx,
       persistenceId,
@@ -148,7 +155,7 @@ object EventSourcedBehaviorSpec {
       snapshotProbe = TestProbe[Try[SnapshotMetadata]]().ref)
 
   def counter(ctx: ActorContext[Command], persistenceId: PersistenceId, logging: ActorRef[String])(
-      implicit system: ActorSystem[_]): EventSourcedBehavior[Command, Event, State] =
+      implicit system: ActorSystem[?]): EventSourcedBehavior[Command, Event, State] =
     counter(
       ctx,
       persistenceId,
@@ -161,18 +168,18 @@ object EventSourcedBehaviorSpec {
       persistenceId: PersistenceId,
       probe: ActorRef[(State, Event)],
       snapshotProbe: ActorRef[Try[SnapshotMetadata]])(
-      implicit system: ActorSystem[_]): EventSourcedBehavior[Command, Event, State] =
+      implicit system: ActorSystem[?]): EventSourcedBehavior[Command, Event, State] =
     counter(ctx, persistenceId, TestProbe[String]().ref, probe, snapshotProbe)
 
   def counterWithProbe(ctx: ActorContext[Command], persistenceId: PersistenceId, probe: ActorRef[(State, Event)])(
-      implicit system: ActorSystem[_]): EventSourcedBehavior[Command, Event, State] =
+      implicit system: ActorSystem[?]): EventSourcedBehavior[Command, Event, State] =
     counter(ctx, persistenceId, TestProbe[String]().ref, probe, TestProbe[Try[SnapshotMetadata]]().ref)
 
   def counterWithSnapshotProbe(
       ctx: ActorContext[Command],
       persistenceId: PersistenceId,
       probe: ActorRef[Try[SnapshotMetadata]])(
-      implicit system: ActorSystem[_]): EventSourcedBehavior[Command, Event, State] =
+      implicit system: ActorSystem[?]): EventSourcedBehavior[Command, Event, State] =
     counter(ctx, persistenceId, TestProbe[String]().ref, TestProbe[(State, Event)]().ref, snapshotProbe = probe)
 
   def counter(
@@ -274,19 +281,48 @@ object EventSourcedBehaviorSpec {
           case StopIt =>
             Effect.none.thenStop()
 
+          case PersistFilteredEvent =>
+            // FilteredEvent will be converted FilteredPayload in eventAdapter
+            Effect.persist(FilteredEvent)
+
+          case GetLastSequenceNumber(replyTo) =>
+            replyTo ! EventSourcedBehavior.lastSequenceNumber(ctx)
+            Effect.none
+
         },
       eventHandler = (state, evt) =>
         evt match {
           case Incremented(delta) =>
             probe ! ((state, evt))
             State(state.value + delta, state.history :+ state.value)
-        }).receiveSignal {
-      case (_, RecoveryCompleted)           => ()
-      case (_, SnapshotCompleted(metadata)) =>
-        snapshotProbe ! Success(metadata)
-      case (_, SnapshotFailed(_, failure)) =>
-        snapshotProbe ! Failure(failure)
-    }
+          case FilteredEvent =>
+            state
+        })
+      .eventAdapter(new EventAdapter[Event, Any] {
+        override def toJournal(e: Event): Any =
+          e match {
+            case FilteredEvent => FilteredPayload
+            case _             => e
+          }
+
+        override def manifest(event: Event): String = ""
+
+        override def fromJournal(p: Any, manifest: String): EventSeq[Event] =
+          p match {
+            case FilteredPayload =>
+              throw new IllegalStateException("Unexpected FilteredPayload")
+            case e: Event => EventSeq.single(e)
+            case _        =>
+              throw new IllegalStateException(s"Unexpected event type $p")
+          }
+      })
+      .receiveSignal {
+        case (_, RecoveryCompleted)           => ()
+        case (_, SnapshotCompleted(metadata)) =>
+          snapshotProbe ! Success(metadata)
+        case (_, SnapshotFailed(_, failure)) =>
+          snapshotProbe ! Failure(failure)
+      }
   }
 }
 
@@ -301,7 +337,7 @@ class EventSourcedBehaviorSpec
     PersistenceQuery(system).readJournalFor[PersistenceTestKitReadJournal](PersistenceTestKitReadJournal.Identifier)
 
   val pidCounter = new AtomicInteger(0)
-  private def nextPid(): PersistenceId = PersistenceId.ofUniqueId(s"c${pidCounter.incrementAndGet()})")
+  private def nextPid(): PersistenceId = PersistenceId.ofUniqueId(s"c${pidCounter.incrementAndGet()}")
 
   "A typed persistent actor" must {
 
@@ -330,6 +366,26 @@ class EventSourcedBehaviorSpec
       c2 ! Increment
       c2 ! GetValue(probe.ref)
       probe.expectMessage(State(4, Vector(0, 1, 2, 3)))
+    }
+
+    "exclude FilteredEvent in replay of persisted events" in {
+      val pid = nextPid()
+      val c = spawn(counter(pid))
+
+      val probe = TestProbe[State]()
+      val seqNrProbe = TestProbe[Long]()
+      c ! Increment
+      c ! PersistFilteredEvent
+      c ! Increment
+      c ! GetValue(probe.ref)
+      probe.expectMessage(10.seconds, State(2, Vector(0, 1)))
+
+      val c2 = spawn(counter(pid))
+      c2 ! Increment
+      c2 ! GetValue(probe.ref)
+      probe.expectMessage(State(3, Vector(0, 1, 2)))
+      c2 ! GetLastSequenceNumber(seqNrProbe.ref)
+      seqNrProbe.expectMessage(4L) // seqNr 2 was used for FilteredPayload
     }
 
     "handle Terminated signal" in {
@@ -550,7 +606,38 @@ class EventSourcedBehaviorSpec
       replyProbe.expectMessage(State(1, Vector(0)))
 
       val events = queries.currentEventsByTag("tag1", Offset.noOffset).runWith(Sink.seq).futureValue
-      events shouldEqual List(EventEnvelope(Sequence(1), pid.id, 1, Incremented(1), 0L))
+      events.map(e => (e.persistenceId, e.sequenceNr, e.event)) shouldEqual List((pid.id, 1L, Incremented(1)))
+      events.head.timestamp should be > 0L
+      inside(events.head.offset) { case offset: TimestampOffset =>
+        offset.timestamp shouldEqual Instant.ofEpochMilli(events.head.timestamp)
+        offset.seen shouldEqual Map(pid.id -> 1L)
+      }
+    }
+
+    "tag events based on state" in {
+      val pid = nextPid()
+      val c = spawn(
+        Behaviors.setup[Command](ctx =>
+          counter(ctx, pid).withTaggerForState((state, _) =>
+            if (state.value <= 1) Set.empty
+            else Set("higher-than-one"))))
+      val replyProbe = TestProbe[State]()
+
+      c ! Increment
+      c ! GetValue(replyProbe.ref)
+      replyProbe.expectMessage(State(1, Vector(0)))
+
+      c ! Increment
+      c ! GetValue(replyProbe.ref)
+      replyProbe.expectMessage(State(2, Vector(0, 1)))
+
+      val events = queries.currentEventsByTag("higher-than-one", Offset.noOffset).runWith(Sink.seq).futureValue
+      events should have size 1
+      val envelope = events.head
+      (envelope.persistenceId, envelope.sequenceNr, envelope.event) shouldEqual ((pid.id, 2L, Incremented(1)))
+      inside(envelope.offset) { case offset: TimestampOffset =>
+        offset.seen shouldEqual Map(pid.id -> 2L)
+      }
     }
 
     "handle scheduled message arriving before recovery completed " in {
@@ -731,7 +818,7 @@ class EventSourcedBehaviorSpec
       firstThree ++ others should contain theSameElementsInOrderAs all
     }
 
-    def watcher(toWatch: ActorRef[_]): TestProbe[String] = {
+    def watcher(toWatch: ActorRef[?]): TestProbe[String] = {
       val probe = TestProbe[String]()
       val w = Behaviors.setup[Any] { ctx =>
         ctx.watch(toWatch)

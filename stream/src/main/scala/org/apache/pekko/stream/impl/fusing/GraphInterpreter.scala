@@ -22,6 +22,7 @@ import org.apache.pekko
 import pekko.Done
 import pekko.actor.ActorRef
 import pekko.annotation.{ InternalApi, InternalStableApi }
+import pekko.event.Logging
 import pekko.event.LoggingAdapter
 import pekko.stream._
 import pekko.stream.Attributes.LogLevels
@@ -60,6 +61,19 @@ import pekko.stream.stage._
   final val KeepGoingMask = 0x3FFFFFF
 
   /**
+   * INTERNAL API
+   *
+   * An async input handler that shares the interpreter event budget of the enclosing shell. The handler returns the
+   * unused part of `eventLimit`. If it has to stop while interpreter events are still pending, the shell invokes
+   * `onInterpreterIdle` after those events have been processed.
+   */
+  @InternalApi private[stream] trait EventLimitHandler extends (Any => Unit) {
+    def apply(event: Any, eventLimit: Int): Int
+    def isWaitingForInterpreter: Boolean
+    def onInterpreterIdle(): Unit
+  }
+
+  /**
    * Marker object that indicates that a port holds no element since it was already grabbed. The port is still pullable,
    * but there is no more element to grab.
    */
@@ -82,7 +96,7 @@ import pekko.stream.stage._
   val singleNoAttribute: Array[Attributes] = Array(Attributes.none)
 
   /**
-   * INERNAL API
+   * INTERNAL API
    *
    * Contains all the necessary information for the GraphInterpreter to be able to implement a connection
    * between an output and input ports.
@@ -224,7 +238,7 @@ import pekko.stream.stage._
     val context: ActorRef) {
   import GraphInterpreter._
 
-  private[this] val ChaseLimit = if (fuzzingMode) 0 else 16
+  private val ChaseLimit = if (fuzzingMode) 0 else 16
 
   /**
    * INTERNAL API
@@ -233,29 +247,61 @@ import pekko.stream.stage._
 
   // The number of currently running stages. Once this counter reaches zero, the interpreter is considered to be
   // completed
-  private[this] var runningStages = logics.length
+  private var runningStages = logics.length
 
   // Counts how many active connections a stage has. Once it reaches zero, the stage is automatically stopped.
-  private[this] val shutdownCounter = Array.tabulate(logics.length) { i =>
+  private val shutdownCounter = Array.tabulate(logics.length) { i =>
     logics(i).handlers.length
   }
 
   // Marks whether a stage has been finalized (finalizeStage been called) or not
-  private[this] val finalizedMark = Array.fill(logics.length)(false)
+  private val finalizedMark = Array.fill(logics.length)(false)
 
-  private[this] var _subFusingMaterializer: Materializer = _
+  // Number of stages whose preStart has been invoked. Zero-port stages are completed from construction, so
+  // finalization scans during init must not include later stages that have not been started yet.
+  private var initializedStages = 0
+
+  // Connection owners are released when their stages complete, but snapshots still need stable endpoint identities.
+  private val connectionInStageIds = connectionStageIds(isInput = true)
+  private val connectionOutStageIds = connectionStageIds(isInput = false)
+
+  private def connectionStageIds(isInput: Boolean): Array[Int] = {
+    val stageIds = new Array[Int](connections.length)
+    var i = 0
+    while (i < connections.length) {
+      val connection = connections(i)
+      if (connection ne null) {
+        val owner = if (isInput) connection.inOwner else connection.outOwner
+        stageIds(i) = if (owner ne null) owner.stageId else -1
+      } else stageIds(i) = -1
+      i += 1
+    }
+    stageIds
+  }
+
+  private var _subFusingMaterializer: Materializer = _
+  private lazy val defaultErrorReportingLogLevel = LogLevels.defaultErrorLevel(materializer.system)
+
   def subFusingMaterializer: Materializer = _subFusingMaterializer
 
   // An event queue implemented as a circular buffer
   // FIXME: This calculates the maximum size ever needed, but most assemblies can run on a smaller queue
-  private[this] val eventQueue = new Array[Connection](1 << (32 - Integer.numberOfLeadingZeros(connections.length - 1)))
-  private[this] val mask = eventQueue.length - 1
-  private[this] var queueHead: Int = 0
-  private[this] var queueTail: Int = 0
+  private val eventQueue = new Array[Connection](1 << (32 - Integer.numberOfLeadingZeros(connections.length - 1)))
+  private val mask = eventQueue.length - 1
+  private var queueHead: Int = 0
+  private var queueTail: Int = 0
 
-  private[this] var chaseCounter = 0 // the first events in preStart blocks should be not chased
-  private[this] var chasedPush: Connection = NoEvent
-  private[this] var chasedPull: Connection = NoEvent
+  private var chaseCounter = 0 // the first events in preStart blocks should be not chased
+  private var chasedPush: Connection = NoEvent
+  private var chasedPull: Connection = NoEvent
+  // Counts stages whose shutdownCounter just transitioned to 0 (completed, awaiting finalization).
+  // Incremented by completeConnection/setKeepGoing; decremented by the O(1) fast path in
+  // afterStageHasRun. When > 0 after the fast path, the scan loop finalizes remaining stages.
+  // A counter (not Boolean) is required: multiple stages may complete during one event dispatch
+  // (e.g. cascading completion), and the fast path must not erase signals for other pending stages.
+  // PERFORMANCE: the scan loop is O(initializedStages) — with 1M+ stages this causes O(n^2) if it
+  // runs on every dispatch. The counter ensures it only runs when stages are genuinely pending.
+  private var pendingFinalizations: Int = 0
 
   private def queueStatus: String = {
     val contents = (queueHead until queueTail).map(idx => {
@@ -264,7 +310,7 @@ import pekko.stream.stage._
     })
     s"(${eventQueue.length}, $queueHead, $queueTail)(${contents.mkString(", ")})"
   }
-  private[this] var _Name: String = _
+  private var _Name: String = _
   def Name: String =
     if (_Name eq null) {
       _Name = f"${System.identityHashCode(this)}%08X"
@@ -323,6 +369,7 @@ import pekko.stream.stage._
           log.error(e, "Error during preStart in [{}]: {}", logic.toString, e.getMessage)
           logic.failStage(e)
       }
+      initializedStages = i + 1
       afterStageHasRun(logic)
       i += 1
     }
@@ -335,28 +382,107 @@ import pekko.stream.stage._
     var i = 0
     while (i < logics.length) {
       val logic = logics(i)
-      if (!isStageCompleted(logic) && !isStageFinalized(logic)) {
-        markStageFinalized(logic)
-        finalizeStage(logic)
+      if (logic ne null) {
+        if (!isStageFinalized(logic)) {
+          markStageFinalized(logic)
+          finalizeStage(logic)
+        }
+        releaseStage(logic)
       }
       i += 1
+    }
+    activeStage = null
+    pendingFinalizations = 0
+
+    // Release connection references and any in-flight payloads retained by the stopped interpreter
+    var j = 0
+    while (j < connections.length) {
+      val conn = connections(j)
+      if (conn ne null) {
+        conn.inHandler = null
+        conn.outHandler = null
+        conn.inOwner = null
+        conn.outOwner = null
+        conn.slot = Empty
+      }
+      j += 1
     }
   }
 
   // Debug name for a connections input part
-  private def inOwnerName(connection: Connection): String = connection.inOwner.toString
+  private def inOwnerName(connection: Connection): String =
+    if (connection.inOwner ne null) connection.inOwner.toString else "<completed>"
 
   // Debug name for a connections output part
-  private def outOwnerName(connection: Connection): String = connection.outOwner.toString
+  private def outOwnerName(connection: Connection): String =
+    if (connection.outOwner ne null) connection.outOwner.toString else "<completed>"
+
+  private def stageIdFor(stageIds: Array[Int], connection: Connection): Int = {
+    val connectionId = connection.id
+    if (connectionId >= 0 && connectionId < stageIds.length) stageIds(connectionId) else -1
+  }
+
+  private def connectionInStageId(connection: Connection): Int = stageIdFor(connectionInStageIds, connection)
+
+  private def connectionOutStageId(connection: Connection): Int = stageIdFor(connectionOutStageIds, connection)
+
+  private def logicName(stageId: Int): String =
+    if (stageId >= 0 && stageId < logics.length) {
+      val logic = logics(stageId)
+      if (logic ne null) logic.toString else "<completed>"
+    } else "<completed>"
 
   // Debug name for a connections input part
-  private def inLogicName(connection: Connection): String = logics(connection.inOwner.stageId).toString
+  private def inLogicName(connection: Connection): String = logicName(connectionInStageId(connection))
 
   // Debug name for a connections output part
-  private def outLogicName(connection: Connection): String = logics(connection.outOwner.stageId).toString
+  private def outLogicName(connection: Connection): String = logicName(connectionOutStageId(connection))
 
   private def shutdownCounters: String =
     shutdownCounter.map(x => if (x >= KeepGoingFlag) s"${x & KeepGoingMask}(KeepGoing)" else x.toString).mkString(",")
+
+  /**
+   * INTERNAL API
+   *
+   * Reports a stage error: logs it according to the configured level, fails the active stage, and aborts any
+   * in-flight event chasing by re-enqueuing chased events. Lifted out of [[execute]] to shrink the hot loop's
+   * bytecode and give the JIT a tighter compile target for inlining `processPush`/`processPull` — the nested
+   * `def` that previously lived inside the loop was already compiled as a synthetic method on this class (Scala
+   * 2.13 does not allocate a fresh closure per iteration when the body only references class fields), so the
+   * gain here is purely in method-body size, not in allocation reduction.
+   */
+  private def reportStageError(e: Throwable): Unit = {
+    if (activeStage eq null) throw e
+    else {
+      val logAt: Logging.LogLevel = activeStage.attributes.get[LogLevels] match {
+        case Some(levels) => levels.onFailure
+        case None         => defaultErrorReportingLogLevel
+      }
+      logAt match {
+        case Logging.ErrorLevel =>
+          log.error(e, "Error in stage [{}]: {}", activeStage.toString, e.getMessage)
+        case Logging.WarningLevel =>
+          log.warning(e, "Error in stage [{}]: {}", activeStage.toString, e.getMessage)
+        case Logging.InfoLevel =>
+          log.info("Error in stage [{}]: {}", activeStage.toString, e.getMessage)
+        case Logging.DebugLevel =>
+          log.debug("Error in stage [{}]: {}", activeStage.toString, e.getMessage)
+        case _ => // Off, nop
+      }
+      activeStage.failStage(e)
+
+      // Abort chasing
+      chaseCounter = 0
+      if (chasedPush ne NoEvent) {
+        enqueue(chasedPush)
+        chasedPush = NoEvent
+      }
+      if (chasedPull ne NoEvent) {
+        enqueue(chasedPull)
+        chasedPull = NoEvent
+      }
+    }
+  }
 
   /**
    * Executes pending events until the given limit is met. If there were remaining events, isSuspended will return
@@ -375,30 +501,6 @@ import pekko.stream.stage._
         eventsRemaining -= 1
         chaseCounter = math.min(ChaseLimit, eventsRemaining)
 
-        def reportStageError(e: Throwable): Unit = {
-          if (activeStage eq null) throw e
-          else {
-            val loggingEnabled = activeStage.attributes.get[LogLevels] match {
-              case Some(levels) => levels.onFailure != LogLevels.Off
-              case None         => true
-            }
-            if (loggingEnabled)
-              log.error(e, "Error in stage [{}]: {}", activeStage.toString, e.getMessage)
-            activeStage.failStage(e)
-
-            // Abort chasing
-            chaseCounter = 0
-            if (chasedPush ne NoEvent) {
-              enqueue(chasedPush)
-              chasedPush = NoEvent
-            }
-            if (chasedPull ne NoEvent) {
-              enqueue(chasedPull)
-              chasedPull = NoEvent
-            }
-          }
-        }
-
         /*
          * This is the "normal" event processing code which dequeues directly from the internal event queue. Since
          * most execution paths tend to produce either a Push that will be propagated along a longer chain we take
@@ -408,7 +510,9 @@ import pekko.stream.stage._
         catch {
           case NonFatal(e) => reportStageError(e)
         }
-        afterStageHasRun(activeStage)
+        if (pendingFinalizations > 0) {
+          afterStageHasRun(activeStage)
+        }
 
         /*
          * "Event chasing" optimization follows from here. This optimization works under the assumption that a Push or
@@ -441,7 +545,9 @@ import pekko.stream.stage._
           catch {
             case NonFatal(e) => reportStageError(e)
           }
-          afterStageHasRun(activeStage)
+          if (pendingFinalizations > 0) {
+            afterStageHasRun(activeStage)
+          }
         }
 
         // Chasing PULL events
@@ -452,7 +558,9 @@ import pekko.stream.stage._
           catch {
             case NonFatal(e) => reportStageError(e)
           }
-          afterStageHasRun(activeStage)
+          if (pendingFinalizations > 0) {
+            afterStageHasRun(activeStage)
+          }
         }
 
         if (chasedPush != NoEvent) {
@@ -497,6 +605,41 @@ import pekko.stream.stage._
         afterStageHasRun(logic)
       } finally currentInterpreterHolder(0) = previousInterpreter
     }
+
+  /** INTERNAL API */
+  @InternalApi private[stream] def runAsyncInput(
+      logic: GraphStageLogic,
+      evt: Any,
+      promise: Promise[Done],
+      handler: EventLimitHandler,
+      eventLimit: Int): Int = {
+    var eventsRemaining = eventLimit
+    if (!isStageCompleted(logic)) {
+      if (GraphInterpreter.Debug) println(s"$Name ASYNC $evt ($handler) [$logic]")
+      val currentInterpreterHolder = _currentInterpreter.get()
+      val previousInterpreter = currentInterpreterHolder(0)
+      currentInterpreterHolder(0) = this
+      try {
+        activeStage = logic
+        try {
+          eventsRemaining = handler(evt, eventLimit)
+          if (promise ne GraphStageLogic.NoPromise) {
+            promise.success(Done)
+            logic.onFeedbackDispatched(promise)
+          }
+        } catch {
+          case NonFatal(ex) =>
+            if (promise ne GraphStageLogic.NoPromise) {
+              promise.failure(ex)
+              logic.onFeedbackDispatched(promise)
+            }
+            logic.failStage(ex)
+        }
+        afterStageHasRun(logic)
+      } finally currentInterpreterHolder(0) = previousInterpreter
+    }
+    eventsRemaining
+  }
 
   // Decodes and processes a single event for the given connection
   @InternalStableApi
@@ -551,7 +694,18 @@ import pekko.stream.stage._
     }
   }
 
+  /**
+   * <p>
+   *   Opentelemetry Java Instrumentation relies on this method so avoid changing it. The agent makes the
+   *   context of the in-flight element current here, which is how server context reaches user code running
+   *   inside a stream stage. It is matched by name only, and the method is private, so a rename or an
+   *   inlining silently disables context propagation.
+   *   See https://github.com/apache/pekko/issues/3472
+   * </p>
+   */
+  // see https://github.com/open-telemetry/opentelemetry-java-instrumentation/blob/6f9ca5672ce84edbbe36ce0e14386c31d68f479f/instrumentation/pekko/pekko-http-1.0/javaagent/src/main/java/io/opentelemetry/javaagent/instrumentation/pekkohttp/v1_0/server/GraphInterpreterInstrumentation.java
   @InternalStableApi
+  @noinline // Not inlined so that the agent can match the method in the bytecode
   private def processPush(connection: Connection): Unit = {
     if (Debug)
       println(
@@ -595,12 +749,78 @@ import pekko.stream.stage._
     queueTail += 1
   }
 
-  def afterStageHasRun(logic: GraphStageLogic): Unit =
-    if (isStageCompleted(logic) && !isStageFinalized(logic)) {
+  def afterStageHasRun(logic: GraphStageLogic): Unit = {
+    // O(1) fast path: finalize the stage that just ran if it completed.
+    // Guard the decrement: zero-port stages are completed from construction (shutdownCounter == 0)
+    // without a corresponding completeConnection increment — must not underflow the counter.
+    if ((logic ne null) && isStageCompleted(logic) && !isStageFinalized(logic)) {
       markStageFinalized(logic)
       runningStages -= 1
+      if (pendingFinalizations > 0) pendingFinalizations -= 1
       finalizeStage(logic)
+      releaseStage(logic)
     }
+
+    // O(n) scan: only entered when other stages also completed (cascading completion).
+    // Uses while (not if) because finalizeStage → postStop → cancel can complete further stages
+    // mid-scan, incrementing the counter again.
+    while (pendingFinalizations > 0) {
+      pendingFinalizations = 0
+      var stageId = 0
+      while (stageId < initializedStages) {
+        val completedLogic = logics(stageId)
+        if ((completedLogic ne null) && isStageCompleted(completedLogic) && !isStageFinalized(completedLogic)) {
+          markStageFinalized(completedLogic)
+          runningStages -= 1
+          finalizeStage(completedLogic)
+          releaseStage(completedLogic)
+        }
+        stageId += 1
+      }
+    }
+  }
+
+  private def hasAvailableElement(connection: Connection): Boolean = {
+    val state = connection.portState
+    val normalArrived = (state & (InReady | InFailed | InClosed)) == InReady
+
+    if (normalArrived) connection.slot.asInstanceOf[AnyRef] ne Empty
+    else if ((state & (InReady | InClosed | InFailed)) == (InReady | InClosed))
+      connection.slot match {
+        case Empty | _: Cancelled => false
+        case _                    => true
+      }
+    else if ((state & (InReady | InFailed)) == (InReady | InFailed))
+      connection.slot match {
+        case Failed(_, elem) => elem.asInstanceOf[AnyRef] ne Empty
+        case _               => false
+      }
+    else false
+  }
+
+  private def releaseStage(logic: GraphStageLogic): Unit = {
+    var i = 0
+    while (i < logic.portToConn.length) {
+      val connection = logic.portToConn(i)
+      if (connection ne null) {
+        if (connection.inOwner eq logic) {
+          connection.inOwner = null
+          connection.inHandler = null
+        }
+        if (connection.outOwner eq logic) {
+          connection.outOwner = null
+          connection.outHandler = null
+        }
+        // Completion and failure may follow an onPush before the element is grabbed. Keep that element available
+        // even after both stages have stopped, while still dropping payloads that can no longer be observed.
+        if ((connection.inOwner eq null) && (connection.outOwner eq null) && !hasAvailableElement(connection))
+          connection.slot = Empty
+      }
+      i += 1
+    }
+    if (activeStage eq logic) activeStage = null
+    logics(logic.stageId) = null
+  }
 
   // Returns true if the given stage is already completed
   def isStageCompleted(stage: GraphStageLogic): Boolean = (stage ne null) && shutdownCounter(stage.stageId) == 0
@@ -615,12 +835,26 @@ import pekko.stream.stage._
   // itself might stop, too.
   private def completeConnection(stageId: Int): Unit = {
     val activeConnections = shutdownCounter(stageId)
-    if (activeConnections > 0) shutdownCounter(stageId) = activeConnections - 1
+    if (activeConnections > 0) {
+      val next = activeConnections - 1
+      shutdownCounter(stageId) = next
+      if (next == 0) pendingFinalizations += 1
+    }
   }
 
   private[stream] def setKeepGoing(logic: GraphStageLogic, enabled: Boolean): Unit =
     if (enabled) shutdownCounter(logic.stageId) |= KeepGoingFlag
-    else shutdownCounter(logic.stageId) &= KeepGoingMask
+    else {
+      val current = shutdownCounter(logic.stageId)
+      // Only signal finalization if the KeepGoing flag was actually set. Without this guard,
+      // internalCompleteStage's trailing setKeepGoing(false) would spuriously increment the
+      // counter when shutdownCounter is already 0 (no KeepGoing was ever enabled).
+      if ((current & KeepGoingFlag) != 0) {
+        val next = current & KeepGoingMask
+        shutdownCounter(logic.stageId) = next
+        if (next == 0) pendingFinalizations += 1
+      }
+    }
 
   @InternalStableApi
   private[stream] def finalizeStage(logic: GraphStageLogic): Unit = {
@@ -658,7 +892,8 @@ import pekko.stream.stage._
       enqueue(connection)
     } else if ((currentState & (InClosed | Pushing | Pulling | OutClosed)) == 0) enqueue(connection)
 
-    if ((currentState & OutClosed) == 0) completeConnection(connection.outOwner.stageId)
+    if ((currentState & OutClosed) == 0 && (connection.outOwner ne null))
+      completeConnection(connection.outOwner.stageId)
   }
 
   @InternalStableApi
@@ -677,7 +912,8 @@ import pekko.stream.stage._
         enqueue(connection)
       }
     }
-    if ((currentState & OutClosed) == 0) completeConnection(connection.outOwner.stageId)
+    if ((currentState & OutClosed) == 0 && (connection.outOwner ne null))
+      completeConnection(connection.outOwner.stageId)
   }
 
   @InternalStableApi
@@ -695,7 +931,7 @@ import pekko.stream.stage._
         enqueue(connection)
       }
     }
-    if ((currentState & InClosed) == 0) completeConnection(connection.inOwner.stageId)
+    if ((currentState & InClosed) == 0 && (connection.inOwner ne null)) completeConnection(connection.inOwner.stageId)
   }
 
   /**
@@ -708,15 +944,20 @@ import pekko.stream.stage._
   def toSnapshot: RunningInterpreter = {
 
     val logicSnapshots = logics.zipWithIndex.map {
-      case (logic, idx) =>
+      case (logic, idx) if logic ne null =>
         LogicSnapshotImpl(idx, logic.toString, logic.attributes)
+      case (_, idx) =>
+        LogicSnapshotImpl(idx, "<completed>", Attributes.none)
     }
-    val logicIndexes = logics.zipWithIndex.map { case (stage, idx) => stage -> idx }.toMap
+    def safeLogicSnapshot(stageId: Int): LogicSnapshotImpl =
+      if (stageId >= 0 && stageId < logicSnapshots.length) logicSnapshots(stageId)
+      else LogicSnapshotImpl(stageId, "<completed>", Attributes.none)
+
     val connectionSnapshots = connections.filter(_ ne null).map { connection =>
       ConnectionSnapshotImpl(
         connection.id,
-        logicSnapshots(logicIndexes(connection.inOwner)),
-        logicSnapshots(logicIndexes(connection.outOwner)),
+        safeLogicSnapshot(connectionInStageId(connection)),
+        safeLogicSnapshot(connectionOutStageId(connection)),
         connection.portState match {
           case InReady | Pushing                                           => ConnectionSnapshot.ShouldPull
           case OutReady | Pulling                                          => ConnectionSnapshot.ShouldPush

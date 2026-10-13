@@ -19,7 +19,7 @@ import scala.MatchError;
 import scala.PartialFunction;
 
 /**
- * Version of {@link scala.PartialFunction} that can be built during runtime from Java.
+ * Version of {@code scala.PartialFunction} that can be built during runtime from Java.
  *
  * @param <I> the input type, that this PartialFunction will be applied to
  * @param <R> the return type, that the results of the application will have

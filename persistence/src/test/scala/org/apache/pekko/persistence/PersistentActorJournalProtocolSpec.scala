@@ -144,11 +144,16 @@ class PersistentActorJournalProtocolSpec extends PekkoSpec(config) with Implicit
     }
   }
 
+  def expectReplayMessages(): ReplayMessages = {
+    journal.expectMsgType[ReplayMessagesWithBatching]
+    journal.expectMsgType[ReplayMessages]
+  }
+
   def startActor(name: String): ActorRef = {
     val subject = system.actorOf(Props(new A(testActor)), name)
     subject ! Echo(0)
     expectMsg(PreStart(name))
-    journal.expectMsgType[ReplayMessages]
+    expectReplayMessages()
     journal.reply(RecoverySuccess(0L))
     expectMsg(RecoveryCompleted)
     expectMsg(Done(0, 0))
@@ -256,7 +261,7 @@ class PersistentActorJournalProtocolSpec extends PekkoSpec(config) with Implicit
           subject ! Fail(new Exception("K-BOOM!"))
           expectMsg(PreRestart("test-6"))
           expectMsg(PostRestart("test-6"))
-          journal.expectMsgType[ReplayMessages]
+          expectReplayMessages()
         }
         journal.reply(RecoverySuccess(0L))
         expectMsg(RecoveryCompleted)

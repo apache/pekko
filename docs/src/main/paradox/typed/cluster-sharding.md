@@ -82,7 +82,7 @@ Java
 :  @@snip [ShardingCompileOnlyTest.java](/cluster-sharding-typed/src/test/java/jdocs/org/apache/pekko/cluster/sharding/typed/ShardingCompileOnlyTest.java) { #init }
 
 Messages to a specific entity are then sent via an @apidoc[typed.*.EntityRef].  The `entityId` and the name of the Entity's key can be retrieved from the `EntityRef`.
-It is also possible to wrap methods in a @apidoc[typed.ShardingEnvelope] or define extractor functions and send messages directly to the shard region.
+It is also possible to wrap messages in a @apidoc[typed.ShardingEnvelope] or define extractor functions and send messages directly to the shard region.
 
 Scala
 :  @@snip [ShardingCompileOnlySpec.scala](/cluster-sharding-typed/src/test/scala/docs/org/apache/pekko/cluster/sharding/typed/ShardingCompileOnlySpec.scala) { #send }
@@ -141,7 +141,7 @@ Scala
 Java
 :  @@snip [HelloWorldPersistentEntityExample.java](/cluster-sharding-typed/src/test/java/jdocs/org/apache/pekko/cluster/sharding/typed/HelloWorldPersistentEntityExample.java) { #persistent-entity-usage-import #persistent-entity-usage }
 
-Note how an unique @apidoc[persistence.typed.PersistenceId] can be constructed from the @apidoc[typed.*.EntityTypeKey] and the `entityId`
+Note how a unique @apidoc[persistence.typed.PersistenceId] can be constructed from the @apidoc[typed.*.EntityTypeKey] and the `entityId`
 provided by the @apidoc[typed.*.EntityContext] in the factory function for the @apidoc[typed.Behavior]. This is a typical way
 of defining the `PersistenceId` but other formats are possible, as described in the
 @ref:[PersistenceId section](persistence.md#persistenceid).
@@ -236,6 +236,44 @@ support a greater number of shards.
 is an example project that can be downloaded, and with instructions of how to run, that demonstrates how to use
 external sharding to co-locate Kafka partition consumption with shards.
 
+### Colocate Shards
+
+When using the default shard allocation strategy the shards for different entity types are allocated independent of
+each other, i.e. the same shard identifier for the different entity types may be allocated to different nodes.
+Colocating shards can be useful if it's known that certain entities interact or share resources with some other
+entities and that can be defined by using the same shard identifier.
+
+To colocate such shards you can use the @apidoc[pekko.cluster.sharding.ConsistentHashingShardAllocationStrategy].
+
+Let's look at an example where the purpose is to colocate `Device` entities with the `Building` entity they belong to.
+To use the same shard identifier we need to use a custom @apidoc[pekko.cluster.sharding.typed.ShardingMessageExtractor]
+for the `Device` and `Building` entities:
+
+Scala
+: @@snip [ConsistentHashingShardAllocationCompileOnlySpec](/cluster-sharding-typed/src/test/scala/docs/org/apache/pekko/cluster/sharding/typed/ConsistentHashingShardAllocationCompileOnlySpec.scala) { #building #device }
+
+Java
+: @@snip [ConsistentHashingShardAllocationCompileOnlyTest](/cluster-sharding-typed/src/test/java/jdocs/org/apache/pekko/cluster/sharding/typed/ConsistentHashingShardAllocationCompileOnlyTest.java) { #building #device }
+
+Set the allocation strategy and message extractor on your @apidoc[typed.*.Entity]:
+
+Scala
+: @@snip [ConsistentHashingShardAllocationCompileOnlySpec](/cluster-sharding-typed/src/test/scala/docs/org/apache/pekko/cluster/sharding/typed/ConsistentHashingShardAllocationCompileOnlySpec.scala) { #init }
+
+Java
+: @@snip [ConsistentHashingShardAllocationCompileOnlyTest](/cluster-sharding-typed/src/test/java/jdocs/org/apache/pekko/cluster/sharding/typed/ConsistentHashingShardAllocationCompileOnlyTest.java) { #init }
+
+@@@ note
+Create a new instance of the `ConsistentHashingShardAllocationStrategy` for each entity type, i.e. a `ConsistentHashingShardAllocationStrategy` instance must not be shared between different entity types.
+@@@
+
+The allocation strategy is using [Consistent Hashing](https://tom-e-white.com/2007/11/consistent-hashing.html)
+of the Cluster membership ring to assign a shard to a node. When adding or removing nodes it will rebalance
+according to the new consistent hashing, but that means that only a few shards will be rebalanced and others
+remain on the same location. When there are changes to the Cluster membership the shards may be on different
+nodes for a while, but eventually, when the membership is stable, the shards with the same identifier will
+end up on the same node.
+
 ### Custom shard allocation
 
 An optional custom shard allocation strategy can be passed into the optional parameter when initializing an entity type 
@@ -280,6 +318,11 @@ Note that in the above example the `stopMessage` is specified as `GoodByeCounter
 the entity when it's supposed to stop itself due to rebalance or passivation. If the `stopMessage` is not defined
 it will be stopped automatically without receiving a specific message. It can be useful to define a custom stop
 message if the entity needs to perform some asynchronous cleanup or interactions before stopping.
+
+If a passivating entity has not stopped within `pekko.cluster.sharding.passivation.stop-timeout` (default 60 seconds)
+after it was sent the stop message, it is stopped forcefully. This prevents an entity that never stops itself, for
+example because it does not handle the stop message, from being stuck in passivation with messages for it buffered
+indefinitely. Set the timeout to `off` to wait indefinitely for the entity to stop itself.
 
 The stop message is only sent locally, from the shard to the entity so does not require an entity id to end up in the right actor. When using a custom @apidoc[typed.ShardingMessageExtractor] without envelopes, the extractor will still have to handle the stop message type to please the compiler, even though it will never actually be passed to the extractor.
 
@@ -631,10 +674,11 @@ Reasons for disabling:
 
 For supporting remembered entities in an environment without disk storage use `eventsourced` mode instead.
 
-@@@ note { title="Java 17" }
+@@@ note
 
-When using `remember-entities-store=ddata` the remember entities store is persisted to disk by LMDB.
-When running with Java 17 you have to add JVM flags `--add-opens=java.base/sun.nio.ch=ALL-UNNAMED --add-opens=java.base/java.nio=ALL-UNNAMED`.
+When using `remember-entities-store=ddata` the remember entities store is persisted to disk by LMDB, which requires
+the JVM flags `--add-opens=java.base/sun.nio.ch=ALL-UNNAMED --add-opens=java.base/java.nio=ALL-UNNAMED` on the JDK 17+
+runtimes required by this Pekko version.
 
 @@@
 
@@ -708,7 +752,7 @@ for more information about `min-nr-of-members`.
 
 ## Health check
 
-An [Pekko Management compatible health check]($pekko.doc.dns$/docs/pekko-management/current/healthchecks.html) is included that returns healthy once the local shard region
+A [Pekko Management compatible health check]($pekko.doc.dns$/docs/pekko-management/current/healthchecks.html) is included that returns healthy once the local shard region
 has registered with the coordinator. This health check should be used in cases where you don't want to receive production traffic until the local shard region is ready to retrieve locations
 for shards. For shard regions that aren't critical and therefore should not block this node becoming ready do not include them.
 
@@ -727,6 +771,8 @@ Monitoring of each shard region is off by default. Add them by defining the enti
 ```ruby
 pekko.cluster.sharding.healthcheck.names = ["counter-1", "HelloWorld"]
 ```
+
+The health check is disabled (always returns success) after a duration of failing checks after the Cluster member is up. Otherwise, it would stall a Kubernetes rolling update when adding a new entity type in the new version.
 
 See also additional information about how to make @ref:[smooth rolling updates](../additional/rolling-updates.md#cluster-sharding).
 
@@ -774,7 +820,7 @@ Reasons for how this can happen:
 A lease can be a final backup that means that each shard won't create child entity actors unless it has the lease. 
 
 To use a lease for sharding set `pekko.cluster.sharding.use-lease` to the configuration location
-of the lease to use. Each shard will try and acquire a lease with with the name `<actor system name>-shard-<type name>-<shard id>` and
+of the lease to use. Each shard will try and acquire a lease with the name `<actor system name>-shard-<type name>-<shard id>` and
 the owner is set to the `Cluster(system).selfAddress.hostPort`.
 
 If a shard can't acquire a lease it will remain uninitialized so messages for entities it owns will
@@ -782,9 +828,9 @@ be buffered in the `ShardRegion`. If the lease is lost after initialization the 
 
 ## Removal of internal Cluster Sharding data
 
-Removal of internal Cluster Sharding data is only relevant for "Persistent Mode".
+Removal of internal Cluster Sharding data is only relevant for "Persistence Mode".
 The Cluster Sharding `ShardCoordinator` stores locations of the shards.
-This data is safely be removed when restarting the whole Pekko Cluster.
+This data can safely be removed when restarting the whole Pekko Cluster.
 Note that this does not include application data.
 
 There is a utility program @apidoc[cluster.sharding.RemoveInternalClusterShardingData$]
@@ -807,7 +853,7 @@ Use this program as a standalone Java main program:
 ```
 java -classpath <jar files, including pekko-cluster-sharding>
   org.apache.pekko.cluster.sharding.RemoveInternalClusterShardingData
-    -2.3 entityType1 entityType2 entityType3
+    entityType1 entityType2 entityType3
 ```
 
 The program is included in the `pekko-cluster-sharding` jar file. It
@@ -827,7 +873,7 @@ with the same layout as below.
 
 One important configuration property is `number-of-shards` as described in @ref:[Shard allocation](#shard-allocation).
 
-You may also need to tune the configuration properties is `rebalance-absolute-limit` and `rebalance-relative-limit`
+You may also need to tune the configuration properties `rebalance-absolute-limit` and `rebalance-relative-limit`
 as described in @ref:[Shard allocation](#shard-allocation).
 
 @@snip [reference.conf](/cluster-sharding/src/main/resources/reference.conf) { #sharding-ext-config }

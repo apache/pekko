@@ -153,12 +153,12 @@ private[io] object SelectionHandler {
       settings: SelectionHandlerSettings,
       log: LoggingAdapter)
       extends ChannelRegistry {
-    private[this] val selector = SelectorProvider.provider.openSelector
-    private[this] val wakeUp = new AtomicBoolean(false)
+    private val selector = SelectorProvider.provider.openSelector
+    private val wakeUp = new AtomicBoolean(false)
 
     final val OP_READ_AND_WRITE = OP_READ | OP_WRITE // compile-time constant
 
-    private[this] val select = new Task {
+    private val select = new Task {
       def tryRun(): Unit = {
         if (selector.select(MaxSelectMillis) > 0) { // This assumes select return value == selectedKeys.size
           val keys = selector.selectedKeys
@@ -200,12 +200,12 @@ private[io] object SelectionHandler {
     executionContext.execute(select) // start selection "loop"
 
     def register(channel: SelectableChannel, initialOps: Int)(implicit channelActor: ActorRef): Unit = {
-      if (settings.TraceLogging) log.debug(s"Scheduling Registering channel $channel with initialOps $initialOps")
+      if (settings.TraceLogging) log.debug("Scheduling Registering channel {} with initialOps {}", channel, initialOps)
       execute {
         new Task {
           def tryRun(): Unit =
             try {
-              if (settings.TraceLogging) log.debug(s"Registering channel $channel with initialOps $initialOps")
+              if (settings.TraceLogging) log.debug("Registering channel {} with initialOps {}", channel, initialOps)
               val key = channel.register(selector, initialOps, channelActor)
               channelActor ! new ChannelRegistration {
                 def enableInterest(ops: Int): Unit = enableInterestOps(key, ops)
@@ -244,7 +244,7 @@ private[io] object SelectionHandler {
       execute {
         new Task {
           def tryRun(): Unit = {
-            if (settings.TraceLogging) log.debug(s"Enabling $ops on $key")
+            if (settings.TraceLogging) log.debug("Enabling {} on {}", ops, key)
             val currentOps = key.interestOps
             val newOps = currentOps | ops
             if (newOps != currentOps) key.interestOps(newOps)
@@ -317,9 +317,9 @@ private[io] class SelectionHandler(settings: SelectionHandlerSettings)
   import SelectionHandler._
   import settings._
 
-  private[this] var sequenceNumber = 0L // should be Long to prevent overflow
-  private[this] var childCount = 0
-  private[this] val registry = {
+  private var sequenceNumber = 0L // should be Long to prevent overflow
+  private var childCount = 0
+  private val registry = {
     val dispatcher = context.system.dispatchers.lookup(SelectorDispatcher)
     new ChannelRegistryImpl(SerializedSuspendableExecutionContext(dispatcher.throughput)(dispatcher), settings, log)
   }

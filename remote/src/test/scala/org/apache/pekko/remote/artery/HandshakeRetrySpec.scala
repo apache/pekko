@@ -45,7 +45,10 @@ class HandshakeRetrySpec extends ArteryMultiNodeSpec(HandshakeRetrySpec.commonCo
         newRemoteSystem(name = Some("systemB"), extraConfig = Some(s"pekko.remote.artery.canonical.port = $portB"))
       systemB.actorOf(TestActors.echoActorProps, "echo")
 
-      expectMsg("hello")
+      // The first message is buffered while the outbound handshake is retried and is only
+      // delivered once the handshake completes, which can take up to handshake-timeout (10s).
+      // The default expect timeout is too tight under CI load, so wait well beyond it.
+      expectMsg(15.seconds, "hello")
 
       sel ! Identify(None)
       val remoteRef = expectMsgType[ActorIdentity].ref.get

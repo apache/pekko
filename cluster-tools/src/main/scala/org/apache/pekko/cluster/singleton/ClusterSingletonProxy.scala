@@ -162,7 +162,7 @@ object ClusterSingletonProxy {
  *
  * The proxy works by keeping track of the oldest cluster member. When a new oldest member is identified, e.g. because
  * the older one left the cluster, or at startup, the proxy will try to identify the singleton on the oldest member by
- * periodically sending an [[pekko.actor.Identify]] message until the singleton responds with its
+ * periodically sending a [[pekko.actor.Identify]] message until the singleton responds with its
  * [[pekko.actor.ActorIdentity]].
  *
  * Note that this is a best effort implementation: messages can always be lost due to the distributed nature of the
@@ -182,7 +182,10 @@ final class ClusterSingletonProxy(singletonManagerPath: String, settings: Cluste
   var singleton: Option[ActorRef] = None
   // sort by age, oldest first
   val ageOrdering = Member.ageOrdering
-  var membersByAge: immutable.SortedSet[Member] = immutable.SortedSet.empty(ageOrdering)
+  var membersByAge: immutable.SortedSet[Member] = {
+    implicit val ord: Ordering[Member] = ageOrdering
+    immutable.SortedSet.empty[Member]
+  }
 
   var buffer: MessageBuffer = MessageBuffer.empty
 
@@ -212,8 +215,9 @@ final class ClusterSingletonProxy(singletonManagerPath: String, settings: Cluste
 
   def handleInitial(state: CurrentClusterState): Unit = {
     trackChange { () =>
+      implicit val ord: Ordering[Member] = ageOrdering
       membersByAge = immutable.SortedSet
-        .empty(ageOrdering)
+        .empty[Member]
         .union(state.members.collect {
           case m if m.status == MemberStatus.Up && matchingRole(m) => m
         })

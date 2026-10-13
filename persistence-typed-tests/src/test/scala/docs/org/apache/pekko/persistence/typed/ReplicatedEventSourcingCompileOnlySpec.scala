@@ -40,7 +40,7 @@ object ReplicatedEventSourcingCompileOnlySpec {
   object Shared {
     // #factory-shared
     def apply(
-        system: ActorSystem[_],
+        system: ActorSystem[?],
         entityId: String,
         replicaId: ReplicaId): EventSourcedBehavior[Command, State, Event] = {
       ReplicatedEventSourcing.commonJournalConfig(
@@ -56,7 +56,7 @@ object ReplicatedEventSourcingCompileOnlySpec {
   object PerReplica {
     // #factory
     def apply(
-        system: ActorSystem[_],
+        system: ActorSystem[?],
         entityId: String,
         replicaId: ReplicaId): EventSourcedBehavior[Command, State, Event] = {
       ReplicatedEventSourcing.perReplicaJournalConfig(

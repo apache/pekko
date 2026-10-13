@@ -203,12 +203,14 @@ private[pekko] class RouterPoolActor(override val supervisorStrategy: Supervisor
   override def receive =
     ({
       case AdjustPoolSize(change: Int) =>
-        if (change > 0) {
-          val newRoutees = Vector.fill(change)(pool.newRoutee(cell.routeeProps, context))
+        val currentRoutees = cell.router.routees
+        val currentSize = currentRoutees.size
+        val effectiveChange = math.max(1, currentSize + change) - currentSize
+        if (effectiveChange > 0) {
+          val newRoutees = Vector.fill(effectiveChange)(pool.newRoutee(cell.routeeProps, context))
           cell.addRoutees(newRoutees)
-        } else if (change < 0) {
-          val currentRoutees = cell.router.routees
-          val abandon = currentRoutees.drop(currentRoutees.length + change)
+        } else if (effectiveChange < 0) {
+          val abandon = currentRoutees.drop(currentRoutees.length + effectiveChange)
           cell.removeRoutees(abandon, stopChild = true)
         }
     }: Actor.Receive).orElse(super.receive)

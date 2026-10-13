@@ -115,7 +115,7 @@ private[cluster] class CrossDcHeartbeatSender extends Actor {
    * In this state no cross-datacenter heartbeats are sent by this actor.
    * This may be because one of those reasons:
    *   - no nodes in other DCs were detected yet
-   *   - nodes in other DCs are present, but this node is not tht n-th oldest in this DC (see
+   *   - nodes in other DCs are present, but this node is not the n-th oldest in this DC (see
    *     `number-of-cross-datacenter-monitoring-actors`), so it does not have to monitor that other data centers
    *
    * In this state it will however listen to cluster events to eventually take over monitoring other DCs
@@ -333,7 +333,10 @@ private[cluster] final case class CrossDcHeartbeatingState(
 private[cluster] object CrossDcHeartbeatingState {
 
   /** Sorted by age */
-  private def emptyMembersSortedSet: immutable.SortedSet[Member] = immutable.SortedSet.empty[Member](Member.ageOrdering)
+  private def emptyMembersSortedSet: immutable.SortedSet[Member] = {
+    implicit val ord: Ordering[Member] = Member.ageOrdering
+    immutable.SortedSet.empty[Member]
+  }
 
   // Since we need ordering of oldests guaranteed, we must only look at Up (or Leaving, Exiting...) nodes
   def atLeastInUpState(m: Member): Boolean =
@@ -356,7 +359,8 @@ private[cluster] object CrossDcHeartbeatingState {
           // we need to enforce the ageOrdering for the SortedSet in each DC
           groupedByDc.map {
             case (dc, ms) =>
-              dc -> immutable.SortedSet.empty[Member](Member.ageOrdering).union(ms)
+              implicit val ord: Ordering[Member] = Member.ageOrdering
+              dc -> immutable.SortedSet.empty[Member].union(ms)
           }
         }
       })

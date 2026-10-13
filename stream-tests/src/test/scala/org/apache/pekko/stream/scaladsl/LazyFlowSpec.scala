@@ -13,7 +13,6 @@
 
 package org.apache.pekko.stream.scaladsl
 
-import scala.collection.immutable
 import scala.concurrent.{ Future, Promise }
 import scala.concurrent.duration._
 
@@ -39,7 +38,7 @@ class LazyFlowSpec extends StreamSpec("""
   "Flow.lazyFlow" must {
     // more complete test coverage is for lazyFutureFlow since this is composition of that
     "work in the happy case" in {
-      val result: (Future[NotUsed], Future[immutable.Seq[String]]) =
+      val result: (Future[NotUsed], Future[Seq[String]]) =
         Source(List(1, 2, 3))
           .viaMat(Flow.lazyFlow(() => Flow.fromFunction((n: Int) => n.toString)))(Keep.right)
           .toMat(Sink.seq)(Keep.both)
@@ -67,7 +66,7 @@ class LazyFlowSpec extends StreamSpec("""
   "Flow.futureFlow" must {
     // more complete test coverage is for lazyFutureFlow since this is composition of that
     "work in the happy case" in {
-      val result: (Future[NotUsed], Future[immutable.Seq[String]]) =
+      val result: (Future[NotUsed], Future[Seq[String]]) =
         Source(List(1, 2, 3))
           .viaMat(Flow.futureFlow(Future.successful(Flow.fromFunction((n: Int) => n.toString))))(Keep.right)
           .toMat(Sink.seq)(Keep.both)
@@ -95,7 +94,7 @@ class LazyFlowSpec extends StreamSpec("""
   "Flow.lazyFutureFlow" must {
 
     "work in the happy case" in {
-      val result: (Future[NotUsed], Future[immutable.Seq[String]]) =
+      val result: (Future[NotUsed], Future[Seq[String]]) =
         Source(List(1, 2, 3))
           .viaMat(Flow.lazyFutureFlow(() => Future.successful(Flow.fromFunction((n: Int) => n.toString))))(Keep.right)
           .toMat(Sink.seq)(Keep.both)
@@ -109,7 +108,7 @@ class LazyFlowSpec extends StreamSpec("""
 
     "complete without creating internal flow when there was no elements in the stream" in {
       val probe = TestProbe()
-      val result: (Future[NotUsed], Future[immutable.Seq[Int]]) = Source
+      val result: (Future[NotUsed], Future[Seq[Int]]) = Source
         .empty[Int]
         .viaMat(Flow.lazyFutureFlow { () =>
           probe.ref ! "constructed"
@@ -128,7 +127,7 @@ class LazyFlowSpec extends StreamSpec("""
 
     "complete without creating internal flow when the stream failed with no elements" in {
       val probe = TestProbe()
-      val result: (Future[NotUsed], Future[immutable.Seq[Int]]) = Source
+      val result: (Future[NotUsed], Future[Seq[Int]]) = Source
         .failed[Int](TE("no-elements"))
         .viaMat(Flow.lazyFutureFlow { () =>
           probe.ref ! "constructed"
@@ -146,7 +145,7 @@ class LazyFlowSpec extends StreamSpec("""
     }
 
     "fail the flow when the factory function fails" in {
-      val result: (Future[NotUsed], Future[immutable.Seq[String]]) =
+      val result: (Future[NotUsed], Future[Seq[String]]) =
         Source(List(1, 2, 3))
           .viaMat(Flow.lazyFutureFlow(() => throw TE("no-flow-for-you")))(Keep.right)
           .toMat(Sink.seq)(Keep.both)
@@ -160,7 +159,7 @@ class LazyFlowSpec extends StreamSpec("""
     }
 
     "fail the flow when the future is initially failed" in {
-      val result: (Future[NotUsed], Future[immutable.Seq[String]]) =
+      val result: (Future[NotUsed], Future[Seq[String]]) =
         Source(List(1, 2, 3))
           .viaMat(Flow.lazyFutureFlow(() => Future.failed(TE("no-flow-for-you"))))(Keep.right)
           .toMat(Sink.seq)(Keep.both)
@@ -175,7 +174,7 @@ class LazyFlowSpec extends StreamSpec("""
 
     "fail the flow when the future is failed after the fact" in {
       val promise = Promise[Flow[Int, String, NotUsed]]()
-      val result: (Future[NotUsed], Future[immutable.Seq[String]]) =
+      val result: (Future[NotUsed], Future[Seq[String]]) =
         Source(List(1, 2, 3))
           .viaMat(Flow.lazyFutureFlow(() => promise.future))(Keep.right)
           .toMat(Sink.seq)(Keep.both)
@@ -195,7 +194,7 @@ class LazyFlowSpec extends StreamSpec("""
       val flowPromise = Promise[Flow[Int, String, NotUsed]]()
       val firstElementArrived = Promise[Done]()
 
-      val result: Future[immutable.Seq[String]] =
+      val result: Future[Seq[String]] =
         Source(List(1))
           .via(Flow.lazyFutureFlow { () =>
             firstElementArrived.success(Done)
@@ -211,7 +210,7 @@ class LazyFlowSpec extends StreamSpec("""
     }
 
     "fail the flow when the future materialization fails" in {
-      val result: (Future[NotUsed], Future[immutable.Seq[String]]) =
+      val result: (Future[NotUsed], Future[Seq[String]]) =
         Source(List(1, 2, 3))
           .viaMat(Flow.lazyFutureFlow(() =>
             Future.successful(Flow[Int].map(_.toString).mapMaterializedValue(_ => throw TE("mat-failed")))))(Keep.right)
@@ -227,7 +226,7 @@ class LazyFlowSpec extends StreamSpec("""
     }
 
     "fail the flow when there was elements but the inner flow failed" in {
-      val result: (Future[NotUsed], Future[immutable.Seq[String]]) =
+      val result: (Future[NotUsed], Future[Seq[String]]) =
         Source(List(1, 2, 3))
           .viaMat(Flow.lazyFutureFlow(() => Future.successful(Flow[Int].map(_ => throw TE("inner-stream-fail")))))(
             Keep.right)
@@ -244,7 +243,7 @@ class LazyFlowSpec extends StreamSpec("""
     "fail the mat val when the stream is abruptly terminated before it got materialized" in {
       val expendableMaterializer = Materializer(system)
       val promise = Promise[Flow[Int, String, NotUsed]]()
-      val result: (Future[NotUsed], Future[immutable.Seq[String]]) =
+      val result: (Future[NotUsed], Future[Seq[String]]) =
         Source
           .maybe[Int]
           .viaMat(Flow.lazyFutureFlow(() => promise.future))(Keep.right)

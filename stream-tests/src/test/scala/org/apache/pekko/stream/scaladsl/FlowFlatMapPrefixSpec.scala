@@ -612,7 +612,7 @@ class FlowFlatMapPrefixSpec extends StreamSpec("pekko.loglevel = debug") {
             log.debug("closing sink")
             closeSink()
             log.debug("sink closed")
-            // closing the sink before returning means that it's higly probably
+            // closing the sink before returning means that it's highly probably
             // for the flatMapPrefix stage to receive the downstream cancellation before the actor graph interpreter
             // gets a chance to complete the new interpreter shell's registration.
             // this in turn exposes a bug in the actor graph interpreter when all active flows complete
@@ -664,7 +664,7 @@ class FlowFlatMapPrefixSpec extends StreamSpec("pekko.loglevel = debug") {
       }
 
       "complete when downstream cancels before pulling and upstream does not produce" in {
-        val fSeq = Source(List.empty[Int])
+        val fSeq = Source.lazySource(() => Source(List.empty[Int]))
           .flatMapPrefixMat(1) { prefix =>
             Flow[Int].mapMaterializedValue(_ => prefix)
           }(Keep.right)
@@ -680,7 +680,7 @@ class FlowFlatMapPrefixSpec extends StreamSpec("pekko.loglevel = debug") {
       }
 
       "complete when downstream cancels before pulling and upstream does not produce, prefix=0" in {
-        val fSeq = Source(List.empty[Int])
+        val fSeq = Source.lazySource(() => Source(List.empty[Int]))
           .flatMapPrefixMat(0) { prefix =>
             Flow[Int].mapMaterializedValue(_ => prefix)
           }(Keep.right)

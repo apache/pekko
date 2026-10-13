@@ -25,7 +25,7 @@ import pekko.actor.ExtensionIdProvider
  * Extension that holds a uid that is assigned as a random `Long` or `Int` depending
  * on which version of remoting that is used.
  *
- * The uid is intended to be used together with an [[pekko.actor.Address]]
+ * The uid is intended to be used together with a [[pekko.actor.Address]]
  * to be able to distinguish restarted actor system using the same host
  * and port.
  */

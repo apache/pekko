@@ -129,8 +129,8 @@ class AskSpec extends PekkoSpec("""
       implicit val timeout: Timeout = Timeout(5.seconds)
       import system.dispatcher
       val echo = system.actorOf(Props(new Actor { def receive = { case x => sender() ! x } }), "select-echo")
-      val identityFuture =
-        (system.actorSelection("/user/select-echo") ? Identify(None)).mapTo[ActorIdentity].map(_.ref.get)
+      val identityFuture = (system.actorSelection("/user/select-echo") ? Identify(None)).mapTo[ActorIdentity].map(
+        _.ref.get)
 
       Await.result(identityFuture, 5.seconds) should ===(echo)
     }

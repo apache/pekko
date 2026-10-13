@@ -76,7 +76,7 @@ class RetrySpec extends PekkoSpec with RetrySupport {
       }
     }
 
-    "return a failure for a Future that would have succeeded but retires were exhausted" in {
+    "return a failure for a Future that would have succeeded but additional attempts were exhausted" in {
       @volatile var failCount = 0
 
       def attempt() = {
@@ -90,10 +90,11 @@ class RetrySpec extends PekkoSpec with RetrySupport {
 
       within(3.seconds) {
         intercept[IllegalStateException] { Await.result(retried, remaining) }.getMessage should ===("6")
+        failCount should ===(6)
       }
     }
 
-    "return a failure for a Future that would have succeeded but retires were exhausted with delay function" in {
+    "return a failure for a Future that would have succeeded but additional attempts were exhausted with delay function" in {
       @volatile var failCount = 0
       @volatile var attemptedCount = 0;
 
@@ -111,6 +112,7 @@ class RetrySpec extends PekkoSpec with RetrySupport {
         })
       within(30000000.seconds) {
         intercept[IllegalStateException] { Await.result(retried, remaining) }.getMessage should ===("6")
+        failCount should ===(6)
         attemptedCount shouldBe 5
       }
     }
@@ -131,9 +133,40 @@ class RetrySpec extends PekkoSpec with RetrySupport {
         intercept[IllegalStateException] {
           Await.result(retried, remaining)
         }.getMessage should ===("1000")
+        failCount should ===(1000)
         val elapse = System.currentTimeMillis() - start
         elapse <= 100 shouldBe true
       }
+    }
+
+    "make one attempt when no additional attempts are configured" in {
+      val counter = new AtomicInteger(0)
+
+      val retried =
+        retry(
+          () => Future.successful(counter.incrementAndGet()),
+          0,
+          100.milliseconds)
+
+      within(3.seconds) {
+        Await.result(retried, remaining) should ===(1)
+      }
+      counter.get() should ===(1)
+    }
+
+    "not make an additional attempt when none are configured" in {
+      val counter = new AtomicInteger(0)
+
+      val retried =
+        retry(
+          () => Future.failed(new IllegalStateException(counter.incrementAndGet().toString)),
+          0,
+          100.milliseconds)
+
+      within(3.seconds) {
+        intercept[IllegalStateException] { Await.result(retried, remaining) }.getMessage should ===("1")
+      }
+      counter.get() should ===(1)
     }
 
     "handle thrown exceptions in same way as failed Future" in {

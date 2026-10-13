@@ -20,13 +20,14 @@ import java.util.concurrent.CompletionStage
 import scala.annotation.nowarn
 import scala.annotation.unchecked.uncheckedVariance
 import scala.annotation.varargs
-import scala.collection.immutable
 import scala.concurrent.ExecutionContext
 import scala.jdk.DurationConverters._
 import scala.jdk.FutureConverters._
 import scala.jdk.OptionConverters._
 import scala.reflect.ClassTag
 import scala.util.control.NonFatal
+
+import org.jspecify.annotations.Nullable
 
 import org.apache.pekko
 import pekko.Done
@@ -139,7 +140,7 @@ object Flow {
    *
    * See also [[fromSinkAndSourceMat]] when access to materialized values of the parameters is needed.
    */
-  def fromSinkAndSource[I, O](sink: Graph[SinkShape[I], _], source: Graph[SourceShape[O], _]): Flow[I, O, NotUsed] =
+  def fromSinkAndSource[I, O](sink: Graph[SinkShape[I], ?], source: Graph[SourceShape[O], ?]): Flow[I, O, NotUsed] =
     new Flow(scaladsl.Flow.fromSinkAndSourceMat(sink, source)(scaladsl.Keep.none))
 
   /**
@@ -234,8 +235,8 @@ object Flow {
    * See also [[fromSinkAndSourceCoupledMat]] when access to materialized values of the parameters is needed.
    */
   def fromSinkAndSourceCoupled[I, O](
-      sink: Graph[SinkShape[I], _],
-      source: Graph[SourceShape[O], _]): Flow[I, O, NotUsed] =
+      sink: Graph[SinkShape[I], ?],
+      source: Graph[SourceShape[O], ?]): Flow[I, O, NotUsed] =
     new Flow(scaladsl.Flow.fromSinkAndSourceCoupled(sink, source))
 
   /**
@@ -387,6 +388,10 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
 
   /**
    * Materializes this [[Flow]], immediately returning (1) its materialized value, and (2) a newly materialized [[Flow]].
+   *
+   * Note that `preMaterialize` is implemented through a reactive streams `Publisher` and `Subscriber` pair which means
+   * that a buffer is introduced and that errors are not propagated upstream but are turned into cancellations without
+   * error details.
    */
   def preMaterialize(
       systemProvider: ClassicActorSystemProvider): pekko.japi.Pair[Mat @uncheckedVariance, Flow[In, Out, NotUsed]] = {
@@ -396,6 +401,10 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
   /**
    * Materializes this [[Flow]], immediately returning (1) its materialized value, and (2) a newly materialized [[Flow]].
    * The returned flow is partial materialized and do not support multiple times materialization.
+   *
+   * Note that `preMaterialize` is implemented through a reactive streams `Publisher` and `Subscriber` pair which means
+   * that a buffer is introduced and that errors are not propagated upstream but are turned into cancellations without
+   * error details.
    */
   def preMaterialize(materializer: Materializer): pekko.japi.Pair[Mat @uncheckedVariance, Flow[In, Out, NotUsed]] = {
     val (mat, flow) = delegate.preMaterialize()(materializer)
@@ -467,7 +476,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *
    * See also [[toMat]] when access to materialized values of the parameter is needed.
    */
-  def to(sink: Graph[SinkShape[Out], _]): javadsl.Sink[In, Mat] =
+  def to(sink: Graph[SinkShape[Out], ?]): javadsl.Sink[In, Mat] =
     new Sink(delegate.to(sink))
 
   /**
@@ -883,7 +892,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    * as they are illegal as stream elements - according to the Reactive Streams specification.
    *
    * This operator doesn't handle upstream's completion signal since the state kept in the closure can be lost.
-   * Use [[FlowOps.statefulMap]], or return an [[StatefulMapConcatAccumulator]] instead.
+   * Use [[FlowOps.statefulMap]], or return a [[StatefulMapConcatAccumulator]] instead.
    *
    * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
    *
@@ -1050,7 +1059,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    * still be in the mailbox, so defaulting to sending the second one a bit earlier than when first ask has replied maintains
    * a slightly healthier throughput.
    *
-   * The operator fails with an [[pekko.stream.WatchedActorTerminatedException]] if the target actor is terminated.
+   * The operator fails with a [[pekko.stream.WatchedActorTerminatedException]] if the target actor is terminated.
    *
    * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
    *
@@ -1080,7 +1089,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    * Please note that the elements emitted by this operator are in-order with regards to the asks being issued
    * (i.e. same behavior as mapAsync).
    *
-   * The operator fails with an [[pekko.stream.WatchedActorTerminatedException]] if the target actor is terminated.
+   * The operator fails with a [[pekko.stream.WatchedActorTerminatedException]] if the target actor is terminated.
    *
    * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
    *
@@ -1098,7 +1107,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
     new Flow(delegate.ask[S](parallelism)(ref)(timeout, ClassTag(mapTo)))
 
   /**
-   * The operator fails with an [[pekko.stream.WatchedActorTerminatedException]] if the target actor is terminated.
+   * The operator fails with a [[pekko.stream.WatchedActorTerminatedException]] if the target actor is terminated.
    *
    * '''Emits when''' upstream emits
    *
@@ -1148,6 +1157,10 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
   /**
    * Run the given function when the first element is received.
    *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute. On `Supervision.Resume` the
+   * first element is dropped and the function is not retried; on `Supervision.Restart` the next
+   * element is treated as the first.
+   *
    * '''Emits when''' upstream emits an element
    *
    * '''Backpressures when''' downstream backpressures
@@ -1178,7 +1191,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *          and the second parameter indicates whether the downstream was cancelled normally.
    * @since 1.3.0
    */
-  def doOnCancel(f: function.Procedure2[_ >: Throwable, java.lang.Boolean]): javadsl.Flow[In, Out, Mat] =
+  def doOnCancel(f: function.Procedure2[? >: Throwable, java.lang.Boolean]): javadsl.Flow[In, Out, Mat] =
     new Flow(delegate.doOnCancel((ex: Throwable, wasCancelledNormally: Boolean) => f(ex, wasCancelledNormally)))
 
   /**
@@ -1338,6 +1351,9 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *
    * The `f` function must return a non-null value for all elements, otherwise the stage will fail.
    *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute (applied to the key function).
+   * On `Supervision.Resume` the offending element is skipped; on `Supervision.Restart` the current group is dropped.
+   *
    * '''Emits when''' the delimiter function returns a different value than the previous element's result
    *
    * '''Backpressures when''' a chunk has been assembled and downstream backpressures
@@ -1360,6 +1376,8 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    * The `f` function must return a non-null value , and the `costFn` must return a non-negative result for all inputs,
    * otherwise the stage will fail.
    *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute (applied to both the key and cost functions). On `Supervision.Resume` the offending element is skipped; on `Supervision.Restart` the current group is dropped.
+   *
    * '''Emits when''' the delimiter function returns a different value than the previous element's result, or exceeds the `maxWeight`.
    *
    * '''Backpressures when''' a chunk has been assembled and downstream backpressures
@@ -1379,24 +1397,21 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
   /**
    * Ensure stream boundedness by limiting the number of elements from upstream.
    * If the number of incoming elements exceeds max, it will signal
-   * upstream failure `StreamLimitException` downstream.
+   * upstream failure `StreamLimitReachedException` downstream.
    *
    * Due to input buffering some elements may have been
    * requested from upstream publishers that will then not be processed downstream
    * of this step.
    *
-   * The stream will be completed without producing any elements if `n` is zero
-   * or negative.
-   *
-   * '''Emits when''' the specified number of elements to take has not yet been reached
+   * '''Emits when''' upstream emits and the number of emitted elements has not reached max
    *
    * '''Backpressures when''' downstream backpressures
    *
-   * '''Completes when''' the defined number of elements has been taken or upstream completes
+   * '''Completes when''' upstream completes and the number of emitted elements has not reached max
    *
-   * '''Errors when''' the total number of incoming element exceeds max
+   * '''Errors when''' the total number of incoming elements exceeds max
    *
-   * '''Cancels when''' the defined number of elements has been taken or downstream cancels
+   * '''Cancels when''' downstream cancels
    *
    * See also [[Flow.take]], [[Flow.takeWithin]], [[Flow.takeWhile]]
    */
@@ -1406,26 +1421,23 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    * Ensure stream boundedness by evaluating the cost of incoming elements
    * using a cost function. Exactly how many elements will be allowed to travel downstream depends on the
    * evaluated cost of each element. If the accumulated cost exceeds max, it will signal
-   * upstream failure `StreamLimitException` downstream.
+   * upstream failure `StreamLimitReachedException` downstream.
    *
    * Due to input buffering some elements may have been
    * requested from upstream publishers that will then not be processed downstream
    * of this step.
    *
-   * The stream will be completed without producing any elements if `n` is zero
-   * or negative.
-   *
    * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
    *
-   * '''Emits when''' the specified number of elements to take has not yet been reached
+   * '''Emits when''' upstream emits and the accumulated cost has not reached max
    *
    * '''Backpressures when''' downstream backpressures
    *
-   * '''Completes when''' the defined number of elements has been taken or upstream completes
+   * '''Completes when''' upstream completes and the accumulated cost has not reached max
    *
-   * '''Errors when''' when the accumulated cost exceeds max
+   * '''Errors when''' the accumulated cost exceeds max
    *
-   * '''Cancels when''' the defined number of elements has been taken or downstream cancels
+   * '''Cancels when''' downstream cancels
    *
    * See also [[Flow.take]], [[Flow.takeWithin]], [[Flow.takeWhile]]
    */
@@ -1619,7 +1631,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    * Examples:
    *
    * {{{
-   * Source<Integer, ?> nums = Source.from(Arrays.asList(0, 1, 2, 3));
+   * Source<Integer, ?> nums = Source.from(List.of(0, 1, 2, 3));
    * nums.intersperse(",");            //   1 , 2 , 3
    * nums.intersperse("[", ",", "]");  // [ 1 , 2 , 3 ]
    * }}}
@@ -1653,7 +1665,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    * Examples:
    *
    * {{{
-   * Source<Integer, ?> nums = Source.from(Arrays.asList(0, 1, 2, 3));
+   * Source<Integer, ?> nums = Source.from(List.of(0, 1, 2, 3));
    * nums.intersperse(",");            //   1 , 2 , 3
    * nums.intersperse("[", ",", "]");  // [ 1 , 2 , 3 ]
    * }}}
@@ -1697,6 +1709,10 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    * The last group before end-of-stream will contain the buffered elements
    * since the previously emitted group.
    *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute. On `Supervision.Resume` the
+   * offending element is skipped and the current group is kept; on `Supervision.Restart` the current
+   * group is dropped.
+   *
    * '''Emits when''' the configured time elapses since the last group has been emitted or weight limit reached
    *
    * '''Backpressures when''' downstream backpressures, and buffered group (+ pending element) weighs more than `maxWeight`
@@ -1720,6 +1736,10 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    * Empty groups will not be emitted if no elements are received from upstream.
    * The last group before end-of-stream will contain the buffered elements
    * since the previously emitted group.
+   *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute. On `Supervision.Resume` the
+   * offending element is skipped and the current group is kept; on `Supervision.Restart` the current
+   * group is dropped.
    *
    * '''Emits when''' the configured time elapses since the last group has been emitted or weight limit reached
    *
@@ -1783,6 +1803,10 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    * Delay precision is 10ms to avoid unnecessary timer scheduling cycles.
    *
    * Internal buffer has default capacity 16. You can set buffer size by calling `addAttributes(inputBuffer)`
+   *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute. On `Supervision.Resume` the
+   * offending element is dropped; on `Supervision.Restart` the delay strategy is recreated from the
+   * supplier (already-buffered elements keep their delays).
    *
    * '''Emits when''' there is a pending element in the buffer and configured time for this element elapsed
    *  * EmitEarly - strategy do not wait to emit element if buffer is full
@@ -1950,7 +1974,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *
    * '''Cancels when''' downstream cancels
    */
-  def recover(clazz: Class[_ <: Throwable], creator: function.Creator[Out]): javadsl.Flow[In, Out, Mat] =
+  def recover(clazz: Class[? <: Throwable], creator: function.Creator[Out]): javadsl.Flow[In, Out, Mat] =
     recover {
       case elem if clazz.isInstance(elem) => creator.create()
     }
@@ -1973,7 +1997,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *
    * @since 1.3.0
    */
-  def recover(clazz: Class[_ <: Throwable], fallbackValue: Out): javadsl.Flow[In, Out, Mat] =
+  def recover(clazz: Class[? <: Throwable], fallbackValue: Out): javadsl.Flow[In, Out, Mat] =
     recover {
       case elem if clazz.isInstance(elem) => fallbackValue
     }
@@ -1996,7 +2020,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *
    * @since 1.3.0
    */
-  def recover(p: function.Predicate[_ >: Throwable], creator: function.Creator[Out]): javadsl.Flow[In, Out, Mat] =
+  def recover(p: function.Predicate[? >: Throwable], creator: function.Creator[Out]): javadsl.Flow[In, Out, Mat] =
     recover {
       case elem if p.test(elem) => creator.create()
     }
@@ -2019,7 +2043,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *
    * @since 1.3.0
    */
-  def recover(p: function.Predicate[_ >: Throwable], fallbackValue: Out): javadsl.Flow[In, Out, Mat] =
+  def recover(p: function.Predicate[? >: Throwable], fallbackValue: Out): javadsl.Flow[In, Out, Mat] =
     recover {
       case elem if p.test(elem) => fallbackValue
     }
@@ -2078,6 +2102,8 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *
    * Throwing an exception inside `recoverWith` _will_ be logged on ERROR level automatically.
    *
+   * It will keep trying to recover indefinitely, if you want to limit the number of attempts, use `recoverWithRetries`.
+   *
    * '''Emits when''' element is available from the upstream or upstream is failed and element is available
    * from alternative Source
    *
@@ -2087,7 +2113,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *
    * '''Cancels when''' downstream cancels
    */
-  def recoverWith(pf: PartialFunction[Throwable, _ <: Graph[SourceShape[Out], NotUsed]]): javadsl.Flow[In, Out, Mat] =
+  def recoverWith(pf: PartialFunction[Throwable, ? <: Graph[SourceShape[Out], NotUsed]]): javadsl.Flow[In, Out, Mat] =
     new Flow(delegate.recoverWith(pf))
 
   /**
@@ -2100,6 +2126,8 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *
    * Throwing an exception inside `recoverWith` _will_ be logged on ERROR level automatically.
    *
+   * It will keep trying to recover indefinitely, if you want to limit the number of attempts, use `recoverWithRetries`.
+   *
    * '''Emits when''' element is available from the upstream or upstream is failed and element is available
    * from alternative Source
    *
@@ -2110,7 +2138,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    * '''Cancels when''' downstream cancels
    */
   def recoverWith(
-      clazz: Class[_ <: Throwable],
+      clazz: Class[? <: Throwable],
       creator: function.Creator[Graph[SourceShape[Out], NotUsed]]): javadsl.Flow[In, Out, Mat] =
     recoverWith({
       case elem if clazz.isInstance(elem) => creator.create()
@@ -2174,7 +2202,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    */
   def recoverWithRetries(
       attempts: Int,
-      clazz: Class[_ <: Throwable],
+      clazz: Class[? <: Throwable],
       creator: function.Creator[Graph[SourceShape[Out], NotUsed]]): javadsl.Flow[In, Out, Mat] =
     recoverWithRetries(attempts,
       {
@@ -2213,7 +2241,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    * '''Cancels when''' downstream cancels
    *  @since 1.1.0
    */
-  def onErrorComplete(clazz: Class[_ <: Throwable]): javadsl.Flow[In, Out, Mat] =
+  def onErrorComplete(clazz: Class[? <: Throwable]): javadsl.Flow[In, Out, Mat] =
     onErrorComplete(ex => clazz.isInstance(ex))
 
   /**
@@ -2231,7 +2259,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    * '''Cancels when''' downstream cancels
    *  @since 1.1.0
    */
-  def onErrorComplete(predicate: function.Predicate[_ >: Throwable]): javadsl.Flow[In, Out, Mat] =
+  def onErrorComplete(predicate: function.Predicate[? >: Throwable]): javadsl.Flow[In, Out, Mat] =
     new Flow(delegate.onErrorComplete {
       case ex: Throwable if predicate.test(ex) => true
     })
@@ -2257,7 +2285,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    * @param errorConsumer function invoked when an error occurs
    * @since 1.3.0
    */
-  def onErrorContinue(errorConsumer: function.Procedure[_ >: Throwable]): javadsl.Flow[In, Out, Mat] =
+  def onErrorContinue(errorConsumer: function.Procedure[? >: Throwable]): javadsl.Flow[In, Out, Mat] =
     new Flow(delegate.onErrorContinue[Throwable](errorConsumer.apply))
 
   /**
@@ -2283,7 +2311,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    * @since 1.3.0
    */
   def onErrorContinue[T <: Throwable](clazz: Class[T],
-      errorConsumer: function.Procedure[_ >: Throwable]): javadsl.Flow[In, Out, Mat] =
+      errorConsumer: function.Procedure[? >: Throwable]): javadsl.Flow[In, Out, Mat] =
     new Flow(delegate.onErrorContinue(clazz.isInstance)(errorConsumer.apply))
 
   /**
@@ -2308,8 +2336,8 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    * @param errorConsumer function invoked when an error occurs
    * @since 1.3.0
    */
-  def onErrorContinue[T <: Throwable](predicate: function.Predicate[_ >: Throwable],
-      errorConsumer: function.Procedure[_ >: Throwable]): javadsl.Flow[In, Out, Mat] =
+  def onErrorContinue[T <: Throwable](predicate: function.Predicate[? >: Throwable],
+      errorConsumer: function.Procedure[? >: Throwable]): javadsl.Flow[In, Out, Mat] =
     new Flow(delegate.onErrorContinue(predicate.test)(errorConsumer.apply))
 
   /**
@@ -2330,7 +2358,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    * @param fallback Function which produces a Source to continue the stream
    * @since 1.3.0
    */
-  def onErrorResume[T >: Out](fallback: function.Function[_ >: Throwable, _ <: Graph[SourceShape[T], NotUsed]])
+  def onErrorResume[T >: Out](fallback: function.Function[? >: Throwable, ? <: Graph[SourceShape[T], NotUsed]])
       : javadsl.Flow[In, T, Mat] = new Flow(delegate.recoverWith {
     case NonFatal(ex) => fallback(ex)
   })
@@ -2355,8 +2383,8 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    * @since 1.3.0
    */
   def onErrorResume[T >: Out](
-      clazz: Class[_ <: Throwable],
-      fallback: function.Function[_ >: Throwable, _ <: Graph[SourceShape[T], NotUsed]])
+      clazz: Class[? <: Throwable],
+      fallback: function.Function[? >: Throwable, ? <: Graph[SourceShape[T], NotUsed]])
       : javadsl.Flow[In, T, Mat] = new Flow(delegate.recoverWith {
     case NonFatal(ex) if clazz.isInstance(ex) => fallback(ex)
   })
@@ -2381,8 +2409,8 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    * @since 1.3.0
    */
   def onErrorResume[T >: Out](
-      predicate: function.Predicate[_ >: Throwable],
-      fallback: function.Function[_ >: Throwable, _ <: Graph[SourceShape[T], NotUsed]])
+      predicate: function.Predicate[? >: Throwable],
+      fallback: function.Function[? >: Throwable, ? <: Graph[SourceShape[T], NotUsed]])
       : javadsl.Flow[In, T, Mat] = new Flow(delegate.recoverWith {
     case NonFatal(ex) if predicate.test(ex) => fallback(ex)
   })
@@ -2560,12 +2588,19 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    * element until new element comes from the upstream. For example an expand step might repeat the last element for
    * the subscriber until it receives an update from upstream.
    *
-   * This element will never "drop" upstream elements as all elements go through at least one extrapolation step.
-   * This means that if the upstream is actually faster than the upstream it will be backpressured by the downstream
-   * subscriber.
+   * Under normal operation all upstream elements go through at least one extrapolation step.
+   * If supervision drops a failed element, that element is not emitted.
+   * If the upstream is actually faster than the downstream it will be backpressured by the downstream subscriber.
    *
-   * Expand does not support [[pekko.stream.Supervision#restart]] and [[pekko.stream.Supervision#resume]].
-   * Exceptions from the `expander` function will complete the stream with failure.
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
+   *
+   * If the `expander` function or the iterator it produces throws during evaluation (`hasNext`/`next`) and the
+   * supervision decision is [[pekko.stream.Supervision#stop]] the stream fails. If the supervision decision is
+   * [[pekko.stream.Supervision#resume]] the failed element is dropped and the stream continues, keeping current
+   * extrapolation state when available. If the supervision decision is [[pekko.stream.Supervision#restart]] the
+   * failed element is dropped and the current extrapolation state is reset. Note that iterator-evaluation failures
+   * necessarily discard the current iterator under both `resume` and `restart`, because a corrupt iterator cannot
+   * be reused.
    *
    * See also [[#extrapolate]] for a version that always preserves the original element and allows for an initial "startup" element.
    *
@@ -2590,8 +2625,14 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    * This is achieved by introducing "extrapolated" elements - based on those from upstream - whenever downstream
    * signals demand.
    *
-   * Extrapolate does not support [[pekko.stream.Supervision#restart]] and [[pekko.stream.Supervision#resume]].
-   * Exceptions from the `extrapolate` function will complete the stream with failure.
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
+   *
+   * If the `extrapolator` function or the iterator it produces throws during evaluation (`hasNext`/`next`) and the
+   * supervision decision is [[pekko.stream.Supervision#stop]] the stream fails. If the supervision decision is
+   * [[pekko.stream.Supervision#resume]] the failed element is dropped and any previously active extrapolation is
+   * retained. If the supervision decision is [[pekko.stream.Supervision#restart]] the failed element is dropped and
+   * the current extrapolation state is reset. For iterator-evaluation failures, `resume` and `restart` both discard
+   * the corrupt iterator because it cannot be reused.
    *
    * See also [[#expand]] for a version that can overwrite the original element.
    *
@@ -2618,8 +2659,14 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    * This is achieved by introducing "extrapolated" elements - based on those from upstream - whenever downstream
    * signals demand.
    *
-   * Extrapolate does not support [[pekko.stream.Supervision#restart]] and [[pekko.stream.Supervision#resume]].
-   * Exceptions from the `extrapolate` function will complete the stream with failure.
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
+   *
+   * If the `extrapolator` function or the iterator it produces throws during evaluation (`hasNext`/`next`) and the
+   * supervision decision is [[pekko.stream.Supervision#stop]] the stream fails. If the supervision decision is
+   * [[pekko.stream.Supervision#resume]] the failed element is dropped and any previously active extrapolation is
+   * retained. If the supervision decision is [[pekko.stream.Supervision#restart]] the failed element is dropped and
+   * the current extrapolation state is reset. For iterator-evaluation failures, `resume` and `restart` both discard
+   * the corrupt iterator because it cannot be reused.
    *
    * See also [[#expand]] for a version that can overwrite the original element.
    *
@@ -2855,26 +2902,12 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *
    * '''Completes when''' upstream completes
    *
-   * '''Cancels when''' downstream cancels and substreams cancel on `SubstreamCancelStrategy.drain()`, downstream
-   * cancels or any substream cancels on `SubstreamCancelStrategy.propagate()`
+   * '''Cancels when''' downstream cancels and substreams cancel
    *
    * See also [[Flow.splitAfter]].
    */
   def splitWhen(p: function.Predicate[Out]): SubFlow[In, Out, Mat] =
     new SubFlow(delegate.splitWhen(p.test))
-
-  /**
-   * This operation applies the given predicate to all incoming elements and
-   * emits them to a stream of output streams, always beginning a new one with
-   * the current element if the given predicate returns true for it.
-   *
-   * @see [[#splitWhen]]
-   */
-  @deprecated(
-    "Use .withAttributes(ActorAttributes.supervisionStrategy(equivalentDecider)) rather than a SubstreamCancelStrategy",
-    since = "1.1.0")
-  def splitWhen(substreamCancelStrategy: SubstreamCancelStrategy, p: function.Predicate[Out]): SubFlow[In, Out, Mat] =
-    new SubFlow(delegate.splitWhen(substreamCancelStrategy)(p.test))
 
   /**
    * This operation applies the given predicate to all incoming elements and
@@ -2916,26 +2949,12 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *
    * '''Completes when''' upstream completes
    *
-   * '''Cancels when''' downstream cancels and substreams cancel on `SubstreamCancelStrategy.drain`, downstream
-   * cancels or any substream cancels on `SubstreamCancelStrategy.propagate`
+   * '''Cancels when''' downstream cancels and substreams cancel
    *
    * See also [[Flow.splitWhen]].
    */
   def splitAfter(p: function.Predicate[Out]): SubFlow[In, Out, Mat] =
     new SubFlow(delegate.splitAfter(p.test))
-
-  /**
-   * This operation applies the given predicate to all incoming elements and
-   * emits them to a stream of output streams. It *ends* the current substream when the
-   * predicate is true.
-   *
-   * @see [[#splitAfter]]
-   */
-  @deprecated(
-    "Use .withAttributes(ActorAttributes.supervisionStrategy(equivalentDecider)) rather than a SubstreamCancelStrategy",
-    since = "1.1.0")
-  def splitAfter(substreamCancelStrategy: SubstreamCancelStrategy, p: function.Predicate[Out]): SubFlow[In, Out, Mat] =
-    new SubFlow(delegate.splitAfter(substreamCancelStrategy)(p.test))
 
   /**
    * Transform each input element into a `Source` of output elements that is
@@ -2950,7 +2969,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *
    * '''Cancels when''' downstream cancels
    */
-  def flatMapConcat[T, M](f: function.Function[Out, _ <: Graph[SourceShape[T], M]]): Flow[In, T, Mat] =
+  def flatMapConcat[T, M](f: function.Function[Out, ? <: Graph[SourceShape[T], M]]): Flow[In, T, Mat] =
     new Flow(delegate.flatMapConcat[T, M](x => f(x)))
 
   /**
@@ -2970,7 +2989,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    */
   def flatMapConcat[T, M](
       parallelism: Int,
-      f: function.Function[Out, _ <: Graph[SourceShape[T], M]]): Flow[In, T, Mat] =
+      f: function.Function[Out, ? <: Graph[SourceShape[T], M]]): Flow[In, T, Mat] =
     new Flow(delegate.flatMapConcat[T, M](parallelism, x => f(x)))
 
   /**
@@ -2986,7 +3005,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *
    * '''Cancels when''' downstream cancels
    */
-  def flatMapMerge[T, M](breadth: Int, f: function.Function[Out, _ <: Graph[SourceShape[T], M]]): Flow[In, T, Mat] =
+  def flatMapMerge[T, M](breadth: Int, f: function.Function[Out, ? <: Graph[SourceShape[T], M]]): Flow[In, T, Mat] =
     new Flow(delegate.flatMapMerge(breadth, o => f(o)))
 
   /**
@@ -3005,7 +3024,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *
    * @since 1.2.0
    */
-  def switchMap[T, M](f: function.Function[Out, _ <: Graph[SourceShape[T], M]]): Flow[In, T, Mat] =
+  def switchMap[T, M](f: function.Function[Out, ? <: Graph[SourceShape[T], M]]): Flow[In, T, Mat] =
     new Flow(delegate.switchMap(o => f(o)))
 
   /**
@@ -3083,7 +3102,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    */
   @varargs
   @SafeVarargs
-  def concatAllLazy(those: Graph[SourceShape[Out], _]*): javadsl.Flow[In, Out, Mat] =
+  def concatAllLazy(those: Graph[SourceShape[Out], ?]*): javadsl.Flow[In, Out, Mat] =
     new Flow(delegate.concatAllLazy(those: _*))
 
   /**
@@ -3273,8 +3292,32 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *
    * '''Cancels when''' downstream or Sink cancels
    */
-  def alsoTo(that: Graph[SinkShape[Out], _]): javadsl.Flow[In, Out, Mat] =
+  def alsoTo(that: Graph[SinkShape[Out], ?]): javadsl.Flow[In, Out, Mat] =
     new Flow(delegate.alsoTo(that))
+
+  /**
+   * Attaches the given [[Sink]] to this [[Flow]], meaning that elements that pass
+   * through will also be sent to the [[Sink]].
+   *
+   * When `propagateCancellation` is `false`, cancellation or failure of the side [[Sink]]
+   * will not cancel the main stream. Elements will continue to flow to the main downstream only.
+   *
+   * When `propagateCancellation` is `true` (the default), this behaves identically to [[#alsoTo]].
+   *
+   * '''Emits when''' element is available and demand exists both from the Sink and the downstream.
+   *
+   * '''Backpressures when''' downstream or Sink backpressures
+   *
+   * '''Completes when''' upstream completes
+   *
+   * '''Cancels when''' downstream cancels (the side [[Sink]] is also cancelled).
+   *                        When `propagateCancellation` is `true`, cancellation or failure of
+   *                        the side [[Sink]] also cancels the downstream.
+   *
+   * @since 2.0.0
+   */
+  def alsoTo(that: Graph[SinkShape[Out], ?], propagateCancellation: Boolean): javadsl.Flow[In, Out, Mat] =
+    new Flow(delegate.alsoTo(that, propagateCancellation))
 
   /**
    * Attaches the given [[Sink]]s to this [[Flow]], meaning that elements that passes
@@ -3292,7 +3335,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    */
   @varargs
   @SafeVarargs
-  def alsoToAll(those: Graph[SinkShape[Out], _]*): javadsl.Flow[In, Out, Mat] =
+  def alsoToAll(those: Graph[SinkShape[Out], ?]*): javadsl.Flow[In, Out, Mat] =
     new Flow(delegate.alsoToAll(those: _*))
 
   /**
@@ -3312,6 +3355,23 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
     new Flow(delegate.alsoToMat(that)(combinerToScala(matF)))
 
   /**
+   * Attaches the given [[Sink]] to this [[Flow]], meaning that elements that pass
+   * through will also be sent to the [[Sink]].
+   *
+   * @see [[#alsoTo]]
+   *
+   * It is recommended to use the internally optimized `Keep.left` and `Keep.right` combiners
+   * where appropriate instead of manually writing functions that pass through one of the values.
+   *
+   * @since 2.0.0
+   */
+  def alsoToMat[M2, M3](
+      that: Graph[SinkShape[Out], M2],
+      propagateCancellation: Boolean,
+      matF: function.Function2[Mat, M2, M3]): javadsl.Flow[In, Out, M3] =
+    new Flow(delegate.alsoToMat(that, propagateCancellation)(combinerToScala(matF)))
+
+  /**
    * Attaches the given [[Sink]] to this [[Flow]], meaning that elements will be sent to the [[Sink]]
    * instead of being passed through if the predicate `when` returns `true`.
    *
@@ -3323,7 +3383,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *
    * '''Cancels when''' any of the downstreams cancel
    */
-  def divertTo(that: Graph[SinkShape[Out], _], when: function.Predicate[Out]): javadsl.Flow[In, Out, Mat] =
+  def divertTo(that: Graph[SinkShape[Out], ?], when: function.Predicate[Out]): javadsl.Flow[In, Out, Mat] =
     new Flow(delegate.divertTo(that, when.test))
 
   /**
@@ -3357,7 +3417,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *
    * '''Cancels when''' downstream cancels
    */
-  def wireTap(that: Graph[SinkShape[Out], _]): javadsl.Flow[In, Out, Mat] =
+  def wireTap(that: Graph[SinkShape[Out], ?]): javadsl.Flow[In, Out, Mat] =
     new Flow(delegate.wireTap(that))
 
   /**
@@ -3384,8 +3444,8 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *
    * Example:
    * {{{
-   * Source<Integer, ?> src = Source.from(Arrays.asList(1, 2, 3))
-   * Flow<Integer, Integer, ?> flow = flow.interleave(Source.from(Arrays.asList(4, 5, 6, 7)), 2)
+   * Source<Integer, ?> src = Source.from(List.of(1, 2, 3))
+   * Flow<Integer, Integer, ?> flow = flow.interleave(Source.from(List.of(4, 5, 6, 7)), 2)
    * src.via(flow) // 1, 2, 4, 5, 3, 6, 7
    * }}}
    *
@@ -3402,7 +3462,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *
    * '''Cancels when''' downstream cancels
    */
-  def interleave(that: Graph[SourceShape[Out], _], segmentSize: Int): javadsl.Flow[In, Out, Mat] =
+  def interleave(that: Graph[SourceShape[Out], ?], segmentSize: Int): javadsl.Flow[In, Out, Mat] =
     interleave(that, segmentSize, eagerClose = false)
 
   /**
@@ -3425,7 +3485,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *
    * '''Cancels when''' downstream cancels
    */
-  def interleave(that: Graph[SourceShape[Out], _], segmentSize: Int, eagerClose: Boolean): javadsl.Flow[In, Out, Mat] =
+  def interleave(that: Graph[SourceShape[Out], ?], segmentSize: Int, eagerClose: Boolean): javadsl.Flow[In, Out, Mat] =
     new Flow(delegate.interleave(that, segmentSize, eagerClose))
 
   /**
@@ -3492,14 +3552,15 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    * '''Cancels when''' downstream cancels
    */
   def interleaveAll(
-      those: java.util.List[_ <: Graph[SourceShape[Out], _ <: Any]],
+      @Nullable those: java.util.List[? <: Graph[SourceShape[Out], ? <: Any]],
       segmentSize: Int,
       eagerClose: Boolean): javadsl.Flow[In, Out, Mat] = {
-    val seq = if (those ne null) CollectionUtil.toSeq(those).collect {
-      case source: Source[Out @unchecked, _] => source.asScala
+    import pekko.util.Collections._
+    val seq = if (those ne null) those.collectToImmutableSeq {
+      case source: Source[Out @unchecked, ?] => source.asScala
       case other                             => other
     }
-    else immutable.Seq()
+    else Seq()
     new Flow(delegate.interleaveAll(seq, segmentSize, eagerClose))
   }
 
@@ -3515,7 +3576,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *
    * '''Cancels when''' downstream cancels
    */
-  def merge(that: Graph[SourceShape[Out], _]): javadsl.Flow[In, Out, Mat] =
+  def merge(that: Graph[SourceShape[Out], ?]): javadsl.Flow[In, Out, Mat] =
     merge(that, eagerComplete = false)
 
   /**
@@ -3530,7 +3591,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *
    * '''Cancels when''' downstream cancels
    */
-  def merge(that: Graph[SourceShape[Out], _], eagerComplete: Boolean): javadsl.Flow[In, Out, Mat] =
+  def merge(that: Graph[SourceShape[Out], ?], eagerComplete: Boolean): javadsl.Flow[In, Out, Mat] =
     new Flow(delegate.merge(that, eagerComplete))
 
   /**
@@ -3575,13 +3636,14 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    * '''Cancels when''' downstream cancels
    */
   def mergeAll(
-      those: java.util.List[_ <: Graph[SourceShape[Out], _ <: Any]],
+      @Nullable those: java.util.List[? <: Graph[SourceShape[Out], ? <: Any]],
       eagerComplete: Boolean): javadsl.Flow[In, Out, Mat] = {
-    val seq = if (those ne null) CollectionUtil.toSeq(those).collect {
-      case source: Source[Out @unchecked, _] => source.asScala
+    import pekko.util.Collections._
+    val seq = if (those ne null) those.collectToImmutableSeq {
+      case source: Source[Out @unchecked, ?] => source.asScala
       case other                             => other
     }
-    else immutable.Seq()
+    else Seq()
     new javadsl.Flow(delegate.mergeAll(seq, eagerComplete))
   }
 
@@ -3596,7 +3658,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    * '''Completes when''' all upstreams complete (eagerClose=false) or one upstream completes (eagerClose=true)
    */
   def mergeLatest(
-      that: Graph[SourceShape[Out], _],
+      that: Graph[SourceShape[Out], ?],
       eagerComplete: Boolean): javadsl.Flow[In, java.util.List[Out], Mat] =
     new Flow(delegate.mergeLatest(that, eagerComplete).map(_.asJava))
 
@@ -3625,7 +3687,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    * '''completes''' when all upstreams complete (This behavior is changeable to completing when any upstream completes by setting `eagerComplete=true`.)
    */
   def mergePreferred(
-      that: Graph[SourceShape[Out], _],
+      that: Graph[SourceShape[Out], ?],
       preferred: Boolean,
       eagerComplete: Boolean): javadsl.Flow[In, Out, Mat] =
     new Flow(delegate.mergePreferred(that, preferred, eagerComplete))
@@ -3653,7 +3715,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    * '''completes''' when both upstreams complete (This behavior is changeable to completing when any upstream completes by setting `eagerComplete=true`.)
    */
   def mergePrioritized(
-      that: Graph[SourceShape[Out], _],
+      that: Graph[SourceShape[Out], ?],
       leftPriority: Int,
       rightPriority: Int,
       eagerComplete: Boolean): javadsl.Flow[In, Out, Mat] =
@@ -3720,7 +3782,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *
    * '''Cancels when''' downstream cancels
    */
-  def zip[T](source: Graph[SourceShape[T], _]): javadsl.Flow[In, Out Pair T, Mat] =
+  def zip[T](source: Graph[SourceShape[T], ?]): javadsl.Flow[In, Out Pair T, Mat] =
     zipMat(source, Keep.left)
 
   /**
@@ -3757,7 +3819,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *
    * '''Cancels when''' downstream cancels
    */
-  def zipAll[U, A >: Out](that: Graph[SourceShape[U], _], thisElem: A, thatElem: U): Flow[In, Pair[A, U], Mat] =
+  def zipAll[U, A >: Out](that: Graph[SourceShape[U], ?], thisElem: A, thatElem: U): Flow[In, Pair[A, U], Mat] =
     new Flow(delegate.zipAll(that, thisElem, thatElem).map { case (a, u) => Pair.create(a, u) })
 
   /**
@@ -3793,7 +3855,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *
    * '''Cancels when''' downstream cancels
    */
-  def zipLatest[T](source: Graph[SourceShape[T], _]): javadsl.Flow[In, Out Pair T, Mat] =
+  def zipLatest[T](source: Graph[SourceShape[T], ?]): javadsl.Flow[In, Out Pair T, Mat] =
     zipLatestMat(source, Keep.left)
 
   /**
@@ -3823,6 +3885,12 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    * Put together the elements of current [[Flow]] and the given [[Source]]
    * into a stream of combined elements using a combiner function.
    *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
+   *
+   * If the combiner function throws and the supervision decision is [[pekko.stream.Supervision#stop]]
+   * the stream fails. If the supervision decision is [[pekko.stream.Supervision#resume]] or
+   * [[pekko.stream.Supervision#restart]] the zipped element is dropped and the stream continues.
+   *
    * '''Emits when''' all of the inputs have an element available
    *
    * '''Backpressures when''' downstream backpressures
@@ -3832,7 +3900,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    * '''Cancels when''' downstream cancels
    */
   def zipWith[Out2, Out3](
-      that: Graph[SourceShape[Out2], _],
+      that: Graph[SourceShape[Out2], ?],
       combine: function.Function2[Out, Out2, Out3]): javadsl.Flow[In, Out3, Mat] =
     new Flow(delegate.zipWith[Out2, Out3](that)(combinerToScala(combine)))
 
@@ -3869,7 +3937,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *   '''Cancels when''' downstream cancels
    */
   def zipLatestWith[Out2, Out3](
-      that: Graph[SourceShape[Out2], _],
+      that: Graph[SourceShape[Out2], ?],
       combine: function.Function2[Out, Out2, Out3]): javadsl.Flow[In, Out3, Mat] =
     new Flow(delegate.zipLatestWith[Out2, Out3](that)(combinerToScala(combine)))
 
@@ -3891,7 +3959,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *   '''Cancels when''' downstream cancels
    */
   def zipLatestWith[Out2, Out3](
-      that: Graph[SourceShape[Out2], _],
+      that: Graph[SourceShape[Out2], ?],
       eagerComplete: Boolean,
       combine: function.Function2[Out, Out2, Out3]): javadsl.Flow[In, Out3, Mat] =
     new Flow(delegate.zipLatestWith[Out2, Out3](that, eagerComplete)(combinerToScala(combine)))
@@ -4123,6 +4191,10 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    * The throttle `mode` is [[pekko.stream.ThrottleMode.Shaping]], which makes pauses before emitting messages to
    * meet throttle rate.
    *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute. On `Supervision.Resume` the
+   * offending element is dropped; `Supervision.Restart` behaves the same as `Supervision.Resume`
+   * because throttle keeps no accumulated per-element state.
+   *
    * '''Emits when''' upstream emits an element and configured time per each element elapsed
    *
    * '''Backpressures when''' downstream backpressures or the incoming rate is higher than the speed limit
@@ -4166,6 +4238,10 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *  `maximumBurst` parameter to automatically calculate the `maximumBurst` based on the given rate (`cost/per`).
    *  In other words the throttler always enforces the rate limit when `maximumBurst` parameter is given, but in
    *  certain cases (mostly due to limited scheduler resolution) it enforces a tighter bound than what was prescribed.
+   *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute. On `Supervision.Resume` the
+   * offending element is dropped; `Supervision.Restart` behaves the same as `Supervision.Resume`
+   * because throttle keeps no accumulated per-element state.
    *
    * '''Emits when''' upstream emits an element and configured time per each element elapsed
    *
@@ -4212,7 +4288,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
   /**
    * Materializes to `FlowMonitor[Out]` that allows monitoring of the current flow. All events are propagated
    * by the monitor unchanged. Note that the monitor inserts a memory barrier every time it processes an
-   * event, and may therefor affect performance.
+   * event, and may therefore affect performance.
    *
    * The `combine` function is used to combine the `FlowMonitor` with this flow's materialized value.
    */
@@ -4227,7 +4303,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *
    * The `FlowMonitor[Out]` allows monitoring of the current flow. All events are propagated
    * by the monitor unchanged. Note that the monitor inserts a memory barrier every time it processes an
-   * event, and may therefor affect performance.
+   * event, and may therefore affect performance.
    */
   def monitor(): Flow[In, Out, Pair[Mat, FlowMonitor[Out]]] =
     monitorMat(Keep.both)
@@ -4316,7 +4392,8 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *
    * '''Cancels when''' downstream cancels
    */
-  def log(name: String, extract: function.Function[Out, Any], log: LoggingAdapter): javadsl.Flow[In, Out, Mat] =
+  def log(name: String, extract: function.Function[Out, Any], @Nullable log: LoggingAdapter)
+      : javadsl.Flow[In, Out, Mat] =
     new Flow(delegate.log(name, e => extract.apply(e))(log))
 
   /**
@@ -4357,7 +4434,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *
    * '''Cancels when''' downstream cancels
    */
-  def log(name: String, log: LoggingAdapter): javadsl.Flow[In, Out, Mat] =
+  def log(name: String, @Nullable log: LoggingAdapter): javadsl.Flow[In, Out, Mat] =
     this.log(name, ConstantFun.javaIdentityFunction[Out], log)
 
   /**
@@ -4404,7 +4481,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
       name: String,
       marker: function.Function[Out, LogMarker],
       extract: function.Function[Out, Any],
-      log: MarkerLoggingAdapter): javadsl.Flow[In, Out, Mat] =
+      @Nullable log: MarkerLoggingAdapter): javadsl.Flow[In, Out, Mat] =
     new Flow(delegate.logWithMarker(name, e => marker.apply(e), e => extract.apply(e))(log))
 
   /**
@@ -4451,7 +4528,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
   def logWithMarker(
       name: String,
       marker: function.Function[Out, LogMarker],
-      log: MarkerLoggingAdapter): javadsl.Flow[In, Out, Mat] =
+      @Nullable log: MarkerLoggingAdapter): javadsl.Flow[In, Out, Mat] =
     this.logWithMarker(name, marker, ConstantFun.javaIdentityFunction[Out], log)
 
   /**
@@ -4499,6 +4576,13 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    * Aggregate input elements into an arbitrary data structure that can be completed and emitted downstream
    * when custom condition is met which can be triggered by aggregate or timer.
    * It can be thought of a more general [[groupedWeightedWithin]].
+   *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
+   *
+   * If `allocate`, `aggregate`, `harvest`, or timer predicate throws and the supervision decision is
+   * [[pekko.stream.Supervision#stop]] the stream fails. If the supervision decision is
+   * [[pekko.stream.Supervision#resume]] or [[pekko.stream.Supervision#restart]], the failing element or
+   * aggregate is dropped and the stream continues.
    *
    * '''Emits when''' the aggregation function decides the aggregate is complete or the timer function returns true
    *

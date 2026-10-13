@@ -13,6 +13,8 @@
 
 package org.apache.pekko.stream.impl.streamref
 
+import java.util.concurrent.atomic.AtomicBoolean
+
 import scala.annotation.nowarn
 
 import org.apache.pekko
@@ -29,8 +31,14 @@ import pekko.util.{ OptionVal, PrettyDuration }
 /** INTERNAL API: Implementation class, not intended to be touched directly by end-users */
 @InternalApi
 private[stream] final case class SourceRefImpl[T](initialPartnerRef: ActorRef) extends SourceRef[T] {
+  private val materialized = new AtomicBoolean(false)
+
+  private[stream] def tryClaimMaterialization(): Boolean =
+    materialized.compareAndSet(false, true)
+
   def source: Source[T, NotUsed] =
-    Source.fromGraph(new SourceRefStageImpl(OptionVal.Some(initialPartnerRef))).mapMaterializedValue(_ => NotUsed)
+    Source.fromGraph(new SourceRefStageImpl(OptionVal.Some(initialPartnerRef), this))
+      .mapMaterializedValue(_ => NotUsed)
 }
 
 /**
@@ -107,7 +115,9 @@ private[stream] final case class SourceRefImpl[T](initialPartnerRef: ActorRef) e
  * If it is none, then we are the side creating the ref.
  */
 @InternalApi
-private[stream] final class SourceRefStageImpl[Out](val initialPartnerRef: OptionVal[ActorRef])
+private[stream] final class SourceRefStageImpl[Out](
+    val initialPartnerRef: OptionVal[ActorRef],
+    private val owner: SourceRefImpl[?] = null)
     extends GraphStageWithMaterializedValue[SourceShape[Out], SinkRef[Out]] { stage =>
   import SourceRefStageImpl._
 
@@ -126,33 +136,33 @@ private[stream] final class SourceRefStageImpl[Out](val initialPartnerRef: Optio
   private[pekko] override def createLogicAndMaterializedValue(
       inheritedAttributes: Attributes,
       eagerMaterializer: Materializer): (GraphStageLogic, SinkRef[Out]) = {
+    if (owner != null && !owner.tryClaimMaterialization())
+      throw new IllegalStateException(
+        "This SourceRef has already been materialized. " +
+        "SourceRef is single-use: calling .source and materializing it more than once is not supported.")
 
     val logic = new TimerGraphStageLogic(shape) with StageLogging with ActorRefStage with OutHandler {
-      override protected def logSource: Class[_] = classOf[SourceRefStageImpl[_]]
+      override protected def logSource: Class[?] = classOf[SourceRefStageImpl[?]]
 
-      private[this] val streamRefsMaster = StreamRefsMaster(eagerMaterializer.system)
+      private val streamRefsMaster = StreamRefsMaster(eagerMaterializer.system)
 
       // settings ---
       import StreamRefAttributes._
-      @nowarn("msg=deprecated") // can't remove this settings access without breaking compat
-      private[this] val settings = eagerMaterializer.settings.streamRefSettings
+      @nowarn("cat=deprecation") // Materializer.settings is needed for stream-ref default settings.
+      private val settings = eagerMaterializer.settings.streamRefDefaultSettings
 
-      @nowarn("msg=deprecated") // can't remove this settings access without breaking compat
-      private[this] val subscriptionTimeout = inheritedAttributes.get[StreamRefAttributes.SubscriptionTimeout](
+      private val subscriptionTimeout = inheritedAttributes.get[StreamRefAttributes.SubscriptionTimeout](
         SubscriptionTimeout(settings.subscriptionTimeout))
 
-      @nowarn("msg=deprecated") // can't remove this settings access without breaking compat
-      private[this] val bufferCapacity = inheritedAttributes
+      private val bufferCapacity = inheritedAttributes
         .get[StreamRefAttributes.BufferCapacity](StreamRefAttributes.BufferCapacity(settings.bufferCapacity))
         .capacity
 
-      @nowarn("msg=deprecated") // can't remove this settings access without breaking compat
-      private[this] val demandRedeliveryInterval = inheritedAttributes
+      private val demandRedeliveryInterval = inheritedAttributes
         .get[StreamRefAttributes.DemandRedeliveryInterval](DemandRedeliveryInterval(settings.demandRedeliveryInterval))
         .timeout
 
-      @nowarn("msg=deprecated") // can't remove this settings access without breaking compat
-      private[this] val finalTerminationSignalDeadline =
+      private val finalTerminationSignalDeadline =
         inheritedAttributes
           .get[StreamRefAttributes.FinalTerminationSignalDeadline](
             FinalTerminationSignalDeadline(settings.finalTerminationSignalDeadline))
@@ -160,10 +170,10 @@ private[stream] final class SourceRefStageImpl[Out](val initialPartnerRef: Optio
       // end of settings ---
 
       override protected val stageActorName: String = streamRefsMaster.nextSourceRefStageName()
-      private[this] val self: GraphStageLogic.StageActor =
+      private val self: GraphStageLogic.StageActor =
         getEagerStageActor(eagerMaterializer)(receiveRemoteMessage)
       override val ref: ActorRef = self.ref
-      private[this] implicit def selfSender: ActorRef = ref
+      private implicit def selfSender: ActorRef = ref
 
       // demand management ---
       private var state: State = initialPartnerRef match {
@@ -314,7 +324,7 @@ private[stream] final class SourceRefStageImpl[Out](val initialPartnerRef: Optio
           state match {
             case WaitingForCancelAck(partner, cause) =>
               verifyPartner(sender, partner)
-              log.debug(s"[{}] Got cancellation ack from remote, canceling", stageActorName)
+              log.debug("[{}] Got cancellation ack from remote, canceling", stageActorName)
               cancelStage(cause)
             case other =>
               throw new IllegalStateException(s"[$stageActorName] Got an Ack when in state $other")

@@ -20,6 +20,8 @@ import pekko.testkit._
 
 object FSMTransitionSpec {
 
+  case object ListenerCount
+
   class Supervisor extends Actor {
     def receive = { case _ => }
   }
@@ -44,7 +46,8 @@ object FSMTransitionSpec {
       case Event("tick", _) => goto(0)
     }
     whenUnhandled {
-      case Event("reply", _) => stay().replying("reply")
+      case Event("reply", _)       => stay().replying("reply")
+      case Event(ListenerCount, _) => stay().replying(listeners.size)
     }
     initialize()
     override def preRestart(reason: Throwable, msg: Option[Any]): Unit = { target ! "restarted" }
@@ -107,9 +110,30 @@ class FSMTransitionSpec extends PekkoSpec with ImplicitSender {
       within(1.second) {
         fsm ! FSM.SubscribeTransitionCallBack(forward)
         expectMsg(FSM.CurrentState(fsm, 0))
-        pekko.pattern.gracefulStop(forward, 5.seconds)
+        watch(forward)
+        system.stop(forward)
+        expectTerminated(forward)
         fsm ! "tick"
         expectNoMessage()
+      }
+    }
+
+    "remove stopped listeners" in {
+      val forward = system.actorOf(Props(new Forwarder(testActor)))
+      val fsm = system.actorOf(Props(new MyFSM(testActor)))
+
+      within(3.seconds) {
+        fsm ! FSM.SubscribeTransitionCallBack(forward)
+        expectMsg(FSM.CurrentState(fsm, 0))
+
+        watch(forward)
+        system.stop(forward)
+        expectTerminated(forward)
+
+        awaitAssert {
+          fsm ! ListenerCount
+          expectMsg(0)
+        }
       }
     }
   }

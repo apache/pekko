@@ -18,7 +18,8 @@ import java.util.concurrent.ThreadLocalRandom
 import scala.annotation.nowarn
 import scala.annotation.tailrec
 
-import org.apache.pekko.testkit.PekkoSpec
+import org.apache.pekko
+import pekko.testkit.PekkoSpec
 
 @nowarn("msg=deprecated")
 object AckedDeliverySpec {
@@ -148,6 +149,17 @@ class AckedDeliverySpec extends PekkoSpec {
       val b9 = b8.acknowledge(Ack(SeqNo(4)))
       b9.nonAcked should ===(Vector.empty[Sequenced])
 
+    }
+
+    "ignore stale cumulative ack newer than the send buffer" in {
+      val emptyBuffer = new AckedSendBuffer[Sequenced](10)
+      emptyBuffer.acknowledge(Ack(SeqNo(2))) should ===(emptyBuffer)
+      emptyBuffer.acknowledge(Ack(SeqNo(2), nacks = Set(SeqNo(0)))) should ===(emptyBuffer)
+
+      val buffer = emptyBuffer.buffer(msg(0)).buffer(msg(1))
+      buffer.acknowledge(Ack(SeqNo(2))) should ===(buffer)
+      buffer.acknowledge(Ack(SeqNo(2), nacks = Set(SeqNo(0)))) should ===(buffer)
+      buffer.acknowledge(Ack(SeqNo(2))).acknowledge(Ack(SeqNo(0))).nonAcked should ===(Vector(msg(1)))
     }
 
     "keep NACKed messages in buffer if selective nacks are received" in {

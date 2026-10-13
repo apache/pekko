@@ -54,7 +54,7 @@ object LwwSpec {
           Registry("", LwwTime(Long.MinValue, replicationContext.replicaId)),
           (state, command) =>
             command match {
-              case Update(s, timestmap, error, maybeLatch) =>
+              case Update(s, timestamp, error, maybeLatch) =>
                 if (s == "") {
                   error ! "bad value"
                   Effect.none
@@ -63,7 +63,7 @@ object LwwSpec {
                     l.countDown()
                     l.await(10, TimeUnit.SECONDS)
                   }
-                  Effect.persist(Changed(s, state.updatedTimestamp.increase(timestmap, replicationContext.replicaId)))
+                  Effect.persist(Changed(s, state.updatedTimestamp.increase(timestamp, replicationContext.replicaId)))
                 }
               case Get(replyTo) =>
                 replyTo ! state

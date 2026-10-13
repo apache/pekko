@@ -396,7 +396,7 @@ This is needed in order to implement the balancing semantics via
 sharing the same mailbox by all the routees.
 
 While it is not possible to change the dispatcher used by the routees, it is possible
-to fine tune the used *executor*. By default the `fork-join-dispatcher` is used and
+to fine tune the used *executor*. By default the `fork-join-executor` is used and
 can be configured as explained in @ref:[Dispatchers](dispatchers.md). In situations where the
 routees are expected to perform blocking operations it may be useful to replace it
 with a `thread-pool-executor` hinting the number of allocated threads explicitly:
@@ -606,7 +606,7 @@ to select a routee based on the sent message. This
 [article](https://tom-e-white.com/2007/11/consistent-hashing.html) gives good 
 insight into how consistent hashing is implemented.
 
-There is 3 ways to define what data to use for the consistent hash key.
+There are 3 ways to define what data to use for the consistent hash key.
 
  * You can define @scala[@scaladoc[hashMapping](pekko.routing.ConsistentHashingPool#hashMapping:org.apache.pekko.routing.ConsistentHashingRouter.ConsistentHashMapping)]@java[@javadoc[withHashMapper](pekko.routing.ConsistentHashingRoutingLogic#withHashMapper(org.apache.pekko.routing.ConsistentHashingRouter.ConsistentHashMapper))] of the router to map incoming
 messages to their consistent hash key. This makes the decision
@@ -618,7 +618,7 @@ with the message definition.
 to define what data to use for the consistent hash key. The sender knows
 the key to use.
 
-These ways to define the consistent hash key can be use together and at
+These ways to define the consistent hash key can be used together and at
 the same time for one router. The @scala[`hashMapping`]@java[`withHashMapper`] is tried first.
 
 Code example:
@@ -790,7 +790,7 @@ Java
  * Sending @apidoc[routing.GetRoutees] to a router actor will make it send back its currently used routees
 in a @apidoc[routing.Routees] message.
  * Sending @apidoc[routing.AddRoutee] to a router actor will add that routee to its collection of routees.
- * Sending @apidoc[routing.RemoveRoutee] to a router actor will remove that routee to its collection of routees.
+ * Sending @apidoc[routing.RemoveRoutee] to a router actor will remove that routee from its collection of routees.
  * Sending @apidoc[routing.AdjustPoolSize] to a pool router actor will add or remove that number of routees to
 its collection of routees.
 
@@ -798,6 +798,12 @@ These management messages may be handled after other messages, so if you send `A
 an ordinary message you are not guaranteed that the routees have been changed when the ordinary message
 is routed. If you need to know when the change has been applied you can send `AddRoutee` followed by `GetRoutees`
 and when you receive the `Routees` reply you know that the preceding change has been applied.
+
+Routee-changing management messages directly change the routees. The `nr-of-instances` setting only defines the initial
+pool size, and changes made by management messages are not constrained by configured resizer bounds. A resizer may
+adjust the pool back within its bounds the next time it runs. If management messages reduce a resizable pool to zero
+routees, ordinary messages are lost until the resizer adds routees. A message that triggers a resize is routed without
+waiting for that resize to complete, so it may be lost if no routees have been added yet.
 
 <a id="resizable-routers"></a>
 ## Dynamically Resizable Pool
@@ -932,7 +938,7 @@ Java
 
 `select` will be called for each message and in this example pick a few destinations by round-robin,
 by reusing the existing @apidoc[routing.RoundRobinRoutingLogic] and wrap the result in a @apidoc[routing.SeveralRoutees]
-instance.  `SeveralRoutees` will send the message to all of the supplied routes.
+instance.  `SeveralRoutees` will send the message to all of the supplied routees.
 
 The implementation of the routing logic must be thread safe, since it might be used outside of actors.
 
@@ -996,7 +1002,7 @@ define the dispatcher inline in the deployment section of the config.
 
 @@snip [RouterDocSpec.scala](/docs/src/test/scala/docs/routing/RouterDocSpec.scala) { #config-pool-dispatcher }
 
-That is the only thing you need to do enable a dedicated dispatcher for a
+That is the only thing you need to enable a dedicated dispatcher for a
 pool.
 
 @@@ note

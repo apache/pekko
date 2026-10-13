@@ -182,7 +182,7 @@ final class LWWRegister[A] private[pekko] (private[pekko] val node: UniqueAddres
   override def toString: String = s"LWWRegister($value)"
 
   override def equals(o: Any): Boolean = o match {
-    case other: LWWRegister[_] =>
+    case other: LWWRegister[?] =>
       timestamp == other.timestamp && value == other.value && node == other.node
     case _ => false
   }
@@ -202,4 +202,7 @@ object LWWRegisterKey {
 }
 
 @SerialVersionUID(1L)
-final case class LWWRegisterKey[A](_id: String) extends Key[LWWRegister[A]](_id) with ReplicatedDataSerialization
+final case class LWWRegisterKey[A](_id: String) extends Key[LWWRegister[A]](_id) with ReplicatedDataSerialization {
+  override def withId(newId: Key.KeyId): LWWRegisterKey[A] =
+    LWWRegisterKey(newId)
+}

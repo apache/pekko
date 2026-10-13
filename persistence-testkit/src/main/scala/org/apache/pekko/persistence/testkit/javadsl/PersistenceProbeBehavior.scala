@@ -17,6 +17,8 @@ import java.util.{ List, Set }
 
 import scala.collection.immutable.{ Set => ScalaSet }
 
+import org.jspecify.annotations.Nullable
+
 import org.apache.pekko
 import pekko.actor.testkit.typed.javadsl.BehaviorTestKit
 import pekko.actor.typed.Behavior
@@ -46,7 +48,7 @@ object PersistenceProbeBehavior {
    */
   def fromEventSourced[Command, Event, State](
       behavior: Behavior[Command],
-      initialState: State,
+      @Nullable initialState: State,
       initialSequenceNr: Long): PersistenceProbeBehavior[Command, Event, State] = {
     require(initialSequenceNr >= 0, "initialSequenceNr must be at least zero")
 

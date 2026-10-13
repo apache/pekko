@@ -15,7 +15,8 @@ package docs.stream.operators.sourceorflow
 
 //#conflate
 //#conflateWithSeed
-import org.apache.pekko.stream.scaladsl.Source
+import org.apache.pekko
+import pekko.stream.scaladsl.Source
 
 //#conflateWithSeed
 //#conflate

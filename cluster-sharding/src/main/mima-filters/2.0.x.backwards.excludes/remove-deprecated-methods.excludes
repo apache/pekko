@@ -20,3 +20,7 @@ ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.cluster.sha
 ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.cluster.sharding.ClusterShardingSettings#TuningParameters.this")
 ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.cluster.sharding.ClusterShardingSettings.passivateIdleEntityAfter")
 ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.cluster.sharding.ClusterShardingSettings.withPassivateIdleAfter")
+
+# Stash trait refactoring - PersistenceStash no longer extends UnrestrictedStash
+# This is an internal class (private[pekko]) and the change is acceptable
+ProblemFilters.exclude[MissingTypesProblem]("org.apache.pekko.cluster.sharding.PersistentShardCoordinator")

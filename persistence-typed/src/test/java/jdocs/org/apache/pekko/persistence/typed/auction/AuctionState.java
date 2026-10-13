@@ -13,8 +13,8 @@
 
 package jdocs.org.apache.pekko.persistence.typed.auction;
 
-import java.util.ArrayList;
 import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -50,7 +50,7 @@ public final class AuctionState {
   }
 
   public AuctionState bid(Bid bid) {
-    if (lastBid().filter(b -> b.getBidder().equals(bid.getBidder())).isPresent()) {
+    if (lastBid().filter(b -> b.bidder().equals(bid.bidder())).isPresent()) {
       // Current bidder has updated their bid
       List<Bid> newBiddingHistory = new ArrayList<>(biddingHistory);
       newBiddingHistory.remove(newBiddingHistory.size() - 1); // remove last

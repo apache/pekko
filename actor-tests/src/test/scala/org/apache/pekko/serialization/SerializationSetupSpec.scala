@@ -46,7 +46,7 @@ final class FakeSerializer extends Serializer {
     Array(id.toByte)
   }
 
-  def fromBinary(bytes: Array[Byte], clazz: Option[Class[_]]) = {
+  def fromBinary(bytes: Array[Byte], clazz: Option[Class[?]]) = {
     require(bytes.length == 1)
     val id = bytes(0).toInt
     registry.get(id)

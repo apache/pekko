@@ -15,7 +15,6 @@ package org.apache.pekko.io
 
 import java.nio.channels.SocketChannel
 
-import scala.annotation.nowarn
 import scala.collection.immutable
 
 import org.apache.pekko
@@ -28,13 +27,12 @@ import pekko.io.Inet.SocketOption
  *
  * INTERNAL API
  */
-@nowarn("msg=deprecated")
 private[io] class TcpIncomingConnection(
     _tcp: TcpExt,
     _channel: SocketChannel,
     registry: ChannelRegistry,
     bindHandler: ActorRef,
-    options: immutable.Traversable[SocketOption],
+    options: immutable.Iterable[SocketOption],
     readThrottling: Boolean)
     extends TcpConnection(_tcp, _channel, readThrottling) {
 

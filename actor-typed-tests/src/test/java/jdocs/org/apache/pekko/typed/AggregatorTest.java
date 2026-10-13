@@ -16,18 +16,19 @@ package jdocs.org.apache.pekko.typed;
 import static jdocs.org.apache.pekko.typed.AggregatorTest.IllustrateUsage.Hotel1;
 import static jdocs.org.apache.pekko.typed.AggregatorTest.IllustrateUsage.Hotel2;
 import static jdocs.org.apache.pekko.typed.AggregatorTest.IllustrateUsage.HotelCustomer;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.stream.Collectors;
-import org.apache.pekko.actor.testkit.typed.javadsl.LogCapturing;
-import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJunitResource;
+import org.apache.pekko.actor.testkit.typed.annotations.JUnitJupiterTestKit;
+import org.apache.pekko.actor.testkit.typed.javadsl.ActorTestKit;
+import org.apache.pekko.actor.testkit.typed.javadsl.JUnitJupiterTestKitBuilder;
+import org.apache.pekko.actor.testkit.typed.javadsl.LogCapturingExtension;
+import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJUnitJupiterExtension;
 import org.apache.pekko.actor.testkit.typed.javadsl.TestProbe;
 import org.apache.pekko.actor.typed.ActorRef;
 import org.apache.pekko.actor.typed.Behavior;
@@ -35,15 +36,13 @@ import org.apache.pekko.actor.typed.javadsl.AbstractBehavior;
 import org.apache.pekko.actor.typed.javadsl.ActorContext;
 import org.apache.pekko.actor.typed.javadsl.Behaviors;
 import org.apache.pekko.actor.typed.javadsl.Receive;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
-import org.scalatestplus.junit.JUnitSuite;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
-public class AggregatorTest extends JUnitSuite {
-  @ClassRule public static final TestKitJunitResource testKit = new TestKitJunitResource();
-
-  @Rule public final LogCapturing logCapturing = new LogCapturing();
+@ExtendWith(TestKitJUnitJupiterExtension.class)
+@ExtendWith(LogCapturingExtension.class)
+public class AggregatorTest {
+  @JUnitJupiterTestKit public ActorTestKit testKit = new JUnitJupiterTestKitBuilder().build();
 
   @Test
   public void testCollectReplies() {
@@ -65,7 +64,7 @@ public class AggregatorTest extends JUnitSuite {
             aggregateReplies,
             Duration.ofSeconds(3)));
 
-    aggregateProbe.expectMessage(Arrays.asList("a", "b", "c"));
+    aggregateProbe.expectMessage(List.of("a", "b", "c"));
   }
 
   @Test
@@ -88,72 +87,30 @@ public class AggregatorTest extends JUnitSuite {
             Duration.ofSeconds(1)));
 
     aggregateProbe.expectNoMessage(Duration.ofMillis(100));
-    aggregateProbe.expectMessage(Arrays.asList("a", "c"));
+    aggregateProbe.expectMessage(List.of("a", "c"));
   }
 
   interface IllustrateUsage {
     // #usage
     public class Hotel1 {
-      public static class RequestQuote {
-        public final ActorRef<Quote> replyTo;
+      public record RequestQuote(ActorRef<Quote> replyTo) {}
 
-        public RequestQuote(ActorRef<Quote> replyTo) {
-          this.replyTo = replyTo;
-        }
-      }
-
-      public static class Quote {
-        public final String hotel;
-        public final BigDecimal price;
-
-        public Quote(String hotel, BigDecimal price) {
-          this.hotel = hotel;
-          this.price = price;
-        }
-      }
+      public record Quote(String hotel, BigDecimal price) {}
     }
 
     public class Hotel2 {
-      public static class RequestPrice {
-        public final ActorRef<Price> replyTo;
+      public record RequestPrice(ActorRef<Price> replyTo) {}
 
-        public RequestPrice(ActorRef<Price> replyTo) {
-          this.replyTo = replyTo;
-        }
-      }
-
-      public static class Price {
-        public final String hotel;
-        public final BigDecimal price;
-
-        public Price(String hotel, BigDecimal price) {
-          this.hotel = hotel;
-          this.price = price;
-        }
-      }
+      public record Price(String hotel, BigDecimal price) {}
     }
 
     public class HotelCustomer extends AbstractBehavior<HotelCustomer.Command> {
 
       interface Command {}
 
-      public static class Quote {
-        public final String hotel;
-        public final BigDecimal price;
+      public record Quote(String hotel, BigDecimal price) {}
 
-        public Quote(String hotel, BigDecimal price) {
-          this.hotel = hotel;
-          this.price = price;
-        }
-      }
-
-      public static class AggregatedQuotes implements Command {
-        public final List<Quote> quotes;
-
-        public AggregatedQuotes(List<Quote> quotes) {
-          this.quotes = quotes;
-        }
-      }
+      public record AggregatedQuotes(List<Quote> quotes) implements Command {}
 
       public static Behavior<Command> create(
           ActorRef<Hotel1.RequestQuote> hotel1, ActorRef<Hotel2.RequestPrice> hotel2) {
@@ -192,15 +149,15 @@ public class AggregatorTest extends JUnitSuite {
                       // The hotels have different protocols with different replies,
                       // convert them to `HotelCustomer.Quote` that this actor understands.
                       if (r instanceof Hotel1.Quote q) {
-                        return new Quote(q.hotel, q.price);
+                        return new Quote(q.hotel(), q.price());
                       } else if (r instanceof Hotel2.Price p) {
-                        return new Quote(p.hotel, p.price);
+                        return new Quote(p.hotel(), p.price());
                       } else {
                         throw new IllegalArgumentException("Unknown reply " + r);
                       }
                     })
-                .sorted((a, b) -> a.price.compareTo(b.price))
-                .collect(Collectors.toList());
+                .sorted((a, b) -> a.price().compareTo(b.price()))
+                .toList();
 
         return new AggregatedQuotes(quotes);
       }
@@ -213,8 +170,8 @@ public class AggregatorTest extends JUnitSuite {
       }
 
       private Behavior<Command> onAggregatedQuotes(AggregatedQuotes aggregated) {
-        if (aggregated.quotes.isEmpty()) getContext().getLog().info("Best Quote N/A");
-        else getContext().getLog().info("Best {}", aggregated.quotes.get(0));
+        if (aggregated.quotes().isEmpty()) getContext().getLog().info("Best Quote N/A");
+        else getContext().getLog().info("Best {}", aggregated.quotes().get(0));
         return this;
       }
     }
@@ -234,12 +191,12 @@ public class AggregatorTest extends JUnitSuite {
             spy.getRef(),
             HotelCustomer.create(hotel1.getRef(), hotel2.getRef())));
 
-    hotel1.receiveMessage().replyTo.tell(new Hotel1.Quote("#1", new BigDecimal(100)));
-    hotel2.receiveMessage().replyTo.tell(new Hotel2.Price("#2", new BigDecimal(95)));
+    hotel1.receiveMessage().replyTo().tell(new Hotel1.Quote("#1", new BigDecimal(100)));
+    hotel2.receiveMessage().replyTo().tell(new Hotel2.Price("#2", new BigDecimal(95)));
     List<HotelCustomer.Quote> quotes =
-        spy.expectMessageClass(HotelCustomer.AggregatedQuotes.class).quotes;
-    assertEquals("#2", quotes.get(0).hotel);
-    assertEquals("#1", quotes.get(1).hotel);
+        spy.expectMessageClass(HotelCustomer.AggregatedQuotes.class).quotes();
+    assertEquals("#2", quotes.get(0).hotel());
+    assertEquals("#1", quotes.get(1).hotel());
     assertEquals(2, quotes.size());
   }
 }

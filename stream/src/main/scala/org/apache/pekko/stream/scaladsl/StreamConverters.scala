@@ -115,7 +115,7 @@ object StreamConverters {
    * Note that a flow can be materialized multiple times, so the function producing the ``Collector`` must be able
    * to handle multiple invocations.
    */
-  def javaCollector[T, R](collectorFactory: () => java.util.stream.Collector[T, _ <: Any, R]): Sink[T, Future[R]] =
+  def javaCollector[T, R](collectorFactory: () => java.util.stream.Collector[T, ? <: Any, R]): Sink[T, Future[R]] =
     Flow[T]
       .fold {
         new FirstCollectorState[T,
@@ -139,7 +139,7 @@ object StreamConverters {
    * to handle multiple invocations.
    */
   def javaCollectorParallelUnordered[T, R](parallelism: Int)(
-      collectorFactory: () => java.util.stream.Collector[T, _ <: Any, R]): Sink[T, Future[R]] = {
+      collectorFactory: () => java.util.stream.Collector[T, ? <: Any, R]): Sink[T, Future[R]] = {
     if (parallelism == 1) javaCollector[T, R](collectorFactory)
     else {
       Sink
@@ -181,7 +181,7 @@ object StreamConverters {
    * If the Java 8 ``Stream`` throws exception the Pekko stream is cancelled.
    *
    * Be aware that Java ``Stream`` blocks current thread while waiting on next element from downstream.
-   * As it is interacting wit blocking API the implementation runs on a separate dispatcher
+   * As it is interacting with blocking API the implementation runs on a separate dispatcher
    * configured through the ``pekko.stream.blocking-io-dispatcher``.
    */
   def asJavaStream[T](): Sink[T, java.util.stream.Stream[T]] = {
@@ -209,7 +209,7 @@ object StreamConverters {
               },
               0),
             false)
-          .onClose(new Runnable { def run = queue.cancel() }))
+          .onClose(() => queue.cancel()))
       .withAttributes(DefaultAttributes.asJavaStream)
   }
 

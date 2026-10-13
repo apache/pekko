@@ -93,7 +93,7 @@ object DelayStrategy {
 
     new DelayStrategy[T] {
 
-      private[this] var delay = initialDelay
+      private var delay = initialDelay
 
       override def nextDelay(elem: T): java.time.Duration = {
         if (needsIncrease(elem)) {

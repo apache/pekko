@@ -5,7 +5,7 @@ project.description: Query side to Apache Pekko Persistence allowing for buildin
 
 ## Dependency
 
-To use Apache Persistence Query, you must add the following dependency in your project:
+To use Apache Pekko Persistence Query, you must add the following dependency in your project:
 
 @@dependency[sbt,Maven,Gradle] {
   bomGroup=org.apache.pekko bomArtifact=pekko-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
@@ -32,10 +32,21 @@ application implemented using Pekko persistence, is completely separated from th
 
 Pekko Persistence and Pekko Projections together can be used to develop a CQRS application. In the application the 
 durable state is stored in a database and fetched as an asynchronous stream to the user. Currently queries on 
-durable state, provided by the `DurableStateStoreQuery` interface, is used to implement tag based searches in 
+durable state, provided by the `DurableStateStoreQuery` interface, are used to implement tag based searches in 
 Pekko Projections. 
 
-At present the query is based on _tags_. So if you have not tagged your objects, this query cannot be used.
+Changes to durable state can be queried in two ways, depending on which queries the state store plugin implements:
+
+* by _tag_, with `changes` and `currentChanges` of @apidoc[pekko.persistence.query.*.DurableStateStoreQuery].
+  If you have not tagged your objects, this query cannot be used.
+* by _slices_, with `changesBySlices` and `currentChangesBySlices` of @apidoc[pekko.persistence.query.typed.*.DurableStateStoreBySliceQuery]
+  for a given entity type and slice range. A slice is deterministically defined based on the persistence id, and the
+  purpose is to evenly distribute all persistence ids over the slices. `sliceForPersistenceId` returns the slice of a
+  persistence id and `sliceRanges` splits all slices into a given number of ranges, for example to run one query per range.
+  This is similar to @ref:[EventsBySlice](../persistence-query.md#eventsbyslice-and-currenteventsbyslice) for event
+  sourced entities. This API may change.
+
+Refer to the documentation of the state store plugin you are using for which of these queries it supports.
 
 The example below shows how to get the  `DurableStateStoreQuery` from the `DurableStateStoreRegistry` extension.
 

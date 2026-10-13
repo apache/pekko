@@ -13,8 +13,9 @@
 
 package docs.stream
 
-import org.apache.pekko.stream.scaladsl._
-import org.apache.pekko.testkit.PekkoSpec
+import org.apache.pekko
+import pekko.stream.scaladsl._
+import pekko.testkit.PekkoSpec
 
 class MigrationsScala extends PekkoSpec {
 

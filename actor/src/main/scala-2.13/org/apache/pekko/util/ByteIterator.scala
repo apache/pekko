@@ -22,7 +22,8 @@ import scala.collection.LinearSeq
 import scala.collection.mutable.ListBuffer
 import scala.reflect.ClassTag
 
-import org.apache.pekko.util.Collections.EmptyImmutableSeq
+import org.apache.pekko
+import pekko.util.Collections.EmptyImmutableSeq
 
 object ByteIterator {
   object ByteArrayIterator {
@@ -141,6 +142,27 @@ object ByteIterator {
       } else throw new NoSuchElementException("next on empty iterator")
     }
 
+    override def getShort(implicit byteOrder: ByteOrder): Short = {
+      if (len < 2) throw new NoSuchElementException("next on empty iterator")
+      val result = SWARUtil.getShort(array, from, byteOrder)
+      from += 2
+      result
+    }
+
+    override def getInt(implicit byteOrder: ByteOrder): Int = {
+      if (len < 4) throw new NoSuchElementException("next on empty iterator")
+      val result = SWARUtil.getInt(array, from, byteOrder)
+      from += 4
+      result
+    }
+
+    override def getLong(implicit byteOrder: ByteOrder): Long = {
+      if (len < 8) throw new NoSuchElementException("next on empty iterator")
+      val result = SWARUtil.getLong(array, from, byteOrder)
+      from += 8
+      result
+    }
+
     private def wrappedByteBuffer: ByteBuffer = ByteBuffer.wrap(array, from, len).asReadOnlyBuffer
 
     def getShorts(xs: Array[Short], offset: Int, n: Int)(implicit byteOrder: ByteOrder): this.type = {
@@ -231,6 +253,36 @@ object ByteIterator {
       val result = current.next()
       normalize()
       result
+    }
+
+    // Fast path: when the current fragment has enough bytes for the requested primitive, delegate
+    // to the current ByteArrayIterator (which uses SWARUtil for a single read) instead of falling
+    // back to the byte-by-byte super impl. Cross-fragment reads keep the byte-by-byte path.
+    override def getShort(implicit byteOrder: ByteOrder): Short = {
+      val cur = current
+      if (cur.len >= java.lang.Short.BYTES) {
+        val r = cur.getShort(byteOrder)
+        normalize()
+        r
+      } else super.getShort(byteOrder)
+    }
+
+    override def getInt(implicit byteOrder: ByteOrder): Int = {
+      val cur = current
+      if (cur.len >= java.lang.Integer.BYTES) {
+        val r = cur.getInt(byteOrder)
+        normalize()
+        r
+      } else super.getInt(byteOrder)
+    }
+
+    override def getLong(implicit byteOrder: ByteOrder): Long = {
+      val cur = current
+      if (cur.len >= java.lang.Long.BYTES) {
+        val r = cur.getLong(byteOrder)
+        normalize()
+        r
+      } else super.getLong(byteOrder)
     }
 
     final override def len: Int = iterators.foldLeft(0) { _ + _.len }

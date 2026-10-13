@@ -27,7 +27,7 @@ import pekko.annotation.DoNotInherit
  * The typical usage of this is to use it as the guardian actor of the [[ActorSystem]], possibly combined with
  * `Behaviors.setup` to starts some initial tasks or actors. Child actors can then be started from the outside
  * by telling or asking [[SpawnProtocol#Spawn]] to the actor reference of the system. When using `ask` this is
- * similar to how [[pekko.actor.ActorSystem#actorOf]] can be used in classic actors with the difference that
+ * similar to how `actorOf` can be used in classic actors with the difference that
  * a `Future` / `CompletionStage` of the `ActorRef` is returned.
  *
  * Stopping children is done through specific support in the protocol of the children, or stopping the entire
@@ -47,7 +47,7 @@ object SpawnProtocol {
    * If `name` is an empty string an anonymous actor (with automatically generated name) will be created.
    *
    * If the `name` is already taken of an existing actor a unique name will be used by appending a suffix
-   * to the the `name`. The exact format or value of the suffix is an implementation detail that is
+   * to the `name`. The exact format or value of the suffix is an implementation detail that is
    * undefined. This means that reusing the same name for several actors will not result in
    * `InvalidActorNameException`, but it's better to use unique names to begin with.
    */

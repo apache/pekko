@@ -52,23 +52,23 @@ import pekko.util.ByteString
  * INTERNAL API: Use [[pekko.stream.scaladsl.JsonFraming]] instead.
  *
  * **Mutable** framing implementation that given any number of [[pekko.util.ByteString]] chunks, can emit JSON objects contained within them.
- * Typically JSON objects are separated by new-lines or commas, however a top-level JSON Array can also be understood and chunked up
- * into valid JSON objects by this framing implementation.
+ * Typically JSON objects are separated by newlines or commas. A top-level JSON array is supported as a container
+ * of objects, but top-level non-object values are not supported.
  *
  * Leading whitespace between elements will be trimmed.
  */
 @InternalApi private[pekko] class JsonObjectParser(maximumObjectLength: Int = Int.MaxValue) {
   import JsonObjectParser._
 
-  private[this] var buffer: Array[Byte] = Array.empty
+  private var buffer: Array[Byte] = Array.empty
 
-  private[this] var pos = 0 // latest position of pointer while scanning for json object end
-  private[this] var start = 0 // number of chars to drop from the front of the bytestring before emitting (skip whitespace etc)
-  private[this] var depth = 0 // counter of object-nesting depth, once hits 0 an object should be emitted
+  private var pos = 0 // latest position of pointer while scanning for json object end
+  private var start = 0 // number of chars to drop from the front of the bytestring before emitting (skip whitespace etc)
+  private var depth = 0 // counter of object-nesting depth, once hits 0 an object should be emitted
 
-  private[this] var completedObject = false
-  private[this] var inStringExpression = false
-  private[this] var inBackslashEscape = false
+  private var completedObject = false
+  private var inStringExpression = false
+  private var inBackslashEscape = false
 
   /**
    * Appends input ByteString to internal buffer.
@@ -90,7 +90,8 @@ import pekko.util.ByteString
 
   /**
    * Attempt to locate next complete JSON object in buffered ByteString and returns `Some(it)` if found.
-   * May throw a [[pekko.stream.scaladsl.Framing.FramingException]] if the contained JSON is invalid or max object size is exceeded.
+   * May throw a [[pekko.stream.scaladsl.Framing.FramingException]] if content outside an object is not an array
+   * delimiter, comma, or whitespace, or if the max object size is exceeded.
    */
   def poll(): Option[ByteString] =
     try {
@@ -112,7 +113,7 @@ import pekko.util.ByteString
         throw new FramingException(s"Invalid JSON encountered at position [$pos] of [${ByteString(buffer).utf8String}]")
     }
 
-  /** @return true if an entire valid JSON object was found, false otherwise */
+  /** @return true if an entire JSON object was found, false otherwise */
   private def seekObject(): Boolean = {
     completedObject = false
     val bufSize = buffer.length

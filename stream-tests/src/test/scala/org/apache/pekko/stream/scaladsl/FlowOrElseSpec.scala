@@ -13,7 +13,6 @@
 
 package org.apache.pekko.stream.scaladsl
 
-import scala.collection.immutable.Seq
 import scala.concurrent.duration._
 
 import org.apache.pekko
@@ -81,7 +80,8 @@ class FlowOrElseSpec extends PekkoSpec {
       outProbe.expectComplete()
     }
 
-    "pass all available requested elements from input two when input 1 has completed without elements" in new OrElseProbedFlow {
+    "pass all available requested elements from input two when input 1 has completed without elements" in
+    new OrElseProbedFlow {
       outProbe.request(5)
 
       inProbe1.sendComplete()

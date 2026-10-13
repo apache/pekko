@@ -57,13 +57,13 @@ object ActorTestKit {
    * Config loaded from the provided actor if that exists, otherwise
    * using default configuration from the reference.conf resources that ship with the Akka libraries.
    */
-  def create(system: ActorSystem[_]): ActorTestKit =
+  def create(system: ActorSystem[?]): ActorTestKit =
     new ActorTestKit(scaladsl.ActorTestKit(system))
 
   /**
    * Create a testkit using the provided name.
    *
-   * It will create an [[pekko.actor.typed.ActorSystem]] with this name,
+   * It will create a [[pekko.actor.typed.ActorSystem]] with this name,
    * e.g. threads will include the name.
    * When the test has completed you should terminate the `ActorSystem` and
    * the testkit with [[ActorTestKit#shutdownTestKit]].
@@ -91,7 +91,7 @@ object ActorTestKit {
    * Create a test kit named based on the provided name,
    * and uses the provided custom config for the actor system.
    *
-   * It will create an [[pekko.actor.typed.ActorSystem]] with this name,
+   * It will create a [[pekko.actor.typed.ActorSystem]] with this name,
    * e.g. threads will include the name.
    *
    * It will also used the provided customConfig provided to create the `ActorSystem`
@@ -103,10 +103,10 @@ object ActorTestKit {
     new ActorTestKit(scaladsl.ActorTestKit(name, customConfig))
 
   /**
-   * Create an [[pekko.actor.typed.ActorSystem]] named based on the provided name,
+   * Create a [[pekko.actor.typed.ActorSystem]] named based on the provided name,
    * use the provided custom config for the actor system, and the testkit will use the provided setting.
    *
-   * It will create an [[pekko.actor.typed.ActorSystem]] with this name,
+   * It will create a [[pekko.actor.typed.ActorSystem]] with this name,
    * e.g. threads will include the name.
    *
    * It will also used the provided customConfig provided to create the `ActorSystem`, and provided setting.
@@ -123,7 +123,7 @@ object ActorTestKit {
    *                             an error is printed to stdout when the system did not shutdown but
    *                             no exception is thrown.
    */
-  def shutdown(system: ActorSystem[_], duration: Duration, throwIfShutdownTimesOut: Boolean): Unit = {
+  def shutdown(system: ActorSystem[?], duration: Duration, throwIfShutdownTimesOut: Boolean): Unit = {
     TestKitUtils.shutdown(system, duration.toScala, throwIfShutdownTimesOut)
   }
 
@@ -132,7 +132,7 @@ object ActorTestKit {
    * if more time than `system-shutdown-default` passes an exception is thrown
    * (can be configured with `throw-on-shutdown-timeout`).
    */
-  def shutdown(system: ActorSystem[_], duration: Duration): Unit = {
+  def shutdown(system: ActorSystem[?], duration: Duration): Unit = {
     val settings = TestKitSettings.create(system)
     shutdown(system, duration, settings.ThrowOnShutdownTimeout)
   }
@@ -142,7 +142,7 @@ object ActorTestKit {
    * if more time than `system-shutdown-default` passes an exception is thrown
    * (can be configured with `throw-on-shutdown-timeout`).
    */
-  def shutdown(system: ActorSystem[_]): Unit = {
+  def shutdown(system: ActorSystem[?]): Unit = {
     val settings = TestKitSettings.create(system)
     shutdown(system, settings.DefaultActorSystemShutdownTimeout.toJava, settings.ThrowOnShutdownTimeout)
   }

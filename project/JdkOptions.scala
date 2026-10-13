@@ -26,8 +26,9 @@ object JdkOptions extends AutoPlugin {
   val targetJavaVersion = "17"
 
   lazy val versionSpecificJavaOptions =
-    // for virtual threads
+    // for Agrona UnsafeApi and virtual threads
     "--add-opens=java.base/jdk.internal.misc=ALL-UNNAMED" ::
+    // for virtual threads
     "--add-opens=java.base/java.lang=ALL-UNNAMED" ::
     // for aeron
     "--add-opens=java.base/sun.nio.ch=ALL-UNNAMED" ::
@@ -36,7 +37,10 @@ object JdkOptions extends AutoPlugin {
 
   def targetJdkScalacOptions(scalaVersion: String): Seq[String] =
     Seq("-release", JdkOptions.targetJavaVersion) ++ {
-      if (scalaVersion.startsWith("3.")) Seq(s"-Xtarget:${targetJavaVersion}") else Seq.empty
+      CrossVersion.partialVersion(scalaVersion) match {
+        case Some((3, minor)) if minor < 8 => Seq(s"-Xtarget:${targetJavaVersion}")
+        case _                             => Seq.empty
+      }
     }
 
   val targetJdkJavacOptions = Seq("--release", targetJavaVersion)

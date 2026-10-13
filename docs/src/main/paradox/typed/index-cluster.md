@@ -24,6 +24,7 @@ project.description: Apache Pekko Cluster concepts, node membership service, CRD
 * [multi-jvm-testing](../multi-jvm-testing.md)
 * [multi-node-testing](../multi-node-testing.md)
 * [remoting-artery](../remoting-artery.md)
+* [remote-security](../remote-security.md)
 * [remoting](../remoting.md)
 * [split-brain-resolver](../split-brain-resolver.md)
 * [coordination](../coordination.md)

@@ -6,13 +6,15 @@ Partitions this stream into chunks by a delimiter function.
 
 ## Signature
 
-@apidoc[Source.groupedAdjacentBy](Source) { scala="#groupedAdjacentBy(f:Out=&gt;T):FlowOps.this.Repr[scala.collection.immutable.Seq[Out]]" java="#groupedAdjacentBy(org.apache.pekko.japi.function.Function)" }
-@apidoc[Flow.groupedAdjacentBy](Flow) { scala="#groupedAdjacentBy(f:Out=&gt;T):FlowOps.this.Repr[scala.collection.immutable.Seq[Out]]" java="#groupedAdjacentBy(org.apache.pekko.japi.function.Function)" }
+@apidoc[Source.groupedAdjacentBy](Source) { scala="#groupedAdjacentBy[T](f:Out=&gt;T):FlowOps.this.Repr[Seq[Out]]" java="#groupedAdjacentBy(org.apache.pekko.japi.function.Function)" }
+@apidoc[Flow.groupedAdjacentBy](Flow) { scala="#groupedAdjacentBy[T](f:Out=&gt;T):FlowOps.this.Repr[Seq[Out]]" java="#groupedAdjacentBy(org.apache.pekko.japi.function.Function)" }
 
 
 ## Description
 
 Partitions this stream into chunks by a delimiter function.
+
+Adheres to the ActorAttributes.SupervisionStrategy attribute (applied to the key function). On `Supervision.Resume` the offending element is skipped; on `Supervision.Restart` the current group is dropped.
 
 See also:
 

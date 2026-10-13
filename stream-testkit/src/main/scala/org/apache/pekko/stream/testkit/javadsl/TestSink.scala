@@ -22,7 +22,7 @@ import pekko.stream.testkit._
 object TestSink {
 
   /**
-   * A Sink that materialized to a [[pekko.stream.testkit.TestSubscriber]].
+   * A Sink that materialized to a [[pekko.stream.testkit.TestSubscriber.Probe]].
    */
   def create[T](system: ClassicActorSystemProvider): Sink[T, TestSubscriber.Probe[T]] =
     new Sink(scaladsl.TestSink[T]()(system))

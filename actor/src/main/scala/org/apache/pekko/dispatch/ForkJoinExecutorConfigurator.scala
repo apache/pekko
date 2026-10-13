@@ -15,9 +15,34 @@ package org.apache.pekko.dispatch
 
 import java.util.concurrent.{ ExecutorService, ForkJoinPool, ForkJoinTask, ThreadFactory, TimeUnit }
 
+import org.apache.pekko
+import pekko.annotation.InternalApi
+import pekko.util.JavaVersion
+
 import com.typesafe.config.Config
 
 object ForkJoinExecutorConfigurator {
+
+  /**
+   * INTERNAL API
+   *
+   * Resolves the effective `minimum-runnable` value for a fork-join dispatcher.
+   *
+   * A negative value (default `-1` in reference.conf) selects the JDK-aware policy:
+   * on JDK 25+ the value is `min(8, max(1, parallelism / 2))` to mitigate the
+   * asyncMode (FIFO) compensation-thread regression tracked in
+   * JDK-8300995 / JDK-8321335 (the impact is most visible on the JDK 25 line in
+   * Pekko nightly tests); on older JDKs the value stays at `1` to preserve the
+   * pre-existing behaviour. Non-negative configured values are honoured verbatim,
+   * so `0` still disables compensation entirely.
+   */
+  @InternalApi private[pekko] def resolveMinimumRunnable(
+      configured: Int,
+      parallelism: Int,
+      jdkMajorVersion: Int): Int =
+    if (configured >= 0) configured
+    else if (jdkMajorVersion >= 25) math.min(8, math.max(1, parallelism / 2))
+    else 1
 
   /**
    * INTERNAL PEKKO USAGE ONLY
@@ -27,15 +52,19 @@ object ForkJoinExecutorConfigurator {
       threadFactory: ForkJoinPool.ForkJoinWorkerThreadFactory,
       maximumPoolSize: Int,
       unhandledExceptionHandler: Thread.UncaughtExceptionHandler,
-      asyncMode: Boolean)
+      asyncMode: Boolean,
+      minimumRunnable: Int = 1)
       extends ForkJoinPool(parallelism, threadFactory, unhandledExceptionHandler, asyncMode,
-        0, maximumPoolSize, 1, null, ForkJoinPoolConstants.DefaultKeepAliveMillis, TimeUnit.MILLISECONDS)
+        0, maximumPoolSize, minimumRunnable, null, ForkJoinPoolConstants.DefaultKeepAliveMillis, TimeUnit.MILLISECONDS)
       with LoadMetrics {
 
     override def execute(r: Runnable): Unit =
       if (r ne null)
-        super.execute(
-          (if (r.isInstanceOf[ForkJoinTask[_]]) r else new PekkoForkJoinTask(r)).asInstanceOf[ForkJoinTask[Any]])
+        // Always hand the pool a task object it has not seen before. Pushing a caller-owned
+        // ForkJoinTask lets the same reference return to the same work-queue slot, which a steal
+        // that stalls between its base recheck and its slot CAS turns into a permanently damaged
+        // queue: https://github.com/ben-manes/caffeine/issues/2021
+        super.execute(new PekkoForkJoinTask(r))
       else
         throw new NullPointerException("Runnable was null")
 
@@ -85,7 +114,8 @@ class ForkJoinExecutorConfigurator(config: Config, prerequisites: DispatcherPrer
       val threadFactory: ForkJoinPool.ForkJoinWorkerThreadFactory,
       val parallelism: Int,
       val asyncMode: Boolean,
-      val maxPoolSize: Int)
+      val maxPoolSize: Int,
+      val minimumRunnable: Int = 1)
       extends ExecutorServiceFactory {
     def this(threadFactory: ForkJoinPool.ForkJoinWorkerThreadFactory,
         parallelism: Int,
@@ -109,7 +139,8 @@ class ForkJoinExecutorConfigurator(config: Config, prerequisites: DispatcherPrer
         }
       } else threadFactory
 
-      val pool = new PekkoForkJoinPool(parallelism, tf, maxPoolSize, MonitorableThreadFactory.doNothing, asyncMode)
+      val pool = new PekkoForkJoinPool(parallelism, tf, maxPoolSize, MonitorableThreadFactory.doNothing, asyncMode,
+        minimumRunnable)
 
       if (isVirtualized) {
         // we need to cast here,
@@ -137,15 +168,21 @@ class ForkJoinExecutorConfigurator(config: Config, prerequisites: DispatcherPrer
           """"task-peeking-mode" in "fork-join-executor" section could only set to "FIFO" or "LIFO".""")
     }
 
+    val parallelism = ThreadPoolConfig.scaledPoolSize(
+      config.getInt("parallelism-min"),
+      config.getDouble("parallelism-factor"),
+      config.getInt("parallelism-max"))
+
     new ForkJoinExecutorServiceFactory(
       id,
       validate(tf),
-      ThreadPoolConfig.scaledPoolSize(
-        config.getInt("parallelism-min"),
-        config.getDouble("parallelism-factor"),
-        config.getInt("parallelism-max")),
+      parallelism,
       asyncMode,
-      config.getInt("maximum-pool-size")
+      config.getInt("maximum-pool-size"),
+      ForkJoinExecutorConfigurator.resolveMinimumRunnable(
+        config.getInt("minimum-runnable"),
+        parallelism,
+        JavaVersion.majorVersion)
     )
   }
 }

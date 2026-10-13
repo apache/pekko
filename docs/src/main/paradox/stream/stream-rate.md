@@ -23,7 +23,7 @@ buffers in a stream. In this chapter we cover how buffers are used in Pekko Stre
 
 In this section we will discuss internal buffers that are introduced as an optimization when using asynchronous operators.
 
-To run an operator asynchronously it has to be marked explicitly as such using the @scala[@scaladoc[`.async`](pekko.stream.Graph#shape:S)]@java[@javadoc[`.async()`](pekko.stream.Graph#async--)] method. Being run
+To run an operator asynchronously it has to be marked explicitly as such using the @scala[@scaladoc[`.async`](pekko.stream.Graph#async:org.apache.pekko.stream.Graph[S,M])]@java[@javadoc[`.async()`](pekko.stream.Graph#async--)] method. Being run
 asynchronously means that an operator, after handing out an element to its downstream consumer is able to immediately
 process the next message. To demonstrate what we mean by this, let's take a look at the following example:
 
@@ -129,7 +129,7 @@ The next example will also queue up 1000 jobs locally, but if there are more job
 in the imaginary external systems, it makes space for the new element by
 dropping one element from the *tail* of the buffer. Dropping from the tail is a very common strategy but
 it must be noted that this will drop the *youngest* waiting job. If some "fairness" is desired in the sense that
-we want to be nice to jobs that has been waiting for long, then this option can be useful.
+we want to be nice to jobs that have been waiting for long, then this option can be useful.
 
 Scala
 :   @@snip [StreamBuffersRateSpec.scala](/docs/src/test/scala/docs/stream/StreamBuffersRateSpec.scala) { #explicit-buffers-droptail }
@@ -204,7 +204,7 @@ Scala
 Java
 :   @@snip [RateTransformationDocTest.java](/docs/src/test/java/jdocs/stream/RateTransformationDocTest.java) { #conflate-sample }
 
-See also @ref:[`conflate`](operators/Source-or-Flow/conflate.md) and @ref:[conflateWithSeed`](operators/Source-or-Flow/conflateWithSeed.md) for more information and examples.
+See also @ref:[`conflate`](operators/Source-or-Flow/conflate.md) and @ref:[`conflateWithSeed`](operators/Source-or-Flow/conflateWithSeed.md) for more information and examples.
 
 
 ### Understanding extrapolate and expand

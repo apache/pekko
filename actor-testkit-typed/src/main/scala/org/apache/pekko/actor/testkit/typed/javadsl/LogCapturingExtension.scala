@@ -7,6 +7,10 @@
  * This file is part of the Apache Pekko project, which was derived from Akka.
  */
 
+/*
+ * Copyright (C) 2019-2022 Lightbend Inc. <https://www.lightbend.com>
+ */
+
 package org.apache.pekko.actor.testkit.typed.javadsl
 
 import java.lang.reflect.Method
@@ -16,7 +20,8 @@ import scala.util.control.NonFatal
 import org.junit.jupiter.api.extension.{ ExtensionContext, InvocationInterceptor, ReflectiveInvocationContext }
 import org.junit.jupiter.api.extension.InvocationInterceptor.Invocation
 
-import org.apache.pekko.actor.testkit.typed.internal.CapturingAppender
+import org.apache.pekko
+import pekko.actor.testkit.typed.internal.CapturingAppender
 
 import org.slf4j.LoggerFactory
 
@@ -24,7 +29,7 @@ final class LogCapturingExtension extends InvocationInterceptor {
 
   private val capturingAppender = CapturingAppender.get("")
 
-  private val myLogger = LoggerFactory.getLogger(classOf[LogCapturing])
+  private val myLogger = LoggerFactory.getLogger(classOf[LogCapturingExtension])
 
   @throws[Throwable]
   override def interceptTestMethod(invocation: Invocation[Void], invocationContext: ReflectiveInvocationContext[Method],
@@ -34,10 +39,9 @@ final class LogCapturingExtension extends InvocationInterceptor {
     val testMethodName = invocationContext.getExecutable.getName
 
     try {
-      myLogger.info(s"Logging started for test [${testClassName}: ${testMethodName}]")
+      myLogger.info("Logging started for test [{}: {}]", testClassName, testMethodName)
       invocation.proceed
-      myLogger.info(
-        s"Logging finished for test [${testClassName}: ${testMethodName}] that was successful")
+      myLogger.info("Logging finished for test [{}: {}] that was successful", testClassName, testMethodName)
     } catch {
       case NonFatal(e) =>
         println(

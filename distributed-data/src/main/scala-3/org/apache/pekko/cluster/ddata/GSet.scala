@@ -52,7 +52,7 @@ final case class GSet[A] private (elements: Set[A])(override val delta: Option[G
    * Java API
    */
   def getElements(): java.util.Set[A] = {
-    import scala.jdk.CollectionConverters._
+    import scala.jdk.CollectionConverters.*
     elements.asJava
   }
 
@@ -79,8 +79,8 @@ final case class GSet[A] private (elements: Set[A])(override val delta: Option[G
   }
 
   override def merge(that: GSet[A]): GSet[A] =
-    if ((this eq that) || that.isAncestorOf(this)) this.clearAncestor()
-    else if (this.isAncestorOf(that)) that.clearAncestor()
+    if (this eq that) || that.isAncestorOf(this) then this.clearAncestor()
+    else if this.isAncestorOf(that) then that.clearAncestor()
     else {
       clearAncestor()
       new GSet[A](elements.union(that.elements))(None)
@@ -91,7 +91,7 @@ final case class GSet[A] private (elements: Set[A])(override val delta: Option[G
   override def zero: GSet[A] = GSet.empty
 
   override def resetDelta: GSet[A] =
-    if (delta.isEmpty) this
+    if delta.isEmpty then this
     else assignAncestor(new GSet[A](elements)(None))
 
   override def toString: String = s"G$elements"

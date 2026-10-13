@@ -15,7 +15,8 @@ package org.apache.pekko.actor.testkit.typed.internal
 
 import scala.annotation.tailrec
 
-import org.apache.pekko.annotation.InternalApi
+import org.apache.pekko
+import pekko.annotation.InternalApi
 
 import org.slf4j.LoggerFactory
 import org.slf4j.event.Level

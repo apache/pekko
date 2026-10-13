@@ -4,6 +4,10 @@ Fan-out the stream to several streams.
 
 @ref[Fan-out operators](index.md#fan-out-operators)
 
+## Signature
+
+@apidoc[stream.*.Balance]
+
 ## Description
 
 Fan-out the stream to several streams. Each upstream element is emitted to the first available downstream consumer.

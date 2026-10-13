@@ -337,14 +337,69 @@ class FlowThrottleSpec extends StreamSpec("""
         .expectComplete()
     }
 
-    "handle rate calculation function exception" in {
-      val ex = new RuntimeException with NoStackTrace
+    "stop on cost calculation function exception with explicit stopping decider" in {
+      val ex = new RuntimeException("boom") with NoStackTrace
       Source(1 to 5)
-        .throttle(2, 200.millis, 0, _ => { throw ex }, Shaping)
-        .throttle(1, 100.millis, 5, Enforcing)
+        .throttle(1, 1.second, 100, n => if (n == 3) throw ex else 1, Shaping)
+        .withAttributes(ActorAttributes.supervisionStrategy(Supervision.stoppingDecider))
         .runWith(TestSink[Int]())
         .request(5)
+        .expectNext(1, 2)
         .expectError(ex)
+    }
+
+    "stop on cost calculation function exception by default" in {
+      val ex = new RuntimeException("boom") with NoStackTrace
+      Source(1 to 5)
+        .throttle(1, 1.second, 100, n => if (n == 3) throw ex else 1, Shaping)
+        .runWith(TestSink[Int]())
+        .request(5)
+        .expectNext(1, 2)
+        .expectError(ex)
+    }
+
+    "resume on cost calculation function exception in shaping mode" in {
+      val ex = new RuntimeException("boom") with NoStackTrace
+      Source(1 to 5)
+        .throttle(1, 1.second, 100, n => if (n == 3) throw ex else 1, Shaping)
+        .withAttributes(ActorAttributes.supervisionStrategy(Supervision.resumingDecider))
+        .runWith(TestSink[Int]())
+        .request(5)
+        .expectNext(1, 2, 4, 5)
+        .expectComplete()
+    }
+
+    "resume and complete when the last element fails cost calculation" in {
+      val ex = new RuntimeException("boom") with NoStackTrace
+      Source(1 to 5)
+        .throttle(1, 1.second, 100, n => if (n == 5) throw ex else 1, Shaping)
+        .withAttributes(ActorAttributes.supervisionStrategy(Supervision.resumingDecider))
+        .runWith(TestSink[Int]())
+        .request(5)
+        .expectNext(1, 2, 3, 4)
+        .expectComplete()
+    }
+
+    "resume on cost calculation function exception in enforcing mode" in {
+      val ex = new RuntimeException("boom") with NoStackTrace
+      Source(1 to 5)
+        .throttle(1, 1.second, 100, n => if (n == 3) throw ex else 1, Enforcing)
+        .withAttributes(ActorAttributes.supervisionStrategy(Supervision.resumingDecider))
+        .runWith(TestSink[Int]())
+        .request(5)
+        .expectNext(1, 2, 4, 5)
+        .expectComplete()
+    }
+
+    "restart on cost calculation function exception like resume" in {
+      val ex = new RuntimeException("boom") with NoStackTrace
+      Source(1 to 5)
+        .throttle(1, 1.second, 100, n => if (n == 3) throw ex else 1, Shaping)
+        .withAttributes(ActorAttributes.supervisionStrategy(Supervision.restartingDecider))
+        .runWith(TestSink[Int]())
+        .request(5)
+        .expectNext(1, 2, 4, 5)
+        .expectComplete()
     }
 
     "work for real scenario with automatic burst size" taggedAs TimingTest in {

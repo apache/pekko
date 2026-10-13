@@ -81,6 +81,10 @@ class ClusterShardingMessageSerializerSpec extends PekkoSpec {
       checkSerialization(GracefulShutdownReq(region1))
     }
 
+    "be able to serialize StopShards" in {
+      checkSerialization(StopShards(Set("a", "b", "c")))
+    }
+
     "be able to serialize PersistentShard snapshot state" in {
       checkSerialization(EventSourcedRememberEntitiesShardStore.State(Set("e1", "e2", "e3")))
     }

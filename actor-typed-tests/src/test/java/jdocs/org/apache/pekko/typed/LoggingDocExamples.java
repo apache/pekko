@@ -58,6 +58,7 @@ public interface LoggingDocExamples {
       return this;
     }
   }
+
   // #context-log
 
   // #logger-name
@@ -86,6 +87,7 @@ public interface LoggingDocExamples {
       return this;
     }
   }
+
   // #logger-name
 
   // #logger-factory
@@ -106,6 +108,7 @@ public interface LoggingDocExamples {
           });
     }
   }
+
   // #logger-factory
 
   static void logMessages() {

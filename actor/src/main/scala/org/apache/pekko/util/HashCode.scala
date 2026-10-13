@@ -14,7 +14,6 @@
 package org.apache.pekko.util
 
 import java.lang.{ Double => JDouble, Float => JFloat }
-import java.lang.reflect.{ Array => JArray }
 
 /**
  * Set of methods which allow easy implementation of <code>hashCode</code>.
@@ -47,7 +46,7 @@ object HashCode {
       var result = seed
       if (value eq null) result = hash(result, 0)
       else if (!isArray(value)) result = hash(result, value.hashCode())
-      else for (id <- 0 until JArray.getLength(value)) result = hash(result, JArray.get(value, id)) // is an array
+      else result = hashArray(result, value)
       result
     case unexpected =>
       throw new IllegalArgumentException(s"Unexpected hash parameter: $unexpected") // will not happen, for exhaustiveness check
@@ -61,5 +60,67 @@ object HashCode {
 
   private def firstTerm(seed: Int): Int = PRIME * seed
   private def isArray(anyRef: AnyRef): Boolean = anyRef.getClass.isArray
+  private def hashArray(seed: Int, value: AnyRef): Int = {
+    var result = seed
+    value match {
+      case array: Array[AnyRef] =>
+        var index = 0
+        while (index < array.length) {
+          result = hash(result, array(index))
+          index += 1
+        }
+      case array: Array[Boolean] =>
+        var index = 0
+        while (index < array.length) {
+          result = hash(result, array(index))
+          index += 1
+        }
+      case array: Array[Char] =>
+        var index = 0
+        while (index < array.length) {
+          result = hash(result, array(index))
+          index += 1
+        }
+      case array: Array[Short] =>
+        var index = 0
+        while (index < array.length) {
+          result = hash(result, array(index))
+          index += 1
+        }
+      case array: Array[Int] =>
+        var index = 0
+        while (index < array.length) {
+          result = hash(result, array(index))
+          index += 1
+        }
+      case array: Array[Long] =>
+        var index = 0
+        while (index < array.length) {
+          result = hash(result, array(index))
+          index += 1
+        }
+      case array: Array[Float] =>
+        var index = 0
+        while (index < array.length) {
+          result = hash(result, array(index))
+          index += 1
+        }
+      case array: Array[Double] =>
+        var index = 0
+        while (index < array.length) {
+          result = hash(result, array(index))
+          index += 1
+        }
+      case array: Array[Byte] =>
+        var index = 0
+        while (index < array.length) {
+          result = hash(result, array(index))
+          index += 1
+        }
+      case unexpected =>
+        throw new IllegalArgumentException(s"Unexpected array hash parameter: $unexpected")
+    }
+    result
+  }
   private val PRIME = 37
 }

@@ -19,10 +19,9 @@ import java.util.concurrent.TimeUnit;
 import org.apache.pekko.actor.testkit.typed.javadsl.TestProbe;
 import org.apache.pekko.actor.typed.ActorSystem;
 import org.apache.pekko.cluster.ClusterEvent;
-import org.junit.Test;
-import org.scalatestplus.junit.JUnitSuite;
+import org.junit.jupiter.api.Test;
 
-public class ClusterApiTest extends JUnitSuite {
+public class ClusterApiTest {
 
   @Test
   public void joinLeaveAndObserve() throws Exception {

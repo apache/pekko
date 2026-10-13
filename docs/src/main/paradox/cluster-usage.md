@@ -194,7 +194,7 @@ Scala
 Java
 :  @@snip [TransformationFrontend.java](/docs/src/test/java/jdocs/cluster/TransformationFrontend.java) { #frontend }
 
-Note that the `TransformationFrontend` actor watch the registered backend
+Note that the `TransformationFrontend` actor watches the registered backend
 to be able to remove it from its list of available backend workers.
 Death watch uses the cluster failure detector for nodes in the cluster, i.e. it detects
 network failures and JVM crashes, in addition to graceful termination of watched
@@ -216,14 +216,14 @@ A common use case is to start actors after the cluster has been initialized,
 members have joined, and the cluster has reached a certain size.
 
 With a configuration option you can define required number of members
-before the leader changes member status of 'Joining' members to 'Up'.:
+before the leader changes member status of 'Joining' members to 'Up':
 
 ```
 pekko.cluster.min-nr-of-members = 3
 ```
 
 In a similar way you can define required number of members of a certain role
-before the leader changes member status of 'Joining' members to 'Up'.:
+before the leader changes member status of 'Joining' members to 'Up':
 
 ```
 pekko.cluster.role {
@@ -245,16 +245,16 @@ Java
 ## How To Cleanup when Member is Removed
 
 You can do some clean up in a @apidoc[registerOnMemberRemoved](cluster.Cluster) {scala="#registerOnMemberRemoved[T](code:=%3ET):Unit" java="#registerOnMemberRemoved(java.lang.Runnable)"} callback, which will
-be invoked when the current member status is changed to 'Removed' or the cluster have been shutdown.
+be invoked when the current member status is changed to 'Removed' or the cluster has been shut down.
 
 An alternative is to register tasks to the @ref:[Coordinated Shutdown](coordinated-shutdown.md).
 
 @@@ note
 
-Register a OnMemberRemoved callback on a cluster that have been shutdown, the callback will be invoked immediately on
+Registering an OnMemberRemoved callback on a cluster that has been shut down, the callback will be invoked immediately on
 the caller thread, otherwise it will be invoked later when the current member status changed to @scala[@scaladoc[Removed](pekko.cluster.MemberStatus$$Removed$)]@java[@javadoc[Removed](pekko.cluster.MemberStatus#removed())]. You may
 want to install some cleanup handling after the cluster was started up, but the cluster might already be shutting
-down when you installing, and depending on the race is not healthy.
+down when you install it, and depending on the race is not healthy.
 
 @@@
 
@@ -382,13 +382,15 @@ There are several management tools for the cluster. Please refer to the
 
 @@@ warning
 
-**Deprecation warning** - The command line script has been deprecated and is scheduled for removal
-in the next major version. Use the @ref:[HTTP management](additional/operations.md#http) API with [curl](https://curl.se/)
+**Deprecation warning** - The command line script has been deprecated and may be removed
+in a future release. Use the @ref:[HTTP management](additional/operations.md#http) API with [curl](https://curl.se/)
 or similar instead.
 
 @@@
 
-The cluster can be managed with the script `pekko-cluster` provided in the Pekko GitHub repository @extref[here](github:cluster/jmx-client). Place the script and the `jmxsh-R5.jar` library in the same directory.
+The cluster can be managed with the script `pekko-cluster` provided in the Pekko GitHub repository @extref[here](github:cluster/jmx-client). The script requires the `jmxsh-R5.jar` library, which is not shipped with Pekko. If the jar is not present, the script
+attempts to download it with `curl` into the directory containing the script; alternatively, obtain it separately and place it
+in the same directory as the script.
 
 Run it without parameters to see instructions about how to use the script:
 
@@ -417,7 +419,7 @@ Examples: ./pekko-cluster localhost 9999 is-available
 ```
 
 To be able to use the script you must enable remote monitoring and management when starting the JVMs of the cluster nodes,
-as described in [Monitoring and Management Using JMX Technology](https://docs.oracle.com/javase/8/docs/technotes/guides/management/agent.html).
+as described in [Monitoring and Management Using JMX Technology](https://docs.oracle.com/en/java/javase/17/management/monitoring-and-management-using-jmx-technology.html).
 Make sure you understand the security implications of enabling remote monitoring and management.
 
 <a id="cluster-configuration"></a>

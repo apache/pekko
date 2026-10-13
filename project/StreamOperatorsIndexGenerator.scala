@@ -21,7 +21,7 @@ import scala.util.control.NonFatal
  */
 object StreamOperatorsIndexGenerator extends AutoPlugin {
 
-  override val projectSettings: Seq[Setting[_]] = inConfig(Compile)(
+  override val projectSettings: Seq[Setting[?]] = inConfig(Compile)(
     Seq(
       resourceGenerators +=
         generateAlphabeticalIndex(sourceDirectory, _ / "paradox" / "stream" / "operators" / "index.md")))
@@ -63,8 +63,6 @@ object StreamOperatorsIndexGenerator extends AutoPlugin {
     "runForeach",
     "runReduce",
     "named",
-    "throttleEven",
-    "actorPublisher",
     "addAttributes",
     "mapMaterializedValue",
     // for comprehensions
@@ -81,6 +79,7 @@ object StreamOperatorsIndexGenerator extends AutoPlugin {
     "mergeGraph",
     "wireTapGraph",
     "alsoToGraph",
+    "resilientAlsoToGraph",
     "orElseGraph",
     "divertToGraph",
     "zipWithGraph",
@@ -89,7 +88,8 @@ object StreamOperatorsIndexGenerator extends AutoPlugin {
   // FIXME document these methods as well
   val pendingTestCases = Map(
     "Source" -> pendingSourceOrFlow,
-    "Flow" -> (pendingSourceOrFlow ++ Seq(
+    "Flow" ->
+    (pendingSourceOrFlow ++ Seq(
       "fromProcessorMat",
       "toProcessor",
       "fromProcessor",
@@ -107,7 +107,6 @@ object StreamOperatorsIndexGenerator extends AutoPlugin {
       "shape",
       "traversalBuilder",
       "fromGraph",
-      "actorSubscriber",
       "foldAsync",
       "newOnCompleteStage"))
 

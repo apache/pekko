@@ -13,13 +13,14 @@
 
 package typed.tutorial_4
 
-import org.apache.pekko.actor.typed.ActorRef
-import org.apache.pekko.actor.typed.Behavior
-import org.apache.pekko.actor.typed.PostStop
-import org.apache.pekko.actor.typed.Signal
-import org.apache.pekko.actor.typed.scaladsl.AbstractBehavior
-import org.apache.pekko.actor.typed.scaladsl.ActorContext
-import org.apache.pekko.actor.typed.scaladsl.Behaviors
+import org.apache.pekko
+import pekko.actor.typed.ActorRef
+import pekko.actor.typed.Behavior
+import pekko.actor.typed.PostStop
+import pekko.actor.typed.Signal
+import pekko.actor.typed.scaladsl.AbstractBehavior
+import pekko.actor.typed.scaladsl.ActorContext
+import pekko.actor.typed.scaladsl.Behaviors
 
 //#device-manager-full
 object DeviceManager {

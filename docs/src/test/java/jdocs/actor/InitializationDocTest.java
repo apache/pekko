@@ -22,20 +22,20 @@ import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.actor.Props;
 import org.apache.pekko.japi.function.Predicate;
 import org.apache.pekko.testkit.javadsl.TestKit;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 public class InitializationDocTest extends AbstractJavaTest {
 
   static ActorSystem system = null;
 
-  @BeforeClass
+  @BeforeAll
   public static void beforeClass() {
     system = ActorSystem.create("InitializationDocTest");
   }
 
-  @AfterClass
+  @AfterAll
   public static void afterClass() {
     TestKit.shutdownActorSystem(system);
   }

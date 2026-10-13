@@ -103,7 +103,7 @@ object EventSourcedBehaviorTestKit {
    * Factory method to create a new EventSourcedBehaviorTestKit.
    */
   def create[Command, Event, State](
-      system: ActorSystem[_],
+      system: ActorSystem[?],
       behavior: Behavior[Command]): EventSourcedBehaviorTestKit[Command, Event, State] =
     create(system, behavior, enabledSerializationSettings)
 
@@ -113,7 +113,7 @@ object EventSourcedBehaviorTestKit {
    * Note that `equals` must be implemented in the commands, events and state if `verifyEquality` is enabled.
    */
   def create[Command, Event, State](
-      system: ActorSystem[_],
+      system: ActorSystem[?],
       behavior: Behavior[Command],
       serializationSettings: SerializationSettings): EventSourcedBehaviorTestKit[Command, Event, State] = {
     val scaladslSettings = new scaladsl.EventSourcedBehaviorTestKit.SerializationSettings(
@@ -161,8 +161,10 @@ object EventSourcedBehaviorTestKit {
      * The first event as a given expected type. It will throw `AssertionError` if there is no event or
      * if the event is of a different type.
      */
-    def eventOfType[E <: Event](eventClass: Class[E]): E =
-      delegate.eventOfType(ClassTag[E](eventClass))
+    def eventOfType[E <: Event](eventClass: Class[E]): E = {
+      implicit val ct: ClassTag[E] = ClassTag(eventClass)
+      delegate.eventOfType[E]
+    }
 
     /**
      * The state after applying the events.
@@ -173,8 +175,10 @@ object EventSourcedBehaviorTestKit {
     /**
      * The state as a given expected type. It will throw `AssertionError` if the state is of a different type.
      */
-    def stateOfType[S <: State](stateClass: Class[S]): S =
-      delegate.stateOfType(ClassTag[S](stateClass))
+    def stateOfType[S <: State](stateClass: Class[S]): S = {
+      implicit val ct: ClassTag[S] = ClassTag(stateClass)
+      delegate.stateOfType[S]
+    }
   }
 
   /**
@@ -195,8 +199,10 @@ object EventSourcedBehaviorTestKit {
      * The reply as a given expected type.  It will throw `AssertionError` if there is no reply or
      * if the reply is of a different type.
      */
-    def replyOfType[R <: Reply](replyClass: Class[R]): R =
-      delegate.replyOfType(ClassTag[R](replyClass))
+    def replyOfType[R <: Reply](replyClass: Class[R]): R = {
+      implicit val ct: ClassTag[R] = ClassTag(replyClass)
+      delegate.replyOfType[R]
+    }
 
     /**
      * `true` if there is no reply.

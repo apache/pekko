@@ -23,7 +23,7 @@ import org.apache.pekko
 import pekko.testkit.metrics._
 
 /**
- * Used to report `org.apache.pekko.testkit.metric.Metric` types that the original `com.codahale.metrics.ConsoleReporter` is unaware of (cannot re-use directly because of private constructor).
+ * Used to report `org.apache.pekko.testkit.metric.Metric` types that the original `com.codahale.metrics.ConsoleReporter` is unaware of (cannot reuse directly because of private constructor).
  */
 class PekkoConsoleReporter(registry: PekkoMetricRegistry, verbose: Boolean, output: PrintStream = System.out)
     extends ScheduledReporter(
@@ -36,7 +36,7 @@ class PekkoConsoleReporter(registry: PekkoMetricRegistry, verbose: Boolean, outp
   private final val ConsoleWidth = 80
 
   override def report(
-      gauges: util.SortedMap[String, Gauge[_]],
+      gauges: util.SortedMap[String, Gauge[?]],
       counters: util.SortedMap[String, Counter],
       histograms: util.SortedMap[String, Histogram],
       meters: util.SortedMap[String, Meter],
@@ -82,7 +82,7 @@ class PekkoConsoleReporter(registry: PekkoMetricRegistry, verbose: Boolean, outp
     output.print("             count = %d%n".format(entry.getCount))
   }
 
-  private def printGauge(entry: Gauge[_]): Unit = {
+  private def printGauge(entry: Gauge[?]): Unit = {
     output.print("             value = %s%n".format(entry.getValue))
   }
 
@@ -168,7 +168,7 @@ class PekkoConsoleReporter(registry: PekkoMetricRegistry, verbose: Boolean, outp
   }
 
   /** Required for getting simple names of refined instances */
-  private def simpleName(clazz: Class[_]): String = {
+  private def simpleName(clazz: Class[?]): String = {
     val n = clazz.getName
     val i = n.lastIndexOf('.')
     n.substring(i + 1)

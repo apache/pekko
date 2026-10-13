@@ -16,7 +16,8 @@ package org.apache.pekko.remote.artery.tcp.ssl
 import java.security.cert.X509Certificate
 import javax.net.ssl.SSLSession
 
-import org.apache.pekko.annotation.InternalApi
+import org.apache.pekko
+import pekko.annotation.InternalApi
 
 /**
  * Allows hooking in extra verification before finishing the SSL handshake.

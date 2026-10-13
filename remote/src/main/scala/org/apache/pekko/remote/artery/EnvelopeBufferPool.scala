@@ -240,7 +240,7 @@ private[remote] final class HeaderBuilderImpl(
     extends HeaderBuilder {
   import HeaderBuilder.DeadLettersCode
 
-  private[this] val toSerializationFormat: SerializationFormatCache = new SerializationFormatCache
+  private val toSerializationFormat: SerializationFormatCache = new SerializationFormatCache
 
   // Fields only available for EnvelopeBuffer
   var _version: Byte = 0
@@ -324,8 +324,7 @@ private[remote] final class HeaderBuilderImpl(
     _senderActorRef = null
     _senderActorRefIdx = DeadLettersCode
   }
-  override def isNoSender: Boolean =
-    (_senderActorRef eq null) && _senderActorRefIdx == DeadLettersCode
+  override def isNoSender: Boolean = (_senderActorRef eq null) && _senderActorRefIdx == DeadLettersCode
   override def senderActorRef(originUid: Long): OptionVal[ActorRef] = {
     // we treat deadLetters as always present, but not included in table
     if ((_senderActorRef eq null) && !isNoSender)
@@ -340,8 +339,7 @@ private[remote] final class HeaderBuilderImpl(
     _recipientActorRef = null
     _recipientActorRefIdx = DeadLettersCode
   }
-  def isNoRecipient: Boolean =
-    (_recipientActorRef eq null) && _recipientActorRefIdx == DeadLettersCode
+  def isNoRecipient: Boolean = (_recipientActorRef eq null) && _recipientActorRefIdx == DeadLettersCode
 
   /**
    * Note that Serialization.currentTransportInformation must be set when calling this method,

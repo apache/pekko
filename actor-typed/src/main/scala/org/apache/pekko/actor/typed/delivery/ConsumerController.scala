@@ -62,7 +62,8 @@ object ConsumerController {
 
   type SeqNr = Long
 
-  sealed trait Command[+A] extends UnsealedInternalCommand
+  /** Not for user extension */
+  @DoNotInherit sealed trait Command[+A] extends UnsealedInternalCommand
 
   /**
    * Initial message from the consumer actor. The `deliverTo` is typically constructed
@@ -204,7 +205,7 @@ object ConsumerController {
      * Scala API: Factory method from config `pekko.reliable-delivery.consumer-controller`
      * of the `ActorSystem`.
      */
-    def apply(system: ActorSystem[_]): Settings =
+    def apply(system: ActorSystem[?]): Settings =
       apply(system.settings.config.getConfig("pekko.reliable-delivery.consumer-controller"))
 
     /**
@@ -223,7 +224,7 @@ object ConsumerController {
      * Java API: Factory method from config `pekko.reliable-delivery.producer-controller`
      * of the `ActorSystem`.
      */
-    def create(system: ActorSystem[_]): Settings =
+    def create(system: ActorSystem[?]): Settings =
       apply(system)
 
     /**

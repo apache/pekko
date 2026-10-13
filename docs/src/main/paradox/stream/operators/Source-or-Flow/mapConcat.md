@@ -6,8 +6,8 @@ Transform each element into zero or more elements that are individually passed d
 
 ## Signature
 
-@apidoc[Source.mapConcat](Source) { scala="#mapConcat[T](f:Out=&gt;scala.collection.immutable.Iterable[T]):FlowOps.this.Repr[T]" java="#mapConcat(org.apache.pekko.japi.function.Function)" }
-@apidoc[Flow.mapConcat](Flow) { scala="#mapConcat[T](f:Out=&gt;scala.collection.immutable.Iterable[T]):FlowOps.this.Repr[T]" java="#mapConcat(org.apache.pekko.japi.function.Function)" }
+@apidoc[Source.mapConcat](Source) { scala="#mapConcat[T](f:Out=&gt;IterableOnce[T]):FlowOps.this.Repr[T]" java="#mapConcat(org.apache.pekko.japi.function.Function)" }
+@apidoc[Flow.mapConcat](Flow) { scala="#mapConcat[T](f:Out=&gt;IterableOnce[T]):FlowOps.this.Repr[T]" java="#mapConcat(org.apache.pekko.japi.function.Function)" }
 
 
 ## Description

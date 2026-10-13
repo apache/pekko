@@ -14,6 +14,7 @@
 package org.apache.pekko.pattern
 
 import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 import java.util.concurrent.TimeoutException
 
 import scala.annotation.{ nowarn, tailrec }
@@ -28,7 +29,7 @@ import org.apache.pekko
 import pekko.actor._
 import pekko.annotation.{ InternalApi, InternalStableApi }
 import pekko.dispatch.sysmsg._
-import pekko.util.{ ByteString, Timeout }
+import pekko.util.Timeout
 
 /**
  * This is what is used to complete a Future that is returned from an ask/? call,
@@ -67,7 +68,7 @@ trait AskSupport {
    * holding the eventual reply message; this means that the target actor
    * needs to send the result to the `sender` reference provided.
    *
-   * The Future will be completed with an [[pekko.pattern.AskTimeoutException]] after the
+   * The Future will be completed with a [[pekko.pattern.AskTimeoutException]] after the
    * given timeout has expired; this is independent from any timeout applied
    * while awaiting a result for this future (i.e. in
    * `Await.result(..., timeout)`). A typical reason for `AskTimeoutException` is that the
@@ -133,7 +134,7 @@ trait AskSupport {
    * holding the eventual reply message; this means that the target actor
    * needs to send the result to the `sender` reference provided.
    *
-   * The Future will be completed with an [[pekko.pattern.AskTimeoutException]] after the
+   * The Future will be completed with a [[pekko.pattern.AskTimeoutException]] after the
    * given timeout has expired; this is independent from any timeout applied
    * while awaiting a result for this future (i.e. in
    * `Await.result(..., timeout)`). A typical reason for `AskTimeoutException` is that the
@@ -196,7 +197,7 @@ trait ExplicitAskSupport {
    * holding the eventual reply message; this means that the target actor
    * needs to send the result to the `sender` reference provided.
    *
-   * The Future will be completed with an [[pekko.pattern.AskTimeoutException]] after the
+   * The Future will be completed with a [[pekko.pattern.AskTimeoutException]] after the
    * given timeout has expired; this is independent from any timeout applied
    * while awaiting a result for this future (i.e. in
    * `Await.result(..., timeout)`). A typical reason for `AskTimeoutException` is that the
@@ -254,7 +255,7 @@ trait ExplicitAskSupport {
    * holding the eventual reply message; this means that the target actor
    * needs to send the result to the `sender` reference provided.
    *
-   * The Future will be completed with an [[pekko.pattern.AskTimeoutException]] after the
+   * The Future will be completed with a [[pekko.pattern.AskTimeoutException]] after the
    * given timeout has expired; this is independent from any timeout applied
    * while awaiting a result for this future (i.e. in
    * `Await.result(..., timeout)`). A typical reason for `AskTimeoutException` is that the
@@ -457,7 +458,7 @@ final class AskableActorSelection(val actorSel: ActorSelection) extends AnyVal {
         if (timeout.duration.length <= 0)
           Future.failed[Any](AskableActorRef.negativeTimeoutException(actorSel, message, sender))
         else {
-          val refPrefix = URLEncoder.encode(actorSel.pathString.replace("/", "_"), ByteString.UTF_8)
+          val refPrefix = URLEncoder.encode(actorSel.pathString.replace("/", "_"), StandardCharsets.UTF_8)
           PromiseActorRef(ref.provider, timeout, targetName = actorSel, message.getClass.getName, refPrefix, sender)
             .ask(actorSel, message, timeout)
         }
@@ -486,7 +487,7 @@ final class ExplicitlyAskableActorSelection(val actorSel: ActorSelection) extend
           val message = messageFactory(ref.provider.deadLetters)
           Future.failed[Any](AskableActorRef.negativeTimeoutException(actorSel, message, sender))
         } else {
-          val refPrefix = URLEncoder.encode(actorSel.pathString.replace("/", "_"), ByteString.UTF_8)
+          val refPrefix = URLEncoder.encode(actorSel.pathString.replace("/", "_"), StandardCharsets.UTF_8)
           val a = PromiseActorRef(ref.provider, timeout, targetName = actorSel, "unknown", refPrefix, sender)
           val message = messageFactory(a)
           a.messageClassName = message.getClass.getName
@@ -536,46 +537,50 @@ private[pekko] final class PromiseActorRef(
    */
   @volatile
   @nowarn("msg=is never updated")
-  private[this] var _stateDoNotCallMeDirectly: AnyRef = _
+  private var _stateDoNotCallMeDirectly: AnyRef = null
 
   @volatile
   @nowarn("msg=is never updated")
-  private[this] var _watchedByDoNotCallMeDirectly: immutable.Set[ActorRef] = ActorCell.emptyActorRefSet
+  private var _watchedByDoNotCallMeDirectly: immutable.Set[ActorRef] = ActorCell.emptyActorRefSet
 
   @nowarn private def _preventPrivateUnusedErasure = {
     _stateDoNotCallMeDirectly
     _watchedByDoNotCallMeDirectly
   }
 
-  private[this] def watchedBy: Set[ActorRef] = watchedByHandle.get(this)
+  // volatile read: published across threads via compareAndSet in updateWatchedBy
+  private def watchedBy: Set[ActorRef] = watchedByHandle.getVolatile(this)
 
-  private[this] def updateWatchedBy(oldWatchedBy: Set[ActorRef], newWatchedBy: Set[ActorRef]): Boolean =
+  private def updateWatchedBy(oldWatchedBy: Set[ActorRef], newWatchedBy: Set[ActorRef]): Boolean =
     watchedByHandle.compareAndSet(this, oldWatchedBy, newWatchedBy)
 
   @tailrec // Returns false if the Promise is already completed
-  private[this] final def addWatcher(watcher: ActorRef): Boolean = watchedBy match {
+  private final def addWatcher(watcher: ActorRef): Boolean = watchedBy match {
     case null  => false
     case other => updateWatchedBy(other, other + watcher) || addWatcher(watcher)
   }
 
   @tailrec
-  private[this] final def remWatcher(watcher: ActorRef): Unit = watchedBy match {
+  private final def remWatcher(watcher: ActorRef): Unit = watchedBy match {
     case null  => ()
     case other => if (!updateWatchedBy(other, other - watcher)) remWatcher(watcher)
   }
 
   @tailrec
-  private[this] final def clearWatchers(): Set[ActorRef] = watchedBy match {
+  private final def clearWatchers(): Set[ActorRef] = watchedBy match {
     case null  => ActorCell.emptyActorRefSet
     case other => if (!updateWatchedBy(other, null)) clearWatchers() else other
   }
 
-  private[this] def state: AnyRef = stateHandle.get(this)
+  // volatile read: published across threads via compareAndSet/setVolatile below
+  private def state: AnyRef = stateHandle.getVolatile(this)
 
-  private[this] def updateState(oldState: AnyRef, newState: AnyRef): Boolean =
+  private def updateState(oldState: AnyRef, newState: AnyRef): Boolean =
     stateHandle.compareAndSet(this, oldState, newState)
 
-  private[this] def setState(newState: AnyRef): Unit = stateHandle.set(this, newState)
+  // volatile write: ordered against the concurrent reads in state; restores the
+  // putObjectVolatile semantics this had before the VarHandle migration
+  private def setState(newState: AnyRef): Unit = stateHandle.setVolatile(this, newState)
 
   override def getParent: InternalActorRef = provider.tempContainer
 

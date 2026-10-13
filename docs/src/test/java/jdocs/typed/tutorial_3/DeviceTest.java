@@ -14,26 +14,24 @@
 package jdocs.typed.tutorial_3;
 
 // #device-read-test
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Optional;
-import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJunitResource;
+import org.apache.pekko.actor.testkit.typed.annotations.JUnitJupiterTestKit;
+import org.apache.pekko.actor.testkit.typed.javadsl.ActorTestKit;
+import org.apache.pekko.actor.testkit.typed.javadsl.JUnitJupiterTestKitBuilder;
+import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJUnitJupiterExtension;
 import org.apache.pekko.actor.testkit.typed.javadsl.TestProbe;
 import org.apache.pekko.actor.typed.ActorRef;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 // #device-read-test
-/*
-//#device-read-test
-
+@ExtendWith(TestKitJUnitJupiterExtension.class)
 public class DeviceTest {
-//#device-read-test
-*/
-public class DeviceTest extends org.scalatestplus.junit.JUnitSuite {
   // #device-read-test
 
-  @ClassRule public static final TestKitJunitResource testKit = new TestKitJunitResource();
+  @JUnitJupiterTestKit public ActorTestKit testKit = new JUnitJupiterTestKitBuilder().build();
 
   @Test
   public void testReplyWithEmptyReadingIfNoTemperatureIsKnown() {

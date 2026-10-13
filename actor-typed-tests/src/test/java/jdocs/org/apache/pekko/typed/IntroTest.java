@@ -78,6 +78,7 @@ public interface IntroTest {
       return this;
     }
   }
+
   // #hello-world-actor
 
   // #hello-world-bot
@@ -111,6 +112,7 @@ public interface IntroTest {
       }
     }
   }
+
   // #hello-world-bot
 
   // #hello-world-main
@@ -137,6 +139,7 @@ public interface IntroTest {
       super(context);
       greeter = context.spawn(HelloWorld.create(), "greeter");
     }
+
     // #hello-world-main-setup
 
     @Override
@@ -152,6 +155,7 @@ public interface IntroTest {
     }
     // #hello-world-main-setup
   }
+
   // #hello-world-main-setup
   // #hello-world-main
 
@@ -168,6 +172,7 @@ public interface IntroTest {
           this.name = name;
         }
       }
+
       // #hello-world-main-with-dispatchers
 
       public static Behavior<SayHello> create() {
@@ -224,6 +229,7 @@ public interface IntroTest {
         this.replyTo = replyTo;
       }
     }
+
     // #chatroom-protocol
     // #chatroom-behavior
     private static final class PublishSessionMessage implements RoomCommand {
@@ -235,6 +241,7 @@ public interface IntroTest {
         this.message = message;
       }
     }
+
     // #chatroom-behavior
     // #chatroom-protocol
 
@@ -283,6 +290,7 @@ public interface IntroTest {
         this.message = message;
       }
     }
+
     // #chatroom-protocol
     // #chatroom-behavior
 
@@ -351,6 +359,7 @@ public interface IntroTest {
       }
     }
   }
+
   // #chatroom-behavior
 
   // #chatroom-gabbler
@@ -390,6 +399,7 @@ public interface IntroTest {
       return Behaviors.stopped();
     }
   }
+
   // #chatroom-gabbler
 
   // #chatroom-main

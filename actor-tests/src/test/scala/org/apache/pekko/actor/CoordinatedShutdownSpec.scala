@@ -582,7 +582,8 @@ class CoordinatedShutdownSpec
       }
     }
 
-    "add and remove user JVM hooks with run-by-jvm-shutdown-hook = off, terminate-actor-system = off" in new JvmHookTest {
+    "add and remove user JVM hooks with run-by-jvm-shutdown-hook = off, terminate-actor-system = off" in
+    new JvmHookTest {
       lazy val systemName = s"CoordinatedShutdownSpec-JvmHooks-1-${System.currentTimeMillis()}"
       lazy val systemConfig = ConfigFactory.parseString("""
           pekko.coordinated-shutdown.run-by-jvm-shutdown-hook = off
@@ -598,7 +599,8 @@ class CoordinatedShutdownSpec
       }
     }
 
-    "add and remove user JVM hooks with run-by-jvm-shutdown-hook = on, terminate-actor-system = off" in new JvmHookTest {
+    "add and remove user JVM hooks with run-by-jvm-shutdown-hook = on, terminate-actor-system = off" in
+    new JvmHookTest {
       lazy val systemName = s"CoordinatedShutdownSpec-JvmHooks-2-${System.currentTimeMillis()}"
       lazy val systemConfig = ConfigFactory.parseString("""
           pekko.coordinated-shutdown.run-by-jvm-shutdown-hook = on
@@ -630,7 +632,8 @@ class CoordinatedShutdownSpec
       }
     }
 
-    "add and remove user JVM hooks with run-by-jvm-shutdown-hook = on, pekko.jvm-shutdown-hooks = off" in new JvmHookTest {
+    "add and remove user JVM hooks with run-by-jvm-shutdown-hook = on, pekko.jvm-shutdown-hooks = off" in
+    new JvmHookTest {
       lazy val systemName = s"CoordinatedShutdownSpec-JvmHooks-4-${System.currentTimeMillis()}"
       lazy val systemConfig = ConfigFactory.parseString("""
           pekko.jvm-shutdown-hooks = off

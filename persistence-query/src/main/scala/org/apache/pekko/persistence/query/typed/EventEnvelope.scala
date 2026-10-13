@@ -13,6 +13,7 @@
 
 package org.apache.pekko.persistence.query.typed
 
+import java.util.{ Set => JSet }
 import java.util.Optional
 
 import org.apache.pekko
@@ -21,6 +22,31 @@ import pekko.persistence.query.Offset
 import pekko.util.HashCode
 
 object EventEnvelope {
+
+  def apply[Event](
+      offset: Offset,
+      persistenceId: String,
+      sequenceNr: Long,
+      event: Event,
+      timestamp: Long,
+      entityType: String,
+      slice: Int,
+      filtered: Boolean,
+      source: String,
+      tags: Set[String]): EventEnvelope[Event] =
+    new EventEnvelope(
+      offset,
+      persistenceId,
+      sequenceNr,
+      Option(event),
+      timestamp,
+      None,
+      entityType,
+      slice,
+      filtered,
+      source,
+      tags)
+
   def apply[Event](
       offset: Offset,
       persistenceId: String,
@@ -31,6 +57,43 @@ object EventEnvelope {
       slice: Int): EventEnvelope[Event] =
     new EventEnvelope(offset, persistenceId, sequenceNr, Option(event), timestamp, None, entityType, slice)
 
+  def apply[Event](
+      offset: Offset,
+      persistenceId: String,
+      sequenceNr: Long,
+      event: Event,
+      timestamp: Long,
+      entityType: String,
+      slice: Int,
+      filtered: Boolean,
+      source: String): EventEnvelope[Event] =
+    new EventEnvelope(
+      offset,
+      persistenceId,
+      sequenceNr,
+      Option(event),
+      timestamp,
+      None,
+      entityType,
+      slice,
+      filtered,
+      source)
+
+  def create[Event](
+      offset: Offset,
+      persistenceId: String,
+      sequenceNr: Long,
+      event: Event,
+      timestamp: Long,
+      entityType: String,
+      slice: Int,
+      filtered: Boolean,
+      source: String,
+      tags: JSet[String]): EventEnvelope[Event] = {
+    import scala.jdk.CollectionConverters._
+    apply(offset, persistenceId, sequenceNr, event, timestamp, entityType, slice, filtered, source, tags.asScala.toSet)
+  }
+
   def create[Event](
       offset: Offset,
       persistenceId: String,
@@ -40,6 +103,18 @@ object EventEnvelope {
       entityType: String,
       slice: Int): EventEnvelope[Event] =
     apply(offset, persistenceId, sequenceNr, event, timestamp, entityType, slice)
+
+  def create[Event](
+      offset: Offset,
+      persistenceId: String,
+      sequenceNr: Long,
+      event: Event,
+      timestamp: Long,
+      entityType: String,
+      slice: Int,
+      filtered: Boolean,
+      source: String): EventEnvelope[Event] =
+    apply(offset, persistenceId, sequenceNr, event, timestamp, entityType, slice, filtered, source)
 
   def unapply[Event](arg: EventEnvelope[Event]): Option[(Offset, String, Long, Option[Event], Long)] =
     Some((arg.offset, arg.persistenceId, arg.sequenceNr, arg.eventOption, arg.timestamp))
@@ -68,14 +143,57 @@ final class EventEnvelope[Event](
     val timestamp: Long,
     val eventMetadata: Option[Any],
     val entityType: String,
-    val slice: Int) {
+    val slice: Int,
+    val filtered: Boolean,
+    val source: String,
+    val tags: Set[String]) {
+
+  def this(
+      offset: Offset,
+      persistenceId: String,
+      sequenceNr: Long,
+      eventOption: Option[Event],
+      timestamp: Long,
+      eventMetadata: Option[Any],
+      entityType: String,
+      slice: Int,
+      filtered: Boolean,
+      source: String) =
+    this(
+      offset,
+      persistenceId,
+      sequenceNr,
+      eventOption,
+      timestamp,
+      eventMetadata,
+      entityType,
+      slice,
+      filtered,
+      source,
+      tags = Set.empty)
+
+  def this(
+      offset: Offset,
+      persistenceId: String,
+      sequenceNr: Long,
+      eventOption: Option[Event],
+      timestamp: Long,
+      eventMetadata: Option[Any],
+      entityType: String,
+      slice: Int) =
+    this(offset, persistenceId, sequenceNr, eventOption, timestamp, eventMetadata, entityType, slice, false, "")
 
   def event: Event =
     eventOption match {
       case Some(evt) => evt
       case None      =>
-        throw new IllegalStateException(
-          "Event was not loaded. Use eventOption and load the event on demand with LoadEventQuery.")
+        if (filtered) {
+          throw new IllegalStateException(
+            "Event was filtered so payload is not present. Use eventOption to handle more gracefully.")
+        } else {
+          throw new IllegalStateException(
+            "Event was not loaded. Use eventOption and load the event on demand with LoadEventQuery.")
+        }
     }
 
   /**
@@ -85,8 +203,13 @@ final class EventEnvelope[Event](
     eventOption match {
       case Some(evt) => evt
       case None      =>
-        throw new IllegalStateException(
-          "Event was not loaded. Use getOptionalEvent and load the event on demand with LoadEventQuery.")
+        if (filtered) {
+          throw new IllegalStateException(
+            "Event was filtered so payload is not present. Use getOptionalEvent to handle more gracefully.")
+        } else {
+          throw new IllegalStateException(
+            "Event was not loaded. Use getOptionalEvent and load the event on demand with LoadEventQuery.")
+        }
     }
 
   /**
@@ -105,6 +228,14 @@ final class EventEnvelope[Event](
     eventMetadata.toJava.asInstanceOf[Optional[AnyRef]]
   }
 
+  /**
+   * Java API:
+   */
+  def getTags(): JSet[String] = {
+    import scala.jdk.CollectionConverters._
+    tags.asJava
+  }
+
   override def hashCode(): Int = {
     var result = HashCode.SEED
     result = HashCode.hash(result, offset)
@@ -114,13 +245,24 @@ final class EventEnvelope[Event](
   }
 
   override def equals(obj: Any): Boolean = obj match {
-    case other: EventEnvelope[_] =>
+    case other: EventEnvelope[?] =>
       offset == other.offset && persistenceId == other.persistenceId && sequenceNr == other.sequenceNr &&
       eventOption == other.eventOption && timestamp == other.timestamp && eventMetadata == other.eventMetadata &&
-      entityType == other.entityType && slice == other.slice
+      entityType == other.entityType && slice == other.slice && filtered == other.filtered &&
+      tags == other.tags
     case _ => false
   }
 
-  override def toString: String =
-    s"EventEnvelope($offset,$persistenceId,$sequenceNr,$eventOption,$timestamp,$eventMetadata,$entityType,$slice)"
+  override def toString: String = {
+    val eventStr = eventOption match {
+      case Some(evt) => evt.getClass.getName
+      case None      => ""
+    }
+    val metaStr = eventMetadata match {
+      case Some(meta) => meta.getClass.getName
+      case None       => ""
+    }
+    s"EventEnvelope($offset,$persistenceId,$sequenceNr,$eventStr,$timestamp,$metaStr,$entityType,$slice,$filtered,$source,${tags
+        .mkString("[", ", ", "]")})"
+  }
 }

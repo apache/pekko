@@ -13,7 +13,8 @@
 
 package org.apache.pekko.remote.artery
 
-import org.apache.pekko.remote.serialization.AbstractSerializationTransportInformationSpec
+import org.apache.pekko
+import pekko.remote.serialization.AbstractSerializationTransportInformationSpec
 
 class SerializationTransportInformationSpec
     extends AbstractSerializationTransportInformationSpec(ArterySpecSupport.defaultConfig)

@@ -513,7 +513,8 @@ class RetryFlowSpec extends StreamSpec("""
       externalOut.expectError() shouldBe an[IllegalStateException]
     }
 
-    "allow more demand in inner flow (but never pass in more than one element into the retrying cycle)" in new AllSucceedBench[
+    "allow more demand in inner flow (but never pass in more than one element into the retrying cycle)" in
+    new AllSucceedBench[
       InData, Ctx2, OutData] {
       externalOut.request(1)
       internalIn.expectRequest() shouldBe 1L

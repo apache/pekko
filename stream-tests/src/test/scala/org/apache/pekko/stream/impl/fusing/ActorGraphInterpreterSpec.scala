@@ -22,6 +22,7 @@ import scala.concurrent.duration._
 import org.apache.pekko
 import pekko.Done
 import pekko.stream._
+import pekko.stream.impl.{ PhasedFusingActorMaterializer, StreamSupervisor }
 import pekko.stream.impl.ReactiveStreamsCompliance.SpecViolation
 import pekko.stream.impl.fusing.GraphStages.SimpleLinearGraphStage
 import pekko.stream.scaladsl._
@@ -33,8 +34,7 @@ import pekko.stream.testkit.StreamSpec
 import pekko.stream.testkit.TestPublisher
 import pekko.stream.testkit.TestSubscriber
 import pekko.stream.testkit.Utils._
-import pekko.testkit.EventFilter
-import pekko.testkit.TestLatch
+import pekko.testkit.{ EventFilter, TestLatch }
 
 import org.reactivestreams.Publisher
 import org.reactivestreams.Subscriber
@@ -106,59 +106,6 @@ class ActorGraphInterpreterSpec extends StreamSpec {
     }
 
     "be able to interpret and reuse a simple bidi stage" in {
-      val identityBidi = new GraphStage[BidiShape[Int, Int, Int, Int]] {
-        val in1 = Inlet[Int]("in1")
-        val in2 = Inlet[Int]("in2")
-        val out1 = Outlet[Int]("out1")
-        val out2 = Outlet[Int]("out2")
-        val shape = BidiShape(in1, out1, in2, out2)
-
-        override def createLogic(inheritedAttributes: Attributes): GraphStageLogic = new GraphStageLogic(shape) {
-          setHandler(in1,
-            new InHandler {
-              override def onPush(): Unit = push(out1, grab(in1))
-
-              override def onUpstreamFinish(): Unit = complete(out1)
-            })
-
-          setHandler(in2,
-            new InHandler {
-              override def onPush(): Unit = push(out2, grab(in2))
-
-              override def onUpstreamFinish(): Unit = complete(out2)
-            })
-
-          setHandler(out1,
-            new OutHandler {
-              override def onPull(): Unit = pull(in1)
-
-              override def onDownstreamFinish(cause: Throwable): Unit = cancel(in1, cause)
-            })
-
-          setHandler(out2,
-            new OutHandler {
-              override def onPull(): Unit = pull(in2)
-
-              override def onDownstreamFinish(cause: Throwable): Unit = cancel(in2, cause)
-            })
-        }
-
-        override def toString = "IdentityBidi"
-      }
-
-      val identityBidiF = BidiFlow.fromGraph(identityBidi)
-      val identity = identityBidiF
-        .atop(identityBidiF)
-        .atop(identityBidiF)
-        .join(Flow[Int].map { x =>
-          x
-        })
-
-      Await.result(Source(1 to 10).via(identity).grouped(100).runWith(Sink.head), 3.seconds) should ===(1 to 10)
-
-    }
-
-    "be able to interpret and resuse a simple bidi stage" in {
       val identityBidi = new GraphStage[BidiShape[Int, Int, Int, Int]] {
         val in1 = Inlet[Int]("in1")
         val in2 = Inlet[Int]("in2")
@@ -374,7 +321,7 @@ class ActorGraphInterpreterSpec extends StreamSpec {
 
     "be able to handle Publisher spec violations without leaking" in {
       val filthyPublisher = new Publisher[Int] {
-        override def subscribe(s: Subscriber[_ >: Int]): Unit = {
+        override def subscribe(s: Subscriber[? >: Int]): Unit = {
           s.onSubscribe(new Subscription {
             override def cancel(): Unit = ()
             override def request(n: Long): Unit = throw TE("violating your spec")
@@ -470,7 +417,7 @@ class ActorGraphInterpreterSpec extends StreamSpec {
       val done = Promise[Done]()
       Source
         .single(Source.fromPublisher(new Publisher[Int] {
-          def subscribe(s: Subscriber[_ >: Int]): Unit = {
+          def subscribe(s: Subscriber[? >: Int]): Unit = {
             s.onSubscribe(new Subscription {
               def cancel(): Unit = ()
               def request(n: Long): Unit = ()
@@ -487,6 +434,61 @@ class ActorGraphInterpreterSpec extends StreamSpec {
         .flatten
         .runWith(Sink.ignore)
       done.future.futureValue // would throw on failure
+    }
+
+    "terminate actor graph interpreter when initial shell completes without subfused interpreters" in {
+      val mat = Materializer(system).asInstanceOf[PhasedFusingActorMaterializer]
+
+      Source.empty[Int].to(Sink.ignore).run()(mat)
+
+      // Wait briefly for the stream to complete and the actor to stop
+      mat.supervisor.tell(StreamSupervisor.GetChildren, testActor)
+      val children = expectMsgType[StreamSupervisor.Children]
+      // After Source.empty completes, the actor should have stopped already
+      // (preStart calls context.stop(self) when activeInterpreters is empty)
+      // If children is empty, actor already stopped; otherwise watch and expect termination
+      if (children.children.nonEmpty) {
+        val interpreterRef = children.children.head
+        watch(interpreterRef)
+        expectTerminated(interpreterRef, remainingOrDefault)
+      }
+    }
+
+    "continue working with subfused interpreters after initial shell reference is released" in {
+      val mat = Materializer(system).asInstanceOf[PhasedFusingActorMaterializer]
+
+      // flatMapConcat triggers subfusing: the inner Source is materialized via
+      // SubFusingActorMaterializerImpl, which registers additional shells into
+      // the same ActorGraphInterpreter actor via registerShell.
+      val upstream = TestPublisher.probe[Int]()
+      val downstream = TestSubscriber.probe[Int]()
+
+      Source
+        .fromPublisher(upstream)
+        .flatMapConcat(i => Source.single(i * 10))
+        .to(Sink.fromSubscriber(downstream))
+        .run()(mat)
+
+      mat.supervisor.tell(StreamSupervisor.GetChildren, testActor)
+      val children = expectMsgType[StreamSupervisor.Children]
+      val interpreterRef = children.children.head
+      watch(interpreterRef)
+
+      // Process elements through subfused inner sources
+      downstream.request(3)
+      upstream.sendNext(1)
+      downstream.expectNext(10)
+      upstream.sendNext(2)
+      downstream.expectNext(20)
+      upstream.sendNext(3)
+      downstream.expectNext(30)
+
+      // Complete the upstream: initial shell completes, subfused shells finish
+      upstream.sendComplete()
+      downstream.expectComplete()
+
+      // Actor should terminate: all shells (initial + subfused) have completed
+      expectTerminated(interpreterRef, remainingOrDefault)
     }
 
   }

@@ -68,13 +68,13 @@ Such are the perils of synchronized.
 
 Since Pekko runs on the JVM there are still some rules to be followed.
 
-Most importantly, you must not close over internal Actor state and exposing it to other threads:
+Most importantly, you must not close over internal Actor state and expose it to other threads:
 
 Scala
 : @@snip [SharedMutableStateDocSpec.scala](/docs/src/test/scala/docs/actor/typed/SharedMutableStateDocSpec.scala) { #mutable-state }
 
 Java
-: @@snip [DistributedDataDocTest.java](/docs/src/test/java/jdocs/actor/typed/SharedMutableStateDocTest.java) { #mutable-state }
+: @@snip [SharedMutableStateDocTest.java](/docs/src/test/java/jdocs/actor/typed/SharedMutableStateDocTest.java) { #mutable-state }
 
 
  * Messages **should** be immutable, this is to avoid the shared mutable state trap.

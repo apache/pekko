@@ -13,14 +13,13 @@
 
 package org.apache.pekko.cluster.sharding
 
-import scala.collection.immutable
 import scala.concurrent.duration._
 import scala.jdk.DurationConverters._
 
 import org.apache.pekko
 import pekko.actor.ActorSystem
 import pekko.actor.NoSerializationVerificationNeeded
-import pekko.annotation.{ ApiMayChange, InternalApi }
+import pekko.annotation.{ DoNotInherit, InternalApi }
 import pekko.cluster.Cluster
 import pekko.cluster.singleton.ClusterSingletonManagerSettings
 import pekko.coordination.lease.LeaseUsageSettings
@@ -101,7 +100,7 @@ object ClusterShardingSettings {
 
     val coordinatorSingletonSettings = ClusterSingletonManagerSettings(config.getConfig("coordinator-singleton"))
 
-    val passivationStrategySettings = PassivationStrategySettings.fromSharding(config)
+    val passivationStrategySettings = PassivationStrategySettings(config.getConfig("passivation"))
 
     val lease = config.getString("use-lease") match {
       case s if s.isEmpty => None
@@ -141,46 +140,22 @@ object ClusterShardingSettings {
   private[pekko] def roleOption(role: String): Option[String] =
     if (role == "") None else Option(role)
 
-  /**
-   * API MAY CHANGE: Settings for passivation strategies may change after additional testing and feedback.
-   */
-  @ApiMayChange
-  final class PassivationStrategySettings private[pekko] (
+  final class PassivationStrategySettings(
       val idleEntitySettings: Option[PassivationStrategySettings.IdleSettings],
       val activeEntityLimit: Option[Int],
       val replacementPolicySettings: Option[PassivationStrategySettings.PolicySettings],
-      val admissionSettings: Option[PassivationStrategySettings.AdmissionSettings],
-      private[pekko] val oldSettingUsed: Boolean) {
-
-    private[pekko] def this(
-        idleEntitySettings: Option[PassivationStrategySettings.IdleSettings],
-        activeEntityLimit: Option[Int],
-        replacementPolicySettings: Option[PassivationStrategySettings.PolicySettings],
-        oldSettingUsed: Boolean) =
-      this(idleEntitySettings, activeEntityLimit, replacementPolicySettings, admissionSettings = None, oldSettingUsed)
-
-    def this(
-        idleEntitySettings: Option[PassivationStrategySettings.IdleSettings],
-        activeEntityLimit: Option[Int],
-        replacementPolicySettings: Option[PassivationStrategySettings.PolicySettings],
-        admissionSettings: Option[PassivationStrategySettings.AdmissionSettings]) =
-      this(idleEntitySettings, activeEntityLimit, replacementPolicySettings, admissionSettings, oldSettingUsed = false)
+      val admissionSettings: Option[PassivationStrategySettings.AdmissionSettings]) {
 
     def this(
         idleEntitySettings: Option[PassivationStrategySettings.IdleSettings],
         activeEntityLimit: Option[Int],
         replacementPolicySettings: Option[PassivationStrategySettings.PolicySettings]) =
-      this(
-        idleEntitySettings,
-        activeEntityLimit,
-        replacementPolicySettings,
-        admissionSettings = None,
-        oldSettingUsed = false)
+      this(idleEntitySettings, activeEntityLimit, replacementPolicySettings, admissionSettings = None)
 
     import PassivationStrategySettings._
 
     def withIdleEntityPassivation(settings: IdleSettings): PassivationStrategySettings =
-      copy(idleEntitySettings = Some(settings), oldSettingUsed = false)
+      copy(idleEntitySettings = Some(settings))
 
     def withIdleEntityPassivation(timeout: FiniteDuration): PassivationStrategySettings =
       withIdleEntityPassivation(IdleSettings.defaults.withTimeout(timeout))
@@ -214,39 +189,24 @@ object ClusterShardingSettings {
     def withAdmission(settings: AdmissionSettings): PassivationStrategySettings =
       copy(admissionSettings = Some(settings))
 
-    private[pekko] def withOldIdleStrategy(timeout: FiniteDuration): PassivationStrategySettings =
-      copy(
-        idleEntitySettings = Some(new IdleSettings(timeout, None)),
-        activeEntityLimit = None,
-        replacementPolicySettings = None,
-        admissionSettings = None,
-        oldSettingUsed = true)
-
     private def copy(
         idleEntitySettings: Option[IdleSettings] = idleEntitySettings,
         activeEntityLimit: Option[Int] = activeEntityLimit,
         replacementPolicySettings: Option[PolicySettings] = replacementPolicySettings,
-        admissionSettings: Option[AdmissionSettings] = admissionSettings,
-        oldSettingUsed: Boolean = oldSettingUsed): PassivationStrategySettings =
+        admissionSettings: Option[AdmissionSettings] = admissionSettings): PassivationStrategySettings =
       new PassivationStrategySettings(
         idleEntitySettings,
         activeEntityLimit,
         replacementPolicySettings,
-        admissionSettings,
-        oldSettingUsed)
+        admissionSettings)
   }
 
-  /**
-   * API MAY CHANGE: Settings for passivation strategies may change after additional testing and feedback.
-   */
-  @ApiMayChange
   object PassivationStrategySettings {
     val defaults = new PassivationStrategySettings(
       idleEntitySettings = None,
       activeEntityLimit = None,
       replacementPolicySettings = None,
-      admissionSettings = None,
-      oldSettingUsed = false)
+      admissionSettings = None)
 
     val disabled: PassivationStrategySettings = defaults
 
@@ -297,7 +257,8 @@ object ClusterShardingSettings {
         }
     }
 
-    sealed trait PolicySettings
+    /** Not for user extension */
+    @DoNotInherit sealed trait PolicySettings
 
     object LeastRecentlyUsedSettings {
       val defaults: LeastRecentlyUsedSettings = new LeastRecentlyUsedSettings(segmentedSettings = None)
@@ -322,16 +283,16 @@ object ClusterShardingSettings {
         }
       }
 
-      final class SegmentedSettings(val levels: Int, val proportions: immutable.Seq[Double]) {
+      final class SegmentedSettings(val levels: Int, val proportions: Seq[Double]) {
 
         def withLevels(levels: Int): SegmentedSettings = copy(levels = levels)
 
-        def withProportions(proportions: immutable.Seq[Double]): SegmentedSettings = copy(proportions = proportions)
+        def withProportions(proportions: Seq[Double]): SegmentedSettings = copy(proportions = proportions)
 
         def withProportions(proportions: java.util.List[java.lang.Double]): SegmentedSettings =
           copy(proportions = immutableSeq(proportions).map(_.toDouble))
 
-        private def copy(levels: Int = levels, proportions: immutable.Seq[Double] = proportions): SegmentedSettings =
+        private def copy(levels: Int = levels, proportions: Seq[Double] = proportions): SegmentedSettings =
           new SegmentedSettings(levels, proportions)
       }
     }
@@ -343,7 +304,7 @@ object ClusterShardingSettings {
       def withSegmented(levels: Int): LeastRecentlyUsedSettings =
         copy(segmentedSettings = Some(new SegmentedSettings(levels, Nil)))
 
-      def withSegmented(proportions: immutable.Seq[Double]): LeastRecentlyUsedSettings =
+      def withSegmented(proportions: Seq[Double]): LeastRecentlyUsedSettings =
         copy(segmentedSettings = Some(new SegmentedSettings(proportions.size, proportions)))
 
       def withSegmentedProportions(proportions: java.util.List[java.lang.Double]): LeastRecentlyUsedSettings =
@@ -395,7 +356,8 @@ object ClusterShardingSettings {
           }
       }
 
-      sealed trait FilterSettings
+      /** Not for user extension */
+      @DoNotInherit sealed trait FilterSettings
 
       object FrequencySketchSettings {
         val defaults =
@@ -502,7 +464,8 @@ object ClusterShardingSettings {
           }
       }
 
-      sealed trait OptimizerSettings
+      /** Not for user extension */
+      @DoNotInherit sealed trait OptimizerSettings
 
       object HillClimbingSettings {
         val defaults: HillClimbingSettings = new HillClimbingSettings(
@@ -572,11 +535,6 @@ object ClusterShardingSettings {
         new AdmissionSettings(filter, window)
     }
 
-    /**
-     * API MAY CHANGE: Settings and configuration for passivation strategies may change after additional
-     * testing and feedback.
-     */
-    @ApiMayChange
     def apply(config: Config): PassivationStrategySettings = {
       toRootLowerCase(config.getString("strategy")) match {
         case "off" | "none" => PassivationStrategySettings.disabled
@@ -598,20 +556,6 @@ object ClusterShardingSettings {
       }
     }
 
-    def fromSharding(shardingConfig: Config): PassivationStrategySettings = {
-      // default to old setting if it exists (defined in application.conf), overriding the new settings
-      if (shardingConfig.hasPath("passivate-idle-entity-after")) {
-        val timeout =
-          if (toRootLowerCase(shardingConfig.getString("passivate-idle-entity-after")) == "off") Duration.Zero
-          else shardingConfig.getDuration("passivate-idle-entity-after", MILLISECONDS).millis
-        oldDefault(timeout)
-      } else {
-        PassivationStrategySettings(shardingConfig.getConfig("passivation"))
-      }
-    }
-
-    private[pekko] def oldDefault(idleTimeout: FiniteDuration): PassivationStrategySettings =
-      defaults.withOldIdleStrategy(idleTimeout)
   }
 
   /**
@@ -669,7 +613,7 @@ object ClusterShardingSettings {
   @InternalApi
   private[pekko] case class LeastRecentlyUsedPassivationStrategy(
       limit: Int,
-      segmented: immutable.Seq[Double],
+      segmented: Seq[Double],
       idle: Option[IdlePassivationStrategy])
       extends PassivationStrategy
 
@@ -975,13 +919,25 @@ final class ClusterShardingSettings(
 
   import ClusterShardingSettings.{ RememberEntitiesStoreCustom, StateStoreModeDData, StateStoreModePersistence }
   require(
-    stateStoreMode == StateStoreModePersistence || stateStoreMode == StateStoreModeDData || stateStoreMode == RememberEntitiesStoreCustom,
+    stateStoreMode == StateStoreModePersistence || stateStoreMode == StateStoreModeDData ||
+    stateStoreMode == RememberEntitiesStoreCustom,
     s"Unknown 'state-store-mode' [$stateStoreMode], valid values are '$StateStoreModeDData' or '$StateStoreModePersistence'")
 
   /** If true, this node should run the shard region, otherwise just a shard proxy should started on this node. */
   @InternalApi
   private[pekko] def shouldHostShard(cluster: Cluster): Boolean =
     role.forall(cluster.selfMember.roles.contains)
+
+  /** If true, this node should run the shard coordinator, otherwise just a shard proxy or shard region on this node. */
+  @InternalApi
+  private[pekko] def shouldHostCoordinator(cluster: Cluster): Boolean =
+    coordinatorSingletonRole.forall(cluster.selfMember.roles.contains)
+
+  /**
+   * INTERNAL API
+   */
+  @InternalApi private[pekko] def coordinatorSingletonRole: Option[String] =
+    if (coordinatorSingletonOverrideRole) role else coordinatorSingletonSettings.role
 
   @InternalApi
   private[pekko] val passivationStrategy: ClusterShardingSettings.PassivationStrategy =
@@ -1006,10 +962,6 @@ final class ClusterShardingSettings(
   def withStateStoreMode(stateStoreMode: String): ClusterShardingSettings =
     copy(stateStoreMode = stateStoreMode)
 
-  /**
-   * API MAY CHANGE: Settings for passivation strategies may change after additional testing and feedback.
-   */
-  @ApiMayChange
   def withPassivationStrategy(settings: ClusterShardingSettings.PassivationStrategySettings): ClusterShardingSettings =
     copy(passivationStrategySettings = settings)
 

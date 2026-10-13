@@ -18,7 +18,8 @@ import com.fasterxml.jackson.databind.{ DeserializationContext, JsonNode, Serial
 import com.fasterxml.jackson.databind.deser.std.StdScalarDeserializer
 import com.fasterxml.jackson.databind.ser.std.StdScalarSerializer
 
-import org.apache.pekko.serialization.{ SerializationExtension, Serializer, Serializers }
+import org.apache.pekko
+import pekko.serialization.{ SerializationExtension, Serializer, Serializers }
 
 final class PekkoSerializationSerializer extends StdScalarSerializer[AnyRef](classOf[AnyRef]) with ActorSystemAccess {
   def serialization = SerializationExtension(currentSystem())

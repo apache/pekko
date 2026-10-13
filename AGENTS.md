@@ -1,0 +1,233 @@
+# Agent Rules for Apache Pekko
+
+Follow `CONTRIBUTING.md`. If this file conflicts with `CONTRIBUTING.md`, follow `CONTRIBUTING.md` and update this file.
+
+## Worktree Rules
+
+- Base new work on `origin/main` unless the user or maintainer requests another branch.
+- Keep every PR scoped to one change.
+- Do not mix behavior changes, formatting churn, dependency updates, and unrelated cleanup.
+- Do not revert user changes or unrelated local changes.
+- Use `rg` or `rg --files` for repository searches.
+- Read neighboring code before editing.
+- Preserve existing license and copyright notices.
+- Do not add `@author` tags.
+- Follow the Licensing Rules below for every new file.
+
+## Licensing Rules
+
+> **⚠️ Mandatory workflow for new files:** Create the file without any header → run `sbt headerCreateAll` → sbt adds the correct header automatically. Never hand-write or copy-paste a license header.
+
+- Do not hand-write or invent license headers. Let sbt manage them.
+- For new files, run `sbt headerCreateAll` to add the correct header. Do not manually paste header text.
+- Run `sbt +headerCheckAll` to verify all files carry the expected header.
+- Existing files with copyright statements must keep those copyright statements intact. Never delete or rewrite an existing copyright notice; only add information.
+- New files containing new code must use the standard Apache license header. Do not add the special Pekko header that mentions Akka unless you are copying code from an existing Akka-derived file.
+- If you copy code from another file in this repository, preserve that file's original headers in the new file.
+- If you copy code from an external project, do not commit it silently. Note the source in the PR description so maintainers can verify license compatibility and update `LICENSE` if needed.
+- `sbt headerCreateAll` does not know the origin of new code; you must still record copied-code provenance in the PR.
+
+## PR Rules
+
+- Every non-doc-only PR must add or update a directional test.
+- Directional test: focused behavior or regression test with explicit assertions.
+- Bug-fix tests must fail or expose the issue before the fix.
+- CI-flake tests must encode the intended ordering, scheduling, timeout, or concurrency contract.
+- Documentation-only PRs must use `Tests: Not run - docs only`.
+- Behavior, configuration, public API, or operator changes must update docs.
+- Scala and Java DSL changes must keep API, docs, and tests in parity.
+- Public API, binary shape, serialization, or MiMa-sensitive internal changes must preserve binary compatibility.
+- The GitHub `Check / Binary Compatibility` job must pass before merge.
+- Wire protocol changes must consider rolling upgrade compatibility.
+- Dependency changes must verify Apache-compatible licenses.
+
+## Package Requirements
+
+### Coursier
+
+Install Coursier (`cs` command).
+
+On x86-64 (aka AMD64)
+```
+curl -fL "https://github.com/coursier/launchers/raw/master/cs-x86_64-pc-linux.gz" | gzip -d > cs
+```
+On ARM64
+```
+curl -fL "https://github.com/VirtusLab/coursier-m1/releases/latest/download/cs-aarch64-pc-linux.gz" | gzip -d > cs
+```
+
+### sbt
+
+```
+cs setup
+```
+
+### scalafmt
+
+```
+cs install scalafmt
+```
+
+## Formatting Rules
+
+- Prefer native scalafmt for changed Scala and SBT files when it is available.
+
+```shell
+git fetch origin main
+scalafmt --mode diff-ref=origin/main
+scalafmt --list --mode diff-ref=origin/main
+```
+
+- If native scalafmt is not installed, use the sbt scalafmt tasks or record that scalafmt could not be run.
+
+```shell
+sbt scalafmtAll scalafmtSbt
+sbt scalafmtCheckAll scalafmtSbtCheck
+```
+
+- Use JDK 17 for Java formatter tasks.
+
+```shell
+export JAVA_HOME=$(/usr/libexec/java_home -v 17)
+export PATH="$JAVA_HOME/bin:$PATH"
+sbt javafmtAll
+```
+
+- Run header generation before PR.
+
+```shell
+sbt headerCreateAll
+```
+
+- Run checks when relevant.
+
+```shell
+sbt javafmtCheckAll
+sbt +headerCheckAll
+sbt checkCodeStyle
+```
+
+- Use `sbt sortImports` when imports change.
+- Do not rely on IDE formatting alone.
+- Do not commit unrelated formatting changes.
+
+## Validation Rules
+
+- Run the smallest focused test first.
+
+```shell
+sbt "module-name / Test / testOnly fully.qualified.SpecName"
+```
+
+- Use JDK-specific configs when relevant.
+
+```shell
+sbt "module-name / TestJdk21 / testOnly fully.qualified.SpecName"
+```
+
+- Run PR impact validation for non-trivial code changes.
+
+```shell
+sbt validatePullRequest
+```
+
+- Set `PR_TARGET_BRANCH` only when the PR target is not `main`.
+
+```shell
+PR_TARGET_BRANCH=origin/example sbt validatePullRequest
+```
+
+- Run MiMa for public API, binary shape, serialization, or MiMa-sensitive internal changes.
+
+```shell
+sbt +mimaReportBinaryIssues
+```
+
+- Do not mark a PR ready while the local MiMa run or the GitHub `Check / Binary Compatibility` job is failing.
+- ALL reported MiMa issues must be fixed before creating or updating a PR. Do not ignore or suppress MiMa warnings without explicit maintainer approval.
+- Run Paradox for documentation changes that touch project docs.
+
+```shell
+sbt docs/paradox
+```
+
+- Always run `git diff --check`.
+- Do not assume local tools such as `sbt` or `scalafmt` are installed; if a required tool is missing, record the missing tool and skipped command in `Tests`.
+- Skipped or environment-failed commands must be recorded in `Tests`.
+
+## Test Rules
+
+- Prefer deterministic tests over larger timeouts.
+- Avoid `Thread.sleep`.
+- Prefer probes, latches, stepped components, `within`, `remaining`, and `remainingOrDefault`.
+- Keep `expectNoMessage` short and intentional.
+- Do not weaken assertions to hide production behavior.
+- Do not fix flakes only by increasing timeouts.
+
+## Code Rules
+
+- Match existing module patterns.
+- Prefer local helpers and established abstractions.
+- Put non-public shared implementation in `internal` packages where appropriate.
+- Mark Java-visible internals with `private[pekko]`, `@InternalApi`, and `INTERNAL API` Scaladoc.
+- For public Java APIs, avoid Scala default parameters, lower type bounds, deeply nested traits, and Scala-only collection types.
+- Use `scala.jdk.*` converters for Java/Scala interop.
+- For new Pekko Streams operators, update operator docs and consistency coverage.
+
+## CI and JDK Rules
+
+- Read exact GitHub Actions logs before changing code for CI failures.
+- Reproduce JDK-specific failures on the same JDK when possible.
+- For JDK 21+ nightly virtual-thread behavior, read the matching section in `CONTRIBUTING.md`.
+- Do not treat a pass on a different JDK as proof for a JDK-specific failure.
+
+## Commit and PR Format
+
+- Use this body format for non-trivial commits.
+
+```text
+Motivation:
+Problem or requirement.
+
+Modification:
+Change summary.
+
+Result:
+New outcome.
+
+Tests:
+- command/result or Not run - docs only
+
+References:
+Fixes #1234, Refs #1234, or None - <short context>
+```
+
+- Use this PR body format.
+
+```markdown
+### Motivation
+Problem or requirement.
+
+### Modification
+Change summary.
+
+### Result
+New outcome.
+
+### Tests
+- command/result or Not run - docs only
+
+### References
+Fixes #1234, Refs #1234, or None - <short context>
+```
+
+- Never omit `Tests`.
+- Never omit `References`.
+- Use `Refs #...`, `Fixes #...`, or `None - <short context>`.
+- Do not add `Co-authored-by` or AI-assistant trailers to commits or PR descriptions.
+
+## Security
+
+- Read [`SECURITY.md`](SECURITY.md) before reporting or acting on a security issue.
+- Classify security findings against the threat model it links,
+  [`THREAT_MODEL.md`](THREAT_MODEL.md); §11a lists recurring false positives.

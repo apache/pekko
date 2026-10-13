@@ -13,9 +13,8 @@
 
 package jdocs.stream.javadsl.cookbook;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.TimeUnit;
@@ -24,20 +23,20 @@ import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.stream.*;
 import org.apache.pekko.stream.javadsl.*;
 import org.apache.pekko.testkit.javadsl.TestKit;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import scala.concurrent.duration.FiniteDuration;
 
 public class RecipeWorkerPool extends RecipeTest {
   static ActorSystem system;
 
-  @BeforeClass
+  @BeforeAll
   public static void setup() {
     system = ActorSystem.create("RecipeWorkerPool");
   }
 
-  @AfterClass
+  @AfterAll
   public static void tearDown() {
     TestKit.shutdownActorSystem(system);
     system = null;
@@ -69,7 +68,7 @@ public class RecipeWorkerPool extends RecipeTest {
     new TestKit(system) {
       {
         Source<Message, NotUsed> data =
-            Source.from(Arrays.asList("1", "2", "3", "4", "5")).map(t -> new Message(t));
+            Source.from(List.of("1", "2", "3", "4", "5")).map(t -> new Message(t));
 
         Flow<Message, Message, NotUsed> worker =
             Flow.of(Message.class).map(m -> new Message(m.msg + " done"));

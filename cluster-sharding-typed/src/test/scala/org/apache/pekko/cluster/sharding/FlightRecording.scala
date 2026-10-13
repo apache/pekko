@@ -12,32 +12,44 @@
  */
 
 package org.apache.pekko.cluster.sharding
+
+import java.lang.invoke.{ MethodHandles, MethodType }
 import java.nio.file.Files
 import java.nio.file.Path
 
-import org.apache.pekko.actor.{ ActorSystem, ExtendedActorSystem }
+import org.apache.pekko
+import pekko.actor.{ ActorSystem, ExtendedActorSystem }
 
 /**
  * This will work on JDK11 and JDK8 built with the enable-jfr flag (8u262+).
  *
  * For Pekko JRF recordings you may need to run a publish for multi jvm tests
- * to get the ComileJDK9 things compiled.
+ * to get the JFR classes compiled.
  */
 class FlightRecording(system: ActorSystem) {
+
+  private val lookup = MethodHandles.publicLookup()
+  private val noArgVoidMethodType = MethodType.methodType(Void.TYPE)
+  // Recording.stop() returns boolean (JDK 9+)
+  private val noArgBooleanMethodType = MethodType.methodType(java.lang.Boolean.TYPE)
+  private val dumpMethodType = MethodType.methodType(Void.TYPE, classOf[Path])
 
   private val dynamic = system.asInstanceOf[ExtendedActorSystem].dynamicAccess
   private val recording =
     dynamic.createInstanceFor[AnyRef]("jdk.jfr.Recording", Nil).toOption
   private val clazz = recording.map(_.getClass)
-  private val startMethod = clazz.map(_.getDeclaredMethod("start"))
-  private val stopMethod = clazz.map(_.getDeclaredMethod("stop"))
-  private val dumpMethod = clazz.map(_.getDeclaredMethod("dump", classOf[Path]))
+  private val startMethod =
+    clazz.map(lookup.findVirtual(_, "start", noArgVoidMethodType))
+  private val stopMethod =
+    clazz.map(lookup.findVirtual(_, "stop", noArgBooleanMethodType))
+  private val dumpMethod =
+    clazz.map(lookup.findVirtual(_, "dump", dumpMethodType))
 
   def start() = {
     for {
       r <- recording
-      m <- startMethod
-    } yield m.invoke(r)
+      handle <- startMethod
+    } yield handle.invoke(r)
   }
 
   def endAndDump(location: Path) = {

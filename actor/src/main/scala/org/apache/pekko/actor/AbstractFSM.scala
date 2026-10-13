@@ -17,6 +17,7 @@ import scala.concurrent.duration.FiniteDuration
 import scala.jdk.DurationConverters._
 
 import org.apache.pekko
+import pekko.japi.Pair
 import pekko.japi.function.{ Effect, Function2, Predicate, Predicate2, Procedure, Procedure2, Procedure3 }
 
 /**
@@ -169,8 +170,13 @@ abstract class AbstractFSM[S, D] extends FSM[S, D] {
    * <b>Multiple handlers may be installed, and every one of them will be
    * called, not only the first one matching.</b>
    */
-  final def onTransition(transitionHandlerBuilder: FSMTransitionHandlerBuilder[S]): Unit =
-    super.onTransition(transitionHandlerBuilder.build().asInstanceOf[TransitionHandler])
+  final def onTransition(transitionHandlerBuilder: FSMTransitionHandlerBuilder[S]): Unit = {
+    val pf = transitionHandlerBuilder.build()
+    super.onTransition(new TransitionHandler {
+      def isDefinedAt(in: (S, S)): Boolean = pf.isDefinedAt(Pair(in._1, in._2))
+      def apply(in: (S, S)): Unit = pf(Pair(in._1, in._2))
+    })
+  }
 
   /**
    * Add a handler which is called upon each state transition, i.e. not when
@@ -201,7 +207,7 @@ abstract class AbstractFSM[S, D] extends FSM[S, D] {
     super.onTermination(stopBuilder.build().asInstanceOf[PartialFunction[StopEvent, Unit]])
 
   /**
-   * Create an [[pekko.japi.pf.FSMStateFunctionBuilder]] with the first case statement set.
+   * Create a [[pekko.japi.pf.FSMStateFunctionBuilder]] with the first case statement set.
    *
    * A case statement that matches on an event and data type and a predicate.
    *
@@ -219,7 +225,7 @@ abstract class AbstractFSM[S, D] extends FSM[S, D] {
     new FSMStateFunctionBuilder[S, D]().event(eventType, dataType, predicate, apply)
 
   /**
-   * Create an [[pekko.japi.pf.FSMStateFunctionBuilder]] with the first case statement set.
+   * Create a [[pekko.japi.pf.FSMStateFunctionBuilder]] with the first case statement set.
    *
    * A case statement that matches on an event and data type.
    *
@@ -235,7 +241,7 @@ abstract class AbstractFSM[S, D] extends FSM[S, D] {
     new FSMStateFunctionBuilder[S, D]().event(eventType, dataType, apply)
 
   /**
-   * Create an [[pekko.japi.pf.FSMStateFunctionBuilder]] with the first case statement set.
+   * Create a [[pekko.japi.pf.FSMStateFunctionBuilder]] with the first case statement set.
    *
    * A case statement that matches if the event type and predicate matches.
    *
@@ -251,7 +257,7 @@ abstract class AbstractFSM[S, D] extends FSM[S, D] {
     new FSMStateFunctionBuilder[S, D]().event(eventType, predicate, apply)
 
   /**
-   * Create an [[pekko.japi.pf.FSMStateFunctionBuilder]] with the first case statement set.
+   * Create a [[pekko.japi.pf.FSMStateFunctionBuilder]] with the first case statement set.
    *
    * A case statement that matches if the event type matches.
    *
@@ -263,7 +269,7 @@ abstract class AbstractFSM[S, D] extends FSM[S, D] {
     new FSMStateFunctionBuilder[S, D]().event(eventType, apply)
 
   /**
-   * Create an [[pekko.japi.pf.FSMStateFunctionBuilder]] with the first case statement set.
+   * Create a [[pekko.japi.pf.FSMStateFunctionBuilder]] with the first case statement set.
    *
    * A case statement that matches if the predicate matches.
    *
@@ -277,7 +283,7 @@ abstract class AbstractFSM[S, D] extends FSM[S, D] {
     new FSMStateFunctionBuilder[S, D]().event(predicate, apply)
 
   /**
-   * Create an [[pekko.japi.pf.FSMStateFunctionBuilder]] with the first case statement set.
+   * Create a [[pekko.japi.pf.FSMStateFunctionBuilder]] with the first case statement set.
    *
    * A case statement that matches on the data type and if any of the event types
    * in the list match or any of the event instances in the list compares equal.
@@ -294,7 +300,7 @@ abstract class AbstractFSM[S, D] extends FSM[S, D] {
     new FSMStateFunctionBuilder[S, D]().event(eventMatches, dataType, apply)
 
   /**
-   * Create an [[pekko.japi.pf.FSMStateFunctionBuilder]] with the first case statement set.
+   * Create a [[pekko.japi.pf.FSMStateFunctionBuilder]] with the first case statement set.
    *
    * A case statement that matches if any of the event types in the list match or any
    * of the event instances in the list compares equal.
@@ -307,7 +313,7 @@ abstract class AbstractFSM[S, D] extends FSM[S, D] {
     new FSMStateFunctionBuilder[S, D]().event(eventMatches, apply)
 
   /**
-   * Create an [[pekko.japi.pf.FSMStateFunctionBuilder]] with the first case statement set.
+   * Create a [[pekko.japi.pf.FSMStateFunctionBuilder]] with the first case statement set.
    *
    * A case statement that matches on the data type and if the event compares equal.
    *
@@ -323,7 +329,7 @@ abstract class AbstractFSM[S, D] extends FSM[S, D] {
     new FSMStateFunctionBuilder[S, D]().eventEquals(event, dataType, apply)
 
   /**
-   * Create an [[pekko.japi.pf.FSMStateFunctionBuilder]] with the first case statement set.
+   * Create a [[pekko.japi.pf.FSMStateFunctionBuilder]] with the first case statement set.
    *
    * A case statement that matches if the event compares equal.
    *
@@ -335,7 +341,7 @@ abstract class AbstractFSM[S, D] extends FSM[S, D] {
     new FSMStateFunctionBuilder[S, D]().eventEquals(event, apply)
 
   /**
-   * Create an [[pekko.japi.pf.FSMStateFunctionBuilder]] with the first case statement set.
+   * Create a [[pekko.japi.pf.FSMStateFunctionBuilder]] with the first case statement set.
    *
    * A case statement that matches on any type of event.
    *
@@ -346,7 +352,7 @@ abstract class AbstractFSM[S, D] extends FSM[S, D] {
     new FSMStateFunctionBuilder[S, D]().anyEvent(apply)
 
   /**
-   * Create an [[pekko.japi.pf.FSMTransitionHandlerBuilder]] with the first case statement set.
+   * Create a [[pekko.japi.pf.FSMTransitionHandlerBuilder]] with the first case statement set.
    *
    * A case statement that matches on a from state and a to state.
    *
@@ -359,7 +365,7 @@ abstract class AbstractFSM[S, D] extends FSM[S, D] {
     new FSMTransitionHandlerBuilder[S]().state(fromState, toState, apply)
 
   /**
-   * Create an [[pekko.japi.pf.FSMTransitionHandlerBuilder]] with the first case statement set.
+   * Create a [[pekko.japi.pf.FSMTransitionHandlerBuilder]] with the first case statement set.
    *
    * A case statement that matches on a from state and a to state.
    *
@@ -372,9 +378,9 @@ abstract class AbstractFSM[S, D] extends FSM[S, D] {
     new FSMTransitionHandlerBuilder[S]().state(fromState, toState, apply)
 
   /**
-   * Create an [[pekko.japi.pf.FSMStopBuilder]] with the first case statement set.
+   * Create a [[pekko.japi.pf.FSMStopBuilder]] with the first case statement set.
    *
-   * A case statement that matches on an [[FSM.Reason]].
+   * A case statement that matches on a [[FSM.Reason]].
    *
    * @param reason  the reason for the termination
    * @param apply  an action to apply to the event and state data if there is a match
@@ -384,7 +390,7 @@ abstract class AbstractFSM[S, D] extends FSM[S, D] {
     new FSMStopBuilder[S, D]().stop(reason, apply)
 
   /**
-   * Create an [[pekko.japi.pf.FSMStopBuilder]] with the first case statement set.
+   * Create a [[pekko.japi.pf.FSMStopBuilder]] with the first case statement set.
    *
    * A case statement that matches on a reason type.
    *
@@ -396,7 +402,7 @@ abstract class AbstractFSM[S, D] extends FSM[S, D] {
     new FSMStopBuilder[S, D]().stop(reasonType, apply)
 
   /**
-   * Create an [[pekko.japi.pf.FSMStopBuilder]] with the first case statement set.
+   * Create a [[pekko.japi.pf.FSMStopBuilder]] with the first case statement set.
    *
    * A case statement that matches on a reason type and a predicate.
    *
@@ -527,4 +533,15 @@ abstract class AbstractLoggingFSM[S, D] extends AbstractFSM[S, D] with LoggingFS
  *
  * Finite State Machine actor abstract base class with Stash support.
  */
-abstract class AbstractFSMWithStash[S, D] extends AbstractFSM[S, D] with Stash
+abstract class AbstractFSMWithStash[S, D] extends AbstractFSM[S, D] with Stash {
+
+  // Overridden solely so that this class carries a real (non-synthetic) override of the member that
+  // both `FSM` and `UnrestrictedStash` implement. Scala 3 emits the mixin forwarder as an
+  // ACC_BRIDGE/ACC_SYNTHETIC method, which javac ignores when resolving inherited members, so a Java
+  // subclass would otherwise fail to compile with "inherits unrelated defaults". The body just
+  // delegates to `super`, which resolves exactly like the forwarder it replaces.
+
+  // No `@throws(classOf[Exception])` here: `FSM.postStop` declares no checked exceptions, so a wider
+  // throws clause would not be a valid override for javac.
+  override def postStop(): Unit = super.postStop()
+}

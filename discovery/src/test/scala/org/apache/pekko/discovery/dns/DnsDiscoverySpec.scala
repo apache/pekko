@@ -115,7 +115,7 @@ class DnsDiscoverySpec extends DockerBindDnsService(DnsDiscoverySpec.config) {
     }
 
     "be using its own resolver" in {
-      // future will fail if it it doesn't exist
+      // future will fail if it doesn't exist
       system.actorSelection("/system/SD-DNS/async-dns").resolveOne(2.seconds).futureValue
     }
 

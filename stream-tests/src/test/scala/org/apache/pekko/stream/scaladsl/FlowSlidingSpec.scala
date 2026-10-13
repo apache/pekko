@@ -23,10 +23,17 @@ import pekko.pattern.pipe
 import pekko.stream.{ ActorMaterializer, ActorMaterializerSettings, Materializer }
 import pekko.stream.testkit._
 
+import com.typesafe.config.ConfigFactory
+
 @nowarn
-class FlowSlidingSpec extends StreamSpec with ScalaCheckPropertyChecks {
+class FlowSlidingSpec
+    extends StreamSpec(ConfigFactory.parseString("""
+    pekko.stream.materializer.initial-input-buffer-size = 2
+    pekko.stream.materializer.max-input-buffer-size = 16
+    """))
+    with ScalaCheckPropertyChecks {
   import system.dispatcher
-  val settings = ActorMaterializerSettings(system).withInputBuffer(initialSize = 2, maxSize = 16)
+  val settings = ActorMaterializerSettings(system)
 
   implicit val materializer: Materializer = ActorMaterializer(settings)
 

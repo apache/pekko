@@ -23,22 +23,21 @@ import org.apache.pekko.discovery.Discovery;
 import org.apache.pekko.discovery.ServiceDiscovery;
 // #lookup-dns
 import org.apache.pekko.testkit.javadsl.TestKit;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.scalatestplus.junit.JUnitSuite;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("unused")
-public class DnsDiscoveryDocTest extends JUnitSuite {
+public class DnsDiscoveryDocTest {
 
   private static ActorSystem system;
 
-  @BeforeClass
+  @BeforeAll
   public static void setup() {
     system = ActorSystem.create("DnsDiscoveryDocTest", DnsDiscoveryDocSpec.config());
   }
 
-  @AfterClass
+  @AfterAll
   public static void teardown() {
     TestKit.shutdownActorSystem(system);
     system = null;

@@ -13,7 +13,7 @@ permissions: {}
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 6 * * *'
+    - cron: '0 6 * * 1'
 
 jobs:
   validate-links:
@@ -21,7 +21,7 @@ jobs:
     if: github.repository == 'apache/pekko'
     steps:
       - name: Checkout
-        uses: actions/checkout@v6.0.0
+        uses: actions/checkout@v7.0.1
         with:
           persist-credentials: false
 
@@ -32,19 +32,19 @@ jobs:
           git checkout scratch
 
       - name: Setup Java 17
-        uses: actions/setup-java@v5
+        uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: 17
 
       - name: Install sbt
-        uses: sbt/setup-sbt@3e125ece5c3e5248e18da9ed8d2cce3d335ec8dd # v1.1.14
+        uses: sbt/setup-sbt@6158cb0903b8ceeae04f830055f3155e1b6a5ad7 # v1.5.11
 
       - name: Cache Coursier cache
-        uses: coursier/cache-action@bebeeb0e6f48ebad66d3783946588ecf43114433 # 6.4.8
+        uses: coursier/cache-action@95e5b1029b6b86e7bac033ee44a0697d8a527d2d # 8.1.1
     
       - name: Setup Coursier
-        uses: coursier/setup-action@039f736548afa5411c1382f40a5bd9c2d30e0383 # v1.3.9
+        uses: coursier/setup-action@648df969f41ef15fda2baba8b37f9fa3d16390a3 # v3.0.4
 
       - name: Create the Pekko site
         env:
@@ -54,4 +54,4 @@ jobs:
           sbt -Dpekko.genjavadoc.enabled=true "Javaunidoc/doc; Compile/unidoc; docs/paradox"
 
       - name: Run Link Validator
-        run: cs launch net.runne::site-link-validator:0.2.4 -- scripts/link-validator.conf
+        run: cs launch net.runne::site-link-validator:0.2.5 -- scripts/link-validator.conf

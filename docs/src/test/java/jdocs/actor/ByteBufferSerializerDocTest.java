@@ -64,6 +64,7 @@ public class ByteBufferSerializerDocTest {
       return null;
     }
   }
+
   // #bytebufserializer-with-manifest
 
   static class OnlyForDocInclude {

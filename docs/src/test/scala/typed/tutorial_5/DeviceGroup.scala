@@ -13,6 +13,7 @@
 
 package typed.tutorial_5
 
+import scala.annotation.nowarn
 import scala.concurrent.duration._
 import org.apache.pekko
 import pekko.actor.typed.ActorRef
@@ -51,6 +52,7 @@ class DeviceGroup(context: ActorContext[DeviceGroup.Command], groupId: String)
 
   context.log.info("DeviceGroup {} started", groupId)
 
+  @nowarn("msg=match may not be exhaustive")
   override def onMessage(msg: Command): Behavior[Command] =
     msg match {
       // #query-added

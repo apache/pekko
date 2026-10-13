@@ -147,8 +147,8 @@ corresponding producer is started again. Even if the same `ConsumerController` i
 delivery of messages that had already been processed but the fact that they were confirmed had not been stored yet.
 This means that we have at-least-once delivery.
 
-If the consumer crashes, a new `ConsumerController` can be connected to the original `ProducerConsumer`
-without restarting it. The `ProducerConsumer` will then redeliver all unconfirmed messages. In that case
+If the consumer crashes, a new `ConsumerController` can be connected to the original `ProducerController`
+without restarting it. The `ProducerController` will then redeliver all unconfirmed messages. In that case
 the unconfirmed messages will be delivered to the new consumer and some of these may already have been
 processed by the previous consumer.
 Again, this means that we have at-least-once delivery.
@@ -333,6 +333,9 @@ Note how the `ActorRef` in the `Start` messages are constructed as message adapt
 
 Those are initialized with sharding like this (from the guardian):
 
+Scala
+:  @@snip [ShardingDocExample.scala](/cluster-sharding-typed/src/test/scala/docs/delivery/ShardingDocExample.scala) { #init }
+
 Java
 :  @@snip [ShardingDocExample.java](/cluster-sharding-typed/src/test/java/jdocs/delivery/ShardingDocExample.java) { #init }
 
@@ -412,7 +415,7 @@ Java
 ## Only flow control
 
 It's possible to use this without resending lost messages, but the flow control is still used. This can
-for example be useful when both consumer and producer are know to be located in the same local `ActorSystem`.
+for example be useful when both consumer and producer are known to be located in the same local `ActorSystem`.
 This can be more efficient since messages don't have to be kept in memory in the `ProducerController` until
 they have been confirmed, but the drawback is that lost messages will not be delivered. See configuration
 `only-flow-control` of the `ConsumerController`.

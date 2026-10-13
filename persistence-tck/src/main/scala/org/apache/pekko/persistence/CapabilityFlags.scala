@@ -14,16 +14,25 @@
 package org.apache.pekko.persistence
 
 import scala.language.implicitConversions
+import scala.jdk.CollectionConverters._
+import scala.util.Try
 
-sealed abstract class CapabilityFlag {
-  private val capturedStack = new Throwable().getStackTrace
-    .filter(_.getMethodName.startsWith("supports"))
-    .find { el =>
-      val clazz = Class.forName(el.getClassName)
-      clazz.getDeclaredMethod(el.getMethodName).getReturnType == classOf[CapabilityFlag]
-    }
-    .map { _.getMethodName }
-    .getOrElse("[unknown]")
+import org.apache.pekko
+import pekko.annotation.DoNotInherit
+
+/** Not for user extension */
+@DoNotInherit sealed abstract class CapabilityFlag {
+  private val capturedStack: String =
+    StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE).walk { stream =>
+      stream.iterator().asScala
+        .filter(_.getMethodName.startsWith("supports"))
+        .find { frame =>
+          Try(frame.getDeclaringClass.getDeclaredMethod(frame.getMethodName).getReturnType)
+            .toOption
+            .contains(classOf[CapabilityFlag])
+        }
+        .map(_.getMethodName)
+    }.getOrElse("[unknown]")
 
   def name: String = capturedStack
   def value: Boolean
@@ -67,6 +76,16 @@ trait JournalCapabilityFlags extends CapabilityFlags {
    */
   protected def supportsMetadata: CapabilityFlag
 
+  /**
+   * When `true` enables tests which check if the Journal supports a replay window that
+   * spans a deleted prefix.
+   * <p>
+   *   Relates to https://github.com/apache/pekko-persistence-jdbc/pull/517.
+   *   pekko-persistence-dynamodb doesn't yet fully support this.
+   * </p>
+   */
+  protected def supportsReplayWindowSpanningDeletedPrefix: CapabilityFlag
+
 }
 //#journal-flags
 
@@ -86,3 +105,33 @@ trait SnapshotStoreCapabilityFlags extends CapabilityFlags {
   protected def supportsMetadata: CapabilityFlag
 }
 //#snapshot-store-flags
+
+//#durable-state-store-flags
+trait DurableStateStoreCapabilityFlags extends CapabilityFlags {
+
+  /**
+   * When `true` enables tests which check if the durable state store properly rejects
+   * a `deleteObject` call when the revision does not match the stored revision.
+   */
+  protected def supportsDeleteWithRevisionCheck: CapabilityFlag
+
+  /**
+   * When `true` enables tests which check if the durable state store properly rejects
+   * an `upsertObject` call when the revision is stale (does not match the expected next revision).
+   * This is the optimistic concurrency check on writes.
+   */
+  protected def supportsUpsertWithRevisionCheck: CapabilityFlag
+
+  /**
+   * When `true` enables tests which check if the durable state store properly serializes
+   * and deserializes values via the configured Pekko serializer infrastructure.
+   */
+  protected def supportsSerialization: CapabilityFlag
+
+  /**
+   * When `true` enables tests which check the deprecated single-argument `deleteObject(persistenceId)`
+   * overload, which deletes regardless of the current revision.
+   */
+  protected def supportsSoftDelete: CapabilityFlag
+}
+//#durable-state-store-flags

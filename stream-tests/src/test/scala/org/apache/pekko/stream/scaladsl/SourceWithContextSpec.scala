@@ -13,11 +13,15 @@
 
 package org.apache.pekko.stream.scaladsl
 
-import scala.collection.mutable.ListBuffer
+import java.util.concurrent.ConcurrentLinkedQueue
+
 import scala.concurrent.duration._
+import scala.jdk.CollectionConverters._
 import scala.util.control.NoStackTrace
 
 import org.apache.pekko
+import pekko.NotUsed
+import pekko.stream.impl.TraversalTestUtils
 import pekko.stream.testkit.StreamSpec
 import pekko.stream.testkit.scaladsl.TestSink
 
@@ -62,6 +66,28 @@ class SourceWithContextSpec extends StreamSpec {
         .expectComplete()
     }
 
+    "add only the requested operators to the Java DSL graph" in {
+      def moduleCount[T](source: Source[T, NotUsed]): Int =
+        TraversalTestUtils
+          .testMaterialize(source.to(Sink.ignore).traversalBuilder)
+          .attributesAssignments
+          .size
+
+      val source = Source.single(1).asSourceWithContext(_.toString).asJava
+      val transformed = source
+        .map((value: Int) => value + 1)
+        .map((value: Int) => value + 1)
+        .map((value: Int) => value + 1)
+
+      val scalaModules = moduleCount(source.asScala.asSource)
+      val sourceModules = moduleCount(source.asSource().asScala)
+      val transformedModules = moduleCount(transformed.asSource().asScala)
+      withClue(s"scala=$scalaModules, java=$sourceModules, transformed=$transformedModules: ") {
+        sourceModules - scalaModules shouldBe 1
+        transformedModules - sourceModules shouldBe 3
+      }
+    }
+
     "pass through contexts using map and filter" in {
       Source(Vector(Message("A", 1L), Message("B", 2L), Message("D", 3L), Message("C", 4L)))
         .asSourceWithContext(_.offset)
@@ -76,12 +102,108 @@ class SourceWithContextSpec extends StreamSpec {
         .expectComplete()
     }
 
+    "pass through contexts using additional filtering operators" in {
+      SourceWithContext
+        .fromTuples(Source(Vector((0, "zero"), (1, "one"), (2, "two"), (3, "three"))))
+        .mapOption {
+          case 0     => None
+          case value => Some(value * 10)
+        }
+        .runWith(TestSink[(Int, String)]())
+        .request(3)
+        .expectNext((10, "one"), (20, "two"), (30, "three"))
+        .expectComplete()
+
+      SourceWithContext
+        .fromTuples(Source(Vector((1, "one"), (2, "two"), (3, "three"))))
+        .collectFirst { case value if value > 1 => value * 10 }
+        .runWith(TestSink[(Int, String)]())
+        .request(1)
+        .expectNext((20, "two"))
+        .expectComplete()
+
+      SourceWithContext
+        .fromTuples(Source(Vector((1, "one"), (2, "two"), (3, "three"))))
+        .collectWhile { case value if value < 3 => value * 10 }
+        .runWith(TestSink[(Int, String)]())
+        .request(3)
+        .expectNext((10, "one"), (20, "two"))
+        .expectComplete()
+
+      SourceWithContext
+        .fromTuples(Source(Vector((1: Any, "one"), ("two": Any, "two"), (3: Any, "three"))))
+        .collectType[Int]
+        .runWith(TestSink[(Int, String)]())
+        .request(2)
+        .expectNext((1, "one"), (3, "three"))
+        .expectComplete()
+
+      val forComprehensionResult =
+        for {
+          value <- SourceWithContext.fromTuples(Source(Vector((1, "one"), (2, "two"), (3, "three"))))
+          if value % 2 == 1
+        } yield value * 10
+
+      forComprehensionResult
+        .runWith(TestSink[(Int, String)]())
+        .request(2)
+        .expectNext((10, "one"), (30, "three"))
+        .expectComplete()
+    }
+
+    "pass through contexts using truncating operators" in {
+      SourceWithContext
+        .fromTuples(Source(Vector((0, "zero"), (1, "one"), (1, "one-duplicate"), (2, "two"), (3, "three"),
+          (4, "four"))))
+        .drop(1)
+        .dropRepeated()
+        .dropWhile(_ < 2)
+        .takeUntil(_ == 3)
+        .takeWithin(1.day)
+        .take(2)
+        .limit(2)
+        .limitWeighted(2)(_ => 1)
+        .runWith(TestSink[(Int, String)]())
+        .request(2)
+        .expectNext((2, "two"), (3, "three"))
+        .expectComplete()
+
+      SourceWithContext
+        .fromTuples(Source(Vector((1, "one"), (2, "two"), (3, "three"))))
+        .takeWhile(_ < 2, inclusive = true)
+        .runWith(TestSink[(Int, String)]())
+        .request(2)
+        .expectNext((1, "one"), (2, "two"))
+        .expectComplete()
+
+      SourceWithContext
+        .fromTuples(Source(Vector((1, "one"), (3, "three"), (4, "four"))))
+        .dropRepeated((left, right) => left % 2 == right % 2)
+        .takeWhile(_ < 3)
+        .runWith(TestSink[(Int, String)]())
+        .request(2)
+        .expectNext((1, "one"))
+        .expectComplete()
+
+      SourceWithContext
+        .fromTuples(Source.single((1, "one")).initialDelay(50.millis))
+        .dropWithin(10.millis)
+        .takeWithin(1.day)
+        .runWith(TestSink[(Int, String)]())
+        .request(1)
+        .expectNext((1, "one"))
+        .expectComplete()
+    }
+
     "pass through all data when using alsoTo" in {
-      val listBuffer = new ListBuffer[Message]()
+      // alsoTo feeds an asynchronous side Sink, which may still be draining when the
+      // main stream completes. Poll until it has observed every element instead of
+      // asserting once (the single assertion raced under JDK 25 scheduling).
+      val received = new ConcurrentLinkedQueue[Message]()
       val messages = Vector(Message("A", 1L), Message("B", 2L), Message("D", 3L), Message("C", 4L))
       Source(messages)
         .asSourceWithContext(_.offset)
-        .alsoTo(Sink.foreach(message => listBuffer.+=(message)))
+        .alsoTo(Sink.foreach(message => received.add(message)))
         .toMat(TestSink[(Message, Long)]())(Keep.right)
         .run()
         .request(4)
@@ -90,17 +212,15 @@ class SourceWithContextSpec extends StreamSpec {
         .expectNext((Message("D", 3L), 3L))
         .expectNext((Message("C", 4L), 4L))
         .expectComplete()
-        .within(10.seconds) {
-          listBuffer.toVector shouldBe messages
-        }
+      awaitAssert(received.asScala.toVector shouldBe messages, 10.seconds)
     }
 
     "pass through all data when using alsoToContext" in {
-      val listBuffer = new ListBuffer[Long]()
+      val received = new ConcurrentLinkedQueue[Long]()
       val messages = Vector(Message("A", 1L), Message("B", 2L), Message("D", 3L), Message("C", 4L))
       Source(messages)
         .asSourceWithContext(_.offset)
-        .alsoToContext(Sink.foreach(offset => listBuffer.+=(offset)))
+        .alsoToContext(Sink.foreach(offset => received.add(offset)))
         .toMat(TestSink[(Message, Long)]())(Keep.right)
         .run()
         .request(4)
@@ -109,17 +229,15 @@ class SourceWithContextSpec extends StreamSpec {
         .expectNext((Message("D", 3L), 3L))
         .expectNext((Message("C", 4L), 4L))
         .expectComplete()
-        .within(10.seconds) {
-          listBuffer.toVector shouldBe messages.map(_.offset)
-        }
+      awaitAssert(received.asScala.toVector shouldBe messages.map(_.offset), 10.seconds)
     }
 
     "pass through all data when using wireTap" in {
-      val listBuffer = new ListBuffer[Message]()
+      val received = new ConcurrentLinkedQueue[Message]()
       val messages = Vector(Message("A", 1L), Message("B", 2L), Message("D", 3L), Message("C", 4L))
       Source(messages)
         .asSourceWithContext(_.offset)
-        .wireTap(Sink.foreach(message => listBuffer.+=(message)))
+        .wireTap(Sink.foreach(message => received.add(message)))
         .toMat(TestSink[(Message, Long)]())(Keep.right)
         .run()
         .request(4)
@@ -128,17 +246,15 @@ class SourceWithContextSpec extends StreamSpec {
         .expectNext((Message("D", 3L), 3L))
         .expectNext((Message("C", 4L), 4L))
         .expectComplete()
-        .within(10.seconds) {
-          listBuffer.toVector should contain atLeastOneElementOf messages
-        }
+      awaitAssert(received.asScala.toVector should contain atLeastOneElementOf messages, 10.seconds)
     }
 
     "pass through all data when using wireTapContext" in {
-      val listBuffer = new ListBuffer[Long]()
+      val received = new ConcurrentLinkedQueue[Long]()
       val messages = Vector(Message("A", 1L), Message("B", 2L), Message("D", 3L), Message("C", 4L))
       Source(messages)
         .asSourceWithContext(_.offset)
-        .wireTapContext(Sink.foreach(offset => listBuffer.+=(offset)))
+        .wireTapContext(Sink.foreach(offset => received.add(offset)))
         .toMat(TestSink[(Message, Long)]())(Keep.right)
         .run()
         .request(4)
@@ -147,9 +263,7 @@ class SourceWithContextSpec extends StreamSpec {
         .expectNext((Message("D", 3L), 3L))
         .expectNext((Message("C", 4L), 4L))
         .expectComplete()
-        .within(10.seconds) {
-          listBuffer.toVector should contain atLeastOneElementOf (messages.map(_.offset))
-        }
+      awaitAssert(received.asScala.toVector should contain atLeastOneElementOf (messages.map(_.offset)), 10.seconds)
     }
 
     "pass through contexts via a FlowWithContext" in {

@@ -61,13 +61,13 @@ object BackoffSupervisor {
 
   /**
    * Send this message to the `BackoffSupervisor` and it will reset the back-off.
-   * This should be used in conjunction with `withManualReset` in [[BackoffOptions]].
+   * This should be used in conjunction with `withManualReset` in `BackoffOptions`.
    */
   case object Reset
 
   /**
    * Java API: Send this message to the `BackoffSupervisor` and it will reset the back-off.
-   * This should be used in conjunction with `withManualReset` in [[BackoffOptions]].
+   * This should be used in conjunction with `withManualReset` in `BackoffOptions`.
    */
   def reset = Reset
 

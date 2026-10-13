@@ -159,6 +159,11 @@ private[pekko] class ReplayFilter(
         case e: IllegalStateException if mode == Fail => fail(e)
       }
 
+    case msg: ReplayBatchReady =>
+      if (debugEnabled)
+        log.debug("Replay batch completed: {}", msg)
+      persistentActor.tell(msg, Actor.noSender)
+
     case msg @ (_: RecoverySuccess | _: ReplayMessagesFailure) =>
       if (debugEnabled)
         log.debug("Replay completed: {}", msg)
@@ -183,7 +188,10 @@ private[pekko] class ReplayFilter(
     buffer.clear()
     persistentActor.tell(ReplayMessagesFailure(cause), Actor.noSender)
     context.become {
-      case _: ReplayedMessage                            => // discard
+      case _: ReplayedMessage    => // discard
+      case msg: ReplayBatchReady =>
+        sender() ! ReplayBatchCancel(msg.replayId)
+        context.stop(self)
       case _: RecoverySuccess | _: ReplayMessagesFailure =>
         context.stop(self)
     }

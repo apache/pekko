@@ -34,9 +34,11 @@ private[io] trait PeriodicCacheCleanup {
 
 class SimpleDnsCache extends Dns with PeriodicCacheCleanup with NoSerializationVerificationNeeded {
   import SimpleDnsCache._
+  private implicit val expiryOrdering: Ordering[ExpiryEntry[(String, RequestType)]] =
+    expiryEntryOrdering[(String, RequestType)]()
   private val cacheRef = new AtomicReference(
     new Cache[(String, RequestType), Resolved](
-      immutable.SortedSet()(expiryEntryOrdering()),
+      immutable.SortedSet.empty[ExpiryEntry[(String, RequestType)]],
       immutable.Map(),
       () => clock()))
 
@@ -134,9 +136,6 @@ object SimpleDnsCache {
    * INTERNAL API
    */
   @InternalApi
-  private[io] def expiryEntryOrdering[K]() = new Ordering[ExpiryEntry[K]] {
-    override def compare(x: ExpiryEntry[K], y: ExpiryEntry[K]): Int = {
-      x.until.compareTo(y.until)
-    }
-  }
+  private[io] def expiryEntryOrdering[K](): Ordering[ExpiryEntry[K]] =
+    (x: ExpiryEntry[K], y: ExpiryEntry[K]) => x.until.compareTo(y.until)
 }

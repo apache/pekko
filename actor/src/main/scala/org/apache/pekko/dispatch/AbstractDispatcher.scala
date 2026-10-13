@@ -116,8 +116,8 @@ abstract class MessageDispatcher(val configurator: MessageDispatcherConfigurator
   val mailboxes = prerequisites.mailboxes
   val eventStream = prerequisites.eventStream
 
-  @nowarn @volatile private[this] var _inhabitantsDoNotCallMeDirectly: Long = _ // DO NOT TOUCH!
-  @nowarn @volatile private[this] var _shutdownScheduleDoNotCallMeDirectly: Int = _ // DO NOT TOUCH!
+  @nowarn @volatile private var _inhabitantsDoNotCallMeDirectly: Long = _ // DO NOT TOUCH!
+  @nowarn @volatile private var _shutdownScheduleDoNotCallMeDirectly: Int = _ // DO NOT TOUCH!
   @nowarn private def _preventPrivateUnusedErasure = {
     _inhabitantsDoNotCallMeDirectly
     _shutdownScheduleDoNotCallMeDirectly
@@ -136,10 +136,12 @@ abstract class MessageDispatcher(val configurator: MessageDispatcherConfigurator
     ret
   }
 
-  final def inhabitants: Long = inhabitantsHandle.get(this)
+  // volatile read: published across threads via getAndAdd in addInhabitants
+  final def inhabitants: Long = inhabitantsHandle.getVolatile(this)
 
   private final def shutdownSchedule: Int =
-    shutdownScheduleHandle.get(this)
+    // volatile read: published across threads via compareAndSet in updateShutdownSchedule
+    shutdownScheduleHandle.getVolatile(this)
   private final def updateShutdownSchedule(expect: Int, update: Int): Boolean =
     shutdownScheduleHandle.compareAndSet(this, expect, update)
 
@@ -188,18 +190,22 @@ abstract class MessageDispatcher(val configurator: MessageDispatcherConfigurator
     case _                    => eventStream.publish(Error(t, getClass.getName, getClass, t.getMessage))
   }
 
-  @tailrec
   private final def ifSensibleToDoSoThenScheduleShutdown(): Unit = {
-    if (inhabitants <= 0) shutdownSchedule match {
-      case UNSCHEDULED =>
-        if (updateShutdownSchedule(UNSCHEDULED, SCHEDULED)) scheduleShutdownAction()
-        else ifSensibleToDoSoThenScheduleShutdown()
-      case SCHEDULED =>
-        if (updateShutdownSchedule(SCHEDULED, RESCHEDULED)) ()
-        else ifSensibleToDoSoThenScheduleShutdown()
-      case RESCHEDULED =>
-      case unexpected  =>
-        throw new IllegalArgumentException(s"Unexpected actor class marker: $unexpected") // will not happen, for exhaustiveness check
+    while (inhabitants <= 0) {
+      shutdownSchedule match {
+        case UNSCHEDULED =>
+          if (updateShutdownSchedule(UNSCHEDULED, SCHEDULED)) {
+            scheduleShutdownAction()
+            return
+          }
+        case SCHEDULED =>
+          if (updateShutdownSchedule(SCHEDULED, RESCHEDULED)) return
+        case RESCHEDULED =>
+          return
+        case unexpected =>
+          throw new IllegalArgumentException(s"Unexpected shutdown schedule marker: $unexpected") // will not happen, for exhaustiveness check
+      }
+      Thread.onSpinWait()
     }
   }
 
@@ -253,14 +259,14 @@ abstract class MessageDispatcher(val configurator: MessageDispatcherConfigurator
           try {
             if (inhabitants == 0) shutdown() // Warning, racy
           } finally {
-            while (!updateShutdownSchedule(shutdownSchedule, UNSCHEDULED)) {}
+            while (!updateShutdownSchedule(shutdownSchedule, UNSCHEDULED)) { Thread.onSpinWait() }
           }
         case RESCHEDULED =>
           if (updateShutdownSchedule(RESCHEDULED, SCHEDULED)) scheduleShutdownAction()
           else run()
         case UNSCHEDULED =>
         case unexpected  =>
-          throw new IllegalArgumentException(s"Unexpected actor class marker: $unexpected") // will not happen, for exhaustiveness check
+          throw new IllegalArgumentException(s"Unexpected shutdown schedule marker: $unexpected") // will not happen, for exhaustiveness check
       }
     }
   }

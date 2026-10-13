@@ -111,7 +111,7 @@ private[remote] object InboundControlJunction {
   private[InboundControlJunction] sealed trait CallbackMessage
   private[InboundControlJunction] final case class Attach(observer: ControlMessageObserver, done: Promise[Done])
       extends CallbackMessage
-  private[InboundControlJunction] final case class Dettach(observer: ControlMessageObserver) extends CallbackMessage
+  private[InboundControlJunction] final case class Detach(observer: ControlMessageObserver) extends CallbackMessage
 }
 
 /**
@@ -137,7 +137,7 @@ private[remote] class InboundControlJunction
         case Attach(observer, done) =>
           observers :+= observer
           done.success(Done)
-        case Dettach(observer) =>
+        case Detach(observer) =>
           observers = observers.filterNot(_ == observer)
       }
 
@@ -170,7 +170,7 @@ private[remote] class InboundControlJunction
       }
 
       override def detach(observer: ControlMessageObserver): Unit =
-        callback.invoke(Dettach(observer))
+        callback.invoke(Detach(observer))
 
     }
 

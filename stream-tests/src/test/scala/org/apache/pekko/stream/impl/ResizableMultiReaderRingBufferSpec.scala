@@ -15,7 +15,8 @@ package org.apache.pekko.stream.impl
 
 import scala.util.Random
 
-import org.apache.pekko.stream.impl.ResizableMultiReaderRingBuffer._
+import org.apache.pekko
+import pekko.stream.impl.ResizableMultiReaderRingBuffer._
 
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec

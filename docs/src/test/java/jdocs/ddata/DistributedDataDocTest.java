@@ -14,14 +14,12 @@
 package jdocs.ddata;
 
 import static org.apache.pekko.cluster.ddata.Replicator.*;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.typesafe.config.ConfigFactory;
 import docs.ddata.DistributedDataDocSpec;
 import java.math.BigInteger;
 import java.time.Duration;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import jdocs.AbstractJavaTest;
@@ -29,23 +27,23 @@ import org.apache.pekko.actor.*;
 import org.apache.pekko.cluster.ddata.*;
 import org.apache.pekko.japi.pf.ReceiveBuilder;
 import org.apache.pekko.testkit.javadsl.TestKit;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 @SuppressWarnings({"unchecked", "unused"})
 public class DistributedDataDocTest extends AbstractJavaTest {
 
   static ActorSystem system;
 
-  @BeforeClass
+  @BeforeAll
   public static void setup() {
     system =
         ActorSystem.create(
             "DistributedDataDocTest", ConfigFactory.parseString(DistributedDataDocSpec.config()));
   }
 
-  @AfterClass
+  @AfterAll
   public static void tearDown() {
     TestKit.shutdownActorSystem(system);
     system = null;
@@ -410,7 +408,7 @@ public class DistributedDataDocTest extends AbstractJavaTest {
     // #ormultimap
     final SelfUniqueAddress node = DistributedData.get(system).selfUniqueAddress();
     final ORMultiMap<String, Integer> m0 = ORMultiMap.create();
-    final ORMultiMap<String, Integer> m1 = m0.put(node, "a", new HashSet<>(Arrays.asList(1, 2, 3)));
+    final ORMultiMap<String, Integer> m1 = m0.put(node, "a", Set.of(1, 2, 3));
     final ORMultiMap<String, Integer> m2 = m1.addBinding(node, "a", 4);
     final ORMultiMap<String, Integer> m3 = m2.removeBinding(node, "a", 2);
     final ORMultiMap<String, Integer> m4 = m3.addBinding(node, "b", 1);

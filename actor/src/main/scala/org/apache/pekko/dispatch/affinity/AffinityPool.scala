@@ -21,7 +21,7 @@ import java.util.concurrent.atomic.AtomicReference
 import java.util.concurrent.locks.{ LockSupport, ReentrantLock }
 
 import scala.annotation.{ switch, tailrec }
-import scala.collection.{ immutable, mutable }
+import scala.collection.mutable
 
 import org.apache.pekko
 import pekko.annotation.{ ApiMayChange, InternalApi }
@@ -62,17 +62,17 @@ private[affinity] object AffinityPool {
   // Following are auxiliary class and trait definitions
   private final class IdleStrategy(idleCpuLevel: Int) {
 
-    private[this] val maxSpins = 1100 * idleCpuLevel - 1000
-    private[this] val maxYields = 5 * idleCpuLevel
-    private[this] val minParkPeriodNs = 1
-    private[this] val maxParkPeriodNs = MICROSECONDS.toNanos(250 - ((80 * (idleCpuLevel - 1)) / 3))
+    private val maxSpins = 1100 * idleCpuLevel - 1000
+    private val maxYields = 5 * idleCpuLevel
+    private val minParkPeriodNs = 1
+    private val maxParkPeriodNs = MICROSECONDS.toNanos(250 - ((80 * (idleCpuLevel - 1)) / 3))
 
-    private[this] var state: IdleState = Initial
-    private[this] var turns = 0L
-    private[this] var parkPeriodNs = 0L
-    @volatile private[this] var idling = false
+    private var state: IdleState = Initial
+    private var turns = 0L
+    private var parkPeriodNs = 0L
+    @volatile private var idling = false
 
-    private[this] def transitionTo(newState: IdleState): Unit = {
+    private def transitionTo(newState: IdleState): Unit = {
       state = newState
       turns = 0
     }
@@ -148,8 +148,8 @@ private[pekko] class AffinityPool(
   // indicates the current state of the pool
   @volatile final private var poolState: PoolState = Uninitialized
 
-  private[this] final val workQueues = Array.fill(parallelism)(new BoundedAffinityTaskQueue(affinityGroupSize))
-  private[this] final val workers = mutable.Set[AffinityPoolWorker]()
+  private final val workQueues = Array.fill(parallelism)(new BoundedAffinityTaskQueue(affinityGroupSize))
+  private final val workers = mutable.Set[AffinityPoolWorker]()
 
   def start(): this.type = {
     bookKeepingLock.lock()
@@ -263,7 +263,7 @@ private[pekko] class AffinityPool(
   override def toString: String =
     s"${Logging.simpleName(this)}(id = $id, parallelism = $parallelism, affinityGroupSize = $affinityGroupSize, threadFactory = $threadFactory, idleCpuLevel = $idleCpuLevel, queueSelector = $queueSelector, rejectionHandler = $rejectionHandler)"
 
-  private[this] final class AffinityPoolWorker(val q: BoundedAffinityTaskQueue, val idleStrategy: IdleStrategy)
+  private final class AffinityPoolWorker(val q: BoundedAffinityTaskQueue, val idleStrategy: IdleStrategy)
       extends Runnable {
     val thread: Thread = threadFactory.newThread(this)
 
@@ -341,7 +341,7 @@ private[pekko] final class AffinityPoolConfigurator(config: Config, prerequisite
   private val queueSelectorFactoryFQCN = config.getString("queue-selector")
   private val queueSelectorFactory: QueueSelectorFactory =
     prerequisites.dynamicAccess
-      .createInstanceFor[QueueSelectorFactory](queueSelectorFactoryFQCN, immutable.Seq(classOf[Config] -> config))
+      .createInstanceFor[QueueSelectorFactory](queueSelectorFactoryFQCN, Seq(classOf[Config] -> config))
       .recover {
         case _ =>
           throw new IllegalArgumentException(
@@ -427,7 +427,7 @@ private[pekko] final class ThrowOnOverflowRejectionHandler extends RejectionHand
 private[pekko] final class FairDistributionHashCache(val config: Config) extends QueueSelectorFactory {
   private final val MaxFairDistributionThreshold = 2048
 
-  private[this] final val fairDistributionThreshold = config
+  private final val fairDistributionThreshold = config
     .getInt("fair-work-distribution.threshold")
     .requiring(
       thr => 0 <= thr && thr <= MaxFairDistributionThreshold,
@@ -437,7 +437,7 @@ private[pekko] final class FairDistributionHashCache(val config: Config) extends
     new AtomicReference[ImmutableIntMap](ImmutableIntMap.empty) with QueueSelector {
       override def toString: String =
         s"FairDistributionHashCache(fairDistributionThreshold = $fairDistributionThreshold)"
-      private[this] final def improve(h: Int): Int =
+      private final def improve(h: Int): Int =
         0x7FFFFFFF & (reverseBytes(h * 0x9E3775CD) * 0x9E3775CD) // `sbhash`: In memory of Phil Bagwell.
       override final def getQueue(command: Runnable, queues: Int): Int = {
         val runnableHash = command.hashCode()

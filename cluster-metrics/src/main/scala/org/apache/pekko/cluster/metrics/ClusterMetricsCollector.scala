@@ -24,6 +24,7 @@ import pekko.actor.ActorLogging
 import pekko.actor.Address
 import pekko.actor.DeadLetterSuppression
 import pekko.actor.Props
+import pekko.annotation.DoNotInherit
 import pekko.cluster.Cluster
 import pekko.cluster.ClusterEvent
 import pekko.cluster.Member
@@ -31,11 +32,13 @@ import pekko.cluster.MemberStatus
 
 /**
  *  Runtime collection management commands.
+ *
+ *  Not for user extension
  */
-sealed abstract class CollectionControlMessage extends Serializable
+@DoNotInherit sealed abstract class CollectionControlMessage extends Serializable
 
 /**
- * Command for [[ClusterMetricsSupervisor]] to start metrics collection.
+ * Command for `ClusterMetricsSupervisor` to start metrics collection.
  */
 @SerialVersionUID(1L)
 case object CollectionStartMessage extends CollectionControlMessage {
@@ -45,7 +48,7 @@ case object CollectionStartMessage extends CollectionControlMessage {
 }
 
 /**
- * Command for [[ClusterMetricsSupervisor]] to stop metrics collection.
+ * Command for `ClusterMetricsSupervisor` to stop metrics collection.
  */
 @SerialVersionUID(1L)
 case object CollectionStopMessage extends CollectionControlMessage {
@@ -84,10 +87,10 @@ private[metrics] class ClusterMetricsSupervisor extends Actor with ActorLogging 
       children.foreach(stop)
       collectorInstance += 1
       actorOf(Props(classOf[ClusterMetricsCollector]), collectorName)
-      log.debug(s"Collection started.")
+      log.debug("Collection started.")
     case CollectionStopMessage =>
       children.foreach(stop)
-      log.debug(s"Collection stopped.")
+      log.debug("Collection stopped.")
   }
 
 }
@@ -95,7 +98,7 @@ private[metrics] class ClusterMetricsSupervisor extends Actor with ActorLogging 
 /**
  * Local cluster metrics extension events.
  *
- * Published to local event bus subscribers by [[ClusterMetricsCollector]].
+ * Published to local event bus subscribers by `ClusterMetricsCollector`.
  */
 trait ClusterMetricsEvent
 

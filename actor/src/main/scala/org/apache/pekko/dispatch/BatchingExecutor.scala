@@ -64,10 +64,10 @@ private[pekko] trait Batchable extends Runnable {
 @InternalApi
 private[pekko] trait BatchingExecutor extends Executor {
 
-  // invariant: if "_tasksLocal.get ne null" then we are inside Batch.run; if it is null, we are outside
-  private[this] val _tasksLocal = new ThreadLocal[AbstractBatch]()
+  // _tasksLocal points to the batch accepting nested tasks, or is null when batching is inactive or paused for blocking
+  private val _tasksLocal = new ThreadLocal[AbstractBatch]()
 
-  private[this] abstract class AbstractBatch extends java.util.ArrayDeque[Runnable](4) with Runnable {
+  private abstract class AbstractBatch extends java.util.ArrayDeque[Runnable](4) with Runnable {
     @tailrec final def processBatch(batch: AbstractBatch): Unit =
       if ((batch eq this) && !batch.isEmpty) {
         batch.pollFirst().run()
@@ -84,25 +84,28 @@ private[pekko] trait BatchingExecutor extends Executor {
     }
   }
 
-  private[this] final class Batch extends AbstractBatch {
+  private final class Batch extends AbstractBatch {
     override final def run(): Unit = {
-      require(_tasksLocal.get eq null)
+      val previousBatch = _tasksLocal.get
       _tasksLocal.set(this) // Install ourselves as the current batch
       try processBatch(this)
       catch {
         case t: Throwable =>
           resubmitUnbatched()
           throw t
-      } finally _tasksLocal.remove()
+      } finally {
+        if (previousBatch eq null) _tasksLocal.remove()
+        else _tasksLocal.set(previousBatch)
+      }
     }
   }
 
-  private[this] val _blockContext = new ThreadLocal[BlockContext]()
+  private val _blockContext = new ThreadLocal[BlockContext]()
 
-  private[this] final class BlockableBatch extends AbstractBatch with BlockContext {
+  private final class BlockableBatch extends AbstractBatch with BlockContext {
     // this method runs in the delegate ExecutionContext's thread
     override final def run(): Unit = {
-      require(_tasksLocal.get eq null)
+      val previousBatch = _tasksLocal.get
       _tasksLocal.set(this) // Install ourselves as the current batch
       val firstInvocation = _blockContext.get eq null
       if (firstInvocation) _blockContext.set(BlockContext.current)
@@ -113,7 +116,8 @@ private[pekko] trait BatchingExecutor extends Executor {
             resubmitUnbatched()
             throw t
         } finally {
-          _tasksLocal.remove()
+          if (previousBatch eq null) _tasksLocal.remove()
+          else _tasksLocal.set(previousBatch)
           if (firstInvocation) _blockContext.remove()
         }
       }

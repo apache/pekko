@@ -16,11 +16,11 @@ package org.apache.pekko.io
 import java.net.DatagramSocket
 import java.net.InetSocketAddress
 
-import scala.annotation.nowarn
 import scala.collection.immutable
 
 import org.apache.pekko
 import pekko.actor._
+import pekko.annotation.DoNotInherit
 import pekko.io.Inet.{ SoJavaFactories, SocketOption }
 import pekko.util.ByteString
 import pekko.util.Helpers.Requiring
@@ -53,8 +53,10 @@ object Udp extends ExtensionId[UdpExt] with ExtensionIdProvider {
 
   /**
    * The common interface for [[Command]] and [[Event]].
+   *
+   * Not for user extension
    */
-  sealed trait Message
+  @DoNotInherit sealed trait Message
 
   /**
    * The common type of all commands supported by the UDP implementation.
@@ -108,11 +110,10 @@ object Udp extends ExtensionId[UdpExt] with ExtensionIdProvider {
    * The listener actor for the newly bound port will reply with a [[Bound]]
    * message, or the manager will reply with a [[CommandFailed]] message.
    */
-  @nowarn("msg=deprecated")
   final case class Bind(
       handler: ActorRef,
       localAddress: InetSocketAddress,
-      options: immutable.Traversable[SocketOption] = Nil)
+      options: immutable.Iterable[SocketOption] = Nil)
       extends Command
 
   /**
@@ -132,8 +133,7 @@ object Udp extends ExtensionId[UdpExt] with ExtensionIdProvider {
    * The “simple sender” will not stop itself, you will have to send it a [[pekko.actor.PoisonPill]]
    * when you want to close the socket.
    */
-  @nowarn("msg=deprecated")
-  case class SimpleSender(options: immutable.Traversable[SocketOption] = Nil) extends Command
+  case class SimpleSender(options: immutable.Iterable[SocketOption] = Nil) extends Command
   object SimpleSender extends SimpleSender(Nil)
 
   /**
@@ -176,15 +176,19 @@ object Udp extends ExtensionId[UdpExt] with ExtensionIdProvider {
 
   /**
    * The “simple sender” sends this message type in response to a [[SimpleSender]] query.
+   *
+   * Not for user extension
    */
-  sealed trait SimpleSenderReady extends Event
+  @DoNotInherit sealed trait SimpleSenderReady extends Event
   case object SimpleSenderReady extends SimpleSenderReady
 
   /**
    * This message is sent by the listener actor in response to an `Unbind` command
    * after the socket has been closed.
+   *
+   * Not for user extension
    */
-  sealed trait Unbound
+  @DoNotInherit sealed trait Unbound
   case object Unbound extends Unbound
 
   /**
@@ -217,7 +221,7 @@ object Udp extends ExtensionId[UdpExt] with ExtensionIdProvider {
 
     override val MaxChannelsPerSelector: Int = if (MaxChannels == -1) -1 else math.max(MaxChannels / NrOfSelectors, 1)
 
-    private[this] def getIntBytes(path: String): Int = {
+    private def getIntBytes(path: String): Int = {
       val size = getBytes(path)
       require(size < Int.MaxValue, s"$path must be < 2 GiB")
       size.toInt

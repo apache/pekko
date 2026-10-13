@@ -40,8 +40,11 @@ not using classic remoting do not have to have Netty on the classpath:
 
 @@dependency[sbt,Maven,Gradle] {
   group=io.netty
-  artifact=netty
+  artifact=netty-transport
   version=$netty_version$
+  group2=io.netty
+  artifact2=netty-handler
+  version2=$netty_version$
 }
 
 ## Configuration
@@ -198,7 +201,7 @@ pekko {
 ```
 
 The configuration above instructs Pekko to react when an actor with path `/sampleActor` is created, i.e.
-using @scala[`system.actorOf(Props(...), "sampleActor")`]@java[`system.actorOf(new Props(...), "sampleActor")`]. This specific actor will not be directly instantiated,
+using @scala[`system.actorOf(Props(...), "sampleActor")`]@java[`system.actorOf(Props.create(...), "sampleActor")`]. This specific actor will not be directly instantiated,
 but instead the remote daemon of the remote system will be asked to create the actor,
 which in this sample corresponds to `sampleActorSystem@127.0.0.1:7356`.
 
@@ -302,7 +305,7 @@ is attempted to be sent to the remote system or an inbound connection is accepte
 When a communication failure happens and the connection is lost between the two systems the link becomes `Gated`.
 
 In this state the system will not attempt to connect to the remote host and all outbound messages will be dropped. The time
-while the link is in the `Gated` state is controlled by the setting `pekko.remote.retry-gate-closed-for`:
+while the link is in the `Gated` state is controlled by the setting `pekko.remote.classic.retry-gate-closed-for`:
 after this time elapses the link state transitions to `Idle` again. `Gate` is one-sided in the
 sense that whenever a successful *inbound* connection is accepted from a remote system during `Gate` it automatically
 transitions to `Active` and communication resumes immediately.
@@ -325,7 +328,7 @@ Please see:
 
 ### Using the Failure Detector
  
-Remoting uses the `org.apache.pekko.remote.PhiAccrualFailureDetector` failure detector by default, or you can provide your by
+Remoting uses the `org.apache.pekko.remote.PhiAccrualFailureDetector` failure detector by default, or you can provide your own by
 implementing the `org.apache.pekko.remote.FailureDetector` and configuring it:
 
 ```
@@ -369,7 +372,7 @@ That is not done by the router.
 ### Remote Events
 
 It is possible to listen to events that occur in Pekko Remote, and to subscribe/unsubscribe to these events
-you register as listener to the below described types in on the `ActorSystem.eventStream`.
+you register as listener to the below described types on the `ActorSystem.eventStream`.
 
 @@@ note
 
@@ -434,12 +437,12 @@ compromising any node with certificates issued by the same internal PKI tree.
 
 By default, @ref[Java serialization](serialization.md#java-serialization) is disabled in Pekko.
 That is also security best-practice because of its multiple
-[known attack surfaces](https://community.microfocus.com/cyberres/fortify/f/fortify-discussions/317555/the-perils-of-java-deserialization).
+[known attack surfaces](https://docs.oracle.com/en/java/javase/25/core/addressing-serialization-vulnerabilities.html).
 
 <a id="remote-tls"></a>
 ### Configuring SSL/TLS for Pekko Remoting
 
-SSL can be used as the remote transport by adding `pekko.remote.classic.netty.ssl` to the `enabled-transport` configuration section.
+SSL can be used as the remote transport by adding `pekko.remote.classic.netty.ssl` to the `enabled-transports` configuration section.
 An example of setting up the default Netty based SSL driver as default:
 
 ```
@@ -479,7 +482,7 @@ pekko {
 Always use [substitution from environment variables](https://github.com/lightbend/config#optional-system-or-env-variable-overrides)
 for passwords. Don't define real passwords in config files.
 
-According to [RFC 7525](https://www.rfc-editor.org/rfc/rfc7525.html) the recommended algorithms to use with TLS 1.2 (as of writing this document) are:
+According to [RFC 9325](https://www.rfc-editor.org/rfc/rfc9325.html) (which obsoletes RFC 7525) the recommended algorithms to use with TLS 1.2 are:
 
  * TLS_DHE_RSA_WITH_AES_128_GCM_SHA256
  * TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
@@ -488,10 +491,19 @@ According to [RFC 7525](https://www.rfc-editor.org/rfc/rfc7525.html) the recomme
 
 You should always check the latest information about security and algorithm recommendations though before you configure your system.
 
-Since a Pekko remoting is inherently @ref:[peer-to-peer](general/remoting.md#symmetric-communication) both the key-store as well as trust-store
+@@@ note
+
+Classic remoting is deprecated in favor of @ref:[Artery Remoting](remoting-artery.md). The
+@ref:[Remote Security](remote-security.md) page covers additional current TLS guidance for Artery that is not
+duplicated here, including the TLS 1.3 cipher-suite list, custom post-handshake session verification, the
+`random-number-generator` recommendation, and mTLS with rotated certificates in Kubernetes.
+
+@@@
+
+Since Pekko remoting is inherently @ref:[peer-to-peer](general/remoting.md#symmetric-communication) both the key-store as well as trust-store
 need to be configured on each remoting node participating in the cluster.
 
-The official [Java Secure Socket Extension documentation](https://docs.oracle.com/javase/8/docs/technotes/guides/security/jsse/JSSERefGuide.html)
+The official [Java Secure Socket Extension documentation](https://docs.oracle.com/en/java/javase/25/security/java-secure-socket-extension-jsse-reference-guide.html)
 as well as the [Oracle documentation on creating KeyStore and TrustStores](https://docs.oracle.com/cd/E19509-01/820-3503/6nf1il6er/index.html)
 are both great resources to research when setting up security on the JVM. Please consult those resources when troubleshooting
 and configuring SSL.
@@ -510,8 +522,15 @@ See also a description of the settings in the @ref:[Remote Configuration](remoti
 
 @@@ note
 
-When using SHA1PRNG on Linux it's recommended specify `-Djava.security.egd=file:/dev/urandom` as argument
-to the JVM to prevent blocking. It is NOT as secure because it reuses the seed.
+`random-number-generator` defaults to the platform `SecureRandom`, which is the recommended
+setting. `SHA1PRNG` is a legacy algorithm: it draws a single seed at startup and never reseeds,
+where the platform default mixes fresh kernel randomness into every request.
+
+On Linux the seed comes from `securerandom.source` (`file:/dev/random` by default), overridable
+with `-Djava.security.egd`. On older kernels `/dev/random` could block on hosts with little
+entropy, which is the origin of the frequently suggested
+`-Djava.security.egd=file:/dev/urandom`; current kernels do not block once the pool is seeded
+at boot.
 
 @@@
 

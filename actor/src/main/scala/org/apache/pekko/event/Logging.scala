@@ -19,7 +19,6 @@ import java.util.concurrent.locks.ReentrantLock
 
 import scala.annotation.implicitNotFound
 import scala.annotation.nowarn
-import scala.collection.immutable
 import scala.concurrent.Await
 import scala.language.existentials
 import scala.util.control.{ NoStackTrace, NonFatal }
@@ -45,13 +44,13 @@ import pekko.util.Timeout
 trait LoggingBus extends ActorEventBus {
 
   type Event >: Logging.LogEvent
-  type Classifier >: Class[_]
+  type Classifier >: Class[?]
 
   import Logging._
 
   private val guard = new ReentrantLock()
   private var loggers = Seq.empty[ActorRef]
-  @volatile private var _logLevel: LogLevel = _
+  @volatile private var _logLevel: LogLevel = OffLevel
 
   /**
    * Query currently set log level. See object Logging for more information.
@@ -216,7 +215,7 @@ trait LoggingBus extends ActorEventBus {
    */
   private def addLogger(
       system: ActorSystemImpl,
-      clazz: Class[_ <: Actor],
+      clazz: Class[? <: Actor],
       level: LogLevel,
       logName: String): ActorRef = {
     val name = "log" + LogExt(system).id() + "-" + simpleName(clazz)
@@ -291,13 +290,13 @@ trait LoggingBus extends ActorEventBus {
     -T] {
   def genString(t: T): String
   def genString(t: T, @nowarn("msg=never used") system: ActorSystem): String = genString(t)
-  def getClazz(t: T): Class[_] = t.getClass
+  def getClazz(t: T): Class[?] = t.getClass
 }
 
 /**
  * INTERNAL API
  */
-@InternalApi private[pekko] final case class ActorWithLogClass(actor: Actor, logClass: Class[_])
+@InternalApi private[pekko] final case class ActorWithLogClass(actor: Actor, logClass: Class[?])
 
 /**
  * This is a “marker” class which is inserted as originator class into
@@ -309,7 +308,7 @@ class DummyClassForStringSources
 /**
  * This object holds predefined formatting rules for log sources.
  *
- * In case an [[pekko.actor.ActorSystem]] is provided, the following apply:
+ * In case a [[pekko.actor.ActorSystem]] is provided, the following apply:
  * <ul>
  * <li>[[pekko.actor.Actor]] and [[pekko.actor.ActorRef]] will be represented by their absolute physical path</li>
  * <li>providing a `String` as source will append "(&lt;system address&gt;)" and use the result</li>
@@ -325,7 +324,7 @@ class DummyClassForStringSources
  * <li>anything else gives compile error unless implicit [[pekko.event.LogSource]] is in scope for it</li>
  * </ul>
  */
-object LogSource {
+object LogSource extends LogSourceCompat {
   implicit val fromString: LogSource[String] = new LogSource[String] {
     def genString(s: String) = s
     override def genString(s: String, system: ActorSystem) = s + "(" + system + ")"
@@ -355,14 +354,14 @@ object LogSource {
     new LogSource[ActorWithLogClass] {
       def genString(a: ActorWithLogClass) = fromActor.genString(a.actor)
       override def genString(a: ActorWithLogClass, system: ActorSystem) = fromActor.genString(a.actor, system)
-      override def getClazz(a: ActorWithLogClass): Class[_] = a.logClass
+      override def getClazz(a: ActorWithLogClass): Class[?] = a.logClass
     }
 
   // this one unfortunately does not work as implicit, because existential types have some weird behavior
-  val fromClass: LogSource[Class[_]] = new LogSource[Class[_]] {
-    def genString(c: Class[_]): String = Logging.simpleName(c)
-    override def genString(c: Class[_], system: ActorSystem): String = genString(c) + "(" + system + ")"
-    override def getClazz(c: Class[_]): Class[_] = c
+  val fromClass: LogSource[Class[?]] = new LogSource[Class[?]] {
+    def genString(c: Class[?]): String = Logging.simpleName(c)
+    override def genString(c: Class[?], system: ActorSystem): String = genString(c) + "(" + system + ")"
+    override def getClazz(c: Class[?]): Class[?] = c
   }
   implicit def fromAnyClass[T]: LogSource[Class[T]] = fromClass.asInstanceOf[LogSource[Class[T]]]
 
@@ -370,7 +369,7 @@ object LogSource {
    * Convenience converter access: given an implicit `LogSource`, generate the
    * string representation and originating class.
    */
-  def apply[T: LogSource](o: T): (String, Class[_]) = {
+  def apply[T: LogSource](o: T): (String, Class[?]) = {
     val ls = implicitly[LogSource[T]]
     (ls.genString(o), ls.getClazz(o))
   }
@@ -380,7 +379,7 @@ object LogSource {
    * [[pekko.actor.ActorSystem]], generate the string representation and
    * originating class.
    */
-  def apply[T: LogSource](o: T, system: ActorSystem): (String, Class[_]) = {
+  def apply[T: LogSource](o: T, system: ActorSystem): (String, Class[?]) = {
     val ls = implicitly[LogSource[T]]
     (ls.genString(o, system), ls.getClazz(o))
   }
@@ -389,9 +388,9 @@ object LogSource {
    * construct string representation for any object according to
    * rules above with fallback to its `Class`’s simple name.
    */
-  def fromAnyRef(o: AnyRef): (String, Class[_]) =
+  def fromAnyRef(o: AnyRef): (String, Class[?]) =
     o match {
-      case c: Class[_] => apply(c)
+      case c: Class[?] => apply(c)
       case a: Actor    => apply(a)
       case a: ActorRef => apply(a)
       case s: String   => apply(s)
@@ -403,9 +402,9 @@ object LogSource {
    * rules above (including the actor system’s address) with fallback to its
    * `Class`’s simple name.
    */
-  def fromAnyRef(o: AnyRef, system: ActorSystem): (String, Class[_]) =
+  def fromAnyRef(o: AnyRef, system: ActorSystem): (String, Class[?]) =
     o match {
-      case c: Class[_] => apply(c)
+      case c: Class[?] => apply(c)
       case a: Actor    => apply(a)
       case a: ActorRef => apply(a)
       case s: String   => apply(s)
@@ -458,7 +457,7 @@ object Logging {
    * Returns a 'safe' getSimpleName for the provided Class
    * @return the simple name of the given Class
    */
-  def simpleName(clazz: Class[_]): String = {
+  def simpleName(clazz: Class[?]): String = {
     val n = clazz.getName
     val i = n.lastIndexOf('.')
     n.substring(i + 1)
@@ -539,7 +538,7 @@ object Logging {
    * Returns the LogLevel associated with the given event class.
    * Defaults to DebugLevel.
    */
-  def levelFor(eventClass: Class[_ <: LogEvent]): LogLevel = {
+  def levelFor(eventClass: Class[? <: LogEvent]): LogLevel = {
     if (classOf[Error].isAssignableFrom(eventClass)) ErrorLevel
     else if (classOf[Warning].isAssignableFrom(eventClass)) WarningLevel
     else if (classOf[Info].isAssignableFrom(eventClass)) InfoLevel
@@ -550,7 +549,7 @@ object Logging {
   /**
    * Returns the event class associated with the given LogLevel
    */
-  def classFor(level: LogLevel): Class[_ <: LogEvent] = level match {
+  def classFor(level: LogLevel): Class[? <: LogEvent] = level match {
     case ErrorLevel   => classOf[Error]
     case WarningLevel => classOf[Warning]
     case InfoLevel    => classOf[Info]
@@ -559,7 +558,7 @@ object Logging {
   }
 
   // these type ascriptions/casts are necessary to avoid CCEs during construction while retaining correct type
-  val AllLogLevels: immutable.Seq[LogLevel] = Vector(ErrorLevel, WarningLevel, InfoLevel, DebugLevel)
+  val AllLogLevels: Seq[LogLevel] = Vector(ErrorLevel, WarningLevel, InfoLevel, DebugLevel)
 
   /**
    * Obtain LoggingAdapter for the given actor system and source object. This
@@ -731,8 +730,10 @@ object Logging {
 
   /**
    * Base type of LogEvents
+   *
+   * Not for user extension
    */
-  sealed trait LogEvent extends NoSerializationVerificationNeeded {
+  @DoNotInherit sealed trait LogEvent extends NoSerializationVerificationNeeded {
 
     /**
      * The thread that created this log event
@@ -758,7 +759,7 @@ object Logging {
     /**
      * The class of the source of this event
      */
-    def logClass: Class[_]
+    def logClass: Class[?]
 
     /**
      * The message, may be any object or null.
@@ -780,7 +781,7 @@ object Logging {
   }
 
   object LogEvent {
-    def apply(level: LogLevel, logSource: String, logClass: Class[_], message: Any): LogEvent = level match {
+    def apply(level: LogLevel, logSource: String, logClass: Class[?], message: Any): LogEvent = level match {
       case ErrorLevel   => Error(logSource, logClass, message)
       case WarningLevel => Warning(logSource, logClass, message)
       case InfoLevel    => Info(logSource, logClass, message)
@@ -788,7 +789,7 @@ object Logging {
       case level        => throw new IllegalArgumentException(s"Unsupported log level [$level]")
     }
 
-    def apply(level: LogLevel, logSource: String, logClass: Class[_], message: Any, mdc: MDC): LogEvent = level match {
+    def apply(level: LogLevel, logSource: String, logClass: Class[?], message: Any, mdc: MDC): LogEvent = level match {
       case ErrorLevel   => Error(logSource, logClass, message, mdc)
       case WarningLevel => Warning(logSource, logClass, message, mdc)
       case InfoLevel    => Info(logSource, logClass, message, mdc)
@@ -799,7 +800,7 @@ object Logging {
     def apply(
         level: LogLevel,
         logSource: String,
-        logClass: Class[_],
+        logClass: Class[?],
         message: Any,
         mdc: MDC,
         marker: LogMarker): LogEvent = level match {
@@ -819,49 +820,49 @@ object Logging {
   /**
    * For ERROR Logging
    */
-  case class Error(override val cause: Throwable, logSource: String, logClass: Class[_], message: Any = "")
+  case class Error(override val cause: Throwable, logSource: String, logClass: Class[?], message: Any = "")
       extends LogEvent
       with LogEventWithCause {
-    def this(logSource: String, logClass: Class[_], message: Any) = this(Error.NoCause, logSource, logClass, message)
+    def this(logSource: String, logClass: Class[?], message: Any) = this(Error.NoCause, logSource, logClass, message)
     override def level = ErrorLevel
   }
   class Error2(
       override val cause: Throwable,
       logSource: String,
-      logClass: Class[_],
+      logClass: Class[?],
       message: Any = "",
       override val mdc: MDC)
       extends Error(cause, logSource, logClass, message) {
-    def this(logSource: String, logClass: Class[_], message: Any, mdc: MDC) =
+    def this(logSource: String, logClass: Class[?], message: Any, mdc: MDC) =
       this(Error.NoCause, logSource, logClass, message, mdc)
   }
   class Error3(
       override val cause: Throwable,
       logSource: String,
-      logClass: Class[_],
+      logClass: Class[?],
       message: Any,
       override val mdc: MDC,
       override val marker: LogMarker)
       extends Error2(cause, logSource, logClass, message, mdc)
       with LogEventWithMarker {
-    def this(logSource: String, logClass: Class[_], message: Any, mdc: MDC, marker: LogMarker) =
+    def this(logSource: String, logClass: Class[?], message: Any, mdc: MDC, marker: LogMarker) =
       this(Error.NoCause, logSource, logClass, message, mdc, marker)
   }
 
   object Error {
-    def apply(logSource: String, logClass: Class[_], message: Any) =
+    def apply(logSource: String, logClass: Class[?], message: Any) =
       new Error(NoCause, logSource, logClass, message)
-    def apply(logSource: String, logClass: Class[_], message: Any, marker: LogMarker) =
+    def apply(logSource: String, logClass: Class[?], message: Any, marker: LogMarker) =
       new Error3(NoCause, logSource, logClass, message, Map.empty, marker)
 
-    def apply(cause: Throwable, logSource: String, logClass: Class[_], message: Any, mdc: MDC) =
+    def apply(cause: Throwable, logSource: String, logClass: Class[?], message: Any, mdc: MDC) =
       new Error2(cause, logSource, logClass, message, mdc)
-    def apply(cause: Throwable, logSource: String, logClass: Class[_], message: Any, mdc: MDC, marker: LogMarker) =
+    def apply(cause: Throwable, logSource: String, logClass: Class[?], message: Any, mdc: MDC, marker: LogMarker) =
       new Error3(cause, logSource, logClass, message, mdc, marker)
 
-    def apply(logSource: String, logClass: Class[_], message: Any, mdc: MDC) =
+    def apply(logSource: String, logClass: Class[?], message: Any, mdc: MDC) =
       new Error2(NoCause, logSource, logClass, message, mdc)
-    def apply(logSource: String, logClass: Class[_], message: Any, mdc: MDC, marker: LogMarker) =
+    def apply(logSource: String, logClass: Class[?], message: Any, mdc: MDC, marker: LogMarker) =
       new Error3(NoCause, logSource, logClass, message, mdc, marker)
 
     /** Null Object used for errors without cause Throwable */
@@ -872,14 +873,14 @@ object Logging {
   /**
    * For WARNING Logging
    */
-  case class Warning(logSource: String, logClass: Class[_], message: Any = "") extends LogEvent {
+  case class Warning(logSource: String, logClass: Class[?], message: Any = "") extends LogEvent {
     override def level = WarningLevel
   }
-  class Warning2(logSource: String, logClass: Class[_], message: Any, override val mdc: MDC)
+  class Warning2(logSource: String, logClass: Class[?], message: Any, override val mdc: MDC)
       extends Warning(logSource, logClass, message)
   class Warning3(
       logSource: String,
-      logClass: Class[_],
+      logClass: Class[?],
       message: Any,
       override val mdc: MDC,
       override val marker: LogMarker)
@@ -887,7 +888,7 @@ object Logging {
       with LogEventWithMarker
   class Warning4(
       logSource: String,
-      logClass: Class[_],
+      logClass: Class[?],
       message: Any,
       override val mdc: MDC,
       override val marker: LogMarker,
@@ -896,60 +897,60 @@ object Logging {
       with LogEventWithMarker
       with LogEventWithCause
   object Warning {
-    def apply(logSource: String, logClass: Class[_], message: Any, mdc: MDC) =
+    def apply(logSource: String, logClass: Class[?], message: Any, mdc: MDC) =
       new Warning2(logSource, logClass, message, mdc)
-    def apply(logSource: String, logClass: Class[_], message: Any, mdc: MDC, marker: LogMarker) =
+    def apply(logSource: String, logClass: Class[?], message: Any, mdc: MDC, marker: LogMarker) =
       new Warning3(logSource, logClass, message, mdc, marker)
 
-    def apply(cause: Throwable, logSource: String, logClass: Class[_], message: Any, mdc: MDC) =
+    def apply(cause: Throwable, logSource: String, logClass: Class[?], message: Any, mdc: MDC) =
       new Warning4(logSource, logClass, message, mdc, null, cause)
-    def apply(cause: Throwable, logSource: String, logClass: Class[_], message: Any, mdc: MDC, marker: LogMarker) =
+    def apply(cause: Throwable, logSource: String, logClass: Class[?], message: Any, mdc: MDC, marker: LogMarker) =
       new Warning4(logSource, logClass, message, mdc, marker, cause)
   }
 
   /**
    * For INFO Logging
    */
-  case class Info(logSource: String, logClass: Class[_], message: Any = "") extends LogEvent {
+  case class Info(logSource: String, logClass: Class[?], message: Any = "") extends LogEvent {
     override def level = InfoLevel
   }
-  class Info2(logSource: String, logClass: Class[_], message: Any, override val mdc: MDC)
+  class Info2(logSource: String, logClass: Class[?], message: Any, override val mdc: MDC)
       extends Info(logSource, logClass, message)
   class Info3(
       logSource: String,
-      logClass: Class[_],
+      logClass: Class[?],
       message: Any,
       override val mdc: MDC,
       override val marker: LogMarker)
       extends Info2(logSource, logClass, message, mdc)
       with LogEventWithMarker
   object Info {
-    def apply(logSource: String, logClass: Class[_], message: Any, mdc: MDC) =
+    def apply(logSource: String, logClass: Class[?], message: Any, mdc: MDC) =
       new Info2(logSource, logClass, message, mdc)
-    def apply(logSource: String, logClass: Class[_], message: Any, mdc: MDC, marker: LogMarker) =
+    def apply(logSource: String, logClass: Class[?], message: Any, mdc: MDC, marker: LogMarker) =
       new Info3(logSource, logClass, message, mdc, marker)
   }
 
   /**
    * For DEBUG Logging
    */
-  case class Debug(logSource: String, logClass: Class[_], message: Any = "") extends LogEvent {
+  case class Debug(logSource: String, logClass: Class[?], message: Any = "") extends LogEvent {
     override def level = DebugLevel
   }
-  class Debug2(logSource: String, logClass: Class[_], message: Any, override val mdc: MDC)
+  class Debug2(logSource: String, logClass: Class[?], message: Any, override val mdc: MDC)
       extends Debug(logSource, logClass, message)
   class Debug3(
       logSource: String,
-      logClass: Class[_],
+      logClass: Class[?],
       message: Any,
       override val mdc: MDC,
       override val marker: LogMarker)
       extends Debug2(logSource, logClass, message, mdc)
       with LogEventWithMarker
   object Debug {
-    def apply(logSource: String, logClass: Class[_], message: Any, mdc: MDC) =
+    def apply(logSource: String, logClass: Class[?], message: Any, mdc: MDC) =
       new Debug2(logSource, logClass, message, mdc)
-    def apply(logSource: String, logClass: Class[_], message: Any, mdc: MDC, marker: LogMarker) =
+    def apply(logSource: String, logClass: Class[?], message: Any, mdc: MDC, marker: LogMarker) =
       new Debug3(logSource, logClass, message, mdc, marker)
   }
 
@@ -1530,8 +1531,8 @@ trait LoggingAdapter {
    * there are more than four arguments.
    */
   private def format1(t: String, arg: Any): String = arg match {
-    case a: Array[_] if !a.getClass.getComponentType.isPrimitive => formatImpl(t, a.toSeq)
-    case a: Array[_]                                             => formatImpl(t, a.toSeq.asInstanceOf[Seq[AnyRef]])
+    case a: Array[?] if !a.getClass.getComponentType.isPrimitive => formatImpl(t, a.toSeq)
+    case a: Array[?]                                             => formatImpl(t, a.toSeq.asInstanceOf[Seq[AnyRef]])
     case x                                                       => format(t, x)
   }
 
@@ -1571,10 +1572,10 @@ trait LoggingAdapter {
  */
 trait LoggingFilter {
   // for backward-compatibility reason implementation of method without marker only must work
-  def isErrorEnabled(logClass: Class[_], logSource: String): Boolean
-  def isWarningEnabled(logClass: Class[_], logSource: String): Boolean
-  def isInfoEnabled(logClass: Class[_], logSource: String): Boolean
-  def isDebugEnabled(logClass: Class[_], logSource: String): Boolean
+  def isErrorEnabled(logClass: Class[?], logSource: String): Boolean
+  def isWarningEnabled(logClass: Class[?], logSource: String): Boolean
+  def isInfoEnabled(logClass: Class[?], logSource: String): Boolean
+  def isDebugEnabled(logClass: Class[?], logSource: String): Boolean
 }
 
 /**
@@ -1583,13 +1584,13 @@ trait LoggingFilter {
  */
 @nowarn("msg=never us")
 trait LoggingFilterWithMarker extends LoggingFilter {
-  def isErrorEnabled(logClass: Class[_], logSource: String, marker: LogMarker): Boolean =
+  def isErrorEnabled(logClass: Class[?], logSource: String, marker: LogMarker): Boolean =
     isErrorEnabled(logClass, logSource)
-  def isWarningEnabled(logClass: Class[_], logSource: String, marker: LogMarker): Boolean =
+  def isWarningEnabled(logClass: Class[?], logSource: String, marker: LogMarker): Boolean =
     isWarningEnabled(logClass, logSource)
-  def isInfoEnabled(logClass: Class[_], logSource: String, marker: LogMarker): Boolean =
+  def isInfoEnabled(logClass: Class[?], logSource: String, marker: LogMarker): Boolean =
     isInfoEnabled(logClass, logSource)
-  def isDebugEnabled(logClass: Class[_], logSource: String, marker: LogMarker): Boolean =
+  def isDebugEnabled(logClass: Class[?], logSource: String, marker: LogMarker): Boolean =
     isDebugEnabled(logClass, logSource)
 }
 
@@ -1602,13 +1603,13 @@ object LoggingFilterWithMarker {
 }
 
 class LoggingFilterWithMarkerWrapper(loggingFilter: LoggingFilter) extends LoggingFilterWithMarker {
-  override def isErrorEnabled(logClass: Class[_], logSource: String): Boolean =
+  override def isErrorEnabled(logClass: Class[?], logSource: String): Boolean =
     loggingFilter.isErrorEnabled(logClass, logSource)
-  override def isWarningEnabled(logClass: Class[_], logSource: String): Boolean =
+  override def isWarningEnabled(logClass: Class[?], logSource: String): Boolean =
     loggingFilter.isWarningEnabled(logClass, logSource)
-  override def isInfoEnabled(logClass: Class[_], logSource: String): Boolean =
+  override def isInfoEnabled(logClass: Class[?], logSource: String): Boolean =
     loggingFilter.isInfoEnabled(logClass, logSource)
-  override def isDebugEnabled(logClass: Class[_], logSource: String): Boolean =
+  override def isDebugEnabled(logClass: Class[?], logSource: String): Boolean =
     loggingFilter.isDebugEnabled(logClass, logSource)
 }
 
@@ -1622,10 +1623,10 @@ class DefaultLoggingFilter(logLevel: () => Logging.LogLevel) extends LoggingFilt
   def this(settings: Settings, eventStream: EventStream) = this(() => eventStream.logLevel)
 
   import Logging._
-  def isErrorEnabled(logClass: Class[_], logSource: String) = logLevel() >= ErrorLevel
-  def isWarningEnabled(logClass: Class[_], logSource: String) = logLevel() >= WarningLevel
-  def isInfoEnabled(logClass: Class[_], logSource: String) = logLevel() >= InfoLevel
-  def isDebugEnabled(logClass: Class[_], logSource: String) = logLevel() >= DebugLevel
+  def isErrorEnabled(logClass: Class[?], logSource: String) = logLevel() >= ErrorLevel
+  def isWarningEnabled(logClass: Class[?], logSource: String) = logLevel() >= WarningLevel
+  def isInfoEnabled(logClass: Class[?], logSource: String) = logLevel() >= InfoLevel
+  def isDebugEnabled(logClass: Class[?], logSource: String) = logLevel() >= DebugLevel
 }
 
 /**
@@ -1665,7 +1666,7 @@ trait DiagnosticLoggingAdapter extends LoggingAdapter {
    * Mapped Diagnostic Context for application defined values
    * which can be used in PatternLayout when `org.apache.pekko.event.slf4j.Slf4jLogger` is configured.
    * Visit <a href="https://logback.qos.ch/manual/mdc.html">Logback Docs: MDC</a> for more information.
-   * Note tha it returns a <b>COPY</b> of the actual MDC values.
+   * Note that it returns a <b>COPY</b> of the actual MDC values.
    * You cannot modify any value by changing the returned Map.
    * Code like the following won't have any effect unless you set back the modified Map.
    *
@@ -1747,14 +1748,14 @@ object LogMarker {
 class MarkerLoggingAdapter(
     override val bus: LoggingBus,
     override val logSource: String,
-    override val logClass: Class[_],
+    override val logClass: Class[?],
     loggingFilter: LoggingFilter)
     extends BusLogging(bus, logSource, logClass, loggingFilter) {
   // TODO when breaking binary compatibility, these marker methods should become baked into LoggingAdapter itself
 
   // For backwards compatibility, and when LoggingAdapter is created without direct
   // association to an ActorSystem
-  def this(bus: LoggingBus, logSource: String, logClass: Class[_]) =
+  def this(bus: LoggingBus, logSource: String, logClass: Class[?]) =
     this(bus, logSource, logClass, new DefaultLoggingFilter(() => bus.logLevel))
 
   val loggingFilterWithMarker: LoggingFilterWithMarker = LoggingFilterWithMarker.wrap(loggingFilter)
@@ -2000,10 +2001,13 @@ class MarkerLoggingAdapter(
     }
   }
 
-  // Copy of LoggingAdapter.format1 due to binary compatibility restrictions
+  // Copy of LoggingAdapter.format1 due to binary compatibility restrictions.
+  // The array branches must spread the elements as varargs (`: _*`) so that each element is
+  // expanded into its own template placeholder; without it the whole IndexedSeq would be passed
+  // as a single argument and rendered as e.g. "ArraySeq(a, b, c)" (issue #3257).
   private def format1(t: String, arg: Any): String = arg match {
-    case a: Array[_] if !a.getClass.getComponentType.isPrimitive => format(t, a.toIndexedSeq)
-    case a: Array[_]                                             => format(t, a.toIndexedSeq.asInstanceOf[IndexedSeq[AnyRef]])
+    case a: Array[?] if !a.getClass.getComponentType.isPrimitive => format(t, a.toIndexedSeq: _*)
+    case a: Array[?]                                             => format(t, a.toIndexedSeq.asInstanceOf[IndexedSeq[AnyRef]]: _*)
     case x                                                       => format(t, x)
   }
 }
@@ -2011,7 +2015,7 @@ class MarkerLoggingAdapter(
 final class DiagnosticMarkerBusLoggingAdapter(
     override val bus: LoggingBus,
     override val logSource: String,
-    override val logClass: Class[_],
+    override val logClass: Class[?],
     loggingFilter: LoggingFilter)
     extends MarkerLoggingAdapter(bus, logSource, logClass, loggingFilter)
     with DiagnosticLoggingAdapter
@@ -2019,12 +2023,12 @@ final class DiagnosticMarkerBusLoggingAdapter(
 /**
  * [[pekko.event.LoggingAdapter]] that publishes [[pekko.event.Logging.LogEvent]] to event stream.
  */
-class BusLogging(val bus: LoggingBus, val logSource: String, val logClass: Class[_], loggingFilter: LoggingFilter)
+class BusLogging(val bus: LoggingBus, val logSource: String, val logClass: Class[?], loggingFilter: LoggingFilter)
     extends LoggingAdapter {
 
   // For backwards compatibility, and when LoggingAdapter is created without direct
   // association to an ActorSystem
-  def this(bus: LoggingBus, logSource: String, logClass: Class[_]) =
+  def this(bus: LoggingBus, logSource: String, logClass: Class[?]) =
     this(bus, logSource, logClass, new DefaultLoggingFilter(() => bus.logLevel))
 
   import Logging._

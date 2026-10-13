@@ -15,10 +15,8 @@ package org.apache.pekko.cluster.sharding.protobuf
 
 import java.io.ByteArrayOutputStream
 import java.io.NotSerializableException
-import java.util.zip.GZIPInputStream
 import java.util.zip.GZIPOutputStream
 
-import scala.annotation.tailrec
 import scala.collection.immutable
 import scala.concurrent.duration._
 import scala.jdk.CollectionConverters._
@@ -38,9 +36,9 @@ import pekko.cluster.sharding.internal.EventSourcedRememberEntitiesShardStore.{ 
 import pekko.cluster.sharding.internal.EventSourcedRememberEntitiesShardStore.{ State => EntityState }
 import pekko.cluster.sharding.protobuf.msg.{ ClusterShardingMessages => sm }
 import pekko.cluster.sharding.protobuf.msg.ClusterShardingMessages
-import pekko.io.UnsynchronizedByteArrayInputStream
 import pekko.protobufv3.internal.MessageLite
 import pekko.serialization.BaseSerializer
+import pekko.serialization.Decompression
 import pekko.serialization.Serialization
 import pekko.serialization.SerializerWithStringManifest
 
@@ -55,6 +53,7 @@ private[pekko] class ClusterShardingMessageSerializer(val system: ExtendedActorS
   import ShardCoordinator.Internal._
 
   private final val BufferSize = 1024 * 4
+  private val maxDecompressedSize: Long = Decompression.maxDecompressedSize(system)
 
   private val CoordinatorStateManifest = "AA"
   private val ShardRegionRegisteredManifest = "AB"
@@ -105,6 +104,8 @@ private[pekko] class ClusterShardingMessageSerializer(val system: ExtendedActorS
 
   private val EventSourcedRememberShardsMigrationMarkerManifest = "SM"
   private val EventSourcedRememberShardsState = "SS"
+
+  private val StopShardsManifest = "ST"
 
   private val fromBinaryMap = collection.immutable.HashMap[String, Array[Byte] => AnyRef](
     EntityStateManifest -> entityStateFromBinary,
@@ -213,7 +214,8 @@ private[pekko] class ClusterShardingMessageSerializer(val system: ExtendedActorS
     },
     EventSourcedRememberShardsState -> { bytes =>
       rememberShardsStateFromBinary(bytes)
-    })
+    },
+    StopShardsManifest -> stopShardsFromBinary)
 
   override def manifest(obj: AnyRef): String = obj match {
     case _: EntityState     => EntityStateManifest
@@ -263,6 +265,8 @@ private[pekko] class ClusterShardingMessageSerializer(val system: ExtendedActorS
 
     case MigrationMarker        => EventSourcedRememberShardsMigrationMarkerManifest
     case _: RememberShardsState => EventSourcedRememberShardsState
+
+    case _: StopShards => StopShardsManifest
 
     case _ =>
       throw new IllegalArgumentException(s"Can't serialize object of type ${obj.getClass} in [${getClass.getName}]")
@@ -318,6 +322,8 @@ private[pekko] class ClusterShardingMessageSerializer(val system: ExtendedActorS
     case MigrationMarker        => Array.emptyByteArray
     case m: RememberShardsState => rememberShardsStateToProto(m).toByteArray
 
+    case ss: StopShards => stopShardsToProto(ss).toByteArray
+
     case _ =>
       throw new IllegalArgumentException(s"Can't serialize object of type ${obj.getClass} in [${getClass.getName}]")
   }
@@ -340,6 +346,17 @@ private[pekko] class ClusterShardingMessageSerializer(val system: ExtendedActorS
   private def rememberShardsStateFromBinary(bytes: Array[Byte]): RememberShardsState = {
     val proto = sm.RememberedShardState.parseFrom(bytes)
     RememberShardsState(proto.getShardIdList.asScala.toSet, proto.getMarker)
+  }
+
+  private def stopShardsFromBinary(bytes: Array[Byte]): StopShards = {
+    val proto = sm.StopShards.parseFrom(bytes)
+    StopShards(proto.getShardsList.asScala.toSet)
+  }
+
+  private def stopShardsToProto(ss: StopShards): sm.StopShards = {
+    val builder = sm.StopShards.newBuilder()
+    builder.addAllShards(ss.shards.asJava)
+    builder.build()
   }
 
   private def coordinatorStateToProto(state: State): sm.CoordinatorState = {
@@ -624,20 +641,7 @@ private[pekko] class ClusterShardingMessageSerializer(val system: ExtendedActorS
   }
 
   private def decompress(bytes: Array[Byte]): Array[Byte] = {
-    val in = new GZIPInputStream(new UnsynchronizedByteArrayInputStream(bytes))
-    val out = new ByteArrayOutputStream()
-    val buffer = new Array[Byte](BufferSize)
-
-    @tailrec def readChunk(): Unit = in.read(buffer) match {
-      case -1 => ()
-      case n  =>
-        out.write(buffer, 0, n)
-        readChunk()
-    }
-
-    try readChunk()
-    finally in.close()
-    out.toByteArray
+    Decompression.gunzip(bytes, maxDecompressedSize)
   }
 
 }

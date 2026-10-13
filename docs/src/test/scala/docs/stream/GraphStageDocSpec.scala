@@ -13,12 +13,13 @@
 
 package docs.stream
 
-import org.apache.pekko.NotUsed
-import org.apache.pekko.stream.scaladsl.{ Flow, Keep, Sink, Source }
-import org.apache.pekko.stream.stage._
-import org.apache.pekko.stream._
-import org.apache.pekko.stream.testkit.{ TestPublisher, TestSubscriber }
-import org.apache.pekko.testkit.{ PekkoSpec, TestLatch }
+import org.apache.pekko
+import pekko.NotUsed
+import pekko.stream.scaladsl.{ Flow, Keep, Sink, Source }
+import pekko.stream.stage._
+import pekko.stream._
+import pekko.stream.testkit.{ TestPublisher, TestSubscriber }
+import pekko.testkit.{ PekkoSpec, TestLatch }
 
 import scala.collection.mutable
 import scala.concurrent.{ Await, Future, Promise }
@@ -521,7 +522,7 @@ class GraphStageDocSpec extends PekkoSpec {
               override def onUpstreamFinish(): Unit = {
                 if (buffer.nonEmpty) {
                   // emit the rest if possible
-                  emitMultiple(out, buffer.toIterator)
+                  emitMultiple(out, buffer.iterator)
                 }
                 completeStage()
               }

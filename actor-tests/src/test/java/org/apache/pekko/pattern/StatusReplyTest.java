@@ -14,27 +14,25 @@
 package org.apache.pekko.pattern;
 
 import static org.apache.pekko.pattern.Patterns.askWithStatus;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.Duration;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import org.apache.pekko.actor.ActorRef;
-import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
+import org.apache.pekko.testkit.PekkoJUnitJupiterActorSystemResource;
 import org.apache.pekko.testkit.PekkoSpec;
 import org.apache.pekko.testkit.TestException;
 import org.apache.pekko.testkit.TestProbe;
-import org.junit.Assert;
-import org.junit.ClassRule;
-import org.junit.Test;
-import org.scalatestplus.junit.JUnitSuite;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
-public class StatusReplyTest extends JUnitSuite {
+public class StatusReplyTest {
 
-  @ClassRule
-  public static PekkoJUnitActorSystemResource actorSystemResource =
-      new PekkoJUnitActorSystemResource("JavaAPI", PekkoSpec.testConf());
+  @RegisterExtension
+  static PekkoJUnitJupiterActorSystemResource actorSystemResource =
+      new PekkoJUnitJupiterActorSystemResource("JavaAPI", PekkoSpec.testConf());
 
   @Test
   public void successReplyThrowsExceptionWhenGetErrorIsCalled() {
@@ -42,10 +40,10 @@ public class StatusReplyTest extends JUnitSuite {
     assertTrue(reply.isSuccess());
     assertFalse(reply.isError());
     assertEquals("woho", reply.getValue());
-    Assert.assertThrows(
-        "Calling .getError() on success should throw",
+    assertThrows(
         IllegalArgumentException.class,
-        reply::getError);
+        reply::getError,
+        "Calling .getError() on success should throw");
   }
 
   @Test
@@ -54,10 +52,10 @@ public class StatusReplyTest extends JUnitSuite {
     assertTrue(reply.isError());
     assertFalse(reply.isSuccess());
     assertEquals("boho", reply.getError().getMessage());
-    Assert.assertThrows(
-        "Calling .getValue() on error should throw",
+    assertThrows(
         StatusReply.ErrorMessage.class,
-        reply::getValue);
+        reply::getValue,
+        "Calling .getValue() on error should throw");
   }
 
   @Test
@@ -66,8 +64,7 @@ public class StatusReplyTest extends JUnitSuite {
     assertTrue(reply.isError());
     assertFalse(reply.isSuccess());
     assertEquals("boho", reply.getError().getMessage());
-    Assert.assertThrows(
-        "Calling .getValue() on error should throw", TestException.class, reply::getValue);
+    assertThrows(TestException.class, reply::getValue, "Calling .getValue() on error should throw");
   }
 
   @Test
@@ -90,7 +87,7 @@ public class StatusReplyTest extends JUnitSuite {
     probe.expectMsg("request");
     probe.lastSender().tell(StatusReply.error("boho"), ActorRef.noSender());
     ExecutionException ex =
-        Assert.assertThrows(
+        assertThrows(
             ExecutionException.class,
             () -> response.toCompletableFuture().get(3, TimeUnit.SECONDS));
     assertEquals(StatusReply.ErrorMessage.class, ex.getCause().getClass());
@@ -105,7 +102,7 @@ public class StatusReplyTest extends JUnitSuite {
     probe.expectMsg("request");
     probe.lastSender().tell(StatusReply.error(new TestException("boho")), ActorRef.noSender());
     ExecutionException ex =
-        Assert.assertThrows(
+        assertThrows(
             ExecutionException.class,
             () -> response.toCompletableFuture().get(3, TimeUnit.SECONDS));
     assertEquals(TestException.class, ex.getCause().getClass());

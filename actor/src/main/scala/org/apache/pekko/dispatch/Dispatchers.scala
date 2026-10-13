@@ -266,13 +266,7 @@ class Dispatchers @InternalApi private[pekko] (
         cfg.renderWithRedactions())
 
     cfg.getString("type") match {
-      case "Dispatcher"          => new DispatcherConfigurator(cfg, prerequisites)
-      case "BalancingDispatcher" =>
-        // FIXME remove this case in Akka 2.4
-        throw new IllegalArgumentException(
-          "BalancingDispatcher is deprecated, use a BalancingPool instead. " +
-          "During a migration period you can still use BalancingDispatcher by specifying the full class name: " +
-          classOf[BalancingDispatcherConfigurator].getName)
+      case "Dispatcher"       => new DispatcherConfigurator(cfg, prerequisites)
       case "PinnedDispatcher" => new PinnedDispatcherConfigurator(cfg, prerequisites)
       case fqn                =>
         val args = List(classOf[Config] -> cfg, classOf[DispatcherPrerequisites] -> prerequisites)
@@ -325,12 +319,15 @@ private[pekko] object BalancingDispatcherConfigurator {
 }
 
 /**
- * Configurator for creating [[pekko.dispatch.BalancingDispatcher]].
+ * INTERNAL API
+ *
+ * Configurator for creating `BalancingDispatcher`.
  * Returns the same dispatcher instance for each invocation
  * of the `dispatcher()` method.
  */
+@deprecated("Use BalancingPool instead of BalancingDispatcherConfigurator", "Pekko 2.0.0")
 @nowarn("msg=deprecated")
-class BalancingDispatcherConfigurator(_config: Config, _prerequisites: DispatcherPrerequisites)
+private[pekko] class BalancingDispatcherConfigurator(_config: Config, _prerequisites: DispatcherPrerequisites)
     extends MessageDispatcherConfigurator(BalancingDispatcherConfigurator.amendConfig(_config), _prerequisites) {
 
   private val instance = {

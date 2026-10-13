@@ -13,7 +13,9 @@
 
 package org.apache.pekko.stream
 
-import org.apache.pekko.stream.FlowMonitorState.StreamState
+import org.apache.pekko
+import pekko.annotation.DoNotInherit
+import pekko.stream.FlowMonitorState.StreamState
 
 /**
  * Used to monitor the state of a stream
@@ -25,7 +27,9 @@ trait FlowMonitor[+T] {
 }
 
 object FlowMonitorState {
-  sealed trait StreamState[+U]
+
+  /** Not for user extension */
+  @DoNotInherit sealed trait StreamState[+U]
 
   /**
    * Stream was created, but no events have passed through it

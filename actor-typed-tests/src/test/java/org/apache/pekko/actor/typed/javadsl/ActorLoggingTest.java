@@ -17,27 +17,32 @@ import com.typesafe.config.ConfigFactory;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import org.apache.pekko.actor.testkit.typed.javadsl.LogCapturing;
-import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJunitResource;
+import org.apache.pekko.actor.testkit.typed.annotations.JUnitJupiterTestKit;
+import org.apache.pekko.actor.testkit.typed.javadsl.ActorTestKit;
+import org.apache.pekko.actor.testkit.typed.javadsl.JUnitJupiterTestKitBuilder;
+import org.apache.pekko.actor.testkit.typed.javadsl.LogCapturingExtension;
+import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJUnitJupiterExtension;
 import org.apache.pekko.actor.typed.ActorRef;
 import org.apache.pekko.actor.typed.Behavior;
 import org.apache.pekko.event.Logging;
 import org.apache.pekko.japi.pf.PFBuilder;
 import org.apache.pekko.testkit.CustomEventFilter;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
-import org.scalatestplus.junit.JUnitSuite;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import scala.concurrent.duration.FiniteDuration;
 
-public class ActorLoggingTest extends JUnitSuite {
+@ExtendWith(TestKitJUnitJupiterExtension.class)
+@ExtendWith(LogCapturingExtension.class)
+public class ActorLoggingTest {
 
-  @ClassRule
-  public static final TestKitJunitResource testKit =
-      new TestKitJunitResource(
-          ConfigFactory.parseString(
-              "pekko.loglevel = INFO\n"
-                  + "pekko.loggers = [\"org.apache.pekko.testkit.TestEventListener\"]"));
+  @JUnitJupiterTestKit
+  public ActorTestKit testKit =
+      new JUnitJupiterTestKitBuilder()
+          .withCustomConfig(
+              ConfigFactory.parseString(
+                  "pekko.loglevel = INFO\n"
+                      + "pekko.loggers = [\"org.apache.pekko.testkit.TestEventListener\"]"))
+          .build();
 
   interface Protocol {
     String getTransactionId();
@@ -54,8 +59,6 @@ public class ActorLoggingTest extends JUnitSuite {
       return transactionId;
     }
   }
-
-  @Rule public final LogCapturing logCapturing = new LogCapturing();
 
   @Test
   public void loggingProvidesClassWhereLogWasCalled() {

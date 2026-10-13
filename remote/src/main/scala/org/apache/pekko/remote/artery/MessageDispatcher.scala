@@ -36,6 +36,15 @@ private[remote] class MessageDispatcher(system: ExtendedActorSystem, provider: R
   private val log = Logging.withMarker(system, getClass.getName)
   private val debugLogEnabled: Boolean = log.isDebugEnabled
 
+  /**
+   * <p>
+   *   Opentelemetry Java Instrumentation relies on this method so avoid changing it. The agent makes the
+   *   received context current while the message is delivered to the recipient.
+   *   See https://github.com/apache/pekko/issues/3472
+   * </p>
+   */
+  // see https://github.com/open-telemetry/opentelemetry-java-instrumentation/pull/19823
+  @noinline // Not inlined so that the agent can match the method in the bytecode
   def dispatch(inboundEnvelope: InboundEnvelope): Unit = {
     import Logging.messageClassName
     import provider.remoteSettings.Artery._
@@ -70,7 +79,8 @@ private[remote] class MessageDispatcher(system: ExtendedActorSystem, provider: R
           log.debug("received message [{}] to [{}] from [{}]", message, recipient, senderOption.getOrElse(""))
         message match {
           case sel: ActorSelectionMessage =>
-            if (UntrustedMode && (!TrustedSelectionPaths.contains(sel.elements.mkString("/", "/", "")) ||
+            if (UntrustedMode &&
+              (!TrustedSelectionPaths.contains(sel.elements.mkString("/", "/", "")) ||
               sel.msg.isInstanceOf[PossiblyHarmful] || l != provider.rootGuardian)) {
               if (debugLogEnabled)
                 log.debug(

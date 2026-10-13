@@ -54,15 +54,15 @@ private[typed] object ClusterReceptionist extends ReceptionistBehaviorProvider {
 
   import ClusterReceptionistProtocol.SubscriptionsKV
   type SubscriptionRegistry = TypedMultiMap[AbstractServiceKey, SubscriptionsKV]
-  type DDataKey = ORMultiMapKey[ServiceKey[_], Entry]
+  type DDataKey = ORMultiMapKey[ServiceKey[?], Entry]
 
-  final val EmptyORMultiMap = ORMultiMap.empty[ServiceKey[_], Entry]
+  final val EmptyORMultiMap = ORMultiMap.empty[ServiceKey[?], Entry]
 
   override val name = "clusterReceptionist"
 
   // values contain system uid to make it possible to discern actors at the same
   // path in different incarnations of a cluster node
-  final case class Entry(ref: ActorRef[_], systemUid: Long)(val createdTimestamp: Long) {
+  final case class Entry(ref: ActorRef[?], systemUid: Long)(val createdTimestamp: Long) {
     def uniqueAddress(selfAddress: Address): UniqueAddress =
       if (ref.path.address.hasLocalScope) UniqueAddress(selfAddress, systemUid)
       else UniqueAddress(ref.path.address, systemUid)
@@ -79,7 +79,7 @@ private[typed] object ClusterReceptionist extends ReceptionistBehaviorProvider {
   private final case class NodeRemoved(addresses: UniqueAddress) extends InternalCommand
   private final case class NodeUnreachable(addresses: UniqueAddress) extends InternalCommand
   private final case class NodeReachable(addresses: UniqueAddress) extends InternalCommand
-  private final case class ChangeFromReplicator(key: DDataKey, value: ORMultiMap[ServiceKey[_], Entry])
+  private final case class ChangeFromReplicator(key: DDataKey, value: ORMultiMap[ServiceKey[?], Entry])
       extends InternalCommand
   private case object RemoveTick extends InternalCommand
   private case object PruneTombstonesTick extends InternalCommand
@@ -93,12 +93,12 @@ private[typed] object ClusterReceptionist extends ReceptionistBehaviorProvider {
    */
   final case class State(
       registry: ShardedServiceRegistry,
-      servicesPerActor: Map[ActorRef[_], Set[AbstractServiceKey]],
-      tombstones: Map[ActorRef[_], Set[(AbstractServiceKey, Deadline)]],
+      servicesPerActor: Map[ActorRef[?], Set[AbstractServiceKey]],
+      tombstones: Map[ActorRef[?], Set[(AbstractServiceKey, Deadline)]],
       subscriptions: SubscriptionRegistry) {
 
     /** tombstone all services actor is registered for */
-    def addTombstone(actor: ActorRef[_], deadline: Deadline): State = {
+    def addTombstone(actor: ActorRef[?], deadline: Deadline): State = {
       servicesPerActor.getOrElse(actor, Set.empty).foldLeft(this) { (state, key) =>
         state.addTombstone(actor.asInstanceOf[ActorRef[key.Protocol]], key.asServiceKey, deadline)
       }
@@ -116,7 +116,7 @@ private[typed] object ClusterReceptionist extends ReceptionistBehaviorProvider {
     def pruneTombstones(): State = {
       if (tombstones.isEmpty) this
       else {
-        val newTombstones: Map[ActorRef[_], Set[(AbstractServiceKey, Deadline)]] =
+        val newTombstones: Map[ActorRef[?], Set[(AbstractServiceKey, Deadline)]] =
           tombstones.foldLeft(tombstones) {
             case (acc, (actorRef, entries)) =>
               val entriesToKeep = entries.filter {
@@ -218,10 +218,10 @@ private[typed] object ClusterReceptionist extends ReceptionistBehaviorProvider {
         // subscribe to changes from other nodes
         val replicatorMessageAdapter: ActorRef[Replicator.ReplicatorMessage] =
           ctx.messageAdapter[Replicator.ReplicatorMessage] {
-            case changed: Replicator.Changed[_] @unchecked =>
+            case changed: Replicator.Changed[?] @unchecked =>
               ChangeFromReplicator(
                 changed.key.asInstanceOf[DDataKey],
-                changed.dataValue.asInstanceOf[ORMultiMap[ServiceKey[_], Entry]])
+                changed.dataValue.asInstanceOf[ORMultiMap[ServiceKey[?], Entry]])
             case _ => throw new IllegalArgumentException() // compiler exhaustiveness check pleaser
           }
 

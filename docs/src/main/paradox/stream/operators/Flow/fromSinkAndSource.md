@@ -22,7 +22,7 @@ Use @ref:[fromSinkAndSourceCoupled](fromSinkAndSourceCoupled.md) if you want to 
 
 ## Examples
 
-One use case is constructing a TCP server where requests and responses do not map 1:1 (like it does in the @ref[Echo TCP server sample](../../stream-io.md) where every incoming test is echoed back) but allows separate flows of elements from the client to the server and from the server to the client.
+One use case is constructing a TCP server where requests and responses do not map 1:1 (like it does in the @ref[Echo TCP server sample](../../stream-io.md) where every incoming text is echoed back) but allows separate flows of elements from the client to the server and from the server to the client.
 
 This example `cancel`s the incoming stream, not allowing the client to write more messages, switching the TCP connection to "half-closed", but keeps streaming periodic output to the client:
 

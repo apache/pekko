@@ -16,7 +16,6 @@ package jdocs.org.apache.pekko.typed.coexistence;
 import static org.apache.pekko.actor.typed.javadsl.Behaviors.same;
 
 import org.apache.pekko.actor.AbstractActor;
-import org.apache.pekko.actor.typed.ActorRef;
 import org.apache.pekko.actor.typed.ActorSystem;
 import org.apache.pekko.actor.typed.Behavior;
 import org.apache.pekko.actor.typed.javadsl.Adapter;
@@ -26,11 +25,10 @@ import org.apache.pekko.actor.typed.javadsl.Behaviors;
 // In java use the static methods on Adapter to convert from typed to classic
 import org.apache.pekko.testkit.TestProbe;
 import org.apache.pekko.testkit.javadsl.TestKit;
-import org.junit.Test;
-import org.scalatestplus.junit.JUnitSuite;
+import org.junit.jupiter.api.Test;
 import scala.concurrent.duration.Duration;
 
-public class ClassicWatchingTypedTest extends JUnitSuite {
+public class ClassicWatchingTypedTest {
 
   // #classic-watch
   public static class Classic extends AbstractActor {
@@ -70,13 +68,7 @@ public class ClassicWatchingTypedTest extends JUnitSuite {
   public abstract static class Typed {
     interface Command {}
 
-    public static class Ping implements Command {
-      public final org.apache.pekko.actor.typed.ActorRef<Pong> replyTo;
-
-      public Ping(ActorRef<Pong> replyTo) {
-        this.replyTo = replyTo;
-      }
-    }
+    public record Ping(org.apache.pekko.actor.typed.ActorRef<Pong> replyTo) implements Command {}
 
     public static class Pong {}
 
@@ -85,7 +77,7 @@ public class ClassicWatchingTypedTest extends JUnitSuite {
           .onMessage(
               Typed.Ping.class,
               message -> {
-                message.replyTo.tell(new Pong());
+                message.replyTo().tell(new Pong());
                 return same();
               })
           .build();

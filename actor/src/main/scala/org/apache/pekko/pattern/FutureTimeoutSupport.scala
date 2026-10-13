@@ -74,23 +74,23 @@ trait FutureTimeoutSupport {
       val p = new CompletableFuture[T]
       using.scheduleOnce(
         duration,
-        new Runnable {
-          override def run(): Unit =
-            try {
-              val future = value
-              future.handle[Unit]((t: T, ex: Throwable) => {
-                if (t != null) p.complete(t)
-                if (ex ne null) p.completeExceptionally(ex)
-              })
-            } catch {
-              case NonFatal(ex) => p.completeExceptionally(ex)
-            }
+        () => {
+          try {
+            val future = value
+            future.handle[Unit]((t: T, ex: Throwable) => {
+              if (t != null) p.complete(t)
+              if (ex ne null) p.completeExceptionally(ex)
+            })
+          } catch {
+            case NonFatal(ex) => p.completeExceptionally(ex)
+          }
+          ()
         })
       p
     }
 
   /**
-   * Returns a [[scala.concurrent.Future]] that will be completed with a [[TimeoutException]]
+   * Returns a [[scala.concurrent.Future]] that will be completed with a `TimeoutException`
    * if the provided value is not completed within the specified duration.
    * @since 1.2.0
    */
@@ -122,7 +122,7 @@ trait FutureTimeoutSupport {
   }
 
   /**
-   * Returns a [[java.util.concurrent.CompletionStage]] that will be completed with a [[TimeoutException]]
+   * Returns a [[java.util.concurrent.CompletionStage]] that will be completed with a `TimeoutException`
    * if the provided value is not completed within the specified duration.
    * @since 1.2.0
    */
@@ -134,23 +134,19 @@ trait FutureTimeoutSupport {
       catch {
         case NonFatal(t) => CompletableFuture.failedStage(t)
       }
-    if (stage.toCompletableFuture.isDone) {
-      stage
-    } else {
-      val p = new CompletableFuture[T]
-      val timeout = using.scheduleOnce(duration,
-        () => {
-          p.completeExceptionally(new TimeoutException(s"Timeout of $duration expired"))
-          stage.toCompletableFuture.cancel(true)
-          ()
-        })
-      stage.handle[Unit]((v: T, ex: Throwable) => {
-        timeout.cancel()
-        if (v != null) p.complete(v)
-        if (ex ne null) p.completeExceptionally(ex)
+    val millis = if (duration.isZero || duration.isNegative) 0L else duration.toMillis
+    // Note: no explicit `isDone` fast-path is needed here because
+    // `CompletableFuture.orTimeout` already short-circuits on an already-completed stage.
+    stage.toCompletableFuture
+      .orTimeout(millis, java.util.concurrent.TimeUnit.MILLISECONDS)
+      .handle((v: T, ex: Throwable) => {
+        if (ex ne null) {
+          ex match {
+            case _: TimeoutException => throw new TimeoutException(s"Timeout of $duration expired")
+            case _                   => throw ex
+          }
+        } else v
       })
-      p
-    }
   }
 
 }

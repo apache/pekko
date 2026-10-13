@@ -13,8 +13,6 @@ Create a `Source` from the given items.
 
 Create a `Source` from the given items.
 
-## Examples
-
 ## Reactive Streams semantics
 
 @@@div { .callout }

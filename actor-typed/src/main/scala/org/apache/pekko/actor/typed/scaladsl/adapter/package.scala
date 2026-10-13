@@ -83,7 +83,7 @@ package object adapter {
   /**
    * Extension methods added to [[pekko.actor.typed.ActorSystem]].
    */
-  implicit class TypedActorSystemOps(val sys: ActorSystem[_]) extends AnyVal {
+  implicit class TypedActorSystemOps(val sys: ActorSystem[?]) extends AnyVal {
     def toClassic: pekko.actor.ActorSystem = sys.classicSystem
 
     /**
@@ -132,14 +132,14 @@ package object adapter {
     def watch[U](other: ActorRef[U]): Unit = ctx.watch(ActorRefAdapter.toClassic(other))
     def unwatch[U](other: ActorRef[U]): Unit = ctx.unwatch(ActorRefAdapter.toClassic(other))
 
-    def stop(child: ActorRef[_]): Unit =
+    def stop(child: ActorRef[?]): Unit =
       ctx.stop(ActorRefAdapter.toClassic(child))
   }
 
   /**
    * Extension methods added to [[pekko.actor.typed.scaladsl.ActorContext]].
    */
-  implicit class TypedActorContextOps(val ctx: scaladsl.ActorContext[_]) extends AnyVal {
+  implicit class TypedActorContextOps(val ctx: scaladsl.ActorContext[?]) extends AnyVal {
     def actorOf(props: pekko.actor.Props): pekko.actor.ActorRef =
       ActorContextAdapter.toClassic(ctx).actorOf(props)
 
@@ -154,7 +154,7 @@ package object adapter {
   /**
    * Extension methods added to [[pekko.actor.typed.ActorRef]].
    */
-  implicit class TypedActorRefOps(val ref: ActorRef[_]) extends AnyVal {
+  implicit class TypedActorRefOps(val ref: ActorRef[?]) extends AnyVal {
     def toClassic: pekko.actor.ActorRef = ActorRefAdapter.toClassic(ref)
   }
 

@@ -15,7 +15,8 @@ package org.apache.pekko.stream.scaladsl
 
 import scala.concurrent.duration._
 
-import org.apache.pekko.stream.testkit._
+import org.apache.pekko
+import pekko.stream.testkit._
 
 class FlowDropWithinSpec extends StreamSpec {
 

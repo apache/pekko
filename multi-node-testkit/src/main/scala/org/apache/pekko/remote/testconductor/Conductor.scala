@@ -52,10 +52,10 @@ import io.netty.channel.ChannelHandler.Sharable
 
 /**
  * The conductor is the one orchestrating the test: it governs the
- * [[pekko.remote.testconductor.Controller]]’s port to which all
+ * `Controller`’s port to which all
  * [[pekko.remote.testconductor.Player]]s connect, it issues commands to their
  * `org.apache.pekko.remote.testconductor.NetworkFailureInjector` and provides support
- * for barriers using the [[pekko.remote.testconductor.BarrierCoordinator]].
+ * for barriers using the `BarrierCoordinator`.
  * All of this is bundled inside the [[pekko.remote.testconductor.TestConductorExt]]
  * extension.
  */
@@ -70,7 +70,7 @@ trait Conductor { this: TestConductorExt =>
   }
 
   /**
-   * Start the [[pekko.remote.testconductor.Controller]], which in turn will
+   * Start the `Controller`, which in turn will
    * bind to a TCP port as specified in the `pekko.testconductor.port` config
    * property, where 0 denotes automatic allocation. Since the latter is
    * actually preferred, a `Future[Int]` is returned which will be completed
@@ -428,7 +428,7 @@ private[pekko] object Controller {
 
 /**
  * This controls test execution by managing barriers (delegated to
- * [[pekko.remote.testconductor.BarrierCoordinator]], its child) and allowing
+ * `BarrierCoordinator`, its child) and allowing
  * network and other failures to be injected at the test nodes.
  *
  * INTERNAL API.

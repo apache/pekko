@@ -55,22 +55,22 @@ object FishingOutcomes {
 
 object TestProbe {
 
-  def create[M](system: ActorSystem[_]): TestProbe[M] =
+  def create[M](system: ActorSystem[?]): TestProbe[M] =
     create(name = "testProbe", system)
 
-  def create[M](@nowarn("msg=never used") clazz: Class[M], system: ActorSystem[_]): TestProbe[M] =
+  def create[M](@nowarn("msg=never used") clazz: Class[M], system: ActorSystem[?]): TestProbe[M] =
     create(system)
 
-  def create[M](name: String, system: ActorSystem[_]): TestProbe[M] =
+  def create[M](name: String, system: ActorSystem[?]): TestProbe[M] =
     new TestProbeImpl[M](name, system)
 
-  def create[M](name: String, @nowarn("msg=never used") clazz: Class[M], system: ActorSystem[_]): TestProbe[M] =
+  def create[M](name: String, @nowarn("msg=never used") clazz: Class[M], system: ActorSystem[?]): TestProbe[M] =
     new TestProbeImpl[M](name, system)
 }
 
 /**
- * Java API: * Create instances through the `create` factories in the [[TestProbe]] companion
- * or via [[ActorTestKit#createTestProbe]].
+ * Java API: Create instances through the `create` factories in the `TestProbe` companion
+ * or via `ActorTestKit.createTestProbe`.
  *
  * A test probe is essentially a queryable mailbox which can be used in place of an actor and the received
  * messages can then be asserted etc.
@@ -101,7 +101,7 @@ abstract class TestProbe[M] extends RecipientRef[M] { this: InternalRecipientRef
 
   /**
    * Obtain time remaining for execution of the innermost enclosing `within`
-   * block or throw an [[java.lang.AssertionError]] if no `within` block surrounds this
+   * block or throw a [[java.lang.AssertionError]] if no `within` block surrounds this
    * call.
    */
   def getRemaining: Duration
@@ -191,7 +191,7 @@ abstract class TestProbe[M] extends RecipientRef[M] { this: InternalRecipientRef
 
   /**
    * Receive one message of type `M`. Wait time is bounded by the `max` duration,
-   * with an [[java.lang.AssertionError]] raised in case of timeout.
+   * with a [[java.lang.AssertionError]] raised in case of timeout.
    */
   def receiveMessage(max: Duration): M
 
@@ -236,7 +236,7 @@ abstract class TestProbe[M] extends RecipientRef[M] { this: InternalRecipientRef
 
   /**
    * Expect the given actor to be stopped or stop within the given timeout or
-   * throw an [[java.lang.AssertionError]].
+   * throw a [[java.lang.AssertionError]].
    *
    * Note that the timeout is scaled using the configuration entry "pekko.actor.testkit.typed.timefactor".
    */

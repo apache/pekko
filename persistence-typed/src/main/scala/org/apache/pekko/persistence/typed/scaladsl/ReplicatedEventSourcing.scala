@@ -15,6 +15,7 @@ package org.apache.pekko.persistence.typed.scaladsl
 
 import org.apache.pekko
 import pekko.annotation.DoNotInherit
+import pekko.annotation.InternalStableApi
 import pekko.persistence.typed.PersistenceId
 import pekko.persistence.typed.ReplicaId
 import pekko.persistence.typed.ReplicationId
@@ -124,4 +125,25 @@ object ReplicatedEventSourcing {
     eventSourcedBehaviorFactory(context).withReplication(context)
   }
 
+  /**
+   * INTERNAL API
+   *
+   * Initialize a replicated event sourced behavior.
+   *
+   * Events from each replica for the same entityId need to be passed to it by an external stream.
+   * Care must be taken to handle events in any order as events can happen concurrently at different replicas.
+   *
+   * Using a replicated event sourced behavior means there is no longer the single writer guarantee.
+   *
+   * The journal plugin id for the entity itself can be configured using withJournalPluginId after creation.
+   */
+  @InternalStableApi
+  private[pekko] def externalReplication[Command, Event, State](
+      replicationId: ReplicationId,
+      allReplicas: Set[ReplicaId])(
+      eventSourcedBehaviorFactory: ReplicationContext => EventSourcedBehavior[Command, Event, State])
+      : EventSourcedBehavior[Command, Event, State] = {
+    val context = new ReplicationContextImpl(replicationId, allReplicas.map(_ -> ReplicationContextImpl.NoPlugin).toMap)
+    eventSourcedBehaviorFactory(context).withReplication(context)
+  }
 }

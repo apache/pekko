@@ -63,6 +63,17 @@ trait Resizer {
    */
   def resize(currentRoutees: immutable.IndexedSeq[Routee]): Int
 
+  /**
+   * Constrain a proposed total pool size to the bounds enforced by this resizer.
+   * Used by [[AdjustPoolSize]] management messages to respect resizer bounds.
+   * The default implementation only ensures the size is at least 1.
+   *
+   * @param proposedSize the proposed total number of routees
+   * @return the clamped pool size
+   * @since 2.0.0
+   */
+  def clamp(proposedSize: Int): Int = math.max(1, proposedSize)
+
 }
 
 object Resizer {
@@ -107,8 +118,10 @@ case object DefaultResizer {
 /**
  * Implementation of [[Resizer]] that adjust the [[Pool]] based on specified
  * thresholds.
- * @param lowerBound The fewest number of routees the router should ever have.
- * @param upperBound The most number of routees the router should ever have. Must be greater than or equal to `lowerBound`.
+ * Router management messages can move the pool outside the configured bounds
+ * until this resizer runs again.
+ * @param lowerBound The minimum pool size targeted when this resizer is invoked.
+ * @param upperBound The maximum pool size targeted when this resizer is invoked. Must be greater than or equal to `lowerBound`.
  * @param pressureThreshold Threshold to evaluate if routee is considered to be busy (under pressure).
  * Implementation depends on this value (default is 1).
  * <ul>
@@ -185,6 +198,9 @@ case class DefaultResizer(
     else if (proposed > upperBound) delta - (proposed - upperBound)
     else delta
   }
+
+  override def clamp(proposedSize: Int): Int =
+    math.max(lowerBound, math.min(proposedSize, upperBound))
 
   /**
    * Number of routees considered busy, or above 'pressure level'.
@@ -345,6 +361,18 @@ private[pekko] class ResizablePoolActor(supervisorStrategy: SupervisorStrategy)
     ({
       case Resize =>
         resizerCell.resize(initial = false)
+      case AdjustPoolSize(change: Int) =>
+        val currentRoutees = cell.router.routees
+        val currentSize = currentRoutees.size
+        val clampedSize = resizerCell.resizer.clamp(currentSize + change)
+        val effectiveChange = clampedSize - currentSize
+        if (effectiveChange > 0) {
+          val newRoutees = Vector.fill(effectiveChange)(pool.newRoutee(cell.routeeProps, context))
+          cell.addRoutees(newRoutees)
+        } else if (effectiveChange < 0) {
+          val abandon = currentRoutees.drop(currentRoutees.length + effectiveChange)
+          cell.removeRoutees(abandon, stopChild = true)
+        }
     }: Actor.Receive).orElse(super.receive)
 
 }

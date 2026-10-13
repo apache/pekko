@@ -26,7 +26,7 @@ import pekko.util.Timeout
 
 object TestProducerWithAsk {
 
-  trait Command
+  sealed trait Command
   final case class RequestNext(askTo: ActorRef[ProducerController.MessageWithConfirmation[TestConsumer.Job]])
       extends Command
   private case object Tick extends Command

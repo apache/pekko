@@ -13,8 +13,6 @@
 
 package org.apache.pekko.util
 
-import scala.collection.immutable
-
 /**
  * Typeclass which describes a classification hierarchy. Observe the contract between `isEqual` and `isSubclass`!
  */
@@ -71,7 +69,7 @@ private[pekko] object SubclassifiedIndex {
   }
 
   private[SubclassifiedIndex] def emptyMergeMap[K, V] = internalEmptyMergeMap.asInstanceOf[Map[K, Set[V]]]
-  private[this] val internalEmptyMergeMap = Map[AnyRef, Set[AnyRef]]().withDefaultValue(Set[AnyRef]())
+  private val internalEmptyMergeMap = Map[AnyRef, Set[AnyRef]]().withDefaultValue(Set[AnyRef]())
 }
 
 /**
@@ -91,7 +89,7 @@ private[pekko] class SubclassifiedIndex[K, V] private (protected var values: Set
 
   import SubclassifiedIndex._
 
-  type Changes = immutable.Seq[(K, Set[V])]
+  type Changes = Seq[(K, Set[V])]
 
   protected var subkeys = Vector.empty[Nonroot[K, V]]
 
@@ -229,5 +227,5 @@ private[pekko] class SubclassifiedIndex[K, V] private (protected var values: Set
       .foldLeft(emptyMergeMap[K, V]) {
         case (m, (k, s)) => m.updated(k, m(k) ++ s)
       }
-      .to(immutable.Seq)
+      .to(Seq)
 }

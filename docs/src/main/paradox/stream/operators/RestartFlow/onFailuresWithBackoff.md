@@ -12,7 +12,7 @@ Wrap the given @apidoc[Flow] with a @apidoc[Flow] that will restart it when it f
 ## Description
 
 Wrap the given @apidoc[Flow] with a @apidoc[Flow] that will restart it when it fails using exponential backoff.
-The backoff resets back to `minBackoff` if there hasn't been a restart within `maxRestartsWithin` (which defaults to `minBackoff` if max restarts).
+The backoff resets back to `minBackoff` if there hasn't been a restart within `maxRestartsWithin` (which defaults to `minBackoff`).
 
 This @apidoc[Flow] will not emit any failure as long as maxRestarts is not reached.
 The failure of the wrapped @apidoc[Flow] will be handled by restarting it.

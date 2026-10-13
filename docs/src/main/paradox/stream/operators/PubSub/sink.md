@@ -24,7 +24,7 @@ version=PekkoVersion
 
 ## Signature
 
-@apidoc[PubSub.sink](stream.typed.*.PubSub$) { scala="#sink[T](topic:org.apache.pekko.actor.typed.Toppic[T]):org.apache.pekko.stream.scaladsl.Sink[T,org.apache.pekko.NotUsed]" java="#sink(org.apache.pekko.actor.typed.Topic)" }
+@apidoc[PubSub.sink](stream.typed.*.PubSub$) { scala="#sink[T](topicActor:org.apache.pekko.actor.typed.ActorRef[org.apache.pekko.actor.typed.pubsub.Topic.Command[T]]):org.apache.pekko.stream.scaladsl.Sink[T,org.apache.pekko.NotUsed]" java="#sink(org.apache.pekko.actor.typed.ActorRef)" }
 
 ## Reactive Streams semantics
 

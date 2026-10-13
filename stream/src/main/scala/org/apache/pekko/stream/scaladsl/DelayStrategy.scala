@@ -58,7 +58,7 @@ object DelayStrategy {
 
     new DelayStrategy[T] {
 
-      private[this] var delay: FiniteDuration = initialDelay
+      private var delay: FiniteDuration = initialDelay
 
       override def nextDelay(elem: T): FiniteDuration = {
         if (needsIncrease(elem)) {

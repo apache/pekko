@@ -297,13 +297,12 @@ class RandomizedSplitBrainResolverIntegrationSpec
           // The test is limited to one flaky step, see issue #29185.
           val numberOfFlaky = if (cleanSplit) 0 else 1
           val healLastFlaky = numberOfFlaky > 0 && random.nextBoolean()
-          val flaky: Map[Int, (RoleName, List[RoleName])] =
-            (0 until numberOfFlaky).map { i =>
-              val from = nodes(random.nextInt(nodes.size))
-              val targets = nodes.filterNot(_ == from)
-              val to = (0 to random.nextInt(math.min(5, targets.size))).map(j => targets(j)).toList
-              i -> (from -> to)
-            }.toMap
+          val flaky: Map[Int, (RoleName, List[RoleName])] = (0 until numberOfFlaky).map { i =>
+            val from = nodes(random.nextInt(nodes.size))
+            val targets = nodes.filterNot(_ == from)
+            val to = (0 to random.nextInt(math.min(5, targets.size))).map(j => targets(j)).toList
+            i -> (from -> to)
+          }.toMap
 
           val delays = (0 until 10).map(_ => 2 + random.nextInt(13))
 

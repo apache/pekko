@@ -13,12 +13,13 @@
 
 package docs.stream.operators.source
 
-import org.apache.pekko.actor.typed.ActorSystem
-import org.apache.pekko.stream.scaladsl.Source
+import org.apache.pekko
+import pekko.actor.typed.ActorSystem
+import pekko.stream.scaladsl.Source
 
 object Zip {
 
-  implicit val system: ActorSystem[_] = ???
+  implicit val system: ActorSystem[?] = ???
 
   def zipN(): Unit = {
     // #zipN-simple

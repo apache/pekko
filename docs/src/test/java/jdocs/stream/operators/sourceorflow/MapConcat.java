@@ -13,7 +13,7 @@
 
 package jdocs.stream.operators.sourceorflow;
 
-import java.util.Arrays;
+import java.util.List;
 import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.stream.javadsl.Source;
 
@@ -22,14 +22,14 @@ public class MapConcat {
 
   // #map-concat
   Iterable<Integer> duplicate(int i) {
-    return Arrays.asList(i, i);
+    return List.of(i, i);
   }
 
   // #map-concat
 
   void example() {
     // #map-concat
-    Source.from(Arrays.asList(1, 2, 3))
+    Source.from(List.of(1, 2, 3))
         .mapConcat(i -> duplicate(i))
         .runForeach(System.out::println, system);
     // prints:

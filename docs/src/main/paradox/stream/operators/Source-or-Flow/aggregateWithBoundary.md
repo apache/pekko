@@ -16,6 +16,10 @@ Aggregate and emit until custom boundary condition met.
 
 This operator can be customized into a broad class of aggregate/group/fold operators, based on custom state or timer conditions.
 
+This operator adheres to the `ActorAttributes.SupervisionStrategy` attribute for exceptions thrown by `allocate`,
+`aggregate`, `harvest`, or timer predicate functions. On `Supervision.Stop` the stream fails; on
+`Supervision.Resume` and `Supervision.Restart` the failing element or aggregate is dropped and the stream continues.
+
 ## Reactive Streams semantics
 
 @@@div { .callout }

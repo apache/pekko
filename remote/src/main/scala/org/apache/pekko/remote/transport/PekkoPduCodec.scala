@@ -72,7 +72,7 @@ private[remote] trait PekkoPduCodec {
   import PekkoPduCodec._
 
   /**
-   * Returns an [[pekko.remote.transport.PekkoPduCodec.PekkoPdu]] instance that represents the PDU contained in the raw
+   * Returns a [[pekko.remote.transport.PekkoPduCodec.PekkoPdu]] instance that represents the PDU contained in the raw
    * ByteString.
    *
    * @param raw
@@ -83,7 +83,7 @@ private[remote] trait PekkoPduCodec {
   def decodePdu(raw: ByteString): PekkoPdu
 
   /**
-   * Takes an [[pekko.remote.transport.PekkoPduCodec.PekkoPdu]] representation of a Pekko PDU and returns its encoded
+   * Takes a [[pekko.remote.transport.PekkoPduCodec.PekkoPdu]] representation of a Pekko PDU and returns its encoded
    * form as a [[pekko.util.ByteString]].
    *
    * For the same effect the constructXXX methods might be called directly, taking method parameters instead of the
@@ -141,6 +141,15 @@ private[remote] object PekkoPduProtobufCodec extends PekkoPduCodec {
     ackBuilder
   }
 
+  /**
+   * <p>
+   *   Opentelemetry Java Instrumentation relies on this method so avoid changing it. The agent writes the
+   *   propagated context into the PDU here.
+   *   See https://github.com/apache/pekko/issues/3472
+   * </p>
+   */
+  // see https://github.com/open-telemetry/opentelemetry-java-instrumentation/pull/19823
+  @noinline // Not inlined so that the agent can match the method in the bytecode
   override def constructMessage(
       localAddress: Address,
       recipient: ActorRef,
@@ -211,6 +220,15 @@ private[remote] object PekkoPduProtobufCodec extends PekkoPduCodec {
     }
   }
 
+  /**
+   * <p>
+   *   Opentelemetry Java Instrumentation relies on this method so avoid changing it. The agent reads the
+   *   propagated context out of the PDU here.
+   *   See https://github.com/apache/pekko/issues/3472
+   * </p>
+   */
+  // see https://github.com/open-telemetry/opentelemetry-java-instrumentation/pull/19823
+  @noinline // Not inlined so that the agent can match the method in the bytecode
   override def decodeMessage(
       raw: ByteString,
       provider: RemoteActorRefProvider,

@@ -13,7 +13,8 @@
 
 package org.apache.pekko.remote
 
-import org.apache.pekko.actor.Address
+import org.apache.pekko
+import pekko.actor.Address
 
 @SerialVersionUID(1L)
 final case class UniqueAddress(address: Address, uid: Long) extends Ordered[UniqueAddress] {

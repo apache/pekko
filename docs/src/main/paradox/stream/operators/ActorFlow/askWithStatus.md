@@ -24,7 +24,7 @@ This operator is included in:
 ## Description
 
 Use the @ref[Ask pattern](../../../typed/interaction-patterns.md#request-response-with-ask-from-outside-an-actor) to send a request-reply message to the target `ref` actor when you expect the reply to be `org.apache.pekko.pattern.StatusReply`.
-If any of the asks times out it will fail the stream with an @apidoc[AskTimeoutException].
+If any of the asks times out it will fail the stream with a `java.util.concurrent.TimeoutException`.
 
 The `askWithStatus` operator requires
 
@@ -35,7 +35,7 @@ The `askWithStatus` operator requires
 
 ## Examples
 
-The `ActorFlow.askWithStatus` sends a message to the actor. The actor expects `AskingWithStatus` messages which contain the actor ref for replies of type @scala[`StatusReply[String]`]@java[`StatusReply<String>`]. When the actor for replies receives a reply, the `ActorFlow.askWihStatus` stream stage emits the reply and the `map` extracts the message `String`.
+The `ActorFlow.askWithStatus` sends a message to the actor. The actor expects `AskingWithStatus` messages which contain the actor ref for replies of type @scala[`StatusReply[String]`]@java[`StatusReply<String>`]. When the actor for replies receives a reply, the `ActorFlow.askWithStatus` stream stage emits the reply and the `map` extracts the message `String`.
 
 Scala
 :  @@snip [ask.scala](/stream-typed/src/test/scala/docs/scaladsl/ActorFlowSpec.scala) { #imports #ask-actor #ask }

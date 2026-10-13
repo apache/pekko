@@ -15,7 +15,8 @@ package org.apache.pekko.stream.impl
 
 import java.util.concurrent.atomic.AtomicLong
 
-import org.apache.pekko.annotation.{ DoNotInherit, InternalApi }
+import org.apache.pekko
+import pekko.annotation.{ DoNotInherit, InternalApi }
 
 /**
  * INTERNAL API

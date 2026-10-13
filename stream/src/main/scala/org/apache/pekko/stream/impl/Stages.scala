@@ -167,6 +167,7 @@ import pekko.stream.Attributes._
     val actorRefWithBackpressureSink = name("actorRefWithBackpressureSink")
     val queueSink = name("queueSink")
     val lazySink = name("lazySink")
+    val eagerFutureSink = name("eagerFutureSink")
     val lazyFlow = name("lazyFlow")
     val futureFlow = name("futureFlow")
     val lazySource = name("lazySource")
@@ -178,6 +179,7 @@ import pekko.stream.Attributes._
     val inputBoundary = name("input-boundary")
     val outputBoundary = name("output-boundary")
     val dropRepeated = name("dropRepeated")
+    val tlsGraphStage = name("TlsGraphStage")
   }
 
 }

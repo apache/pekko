@@ -30,6 +30,7 @@
 package org.apache.pekko.io.dns
 
 import java.io.File
+import java.lang.invoke.{ MethodHandles, MethodType }
 import java.net.{ InetSocketAddress, URI }
 import java.util
 
@@ -160,7 +161,8 @@ private[dns] final class DnsSettings(system: ExtendedActorSystem, c: Config) {
 
   def failUnableToDetermineDefaultNameservers =
     throw new IllegalStateException(
-      "Unable to obtain default nameservers from JNDI or via reflection. " +
+      "Unable to obtain default nameservers from JNDI or via the JDK internal ResolverConfiguration fallback. " +
+      "On modular JDKs, that fallback requires access to java.base/sun.net.dns. " +
       "Please set `pekko.io.dns.async-dns.nameservers` explicitly in order to be able to resolve domain names. ")
 
 }
@@ -169,6 +171,9 @@ object DnsSettings {
 
   private final val DnsFallbackPort = 53
   private val inetSocketAddress = """(.*?)(?::(\d+))?""".r
+  private val publicLookup = MethodHandles.publicLookup()
+  private val lookup = MethodHandles.lookup()
+  private val nameserversMethodType = MethodType.methodType(classOf[util.List[?]])
 
   /**
    * INTERNAL API
@@ -186,7 +191,8 @@ object DnsSettings {
    * Find out the default search lists that Java would use normally, e.g. when using InetAddress to resolve domains.
    *
    * The default nameservers are attempted to be obtained from: jndi-dns and from `sun.net.dnsResolverConfiguration`
-   * as a fallback (which is expected to fail though when running on JDK9+ due to the module encapsulation of sun packages).
+   * as a fallback. That JDK-internal fallback is expected to fail when running on JDK9+ unless java.base/sun.net.dns
+   * is exported or opened to Pekko.
    *
    * Based on: https://github.com/netty/netty/blob/4.1/resolver-dns/src/main/java/io/netty/resolver/dns/DefaultDnsServerAddressStreamProvider.java#L58-L146
    */
@@ -229,24 +235,37 @@ object DnsSettings {
       }
     }
 
-    // this method is used as a fallback in case JNDI results in an empty list
-    // this method will not work when running modularised of course since it needs access to internal sun classes
-    def getNameserversUsingReflection: Try[List[InetSocketAddress]] = {
+    // This method is used as a best-effort fallback in case JNDI results in an empty list. It needs access to
+    // JDK-internal sun classes, so it will not work on modular JDKs unless java.base/sun.net.dns is exported or opened.
+    def getNameserversUsingMethodHandles: Try[List[InetSocketAddress]] = {
       system.dynamicAccess.getClassFor[Any]("sun.net.dns.ResolverConfiguration").flatMap { c =>
         Try {
-          val open = c.getMethod("open")
-          val nameservers = c.getMethod("nameservers")
-          val instance = open.invoke(null)
+          val effectiveLookup: MethodHandles.Lookup =
+            try {
+              lookup.findStatic(c, "open", MethodType.methodType(c))
+              lookup
+            } catch {
+              case _: IllegalAccessException =>
+                try {
+                  publicLookup.findStatic(c, "open", MethodType.methodType(c))
+                  publicLookup
+                } catch {
+                  case _: IllegalAccessException => MethodHandles.privateLookupIn(c, lookup)
+                }
+            }
+          val open = effectiveLookup.findStatic(c, "open", MethodType.methodType(c))
+          val nameservers = effectiveLookup.findVirtual(c, "nameservers", nameserversMethodType)
+          val instance = open.invoke()
           val ns = nameservers.invoke(instance).asInstanceOf[util.List[String]]
           val res = if (ns.isEmpty)
             throw new IllegalStateException(
-              "Empty nameservers list discovered using reflection. Consider configuring default nameservers manually!")
+              "Empty nameservers list discovered using method handles. Consider configuring default nameservers manually!")
           else ns.asScala.toList
           res.flatMap(s => asInetSocketAddress(s).toOption)
         }
       }
     }
 
-    getNameserversUsingJNDI.orElse(getNameserversUsingReflection)
+    getNameserversUsingJNDI.orElse(getNameserversUsingMethodHandles)
   }
 }

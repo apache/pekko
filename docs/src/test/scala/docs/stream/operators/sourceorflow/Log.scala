@@ -13,9 +13,10 @@
 
 package docs.stream.operators.sourceorflow
 
-import org.apache.pekko.stream.scaladsl.Flow
+import org.apache.pekko
+import pekko.stream.scaladsl.Flow
 //#log
-import org.apache.pekko.stream.Attributes
+import pekko.stream.Attributes
 
 //#log
 

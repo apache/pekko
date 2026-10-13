@@ -56,7 +56,7 @@ Some modules are excluded from the binary compatibility guarantees, such as:
 
 Once a method has been deprecated then the guideline* is that it will be kept, at minimum, for one **full** minor version release. For example, if it is deprecated in version 1.0.2 then it will remain through the rest of 1.0, as well as the entirety of 1.1.
 
-Methods that were deprecated in Akka, before the project fork to Pekko, are being considered for removal in Pekko 1.1.0.
+Methods that were deprecated in Akka, before the project fork to Pekko, have been removed in Pekko 2.0.0.
 
 *This is a guideline because in **rare** instances, after careful consideration, an exception may be made and the method removed earlier.
 
@@ -87,7 +87,7 @@ you might want to add `pekko-persistence-query` dependency for 1.0.6.
 
 @@@ note
 
-We recommend keeping an `pekkoVersion` variable in your build file, and re-use it for all
+We recommend keeping a `pekkoVersion` variable in your build file, and reusing it for all
 included modules, so when you upgrade you can simply change it in this one place.
 
 @@@
@@ -145,7 +145,7 @@ possible, however these markers allow to experiment, gather feedback and stabili
 ## Binary Compatibility Checking Toolchain
 
 Pekko uses the Lightbend maintained [MiMa](https://github.com/lightbend/mima),
-for enforcing binary compatibility is kept where it was promised.
+to enforce that binary compatibility is kept where it was promised.
 
 All Pull Requests must pass MiMa validation (which happens automatically), and if failures are detected,
 manual exception overrides may be put in place if the change happened to be in an Internal API for example.

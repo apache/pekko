@@ -36,6 +36,7 @@ import scala.annotation.tailrec
 import scala.collection.immutable
 
 import org.apache.pekko
+import pekko.annotation.DoNotInherit
 import pekko.annotation.InternalApi
 import pekko.cluster.UniqueAddress
 import pekko.util.HashCode
@@ -68,7 +69,9 @@ object ORSet {
    */
   @InternalApi private[pekko] type Dot = VersionVector
 
-  sealed trait DeltaOp extends ReplicatedDelta with RequiresCausalDeliveryOfDeltas with ReplicatedDataSerialization {
+  /** Not for user extension */
+  @DoNotInherit sealed trait DeltaOp extends ReplicatedDelta with RequiresCausalDeliveryOfDeltas
+      with ReplicatedDataSerialization {
     type T = DeltaOp
   }
 
@@ -89,7 +92,7 @@ object ORSet {
         // Note that we only merge deltas originating from the same node
         AddDeltaOp(
           new ORSet(concatElementsMap(u.elementsMap.asInstanceOf[Map[A, Dot]]), underlying.vvector.merge(u.vvector)))
-      case _: AtomicDeltaOp[_] => DeltaGroup(Vector(this, that))
+      case _: AtomicDeltaOp[?] => DeltaGroup(Vector(this, that))
       case DeltaGroup(ops)     => DeltaGroup(this +: ops)
     }
 
@@ -108,7 +111,7 @@ object ORSet {
       throw new IllegalArgumentException(s"RemoveDeltaOp should contain one removed element, but was $underlying")
 
     override def merge(that: DeltaOp): DeltaOp = that match {
-      case _: AtomicDeltaOp[_] => DeltaGroup(Vector(this, that)) // keep it simple for removals
+      case _: AtomicDeltaOp[?] => DeltaGroup(Vector(this, that)) // keep it simple for removals
       case DeltaGroup(ops)     => DeltaGroup(this +: ops)
     }
   }
@@ -116,7 +119,7 @@ object ORSet {
   /** INTERNAL API: Used for `clear` but could be used for other cases also */
   @InternalApi private[pekko] final case class FullStateDeltaOp[A](underlying: ORSet[A]) extends AtomicDeltaOp[A] {
     override def merge(that: DeltaOp): DeltaOp = that match {
-      case _: AtomicDeltaOp[_] => DeltaGroup(Vector(this, that))
+      case _: AtomicDeltaOp[?] => DeltaGroup(Vector(this, that))
       case DeltaGroup(ops)     => DeltaGroup(this +: ops)
     }
   }
@@ -128,10 +131,10 @@ object ORSet {
       extends DeltaOp
       with ReplicatedDeltaSize {
     override def merge(that: DeltaOp): DeltaOp = that match {
-      case thatAdd: AddDeltaOp[_] =>
+      case thatAdd: AddDeltaOp[?] =>
         // merge AddDeltaOp into last AddDeltaOp in the group, if possible
         ops.last match {
-          case thisAdd: AddDeltaOp[_] => DeltaGroup(ops.dropRight(1) :+ thisAdd.merge(thatAdd))
+          case thisAdd: AddDeltaOp[?] => DeltaGroup(ops.dropRight(1) :+ thisAdd.merge(thatAdd))
           case _                      => DeltaGroup(ops :+ thatAdd)
         }
       case DeltaGroup(thatOps) => DeltaGroup(ops ++ thatOps)
@@ -363,7 +366,7 @@ final class ORSet[A] private[pekko] (
     val newDelta = delta match {
       case None =>
         ORSet.AddDeltaOp(new ORSet(Map(element -> newDot), newDot))
-      case Some(existing: ORSet.AddDeltaOp[_]) =>
+      case Some(existing: ORSet.AddDeltaOp[?]) =>
         existing.merge(ORSet.AddDeltaOp(new ORSet(Map(element -> newDot), newDot)))
       case Some(d) =>
         d.merge(ORSet.AddDeltaOp(new ORSet(Map(element -> newDot), newDot)))
@@ -461,18 +464,18 @@ final class ORSet[A] private[pekko] (
 
   override def mergeDelta(thatDelta: ORSet.DeltaOp): ORSet[A] = {
     thatDelta match {
-      case d: ORSet.AddDeltaOp[_]       => dryMerge(d.asInstanceOf[ORSet.AddDeltaOp[A]].underlying, addDeltaOp = true)
-      case d: ORSet.RemoveDeltaOp[_]    => mergeRemoveDelta(d.asInstanceOf[ORSet.RemoveDeltaOp[A]])
-      case d: ORSet.FullStateDeltaOp[_] =>
+      case d: ORSet.AddDeltaOp[?]       => dryMerge(d.asInstanceOf[ORSet.AddDeltaOp[A]].underlying, addDeltaOp = true)
+      case d: ORSet.RemoveDeltaOp[?]    => mergeRemoveDelta(d.asInstanceOf[ORSet.RemoveDeltaOp[A]])
+      case d: ORSet.FullStateDeltaOp[?] =>
         dryMerge(d.asInstanceOf[ORSet.FullStateDeltaOp[A]].underlying, addDeltaOp = false)
       case ORSet.DeltaGroup(ops) =>
         ops.foldLeft(this) {
-          case (acc, op: ORSet.AddDeltaOp[_]) =>
+          case (acc, op: ORSet.AddDeltaOp[?]) =>
             acc.dryMerge(op.asInstanceOf[ORSet.AddDeltaOp[A]].underlying, addDeltaOp = true)
-          case (acc, op: ORSet.RemoveDeltaOp[_])    => acc.mergeRemoveDelta(op.asInstanceOf[ORSet.RemoveDeltaOp[A]])
-          case (acc, op: ORSet.FullStateDeltaOp[_]) =>
+          case (acc, op: ORSet.RemoveDeltaOp[?])    => acc.mergeRemoveDelta(op.asInstanceOf[ORSet.RemoveDeltaOp[A]])
+          case (acc, op: ORSet.FullStateDeltaOp[?]) =>
             acc.dryMerge(op.asInstanceOf[ORSet.FullStateDeltaOp[A]].underlying, addDeltaOp = false)
-          case (_, _: ORSet.DeltaGroup[_]) =>
+          case (_, _: ORSet.DeltaGroup[?]) =>
             throw new IllegalArgumentException("ORSet.DeltaGroup should not be nested")
         }
     }
@@ -557,7 +560,7 @@ final class ORSet[A] private[pekko] (
   override def toString: String = s"OR$elements"
 
   override def equals(o: Any): Boolean = o match {
-    case other: ORSet[_] => vvector == other.vvector && elementsMap == other.elementsMap
+    case other: ORSet[?] => vvector == other.vvector && elementsMap == other.elementsMap
     case _               => false
   }
 
@@ -574,4 +577,7 @@ object ORSetKey {
 }
 
 @SerialVersionUID(1L)
-final case class ORSetKey[A](_id: String) extends Key[ORSet[A]](_id) with ReplicatedDataSerialization
+final case class ORSetKey[A](_id: String) extends Key[ORSet[A]](_id) with ReplicatedDataSerialization {
+  override def withId(newId: Key.KeyId): ORSetKey[A] =
+    ORSetKey(newId)
+}

@@ -18,7 +18,6 @@ import java.net.InetSocketAddress
 import java.net.Socket
 import java.nio.file.{ Path, Paths }
 
-import scala.annotation.nowarn
 import scala.collection.immutable
 import scala.concurrent.duration._
 import scala.jdk.CollectionConverters._
@@ -26,7 +25,7 @@ import scala.jdk.DurationConverters._
 
 import org.apache.pekko
 import pekko.actor._
-import pekko.annotation.InternalApi
+import pekko.annotation.{ DoNotInherit, InternalApi }
 import pekko.io.Inet._
 import pekko.util.{ ByteString, Helpers }
 import pekko.util.Helpers.Requiring
@@ -107,8 +106,10 @@ object Tcp extends ExtensionId[TcpExt] with ExtensionIdProvider {
 
   /**
    * The common interface for [[Command]] and [[Event]].
+   *
+   * Not for user extension
    */
-  sealed trait Message extends NoSerializationVerificationNeeded
+  @DoNotInherit sealed trait Message extends NoSerializationVerificationNeeded
 
   /// COMMANDS
 
@@ -129,11 +130,10 @@ object Tcp extends ExtensionId[TcpExt] with ExtensionIdProvider {
    * @param localAddress optionally specifies a specific address to bind to
    * @param options Please refer to the `Tcp.SO` object for a list of all supported options.
    */
-  @nowarn("msg=deprecated")
   final case class Connect(
       remoteAddress: InetSocketAddress,
       localAddress: Option[InetSocketAddress] = None,
-      options: immutable.Traversable[SocketOption] = Nil,
+      options: immutable.Iterable[SocketOption] = Nil,
       timeout: Option[FiniteDuration] = None,
       pullMode: Boolean = false)
       extends Command
@@ -157,12 +157,11 @@ object Tcp extends ExtensionId[TcpExt] with ExtensionIdProvider {
    *
    * @param options Please refer to the `Tcp.SO` object for a list of all supported options.
    */
-  @nowarn("msg=deprecated")
   final case class Bind(
       handler: ActorRef,
       localAddress: InetSocketAddress,
       backlog: Int = 100,
-      options: immutable.Traversable[SocketOption] = Nil,
+      options: immutable.Iterable[SocketOption] = Nil,
       pullMode: Boolean = false)
       extends Command
 
@@ -196,8 +195,10 @@ object Tcp extends ExtensionId[TcpExt] with ExtensionIdProvider {
 
   /**
    * Common interface for all commands which aim to close down an open connection.
+   *
+   * Not for user extension
    */
-  sealed trait CloseCommand extends Command with DeadLetterSuppression {
+  @DoNotInherit sealed trait CloseCommand extends Command with DeadLetterSuppression {
 
     /**
      * The corresponding event which is sent as an acknowledgment once the
@@ -268,8 +269,10 @@ object Tcp extends ExtensionId[TcpExt] with ExtensionIdProvider {
 
   /**
    * Common interface for all write commands.
+   *
+   * Not for user extension
    */
-  sealed abstract class WriteCommand extends Command {
+  @DoNotInherit sealed abstract class WriteCommand extends Command {
 
     /**
      * Prepends this command with another `Write` or `WriteFile` to form
@@ -316,9 +319,11 @@ object Tcp extends ExtensionId[TcpExt] with ExtensionIdProvider {
   }
 
   /**
-   * Common supertype of [[Write]] and [[WriteFile]].
+   * Common supertype of [[Write]] and [[WritePath]].
+   *
+   * Not for user extension
    */
-  sealed abstract class SimpleWriteCommand extends WriteCommand {
+  @DoNotInherit sealed abstract class SimpleWriteCommand extends WriteCommand {
     require(ack != null, "ack must be non-null. Use NoAck if you don't want acks.")
 
     /**
@@ -383,7 +388,7 @@ object Tcp extends ExtensionId[TcpExt] with ExtensionIdProvider {
 
   /**
    * A write command which aggregates two other write commands. Using this construct
-   * you can chain a number of [[Write]] and/or [[WriteFile]] commands together in a way
+   * you can chain a number of [[Write]] and/or [[WritePath]] commands together in a way
    * that allows them to be handled as a single write which gets written out to the
    * network as quickly as possible.
    * If the sub commands contain `ack` requests they will be honored as soon as the
@@ -395,7 +400,7 @@ object Tcp extends ExtensionId[TcpExt] with ExtensionIdProvider {
 
     def iterator: Iterator[SimpleWriteCommand] =
       new Iterator[SimpleWriteCommand] {
-        private[this] var current: WriteCommand = CompoundWrite.this
+        private var current: WriteCommand = CompoundWrite.this
         def hasNext: Boolean = current ne null
         def next(): SimpleWriteCommand =
           current match {
@@ -504,8 +509,10 @@ object Tcp extends ExtensionId[TcpExt] with ExtensionIdProvider {
    * which it is safe to send at least one write. This means that all writes preceding
    * the first [[CommandFailed]] message have been enqueued to the O/S kernel at this
    * point.
+   *
+   * Not for user extension
    */
-  sealed trait WritingResumed extends Event
+  @DoNotInherit sealed trait WritingResumed extends Event
   case object WritingResumed extends WritingResumed
 
   /**
@@ -518,15 +525,19 @@ object Tcp extends ExtensionId[TcpExt] with ExtensionIdProvider {
   /**
    * The sender of an `Unbind` command will receive confirmation through this
    * message once the listening socket has been closed.
+   *
+   * Not for user extension
    */
-  sealed trait Unbound extends Event
+  @DoNotInherit sealed trait Unbound extends Event
   case object Unbound extends Unbound
 
   /**
    * This is the common interface for all events which indicate that a connection
    * has been closed or half-closed.
+   *
+   * Not for user extension
    */
-  sealed trait ConnectionClosed extends Event with DeadLetterSuppression {
+  @DoNotInherit sealed trait ConnectionClosed extends Event with DeadLetterSuppression {
 
     /**
      * `true` iff the connection has been closed in response to an `Abort` command.
@@ -632,7 +643,7 @@ class TcpExt(system: ExtendedActorSystem) extends IO.Extension {
         case _      => getBoolean("windows-connection-abort-workaround-enabled")
       }
 
-    private[this] def getIntBytes(path: String): Int = {
+    private def getIntBytes(path: String): Int = {
       val size = getBytes(path)
       require(size < Int.MaxValue, s"$path must be < 2 GiB")
       require(size >= 0, s"$path must be non-negative")

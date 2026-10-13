@@ -13,8 +13,10 @@
 
 package docs.org.apache.pekko.typed
 
+import org.apache.pekko
+import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
+
 import scala.concurrent.duration._
-import org.apache.pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
 import scala.annotation.nowarn
 import org.scalatest.wordspec.AnyWordSpecLike
 

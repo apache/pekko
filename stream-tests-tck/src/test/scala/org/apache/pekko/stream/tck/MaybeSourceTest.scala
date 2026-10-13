@@ -13,7 +13,8 @@
 
 package org.apache.pekko.stream.tck
 
-import org.apache.pekko.stream.scaladsl.{ Keep, Sink, Source }
+import org.apache.pekko
+import pekko.stream.scaladsl.{ Keep, Sink, Source }
 
 import org.reactivestreams.Publisher
 

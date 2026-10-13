@@ -13,13 +13,15 @@
 
 package docs.config
 
-import org.apache.pekko.actor.testkit.typed.scaladsl.ActorTestKit
-import org.apache.pekko.actor.typed.scaladsl.Behaviors
+import org.apache.pekko
+import pekko.actor.testkit.typed.scaladsl.ActorTestKit
+import pekko.actor.typed.scaladsl.Behaviors
+
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
 //#imports
-import org.apache.pekko.actor.typed.ActorSystem
+import pekko.actor.typed.ActorSystem
 import com.typesafe.config.ConfigFactory
 //#imports
 

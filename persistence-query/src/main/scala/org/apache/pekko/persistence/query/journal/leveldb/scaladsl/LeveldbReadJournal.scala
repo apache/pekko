@@ -14,6 +14,7 @@
 package org.apache.pekko.persistence.query.journal.leveldb.scaladsl
 
 import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 import scala.concurrent.duration._
 
@@ -31,7 +32,6 @@ import pekko.persistence.query.journal.leveldb.EventsByTagStage
 import pekko.persistence.query.scaladsl._
 import pekko.persistence.query.scaladsl.ReadJournal
 import pekko.stream.scaladsl.Source
-import pekko.util.ByteString
 
 import com.typesafe.config.Config
 
@@ -69,7 +69,8 @@ class LeveldbReadJournal(system: ExtendedActorSystem, config: Config)
     else
       writeJournalPluginId
   require(
-    resolvedWriteJournalPluginId.nonEmpty && system.settings.config
+    resolvedWriteJournalPluginId.nonEmpty &&
+    system.settings.config
       .getConfig(resolvedWriteJournalPluginId)
       .getString("class") == "org.apache.pekko.persistence.journal.leveldb.LeveldbJournal",
     s"Leveldb read journal can only work with a Leveldb write journal. Current plugin [$resolvedWriteJournalPluginId] is not a LeveldbJournal")
@@ -194,7 +195,7 @@ class LeveldbReadJournal(system: ExtendedActorSystem, config: Config)
    * `eventsByTag` is used for retrieving events that were marked with
    * a given tag, e.g. all events of an Aggregate Root type.
    *
-   * To tag events you create an [[pekko.persistence.journal.EventAdapter]] that wraps the events
+   * To tag events you create a [[pekko.persistence.journal.EventAdapter]] that wraps the events
    * in a [[pekko.persistence.journal.Tagged]] with the given `tags`.
    *
    * You can use `NoOffset` to retrieve all events with a given tag or retrieve a subset of all
@@ -244,7 +245,7 @@ class LeveldbReadJournal(system: ExtendedActorSystem, config: Config)
                   writeJournalPluginId,
                   refreshInterval,
                   mat))
-              .named("eventsByTag-" + URLEncoder.encode(tag, ByteString.UTF_8))
+              .named("eventsByTag-" + URLEncoder.encode(tag, StandardCharsets.UTF_8))
 
           case NoOffset => eventsByTag(tag, Sequence(0L)) // recursive
           case _        =>
@@ -267,7 +268,7 @@ class LeveldbReadJournal(system: ExtendedActorSystem, config: Config)
             Source
               .fromGraph(
                 new EventsByTagStage(tag, seq.value, maxBufSize, Long.MaxValue, writeJournalPluginId, None, mat))
-              .named("currentEventsByTag-" + URLEncoder.encode(tag, ByteString.UTF_8))
+              .named("currentEventsByTag-" + URLEncoder.encode(tag, StandardCharsets.UTF_8))
           case NoOffset => currentEventsByTag(tag, Sequence(0L))
           case _        =>
             throw new IllegalArgumentException(
@@ -282,7 +283,7 @@ object LeveldbReadJournal {
 
   /**
    * The default identifier for [[LeveldbReadJournal]] to be used with
-   * [[pekko.persistence.query.PersistenceQuery#readJournalFor]].
+   * `PersistenceQuery#readJournalFor`.
    *
    * The value is `"pekko.persistence.query.journal.leveldb"` and corresponds
    * to the absolute path to the read journal configuration entry.

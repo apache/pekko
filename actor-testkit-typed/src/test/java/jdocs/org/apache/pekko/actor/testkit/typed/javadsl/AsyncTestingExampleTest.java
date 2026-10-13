@@ -20,12 +20,15 @@ import org.apache.pekko.actor.typed.javadsl.AskPattern;
 import org.apache.pekko.actor.typed.javadsl.Behaviors;
 // #test-header
 import org.apache.pekko.actor.testkit.typed.javadsl.ActorTestKit;
+import org.apache.pekko.actor.testkit.typed.javadsl.JUnitJupiterTestKitBuilder;
+import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJUnitJupiterExtension;
+import org.apache.pekko.actor.testkit.typed.javadsl.LogCapturingExtension;
 
 // #test-header
 import org.apache.pekko.actor.testkit.typed.javadsl.TestProbe;
-import org.junit.AfterClass;
-import org.junit.Test;
-import org.scalatestplus.junit.JUnitSuite;
+import org.apache.pekko.actor.testkit.typed.annotations.JUnitJupiterTestKit;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.time.Duration;
 import java.util.concurrent.CompletionStage;
@@ -33,15 +36,17 @@ import java.util.stream.IntStream;
 
 import java.util.Objects;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 // #test-header
+@ExtendWith({TestKitJUnitJupiterExtension.class, LogCapturingExtension.class})
 public class AsyncTestingExampleTest
-    // #test-header
-    extends JUnitSuite
+// #test-header
+
 // #test-header
 {
-  static final ActorTestKit testKit = ActorTestKit.create();
+  @JUnitJupiterTestKit public ActorTestKit testKit = new JUnitJupiterTestKitBuilder().build();
+
   // #test-header
 
   // #under-test
@@ -89,6 +94,7 @@ public class AsyncTestingExampleTest
           .build();
     }
   }
+
   // #under-test
 
   // #under-test-2
@@ -125,13 +131,11 @@ public class AsyncTestingExampleTest
           scheduler);
     }
   }
+
   // #under-test-2
 
   // #test-shutdown
-  @AfterClass
-  public static void cleanup() {
-    testKit.shutdownTestKit();
-  }
+  // Test cleanup is automatically handled by  extension
   // #test-shutdown
 
   @Test
@@ -202,7 +206,7 @@ public class AsyncTestingExampleTest
 
   @Test
   public void systemNameShouldComeFromTestClass() {
-    assertEquals(testKit.system().name(), "AsyncTestingExampleTest");
+    assertEquals("AsyncTestingExampleTest", testKit.system().name());
   }
   // #test-header
 }

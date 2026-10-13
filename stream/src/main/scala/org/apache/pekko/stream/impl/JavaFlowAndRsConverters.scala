@@ -122,14 +122,14 @@ private[pekko] object JavaFlowAndRsConverters {
 /** INTERNAL API: Adapters are not meant to be touched directly */
 @InternalApi private[pekko] final class JavaFlowPublisherToRsAdapter[T](
     val delegate: Flow.Publisher[T]) extends rs.Publisher[T] {
-  override def subscribe(rsSubscriber: rs.Subscriber[_ >: T]): Unit =
+  override def subscribe(rsSubscriber: rs.Subscriber[? >: T]): Unit =
     delegate.subscribe(rsSubscriber.asJava)
 }
 
 /** INTERNAL API: Adapters are not meant to be touched directly */
 @InternalApi private[pekko] final class RsPublisherToJavaFlowAdapter[T](
     val delegate: rs.Publisher[T]) extends Flow.Publisher[T] {
-  override def subscribe(javaSubscriber: Flow.Subscriber[_ >: T]): Unit =
+  override def subscribe(javaSubscriber: Flow.Subscriber[? >: T]): Unit =
     delegate.subscribe(javaSubscriber.asRs)
 }
 
@@ -196,7 +196,7 @@ private[pekko] object JavaFlowAndRsConverters {
   override def onSubscribe(s: Flow.Subscription): Unit =
     delegate.onSubscribe(s.asRs)
 
-  override def subscribe(javaSubscriber: Flow.Subscriber[_ >: R]): Unit =
+  override def subscribe(javaSubscriber: Flow.Subscriber[? >: R]): Unit =
     delegate.subscribe(javaSubscriber.asRs)
 }
 
@@ -215,6 +215,6 @@ private[pekko] object JavaFlowAndRsConverters {
   override def onSubscribe(s: rs.Subscription): Unit =
     delegate.onSubscribe(s.asJava)
 
-  override def subscribe(rsSubscriber: rs.Subscriber[_ >: R]): Unit =
+  override def subscribe(rsSubscriber: rs.Subscriber[? >: R]): Unit =
     delegate.subscribe(rsSubscriber.asJava)
 }

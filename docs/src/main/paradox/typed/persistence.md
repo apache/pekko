@@ -22,7 +22,7 @@ To use Pekko Persistence, add the module to your project:
   scope2=test
 }
 
-You also have to select journal plugin and optionally snapshot store plugin, see 
+You also have to select a journal plugin and optionally snapshot store plugin, see 
 @ref:[Persistence Plugins](../persistence-plugins.md).
 
 @@project-info{ projectId="persistence-typed" }
@@ -244,7 +244,7 @@ Scala
 Java
 :  @@snip [BasicPersistentBehaviorTest.java](/persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/BasicPersistentBehaviorTest.java) { #effects }
 
-Most of the time this will be done with the @apidoc[thenRun](typed.(scaladsl|javadsl).EffectBuilder) {scala="#thenRun(callback:State=%3EUnit):org.apache.pekko.persistence.typed.scaladsl.EffectBuilder[Event,State]" java="#thenRun(function.Effect)"} method on the `Effect` above. You can factor out
+Most of the time this will be done with the @apidoc[thenRun](typed.(scaladsl|javadsl).EffectBuilder) {scala="#thenRun(callback:State=%3EUnit):org.apache.pekko.persistence.typed.scaladsl.EffectBuilder[Event,State]" java="#thenRun(org.apache.pekko.japi.function.Effect)"} method on the `Effect` above. You can factor out
 common side effects into functions and reuse for several commands. For example:
 
 Scala
@@ -264,7 +264,7 @@ have not been acknowledged at that point. That may possibly result in executing 
 The side effects are executed sequentially, it is not possible to execute side effects in parallel, unless they
 call out to something that is running concurrently (for example sending a message to another actor).
 
-It's possible to execute a side effects before persisting the event, but that can result in that the
+It's possible to execute a side effect before persisting the event, but that can result in that the
 side effect is performed but the event is not stored if the persist fails.
 
 ### Atomic writes
@@ -384,7 +384,7 @@ when accepted you want a confirmation when the events have been successfully sto
 Therefore you typically include a @apidoc[typed.ActorRef]@scala[`[ReplyMessageType]`]@java[`<ReplyMessageType>`]. If the 
 command can either have a successful response or a validation error returned, the generic response type @apidoc[pattern.StatusReply]@scala[`[ReplyType]`]
 @java[`<ReplyType>`] can be used. If the successful reply does not contain a value but is more of an acknowledgement
-a pre defined @scala[@scaladoc[StatusReply.Ack](pekko.pattern.StatusReply$#Ack:org.apache.pekko.pattern.StatusReply[org.apache.pekko.Done])]@java[@javadoc[StatusReply.ack()](pekko.pattern.StatusReply$#ack():org.apache.pekko.pattern.StatusReply[org.apache.pekko.Done])] of type @scala[`StatusReply[Done]`]@java[`StatusReply<Done>`]
+a pre defined @scala[@scaladoc[StatusReply.Ack](pekko.pattern.StatusReply$#Ack:org.apache.pekko.pattern.StatusReply[org.apache.pekko.Done])]@java[@javadoc[StatusReply.ack()](pekko.pattern.StatusReply#ack())] of type @scala[`StatusReply[Done]`]@java[`StatusReply<Done>`]
 can be used.
 
 After validation errors or after persisting events, using a @apidoc[thenRun](typed.(scaladsl|javadsl).EffectBuilder) {scala="#thenRun(callback:State=%3EUnit):org.apache.pekko.persistence.typed.scaladsl.EffectBuilder[Event,State]" java="#thenRun(org.apache.pekko.japi.function.Effect)"} side effect, the reply message can
@@ -468,10 +468,21 @@ until other recoveries have been completed. This is configured by:
 pekko.persistence.max-concurrent-recoveries = 50
 ```
 
+Journal plugins based on `AsyncWriteJournal` also bound each individual recovery. They replay at most
+`replay-batch-size` event sequence numbers and wait until the recovering actor has processed that batch before
+requesting the next one. The default is `1000`; it can be changed in the journal plugin configuration, for example:
+
+```
+pekko.persistence.journal.my-plugin.replay-batch-size = 500
+```
+
+This setting limits replay pressure on the persistent actor's mailbox without limiting the total number of events
+that are recovered.
+
 The @ref:[event handler](#event-handler) is used for updating the state when replaying the journaled events.
 
 It is strongly discouraged to perform side effects in the event handler, so side effects should be performed
-once recovery has completed as a reaction to the @apidoc[typed.RecoveryCompleted] signal @scala[in the @scaladoc[receiveSignal](pekko.persistence.typed.scaladsl.EventSourcedBehavior#receiveSignal(signalHandler:PartialFunction[(State,org.apache.pekko.actor.typed.Signal),Unit]):org.apache.pekko.persistence.typed.scaladsl.EventSourcedBehavior[Command,Event,State]) handler] @java[by overriding @javadoc[receiveSignal](pekko.persistence.typed.javadsl.SignalHandlerBuilder#onSignal(java.lang.Class,java.util.function.BiConsumer))]
+once recovery has completed as a reaction to the @apidoc[typed.RecoveryCompleted] signal @scala[in the @scaladoc[receiveSignal](pekko.persistence.typed.scaladsl.EventSourcedBehavior#receiveSignal(signalHandler:PartialFunction[(State,org.apache.pekko.actor.typed.Signal),Unit]):org.apache.pekko.persistence.typed.scaladsl.EventSourcedBehavior[Command,Event,State]) handler] @java[by overriding @javadoc[signalHandler](pekko.persistence.typed.javadsl.SignalHandlerBuilder#onSignal(java.lang.Class,java.util.function.BiConsumer))]
 
 Scala
 :  @@snip [BasicPersistentBehaviorCompileOnly.scala](/persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/BasicPersistentBehaviorCompileOnly.scala) { #recovery }
@@ -481,7 +492,7 @@ Java
 
 The `RecoveryCompleted` contains the current `State`.
 
-The actor will always receive a `RecoveryCompleted` signal, even if there are no events
+The actor will always receive a @apidoc[typed.RecoveryCompleted] signal, even if there are no events
 in the journal and the snapshot store is empty, or if it's a new persistent actor with a previously
 unused `PersistenceId`.
 
@@ -589,7 +600,7 @@ Java
 :  @@snip [BasicPersistentBehaviorTest.java](/persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/BasicPersistentBehaviorTest.java) { #supervision }
 
 If there is a problem with recovering the state of the actor from the journal, a @apidoc[typed.RecoveryFailed] signal is
-emitted to the @scala[@scaladoc[receiveSignal](pekko.persistence.typed.scaladsl.EventSourcedBehavior#receiveSignal(signalHandler:PartialFunction[(State,org.apache.pekko.actor.typed.Signal),Unit]):org.apache.pekko.persistence.typed.scaladsl.EventSourcedBehavior[Command,Event,State]) handler] @java[@javadoc[receiveSignal](pekko.persistence.typed.javadsl.SignalHandlerBuilder#onSignal(java.lang.Class,java.util.function.BiConsumer)) method] and the actor will be stopped
+emitted to the @scala[@scaladoc[receiveSignal](pekko.persistence.typed.scaladsl.EventSourcedBehavior#receiveSignal(signalHandler:PartialFunction[(State,org.apache.pekko.actor.typed.Signal),Unit]):org.apache.pekko.persistence.typed.scaladsl.EventSourcedBehavior[Command,Event,State]) handler] @java[@javadoc[signalHandler](pekko.persistence.typed.javadsl.SignalHandlerBuilder#onSignal(java.lang.Class,java.util.function.BiConsumer)) method] and the actor will be stopped
 (or restarted with backoff).
 
 ### Journal rejections
@@ -626,7 +637,9 @@ Java
 :  @@snip [StashingExample.java](/persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/StashingExample.java) { #stashing }
 
 You should be careful to not send more messages to a persistent actor than it can keep up with, otherwise the stash
-buffer will fill up and when reaching its maximum capacity the commands will be dropped. The capacity can be configured with:
+buffer will fill up and when reaching its maximum capacity the commands will be dropped (with the default
+`pekko.persistence.typed.stash-overflow-strategy = "drop"`; set it to `"fail"` to fail the actor instead).
+The capacity (default 4096) can be configured with, for example:
 
 ```
 pekko.persistence.typed.stash-capacity = 10000

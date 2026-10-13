@@ -14,10 +14,10 @@
 package org.apache.pekko.stream.scaladsl
 
 import scala.annotation.unchecked.uncheckedVariance
-import scala.collection.immutable
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 import scala.concurrent.duration.FiniteDuration
+import scala.reflect.ClassTag
 
 import org.apache.pekko
 import pekko.NotUsed
@@ -48,7 +48,7 @@ trait FlowWithContextOps[+Out, +Ctx, +Mat] {
    * This can be used as an escape hatch for operations that are not (yet) provided with automatic
    * context propagation here.
    *
-   * @see [[pekko.stream.scaladsl.FlowOps.via]]
+   * @see `FlowOps.via`
    */
   def via[Out2, Ctx2, Mat2](flow: Graph[FlowShape[(Out, Ctx), (Out2, Ctx2)], Mat2]): Repr[Out2, Ctx2]
 
@@ -87,57 +87,76 @@ trait FlowWithContextOps[+Out, +Ctx, +Mat] {
       combine: (Mat, Mat2) => Mat3): ReprMat[Out2, Ctx2, Mat3]
 
   /**
-   * Data variant of [[pekko.stream.scaladsl.FlowOps.alsoTo]]
+   * Data variant of `FlowOps.alsoTo`
    *
-   * @see [[pekko.stream.scaladsl.FlowOps.alsoTo]]
+   * @see `FlowOps.alsoTo`
    * @since 1.1.0
    */
-  def alsoTo(that: Graph[SinkShape[Out], _]): Repr[Out, Ctx]
+  def alsoTo(that: Graph[SinkShape[Out], ?]): Repr[Out, Ctx]
 
   /**
-   * Context variant of [[pekko.stream.scaladsl.FlowOps.alsoTo]]
+   * Data variant of `FlowOps.alsoTo` with configurable cancellation propagation.
    *
-   * @see [[pekko.stream.scaladsl.FlowOps.alsoTo]]
+   * @see `FlowOps.alsoTo`
+   * @since 2.0.0
+   */
+  def alsoTo(that: Graph[SinkShape[Out], ?], propagateCancellation: Boolean): Repr[Out, Ctx]
+
+  /**
+   * Context variant of `FlowOps.alsoTo`
+   *
+   * @see `FlowOps.alsoTo`
    * @since 1.1.0
    */
-  def alsoToContext(that: Graph[SinkShape[Ctx], _]): Repr[Out, Ctx]
+  def alsoToContext(that: Graph[SinkShape[Ctx], ?]): Repr[Out, Ctx]
 
   /**
-   * Data variant of [[pekko.stream.scaladsl.FlowOps.wireTap]]
+   * Data variant of `FlowOps.wireTap`
    *
-   * @see [[pekko.stream.scaladsl.FlowOps.wireTap]]
+   * @see `FlowOps.wireTap`
    * @since 1.1.0
    */
-  def wireTap(that: Graph[SinkShape[Out], _]): Repr[Out, Ctx]
+  def wireTap(that: Graph[SinkShape[Out], ?]): Repr[Out, Ctx]
 
   /**
-   * Context variant of [[pekko.stream.scaladsl.FlowOps.wireTap]]
+   * Context variant of `FlowOps.wireTap`
    *
-   * @see [[pekko.stream.scaladsl.FlowOps.wireTap]]
+   * @see `FlowOps.wireTap`
    * @since 1.1.0
    */
-  def wireTapContext(that: Graph[SinkShape[Ctx], _]): Repr[Out, Ctx]
+  def wireTapContext(that: Graph[SinkShape[Ctx], ?]): Repr[Out, Ctx]
 
   /**
-   * Context-preserving variant of [[pekko.stream.scaladsl.FlowOps.map]].
+   * Context-preserving variant of `FlowOps.map`.
    *
-   * @see [[pekko.stream.scaladsl.FlowOps.map]]
+   * @see `FlowOps.map`
    */
   def map[Out2](f: Out => Out2): Repr[Out2, Ctx] =
     via(flow.map { case (e, ctx) => (f(e), ctx) })
 
   /**
-   * Context-preserving variant of [[pekko.stream.scaladsl.FlowOps.mapError]].
+   * Context-preserving variant of `FlowOps.mapOption`.
    *
-   * @see [[pekko.stream.scaladsl.FlowOps.mapError]]
+   * Note, that the context of elements that are filtered out is skipped as well.
+   *
+   * @see `FlowOps.mapOption`
+   * @since 2.0.0
+   */
+  def mapOption[Out2](f: Out => Option[Out2]): Repr[Out2, Ctx] =
+    via(flow.mapOption { case (e, ctx) => f(e).map(_ -> ctx) })
+
+  /**
+   * Context-preserving variant of `FlowOps.mapError`.
+   *
+   * @see `FlowOps.mapError`
    */
   def mapError(pf: PartialFunction[Throwable, Throwable]): Repr[Out, Ctx] =
     via(flow.mapError(pf))
 
   /**
-   * Context-preserving variant of [[pekko.stream.scaladsl.FlowOps.mapAsync]].
+   * Context-preserving variant of `FlowOps.mapAsync`.
    *
-   * @see [[pekko.stream.scaladsl.FlowOps.mapAsync]]
+   * @see `FlowOps.mapAsync`
    */
   def mapAsync[Out2](parallelism: Int)(f: Out => Future[Out2]): Repr[Out2, Ctx] =
     via(flow.mapAsync(parallelism) {
@@ -145,10 +164,10 @@ trait FlowWithContextOps[+Out, +Ctx, +Mat] {
     })
 
   /**
-   * Context-preserving variant of [[pekko.stream.scaladsl.FlowOps.mapAsyncPartitioned]].
+   * Context-preserving variant of `FlowOps.mapAsyncPartitioned`.
    *
    * @since 1.1.0
-   * @see [[pekko.stream.scaladsl.FlowOps.mapAsyncPartitioned]]
+   * @see `FlowOps.mapAsyncPartitioned`
    */
   def mapAsyncPartitioned[Out2, P](parallelism: Int)(
       partitioner: Out => P)(
@@ -160,10 +179,10 @@ trait FlowWithContextOps[+Out, +Ctx, +Mat] {
   }
 
   /**
-   * Context-preserving variant of [[pekko.stream.scaladsl.FlowOps.mapAsyncPartitionedUnordered]].
+   * Context-preserving variant of `FlowOps.mapAsyncPartitionedUnordered`.
    *
    * @since 1.1.0
-   * @see [[pekko.stream.scaladsl.FlowOps.mapAsyncPartitionedUnordered]]
+   * @see `FlowOps.mapAsyncPartitionedUnordered`
    */
   def mapAsyncPartitionedUnordered[Out2, P](parallelism: Int)(
       partitioner: Out => P)(
@@ -175,11 +194,11 @@ trait FlowWithContextOps[+Out, +Ctx, +Mat] {
   }
 
   /**
-   * Context-preserving variant of [[pekko.stream.scaladsl.FlowOps.collect]].
+   * Context-preserving variant of `FlowOps.collect`.
    *
    * Note, that the context of elements that are filtered out is skipped as well.
    *
-   * @see [[pekko.stream.scaladsl.FlowOps.collect]]
+   * @see `FlowOps.collect`
    */
   def collect[Out2](f: PartialFunction[Out, Out2]): Repr[Out2, Ctx] =
     via(flow.collect {
@@ -187,53 +206,208 @@ trait FlowWithContextOps[+Out, +Ctx, +Mat] {
     })
 
   /**
-   * Context-preserving variant of [[pekko.stream.scaladsl.FlowOps.filter]].
+   * Context-preserving variant of `FlowOps.filter`.
    *
    * Note, that the context of elements that are filtered out is skipped as well.
    *
-   * @see [[pekko.stream.scaladsl.FlowOps.filter]]
+   * @see `FlowOps.filter`
    */
   def filter(pred: Out => Boolean): Repr[Out, Ctx] =
     collect { case e if pred(e) => e }
 
   /**
-   * Context-preserving variant of [[pekko.stream.scaladsl.FlowOps.filterNot]].
+   * Context-preserving variant of `FlowOps.filterNot`.
    *
    * Note, that the context of elements that are filtered out is skipped as well.
    *
-   * @see [[pekko.stream.scaladsl.FlowOps.filterNot]]
+   * @see `FlowOps.filterNot`
    */
   def filterNot(pred: Out => Boolean): Repr[Out, Ctx] =
     collect { case e if !pred(e) => e }
 
   /**
-   * Context-preserving variant of [[pekko.stream.scaladsl.FlowOps.grouped]].
+   * Alias for [[filter]], added to enable filtering in for comprehensions.
+   *
+   * @see `FlowOps.withFilter`
+   * @since 2.0.0
+   */
+  @ApiMayChange
+  def withFilter(pred: Out => Boolean): Repr[Out, Ctx] =
+    filter(pred)
+
+  /**
+   * Context-preserving variant of `FlowOps.dropRepeated`.
+   *
+   * @see `FlowOps.dropRepeated`
+   * @since 2.0.0
+   */
+  def dropRepeated(): Repr[Out, Ctx] =
+    dropRepeated(ConstantFun.scalaAnyTwoEquals)
+
+  /**
+   * Context-preserving variant of `FlowOps.dropRepeated`.
+   *
+   * @see `FlowOps.dropRepeated`
+   * @since 2.0.0
+   */
+  def dropRepeated(pred: (Out, Out) => Boolean): Repr[Out, Ctx] =
+    via(flow.dropRepeated((left, right) => pred(left._1, right._1)))
+
+  /**
+   * Context-preserving variant of `FlowOps.takeWhile`.
+   *
+   * @see `FlowOps.takeWhile`
+   * @since 2.0.0
+   */
+  def takeWhile(pred: Out => Boolean): Repr[Out, Ctx] =
+    takeWhile(pred, inclusive = false)
+
+  /**
+   * Context-preserving variant of `FlowOps.takeUntil`.
+   *
+   * @see `FlowOps.takeUntil`
+   * @since 2.0.0
+   */
+  def takeUntil(pred: Out => Boolean): Repr[Out, Ctx] =
+    takeWhile(!pred(_), inclusive = true)
+
+  /**
+   * Context-preserving variant of `FlowOps.takeWhile`.
+   *
+   * @see `FlowOps.takeWhile`
+   * @since 2.0.0
+   */
+  def takeWhile(pred: Out => Boolean, inclusive: Boolean): Repr[Out, Ctx] =
+    via(flow.takeWhile({ case (e, _) => pred(e) }, inclusive))
+
+  /**
+   * Context-preserving variant of `FlowOps.dropWhile`.
+   *
+   * @see `FlowOps.dropWhile`
+   * @since 2.0.0
+   */
+  def dropWhile(pred: Out => Boolean): Repr[Out, Ctx] =
+    via(flow.dropWhile { case (e, _) => pred(e) })
+
+  /**
+   * Context-preserving variant of `FlowOps.collectFirst`.
+   *
+   * Note, that the context of elements that are filtered out is skipped as well.
+   *
+   * @see `FlowOps.collectFirst`
+   * @since 2.0.0
+   */
+  def collectFirst[Out2](f: PartialFunction[Out, Out2]): Repr[Out2, Ctx] =
+    via(flow.collectFirst {
+      case (e, ctx) if f.isDefinedAt(e) => (f(e), ctx)
+    })
+
+  /**
+   * Context-preserving variant of `FlowOps.collectWhile`.
+   *
+   * Note, that the context of elements that are filtered out is skipped as well.
+   *
+   * @see `FlowOps.collectWhile`
+   * @since 2.0.0
+   */
+  def collectWhile[Out2](f: PartialFunction[Out, Out2]): Repr[Out2, Ctx] =
+    via(flow.collectWhile {
+      case (e, ctx) if f.isDefinedAt(e) => (f(e), ctx)
+    })
+
+  /**
+   * Context-preserving variant of `FlowOps.collectType`.
+   *
+   * Note, that the context of elements that are filtered out is skipped as well.
+   *
+   * @see `FlowOps.collectType`
+   * @since 2.0.0
+   */
+  def collectType[Out2](implicit tag: ClassTag[Out2]): Repr[Out2, Ctx] =
+    collect { case tag(e) => e }
+
+  /**
+   * Context-preserving variant of `FlowOps.drop`.
+   *
+   * @see `FlowOps.drop`
+   * @since 2.0.0
+   */
+  def drop(n: Long): Repr[Out, Ctx] =
+    via(flow.drop(n))
+
+  /**
+   * Context-preserving variant of `FlowOps.dropWithin`.
+   *
+   * @see `FlowOps.dropWithin`
+   * @since 2.0.0
+   */
+  def dropWithin(d: FiniteDuration): Repr[Out, Ctx] =
+    via(flow.dropWithin(d))
+
+  /**
+   * Context-preserving variant of `FlowOps.take`.
+   *
+   * @see `FlowOps.take`
+   * @since 2.0.0
+   */
+  def take(n: Long): Repr[Out, Ctx] =
+    via(flow.take(n))
+
+  /**
+   * Context-preserving variant of `FlowOps.takeWithin`.
+   *
+   * @see `FlowOps.takeWithin`
+   * @since 2.0.0
+   */
+  def takeWithin(d: FiniteDuration): Repr[Out, Ctx] =
+    via(flow.takeWithin(d))
+
+  /**
+   * Context-preserving variant of `FlowOps.limit`.
+   *
+   * @see `FlowOps.limit`
+   * @since 2.0.0
+   */
+  def limit(max: Long): Repr[Out, Ctx] =
+    limitWeighted(max)(_ => 1)
+
+  /**
+   * Context-preserving variant of `FlowOps.limitWeighted`.
+   *
+   * @see `FlowOps.limitWeighted`
+   * @since 2.0.0
+   */
+  def limitWeighted(max: Long)(costFn: Out => Long): Repr[Out, Ctx] =
+    via(flow.limitWeighted(max) { case (e, _) => costFn(e) })
+
+  /**
+   * Context-preserving variant of `FlowOps.grouped`.
    *
    * Each output group will be associated with a `Seq` of corresponding context elements.
    *
-   * @see [[pekko.stream.scaladsl.FlowOps.grouped]]
+   * @see `FlowOps.grouped`
    */
-  def grouped(n: Int): Repr[immutable.Seq[Out], immutable.Seq[Ctx]] =
+  def grouped(n: Int): Repr[Seq[Out], Seq[Ctx]] =
     via(flow.grouped(n).map { elsWithContext =>
       val (els, ctxs) = elsWithContext.unzip
       (els, ctxs)
     })
 
   /**
-   * Context-preserving variant of [[pekko.stream.scaladsl.FlowOps.sliding]].
+   * Context-preserving variant of `FlowOps.sliding`.
    *
    * Each output group will be associated with a `Seq` of corresponding context elements.
    *
-   * @see [[pekko.stream.scaladsl.FlowOps.sliding]]
+   * @see `FlowOps.sliding`
    */
-  def sliding(n: Int, step: Int = 1): Repr[immutable.Seq[Out], immutable.Seq[Ctx]] =
+  def sliding(n: Int, step: Int = 1): Repr[Seq[Out], Seq[Ctx]] =
     via(flow.sliding(n, step).map { elsWithContext =>
       val (els, ctxs) = elsWithContext.unzip
       (els, ctxs)
     })
 
   /**
-   * Context-preserving variant of [[pekko.stream.scaladsl.FlowOps.mapConcat]].
+   * Context-preserving variant of `FlowOps.mapConcat`.
    *
    * The context of the input element will be associated with each of the output elements calculated from
    * this input element.
@@ -258,7 +432,7 @@ trait FlowWithContextOps[+Out, +Ctx, +Mat] {
    * ("b", 2)
    * ```
    *
-   * @see [[pekko.stream.scaladsl.FlowOps.mapConcat]]
+   * @see `FlowOps.mapConcat`
    */
   def mapConcat[Out2](f: Out => IterableOnce[Out2]): Repr[Out2, Ctx] =
     via(flow.mapConcat {
@@ -272,9 +446,9 @@ trait FlowWithContextOps[+Out, +Ctx, +Mat] {
     via(flow.map { case (e, ctx) => (e, f(ctx)) })
 
   /**
-   * Context-preserving variant of [[pekko.stream.scaladsl.FlowOps.log]].
+   * Context-preserving variant of `FlowOps.log`.
    *
-   * @see [[pekko.stream.scaladsl.FlowOps.log]]
+   * @see `FlowOps.log`
    */
   def log(name: String, extract: Out => Any = ConstantFun.scalaIdentityFunction)(
       implicit log: LoggingAdapter = null): Repr[Out, Ctx] = {
@@ -283,9 +457,9 @@ trait FlowWithContextOps[+Out, +Ctx, +Mat] {
   }
 
   /**
-   * Context-preserving variant of [[pekko.stream.scaladsl.FlowOps.logWithMarker]].
+   * Context-preserving variant of `FlowOps.logWithMarker`.
    *
-   * @see [[pekko.stream.scaladsl.FlowOps.logWithMarker]]
+   * @see `FlowOps.logWithMarker`
    */
   def logWithMarker(
       name: String,
@@ -297,33 +471,33 @@ trait FlowWithContextOps[+Out, +Ctx, +Mat] {
   }
 
   /**
-   * Context-preserving variant of [[pekko.stream.scaladsl.FlowOps.throttle]].
+   * Context-preserving variant of `FlowOps.throttle`.
    *
-   * @see [[pekko.stream.scaladsl.FlowOps.throttle]]
+   * @see `FlowOps.throttle`
    */
   def throttle(elements: Int, per: FiniteDuration): Repr[Out, Ctx] =
     throttle(elements, per, Throttle.AutomaticMaximumBurst, ConstantFun.oneInt, ThrottleMode.Shaping)
 
   /**
-   * Context-preserving variant of [[pekko.stream.scaladsl.FlowOps.throttle]].
+   * Context-preserving variant of `FlowOps.throttle`.
    *
-   * @see [[pekko.stream.scaladsl.FlowOps.throttle]]
+   * @see `FlowOps.throttle`
    */
   def throttle(elements: Int, per: FiniteDuration, maximumBurst: Int, mode: ThrottleMode): Repr[Out, Ctx] =
     throttle(elements, per, maximumBurst, ConstantFun.oneInt, mode)
 
   /**
-   * Context-preserving variant of [[pekko.stream.scaladsl.FlowOps.throttle]].
+   * Context-preserving variant of `FlowOps.throttle`.
    *
-   * @see [[pekko.stream.scaladsl.FlowOps.throttle]]
+   * @see `FlowOps.throttle`
    */
   def throttle(cost: Int, per: FiniteDuration, costCalculation: (Out) => Int): Repr[Out, Ctx] =
     throttle(cost, per, Throttle.AutomaticMaximumBurst, costCalculation, ThrottleMode.Shaping)
 
   /**
-   * Context-preserving variant of [[pekko.stream.scaladsl.FlowOps.throttle]].
+   * Context-preserving variant of `FlowOps.throttle`.
    *
-   * @see [[pekko.stream.scaladsl.FlowOps.throttle]]
+   * @see `FlowOps.throttle`
    */
   def throttle(
       cost: Int,

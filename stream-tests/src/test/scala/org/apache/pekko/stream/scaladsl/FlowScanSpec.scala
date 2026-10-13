@@ -15,7 +15,6 @@ package org.apache.pekko.stream.scaladsl
 
 import java.util.concurrent.ThreadLocalRandom.{ current => random }
 
-import scala.collection.immutable
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
@@ -33,8 +32,8 @@ class FlowScanSpec extends StreamSpec("""
 
   "A Scan" must {
 
-    def scan(s: Source[Int, NotUsed], duration: Duration = 5.seconds): immutable.Seq[Int] =
-      Await.result(s.scan(0)(_ + _).runFold(immutable.Seq.empty[Int])(_ :+ _), duration)
+    def scan(s: Source[Int, NotUsed], duration: Duration = remainingOrDefault): Seq[Int] =
+      Await.result(s.scan(0)(_ + _).runFold(Seq.empty[Int])(_ :+ _), duration)
 
     "Scan" in {
       val v = Vector.fill(random.nextInt(100, 1000))(random.nextInt())
@@ -52,7 +51,7 @@ class FlowScanSpec extends StreamSpec("""
 
     "emit values promptly" in {
       val f = Source.single(1).concat(Source.maybe[Int]).scan(0)(_ + _).take(2).runWith(Sink.seq)
-      Await.result(f, 1.second) should ===(Seq(0, 1))
+      Await.result(f, remainingOrDefault) should ===(Seq(0, 1))
     }
 
     "restart properly" in {
@@ -63,7 +62,7 @@ class FlowScanSpec extends StreamSpec("""
           old + current
         }
         .withAttributes(supervisionStrategy(Supervision.restartingDecider))
-      Source(List(1, 3, -1, 5, 7)).via(scan).runWith(TestSink()).toStrict(1.second) should ===(
+      Source(List(1, 3, -1, 5, 7)).via(scan).runWith(TestSink()).toStrict(3.seconds) should ===(
         Seq(0, 1, 4, 0, 5, 12))
     }
 
@@ -75,7 +74,8 @@ class FlowScanSpec extends StreamSpec("""
           old + current
         }
         .withAttributes(supervisionStrategy(Supervision.resumingDecider))
-      Source(List(1, 3, -1, 5, 7)).via(scan).runWith(TestSink()).toStrict(1.second) should ===(Seq(0, 1, 4, 9, 16))
+      Source(List(1, 3, -1, 5, 7)).via(scan).runWith(TestSink()).toStrict(3.seconds) should ===(
+        Seq(0, 1, 4, 9, 16))
     }
 
     "scan normally for empty source" in {

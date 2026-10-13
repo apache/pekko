@@ -14,9 +14,7 @@
 package org.apache.pekko.coordination.lease.scaladsl
 
 import java.util.concurrent.ConcurrentHashMap
-import java.util.function.{ Function => JFunction }
 
-import scala.collection.immutable
 import scala.reflect.ClassTag
 import scala.util.{ Failure, Success, Try }
 
@@ -66,36 +64,34 @@ final class LeaseProvider(system: ExtendedActorSystem) extends Extension {
     val leaseKey = LeaseKey(leaseName, configPath, ownerName)
     leases.computeIfAbsent(
       leaseKey,
-      new JFunction[LeaseKey, Lease] {
-        override def apply(t: LeaseKey): Lease = {
-          val leaseConfig = system.settings.config
-            .getConfig(configPath)
-            .withFallback(system.settings.config.getConfig("pekko.coordination.lease"))
+      (_: LeaseKey) => {
+        val leaseConfig = system.settings.config
+          .getConfig(configPath)
+          .withFallback(system.settings.config.getConfig("pekko.coordination.lease"))
 
-          val settings = LeaseSettings(leaseConfig, leaseName, ownerName)
+        val settings = LeaseSettings(leaseConfig, leaseName, ownerName)
 
-          // Try and load a scala implementation
-          val lease: Try[Lease] =
-            loadLease[Lease](settings).recoverWith {
-              case _: ClassCastException =>
-                // Try and load a java implementation
-                loadLease[pekko.coordination.lease.javadsl.Lease](settings).map(javaLease =>
-                  new LeaseAdapterToScala(javaLease)(system.dispatchers.internalDispatcher))
-            }
-
-          lease match {
-            case Success(value) => value
-            case Failure(e)     =>
-              log.error(
-                e,
-                "Invalid lease configuration for leaseName [{}], configPath [{}] lease-class [{}]. " +
-                "The class must implement scaladsl.Lease or javadsl.Lease and have constructor with LeaseSettings parameter and " +
-                "optionally ActorSystem parameter.",
-                settings.leaseName,
-                configPath,
-                settings.leaseConfig.getString("lease-class"))
-              throw e
+        // Try and load a scala implementation
+        val lease: Try[Lease] =
+          loadLease[Lease](settings).recoverWith {
+            case _: ClassCastException =>
+              // Try and load a java implementation
+              loadLease[pekko.coordination.lease.javadsl.Lease](settings).map(javaLease =>
+                new LeaseAdapterToScala(javaLease)(system.dispatchers.internalDispatcher))
           }
+
+        lease match {
+          case Success(value) => value
+          case Failure(e)     =>
+            log.error(
+              e,
+              "Invalid lease configuration for leaseName [{}], configPath [{}] lease-class [{}]. " +
+              "The class must implement scaladsl.Lease or javadsl.Lease and have constructor with LeaseSettings parameter and " +
+              "optionally ActorSystem parameter.",
+              settings.leaseName,
+              configPath,
+              settings.leaseConfig.getString("lease-class"))
+            throw e
         }
       })
   }
@@ -111,12 +107,12 @@ final class LeaseProvider(system: ExtendedActorSystem) extends Extension {
     val dynamicAccess = system.dynamicAccess
     dynamicAccess.createInstanceFor[T](
       fqcn,
-      immutable.Seq((classOf[LeaseSettings], leaseSettings), (classOf[ExtendedActorSystem], system))) match {
+      Seq((classOf[LeaseSettings], leaseSettings), (classOf[ExtendedActorSystem], system))) match {
       case s: Success[T] =>
         s
       case Failure(_: NoSuchMethodException) =>
-        dynamicAccess.createInstanceFor[T](fqcn, immutable.Seq((classOf[LeaseSettings], leaseSettings)))
-      case f: Failure[_] =>
+        dynamicAccess.createInstanceFor[T](fqcn, Seq((classOf[LeaseSettings], leaseSettings)))
+      case f: Failure[?] =>
         f
     }
 

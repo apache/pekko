@@ -6,8 +6,8 @@ Use the first `n` elements from the stream to determine how to process the rest.
 
 ## Signature
 
-@apidoc[Source.flatMapPrefix](Source) { scala="#flatMapPrefix[Out2,Mat2](n:Int)(f:scala.collection.immutable.Seq[Out]=&gt;org.apache.pekko.stream.scaladsl.Flow[Out,Out2,Mat2]):FlowOps.this.Repr[Out2]" java="#flatMapPrefix(int,org.apache.pekko.japi.function.Function)" }
-@apidoc[Flow.flatMapPrefix](Flow) { scala="#flatMapPrefix[Out2,Mat2](n:Int)(f:scala.collection.immutable.Seq[Out]=&gt;org.apache.pekko.stream.scaladsl.Flow[Out,Out2,Mat2]):FlowOps.this.Repr[Out2]" java="#flatMapPrefix(int,org.apache.pekko.japi.function.Function)" }
+@apidoc[Source.flatMapPrefix](Source) { scala="#flatMapPrefix[Out2,Mat2](n:Int)(f:Seq[Out]=&gt;org.apache.pekko.stream.scaladsl.Flow[Out,Out2,Mat2]):FlowOps.this.Repr[Out2]" java="#flatMapPrefix(int,org.apache.pekko.japi.function.Function)" }
+@apidoc[Flow.flatMapPrefix](Flow) { scala="#flatMapPrefix[Out2,Mat2](n:Int)(f:Seq[Out]=&gt;org.apache.pekko.stream.scaladsl.Flow[Out,Out2,Mat2]):FlowOps.this.Repr[Out2]" java="#flatMapPrefix(int,org.apache.pekko.japi.function.Function)" }
 
 
 ## Description
@@ -25,9 +25,9 @@ This method returns a flow consuming the rest of the stream producing the materi
 
 **backpressures** when the materialized flow backpressures
 
-**completes**  the materialized flow completes.
+**completes** when the materialized flow completes.
     If upstream completes before producing `n` elements, `f` will be applied with the provided elements,
-    the resulting flow will be materialized and signalled for upstream completion, it can then or continue to emit elements at its own discretion.
+    the resulting flow will be materialized and signalled for upstream completion, it can then continue to emit elements at its own discretion.
 
 
 @@@

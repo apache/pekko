@@ -15,8 +15,7 @@ package org.apache.pekko.stream.scaladsl
 
 import java.util
 import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.atomic.{ AtomicLong, AtomicReference }
-import java.util.concurrent.atomic.AtomicInteger
+import java.util.concurrent.atomic.{ AtomicInteger, AtomicLong, AtomicReference }
 import java.util.concurrent.atomic.AtomicReferenceArray
 
 import scala.annotation.tailrec
@@ -25,6 +24,7 @@ import scala.collection.immutable.Queue
 import scala.collection.mutable.LongMap
 import scala.concurrent.{ Future, Promise }
 import scala.util.{ Failure, Success, Try }
+import scala.util.control.NonFatal
 
 import org.apache.pekko
 import pekko.NotUsed
@@ -50,8 +50,9 @@ object MergeHub {
   /**
    * A DrainingControl object is created during the materialization of a MergeHub and allows to initiate the draining
    * and eventual completion of the Hub from the outside.
+   * Not for user extension
    */
-  sealed trait DrainingControl {
+  @DoNotInherit sealed trait DrainingControl {
 
     /**
      * Set the operation mode of the linked MergeHub to draining. In this mode the Hub will cancel any new producer and
@@ -87,6 +88,27 @@ object MergeHub {
    * Completed or failed [[Sink]]s are simply removed. Once the [[Source]] is cancelled, the Hub is considered closed
    * and any new producers using the [[Sink]] will be cancelled.
    *
+   * @param perProducerBufferSize Buffer space used per producer.
+   * @param maxTotalBufferSize Admission threshold for the total number of elements buffered across all producers.
+   *   New producers are cancelled at registration when the buffered element count meets or exceeds this value.
+   *   Already admitted producers are unaffected and may continue to push up to their per-producer buffer.
+   *   Use 0 for unlimited (default behavior).
+   * @since 2.0.0
+   */
+  def source[T](perProducerBufferSize: Int, maxTotalBufferSize: Int): Source[T, Sink[T, NotUsed]] =
+    Source.fromGraph(new MergeHub[T](perProducerBufferSize, false, maxTotalBufferSize)).mapMaterializedValue(_._1)
+
+  /**
+   * Creates a [[Source]] that emits elements merged from a dynamic set of producers. After the [[Source]] returned
+   * by this method is materialized, it returns a [[Sink]] as a materialized value. This [[Sink]] can be materialized
+   * arbitrary many times and each of the materializations will feed the elements into the original [[Source]].
+   *
+   * Every new materialization of the [[Source]] results in a new, independent hub, which materializes to its own
+   * [[Sink]] for feeding that materialization.
+   *
+   * Completed or failed [[Sink]]s are simply removed. Once the [[Source]] is cancelled, the Hub is considered closed
+   * and any new producers using the [[Sink]] will be cancelled.
+   *
    * The materialized [[DrainingControl]] can be used to drain the Hub: any new producers using the [[Sink]] will be cancelled
    * and the Hub will be closed completing the [[Source]] as soon as all currently connected producers complete.
    *
@@ -94,6 +116,32 @@ object MergeHub {
    */
   def sourceWithDraining[T](perProducerBufferSize: Int): Source[T, (Sink[T, NotUsed], DrainingControl)] =
     Source.fromGraph(new MergeHub[T](perProducerBufferSize, true))
+
+  /**
+   * Creates a [[Source]] that emits elements merged from a dynamic set of producers. After the [[Source]] returned
+   * by this method is materialized, it returns a [[Sink]] as a materialized value. This [[Sink]] can be materialized
+   * arbitrary many times and each of the materializations will feed the elements into the original [[Source]].
+   *
+   * Every new materialization of the [[Source]] results in a new, independent hub, which materializes to its own
+   * [[Sink]] for feeding that materialization.
+   *
+   * Completed or failed [[Sink]]s are simply removed. Once the [[Source]] is cancelled, the Hub is considered closed
+   * and any new producers using the [[Sink]] will be cancelled.
+   *
+   * The materialized [[DrainingControl]] can be used to drain the Hub: any new producers using the [[Sink]] will be cancelled
+   * and the Hub will be closed completing the [[Source]] as soon as all currently connected producers complete.
+   *
+   * @param perProducerBufferSize Buffer space used per producer.
+   * @param maxTotalBufferSize Admission threshold for the total number of elements buffered across all producers.
+   *   New producers are cancelled at registration when the buffered element count meets or exceeds this value.
+   *   Already admitted producers are unaffected and may continue to push up to their per-producer buffer.
+   *   Use 0 for unlimited (default behavior).
+   * @since 2.0.0
+   */
+  def sourceWithDraining[T](
+      perProducerBufferSize: Int,
+      maxTotalBufferSize: Int): Source[T, (Sink[T, NotUsed], DrainingControl)] =
+    Source.fromGraph(new MergeHub[T](perProducerBufferSize, true, maxTotalBufferSize))
 
   /**
    * Creates a [[Source]] that emits elements merged from a dynamic set of producers. After the [[Source]] returned
@@ -138,15 +186,19 @@ private[pekko] final class MergeHubDrainingControlImpl(drainAction: () => Unit) 
   }
 }
 
-private[pekko] class MergeHub[T](perProducerBufferSize: Int, drainingEnabled: Boolean = false)
+private[pekko] class MergeHub[T](
+    perProducerBufferSize: Int,
+    drainingEnabled: Boolean = false,
+    maxTotalBufferSize: Int = 0)
     extends GraphStageWithMaterializedValue[SourceShape[T], (Sink[T, NotUsed], MergeHub.DrainingControl)] {
   require(perProducerBufferSize > 0, "Buffer size must be positive")
+  require(maxTotalBufferSize >= 0, "Max total buffer size must be non-negative (0 means unlimited)")
 
   val out: Outlet[T] = Outlet("MergeHub.out")
   override val shape: SourceShape[T] = SourceShape(out)
 
   // Half of buffer size, rounded up
-  private[this] val DemandThreshold = (perProducerBufferSize / 2) + (perProducerBufferSize % 2)
+  private val DemandThreshold = (perProducerBufferSize / 2) + (perProducerBufferSize % 2)
 
   private sealed trait Event {
     def id: Long
@@ -180,12 +232,13 @@ private[pekko] class MergeHub[T](perProducerBufferSize: Int, drainingEnabled: Bo
      * processing of control messages. This causes no issues though, see the explanation in 'tryProcessNext'.
      */
     private val queue = new AbstractNodeQueue[Event] {}
-    @volatile private[this] var needWakeup = false
-    @volatile private[this] var shuttingDown = false
-    @volatile private[this] var draining = false
+    private val totalBufferedElements = new AtomicInteger(0)
+    @volatile private var needWakeup = false
+    @volatile private var shuttingDown = false
+    @volatile private var draining = false
 
-    private[this] val demands = scala.collection.mutable.LongMap.empty[InputState]
-    private[this] val wakeupCallback = getAsyncCallback[NotUsed](_ =>
+    private val demands = scala.collection.mutable.LongMap.empty[InputState]
+    private val wakeupCallback = getAsyncCallback[NotUsed](_ =>
       // We are only allowed to dequeue if we are not backpressured. See comment in tryProcessNext() for details.
       if (isAvailable(out)) tryProcessNext(firstAttempt = true))
 
@@ -200,21 +253,6 @@ private[pekko] class MergeHub[T](perProducerBufferSize: Int, drainingEnabled: Bo
     }
 
     setHandler(out, this)
-
-    // Returns true when we have not consumed demand, false otherwise
-    private def onEvent(ev: Event): Boolean = ev match {
-      case Element(id, elem) =>
-        demands(id).onElement()
-        push(out, elem)
-        false
-      case Register(id, callback) =>
-        demands.put(id, new InputState(callback))
-        true
-      case Deregister(id) =>
-        demands.remove(id)
-        if (drainingEnabled && draining) tryCompleteOnDraining()
-        true
-    }
 
     private def tryCompleteOnDraining(): Unit = {
       if (demands.isEmpty && (queue.peek() eq null)) {
@@ -235,7 +273,20 @@ private[pekko] class MergeHub[T](perProducerBufferSize: Int, drainingEnabled: Bo
       // queue, but then we will eventually reach the Deregister message, too.
       if (nextElem ne null) {
         needWakeup = false
-        if (onEvent(nextElem)) tryProcessNext(firstAttempt = true)
+        nextElem match {
+          case Element(id, elem) =>
+            totalBufferedElements.decrementAndGet()
+            demands(id).onElement()
+            push(out, elem)
+          // demand consumed by push — exit and wait for the next onPull
+          case Register(id, callback) =>
+            demands.put(id, new InputState(callback))
+            tryProcessNext(firstAttempt = true)
+          case Deregister(id) =>
+            demands.remove(id)
+            if (drainingEnabled && draining) tryCompleteOnDraining()
+            tryProcessNext(firstAttempt = true)
+        }
       } else {
         needWakeup = true
         // additional poll() to grab any elements that might missed the needWakeup
@@ -249,9 +300,14 @@ private[pekko] class MergeHub[T](perProducerBufferSize: Int, drainingEnabled: Bo
 
     def isShuttingDown: Boolean = shuttingDown
     def isDraining: Boolean = drainingEnabled && draining
+    def isBufferFull: Boolean = maxTotalBufferSize > 0 && totalBufferedElements.get() >= maxTotalBufferSize
 
     // External API
     private[MergeHub] def enqueue(ev: Event): Unit = {
+      ev match {
+        case _: Element => totalBufferedElements.incrementAndGet()
+        case _          =>
+      }
       queue.add(ev)
       /*
        * Simple volatile var is enough, there is no need for a CAS here. The first important thing to note
@@ -322,11 +378,12 @@ private[pekko] class MergeHub[T](perProducerBufferSize: Int, drainingEnabled: Bo
         new GraphStageLogic(shape) with InHandler {
           // Start from non-zero demand to avoid initial delays.
           // The HUB will expect this behavior.
-          private[this] var demand: Long = perProducerBufferSize
-          private[this] val id = idCounter.getAndIncrement()
+          private var demand: Long = perProducerBufferSize
+          private val id = idCounter.getAndIncrement()
 
           override def preStart(): Unit = {
-            if (!logic.isDraining && !logic.isShuttingDown) {
+            // Best-effort admission check: already admitted producers may overshoot the bound.
+            if (!logic.isDraining && !logic.isShuttingDown && !logic.isBufferFull) {
               logic.enqueue(Register(id, getAsyncCallback(onDemand)))
 
               // At this point, we could be in the unfortunate situation that:
@@ -498,7 +555,7 @@ private[pekko] class BroadcastHub[T](startAfterNrOfConsumers: Int, bufferSize: I
   override val shape: SinkShape[T] = SinkShape(in)
 
   // Half of buffer size, rounded up
-  private[this] val DemandThreshold = (bufferSize / 2) + (bufferSize % 2)
+  private val DemandThreshold = (bufferSize / 2) + (bufferSize % 2)
 
   private sealed trait HubEvent
 
@@ -518,36 +575,39 @@ private[pekko] class BroadcastHub[T](startAfterNrOfConsumers: Int, bufferSize: I
 
   private class BroadcastSinkLogic(_shape: Shape) extends GraphStageLogic(_shape) with InHandler {
 
-    private[this] val callbackPromise: Promise[AsyncCallback[HubEvent]] = Promise()
-    private[this] val noRegistrationsState = Open(callbackPromise.future, Nil)
+    private val callbackPromise: Promise[AsyncCallback[HubEvent]] = Promise()
+    private val noRegistrationsState = Open(callbackPromise.future, Nil)
     val state = new AtomicReference[HubState](noRegistrationsState)
     private var initialized = false
 
     // Start from values that will almost immediately overflow. This has no effect on performance, any starting
     // number will do, however, this protects from regressions as these values *almost surely* overflow and fail
     // tests if someone makes a mistake.
-    @volatile private[this] var tail = Int.MaxValue
-    private[this] var head = Int.MaxValue
+    @volatile private var tail = Int.MaxValue
+    private var head = Int.MaxValue
     /*
      * An Array with a published tail ("latest message") and a privately maintained head ("earliest buffered message").
      * Elements are published by simply putting them into the array and bumping the tail. If necessary, certain
      * consumers are sent a wakeup message through an AsyncCallback.
      */
-    private[this] val queue = new Array[AnyRef](bufferSize)
+    private val queue = new Array[AnyRef](bufferSize)
     /* This is basically a classic Bucket Queue: https://en.wikipedia.org/wiki/Bucket_queue
      * (in fact, this is the variant described in the Optimizations section, where the given set
      * of priorities always fall to a range
      *
      * This wheel tracks the position of Consumers relative to the slowest ones. Every slot
-     * contains a list of Consumers being known at that location (this might be out of date!).
+     * contains a map of Consumers being known at that location (this might be out of date!).
      * Consumers from time to time send Advance messages to indicate that they have progressed
      * by reading from the broadcast queue. Consumers that are blocked (due to reaching tail) request
      * a wakeup and update their position at the same time.
      *
+     * Each slot uses a LongMap keyed by Consumer.id for O(1) add/remove without Long boxing.
+     * Empty slots are null (no backing map allocated), reducing baseline memory and GC pressure.
+     * When a slot drains to zero consumers, its map is released (set to null).
      */
-    private[this] val consumerWheel =
-      Array.fill[java.util.ArrayList[Consumer]](bufferSize * 2)(new util.ArrayList[Consumer]())
-    private[this] var activeConsumers = 0
+    private val consumerWheel =
+      new Array[LongMap[Consumer]](bufferSize * 2)
+    private var activeConsumers = 0
 
     override def preStart(): Unit = {
       setKeepGoing(true)
@@ -577,15 +637,19 @@ private[pekko] class BroadcastHub[T](startAfterNrOfConsumers: Int, bufferSize: I
           val newOffset = previousOffset + DemandThreshold
           // Move the consumer from its last known offset to its new one. Check if we are unblocked.
           val consumer = findAndRemoveConsumer(id, previousOffset)
-          addConsumer(consumer, newOffset)
+          if (consumer ne null) {
+            addConsumer(consumer, newOffset)
+          }
           checkUnblock(previousOffset)
         case NeedWakeup(id, previousOffset, currentOffset) =>
           // Move the consumer from its last known offset to its new one. Check if we are unblocked.
           val consumer = findAndRemoveConsumer(id, previousOffset)
-          addConsumer(consumer, currentOffset)
+          if (consumer ne null) {
+            addConsumer(consumer, currentOffset)
 
-          // Also check if the consumer is now unblocked since we published an element since it went asleep.
-          if (currentOffset != tail) consumer.callback.invoke(Wakeup)
+            // Also check if the consumer is now unblocked since we published an element since it went asleep.
+            if (currentOffset != tail) consumer.callback.invoke(Wakeup)
+          }
           checkUnblock(previousOffset)
 
         case RegistrationPending =>
@@ -648,17 +712,13 @@ private[pekko] class BroadcastHub[T](startAfterNrOfConsumers: Int, bufferSize: I
     override def onUpstreamFailure(ex: Throwable): Unit = {
       val failMessage = HubCompleted(Some(ex))
 
-      // Notify pending consumers and set tombstone
+      // Notify pending consumers and set tombstone.
+      // Registered consumers in the consumerWheel are notified by postStop.
       state.getAndSet(Closed(Some(ex))).asInstanceOf[Open].registrations.foreach { consumer =>
-        consumer.callback.invoke(failMessage)
+        try consumer.callback.invoke(failMessage)
+        catch { case NonFatal(_) => }
       }
 
-      // Notify registered consumers
-      var idx = 0
-      while (idx < consumerWheel.length) {
-        consumerWheel(idx).forEach(_.callback.invoke(failMessage))
-        idx += 1
-      }
       failStage(ex)
     }
 
@@ -667,21 +727,19 @@ private[pekko] class BroadcastHub[T](startAfterNrOfConsumers: Int, bufferSize: I
      *
      * NB: You cannot remove a consumer without knowing its last offset! Consumers on the Source side always must
      * track this so this can be a fast operation.
+     *
+     * Uses LongMap.getOrNull + -= to avoid Option allocation on the hot path.
      */
     private def findAndRemoveConsumer(id: Long, offset: Int): Consumer = {
-      // TODO: Try to eliminate modulo division somehow...
       val wheelSlot = offset & WheelMask
-      val consumersInSlot = consumerWheel(wheelSlot)
-      var removedConsumer: Consumer = null
-      if (consumersInSlot.size() > 0) {
-        consumersInSlot.removeIf(consumer => {
-          if (consumer.id == id) {
-            removedConsumer = consumer
-            true
-          } else false
-        })
+      val bucket = consumerWheel(wheelSlot)
+      if (bucket eq null) return null
+      val consumer = bucket.getOrNull(id)
+      if (consumer ne null) {
+        bucket -= id
+        if (bucket.isEmpty) consumerWheel(wheelSlot) = null
       }
-      removedConsumer
+      consumer
     }
 
     /*
@@ -700,7 +758,7 @@ private[pekko] class BroadcastHub[T](startAfterNrOfConsumers: Int, bufferSize: I
       if (offsetOfConsumerRemoved == head) {
         // Try to advance along the wheel. We can skip any wheel slots which have no waiting Consumers, until
         // we either find a nonempty one, or we reached the end of the buffer.
-        while (consumerWheel(head & WheelMask).isEmpty && head != tail) {
+        while (isConsumerWheelSlotEmpty(head & WheelMask) && head != tail) {
           queue(head & Mask) = null
           head += 1
           unblocked = true
@@ -709,18 +767,35 @@ private[pekko] class BroadcastHub[T](startAfterNrOfConsumers: Int, bufferSize: I
       unblocked
     }
 
+    private def isConsumerWheelSlotEmpty(slot: Int): Boolean = {
+      val bucket = consumerWheel(slot)
+      (bucket eq null) || bucket.isEmpty
+    }
+
     private def addConsumer(consumer: Consumer, offset: Int): Unit = {
       val slot = offset & WheelMask
-      consumerWheel(slot).add(consumer)
+      val bucket = consumerWheel(slot)
+      if (bucket ne null) bucket.update(consumer.id, consumer)
+      else {
+        val newBucket = LongMap.empty[Consumer]
+        newBucket.update(consumer.id, consumer)
+        consumerWheel(slot) = newBucket
+      }
     }
 
     /*
      * Send a wakeup signal to all the Consumers at a certain wheel index. Note, this needs the actual index,
      * which is offset modulo (bufferSize + 1).
+     *
+     * Enumeration order of the bucket is not semantically significant — every consumer receives the same
+     * wakeup signal independently.
      */
     private def wakeupIdx(idx: Int): Unit = {
-      val itr = consumerWheel(idx).iterator
-      while (itr.hasNext) itr.next().callback.invoke(Wakeup)
+      val bucket = consumerWheel(idx)
+      if (bucket ne null) {
+        val itr = bucket.valuesIterator
+        while (itr.hasNext) itr.next().callback.invoke(Wakeup)
+      }
     }
 
     private def complete(): Unit = {
@@ -736,17 +811,41 @@ private[pekko] class BroadcastHub[T](startAfterNrOfConsumers: Int, bufferSize: I
     }
 
     override def postStop(): Unit = {
-      // Notify pending consumers and set tombstone
+      // Notify all consumers (pending and registered) when the stage stops.
+      // Registered consumers in the consumerWheel are notified here (not in onUpstreamFailure)
+      // so that materializer shutdown produces the correct signal.
 
       @tailrec def tryClose(): Unit = state.get() match {
-        case Closed(_)  => // Already closed, ignore
+        case Closed(_) => // Already closed by onUpstreamFailure — notify registered consumers directly
+          notifyRegisteredConsumers()
         case open: Open =>
           if (state.compareAndSet(open, Closed(None))) {
             val completedMessage = HubCompleted(None)
             open.registrations.foreach { consumer =>
-              consumer.callback.invoke(completedMessage)
+              try consumer.callback.invoke(completedMessage)
+              catch { case NonFatal(_) => }
             }
+            notifyRegisteredConsumers()
           } else tryClose()
+      }
+
+      def notifyRegisteredConsumers(): Unit = {
+        val message = state.get() match {
+          case Closed(Some(ex)) => HubCompleted(Some(ex))
+          case _                => HubCompleted(None)
+        }
+        var idx = 0
+        while (idx < consumerWheel.length) {
+          val bucket = consumerWheel(idx)
+          if (bucket ne null) {
+            val itr = bucket.valuesIterator
+            while (itr.hasNext) {
+              try itr.next().callback.invoke(message)
+              catch { case NonFatal(_) => }
+            }
+          }
+          idx += 1
+        }
       }
 
       tryClose()
@@ -789,10 +888,10 @@ private[pekko] class BroadcastHub[T](startAfterNrOfConsumers: Int, bufferSize: I
 
       override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =
         new GraphStageLogic(shape) with OutHandler {
-          private[this] var untilNextAdvanceSignal = DemandThreshold
-          private[this] val id = idCounter.getAndIncrement()
-          private[this] var offsetInitialized = false
-          private[this] var hubCallback: AsyncCallback[HubEvent] = _
+          private var untilNextAdvanceSignal = DemandThreshold
+          private val id = idCounter.getAndIncrement()
+          private var offsetInitialized = false
+          private var hubCallback: AsyncCallback[HubEvent] = _
 
           /*
            * We need to track our last offset that we published to the Hub. The reason is, that for efficiency reasons,
@@ -800,8 +899,8 @@ private[pekko] class BroadcastHub[T](startAfterNrOfConsumers: Int, bufferSize: I
            * is needed, but it also means that we need to keep track of both our current offset, and the last one that
            * we published.
            */
-          private[this] var previousPublishedOffset = 0
-          private[this] var offset = 0
+          private var previousPublishedOffset = 0
+          private var offset = 0
 
           override def preStart(): Unit = {
             val callback = getAsyncCallback(onCommand)
@@ -1334,30 +1433,44 @@ object PartitionHub {
     override def onUpstreamFailure(ex: Throwable): Unit = {
       val failMessage = HubCompleted(Some(ex))
 
-      // Notify pending consumers and set tombstone
+      // Notify pending consumers and set tombstone.
+      // Registered consumers are notified by postStop.
       state.getAndSet(Closed(Some(ex))).asInstanceOf[Open].registrations.foreach { consumer =>
-        consumer.callback.invoke(failMessage)
+        try consumer.callback.invoke(failMessage)
+        catch { case NonFatal(_) => }
       }
 
-      // Notify registered consumers
-      consumerInfo.consumers.foreach { consumer =>
-        consumer.callback.invoke(failMessage)
-      }
       failStage(ex)
     }
 
     override def postStop(): Unit = {
-      // Notify pending consumers and set tombstone
+      // Notify all consumers (pending and registered) when the stage stops.
+      // Registered consumers are notified here (not in onUpstreamFailure)
+      // so that materializer shutdown produces the correct signal.
 
       @tailrec def tryClose(): Unit = state.get() match {
-        case Closed(_)  => // Already closed, ignore
+        case Closed(_) => // Already closed by onUpstreamFailure — notify registered consumers here
+          notifyRegisteredConsumers()
         case open: Open =>
           if (state.compareAndSet(open, Closed(None))) {
             val completedMessage = HubCompleted(None)
             open.registrations.foreach { consumer =>
-              consumer.callback.invoke(completedMessage)
+              try consumer.callback.invoke(completedMessage)
+              catch { case NonFatal(_) => }
             }
+            notifyRegisteredConsumers()
           } else tryClose()
+      }
+
+      def notifyRegisteredConsumers(): Unit = {
+        val message = state.get() match {
+          case Closed(Some(ex)) => HubCompleted(Some(ex))
+          case _                => HubCompleted(None)
+        }
+        consumerInfo.consumers.foreach { consumer =>
+          try consumer.callback.invoke(message)
+          catch { case NonFatal(_) => }
+        }
       }
 
       tryClose()

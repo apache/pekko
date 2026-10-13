@@ -13,6 +13,8 @@ Run the given function when the first element is received.
 
 Run the given function when the first element is received.
 
+The `doOnFirst` operator adheres to the ActorAttributes.SupervisionStrategy attribute. On `Supervision.Resume` the failing first element is dropped and the function is not retried; on `Supervision.Restart` the next element is treated as the first.
+
 ## Examples
 
 Scala

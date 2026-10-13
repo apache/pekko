@@ -22,6 +22,7 @@ import sbtwelcome.WelcomePlugin.autoImport._
 
 import java.io.FileInputStream
 import java.io.InputStreamReader
+import java.nio.charset.StandardCharsets
 import java.util.Properties
 
 object PekkoBuild {
@@ -40,9 +41,10 @@ object PekkoBuild {
   lazy val rootSettings = Def.settings(
     UnidocRoot.pekkoSettings,
     Protobuf.settings,
-    GlobalScope / parallelExecution := System
-      .getProperty("pekko.parallelExecution", parallelExecutionByDefault.toString)
-      .toBoolean,
+    GlobalScope / parallelExecution :=
+      System
+        .getProperty("pekko.parallelExecution", parallelExecutionByDefault.toString)
+        .toBoolean,
     // used for linking to API docs (overwrites `project-info.version`)
     ThisBuild / projectInfoVersion := { if (isSnapshot.value) "snapshot" else version.value })
 
@@ -88,6 +90,16 @@ object PekkoBuild {
 
   private def allWarnings: Boolean = System.getProperty("pekko.allwarnings", "false").toBoolean
 
+  private def isScala38OrLater(scalaVersion: String): Boolean =
+    CrossVersion.partialVersion(scalaVersion).exists {
+      case (3, minor) if minor >= 8 => true
+      case _                        => false
+    }
+
+  private def testJavacOptions(scalaVersion: String): Seq[String] =
+    if (isScala38OrLater(scalaVersion)) Seq("-encoding", "UTF-8", "-nowarn", "-Xlint:none")
+    else DefaultJavacOptions
+
   final val DefaultScalacOptions = Def.setting {
     if (scalaVersion.value.startsWith("3.")) {
       Seq(
@@ -96,7 +108,9 @@ object PekkoBuild {
         "-feature",
         "-unchecked",
         // 'blessed' since 2.13.1
-        "-language:higherKinds")
+        "-language:higherKinds") ++
+      (if (isScala38OrLater(scalaVersion.value)) Seq("-Wconf:any:s") else Seq.empty) ++
+      (if (scalaVersion.value.startsWith("3.3.")) Seq("-Yfuture-lazy-vals") else Seq.empty)
     } else {
       Seq(
         "-encoding",
@@ -113,7 +127,7 @@ object PekkoBuild {
 
   final val DefaultJavacOptions = Seq("-encoding", "UTF-8", "-Xlint:unchecked")
 
-  lazy val defaultSettings: Seq[Setting[_]] = Def.settings(
+  lazy val defaultSettings: Seq[Setting[?]] = Def.settings(
     projectInfoVersion := (if (isSnapshot.value) "snapshot" else version.value),
     Dependencies.Versions,
     resolverSettings,
@@ -125,7 +139,7 @@ object PekkoBuild {
     Test / scalacOptions := (Test / scalacOptions).value.filterNot(opt =>
       opt == "-Xlog-reflective-calls" || opt.contains("genjavadoc")),
     Compile / javacOptions ++= JdkOptions.targetJdkJavacOptions,
-    Test / javacOptions ++= DefaultJavacOptions ++ JdkOptions.targetJdkJavacOptions,
+    Test / javacOptions ++= testJavacOptions(scalaVersion.value) ++ JdkOptions.targetJdkJavacOptions,
     Compile / javacOptions ++= (if (allWarnings) Seq("-Xlint:deprecation") else Nil),
     doc / javacOptions := Seq(),
     crossVersion := CrossVersion.binary,
@@ -152,7 +166,8 @@ object PekkoBuild {
     ThisBuild / ivyLoggingLevel := UpdateLogging.Quiet,
     licenses := Seq(("Apache-2.0", url("https://www.apache.org/licenses/LICENSE-2.0.html"))),
     homepage := Some(url("https://pekko.apache.org/")),
-    description := "Apache Pekko is a toolkit for building highly concurrent, distributed, and resilient message-driven applications for Java and Scala.",
+    description :=
+      "Apache Pekko is a toolkit for building highly concurrent, distributed, and resilient message-driven applications for Java and Scala.",
     scmInfo := Some(
       ScmInfo(
         url("https://github.com/apache/pekko"),
@@ -197,10 +212,14 @@ object PekkoBuild {
         "-XX:MaxGCPauseMillis=300",
         // nio direct memory limit for artery/aeron (probably)
         "-XX:MaxDirectMemorySize=256m",
-        // faster random source
-        "-Djava.security.egd=file:/dev/./urandom")
+        // Non-blocking seed source. Keep the plain path: `/dev/./urandom` does
+        // not match SunEntries.URL_DEV_URANDOM, which switches the default
+        // SecureRandom away from NativePRNG (to DRBG, or SHA1PRNG on JDK 8),
+        // so CI would stop exercising the algorithm users get.
+        "-Djava.security.egd=file:/dev/urandom")
 
-      defaults ++ CliOptions.runningOnCi
+      defaults ++
+      CliOptions.runningOnCi
         .ifTrue(jvmGCLogOptions)
         .getOrElse(Nil) ++
       JdkOptions.versionSpecificJavaOptions
@@ -232,9 +251,10 @@ object PekkoBuild {
         }
       }
     },
-    Test / parallelExecution := System
-      .getProperty("pekko.parallelExecution", parallelExecutionByDefault.toString)
-      .toBoolean,
+    Test / parallelExecution :=
+      System
+        .getProperty("pekko.parallelExecution", parallelExecutionByDefault.toString)
+        .toBoolean,
     Test / logBuffered := System.getProperty("pekko.logBufferedTests", "false").toBoolean,
     // show full stack traces and test case durations
     Test / testOptions += Tests.Argument("-oDF"),
@@ -250,7 +270,7 @@ object PekkoBuild {
       }
     })
 
-  lazy val welcomeSettings: Seq[Setting[_]] = Def.settings {
+  lazy val welcomeSettings: Seq[Setting[?]] = Def.settings {
     import sbtwelcome._
     Seq(
       logo := {
@@ -271,10 +291,11 @@ object PekkoBuild {
         UsefulTask("testQuick",
           "Runs all the tests. When run multiple times will only run previously failing tests (shell mode only)"),
         UsefulTask("testOnly *.AnySpec", "Only run a selected test"),
-        UsefulTask("TestJdk9 / testOnly *.AnySpec", "Only run a Jdk9+ selected test"),
+        UsefulTask("TestJdk21 / testOnly *.AnySpec", "Only run a Jdk21+ selected test"),
         UsefulTask("testQuick *.AnySpec",
           "Only run a selected test. When run multiple times will only run previously failing tests (shell mode only)"),
         UsefulTask("testQuickUntilPassed", "Runs all tests in a continuous loop until all tests pass"),
+        UsefulTask("testQuickUntilPassed *.AnySpec", "Only run a selected test in a continuous loop until it passes"),
         UsefulTask("publishLocal", "Publish current snapshot version to local ~/.ivy2 repo"),
         UsefulTask("verifyCodeStyle", "Verify code style"),
         UsefulTask("applyCodeStyle", "Apply code style"),
@@ -306,7 +327,7 @@ object PekkoBuild {
     val file = new File(fileName)
     if (file.exists()) {
       println("Loading system properties from file `" + fileName + "`")
-      val in = new InputStreamReader(new FileInputStream(file), "UTF-8")
+      val in = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8)
       val props = new Properties
       props.load(in)
       in.close()

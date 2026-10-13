@@ -13,7 +13,8 @@
 
 package org.apache.pekko.cluster
 
-import org.apache.pekko.actor.Address
+import org.apache.pekko
+import pekko.actor.Address
 
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec

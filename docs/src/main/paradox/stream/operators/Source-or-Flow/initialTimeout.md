@@ -1,6 +1,6 @@
 # initialTimeout
 
-If the first element has not passed through this operators before the provided timeout, the stream is failed with a `TimeoutException`.
+If the first element has not passed through this operator before the provided timeout, the stream is failed with a `TimeoutException`.
 
 @ref[Time aware operators](../index.md#time-aware-operators)
 
@@ -12,7 +12,7 @@ If the first element has not passed through this operators before the provided t
 
 ## Description
 
-If the first element has not passed through this operators before the provided timeout, the stream is failed
+If the first element has not passed through this operator before the provided timeout, the stream is failed
 with a `TimeoutException`.
 
 ## Reactive Streams semantics

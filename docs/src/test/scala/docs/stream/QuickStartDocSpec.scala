@@ -33,9 +33,11 @@ import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.concurrent._
 
 //#main-app
-object Main extends App {
-  implicit val system: ActorSystem = ActorSystem("QuickStart")
-  // Code here
+object Main {
+  def main(args: Array[String]): Unit = {
+    implicit val system: ActorSystem = ActorSystem("QuickStart")
+    // Code here
+  }
 }
 //#main-app
 

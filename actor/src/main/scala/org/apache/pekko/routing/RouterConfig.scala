@@ -47,7 +47,7 @@ import pekko.japi.Util.immutableSeq
  * someone tries sending a message to that reference before the constructor of
  * RoutedActorRef has returned, there will be a `NullPointerException`!
  */
-@nowarn("msg=@SerialVersionUID has no effect")
+@nowarn("msg=@SerialVersionUID (has no effect|does nothing)")
 @SerialVersionUID(1L)
 trait RouterConfig extends Serializable {
 
@@ -384,7 +384,7 @@ case object NoRouter extends NoRouter {
 /**
  * INTERNAL API
  */
-@nowarn("msg=@SerialVersionUID has no effect")
+@nowarn("msg=@SerialVersionUID (has no effect|does nothing)")
 @SerialVersionUID(1L)
 private[pekko] trait RouterManagementMesssage
 
@@ -393,7 +393,7 @@ private[pekko] trait RouterManagementMesssage
  * A [[Routees]] message is sent asynchronously to the "requester" containing information
  * about what routees the router is routing over.
  */
-@nowarn("msg=@SerialVersionUID has no effect")
+@nowarn("msg=@SerialVersionUID (has no effect|does nothing)")
 @SerialVersionUID(1L)
 abstract class GetRoutees extends RouterManagementMesssage
 
@@ -444,6 +444,10 @@ final case class RemoveRoutee(routee: Routee) extends RouterManagementMesssage
  *
  * Positive `change` will add that number of routees to the [[Pool]].
  * Negative `change` will remove that number of routees from the [[Pool]].
+ * If a [[Resizer]] is configured, the resulting pool size is clamped to the
+ * resizer's bounds (see [[Resizer.clamp]]). Without a resizer, the pool will
+ * not shrink below 1 routee.
+ *
  * Routees are stopped by sending a [[pekko.actor.PoisonPill]] to the routee.
  * Precautions are taken reduce the risk of dropping messages that are concurrently
  * being routed to the removed routee, but it is not guaranteed that messages are not

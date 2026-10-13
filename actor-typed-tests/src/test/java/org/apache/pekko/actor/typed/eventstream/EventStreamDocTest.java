@@ -27,12 +27,11 @@ import org.apache.pekko.actor.typed.javadsl.AbstractBehavior;
 import org.apache.pekko.actor.typed.javadsl.ActorContext;
 import org.apache.pekko.actor.typed.javadsl.Behaviors;
 import org.apache.pekko.actor.typed.javadsl.Receive;
-import org.junit.Test;
-import org.scalatestplus.junit.JUnitSuite;
+import org.junit.jupiter.api.Test;
 
 // #dead-letter-imports
 
-public class EventStreamDocTest extends JUnitSuite {
+public class EventStreamDocTest {
 
   @Test
   public void listenToDeadLetters() {

@@ -13,10 +13,11 @@
 
 package docs.dispatcher
 
-import org.apache.pekko.testkit.PekkoSpec
-import org.apache.pekko.event.Logging
-import org.apache.pekko.event.LoggingAdapter
-import org.apache.pekko.actor._
+import org.apache.pekko
+import pekko.testkit.PekkoSpec
+import pekko.event.Logging
+import pekko.event.LoggingAdapter
+import pekko.actor._
 
 object DispatcherDocSpec {
   val javaConfig = """

@@ -15,7 +15,8 @@ package org.apache.pekko.actor.testkit.typed.scaladsl
 
 import scala.util.control.NonFatal
 
-import org.apache.pekko.actor.testkit.typed.internal.CapturingAppender
+import org.apache.pekko
+import pekko.actor.testkit.typed.internal.CapturingAppender
 
 import org.scalatest.BeforeAndAfterAll
 import org.scalatest.Outcome
@@ -76,9 +77,9 @@ trait LogCapturing extends BeforeAndAfterAll { self: TestSuite =>
   def clearCapturedLogs(): Unit = capturingAppender.clear()
 
   abstract override def withFixture(test: NoArgTest): Outcome = {
-    myLogger.info(s"Logging started for test [${self.getClass.getName}: ${test.name}]")
+    myLogger.info("Logging started for test [{}: {}]", self.getClass.getName, test.name)
     val res = test()
-    myLogger.info(s"Logging finished for test [${self.getClass.getName}: ${test.name}] that [$res]")
+    myLogger.info("Logging finished for test [{}: {}] that [{}]", self.getClass.getName, test.name, res)
 
     if (!(res.isSucceeded || res.isPending)) {
       println(

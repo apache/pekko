@@ -13,6 +13,7 @@
 
 package org.apache.pekko.stream.stage
 
+import java.lang.invoke.{ MethodHandles, VarHandle }
 import java.util.Spliterator
 import java.util.concurrent.{ CompletionStage, ConcurrentHashMap }
 import java.util.concurrent.atomic.AtomicReference
@@ -20,13 +21,16 @@ import java.util.concurrent.atomic.AtomicReference
 import scala.annotation.nowarn
 import scala.annotation.tailrec
 import scala.collection.{ immutable, mutable }
-import scala.concurrent.{ Future, Promise }
+import scala.concurrent.{ Await, Future, Promise }
 import scala.concurrent.duration.FiniteDuration
 
 import org.apache.pekko
 import pekko.{ Done, NotUsed }
 import pekko.actor._
 import pekko.annotation.InternalApi
+import pekko.pattern.ask
+import pekko.util.Timeout
+import pekko.dispatch.AbstractNodeQueue
 import pekko.japi.function.{ Effect, Procedure }
 import pekko.stream._
 import pekko.stream.Attributes.SourceLocation
@@ -206,29 +210,61 @@ object GraphStageLogic {
    *
    * Not for user instantiation, use [[GraphStageLogic.getStageActor]].
    */
-  final class StageActor @InternalApi() private[pekko] (
+  final class StageActor @InternalApi() private (
       materializer: Materializer,
-      getAsyncCallback: StageActorRef.Receive => AsyncCallback[(ActorRef, Any)],
       initialReceive: StageActorRef.Receive,
-      name: String) {
+      name: String,
+      cell: ActorCell,
+      buildDispatch: StageActorRef.Receive => ((ActorRef, Any)) => Unit) {
 
-    private val callback = getAsyncCallback(internalReceive)
+    @InternalApi private[pekko] def this(
+        materializer: Materializer,
+        getAsyncCallback: StageActorRef.Receive => AsyncCallback[(ActorRef, Any)],
+        initialReceive: StageActorRef.Receive,
+        name: String) =
+      this(
+        materializer,
+        initialReceive,
+        name,
+        StageActor.localCell(materializer.supervisor, "Stream supervisor"),
+        receive => getAsyncCallback(receive).invoke)
 
-    private def cell = materializer.supervisor match {
-      case ref: LocalActorRef => ref.underlying
-      case unknown            =>
-        throw new IllegalStateException(s"Stream supervisor must be a local actor, was [${unknown.getClass.getName}]")
-    }
+    @InternalApi private[pekko] def this(
+        materializer: Materializer,
+        interpreter: GraphInterpreter,
+        logic: GraphStageLogic,
+        initialReceive: StageActorRef.Receive,
+        name: String) =
+      this(
+        materializer,
+        initialReceive,
+        name,
+        StageActor.localCell(materializer.supervisor, "Stream supervisor"),
+        // Coalesce per-tell mailbox traffic: N tells produce 1 AsyncInput envelope (amortized).
+        receive =>
+          new StageActor.LazyDispatch(
+            interpreter,
+            logic,
+            receive.asInstanceOf[Any => Unit],
+            StageActor.drainBatchSize(materializer)))
+
+    // Monomorphic Function1 captured once; JIT can inline the apply at the FunctionRef call site.
+    private val dispatch: ((ActorRef, Any)) => Unit = buildDispatch(internalReceive)
+
     private val functionRef: FunctionRef = {
-      val f: (ActorRef, Any) => Unit = {
-        case (_, m @ (PoisonPill | Kill)) =>
-          materializer.logger.warning(
-            "{} message sent to StageActor({}) will be ignored, since it is not a real Actor." +
-            "Use a custom message type to communicate with it instead.",
-            m,
-            functionRef.path)
-        case pair => callback.invoke(pair)
-      }
+      // Explicit (sender, msg) lambda (not a pattern-match Function2 literal) so the PoisonPill / Kill
+      // branch matches on `msg` directly and does not allocate a Tuple2. The regular branch still
+      // constructs one tuple per tell, as required by the `((ActorRef, Any)) => Unit` public Receive type.
+      val f: (ActorRef, Any) => Unit = (sender, msg) =>
+        msg match {
+          case PoisonPill | Kill =>
+            materializer.logger.warning(
+              "{} message sent to StageActor({}) will be ignored, since it is not a real Actor. " +
+              "Use a custom message type to communicate with it instead.",
+              msg,
+              functionRef.path)
+          case _ => dispatch((sender, msg))
+        }
 
       cell.addFunctionRef(f, name)
     }
@@ -241,7 +277,7 @@ object GraphStageLogic {
     def ref: ActorRef = functionRef
 
     @volatile
-    private[this] var behavior = initialReceive
+    private var behavior = initialReceive
 
     /** INTERNAL API */
     private[pekko] def internalReceive(pack: (ActorRef, Any)): Unit = {
@@ -273,6 +309,199 @@ object GraphStageLogic {
   }
   object StageActorRef {
     type Receive = ((ActorRef, Any)) => Unit
+  }
+
+  private object StageActor {
+    def localCell(ref: ActorRef, description: String): ActorCell =
+      ref match {
+        case ref: LocalActorRef     => ref.underlying
+        case r: RepointableActorRef =>
+          r.underlying match {
+            case cell: ActorCell  => cell
+            case _: UnstartedCell =>
+              implicit val timeout: Timeout = r.system.settings.CreationTimeout
+              Await.result(r ? Identify(null), timeout.duration)
+              r.underlying match {
+                case cell: ActorCell => cell
+                case unknown         =>
+                  throw new IllegalStateException(
+                    s"$description must be a local actor, was [${unknown.getClass.getName}]")
+              }
+            case unknown =>
+              throw new IllegalStateException(
+                s"$description must be a local actor, was [${unknown.getClass.getName}]")
+          }
+        case unknown =>
+          throw new IllegalStateException(s"$description must be a local actor, was [${unknown.getClass.getName}]")
+      }
+
+    /**
+     * Reads `pekko.stream.materializer.stage-actor-drain-batch` from the materializer's ActorSystem config.
+     * Called once per lazy StageActor construction (never on the hot path). Bounded to `>= 1`.
+     */
+    def drainBatchSize(materializer: Materializer): Int =
+      Math.max(1, materializer.system.settings.config.getInt("pekko.stream.materializer.stage-actor-drain-batch"))
+
+    private final val SchedStateIdle: Int = 0
+    private final val SchedStateScheduled: Int = 1
+    private final val SchedStateStopped: Int = 2
+
+    /**
+     * Lazy-path dispatch: producers enqueue into a Vyukov MPSC queue and elect a single drain via
+     * IDLE -> SCHEDULED CAS; only the elected producer pays a mailbox enqueue. The drain runs on the
+     * interpreter thread, polls in a tight loop bounded by `drainBatchSize`, then either publishes IDLE
+     * (with a recheck for the publish-window race) or re-schedules another envelope to yield to other
+     * BoundaryEvents.
+     *
+     * JIT/GC notes:
+     *  - `final class` + monomorphic per-StageActor instance → JIT devirtualizes the apply at the
+     *    FunctionRef call site.
+     *  - Extends `AbstractNodeQueue` directly so the queue head atomic and the dispatch function share one
+     *    object (one allocation per StageActor, one fewer field deref on the producer hot path).
+     *  - Implements `Any => Unit` directly — serves as both the producer callback and the drain callback,
+     *    eliminating the separate `drainCallback` lambda allocation.
+     *  - `state` is a plain `@volatile var Int` driven by a static `VarHandle`; volatile state access
+     *    keeps the election protocol conservative and avoids per-instance `AtomicInteger`.
+     *  - `drainBatchSize` is read once into a stack-local at the top of `drain` so the JIT can treat the loop
+     *    bound as a constant.
+     *  - Per-tell allocation = 1 Node (`AbstractNodeQueue.Node`, ~24 bytes) + 1 Tuple2 (~24 bytes). The
+     *    Tuple2 is forced by the public `StageActorRef.Receive` type. No AsyncInput / Envelope per tell —
+     *    those are amortized across the batch.
+     */
+    // Not marked `private` so that `class StageActor`'s aux constructor (compiled outside of the companion
+    // object on Scala 3) can reference it; the enclosing `object StageActor` is itself private.
+    final class LazyDispatch(
+        interpreter: GraphInterpreter,
+        logic: GraphStageLogic,
+        handler: Any => Unit,
+        drainBatchSize: Int)
+        extends AbstractNodeQueue[(ActorRef, Any)]
+        with GraphInterpreter.EventLimitHandler {
+
+      // IDLE/SCHEDULED election state. VarHandle avoids per-instance AtomicInteger.
+      @volatile var state: Int = SchedStateIdle
+
+      private def getState(): Int = {
+        val v: Int = LazyDispatch.stateHandle.getVolatile(this)
+        v
+      }
+      private def setState(v: Int): Unit = LazyDispatch.stateHandle.setVolatile(this, v)
+      private def casState(expect: Int, update: Int): Boolean =
+        LazyDispatch.stateHandle.compareAndSet(this, expect, update)
+
+      private var waitingForInterpreter = false
+
+      // null msg = drain signal from onAsyncInput; non-null = (ActorRef, Any) tuple from FunctionRef.
+      override def apply(msg: Any): Unit =
+        if (msg != null) {
+          val pair = msg.asInstanceOf[(ActorRef, Any)]
+          if (!interpreter.isStageCompleted(logic) && getState() != SchedStateStopped) {
+            add(pair)
+            if (getState() == SchedStateIdle && casState(SchedStateIdle, SchedStateScheduled)) {
+              if (interpreter.isStageCompleted(logic)) setState(SchedStateIdle)
+              else scheduleDrain()
+            }
+          }
+        }
+
+      private def scheduleDrain(): Unit =
+        // 1 AsyncInput + 1 Envelope per drain batch (amortized across up to drainBatchSize tells).
+        // `this` serves as both the producer callback and the event-limit-aware drain callback.
+        interpreter.onAsyncInput(logic, null, NoPromise, this)
+
+      override def apply(event: Any, eventLimit: Int): Int = {
+        require(event == null, "LazyDispatch drain event must be null")
+        drain(eventLimit)
+      }
+
+      override def isWaitingForInterpreter: Boolean = waitingForInterpreter
+
+      override def onInterpreterIdle(): Unit = {
+        waitingForInterpreter = false
+        if (interpreter.isStageCompleted(logic)) stopDispatch()
+        else publishIdleOrSchedule()
+      }
+
+      private def drain(eventLimit: Int): Int = {
+        var eventsRemaining = eventLimit
+        waitingForInterpreter = false
+        try {
+          // BoundaryEvents can overtake a shell resume when the shell-specific limit is reached. Finish any
+          // previously queued interpreter work before dispatching another StageActor message.
+          if (interpreter.isSuspended) {
+            eventsRemaining = interpreter.execute(eventsRemaining)
+            if (interpreter.isSuspended) {
+              waitingForInterpreter = true
+              return eventsRemaining
+            }
+          }
+
+          val limit = drainBatchSize
+          var processed = 0
+          // The AsyncInput itself accounts for the first callback. Even when it consumed the last actor quota,
+          // dispatch one message and defer any interpreter work it creates to the next shell resume.
+          while (processed < limit && (eventsRemaining > 0 || processed == 0)) {
+            if (interpreter.isStageCompleted(logic)) {
+              stopDispatch()
+              return eventsRemaining
+            }
+            val item = poll()
+            if (item eq null) {
+              publishIdleOrSchedule()
+              return eventsRemaining
+            }
+
+            // execute() changes activeStage while propagating the element. Set it explicitly for every
+            // StageActor callback; never restore a logic that execute() may have finalized and released.
+            interpreter.activeStage = logic
+            handler(item)
+            // Most StageActor callbacks only update local stage state. Avoid entering execute() unless the
+            // callback actually enqueued interpreter work; demand-producing callbacks still drain that work
+            // before another message is dispatched.
+            if (interpreter.isSuspended) eventsRemaining = interpreter.execute(eventsRemaining)
+            processed += 1
+
+            if (interpreter.isStageCompleted(logic)) {
+              stopDispatch()
+              return eventsRemaining
+            }
+            if (interpreter.isSuspended) {
+              waitingForInterpreter = true
+              return eventsRemaining
+            }
+          }
+
+          publishIdleOrSchedule()
+          eventsRemaining
+        } catch {
+          case ex: Throwable =>
+            stopDispatch()
+            throw ex
+        }
+      }
+
+      private def publishIdleOrSchedule(): Unit = {
+        if (isEmpty) {
+          setState(SchedStateIdle)
+          // Recheck race: a producer may have added between observing empty and publishing IDLE above.
+          if (!isEmpty && casState(SchedStateIdle, SchedStateScheduled)) scheduleDrain()
+        } else scheduleDrain()
+      }
+
+      private def stopDispatch(): Unit = {
+        waitingForInterpreter = false
+        setState(SchedStateStopped)
+        while (poll() ne null) ()
+      }
+    }
+
+    object LazyDispatch {
+      private val stateHandle: VarHandle = {
+        val lookup = MethodHandles.privateLookupIn(classOf[LazyDispatch], MethodHandles.lookup())
+        lookup.findVarHandle(classOf[LazyDispatch], "state", Integer.TYPE)
+      }
+    }
+
   }
 
   /**
@@ -340,7 +569,7 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
    *
    * If possible a link back to the operator that the logic was created with, used for debugging.
    */
-  private[stream] var originalStage: OptionVal[GraphStageWithMaterializedValue[_ <: Shape, _]] = OptionVal.None
+  private[stream] var originalStage: OptionVal[GraphStageWithMaterializedValue[? <: Shape, ?]] = OptionVal.None
 
   /**
    * INTERNAL API
@@ -376,7 +605,7 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
   /**
    * INTERNAL API
    */
-  private[this] var _interpreter: GraphInterpreter = _
+  private var _interpreter: GraphInterpreter = _
 
   /**
    * INTERNAL API
@@ -454,7 +683,7 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
   /**
    * Assigns callbacks for the events for an [[Inlet]]
    */
-  final protected def setHandler(in: Inlet[_], handler: InHandler): Unit = {
+  final protected def setHandler(in: Inlet[?], handler: InHandler): Unit = {
     handlers(in.id) = handler
     if (_interpreter ne null) _interpreter.setHandler(conn(in), handler)
   }
@@ -462,7 +691,7 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
   /**
    * Assign callbacks for linear operator for both [[Inlet]] and [[Outlet]]
    */
-  final protected def setHandlers(in: Inlet[_], out: Outlet[_], handler: InHandler with OutHandler): Unit = {
+  final protected def setHandlers(in: Inlet[?], out: Outlet[?], handler: InHandler with OutHandler): Unit = {
     setHandler(in, handler)
     setHandler(out, handler)
   }
@@ -470,31 +699,31 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
   /**
    * Retrieves the current callback for the events on the given [[Inlet]]
    */
-  final protected def getHandler(in: Inlet[_]): InHandler = {
+  final protected def getHandler(in: Inlet[?]): InHandler = {
     handlers(in.id).asInstanceOf[InHandler]
   }
 
   /**
    * Assigns callbacks for the events for an [[Outlet]]
    */
-  final protected def setHandler(out: Outlet[_], handler: OutHandler): Unit = {
+  final protected def setHandler(out: Outlet[?], handler: OutHandler): Unit = {
     handlers(out.id + inCount) = handler
     if (_interpreter ne null) _interpreter.setHandler(conn(out), handler)
   }
 
-  private def conn(in: Inlet[_]): Connection = portToConn(in.id)
-  private def conn(out: Outlet[_]): Connection = portToConn(out.id + inCount)
+  private def conn(in: Inlet[?]): Connection = portToConn(in.id)
+  private def conn(out: Outlet[?]): Connection = portToConn(out.id + inCount)
 
   /**
    * Retrieves the current callback for the events on the given [[Outlet]]
    */
-  final protected def getHandler(out: Outlet[_]): OutHandler = {
+  final protected def getHandler(out: Outlet[?]): OutHandler = {
     handlers(out.id + inCount).asInstanceOf[OutHandler]
   }
 
-  private def getNonEmittingHandler(out: Outlet[_]): OutHandler =
+  private def getNonEmittingHandler(out: Outlet[?]): OutHandler =
     getHandler(out) match {
-      case e: Emitting[_] => e.previous
+      case e: Emitting[?] => e.previous
       case other          => other
     }
 
@@ -565,7 +794,7 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
    * can be retrieved via this method. After [[grab]] has been called the port is considered to be empty, and further
    * calls to [[grab]] will fail until the port is pulled again and a new element is pushed as a response.
    *
-   * The method [[isAvailable]] can be used to query if the port has an element that can be grabbed or not.
+   * The method `isAvailable` can be used to query if the port has an element that can be grabbed or not.
    */
   final protected def grab[T](in: Inlet[T]): T = {
     val connection = conn(in)
@@ -597,7 +826,7 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
 
   /**
    * Indicates whether there is already a pending pull for the given input port. If this method returns true
-   * then [[isAvailable]] must return false for that same port.
+   * then `isAvailable` must return false for that same port.
    */
   final protected def hasBeenPulled[T](in: Inlet[T]): Boolean = (conn(in).portState & (InReady | InClosed)) == 0
 
@@ -637,7 +866,7 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
 
   /**
    * Emits an element through the given output port. Calling this method twice before a [[pull]] has been arrived
-   * will fail. There can be only one outstanding push request at any given time. The method [[isAvailable]] can be
+   * will fail. There can be only one outstanding push request at any given time. The method `isAvailable` can be
    * used to check if the port is ready to be pushed or not.
    */
   final protected def push[T](out: Outlet[T], elem: T): Unit = {
@@ -690,14 +919,14 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
   final protected def fail[T](out: Outlet[T], ex: Throwable): Unit = interpreter.fail(conn(out), ex)
 
   /**
-   * Automatically invokes [[cancel]] or [[complete]] on all the input or output ports that have been called,
+   * Automatically invokes `cancel` or `complete` on all the input or output ports that have been called,
    * then marks the operator as stopped.
    */
   final def completeStage(): Unit =
     internalCompleteStage(SubscriptionWithCancelException.StageWasCompleted, OptionVal.None)
 
   /**
-   * Automatically invokes [[cancel]] or [[complete]] on all the input or output ports that have been called,
+   * Automatically invokes `cancel` or `complete` on all the input or output ports that have been called,
    * then marks the stage as stopped.
    */
   final def cancelStage(cause: Throwable): Unit =
@@ -722,7 +951,7 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
   }
 
   /**
-   * Automatically invokes [[cancel]] or [[fail]] on all the input or output ports that have been called,
+   * Automatically invokes `cancel` or `fail` on all the input or output ports that have been called,
    * then marks the operator as stopped.
    */
   final def failStage(ex: Throwable): Unit = internalCompleteStage(ex, OptionVal.Some(ex))
@@ -751,14 +980,14 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
 
   private def cleanUpSubstreams(optionalFailureCause: OptionVal[Throwable]): Unit = {
     _subInletsAndOutlets.foreach {
-      case inlet: SubSinkInlet[_] =>
-        val subSink = inlet.sink.asInstanceOf[SubSink[_]]
+      case inlet: SubSinkInlet[?] =>
+        val subSink = inlet.sink.asInstanceOf[SubSink[?]]
         optionalFailureCause match {
           case OptionVal.Some(cause) => subSink.cancelSubstream(cause)
           case _                     => subSink.cancelSubstream()
         }
-      case outlet: SubSourceOutlet[_] =>
-        val subSource = outlet.source.asInstanceOf[SubSource[_]]
+      case outlet: SubSourceOutlet[?] =>
+        val subSource = outlet.source.asInstanceOf[SubSource[?]]
         optionalFailureCause match {
           case OptionVal.Some(cause) => subSource.failSubstream(cause)
           case _                     => subSource.completeSubstream()
@@ -773,8 +1002,7 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
   /**
    * Return true if the given output port is ready to be pushed.
    */
-  final def isAvailable[T](out: Outlet[T]): Boolean =
-    (conn(out).portState & (OutReady | OutClosed)) == OutReady
+  final def isAvailable[T](out: Outlet[T]): Boolean = (conn(out).portState & (OutReady | OutClosed)) == OutReady
 
   /**
    * Indicates whether the port has been closed. A closed port cannot be pushed.
@@ -865,15 +1093,15 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
    * This will reinstall the replaced handler that was in effect before the `read`
    * call.
    */
-  final protected def abortReading(in: Inlet[_]): Unit =
+  final protected def abortReading(in: Inlet[?]): Unit =
     getHandler(in) match {
-      case r: Reading[_] =>
+      case r: Reading[?] =>
         setHandler(in, r.previous)
       case _ =>
     }
 
-  private def requireNotReading(in: Inlet[_]): Unit =
-    if (getHandler(in).isInstanceOf[Reading[_]])
+  private def requireNotReading(in: Inlet[?]): Unit =
+    if (getHandler(in).isInstanceOf[Reading[?]])
       throw new IllegalStateException("already reading on inlet " + in)
 
   /**
@@ -1035,15 +1263,15 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
    * This will reinstall the replaced handler that was in effect before the `emit`
    * call.
    */
-  final protected def abortEmitting(out: Outlet[_]): Unit =
+  final protected def abortEmitting(out: Outlet[?]): Unit =
     getHandler(out) match {
-      case e: Emitting[_] => setHandler(out, e.previous)
+      case e: Emitting[?] => setHandler(out, e.previous)
       case _              =>
     }
 
   private def setOrAddEmitting[T](out: Outlet[T], next: Emitting[T]): Unit =
     getHandler(out) match {
-      case e: Emitting[_] => e.asInstanceOf[Emitting[T]].addFollowUp(next)
+      case e: Emitting[?] => e.asInstanceOf[Emitting[T]].addFollowUp(next)
       case _              => setHandler(out, next)
     }
 
@@ -1062,11 +1290,11 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
          * we should add it to the end of emission queue
          */
         val currentHandler = getHandler(out)
-        if (currentHandler.isInstanceOf[Emitting[_]])
+        if (currentHandler.isInstanceOf[Emitting[?]])
           addFollowUp(currentHandler.asInstanceOf[Emitting[T]])
 
         val next = dequeue()
-        if (next.isInstanceOf[EmittingCompletion[_]]) {
+        if (next.isInstanceOf[EmittingCompletion[?]]) {
 
           /*
            * If next element is emitting completion and there are some elements after it,
@@ -1309,7 +1537,7 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
   final protected def createAsyncCallback[T](handler: Procedure[T]): AsyncCallback[T] =
     getAsyncCallback(handler.apply)
 
-  private var callbacksWaitingForInterpreter: List[ConcurrentAsyncCallback[_]] = Nil
+  private var callbacksWaitingForInterpreter: List[ConcurrentAsyncCallback[?]] = Nil
   // is used for two purposes: keep track of running callbacks and signal that the
   // stage has stopped to fail incoming async callback invocations by being set to null
   // Using ConcurrentHashMap's KeySetView as Set to track the inProgress async callbacks.
@@ -1326,22 +1554,22 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
   // when this stage completes/fails, not threadsafe only accessed from stream machinery callbacks etc.
   private var _subInletsAndOutlets: Set[AnyRef] = Set.empty
 
-  private def created(inlet: SubSinkInlet[_]): Unit =
+  private def created(inlet: SubSinkInlet[?]): Unit =
     _subInletsAndOutlets += inlet
 
-  private def completedOrFailed(inlet: SubSinkInlet[_]): Unit =
+  private def completedOrFailed(inlet: SubSinkInlet[?]): Unit =
     _subInletsAndOutlets -= inlet
 
-  private def created(outlet: SubSourceOutlet[_]): Unit =
+  private def created(outlet: SubSourceOutlet[?]): Unit =
     _subInletsAndOutlets += outlet
 
-  private def completedOrFailed(outlet: SubSourceOutlet[_]): Unit =
+  private def completedOrFailed(outlet: SubSourceOutlet[?]): Unit =
     _subInletsAndOutlets -= outlet
 
   /**
-   * Initialize a [[GraphStageLogic.StageActorRef]] which can be used to interact with from the outside world "as-if" an [[pekko.actor.Actor]].
-   * The messages are looped through the [[getAsyncCallback]] mechanism of [[GraphStage]] so they are safe to modify
-   * internal state of this operator.
+   * Initialize a [[GraphStageLogic.StageActorRef]] which can be used to interact with from the outside world "as-if" a [[pekko.actor.Actor]].
+   * The messages are delivered through the owning stream interpreter so they are safe to modify internal state of this
+   * operator.
    *
    * This method must (the earliest) be called after the [[GraphStageLogic]] constructor has finished running,
    * for example from the [[preStart]] callback the graph operator logic provides.
@@ -1359,7 +1587,20 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
    * @return minimal actor with watch method
    */
   final protected def getStageActor(receive: ((ActorRef, Any)) => Unit): StageActor =
-    getEagerStageActor(interpreter.materializer)(receive)
+    _stageActor match {
+      case null =>
+        val currentInterpreter = interpreter
+        _stageActor = new StageActor(
+          currentInterpreter.materializer,
+          currentInterpreter,
+          this,
+          receive,
+          stageActorName)
+        _stageActor
+      case existing =>
+        existing.become(receive)
+        existing
+    }
 
   /**
    * INTERNAL API
@@ -1380,10 +1621,21 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
     }
 
   /**
+   * INTERNAL API
+   *
+   * Resolves the stream supervisor's [[ActorCell]] so a caller can host a FunctionRef on it.
+   * If the supervisor is a [[RepointableActorRef]] that has not yet been started (its cell is still
+   * an [[UnstartedCell]]), it is force-started via Ask(Identify) before the cell is returned.
+   */
+  @InternalApi
+  private[pekko] def resolveSupervisorCell(materializer: Materializer): ActorCell =
+    StageActor.localCell(materializer.supervisor, "Stream supervisor")
+
+  /**
    * Override and return a name to be given to the StageActor of this operator.
    *
    * This method will be only invoked and used once, during the first [[getStageActor]]
-   * invocation whichc reates the actor, since subsequent `getStageActors` calls function
+   * invocation which creates the actor, since subsequent `getStageActor` calls function
    * like `become`, rather than creating new actors.
    *
    * Returns an empty string by default, which means that the name will a unique generated String (e.g. "$$a").

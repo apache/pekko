@@ -15,7 +15,6 @@ package org.apache.pekko.actor.testkit.typed.scaladsl
 
 import java.util.concurrent.ThreadLocalRandom
 
-import scala.collection.immutable
 import scala.reflect.ClassTag
 
 import org.apache.pekko
@@ -59,7 +58,7 @@ object BehaviorTestKit {
 trait BehaviorTestKit[T] {
 
   /**
-   * Constructs a message using the provided function to inject a single-use "reply to" [[akka.actor.typed.ActorRef]],
+   * Constructs a message using the provided function to inject a single-use "reply to" [[pekko.actor.typed.ActorRef]],
    * and sends the constructed message to the behavior, recording any [[Effect]]s.
    *
    * The returned [[ReplyInbox]] allows the message sent to the "reply to" `ActorRef` to be asserted on.
@@ -69,7 +68,7 @@ trait BehaviorTestKit[T] {
   def runAsk[Res](f: ActorRef[Res] => T): ReplyInbox[Res]
 
   /**
-   * The same as [[runAsk]] but only for requests that result in a response of type [[akka.pattern.StatusReply]].
+   * The same as [[runAsk]] but only for requests that result in a response of type [[pekko.pattern.StatusReply]].
    *
    * @since 1.3.0
    */
@@ -115,7 +114,7 @@ trait BehaviorTestKit[T] {
    * Requests all the effects. The effects are consumed, subsequent calls will only
    * see new effects.
    */
-  def retrieveAllEffects(): immutable.Seq[Effect]
+  def retrieveAllEffects(): Seq[Effect]
 
   /**
    * Returns if there have been any effects.
@@ -174,7 +173,7 @@ trait BehaviorTestKit[T] {
   /**
    * Returns all the [[CapturedLogEvent]] issued by this behavior(s)
    */
-  def logEntries(): immutable.Seq[CapturedLogEvent]
+  def logEntries(): Seq[CapturedLogEvent]
 
   /**
    * Clear the log entries

@@ -13,7 +13,8 @@
 
 package org.apache.pekko.remote.artery
 
-import org.apache.pekko.remote.UniqueAddress
+import org.apache.pekko
+import pekko.remote.UniqueAddress
 
 final case class QuarantinedEvent(uniqueAddress: UniqueAddress) {
 

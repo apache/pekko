@@ -49,8 +49,8 @@ object Effect {
    * The 'replyToRef' is exposed so that the target inbox can expect the actual message sent to
    * initiate the ask.
    *
-   * Note that this requires the ask to be initiated via the [[ActorContext]].  The [[Future]] returning
-   * ask is not testable in the [[BehaviorTestKit]].
+   * Note that this requires the ask to be initiated via the [[ActorContext]].  The `Future` returning
+   * ask is not testable in the `BehaviorTestKit`.
    */
   final case class AskInitiated[Req, Res, T](target: RecipientRef[Req],
       responseTimeout: FiniteDuration,
@@ -100,7 +100,7 @@ object Effect {
       with Serializable {
 
     override def equals(other: Any) = other match {
-      case o: Spawned[_] =>
+      case o: Spawned[?] =>
         this.behavior == o.behavior &&
         this.childName == o.childName &&
         this.props == o.props
@@ -113,7 +113,7 @@ object Effect {
     override def _1: Behavior[T] = behavior
     override def _2: String = childName
     override def _3: Props = props
-    override def canEqual(o: Any) = o.isInstanceOf[Spawned[_]]
+    override def canEqual(o: Any) = o.isInstanceOf[Spawned[?]]
   }
 
   object Spawned {
@@ -131,7 +131,7 @@ object Effect {
       with Serializable {
 
     override def equals(other: Any) = other match {
-      case o: SpawnedAnonymous[_] => this.behavior == o.behavior && this.props == o.props
+      case o: SpawnedAnonymous[?] => this.behavior == o.behavior && this.props == o.props
       case _                      => false
     }
     override def hashCode: Int = behavior.## * 31 + props.##
@@ -140,7 +140,7 @@ object Effect {
     override def productPrefix = "SpawnedAnonymous"
     override def _1: Behavior[T] = behavior
     override def _2: Props = props
-    override def canEqual(o: Any) = o.isInstanceOf[SpawnedAnonymous[_]]
+    override def canEqual(o: Any) = o.isInstanceOf[SpawnedAnonymous[?]]
   }
 
   object SpawnedAnonymous {
@@ -160,7 +160,7 @@ object Effect {
       with Serializable {
 
     override def equals(other: Any) = other match {
-      case o: SpawnedAdapter[_] => this.name == o.name
+      case o: SpawnedAdapter[?] => this.name == o.name
       case _                    => false
     }
     override def hashCode: Int = name.##
@@ -168,7 +168,7 @@ object Effect {
 
     override def productPrefix = "SpawnedAdapter"
     override def _1: String = name
-    override def canEqual(o: Any) = o.isInstanceOf[SpawnedAdapter[_]]
+    override def canEqual(o: Any) = o.isInstanceOf[SpawnedAdapter[?]]
   }
 
   /**
@@ -192,17 +192,17 @@ object Effect {
       with Serializable {
 
     override def equals(other: Any): Boolean = other match {
-      case _: SpawnedAnonymousAdapter[_] => true
+      case _: SpawnedAnonymousAdapter[?] => true
       case _                             => false
     }
     override def hashCode: Int = Nil.##
     override def toString: String = "SpawnedAnonymousAdapter"
 
     override def productPrefix: String = "SpawnedAnonymousAdapter"
-    override def productIterator: Iterator[_] = Iterator.empty
+    override def productIterator: Iterator[?] = Iterator.empty
     override def productArity: Int = 0
     override def productElement(n: Int) = throw new NoSuchElementException
-    override def canEqual(o: Any): Boolean = o.isInstanceOf[SpawnedAnonymousAdapter[_]]
+    override def canEqual(o: Any): Boolean = o.isInstanceOf[SpawnedAnonymousAdapter[?]]
   }
 
   /**
@@ -258,7 +258,8 @@ object Effect {
 
   case object ReceiveTimeoutCancelled extends ReceiveTimeoutCancelled
 
-  sealed abstract class ReceiveTimeoutCancelled extends Effect
+  /** Not for user extension */
+  @DoNotInherit sealed abstract class ReceiveTimeoutCancelled extends Effect
 
   /**
    * The behavior used `context.scheduleOnce` to schedule `message` to be sent to `target` after `delay`
@@ -281,7 +282,8 @@ object Effect {
   object TimerScheduled {
     import scala.jdk.DurationConverters._
 
-    sealed trait TimerMode
+    /** Not for user extension */
+    @DoNotInherit sealed trait TimerMode
     case object FixedRateMode extends TimerMode
     case class FixedRateModeWithInitialDelay(initialDelay: FiniteDuration) extends TimerMode
     case object FixedDelayMode extends TimerMode
@@ -308,6 +310,7 @@ object Effect {
 
   /**
    * Used for NoEffects expectations by type
+   * Not for user extension
    */
-  sealed abstract class NoEffects extends Effect
+  @DoNotInherit sealed abstract class NoEffects extends Effect
 }

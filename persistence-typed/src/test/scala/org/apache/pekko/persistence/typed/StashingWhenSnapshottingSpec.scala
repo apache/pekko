@@ -41,7 +41,7 @@ import com.typesafe.config.ConfigFactory
 object StashingWhenSnapshottingSpec {
   object ControllableSnapshotStoreExt extends ExtensionId[ControllableSnapshotStoreExt] {
 
-    override def createExtension(system: ActorSystem[_]): ControllableSnapshotStoreExt =
+    override def createExtension(system: ActorSystem[?]): ControllableSnapshotStoreExt =
       new ControllableSnapshotStoreExt()
   }
 

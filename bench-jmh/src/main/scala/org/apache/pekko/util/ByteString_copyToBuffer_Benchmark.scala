@@ -18,7 +18,8 @@ import java.util.concurrent.TimeUnit
 
 import org.openjdk.jmh.annotations._
 
-import org.apache.pekko.util.ByteString.{ ByteString1C, ByteStrings }
+import org.apache.pekko
+import pekko.util.ByteString.{ ByteString1C, ByteStrings }
 
 @State(Scope.Benchmark)
 @Measurement(timeUnit = TimeUnit.MILLISECONDS)

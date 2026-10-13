@@ -15,7 +15,8 @@ package org.apache.pekko.util
 
 import scala.collection.AbstractIterator
 
-import org.apache.pekko.annotation.InternalApi
+import org.apache.pekko
+import pekko.annotation.InternalApi
 
 /**
  * INTERNAL API
@@ -29,8 +30,8 @@ private[pekko] final class DoubleLinkedList[Node](
     setPrevious: (Node, OptionVal[Node]) => Unit,
     setNext: (Node, OptionVal[Node]) => Unit) {
 
-  private[this] var first: OptionVal[Node] = OptionVal.none
-  private[this] var last: OptionVal[Node] = OptionVal.none
+  private var first: OptionVal[Node] = OptionVal.none
+  private var last: OptionVal[Node] = OptionVal.none
 
   def isEmpty: Boolean = first.isEmpty
 
@@ -138,7 +139,7 @@ private[pekko] final class DoubleLinkedList[Node](
 
   private def iteratorFrom(start: OptionVal[Node], shift: Node => OptionVal[Node]): Iterator[Node] =
     new AbstractIterator[Node] {
-      private[this] var cursor: OptionVal[Node] = start
+      private var cursor: OptionVal[Node] = start
       override def hasNext: Boolean = cursor.isDefined
       override def next(): Node = {
         val node = cursor

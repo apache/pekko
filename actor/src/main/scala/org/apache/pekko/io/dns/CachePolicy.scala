@@ -17,11 +17,12 @@ import scala.concurrent.duration.{ Duration, FiniteDuration, _ }
 import scala.jdk.DurationConverters._
 
 import org.apache.pekko
-import pekko.annotation.InternalApi
+import pekko.annotation.{ DoNotInherit, InternalApi }
 
 object CachePolicy {
 
-  sealed trait CachePolicy
+  /** Not for user extension */
+  @DoNotInherit sealed trait CachePolicy
   case object Never extends CachePolicy
   case object Forever extends CachePolicy
 

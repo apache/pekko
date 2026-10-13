@@ -6,8 +6,8 @@ Chunk up this stream into groups of elements received within a time window, or l
 
 ## Signature
 
-@apidoc[Source.groupedWithin](Source) { scala="#groupedWithin(n:Int,d:scala.concurrent.duration.FiniteDuration):FlowOps.this.Repr[scala.collection.immutable.Seq[Out]]" java="#groupedWithin(int,java.time.Duration)" }
-@apidoc[Flow.groupedWithin](Flow) { scala="#groupedWithin(n:Int,d:scala.concurrent.duration.FiniteDuration):FlowOps.this.Repr[scala.collection.immutable.Seq[Out]]" java="#groupedWithin(int,java.time.Duration)" }
+@apidoc[Source.groupedWithin](Source) { scala="#groupedWithin(n:Int,d:scala.concurrent.duration.FiniteDuration):FlowOps.this.Repr[Seq[Out]]" java="#groupedWithin(int,java.time.Duration)" }
+@apidoc[Flow.groupedWithin](Flow) { scala="#groupedWithin(n:Int,d:scala.concurrent.duration.FiniteDuration):FlowOps.this.Repr[Seq[Out]]" java="#groupedWithin(int,java.time.Duration)" }
 
 
 ## Description
@@ -29,7 +29,7 @@ See also:
 **emits** when the configured time elapses since the last group has been emitted,
 but not if no elements has been grouped (i.e: no empty groups), or when limit has been reached.
 
-**backpressures** downstream backpressures, and there are *n+1* buffered elements
+**backpressures** when downstream backpressures, and there are *n+1* buffered elements
 
 **completes** when upstream completes
 

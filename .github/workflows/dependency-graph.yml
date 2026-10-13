@@ -33,12 +33,12 @@ jobs:
       # to submit dependencies
       contents: write
     steps:
-      - uses: actions/checkout@v6.0.0
+      - uses: actions/checkout@v7.0.1
         with:
           persist-credentials: false
       - name: Install sbt
-        uses: sbt/setup-sbt@3e125ece5c3e5248e18da9ed8d2cce3d335ec8dd # v1.1.14
-      - uses: scalacenter/sbt-dependency-submission@64084844d2b0a9b6c3765f33acde2fbe3f5ae7d3 # v3.1.0
+        uses: sbt/setup-sbt@6158cb0903b8ceeae04f830055f3155e1b6a5ad7 # v1.5.11
+      - uses: scalacenter/sbt-dependency-submission@d84eef4c09e633bcf5f113bcad7fd5e9af1baee9 # v3.1.1
         with:
-          configs-ignore: provided optional test TestJdk9 compile-internal runtime-internal pr-validation multi-jvm scala-tool scala-doc-tool
+          configs-ignore: provided optional test TestJdk21 compile-internal runtime-internal pr-validation multi-jvm scala-tool scala-doc-tool
           modules-ignore: pekko-bench-jmh_2.13 pekko-docs_2.13 pekko-bench-jmh_3 pekko-docs_3

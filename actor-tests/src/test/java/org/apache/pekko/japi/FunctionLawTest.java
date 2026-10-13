@@ -17,12 +17,15 @@
 
 package org.apache.pekko.japi;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.apache.pekko.japi.function.Function;
 import org.apache.pekko.japi.function.Function2;
 import org.apache.pekko.japi.function.Predicate;
 import org.apache.pekko.japi.function.Predicate2;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class FunctionLawTest {
 
@@ -31,8 +34,8 @@ public class FunctionLawTest {
     Function<Long, Long> f = v1 -> v1 + 1;
     Function<Long, Long> g = v1 -> v1 * 2;
     Function<Long, Long> h = f.compose(g);
-    Assert.assertEquals(5L, h.apply(2L).longValue());
-    Assert.assertEquals(6L, g.compose(f).apply(2L).longValue());
+    assertEquals(Long.valueOf(5L), h.apply(2L));
+    assertEquals(Long.valueOf(6L), g.compose(f).apply(2L));
   }
 
   @Test
@@ -40,8 +43,8 @@ public class FunctionLawTest {
     Function<Long, Long> f = v1 -> v1 + 1;
     Function<Long, Long> g = v1 -> v1 * 2;
     Function<Long, Long> h = f.andThen(g);
-    Assert.assertEquals(6L, h.apply(2L).longValue());
-    Assert.assertEquals(5L, g.andThen(f).apply(2L).longValue());
+    assertEquals(Long.valueOf(6L), h.apply(2L));
+    assertEquals(Long.valueOf(5L), g.andThen(f).apply(2L));
   }
 
   @Test
@@ -49,24 +52,24 @@ public class FunctionLawTest {
     Function2<Long, Long, Long> f = Long::sum;
     Function<Long, Long> g = v1 -> v1 * 2;
     Function2<Long, Long, Long> h = f.andThen(g);
-    Assert.assertEquals(10L, h.apply(2L, 3L).longValue());
+    assertEquals(Long.valueOf(10L), h.apply(2L, 3L));
   }
 
   @Test
   public void testPredicateNegate() {
     final Predicate<Object> alwaysTrue = o -> true;
     final Predicate<Object> alwaysFalse = alwaysTrue.negate();
-    Assert.assertTrue(alwaysTrue.test(new Object()));
-    Assert.assertFalse(alwaysFalse.test(new Object()));
-    Assert.assertTrue(alwaysTrue.negate().negate().test(new Object()));
+    assertTrue(alwaysTrue.test(new Object()));
+    assertFalse(alwaysFalse.test(new Object()));
+    assertTrue(alwaysTrue.negate().negate().test(new Object()));
   }
 
   @Test
   public void testPredicate2Negate() {
     final Predicate2<Object, Object> alwaysTrue = (o1, o2) -> true;
     final Predicate2<Object, Object> alwaysFalse = alwaysTrue.negate();
-    Assert.assertTrue(alwaysTrue.test(new Object(), new Object()));
-    Assert.assertFalse(alwaysFalse.test(new Object(), new Object()));
-    Assert.assertTrue(alwaysTrue.negate().negate().test(new Object(), new Object()));
+    assertTrue(alwaysTrue.test(new Object(), new Object()));
+    assertFalse(alwaysFalse.test(new Object(), new Object()));
+    assertTrue(alwaysTrue.negate().negate().test(new Object(), new Object()));
   }
 }

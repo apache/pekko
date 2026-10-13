@@ -29,6 +29,7 @@ import pekko.actor.typed.delivery.internal.WorkPullingProducerControllerImpl
 import pekko.actor.typed.receptionist.ServiceKey
 import pekko.actor.typed.scaladsl.Behaviors
 import pekko.annotation.ApiMayChange
+import pekko.annotation.DoNotInherit
 
 import com.typesafe.config.Config
 
@@ -111,7 +112,8 @@ object WorkPullingProducerController {
 
   import WorkPullingProducerControllerImpl.UnsealedInternalCommand
 
-  sealed trait Command[A] extends UnsealedInternalCommand
+  /** Not for user extension */
+  @DoNotInherit sealed trait Command[A] extends UnsealedInternalCommand
 
   /**
    * Initial message from the producer actor. The `producer` is typically constructed
@@ -154,7 +156,7 @@ object WorkPullingProducerController {
      * Scala API: Factory method from config `pekko.reliable-delivery.work-pulling.producer-controller`
      * of the `ActorSystem`.
      */
-    def apply(system: ActorSystem[_]): Settings =
+    def apply(system: ActorSystem[?]): Settings =
       apply(system.settings.config.getConfig("pekko.reliable-delivery.work-pulling.producer-controller"))
 
     /**
@@ -172,7 +174,7 @@ object WorkPullingProducerController {
      * Java API: Factory method from config `pekko.reliable-delivery.work-pulling.producer-controller`
      * of the `ActorSystem`.
      */
-    def create(system: ActorSystem[_]): Settings =
+    def create(system: ActorSystem[?]): Settings =
       apply(system)
 
     /**
@@ -241,7 +243,8 @@ object WorkPullingProducerController {
       producerId: String,
       workerServiceKey: ServiceKey[ConsumerController.Command[A]],
       durableQueueBehavior: Optional[Behavior[DurableProducerQueue.Command[A]]]): Behavior[Command[A]] = {
-    apply(producerId, workerServiceKey, durableQueueBehavior.toScala)(ClassTag(messageClass))
+    implicit val ct: ClassTag[A] = ClassTag(messageClass)
+    apply(producerId, workerServiceKey, durableQueueBehavior.toScala)
   }
 
   /**
@@ -253,6 +256,7 @@ object WorkPullingProducerController {
       workerServiceKey: ServiceKey[ConsumerController.Command[A]],
       durableQueueBehavior: Optional[Behavior[DurableProducerQueue.Command[A]]],
       settings: Settings): Behavior[Command[A]] = {
-    apply(producerId, workerServiceKey, durableQueueBehavior.toScala, settings)(ClassTag(messageClass))
+    implicit val ct: ClassTag[A] = ClassTag(messageClass)
+    apply(producerId, workerServiceKey, durableQueueBehavior.toScala, settings)
   }
 }

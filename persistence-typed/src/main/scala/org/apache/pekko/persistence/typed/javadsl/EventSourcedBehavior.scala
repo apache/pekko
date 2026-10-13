@@ -19,6 +19,8 @@ import java.util.Optional
 import scala.annotation.nowarn
 import scala.jdk.OptionConverters._
 
+import org.jspecify.annotations.Nullable
+
 import org.apache.pekko
 import pekko.actor.typed
 import pekko.actor.typed.BackoffSupervisorStrategy
@@ -52,7 +54,7 @@ abstract class EventSourcedBehavior[Command, Event, State] private[pekko] (
    * @param persistenceId stable unique identifier for the event sourced behavior
    * @param onPersistFailure BackoffSupervisionStrategy for persist failures
    */
-  def this(persistenceId: PersistenceId, onPersistFailure: BackoffSupervisorStrategy) = {
+  def this(persistenceId: PersistenceId, @Nullable onPersistFailure: BackoffSupervisorStrategy) = {
     this(persistenceId, Optional.ofNullable(onPersistFailure))
   }
 
@@ -154,7 +156,7 @@ abstract class EventSourcedBehavior[Command, Event, State] private[pekko] (
    * been persisted.
    *
    * Snapshots triggered by `snapshotWhen` will not trigger deletes of old snapshots and events if
-   * [[EventSourcedBehavior.retentionCriteria]] with [[RetentionCriteria.snapshotEvery]] is used together with
+   * [[EventSourcedBehavior.retentionCriteria]] with `RetentionCriteria.snapshotEvery` is used together with
    * `shouldSnapshot`. Such deletes are only triggered by snapshots matching the `numberOfEvents` in the
    * [[RetentionCriteria]].
    *
@@ -177,15 +179,25 @@ abstract class EventSourcedBehavior[Command, Event, State] private[pekko] (
   def recovery: Recovery = Recovery.default
 
   /**
-   * The `tagger` function should give event tags, which will be used in persistence query
+   * Return tags to store for the given event, the tags can then be used in persistence query.
+   *
+   * If `tagsFor` is overridden this method is ignored.
    */
   def tagsFor(@nowarn("msg=never used") event: Event): java.util.Set[String] = Collections.emptySet()
+
+  /**
+   * Return tags to store for the given event and state, the tags can then be used in persistence query.
+   * The state passed to the tagger allows for toggling a tag with one event but keep all events after it tagged
+   * based on a property or the type of the state.
+   */
+  def tagsFor(@nowarn("msg=never used") state: State, event: Event): java.util.Set[String] =
+    tagsFor(event)
 
   /**
    * Transform the event in another type before giving to the journal. Can be used to wrap events
    * in types Journals understand but is of a different type than `Event`.
    */
-  def eventAdapter(): EventAdapter[Event, _] = NoOpEventAdapter.instance[Event]
+  def eventAdapter(): EventAdapter[Event, ?] = NoOpEventAdapter.instance[Event]
 
   /**
    * Transform the state into another type before giving it to and from the journal. Can be used
@@ -206,9 +218,9 @@ abstract class EventSourcedBehavior[Command, Event, State] private[pekko] (
       : scaladsl.EventSourcedBehavior[Command, Event, State] = {
     val snapshotWhen: (State, Event, Long) => Boolean = (state, event, seqNr) => shouldSnapshot(state, event, seqNr)
 
-    val tagger: Event => Set[String] = { event =>
+    val tagger: (State, Event) => Set[String] = { (state, event) =>
       import scala.jdk.CollectionConverters._
-      val tags = tagsFor(event)
+      val tags = tagsFor(state, event)
       if (tags.isEmpty) Set.empty
       else tags.asScala.toSet
     }
@@ -223,7 +235,7 @@ abstract class EventSourcedBehavior[Command, Event, State] private[pekko] (
       getClass)
       .snapshotWhen(snapshotWhen)
       .withRetention(retentionCriteria.asScala)
-      .withTagger(tagger)
+      .withTaggerForState(tagger)
       .eventAdapter(eventAdapter())
       .snapshotAdapter(snapshotAdapter())
       .withJournalPluginId(journalPluginId)
@@ -253,7 +265,7 @@ abstract class EventSourcedBehavior[Command, Event, State] private[pekko] (
   /**
    * The last sequence number that was persisted, can only be called from inside the handlers of an `EventSourcedBehavior`
    */
-  final def lastSequenceNumber(ctx: ActorContext[_]): Long = {
+  final def lastSequenceNumber(ctx: ActorContext[?]): Long = {
     scaladsl.EventSourcedBehavior.lastSequenceNumber(ctx.asScala)
   }
 
@@ -280,7 +292,7 @@ abstract class EventSourcedBehaviorWithEnforcedReplies[Command, Event, State](
     this(persistenceId, Optional.empty[BackoffSupervisorStrategy])
   }
 
-  def this(persistenceId: PersistenceId, backoffSupervisorStrategy: BackoffSupervisorStrategy) = {
+  def this(persistenceId: PersistenceId, @Nullable backoffSupervisorStrategy: BackoffSupervisorStrategy) = {
     this(persistenceId, Optional.ofNullable(backoffSupervisorStrategy))
   }
 

@@ -13,7 +13,7 @@ asynchronous. This effort has been undertaken to ensure that all functions are
 available equally when running within a single JVM or on a cluster of hundreds
 of machines. The key for enabling this is to go from remote to local by way of
 optimization instead of trying to go from local to remote by way of
-generalization. See [this classic paper](https://dl.acm.org/doi/pdf/10.5555/974938)
+generalization. See [this classic paper](https://waldo.scholars.harvard.edu/publications/note-distributed-computing)
 for a detailed discussion on why the second approach is bound to fail.
 
 ## Ways in which Transparency is Broken
@@ -52,6 +52,16 @@ network configuration to allow symmetric communication between involved systems.
 In such situations Pekko can be configured to bind to a different network
 address than the one used for establishing connections between Pekko nodes.
 See @ref:[Pekko behind NAT or in a Docker container](../remoting-artery.md#remote-configuration-nat-artery).
+
+### Service mesh
+
+In a Kubernetes environment, many people turn to a service mesh such as Istio, Linkerd or Consul to authenticate and
+encrypt their network communications. A service mesh can help with transport encryption and identity for request/response
+services, but it does not remove Pekko remoting's peer-to-peer addressing and direct connectivity requirements.
+Pekko clusters need to understand how and where the individual nodes are deployed in order to implement stateful
+features such as sharding, replication and peer-to-peer messaging. When deploying a service that uses Pekko Cluster in
+a service mesh, the cluster communication must be configured so that nodes can still connect to each other directly by
+their canonical addresses.
 
 ## Marking Points for Scaling Up with Routers
 

@@ -166,9 +166,7 @@ final class CommandHandlerBuilder[Command, Event, State]() {
 
 object CommandHandlerBuilderByState {
 
-  private val _trueStatePredicate: Predicate[Any] = new Predicate[Any] {
-    override def test(t: Any): Boolean = true
-  }
+  private val _trueStatePredicate: Predicate[Any] = (_: Any) => true
 
   private def trueStatePredicate[S]: Predicate[S] = _trueStatePredicate.asInstanceOf[Predicate[S]]
 
@@ -244,9 +242,7 @@ final class CommandHandlerBuilderByState[Command, Event, S <: State, State] @Int
       predicate: Predicate[Command],
       handler: JFunction[Command, Effect[Event, State]]): CommandHandlerBuilderByState[Command, Event, S, State] = {
     addCase(cmd => predicate.test(cmd),
-      new BiFunction[S, Command, Effect[Event, State]] {
-        override def apply(state: S, cmd: Command): Effect[Event, State] = handler(cmd)
-      })
+      (_: S, cmd: Command) => handler(cmd))
     this
   }
 
@@ -280,9 +276,7 @@ final class CommandHandlerBuilderByState[Command, Event, S <: State, State] @Int
       commandClass: Class[C],
       handler: JFunction[C, Effect[Event, State]]): CommandHandlerBuilderByState[Command, Event, S, State] = {
     onCommand[C](commandClass,
-      new BiFunction[S, C, Effect[Event, State]] {
-        override def apply(state: S, cmd: C): Effect[Event, State] = handler(cmd)
-      })
+      (_: S, cmd: C) => handler(cmd))
   }
 
   /**
@@ -298,9 +292,7 @@ final class CommandHandlerBuilderByState[Command, Event, S <: State, State] @Int
       commandClass: Class[C],
       handler: Supplier[Effect[Event, State]]): CommandHandlerBuilderByState[Command, Event, S, State] = {
     onCommand[C](commandClass,
-      new BiFunction[S, C, Effect[Event, State]] {
-        override def apply(state: S, cmd: C): Effect[Event, State] = handler.get()
-      })
+      (_: S, _: C) => handler.get())
   }
 
   /**
@@ -313,7 +305,7 @@ final class CommandHandlerBuilderByState[Command, Event, S <: State, State] @Int
    * and no further lookup is done. Therefore you must make sure that their matching conditions don't overlap,
    * otherwise you risk to 'shadow' part of your command handlers.
    *
-   * Extra care should be taken when using [[onAnyCommand]] as it will match any command.
+   * Extra care should be taken when using `onAnyCommand` as it will match any command.
    * This method builds and returns the command handler since this will not let through any states to subsequent match statements.
    *
    * @return A CommandHandler from the appended states.
@@ -335,16 +327,14 @@ final class CommandHandlerBuilderByState[Command, Event, S <: State, State] @Int
    * and no further lookup is done. Therefore you must make sure that their matching conditions don't overlap,
    * otherwise you risk to 'shadow' part of your command handlers.
    *
-   * Extra care should be taken when using [[onAnyCommand]] as it will match any command.
+   * Extra care should be taken when using `onAnyCommand` as it will match any command.
    * This method builds and returns the command handler since this will not let through any states to subsequent match statements.
    *
    * @return A CommandHandler from the appended states.
    */
   def onAnyCommand(handler: JFunction[Command, Effect[Event, State]]): CommandHandler[Command, Event, State] = {
     addCase(_ => true,
-      new BiFunction[S, Command, Effect[Event, State]] {
-        override def apply(state: S, cmd: Command): Effect[Event, State] = handler(cmd)
-      })
+      (_: S, cmd: Command) => handler(cmd))
     build()
   }
 
@@ -360,16 +350,14 @@ final class CommandHandlerBuilderByState[Command, Event, S <: State, State] @Int
    * and no further lookup is done. Therefore you must make sure that their matching conditions don't overlap,
    * otherwise you risk to 'shadow' part of your command handlers.
    *
-   * Extra care should be taken when using [[onAnyCommand]] as it will match any command.
+   * Extra care should be taken when using `onAnyCommand` as it will match any command.
    * This method builds and returns the command handler since this will not let through any states to subsequent match statements.
    *
    * @return A CommandHandler from the appended states.
    */
   def onAnyCommand(handler: Supplier[Effect[Event, State]]): CommandHandler[Command, Event, State] = {
     addCase(_ => true,
-      new BiFunction[S, Command, Effect[Event, State]] {
-        override def apply(state: S, cmd: Command): Effect[Event, State] = handler.get()
-      })
+      (_: S, _: Command) => handler.get())
     build()
   }
 

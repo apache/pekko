@@ -20,7 +20,6 @@ import java.nio.channels.{ FileChannel, SocketChannel }
 import java.nio.channels.SelectionKey._
 import java.nio.file.Path
 
-import scala.annotation.nowarn
 import scala.annotation.tailrec
 import scala.collection.immutable
 import scala.concurrent.duration._
@@ -48,12 +47,12 @@ private[io] abstract class TcpConnection(val tcp: TcpExt, val channel: SocketCha
   import tcp.Settings._
   import tcp.bufferPool
 
-  private[this] var pendingWrite: PendingWrite = EmptyPendingWrite
-  private[this] var peerClosed = false
-  private[this] var writingSuspended = false
-  private[this] var readingSuspended = pullMode
-  private[this] var interestedInResume: Option[ActorRef] = None
-  private[this] var closedMessage: Option[CloseInformation] = None // for ConnectionClosed message in postStop
+  private var pendingWrite: PendingWrite = EmptyPendingWrite
+  private var peerClosed = false
+  private var writingSuspended = false
+  private var readingSuspended = pullMode
+  private var interestedInResume: Option[ActorRef] = None
+  private var closedMessage: Option[CloseInformation] = None // for ConnectionClosed message in postStop
   private var watchedActor: ActorRef = context.system.deadLetters
   private var registration: Option[ChannelRegistration] = None
 
@@ -100,7 +99,7 @@ private[io] abstract class TcpConnection(val tcp: TcpExt, val channel: SocketCha
       val info = ConnectionInfo(registration, commander, keepOpenOnPeerClosed = false, useResumeWriting = false)
       handleClose(info, Some(sender()), cmd.event)
 
-    case ReceiveTimeout =>
+    case _: ReceiveTimeout =>
       // after sending `Register` user should watch this actor to make sure
       // it didn't die because of the timeout
       log.debug("Configured registration timeout of [{}] expired, stopping", RegisterTimeout)
@@ -219,11 +218,10 @@ private[io] abstract class TcpConnection(val tcp: TcpExt, val channel: SocketCha
   // AUXILIARIES and IMPLEMENTATION
 
   /** used in subclasses to start the common machinery above once a channel is connected */
-  @nowarn("msg=deprecated")
   def completeConnect(
       registration: ChannelRegistration,
       commander: ActorRef,
-      options: immutable.Traversable[SocketOption]): Unit = {
+      options: immutable.Iterable[SocketOption]): Unit = {
     this.registration = Some(registration)
 
     // Turn off Nagle's algorithm by default
@@ -267,10 +265,8 @@ private[io] abstract class TcpConnection(val tcp: TcpExt, val channel: SocketCha
       @tailrec def innerRead(buffer: ByteBuffer, remainingLimit: Int): ReadResult =
         if (remainingLimit > 0) {
           // never read more than the configured limit
-          buffer.clear()
           val maxBufferSpace = math.min(DirectBufferSize, remainingLimit)
-          buffer.limit(maxBufferSpace)
-          val readBytes = channel.read(buffer)
+          val readBytes = channel.read(buffer.clear().limit(maxBufferSpace))
           buffer.flip()
 
           if (TraceLogging) log.debug("Read [{}] bytes.", readBytes)
@@ -319,7 +315,7 @@ private[io] abstract class TcpConnection(val tcp: TcpExt, val channel: SocketCha
   def handleClose(info: ConnectionInfo, closeCommander: Option[ActorRef], closedEvent: ConnectionClosed): Unit =
     closedEvent match {
       case Aborted =>
-        if (TraceLogging) log.debug("Got Abort command. RESETing connection.")
+        if (TraceLogging) log.debug("Got Abort command. Resetting connection.")
         doCloseConnection(info.handler, closeCommander, closedEvent)
       case PeerClosed if info.keepOpenOnPeerClosed =>
         // report that peer closed the connection
@@ -364,7 +360,7 @@ private[io] abstract class TcpConnection(val tcp: TcpExt, val channel: SocketCha
       case _: SocketException => false
     }
 
-  @tailrec private[this] def extractMsg(t: Throwable): String =
+  @tailrec private def extractMsg(t: Throwable): String =
     if (t eq null) "unknown"
     else {
       t.getMessage match {
@@ -412,8 +408,15 @@ private[io] abstract class TcpConnection(val tcp: TcpExt, val channel: SocketCha
       (if (writePending) Set(pendingWrite.commander) else Set.empty) ++
       closedMessage.toList.flatMap(_.notificationsTo).toSet
 
-    if (channel.isOpen) // if channel is still open here, we didn't go through stopWith => unexpected actor termination
+    if (channel.isOpen) {
       prepareAbort()
+      // Without a ChannelRegistration there is no selector callback to close through.
+      if (registration.isEmpty)
+        try channel.close()
+        catch {
+          case NonFatal(e) => log.error(e, "Error closing SocketChannel")
+        }
+    }
 
     def isCommandFailed: Boolean = closedMessage.exists(_.closedEvent.isInstanceOf[CommandFailed])
     def notifyInterested(): Unit =

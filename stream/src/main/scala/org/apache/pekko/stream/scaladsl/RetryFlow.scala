@@ -16,7 +16,6 @@ package org.apache.pekko.stream.scaladsl
 import scala.concurrent.duration._
 
 import org.apache.pekko
-import pekko.annotation.ApiMayChange
 import pekko.stream.impl.RetryFlowCoordinator
 
 object RetryFlow {
@@ -39,7 +38,7 @@ object RetryFlow {
    * Let's say the flow is handling an element, either first-time executing some calculation, or retrying.
    * The next element won't be emitted into the flow until the current element has been finished processing.
    * By finished, it means either succeed the very first attempt, succeed after a few attempts, or get dropped after
-   * using up [[maxRetries]] retries.
+   * using up `maxRetries` retries.
    *
    * @param minBackoff minimum duration to backoff between issuing retries
    * @param maxBackoff maximum duration to backoff between issuing retries
@@ -49,7 +48,6 @@ object RetryFlow {
    * @param flow a flow to retry elements from
    * @param decideRetry retry condition decision function
    */
-  @ApiMayChange(issue = "https://github.com/akka/akka/issues/27960")
   def withBackoff[In, Out, Mat](
       minBackoff: FiniteDuration,
       maxBackoff: FiniteDuration,
@@ -88,7 +86,6 @@ object RetryFlow {
    * @param flow a flow with context to retry elements from
    * @param decideRetry retry condition decision function
    */
-  @ApiMayChange(issue = "https://github.com/akka/akka/issues/27960")
   def withBackoffAndContext[In, CtxIn, Out, CtxOut, Mat](
       minBackoff: FiniteDuration,
       maxBackoff: FiniteDuration,

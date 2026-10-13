@@ -46,17 +46,17 @@ private[remote] final class TopHeavyHitters[T >: Null](val max: Int)(implicit cl
 
   // Contains the hash value for each entry in the hashmap. Used for quicker lookups (equality check can be avoided
   // if hashes don't match)
-  private[this] val hashes: Array[Int] = new Array(capacity)
+  private val hashes: Array[Int] = new Array(capacity)
   // Actual stored elements in the hashmap
-  private[this] val items: Array[T] = Array.ofDim[T](capacity)
+  private val items: Array[T] = Array.ofDim[T](capacity)
   // Index of stored element in the associated heap
-  private[this] val heapIndex: Array[Int] = Array.fill(capacity)(-1)
+  private val heapIndex: Array[Int] = Array.fill(capacity)(-1)
   // Weights associated with an entry in the hashmap. Used to maintain the heap property and give easy access to low
   // weight entries
-  private[this] val weights: Array[Long] = new Array(capacity)
+  private val weights: Array[Long] = new Array(capacity)
 
   // Heap structure containing indices to slots in the hashmap
-  private[this] val heap: Array[Int] = Array.fill(adjustedMax)(-1)
+  private val heap: Array[Int] = Array.fill(adjustedMax)(-1)
 
   /*
    * Invariants (apart from heap and hashmap invariants):
@@ -150,50 +150,52 @@ private[remote] final class TopHeavyHitters[T >: Null](val max: Int)(implicit cl
    * Attempt adding item to heavy hitters set, if it does not fit in the top yet,
    * it will be dropped and the method will return `false`.
    *
-   * WARNING: It is only allowed to *increase* the weight of existing elements, decreasing is disallowed.
+   * Existing entries always have their weight updated (both increase and decrease are supported),
+   * which is needed when using a frequency sketch with periodic reset (aging).
    *
    * @return `true` if the added item has become a heavy hitter.
    */
   // TODO possibly can be optimised further? (there is a benchmark)
-  def update(item: T, count: Long): Boolean =
-    isHeavy(count) && { // O(1) terminate execution ASAP if known to not be a heavy hitter anyway
-      val hashCode = new HashCodeVal(item.hashCode()) // avoid re-calculating hashCode
-      val startIndex = hashCode.get & mask
+  def update(item: T, count: Long): Boolean = {
+    val hashCode = new HashCodeVal(item.hashCode()) // avoid re-calculating hashCode
+    val startIndex = hashCode.get & mask
 
-      // We first try to find the slot where an element with an equal hash value is. This is a possible candidate
-      // for an actual matching entry (unless it is an entry with a colliding hash value).
-      // worst case O(n), common O(1 + alpha), can't really bin search here since indexes are kept in synch with other arrays hmm...
-      val candidateIndex = findHashIdx(startIndex, hashCode)
+    // We first try to find the slot where an element with an equal hash value is. This is a possible candidate
+    // for an actual matching entry (unless it is an entry with a colliding hash value).
+    // worst case O(n), common O(1 + alpha), can't really bin search here since indexes are kept in synch with other arrays hmm...
+    val candidateIndex = findHashIdx(startIndex, hashCode)
 
-      if (candidateIndex == -1) {
-        // No matching hash value entry is found, so we are sure we don't have this entry yet.
-        insertKnownNewHeavy(hashCode, item, count) // O(log n + alpha)
-        true
+    if (candidateIndex == -1) {
+      // No matching hash value entry is found, so we are sure we don't have this entry yet.
+      // Only insert new entries if the weight qualifies as heavy.
+      isHeavy(count) && { insertKnownNewHeavy(hashCode, item, count); true }
+    } else {
+      // We now found, relatively cheaply, the first index where our searched entry *might* be (hashes are equal).
+      // This is not guaranteed to be the one we are searching for, yet (hash values may collide).
+      // From this position we can invoke the more costly search which checks actual object equalities.
+      // With this two step search we avoid equality checks completely for many non-colliding entries.
+      val actualIdx = findItemIdx(candidateIndex, hashCode, item)
+
+      // usually O(1), worst case O(n) if we need to scan due to hash conflicts
+      if (actualIdx == -1) {
+        // So we don't have this entry so far (only a colliding one, it was a false positive from findHashIdx).
+        // Only insert new entries if the weight qualifies as heavy.
+        isHeavy(count) && { insertKnownNewHeavy(hashCode, item, count); true }
       } else {
-        // We now found, relatively cheaply, the first index where our searched entry *might* be (hashes are equal).
-        // This is not guaranteed to be the one we are searching for, yet (hash values may collide).
-        // From this position we can invoke the more costly search which checks actual object equalities.
-        // With this two step search we avoid equality checks completely for many non-colliding entries.
-        val actualIdx = findItemIdx(candidateIndex, hashCode, item)
-
-        // usually O(1), worst case O(n) if we need to scan due to hash conflicts
-        if (actualIdx == -1) {
-          // So we don't have this entry so far (only a colliding one, it was a false positive from findHashIdx).
-          insertKnownNewHeavy(hashCode, item, count) // O(1 + log n), we simply replace the current lowest heavy hitter
-          true
-        } else {
-          // The entry exists, let's update it.
-          updateExistingHeavyHitter(actualIdx, count)
-          // not a "new" heavy hitter, since we only replaced it (so it was signaled as new once before)
-          false
-        }
+        // The entry exists, let's update it.
+        // Existing heavy hitters always get their weight updated (even if decreased),
+        // which is needed when using a frequency sketch with periodic reset (aging).
+        updateExistingHeavyHitter(actualIdx, count)
+        // not a "new" heavy hitter, since we only replaced it (so it was signaled as new once before)
+        false
       }
-
     }
+  }
 
   /**
    * Checks the lowest weight entry in this structure and returns true if the given count is larger than that. In
    * other words this checks if a new entry can be added as it is larger than the known least weight.
+   * Note: this only gates insertion of new entries; existing entries always get their weight updated.
    */
   private def isHeavy(count: Long): Boolean =
     count > lowestHitterWeight
@@ -233,15 +235,18 @@ private[remote] final class TopHeavyHitters[T >: Null](val max: Int)(implicit cl
   /**
    * Replace existing heavy hitter – give it a new `count` value. This will also restore the heap property, so this
    * might make a previously lowest hitter no longer be one.
+   *
+   * Supports both weight increase and decrease. When using a frequency sketch with periodic reset (aging),
+   * the estimated frequency can decrease, so the weight must be allowed to go down as well.
    */
   private def updateExistingHeavyHitter(foundHashIndex: Int, count: Long): Unit = {
-    if (weights(foundHashIndex) > count)
-      throw new IllegalArgumentException(
-        s"Weights can be only incremented or kept the same, not decremented. " +
-        s"Previous weight was [${weights(foundHashIndex)}], attempted to modify it to [$count].")
+    val oldCount = weights(foundHashIndex)
     weights(foundHashIndex) = count // we don't need to change `hashCode`, `heapIndex` or `item`, those remain the same
-    // Position in the heap might have changed as count was incremented
-    fixHeap(heapIndex(foundHashIndex))
+    // Position in the heap might have changed as count was updated
+    if (count > oldCount)
+      fixHeap(heapIndex(foundHashIndex)) // weight increased: push down towards children
+    else if (count < oldCount)
+      fixHeapUp(heapIndex(foundHashIndex)) // weight decreased: bubble up towards parent
   }
 
   /**
@@ -307,6 +312,23 @@ private[remote] final class TopHeavyHitters[T >: Null](val max: Int)(implicit cl
           swapHeapNode(index, leftIndex)
           fixHeap(leftIndex)
         }
+      }
+    }
+  }
+
+  /**
+   * Call this if the weight of an entry at heap node `index` was decremented. Since the weight decreased,
+   * the element may now be smaller than its parent, so we need to restore the heap property "upwards".
+   */
+  @tailrec
+  private def fixHeapUp(index: Int): Unit = {
+    if (index > 0) {
+      val parentIndex = (index - 1) / 2
+      val currentWeight: Long = weights(heap(index))
+      val parentWeight: Long = weights(heap(parentIndex))
+      if (currentWeight < parentWeight) {
+        swapHeapNode(index, parentIndex)
+        fixHeapUp(parentIndex)
       }
     }
   }

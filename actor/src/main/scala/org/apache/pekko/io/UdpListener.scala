@@ -101,10 +101,7 @@ private[io] class UdpListener(val udp: UdpExt, channelRegistry: ChannelRegistry,
 
   def doReceive(registration: ChannelRegistration, handler: ActorRef): Unit = {
     @tailrec def innerReceive(readsLeft: Int, buffer: ByteBuffer): Unit = {
-      buffer.clear()
-      buffer.limit(DirectBufferSize)
-
-      channel.receive(buffer) match {
+      channel.receive(buffer.clear().limit(DirectBufferSize)) match {
         case sender: InetSocketAddress =>
           buffer.flip()
           handler ! Received(ByteString(buffer), sender)

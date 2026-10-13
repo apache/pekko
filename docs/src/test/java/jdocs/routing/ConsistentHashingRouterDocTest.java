@@ -13,12 +13,12 @@
 
 package jdocs.routing;
 
-import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
+import org.apache.pekko.testkit.PekkoJUnitJupiterActorSystemResource;
 
 import jdocs.AbstractJavaTest;
 import org.apache.pekko.testkit.javadsl.TestKit;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
+import org.junit.jupiter.api.Test;
 
 import org.apache.pekko.actor.ActorSystem;
 
@@ -37,13 +37,14 @@ import org.apache.pekko.actor.ActorRef;
 import org.apache.pekko.routing.ConsistentHashingPool;
 import org.apache.pekko.routing.ConsistentHashingRouter.ConsistentHashMapper;
 import org.apache.pekko.routing.ConsistentHashingRouter.ConsistentHashableEnvelope;
+
 // #imports2
 
 public class ConsistentHashingRouterDocTest extends AbstractJavaTest {
 
-  @ClassRule
-  public static PekkoJUnitActorSystemResource actorSystemResource =
-      new PekkoJUnitActorSystemResource("ConsistentHashingRouterDocTest");
+  @RegisterExtension
+  static PekkoJUnitJupiterActorSystemResource actorSystemResource =
+      new PekkoJUnitJupiterActorSystemResource("ConsistentHashingRouterDocTest");
 
   private final ActorSystem system = actorSystemResource.getSystem();
 
@@ -121,6 +122,7 @@ public class ConsistentHashingRouterDocTest extends AbstractJavaTest {
   public
   // #cache-actor
   static final String NOT_FOUND = "NOT_FOUND";
+
   // #cache-actor
 
   @Test

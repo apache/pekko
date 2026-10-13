@@ -145,10 +145,11 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
     val numberOfNodesJoiningOneByOneLarge = getInt("nr-of-nodes-joining-one-by-one-large") * nFactor
     val numberOfNodesJoiningToOneNode = getInt("nr-of-nodes-joining-to-one") * nFactor
     // remaining will join to seed nodes
-    val numberOfNodesJoiningToSeedNodes = (totalNumberOfNodes - numberOfSeedNodes -
+    val numberOfNodesJoiningToSeedNodes =
+      (totalNumberOfNodes - numberOfSeedNodes -
       numberOfNodesJoiningToSeedNodesInitially - numberOfNodesJoiningOneByOneSmall -
       numberOfNodesJoiningOneByOneLarge - numberOfNodesJoiningToOneNode)
-      .requiring(_ >= 0, s"too many configured nr-of-nodes-joining-*, total should be <= $totalNumberOfNodes")
+        .requiring(_ >= 0, s"too many configured nr-of-nodes-joining-*, total should be <= $totalNumberOfNodes")
     val numberOfNodesLeavingOneByOneSmall = getInt("nr-of-nodes-leaving-one-by-one-small") * nFactor
     val numberOfNodesLeavingOneByOneLarge = getInt("nr-of-nodes-leaving-one-by-one-large") * nFactor
     val numberOfNodesLeaving = getInt("nr-of-nodes-leaving") * nFactor
@@ -166,13 +167,15 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
 
     require(
       numberOfSeedNodes + numberOfNodesJoiningToSeedNodesInitially + numberOfNodesJoiningOneByOneSmall +
-      numberOfNodesJoiningOneByOneLarge + numberOfNodesJoiningToOneNode + numberOfNodesJoiningToSeedNodes <= totalNumberOfNodes,
+      numberOfNodesJoiningOneByOneLarge + numberOfNodesJoiningToOneNode + numberOfNodesJoiningToSeedNodes <=
+        totalNumberOfNodes,
       s"specified number of joining nodes <= $totalNumberOfNodes")
 
     // don't shutdown the 3 nodes hosting the master actors
     require(
       numberOfNodesLeavingOneByOneSmall + numberOfNodesLeavingOneByOneLarge + numberOfNodesLeaving +
-      numberOfNodesShutdownOneByOneSmall + numberOfNodesShutdownOneByOneLarge + numberOfNodesShutdown <= totalNumberOfNodes - 3,
+      numberOfNodesShutdownOneByOneSmall + numberOfNodesShutdownOneByOneLarge + numberOfNodesShutdown <=
+        totalNumberOfNodes - 3,
       s"""specified number of leaving/shutdown nodes <= ${totalNumberOfNodes - 3}""")
 
     require(
@@ -287,8 +290,7 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
         log.info("Cluster result history\n" + formatHistory)
     }
 
-    def formatHistory: String =
-      (formatHistoryHeader +: (history.map(formatHistoryLine))).mkString("\n")
+    def formatHistory: String = (formatHistoryHeader +: (history.map(formatHistoryLine))).mkString("\n")
 
     def formatHistoryHeader: String = "[Title]\t[Duration (ms)]\t[GossipStats(gossip, merge, same, newer, older)]"
 

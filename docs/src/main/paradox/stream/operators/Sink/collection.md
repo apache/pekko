@@ -8,11 +8,11 @@
 
 ## Signature
 
-@apidoc[Sink.collection](Sink$) { scala="#collection[T,That](implicitcbf:org.apache.pekko.util.ccompat.Factory[T,Thatwithscala.collection.immutable.Iterable[_]]):org.apache.pekko.stream.scaladsl.Sink[T,scala.concurrent.Future[That]]" }
+@apidoc[Sink.collection](Sink$) { scala="#collection[T,That](implicitcbf:scala.collection.Factory[T,Thatwithscala.collection.immutable.Iterable[_]]):org.apache.pekko.stream.scaladsl.Sink[T,scala.concurrent.Future[That]]" }
 
 ## Description
 
-Collect values emitted from the stream into an arbitrary collection `That`. The resulting collection is available through a `Future[That]` or when the stream completes. Note that the collection boundaries are those defined in the `CanBuildFrom` associated with the chosen collection. See [The Architecture of Scala 2.13's Collections](https://docs.scala-lang.org/overviews/core/architecture-of-scala-213-collections.html) for more info. The [`seq`](seq.html) operator is a shorthand for `Sink.collection[T, Vector[T]]`.
+Collect values emitted from the stream into an arbitrary collection `That`. The resulting collection is available through a `Future[That]` or when the stream completes. Note that the collection boundaries are those defined in the `scala.collection.Factory` associated with the chosen collection. See [The Architecture of Scala 2.13's Collections](https://docs.scala-lang.org/overviews/core/architecture-of-scala-213-collections.html) for more info. The [`seq`](seq.html) operator is a shorthand for `Sink.collection[T, Vector[T]]`.
 
 ## Example
 

@@ -25,13 +25,13 @@ import scala.PartialFunction;
 /**
  * Builder used to create a partial function for {@link org.apache.pekko.actor.FSM#whenUnhandled}.
  *
- * @deprecated use EventSourcedBehavior since Akka 2.6.0
  * @param <S> the state type
  * @param <D> the data type
  * @param <E> the domain event type
+ * @deprecated use EventSourcedBehavior since Akka 2.6.0
  */
 @SuppressWarnings("rawtypes")
-@Deprecated
+@Deprecated(since = "Akka 2.6.0")
 public class FSMStateFunctionBuilder<S, D, E> {
 
   private final PFBuilder<
@@ -287,7 +287,7 @@ public class FSMStateFunctionBuilder<S, D, E> {
   }
 
   /**
-   * Build a {@link scala.PartialFunction} from this builder. After this call the builder will be
+   * Build a {@code scala.PartialFunction} from this builder. After this call the builder will be
    * reset.
    *
    * @return a PartialFunction for this builder.

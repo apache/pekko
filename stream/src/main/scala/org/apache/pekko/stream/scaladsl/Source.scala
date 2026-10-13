@@ -15,7 +15,7 @@ package org.apache.pekko.stream.scaladsl
 
 import java.util.concurrent.CompletionStage
 
-import scala.annotation.{ tailrec, varargs }
+import scala.annotation.{ nowarn, switch, tailrec, varargs }
 import scala.annotation.unchecked.uncheckedVariance
 import scala.collection.{ immutable, AbstractIterator }
 import scala.concurrent.{ Future, Promise }
@@ -30,7 +30,15 @@ import pekko.annotation.InternalApi
 import pekko.stream._
 import pekko.stream.impl._
 import pekko.stream.impl.Stages.DefaultAttributes
-import pekko.stream.impl.fusing.{ ArraySource, GraphStages, IterableSource, LazyFutureSource, LazySingleSource }
+import pekko.stream.impl.fusing.{
+  ArraySource,
+  GraphStages,
+  IterableSource,
+  IteratorSource,
+  LazyFutureSource,
+  LazySingleSource,
+  RangeSource
+}
 import pekko.stream.impl.fusing.GraphStages._
 import pekko.stream.stage.GraphStageWithMaterializedValue
 import pekko.util.ConstantFun
@@ -103,6 +111,9 @@ final class Source[+Out, +Mat](
   /**
    * Materializes this Source, immediately returning (1) its materialized value, and (2) a new Source
    * that can be used to consume elements from the newly materialized Source.
+   *
+   * Note that `preMaterialize` is implemented through a reactive streams `Publisher` which means that a buffer is
+   * introduced and that errors are not propagated upstream but are turned into cancellations without error details.
    */
   def preMaterialize()(implicit materializer: Materializer): (Mat, ReprMat[Out, NotUsed]) = {
     val (mat, pub) = toMat(Sink.asPublisher(fanout = true))(Keep.both).run()
@@ -113,7 +124,7 @@ final class Source[+Out, +Mat](
    * Materializes this [[Source]] using the [[Sink]], immediately returning the values via the
    * provided [[Sink]] as a new [[Source]].
    *
-   * @param sink A sink which needs to materialize into a [[Future]], typically one
+   * @param sink A sink which needs to materialize into a `Future`, typically one
    *             that collects values such as [[Sink.head]] or [[Sink.seq]]
    * @return A new [[Source]] that contains the results of the provided [[Source]]'s
    *         elements run with the [[Sink]]
@@ -180,7 +191,7 @@ final class Source[+Out, +Mat](
    * if there is a failure signaled in the stream.
    *
    * If the stream is empty (i.e. completes before signalling any elements),
-   * the reduce operator will fail its downstream with a [[NoSuchElementException]],
+   * the reduce operator will fail its downstream with a `NoSuchElementException`,
    * which is semantically in-line with that Scala's standard library collections
    * do in such situations.
    *
@@ -286,11 +297,8 @@ object Source {
    * Elements are pulled out of the iterator in accordance with the demand coming
    * from the downstream transformation steps.
    */
-  def fromIterator[T](f: () => Iterator[T]): Source[T, NotUsed] =
-    apply(new immutable.Iterable[T] {
-      override def iterator: Iterator[T] = f()
-      override def toString: String = "() => Iterator"
-    })
+  @inline def fromIterator[T](f: () => Iterator[T]): Source[T, NotUsed] =
+    fromGraphStage(new IteratorSource[T](f, DefaultAttributes.iterableSource))
 
   /**
    * Creates a source that wraps a Java 8 ``Stream``. ``Source`` uses a stream iterator to get all its
@@ -309,11 +317,11 @@ object Source {
    * Starts a new 'cycled' `Source` from the given elements. The producer stream of elements
    * will continue infinitely by repeating the sequence of elements provided by function parameter.
    */
-  def cycle[T](f: () => Iterator[T]): Source[T, NotUsed] = {
+  @inline def cycle[T](f: () => Iterator[T]): Source[T, NotUsed] = {
     val iterator = Iterator.continually {
       val i = f(); if (i.isEmpty) throw new IllegalArgumentException("empty iterator") else i
     }.flatten
-    fromIterator(() => iterator).withAttributes(DefaultAttributes.cycledSource)
+    fromGraphStage(new IteratorSource[T](() => iterator, DefaultAttributes.cycledSource))
   }
 
   /**
@@ -372,18 +380,17 @@ object Source {
   def fromGraph[T, M](g: Graph[SourceShape[T], M]): Source[T, M] = g match {
     case s: Source[T, M]                                       => s
     case s: javadsl.Source[T, M] @unchecked                    => s.asScala
-    case g: GraphStageWithMaterializedValue[SourceShape[T], M] =>
-      // move these from the stage itself to make the returned source
-      // behave as it is the stage with regards to attributes
-      val attrs = g.traversalBuilder.attributes
-      val noAttrStage = g.withAttributes(Attributes.none)
-      new Source(
-        LinearTraversalBuilder.fromBuilder(noAttrStage.traversalBuilder, noAttrStage.shape, Keep.right),
-        noAttrStage.shape).withAttributes(attrs)
-    case other =>
+    case g: GraphStageWithMaterializedValue[SourceShape[T], M] => fromGraphStage(g)
+    case other                                                 =>
       // composite source shaped graph
       new Source(LinearTraversalBuilder.fromBuilder(other.traversalBuilder, other.shape, Keep.right), other.shape)
   }
+
+  @inline private def fromGraphStage[T, M](g: GraphStageWithMaterializedValue[SourceShape[T], M]): Source[T, M] =
+    new Source(LinearTraversalBuilder.fromGraphStage(g), g.shape)
+
+  @inline private def fromRange[T](range: immutable.Range): Source[T, NotUsed] =
+    fromGraphStage(new RangeSource[T](range, DefaultAttributes.iterableSource))
 
   /**
    * Defers the creation of a [[Source]] until materialization. The `factory` function
@@ -391,19 +398,54 @@ object Source {
    * [[Attributes]] of the [[Source]] returned by this method.
    */
   def fromMaterializer[T, M](factory: (Materializer, Attributes) => Source[T, M]): Source[T, Future[M]] =
-    Source.fromGraph(new SetupSourceStage(factory))
+    fromGraphStage(new SetupSourceStage(factory))
 
   /**
    * Helper to create [[Source]] from `Iterable`.
-   * Example usage: `Source(Seq(1,2,3))`
+   * Example usage: `Source(Set(1,2,3))`
    *
    * Starts a new `Source` from the given `Iterable`. This is like starting from an
    * Iterator, but every Subscriber directly attached to the Publisher of this
    * stream will see an individual flow of elements (always starting from the
    * beginning) regardless of when they subscribed.
+   * @see [[apply(Seq)]]
    */
-  def apply[T](iterable: immutable.Iterable[T]): Source[T, NotUsed] =
-    fromGraph(new IterableSource[T](iterable)).withAttributes(DefaultAttributes.iterableSource)
+  @inline def apply[T](iterable: immutable.Iterable[T]): Source[T, NotUsed] = {
+    // unknown size is -1
+    (iterable.knownSize: @switch) match {
+      case 0 => empty
+      case 1 => single(iterable.head)
+      case _ =>
+        iterable match {
+          case range: immutable.Range => fromRange[T](range)
+          case _                      => fromGraphStage(new IterableSource[T](iterable))
+        }
+    }
+  }
+
+  /**
+   * Helper to create [[Source]] from `Seq`.
+   * Example usage: `Source(Seq(1,2,3))`
+   *
+   * Starts a new `Source` from the given `Seq`. This is like starting from an
+   * Iterator, but every Subscriber directly attached to the Publisher of this
+   * stream will see an individual flow of elements (always starting from the
+   * beginning) regardless of when they subscribed.
+   * @see [[apply(immutable.Iterable)]]
+   * @since 2.0.0
+   */
+  @inline def apply[T](seq: Seq[T]): Source[T, NotUsed] = {
+    // unknown size is -1
+    (seq.knownSize: @switch) match {
+      case 0 => empty[T]
+      case 1 => single(seq.head)
+      case _ =>
+        seq match {
+          case range: immutable.Range => fromRange[T](range)
+          case _                      => fromGraphStage(new IterableSource[T](seq))
+        }
+    }
+  }
 
   /**
    * Creates a `Source` from an array, if the array is empty, the stream is completed immediately,
@@ -411,13 +453,13 @@ object Source {
    *
    * @since 1.3.0
    */
-  def apply[T](array: Array[T]): Source[T, NotUsed] = {
+  @inline def apply[T](array: Array[T]): Source[T, NotUsed] = {
     if (array.length == 0)
       empty
     else if (array.length == 1)
       single(array(0))
     else
-      Source.fromGraph(new ArraySource[T](array))
+      fromGraphStage(new ArraySource[T](array))
   }
 
   /**
@@ -428,14 +470,14 @@ object Source {
    * receive new tick elements as soon as it has requested more elements.
    */
   def tick[T](initialDelay: FiniteDuration, interval: FiniteDuration, tick: T): Source[T, Cancellable] =
-    fromGraph(new TickSource[T](initialDelay, interval, tick))
+    fromGraphStage(new TickSource[T](initialDelay, interval, tick))
 
   /**
    * Create a `Source` with one element.
    * Every connected `Sink` of this stream will see an individual stream consisting of one element.
    */
-  def single[T](element: T): Source[T, NotUsed] =
-    fromGraph(new GraphStages.SingleSource(element))
+  @inline def single[T](element: T): Source[T, NotUsed] =
+    fromGraphStage(new GraphStages.SingleSource(element))
 
   /**
    * Create a `Source` from the given elements.
@@ -468,8 +510,8 @@ object Source {
   /**
    * Create a `Source` that will continually emit the given element.
    */
-  def repeat[T](element: T): Source[T, NotUsed] = {
-    fromIterator(() => Iterator.continually(element)).withAttributes(DefaultAttributes.repeat)
+  @inline def repeat[T](element: T): Source[T, NotUsed] = {
+    fromGraphStage(new GraphStages.RepeatSource(element))
   }
 
   /**
@@ -486,7 +528,7 @@ object Source {
    * }}}
    */
   def unfold[S, E](s: S)(f: S => Option[(S, E)]): Source[E, NotUsed] =
-    Source.fromGraph(new Unfold(s, f))
+    fromGraphStage(new Unfold(s, f))
 
   /**
    * Same as [[unfold]], but uses an async function to generate the next state-element tuple.
@@ -504,7 +546,7 @@ object Source {
    * }}}
    */
   def unfoldAsync[S, E](s: S)(f: S => Future[Option[(S, E)]]): Source[E, NotUsed] =
-    Source.fromGraph(new UnfoldAsync(s, f))
+    fromGraphStage(new UnfoldAsync(s, f))
 
   /**
    * Creates a sequential `Source` by iterating with the given predicate and function,
@@ -515,27 +557,29 @@ object Source {
    * @since 1.1.0
    */
   def iterate[T](seed: T)(p: T => Boolean, f: T => T): Source[T, NotUsed] =
-    fromIterator(() =>
-      new AbstractIterator[T] {
-        private var first = true
-        private var acc = seed
-        override def hasNext: Boolean = p(acc)
-        override def next(): T = {
-          if (first) {
-            first = false
-          } else {
-            acc = f(acc)
+    fromGraphStage(new IteratorSource[T](
+      () =>
+        new AbstractIterator[T] {
+          private var first = true
+          private var acc = seed
+          override def hasNext: Boolean = p(acc)
+          override def next(): T = {
+            if (first) {
+              first = false
+            } else {
+              acc = f(acc)
+            }
+            acc
           }
-          acc
-        }
-      }).withAttributes(DefaultAttributes.iterateSource)
+        },
+      DefaultAttributes.iterateSource))
 
   /**
    * A `Source` with no elements, i.e. an empty stream that is completed immediately for every connected `Sink`.
    */
   def empty[T]: Source[T, NotUsed] = _empty
-  private[this] val _empty: Source[Nothing, NotUsed] =
-    Source.fromGraph(EmptySource)
+  private val _empty: Source[Nothing, NotUsed] =
+    fromGraphStage(EmptySource)
 
   /**
    * Create a `Source` which materializes a [[scala.concurrent.Promise]] which controls what element
@@ -549,27 +593,33 @@ object Source {
    * with None.
    */
   def maybe[T]: Source[T, Promise[Option[T]]] =
-    Source.fromGraph(MaybeSource.asInstanceOf[Graph[SourceShape[T], Promise[Option[T]]]])
+    fromGraphStage(
+      MaybeSource.asInstanceOf[GraphStageWithMaterializedValue[SourceShape[T], Promise[Option[T]]]])
 
   /**
    * Create a `Source` that immediately ends the stream with the `cause` error to every connected `Sink`.
    */
   def failed[T](cause: Throwable): Source[T, NotUsed] =
-    Source.fromGraph(new FailedSource[T](cause))
+    fromGraphStage(new FailedSource[T](cause))
 
   /**
    * Emits a single value when the given `Future` is successfully completed and then completes the stream.
    * The stream fails if the `Future` is completed with a failure.
    */
-  def future[T](futureElement: Future[T]): Source[T, NotUsed] =
-    fromGraph(new FutureSource[T](futureElement))
+  @inline
+  def future[T](futureElement: Future[T]): Source[T, NotUsed] = futureElement.value match {
+    case None                           => fromGraphStage(new FutureSource[T](futureElement))
+    case Some(scala.util.Success(null)) => empty[T]
+    case Some(scala.util.Success(elem)) => single(elem)
+    case Some(scala.util.Failure(ex))   => failed[T](ex)
+  }
 
   /**
    * Never emits any elements, never completes and never fails.
    * This stream could be useful in tests.
    */
   def never[T]: Source[T, NotUsed] = _never
-  private[this] val _never: Source[Nothing, NotUsed] = fromGraph(GraphStages.NeverSource)
+  private val _never: Source[Nothing, NotUsed] = fromGraphStage(GraphStages.NeverSource)
 
   /**
    * Emits a single value when the given `CompletionStage` is successfully completed and then completes the stream.
@@ -584,8 +634,15 @@ object Source {
    * Turn a `Future[Source]` into a source that will emit the values of the source when the future completes successfully.
    * If the `Future` is completed with a failure the stream is failed.
    */
-  def futureSource[T, M](futureSource: Future[Source[T, M]]): Source[T, Future[M]] =
-    fromGraph(new FutureFlattenSource(futureSource))
+  @inline
+  def futureSource[T, M](futureSource: Future[Source[T, M]]): Source[T, Future[M]] = futureSource.value match {
+    case None                           => fromGraphStage(new FutureFlattenSource(futureSource))
+    case Some(scala.util.Success(null)) =>
+      val exception = new NullPointerException("futureSource completed with null")
+      Source.failed(exception).mapMaterializedValue(_ => Future.failed[M](exception))
+    case Some(scala.util.Success(source)) => source.mapMaterializedValue(Future.successful)
+    case Some(scala.util.Failure(ex))     => Source.failed[T](ex).mapMaterializedValue(_ => Future.failed[M](ex))
+  }
 
   /**
    * Defers invoking the `create` function to create a single element until there is downstream demand.
@@ -596,7 +653,7 @@ object Source {
    * the laziness and will trigger the factory immediately.
    */
   def lazySingle[T](create: () => T): Source[T, NotUsed] =
-    fromGraph(new LazySingleSource(create))
+    fromGraphStage(new LazySingleSource(create))
 
   /**
    * Defers invoking the `create` function to create a future element until there is downstream demand.
@@ -608,7 +665,7 @@ object Source {
    * the laziness and will trigger the factory immediately.
    */
   def lazyFuture[T](create: () => Future[T]): Source[T, NotUsed] =
-    fromGraph(new LazyFutureSource(create))
+    fromGraphStage(new LazyFutureSource(create))
 
   /**
    * Defers invoking the `create` function to create a future source until there is downstream demand.
@@ -627,7 +684,7 @@ object Source {
    * is failed with a [[pekko.stream.NeverMaterializedException]]
    */
   def lazySource[T, M](create: () => Source[T, M]): Source[T, Future[M]] =
-    fromGraph(new LazySource(create))
+    fromGraphStage(new LazySource(create))
 
   /**
    * Defers invoking the `create` function to create a future source until there is downstream demand.
@@ -656,7 +713,7 @@ object Source {
     fromGraph(new SubscriberSource[T](DefaultAttributes.subscriberSource, shape("SubscriberSource")))
 
   /**
-   * Creates a `Source` that is materialized as an [[pekko.actor.ActorRef]].
+   * Creates a `Source` that is materialized as a [[pekko.actor.ActorRef]].
    * Messages sent to this actor will be emitted to the stream if there is demand from downstream,
    * otherwise they will be buffered until request for demand is received.
    *
@@ -700,9 +757,7 @@ object Source {
       overflowStrategy: OverflowStrategy): Source[T, ActorRef] = {
     require(bufferSize >= 0, "bufferSize must be greater than or equal to 0")
     require(!overflowStrategy.isBackpressure, "Backpressure overflowStrategy not supported")
-    Source
-      .fromGraph(new ActorRefSource(bufferSize, overflowStrategy, completionMatcher, failureMatcher))
-      .withAttributes(DefaultAttributes.actorRefSource)
+    fromGraphStage(new ActorRefSource(bufferSize, overflowStrategy, completionMatcher, failureMatcher))
   }
 
   /**
@@ -713,11 +768,11 @@ object Source {
       ackMessage: Any,
       completionMatcher: PartialFunction[Any, CompletionStrategy],
       failureMatcher: PartialFunction[Any, Throwable]): Source[T, ActorRef] = {
-    Source.fromGraph(new ActorRefBackpressureSource(ackTo, ackMessage, completionMatcher, failureMatcher))
+    fromGraphStage(new ActorRefBackpressureSource(ackTo, ackMessage, completionMatcher, failureMatcher))
   }
 
   /**
-   * Creates a `Source` that is materialized as an [[pekko.actor.ActorRef]].
+   * Creates a `Source` that is materialized as a [[pekko.actor.ActorRef]].
    * Messages sent to this actor will be emitted to the stream if there is demand from downstream,
    * and a new message will only be accepted after the previous messages has been consumed and acknowledged back.
    * The stream will complete with failure if a message is sent before the acknowledgement has been replied back.
@@ -734,13 +789,13 @@ object Source {
       ackMessage: Any,
       completionMatcher: PartialFunction[Any, CompletionStrategy],
       failureMatcher: PartialFunction[Any, Throwable]): Source[T, ActorRef] = {
-    Source.fromGraph(new ActorRefBackpressureSource(None, ackMessage, completionMatcher, failureMatcher))
+    fromGraphStage(new ActorRefBackpressureSource(None, ackMessage, completionMatcher, failureMatcher))
   }
 
   /**
    * Combines several sources with fan-in strategy like [[Merge]] or [[Concat]] into a single [[Source]].
    */
-  def combine[T, U](first: Source[T, _], second: Source[T, _], rest: Source[T, _]*)(
+  def combine[T, U](first: Source[T, ?], second: Source[T, ?], rest: Source[T, ?]*)(
       fanInStrategy: Int => Graph[UniformFanInShape[T, U], NotUsed]): Source[U, NotUsed] =
     Source.fromGraph(GraphDSL.create() { implicit b =>
       import GraphDSL.Implicits._
@@ -748,7 +803,7 @@ object Source {
       first  ~> c.in(0)
       second ~> c.in(1)
 
-      @tailrec def combineRest(idx: Int, i: Iterator[Source[T, _]]): SourceShape[U] =
+      @tailrec def combineRest(idx: Int, i: Iterator[Source[T, ?]]): SourceShape[U] =
         if (i.hasNext) {
           i.next() ~> c.in(idx)
           combineRest(idx + 1, i)
@@ -761,12 +816,49 @@ object Source {
    * Combines several sources with fan-in strategy like [[Merge]] or [[Concat]] into a single [[Source]].
    * @since 1.1.0
    */
-  def combine[T, U, M](sources: immutable.Seq[Graph[SourceShape[T], M]])(
-      fanInStrategy: Int => Graph[UniformFanInShape[T, U], NotUsed]): Source[U, immutable.Seq[M]] =
+  def combine[T, U, M](sources: Seq[Graph[SourceShape[T], M]])(
+      fanInStrategy: Int => Graph[UniformFanInShape[T, U], NotUsed]): Source[U, Seq[M]] =
     sources match {
-      case immutable.Seq()       => Source.empty.mapMaterializedValue(_ => Nil)
-      case immutable.Seq(source) => source.asInstanceOf[Source[U, M]].mapMaterializedValue(_ :: Nil)
-      case _                     =>
+      case Seq()       => Source.empty.mapMaterializedValue(_ => Nil)
+      case Seq(source) =>
+        // Single-source optimization: bypass the fan-in strategy if and only if the strategy
+        // is type-preserving (T == U), marked by the TypePreservingFanIn trait.
+        //
+        // For type-transforming strategies (e.g., MergeLatest: T => List[T], ZipWithN: A => O),
+        // we MUST route through the strategy even for a single source to ensure correct output
+        // types. Without this check, the asInstanceOf cast would silently produce incorrect
+        // results at runtime (see #2723).
+        //
+        // Design: "safe default" — strategies WITHOUT TypePreservingFanIn always go through
+        // the full fan-in graph. This correctly handles unknown or third-party strategies.
+        // Built-in type-preserving fan-in stages (Merge, MergePrioritized) directly return
+        // the stage class from their factory methods, so the trait check fires and enables
+        // the bypass. Other stages (Concat, Interleave, MergeSequence) are wrapped by
+        // withDetachedInputs in their factory methods, which loses the trait — they always
+        // route through the graph, which is correct because their require constraints have
+        // been relaxed to accept inputPorts >= 1.
+        //
+        // Note: fanInStrategy(1) is always invoked here to determine the strategy's trait.
+        // Third-party strategies that reject n=1 will surface their exception immediately,
+        // which is preferable to silently returning an incorrectly-typed stream.
+        val strategyGraph = fanInStrategy(1)
+        strategyGraph match {
+          case _: pekko.stream.TypePreservingFanIn =>
+            // Type-preserving (T == U): safe to bypass the strategy with a direct pass-through.
+            // Use Source.fromGraph to handle non-Source Graph inputs safely (the sources parameter
+            // accepts Graph[SourceShape[T], M], not just Source[T, M]).
+            Source.fromGraph(source).asInstanceOf[Source[U, M]].mapMaterializedValue(_ :: Nil)
+          case _ =>
+            // Not type-preserving or unknown: route through the fan-in strategy.
+            // This ensures type-transforming strategies correctly transform the output.
+            Source.fromGraph(GraphDSL.create(sources) { implicit b => shapes =>
+              import GraphDSL.Implicits._
+              val c = b.add(strategyGraph)
+              shapes.head ~> c.in(0)
+              SourceShape(c.out)
+            })
+        }
+      case _ =>
         Source.fromGraph(GraphDSL.create(sources) { implicit b => shapes =>
           import GraphDSL.Implicits._
           val c = b.add(fanInStrategy(sources.size))
@@ -793,25 +885,31 @@ object Source {
   /**
    * Combine the elements of multiple streams into a stream of sequences.
    */
-  def zipN[T](sources: immutable.Seq[Source[T, _]]): Source[immutable.Seq[T], NotUsed] =
-    zipWithN(ConstantFun.scalaIdentityFunction[immutable.Seq[T]])(sources).addAttributes(DefaultAttributes.zipN)
+  def zipN[T](sources: Seq[Source[T, ?]]): Source[Seq[T], NotUsed] =
+    zipWithN(ConstantFun.scalaIdentityFunction[Seq[T]])(sources).addAttributes(DefaultAttributes.zipN)
 
   /**
    * Combine the elements of multiple streams into a stream of sequences using a combiner function.
+   *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
+   *
+   * If the combiner function throws and the supervision decision is [[pekko.stream.Supervision.Stop]]
+   * the stream fails. If the supervision decision is [[pekko.stream.Supervision.Resume]] or
+   * [[pekko.stream.Supervision.Restart]] the zipped element is dropped and the stream continues.
    */
-  def zipWithN[T, O](zipper: immutable.Seq[T] => O)(sources: immutable.Seq[Source[T, _]]): Source[O, NotUsed] = {
+  def zipWithN[T, O](zipper: Seq[T] => O)(sources: Seq[Source[T, ?]]): Source[O, NotUsed] = {
     val source = sources match {
-      case immutable.Seq()       => empty[O]
-      case immutable.Seq(source) => source.map(t => zipper(immutable.Seq(t))).mapMaterializedValue(_ => NotUsed)
-      case s1 +: s2 +: ss        => combine(s1, s2, ss: _*)(ZipWithN(zipper))
-      case _                     => throw new IllegalArgumentException() // just to please compiler completeness check
+      case Seq()          => empty[O]
+      case Seq(source)    => source.map(t => zipper(Seq(t))).mapMaterializedValue(_ => NotUsed)
+      case s1 +: s2 +: ss => combine(s1, s2, ss: _*)(ZipWithN(zipper))
+      case _              => throw new IllegalArgumentException() // just to please compiler completeness check
     }
 
     source.addAttributes(DefaultAttributes.zipWithN)
   }
 
   /**
-   * Creates a `Source` that is materialized as an [[pekko.stream.BoundedSourceQueue]].
+   * Creates a `Source` that is materialized as a [[pekko.stream.BoundedSourceQueue]].
    * You can push elements to the queue and they will be emitted to the stream if there is demand from downstream,
    * otherwise they will be buffered until request for demand is received. The buffer size is passed in as a parameter.
    * Elements in the buffer will be discarded if downstream is terminated.
@@ -835,7 +933,7 @@ object Source {
    * @param bufferSize size of the buffer in number of elements
    */
   def queue[T](bufferSize: Int): Source[T, BoundedSourceQueue[T]] =
-    Source.fromGraph(new BoundedSourceQueueStage[T](bufferSize))
+    fromGraphStage(new BoundedSourceQueueStage[T](bufferSize))
 
   /**
    * Creates a Source that will immediately execute the provided function `producer` with a [[BoundedSourceQueue]] when materialized.
@@ -881,7 +979,7 @@ object Source {
     }).withAttributes(DefaultAttributes.create))
 
   /**
-   * Creates a `Source` that is materialized as an [[pekko.stream.scaladsl.SourceQueueWithComplete]].
+   * Creates a `Source` that is materialized as a [[pekko.stream.scaladsl.SourceQueueWithComplete]].
    * You can push elements to the queue and they will be emitted to the stream if there is demand from downstream,
    * otherwise they will be buffered until request for demand is received. Elements in the buffer will be discarded
    * if downstream is terminated.
@@ -913,11 +1011,17 @@ object Source {
    * @param bufferSize size of buffer in element count
    * @param overflowStrategy Strategy that is used when incoming elements cannot fit inside the buffer
    */
+  @deprecated(
+    "Prefer Source.queue[T](bufferSize) which materializes a BoundedSourceQueue with synchronous feedback " +
+    "(dropping the newest element when the buffer is full). For backpressure, use Source.actorRefWithBackpressure " +
+    "or MergeHub.source instead. See the Pekko Streams documentation for the Source.queue migration guide.",
+    since = "2.0.0")
+  @nowarn("msg=deprecated")
   def queue[T](bufferSize: Int, overflowStrategy: OverflowStrategy): Source[T, SourceQueueWithComplete[T]] =
     queue(bufferSize, overflowStrategy, maxConcurrentOffers = 1)
 
   /**
-   * Creates a `Source` that is materialized as an [[pekko.stream.scaladsl.SourceQueueWithComplete]].
+   * Creates a `Source` that is materialized as a [[pekko.stream.scaladsl.SourceQueueWithComplete]].
    * You can push elements to the queue and they will be emitted to the stream if there is demand from downstream,
    * otherwise they will be buffered until request for demand is received. Elements in the buffer will be discarded
    * if downstream is terminated.
@@ -950,12 +1054,16 @@ object Source {
    * @param overflowStrategy Strategy that is used when incoming elements cannot fit inside the buffer
    * @param maxConcurrentOffers maximum number of pending offers when buffer is full, should be greater than 0.
    */
+  @deprecated(
+    "Prefer Source.queue[T](bufferSize) which materializes a BoundedSourceQueue with synchronous feedback " +
+    "(dropping the newest element when the buffer is full). For backpressure, use Source.actorRefWithBackpressure " +
+    "or MergeHub.source instead. See the Pekko Streams documentation for the Source.queue migration guide.",
+    since = "2.0.0")
   def queue[T](
       bufferSize: Int,
       overflowStrategy: OverflowStrategy,
       maxConcurrentOffers: Int): Source[T, SourceQueueWithComplete[T]] =
-    Source.fromGraph(
-      new QueueSource(bufferSize, overflowStrategy, maxConcurrentOffers).withAttributes(DefaultAttributes.queueSource))
+    fromGraphStage(new QueueSource(bufferSize, overflowStrategy, maxConcurrentOffers))
 
   /**
    * Start a new `Source` from some resource which can be opened, read and closed.
@@ -988,7 +1096,7 @@ object Source {
    * @tparam R - the resource type.
    */
   def unfoldResource[T, R](create: () => R, read: (R) => Option[T], close: (R) => Unit): Source[T, NotUsed] =
-    Source.fromGraph(new UnfoldResourceSource(create, read, close))
+    fromGraphStage(new UnfoldResourceSource(create, read, close))
 
   /**
    * Start a new `Source` from some resource which can be opened, read and closed.
@@ -1016,7 +1124,7 @@ object Source {
       create: () => Future[R],
       read: (R) => Future[Option[T]],
       close: (R) => Future[Done]): Source[T, NotUsed] =
-    Source.fromGraph(new UnfoldResourceSourceAsync(create, read, close))
+    fromGraphStage(new UnfoldResourceSourceAsync(create, read, close))
 
   /**
    * Merge multiple [[Source]]s. Prefer the sources depending on the 'priority' parameters.
@@ -1031,12 +1139,12 @@ object Source {
    * '''Cancels when''' downstream cancels
    */
   def mergePrioritizedN[T](
-      sourcesAndPriorities: immutable.Seq[(Source[T, _], Int)],
+      sourcesAndPriorities: Seq[(Source[T, ?], Int)],
       eagerComplete: Boolean): Source[T, NotUsed] = {
     sourcesAndPriorities match {
-      case immutable.Seq()            => Source.empty
-      case immutable.Seq((source, _)) => source.mapMaterializedValue(_ => NotUsed)
-      case sourcesAndPriorities       =>
+      case Seq()                => Source.empty
+      case Seq((source, _))     => source.mapMaterializedValue(_ => NotUsed)
+      case sourcesAndPriorities =>
         val (sources, priorities) = sourcesAndPriorities.unzip
         combine(sources.head, sources(1), sources.drop(2): _*)(_ => MergePrioritized(priorities, eagerComplete))
     }

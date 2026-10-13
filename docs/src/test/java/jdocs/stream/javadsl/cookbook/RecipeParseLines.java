@@ -13,7 +13,7 @@
 
 package jdocs.stream.javadsl.cookbook;
 
-import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.actor.ActorSystem;
@@ -23,20 +23,20 @@ import org.apache.pekko.stream.javadsl.Sink;
 import org.apache.pekko.stream.javadsl.Source;
 import org.apache.pekko.testkit.javadsl.TestKit;
 import org.apache.pekko.util.ByteString;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 public class RecipeParseLines extends RecipeTest {
 
   static ActorSystem system;
 
-  @BeforeClass
+  @BeforeAll
   public static void setup() {
     system = ActorSystem.create("RecipeParseLines");
   }
 
-  @AfterClass
+  @AfterAll
   public static void tearDown() {
     TestKit.shutdownActorSystem(system);
     system = null;
@@ -46,7 +46,7 @@ public class RecipeParseLines extends RecipeTest {
   public void parseLines() throws Exception {
     final Source<ByteString, NotUsed> rawData =
         Source.from(
-            Arrays.asList(
+            List.of(
                 ByteString.fromString("Hello World"),
                 ByteString.fromString("\r"),
                 ByteString.fromString("!\r"),

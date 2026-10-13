@@ -103,7 +103,7 @@ object Behaviors {
   /**
    * Construct an actor behavior that can react to both incoming messages and
    * lifecycle signals. After spawning this actor from another actor (or as the
-   * guardian of an [[pekko.actor.typed.ActorSystem]]) it will be executed within an
+   * guardian of a [[pekko.actor.typed.ActorSystem]]) it will be executed within an
    * [[ActorContext]] that allows access to the system, spawning and watching
    * other actors, etc.
    *
@@ -118,11 +118,11 @@ object Behaviors {
   /**
    * Simplified version of [[Receive]] with only a single argument - the message
    * to be handled. Useful for when the context is already accessible by other means,
-   * like being wrapped in an [[setup]] or similar.
+   * like being wrapped in a [[setup]] or similar.
    *
    * Construct an actor behavior that can react to both incoming messages and
    * lifecycle signals. After spawning this actor from another actor (or as the
-   * guardian of an [[pekko.actor.typed.ActorSystem]]) it will be executed within an
+   * guardian of a [[pekko.actor.typed.ActorSystem]]) it will be executed within an
    * [[ActorContext]] that allows access to the system, spawning and watching
    * other actors, etc.
    *
@@ -141,7 +141,7 @@ object Behaviors {
    *
    * Construct an actor behavior that can react to incoming messages but not to
    * lifecycle signals. After spawning this actor from another actor (or as the
-   * guardian of an [[pekko.actor.typed.ActorSystem]]) it will be executed within an
+   * guardian of a [[pekko.actor.typed.ActorSystem]]) it will be executed within an
    * [[ActorContext]] that allows access to the system, spawning and watching
    * other actors, etc.
    *

@@ -18,8 +18,8 @@ import org.apache.pekko.japi.function.Procedure;
 import scala.runtime.BoxedUnit;
 
 /**
- * A builder for {@link scala.PartialFunction}. This is a specialized version of {@link PFBuilder}
- * to map java void methods to {@link scala.runtime.BoxedUnit}.
+ * A builder for {@code scala.PartialFunction}. This is a specialized version of {@link PFBuilder}
+ * to map java void methods to {@code scala.runtime.BoxedUnit}.
  *
  * @param <I> the input type, that this PartialFunction to be applied to
  */

@@ -60,7 +60,7 @@ class LoggingReceiveSpec extends AnyWordSpec with BeforeAndAfterAll {
 
   def ignoreMute(t: TestKit): Unit = {
     t.ignoreMsg {
-      case (_: TestEvent.Mute | _: TestEvent.UnMute) => true
+      case _: TestEvent.Mute | _: TestEvent.UnMute => true
     }
   }
 

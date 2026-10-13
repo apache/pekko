@@ -17,9 +17,6 @@ import java.io.IOException
 import java.util.jar.Attributes
 import java.util.jar.Manifest
 
-import scala.annotation.nowarn
-import scala.collection.immutable
-
 import org.apache.pekko
 import pekko.actor.ActorSystem
 import pekko.actor.ClassicActorSystemProvider
@@ -75,10 +72,9 @@ object ManifestInfo extends ExtensionId[ManifestInfo] with ExtensionIdProvider {
   /** INTERNAL API */
   private[util] def checkSameVersion(
       productName: String,
-      dependencies: immutable.Seq[String],
+      dependencies: Seq[String],
       versions: Map[String, Version]): Option[String] = {
-    @nowarn("msg=deprecated")
-    val filteredVersions = versions.filterKeys(dependencies.toSet)
+    val filteredVersions = versions.filter { case (k, _) => dependencies.contains(k) }
     val values = filteredVersions.values.toSet
     if (values.size > 1) {
       val highestVersion = values.max
@@ -161,7 +157,7 @@ final class ManifestInfo(val system: ExtendedActorSystem) extends Extension {
    *
    * @return `true` if versions are the same
    */
-  def checkSameVersion(productName: String, dependencies: immutable.Seq[String], logWarning: Boolean): Boolean = {
+  def checkSameVersion(productName: String, dependencies: Seq[String], logWarning: Boolean): Boolean = {
     checkSameVersion(productName, dependencies, logWarning, throwException = system.settings.FailMixedVersions)
   }
 
@@ -175,7 +171,7 @@ final class ManifestInfo(val system: ExtendedActorSystem) extends Extension {
    */
   def checkSameVersion(
       productName: String,
-      dependencies: immutable.Seq[String],
+      dependencies: Seq[String],
       logWarning: Boolean,
       throwException: Boolean): Boolean = {
     ManifestInfo.checkSameVersion(productName, dependencies, versions) match {

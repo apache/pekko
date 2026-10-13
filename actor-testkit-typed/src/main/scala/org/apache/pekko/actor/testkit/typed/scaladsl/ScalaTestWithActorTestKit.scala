@@ -53,7 +53,7 @@ abstract class ScalaTestWithActorTestKit(override val testKit: ActorTestKit)
   /**
    * Use a custom [[pekko.actor.typed.ActorSystem]] for the actor system.
    */
-  def this(system: ActorSystem[_]) = this(ActorTestKit(system))
+  def this(system: ActorSystem[?]) = this(ActorTestKit(system))
 
   /**
    * Use a custom config for the actor system.
@@ -91,8 +91,11 @@ trait ScalaTestWithActorTestKitBase
    * `PatienceConfig` from [[pekko.actor.testkit.typed.TestKitSettings#DefaultTimeout]].
    * `DefaultTimeout` is dilated with [[pekko.actor.testkit.typed.TestKitSettings#TestTimeFactor]],
    * which means that the patience is also dilated.
+   *
+   * A `def` so that a spec can override `testKit` with a `val` without hitting a `NullPointerException`
+   * during initialization, while subclasses can still override it with a `val`, `lazy val` or `def`.
    */
-  implicit val patience: PatienceConfig =
+  implicit def patience: PatienceConfig =
     PatienceConfig(testKit.testKitSettings.DefaultTimeout.duration, Span(100, org.scalatest.time.Millis))
 
   /**

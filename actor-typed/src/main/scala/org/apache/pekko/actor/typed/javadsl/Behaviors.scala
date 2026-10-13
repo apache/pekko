@@ -20,6 +20,8 @@ import scala.annotation.nowarn
 import scala.jdk.CollectionConverters._
 import scala.reflect.ClassTag
 
+import org.jspecify.annotations.Nullable
+
 import org.apache.pekko
 import pekko.actor.typed._
 import pekko.actor.typed.internal.{ BehaviorImpl, StashBufferImpl, TimerSchedulerImpl, WithMdcBehaviorInterceptor }
@@ -31,14 +33,14 @@ import pekko.japi.pf.PFBuilder
  */
 object Behaviors {
 
-  private[this] val _two2same = new JapiFunction2[ActorContext[Any], Any, Behavior[Any]] {
+  private val _two2same = new JapiFunction2[ActorContext[Any], Any, Behavior[Any]] {
     override def apply(context: ActorContext[Any], msg: Any): Behavior[Any] = same
   }
-  private[this] def two2same[T] = _two2same.asInstanceOf[JapiFunction2[ActorContext[T], T, Behavior[T]]]
+  private def two2same[T] = _two2same.asInstanceOf[JapiFunction2[ActorContext[T], T, Behavior[T]]]
 
   /**
    * `setup` is a factory for a behavior. Creation of the behavior instance is deferred until
-   * the actor is started, as opposed to [[Behaviors#receive]] that creates the behavior instance
+   * the actor is started, as opposed to `receive` that creates the behavior instance
    * immediately before the actor is running. The `factory` function pass the `ActorContext`
    * as parameter and that can for example be used for spawning child actors.
    *
@@ -112,7 +114,7 @@ object Behaviors {
   /**
    * Construct an actor behavior that can react to incoming messages but not to
    * lifecycle signals. After spawning this actor from another actor (or as the
-   * guardian of an [[pekko.actor.typed.ActorSystem]]) it will be executed within an
+   * guardian of a [[pekko.actor.typed.ActorSystem]]) it will be executed within an
    * [[ActorContext]] that allows access to the system, spawning and watching
    * other actors, etc.
    *
@@ -125,13 +127,13 @@ object Behaviors {
     new BehaviorImpl.ReceiveBehavior((ctx, msg) => onMessage.apply(ctx.asJava, msg))
 
   /**
-   * Simplified version of [[receive]] with only a single argument - the message
+   * Simplified version of `receive` with only a single argument - the message
    * to be handled. Useful for when the context is already accessible by other means,
-   * like being wrapped in an [[setup]] or similar.
+   * like being wrapped in a [[setup]] or similar.
    *
    * Construct an actor behavior that can react to incoming messages but not to
    * lifecycle signals. After spawning this actor from another actor (or as the
-   * guardian of an [[pekko.actor.typed.ActorSystem]]) it will be executed within an
+   * guardian of a [[pekko.actor.typed.ActorSystem]]) it will be executed within an
    * [[ActorContext]] that allows access to the system, spawning and watching
    * other actors, etc.
    *
@@ -150,7 +152,7 @@ object Behaviors {
    *
    * Construct an actor behavior that can react to incoming messages but not to
    * lifecycle signals. After spawning this actor from another actor (or as the
-   * guardian of an [[pekko.actor.typed.ActorSystem]]) it will be executed within an
+   * guardian of a [[pekko.actor.typed.ActorSystem]]) it will be executed within an
    * [[ActorContext]] that allows access to the system, spawning and watching
    * other actors, etc.
    *
@@ -169,7 +171,7 @@ object Behaviors {
   /**
    * Construct an actor behavior that can react to both incoming messages and
    * lifecycle signals. After spawning this actor from another actor (or as the
-   * guardian of an [[pekko.actor.typed.ActorSystem]]) it will be executed within an
+   * guardian of a [[pekko.actor.typed.ActorSystem]]) it will be executed within an
    * [[ActorContext]] that allows access to the system, spawning and watching
    * other actors, etc.
    *
@@ -234,8 +236,10 @@ object Behaviors {
    * @param monitor The messages will also be sent to this `ActorRef`
    * @param behavior The inner behavior that is decorated
    */
-  def monitor[T](interceptMessageClass: Class[T], monitor: ActorRef[T], behavior: Behavior[T]): Behavior[T] =
-    scaladsl.Behaviors.monitor(monitor, behavior)(ClassTag(interceptMessageClass))
+  def monitor[T](interceptMessageClass: Class[T], monitor: ActorRef[T], behavior: Behavior[T]): Behavior[T] = {
+    implicit val classTag: ClassTag[T] = ClassTag(interceptMessageClass)
+    scaladsl.Behaviors.monitor(monitor, behavior)
+  }
 
   /**
    * Behavior decorator that logs all messages to the [[pekko.actor.typed.Behavior]] using the provided
@@ -332,8 +336,10 @@ object Behaviors {
   def transformMessages[Outer, Inner](
       interceptMessageClass: Class[Outer],
       behavior: Behavior[Inner],
-      selector: JFunction[PFBuilder[Outer, Inner], PFBuilder[Outer, Inner]]): Behavior[Outer] =
-    BehaviorImpl.transformMessages(behavior, selector.apply(new PFBuilder).build())(ClassTag(interceptMessageClass))
+      selector: JFunction[PFBuilder[Outer, Inner], PFBuilder[Outer, Inner]]): Behavior[Outer] = {
+    implicit val classTag: ClassTag[Outer] = ClassTag(interceptMessageClass)
+    BehaviorImpl.transformMessages(behavior, selector.apply(new PFBuilder).build())
+  }
 
   /**
    * Support for scheduled `self` messages in an actor.
@@ -398,8 +404,8 @@ object Behaviors {
    */
   def withMdc[T](
       interceptMessageClass: Class[T],
-      staticMdc: java.util.Map[String, String],
-      mdcForMessage: pekko.japi.function.Function[T, java.util.Map[String, String]],
+      @Nullable staticMdc: java.util.Map[String, String],
+      @Nullable mdcForMessage: pekko.japi.function.Function[T, java.util.Map[String, String]],
       behavior: Behavior[T]): Behavior[T] = {
 
     def asScalaMap(m: java.util.Map[String, String]): Map[String, String] = {
@@ -413,7 +419,8 @@ object Behaviors {
         asScalaMap(mdcForMessage.apply(message))
       }
 
-    WithMdcBehaviorInterceptor[T](asScalaMap(staticMdc), mdcForMessageFun, behavior)(ClassTag(interceptMessageClass))
+    implicit val classTag: ClassTag[T] = ClassTag(interceptMessageClass)
+    WithMdcBehaviorInterceptor[T](asScalaMap(staticMdc), mdcForMessageFun, behavior)
   }
 
 }

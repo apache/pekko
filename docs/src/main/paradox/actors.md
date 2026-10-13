@@ -64,7 +64,7 @@ Actor classes are implemented by extending the @javadoc[AbstractActor](pekko.act
 the “initial behavior” in the @javadoc[createReceive](pekko.actor.AbstractActor#createReceive()) method.
 
 The `createReceive` method has no arguments and returns @javadoc[AbstractActor.Receive](pekko.actor.AbstractActor.Receive). It defines which messages your Actor can handle, along with the implementation of how the messages should be processed. You can build such behavior with a builder named
-@javadoc[ReceiveBuilder](pekko.actor.typed.javadsl.ReceiveBuilder). This build has a convenient factory in `AbstractActor` called @javadoc[receiveBuilder](pekko.actor.AbstractActor#receiveBuilder()).
+@javadoc[ReceiveBuilder](pekko.japi.pf.ReceiveBuilder). This builder has a convenient factory in `AbstractActor` called @javadoc[receiveBuilder](pekko.actor.AbstractActor#receiveBuilder()).
 
 @@@
 
@@ -89,7 +89,7 @@ as explained below.
 The result of the @scala[@scaladoc[receive](pekko.actor.Actor#receive:org.apache.pekko.actor.Actor.Receive) method is a partial function object, which is]
 @java[@javadoc[createReceive](pekko.actor.AbstractActor#createReceive()) method is @javadoc[AbstractActor.Receive](pekko.actor.AbstractActor.Receive) which is a wrapper around partial
 scala function object. It is] stored within the actor as its “initial behavior”,
-see @ref:[Become/Unbecome](#become-unbecome) for
+see @ref:[Become/Unbecome](#actor-hotswap) for
 further information on changing the behavior of an actor after its
 construction.
 
@@ -293,6 +293,8 @@ described here: @ref:[What Restarting Means](general/supervision.md#supervision-
 When using a dependency injection framework, actor beans *MUST NOT* have
 singleton scope.
 
+@@@
+
 ## Actor API
 
 @scala[The @apidoc[actor.Actor] trait defines only one abstract method, the above mentioned
@@ -312,7 +314,7 @@ In addition, it offers:
 * @scala[@scaladoc[self](pekko.actor.Actor#self:org.apache.pekko.actor.ActorRef)] @java[@javadoc[getSelf()](pekko.actor.AbstractActor#getSelf())] reference to the @apidoc[actor.ActorRef] of the actor
 * @scala[@scaladoc[sender](pekko.actor.Actor#sender():org.apache.pekko.actor.ActorRef)] @java[@javadoc[getSender()](pekko.actor.AbstractActor#getSender())] reference sender Actor of the last received message, typically used as described in
   @scala[[Actor.Reply](#actor-reply)]
-  @java[[LambdaActor.Reply](#lambdaactor-reply)]
+  @java[[Reply to messages](#actor-reply)]
 * @scala[@scaladoc[supervisorStrategy](pekko.actor.Actor#supervisorStrategy:org.apache.pekko.actor.SupervisorStrategy)] @java[@javadoc[supervisorStrategy()](pekko.actor.AbstractActor#supervisorStrategy())] user overridable definition the strategy to use for supervising child actors
 
   This strategy is typically declared inside the actor to have access
@@ -403,7 +405,7 @@ occupying it. `ActorSelection` cannot be watched for this reason. It is
 possible to resolve the current incarnation's `ActorRef` living under the
 path by sending an @apidoc[actor.Identify] message to the `ActorSelection` which
 will be replied to with an @apidoc[actor.ActorIdentity] containing the correct reference
-(see @ref:[ActorSelection](#actorselection)). This can also be done with the @apidoc[resolveOne](actor.ActorSelection) {scala="#resolveOne(timeout:scala.concurrent.duration.FiniteDuration):scala.concurrent.Future[actor.ActorRef]" java="#resolveOne(java.time.Duration)"}
+(see @ref:[ActorSelection](#actorselection)). This can also be done with the @apidoc[resolveOne](actor.ActorSelection) {scala="#resolveOne(timeout:scala.concurrent.duration.FiniteDuration):scala.concurrent.Future[org.apache.pekko.actor.ActorRef]" java="#resolveOne(java.time.Duration)"}
 method of the `ActorSelection`, which returns a @scala[@scaladoc[Future](scala.concurrent.Future)]@java[@javadoc[CompletionStage](java.util.concurrent.CompletionStage)] of the matching
 `ActorRef`.
 
@@ -564,7 +566,7 @@ Messages can be sent via the @apidoc[actor.ActorSelection] and the path of the
 does not match any actors the message will be dropped.
 
 To acquire an @apidoc[actor.ActorRef] for an `ActorSelection` you need to send
-a message to the selection and use the @scala[@scaladoc[sender](pekko.actor.Actor#sender():org.apache.pekko.actor.ActorRef)] @java[@javadoc[getSender()](pekko.actor.AbstractActor#getSender())]) reference of the reply from
+a message to the selection and use the @scala[@scaladoc[sender](pekko.actor.Actor#sender():org.apache.pekko.actor.ActorRef)] @java[@javadoc[getSender()](pekko.actor.AbstractActor#getSender())] reference of the reply from
 the actor. There is a built-in @apidoc[actor.Identify] message that all Actors will
 understand and automatically reply to with an @apidoc[actor.ActorIdentity] message
 containing the @apidoc[actor.ActorRef]. This message is handled specially by the
@@ -580,7 +582,7 @@ Java
 :  @@snip [ActorDocTest.java](/docs/src/test/java/jdocs/actor/ActorDocTest.java) { #import-identify #identify }
 
 You can also acquire an `ActorRef` for an `ActorSelection` with
-the @apidoc[resolveOne](actor.ActorSelection) {scala="#resolveOne(timeout:scala.concurrent.duration.FiniteDuration):scala.concurrent.Future[actor.ActorRef]" java="#resolveOne(java.time.Duration)"} method of the `ActorSelection`. It returns a @scala[@scaladoc[Future](scala.concurrent.Future)]@java[@javadoc[CompletionStage](java.util.concurrent.CompletionStage)]
+the @apidoc[resolveOne](actor.ActorSelection) {scala="#resolveOne(timeout:scala.concurrent.duration.FiniteDuration):scala.concurrent.Future[org.apache.pekko.actor.ActorRef]" java="#resolveOne(java.time.Duration)"} method of the `ActorSelection`. It returns a @scala[@scaladoc[Future](scala.concurrent.Future)]@java[@javadoc[CompletionStage](java.util.concurrent.CompletionStage)]
 of the matching `ActorRef` if such an actor exists. It is completed with
 failure @apidoc[actor.ActorNotFound] if no such actor exists or the identification
 didn't complete within the supplied `timeout`.
@@ -747,7 +749,7 @@ you a way to avoid blocking.
 
 @@@ warning
 
-When using future callbacks, @scala[such as @scaladoc[onComplete](scala.concurrent.Future#onComplete[U](f:scala.util.Try[T]=%3EU)(implicitexecutor:scala.concurrent.ExecutionContext):Unit), or @scaladoc[map](scala.concurrent.Future#map[S](f:T=%3ES)(implicitexecutor:scala.concurrent.ExecutionContext):scala.concurrent.Future[S])]@scala[such as @javadoc[thenRun](java.util.concurrent.CompletionStage#thenRun(java.lang.Runnable)), or @javadoc[thenApply](java.util.concurrent.CompletionStage#thenApply(java.util.function.Function))]
+When using future callbacks, @scala[such as @scaladoc[onComplete](scala.concurrent.Future#onComplete[U](f:scala.util.Try[T]=%3EU)(implicitexecutor:scala.concurrent.ExecutionContext):Unit), or @scaladoc[map](scala.concurrent.Future#map[S](f:T=%3ES)(implicitexecutor:scala.concurrent.ExecutionContext):scala.concurrent.Future[S])]@java[such as @javadoc[thenRun](java.util.concurrent.CompletionStage#thenRun(java.lang.Runnable)), or @javadoc[thenApply](java.util.concurrent.CompletionStage#thenApply(java.util.function.Function))]
 inside actors you need to carefully avoid closing over
 the containing actor’s reference, i.e. do not call methods or access mutable state
 on the enclosing actor from within the callback. This would break the actor
@@ -866,7 +868,7 @@ Java
 
 ## Receive timeout
 
-The @java[@scaladoc[ActorContext.setReceiveTimeout](pekko.actor.ActorContext#setReceiveTimeout(timeout:scala.concurrent.duration.Duration):Unit)]@java[@javadoc[ActorContext.setReceiveTimeout](pekko.actor.AbstractActor.ActorContext#setReceiveTimeout(java.time.Duration))] defines the inactivity timeout after which
+The @scala[@scaladoc[ActorContext.setReceiveTimeout](pekko.actor.ActorContext#setReceiveTimeout(timeout:scala.concurrent.duration.Duration):Unit)]@java[@javadoc[ActorContext.setReceiveTimeout](pekko.actor.AbstractActor.ActorContext#setReceiveTimeout(java.time.Duration))] defines the inactivity timeout after which
 the sending of a @apidoc[actor.ReceiveTimeout] message is triggered.
 When specified, the receive function should be able to handle an `org.apache.pekko.actor.ReceiveTimeout` message.
 1 millisecond is the minimum supported timeout.
@@ -900,10 +902,10 @@ to use the support for named timers. The lifecycle of scheduled messages can be 
 when the actor is restarted and that is taken care of by the timers.
 
 Scala
-:  @@snip [ActorDocSpec.scala](/docs/src/test/scala/docs/actor/TimerDocSpec.scala) { #timers }
+:  @@snip [TimerDocSpec.scala](/docs/src/test/scala/docs/actor/TimerDocSpec.scala) { #timers }
 
 Java
-:  @@snip [ActorDocTest.java](/docs/src/test/java/jdocs/actor/TimerDocTest.java) { #timers }
+:  @@snip [TimerDocTest.java](/docs/src/test/java/jdocs/actor/TimerDocTest.java) { #timers }
 
 The @ref:[Scheduler](scheduler.md#schedule-periodically) documentation describes the difference between
 `fixed-delay` and `fixed-rate` scheduling. If you are uncertain of which one to use you should pick
@@ -1149,7 +1151,7 @@ major impact on performance.
 @@@ warning { .group-scala }
 
 Note that the @scaladoc[Stash](pekko.actor.Stash) trait must be mixed into (a subclass of) the
-@scaladoc[Actor](pekko.actor.Actor) trait before any trait/class that overrides the @scaladoc[preRestart](org.apache.pekko.actor.Actor#preRestart(reason:Throwable,message:Option[Any]):Unit)]
+@scaladoc[Actor](pekko.actor.Actor) trait before any trait/class that overrides the @scaladoc[preRestart](org.apache.pekko.actor.Actor#preRestart(reason:Throwable,message:Option[Any]):Unit)
 callback. This means it's not possible to write
 `Actor with MyActor with Stash` if `MyActor` overrides `preRestart`.
 

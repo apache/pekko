@@ -14,13 +14,16 @@
 package org.apache.pekko.cluster
 
 import java.io.Closeable
+import java.util.concurrent.CompletionStage
 import java.util.concurrent.ThreadFactory
 import java.util.concurrent.atomic.AtomicBoolean
 
 import scala.annotation.varargs
-import scala.collection.immutable
 import scala.concurrent.{ Await, ExecutionContext }
+import scala.concurrent.Future
 import scala.concurrent.duration._
+import scala.util.Failure
+import scala.util.Success
 import scala.util.control.NonFatal
 
 import org.apache.pekko
@@ -36,6 +39,8 @@ import pekko.event.MarkerLoggingAdapter
 import pekko.japi.Util
 import pekko.pattern._
 import pekko.remote.{ UniqueAddress => _, _ }
+import pekko.util.Helpers.toRootLowerCase
+import pekko.util.Version
 
 import com.typesafe.config.{ Config, ConfigFactory }
 
@@ -55,7 +60,7 @@ object Cluster extends ExtensionId[Cluster] with ExtensionIdProvider {
    * INTERNAL API
    */
   private[cluster] final val isAssertInvariantsEnabled: Boolean =
-    System.getProperty("pekko.cluster.assert", "off").toLowerCase match {
+    toRootLowerCase(System.getProperty("pekko.cluster.assert", "off")) match {
       case "on" | "true" => true
       case _             => false
     }
@@ -63,7 +68,7 @@ object Cluster extends ExtensionId[Cluster] with ExtensionIdProvider {
 
 /**
  * This module is responsible cluster membership information. Changes to the cluster
- * information is retrieved through [[#subscribe]]. Commands to operate the cluster is
+ * information is retrieved through `subscribe`. Commands to operate the cluster is
  * available through methods in this class, such as [[#join]], [[#down]] and [[#leave]].
  *
  * Each cluster [[Member]] is identified by its [[pekko.actor.Address]], and
@@ -149,7 +154,7 @@ class Cluster(val system: ExtendedActorSystem) extends Extension {
       (settings.config.hasPath("auto-down-unreachable-after") && settings.config.getString(
         "auto-down-unreachable-after") != "off"))
       logWarning(
-        "auto-down has been removed in Akka 2.6.0. See " +
+        "auto-down is not supported in Pekko. See " +
         "https://pekko.apache.org/docs/pekko/current/typed/cluster.html#downing for alternatives.")
   }
 
@@ -178,8 +183,7 @@ class Cluster(val system: ExtendedActorSystem) extends Extension {
       system.dynamicAccess
         .createInstanceFor[Scheduler](
           system.settings.SchedulerClass,
-          immutable
-            .Seq(classOf[Config] -> cfg, classOf[LoggingAdapter] -> log, classOf[ThreadFactory] -> threadFactory))
+          Seq(classOf[Config] -> cfg, classOf[LoggingAdapter] -> log, classOf[ThreadFactory] -> threadFactory))
         .get
     } else {
       // delegate to system.scheduler, but don't close over system
@@ -265,7 +269,7 @@ class Cluster(val system: ExtendedActorSystem) extends Extension {
    * A snapshot of [[pekko.cluster.ClusterEvent.CurrentClusterState]]
    * will be sent to the subscriber as the first message.
    */
-  @varargs def subscribe(subscriber: ActorRef, to: Class[_]*): Unit =
+  @varargs def subscribe(subscriber: ActorRef, to: Class[?]*): Unit =
     subscribe(subscriber, initialStateMode = InitialStateAsSnapshot, to: _*)
 
   /**
@@ -283,7 +287,7 @@ class Cluster(val system: ExtendedActorSystem) extends Extension {
    *
    * Note that for large clusters it is more efficient to use `InitialStateAsSnapshot`.
    */
-  @varargs def subscribe(subscriber: ActorRef, initialStateMode: SubscriptionInitialStateMode, to: Class[_]*): Unit = {
+  @varargs def subscribe(subscriber: ActorRef, initialStateMode: SubscriptionInitialStateMode, to: Class[?]*): Unit = {
     require(to.length > 0, "at least one `ClusterDomainEvent` class is required")
     require(
       to.forall(classOf[ClusterDomainEvent].isAssignableFrom),
@@ -302,7 +306,7 @@ class Cluster(val system: ExtendedActorSystem) extends Extension {
    * Unsubscribe to a specific type of cluster domain events,
    * matching previous `subscribe` registration.
    */
-  def unsubscribe(subscriber: ActorRef, to: Class[_]): Unit =
+  def unsubscribe(subscriber: ActorRef, to: Class[?]): Unit =
     clusterCore ! InternalClusterAction.Unsubscribe(subscriber, Some(to))
 
   /**
@@ -351,7 +355,7 @@ class Cluster(val system: ExtendedActorSystem) extends Extension {
    * When it has successfully joined it must be restarted to be able to join another
    * cluster or to join the same cluster again.
    */
-  def joinSeedNodes(seedNodes: immutable.Seq[Address]): Unit = {
+  def joinSeedNodes(seedNodes: Seq[Address]): Unit = {
     seedNodes.foreach(_.checkHostCharacters())
     clusterCore ! InternalClusterAction.JoinSeedNodes(seedNodes.toVector.map(fillLocal))
   }
@@ -368,6 +372,37 @@ class Cluster(val system: ExtendedActorSystem) extends Extension {
    */
   def joinSeedNodes(seedNodes: java.util.List[Address]): Unit =
     joinSeedNodes(Util.immutableSeq(seedNodes))
+
+  /**
+   * Scala API: If the `appVersion` is read from an external system (e.g. Kubernetes) it can be defined after
+   * system startup but before joining by completing the `appVersion` `Future`. In that case, `setAppVersionLater`
+   * should be called before calling `join` or `joinSeedNodes`. It's fine to call `join` or `joinSeedNodes`
+   * immediately afterwards (before the `Future` is completed). The join will then wait for the `appVersion`
+   * to be completed.
+   */
+  def setAppVersionLater(appVersion: Future[Version]): Unit = {
+    clusterCore ! ClusterUserAction.SetAppVersionLater
+    import system.dispatcher
+    appVersion.onComplete {
+      case Success(version) =>
+        clusterCore ! ClusterUserAction.SetAppVersion(version)
+      case Failure(exc) =>
+        logWarning("Later appVersion failed. Fallback to configured appVersion [{}]. {}", settings.AppVersion, exc)
+        clusterCore ! ClusterUserAction.SetAppVersion(settings.AppVersion)
+    }
+  }
+
+  /**
+   * Java API: If the `appVersion` is read from an external system (e.g. Kubernetes) it can be defined after
+   * system startup but before joining by completing the `appVersion` `CompletionStage`. In that case,
+   * `setAppVersionLater` should be called before calling `join` or `joinSeedNodes`. It's fine to call
+   * `join` or `joinSeedNodes` immediately afterwards (before the `CompletionStage` is completed). The join will
+   * then wait for the `appVersion` to be completed.
+   */
+  def setAppVersionLater(appVersion: CompletionStage[Version]): Unit = {
+    import scala.jdk.FutureConverters._
+    setAppVersionLater(appVersion.asScala)
+  }
 
   /**
    * Send command to issue state transition to LEAVING for the node specified by 'address'.
@@ -402,7 +437,7 @@ class Cluster(val system: ExtendedActorSystem) extends Extension {
    * a certain size.
    */
   def registerOnMemberUp[T](code: => T): Unit =
-    registerOnMemberUp(new Runnable { def run() = code })
+    registerOnMemberUp((() => code): Runnable)
 
   /**
    * Java API: The supplied callback will be run, once, when current cluster member is `Up`.
@@ -416,16 +451,16 @@ class Cluster(val system: ExtendedActorSystem) extends Extension {
   /**
    * The supplied thunk will be run, once, when current cluster member is `Removed`.
    * If the cluster has already been shutdown the thunk will run on the caller thread immediately.
-   * If this is called "at the same time" as `shutdown()` there is a possibility that the the thunk
+   * If this is called "at the same time" as `shutdown()` there is a possibility that the thunk
    * is not invoked. It's often better to use [[pekko.actor.CoordinatedShutdown]] for this purpose.
    */
   def registerOnMemberRemoved[T](code: => T): Unit =
-    registerOnMemberRemoved(new Runnable { override def run(): Unit = code })
+    registerOnMemberRemoved((() => code): Runnable)
 
   /**
    * Java API: The supplied thunk will be run, once, when current cluster member is `Removed`.
    * If the cluster has already been shutdown the thunk will run on the caller thread immediately.
-   * If this is called "at the same time" as `shutdown()` there is a possibility that the the thunk
+   * If this is called "at the same time" as `shutdown()` there is a possibility that the thunk
    * is not invoked. It's often better to use [[pekko.actor.CoordinatedShutdown]] for this purpose.
    */
   def registerOnMemberRemoved(callback: Runnable): Unit = {

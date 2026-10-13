@@ -75,7 +75,7 @@ object ActorTestKit {
    * Config loaded from the provided actor if that exists, otherwise
    * using default configuration from the reference.conf resources that ship with the Akka libraries.
    */
-  def apply(system: ActorSystem[_]): ActorTestKit = {
+  def apply(system: ActorSystem[?]): ActorTestKit = {
     val name = testKitGuardianCounter.incrementAndGet() match {
       case 1 => "test"
       case n => s"test-$n"
@@ -88,7 +88,7 @@ object ActorTestKit {
   /**
    * Create a testkit using the provided name.
    *
-   * It will create an [[pekko.actor.typed.ActorSystem]] with this name,
+   * It will create a [[pekko.actor.typed.ActorSystem]] with this name,
    * e.g. threads will include the name.
    * When the test has completed you should terminate the `ActorSystem` and
    * the testkit with [[ActorTestKit#shutdownTestKit]].
@@ -124,7 +124,7 @@ object ActorTestKit {
    * Create a test kit named based on the provided name,
    * and uses the provided custom config for the actor system.
    *
-   * It will create an [[pekko.actor.typed.ActorSystem]] with this name,
+   * It will create a [[pekko.actor.typed.ActorSystem]] with this name,
    * e.g. threads will include the name.
    *
    * It will also used the provided customConfig provided to create the `ActorSystem`
@@ -139,10 +139,10 @@ object ActorTestKit {
   }
 
   /**
-   * Create an [[pekko.actor.typed.ActorSystem]] named based on the provided name,
+   * Create a [[pekko.actor.typed.ActorSystem]] named based on the provided name,
    * use the provided custom config for the actor system, and the testkit will use the provided setting.
    *
-   * It will create an [[pekko.actor.typed.ActorSystem]] with this name,
+   * It will create a [[pekko.actor.typed.ActorSystem]] with this name,
    * e.g. threads will include the name.
    *
    * It will also used the provided customConfig provided to create the `ActorSystem`, and provided setting.
@@ -160,7 +160,7 @@ object ActorTestKit {
    * Shutdown the given [[pekko.actor.typed.ActorSystem]] and block until it shuts down,
    * if more time than `TestKitSettings.DefaultActorSystemShutdownTimeout` passes an exception is thrown
    */
-  def shutdown(system: ActorSystem[_]): Unit = {
+  def shutdown(system: ActorSystem[?]): Unit = {
     val settings = TestKitSettings(system)
     TestKitUtils.shutdown(system, settings.DefaultActorSystemShutdownTimeout, settings.ThrowOnShutdownTimeout)
   }
@@ -169,7 +169,7 @@ object ActorTestKit {
    * Shutdown the given [[pekko.actor.typed.ActorSystem]] and block until it shuts down
    * or the `duration` hits. If the timeout hits `verifySystemShutdown` decides
    */
-  def shutdown(system: ActorSystem[_], timeout: Duration, throwIfShutdownFails: Boolean = false): Unit =
+  def shutdown(system: ActorSystem[?], timeout: Duration, throwIfShutdownFails: Boolean = false): Unit =
     TestKitUtils.shutdown(system, timeout, throwIfShutdownFails)
 
   /**
@@ -193,7 +193,7 @@ object ActorTestKit {
  * For synchronous testing of a `Behavior` see [[BehaviorTestKit]]
  */
 final class ActorTestKit private[pekko] (
-    val internalSystem: ActorSystem[_],
+    val internalSystem: ActorSystem[?],
     internalTestKitGuardian: ActorRef[ActorTestKitGuardian.TestKitCommand],
     settings: Option[TestKitSettings]) {
 

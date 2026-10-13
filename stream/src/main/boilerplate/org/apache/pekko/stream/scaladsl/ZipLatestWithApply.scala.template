@@ -107,7 +107,7 @@ class ZipLatestWith1[[#A1#], O] (val zipper: ([#A1#]) => O, val eagerComplete: B
       }
 
       private class ZipLatestInlet[T](in: Inlet[T]) extends InHandler {
-         var value: T = _
+         var value: T = null.asInstanceOf[T]
          var hasValue = false
 
          override def onPush() = {

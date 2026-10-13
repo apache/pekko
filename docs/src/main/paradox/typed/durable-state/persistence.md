@@ -20,7 +20,7 @@ To use Pekko Persistence, add the module to your project:
   scope2=test
 }
 
-You also have to select durable state store plugin, see @ref:[Persistence Plugins](../../persistence-plugins.md).
+You also have to select a durable state store plugin, see @ref:[Persistence Plugins](../../persistence-plugins.md).
 
 @@project-info{ projectId="persistence-typed" }
 
@@ -64,7 +64,7 @@ Next we'll discuss each of these in detail.
 ### PersistenceId
 
 The @apidoc[persistence.typed.PersistenceId] is the stable unique identifier for the persistent actor in the backend
-durabe state store.
+durable state store.
 
 @ref:[Cluster Sharding](../cluster-sharding.md) is typically used together with `DurableStateBehavior` to ensure
 that there is only one active entity for each `PersistenceId` (`entityId`). There are techniques to ensure this 
@@ -199,6 +199,13 @@ Scala
 Java
 :  @@snip [PersistentActorCompileOnlyTest.java](/persistence-typed/src/test/java/org/apache/pekko/persistence/typed/javadsl/PersistentActorCompileOnlyTest.java) { #commonChainedEffects }
 
+### DurableStateBehavior receiveSignal/signalHandler
+
+DurableStateBehavior supports receiveSignal/signalHandler in a similar way to EventSourcedBehavior but the signal classes are in the `org.apache.pekko.persistence.typed.state` package not the `org.apache.pekko.persistence.typed` package. These are the only `DurableStateSignal` signals and note that the class names match equivalent `EventSourcedSignal` classes but you need to use these ones for DurableStateBehavior:
+
+* @apidoc[pekko.persistence.typed.state.RecoveryCompleted] signal
+* @apidoc[pekko.persistence.typed.state.RecoveryFailed] signal
+
 ### Side effects ordering and guarantees
 
 Any side effects are executed on an at-most-once basis and will not be executed if the persist fails.
@@ -231,7 +238,7 @@ Scala
 :  @@snip [DurableStatePersistentBehaviorCompileOnly.scala](/persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/DurableStatePersistentBehaviorCompileOnly.scala) { #actor-context }
 
 Java
-:  @@snip [BasicPersistentBehaviorTest.java](/persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/DurableStatePersistentBehaviorTest.java) { #actor-context }
+:  @@snip [DurableStatePersistentBehaviorTest.java](/persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/DurableStatePersistentBehaviorTest.java) { #actor-context }
 
 ## Changing Behavior
 
@@ -300,15 +307,15 @@ There is also an example illustrating an @ref:[optional initial state](persisten
 
 The @ref:[Request-Response interaction pattern](../interaction-patterns.md#request-response) is very common for
 persistent actors, because you typically want to know if the command was rejected due to validation errors and
-when accepted you want a confirmation when the events have been successfully stored.
+when accepted you want a confirmation when the state has been successfully stored.
 
 Therefore you typically include a @scala[`ActorRef[ReplyMessageType]`]@java[`ActorRef<ReplyMessageType>`]. If the 
-command can either have a successful response or a validation error returned, the generic response type @scala[`StatusReply[ReplyType]]`]
+command can either have a successful response or a validation error returned, the generic response type @scala[`StatusReply[ReplyType]`]
 @java[`StatusReply<ReplyType>`] can be used. If the successful reply does not contain a value but is more of an acknowledgement
 a pre defined @scala[`StatusReply.Ack`]@java[`StatusReply.ack()`] of type @scala[`StatusReply[Done]`]@java[`StatusReply<Done>`]
 can be used.
 
-After validation errors or after persisting events, using a `thenRun` side effect, the reply message can
+After validation errors or after persisting the state, using a `thenRun` side effect, the reply message can
 be sent to the `ActorRef`.
 
 Scala
@@ -350,7 +357,7 @@ The `ReplyEffect` is created with @scala[`Effect.reply`]@java[`Effect().reply`],
 @scala[`Effect.thenReply`]@java[`Effect().thenReply`], or @scala[`Effect.thenNoReply`]@java[`Effect().thenNoReply`].
 
 @java[Note that command handlers are defined with `newCommandHandlerWithReplyBuilder` when using
-`EventSourcedBehaviorWithEnforcedReplies`, as opposed to newCommandHandlerBuilder when using `EventSourcedBehavior`.]
+`DurableStateBehaviorWithEnforcedReplies`, as opposed to newCommandHandlerBuilder when using `DurableStateBehavior`.]
 
 Scala
 :  @@snip [AccountExampleWithCommandHandlersInDurableState.scala](/cluster-sharding-typed/src/test/scala/docs/org/apache/pekko/cluster/sharding/typed/AccountExampleWithCommandHandlersInDurableState.scala) { #reply }
@@ -390,7 +397,7 @@ other behaviors such as `Behaviors.setup` in order to access the `ActorContext` 
 to access the logger from within the `ActorContext` to log for debugging the `commandHandler`.
 
 Scala
-:  @@snip [DurableStatePersistentActorCompileOnly.scala](/persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/DurableStatePersistentBehaviorCompileOnly.scala) { #wrapPersistentBehavior }
+:  @@snip [DurableStatePersistentBehaviorCompileOnly.scala](/persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/DurableStatePersistentBehaviorCompileOnly.scala) { #wrapPersistentBehavior }
 
 Java
 :  @@snip [DurableStatePersistentBehaviorTest.java](/persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/DurableStatePersistentBehaviorTest.java) { #wrapPersistentBehavior }

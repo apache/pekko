@@ -17,9 +17,11 @@
 
 package org.apache.pekko.util;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import org.apache.pekko.japi.function.Function;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ConstantFunJavaTest {
   @Test
@@ -27,9 +29,9 @@ public class ConstantFunJavaTest {
     final Object value = new Object();
     final Function<Object, Object> fun = ConstantFun.javaIdentityFunction();
     try {
-      Assert.assertTrue(fun.apply(value) == value);
+      assertTrue(fun.apply(value) == value);
     } catch (Exception e) {
-      Assert.fail("Exception thrown: " + e.getMessage());
+      fail("Exception thrown: " + e.getMessage());
     }
   }
 
@@ -38,9 +40,9 @@ public class ConstantFunJavaTest {
     final Function<Object, Object> funObj = ConstantFun.javaIdentityFunction();
     final Function<String, String> funStr = ConstantFun.javaIdentityFunction();
     try {
-      Assert.assertTrue(funObj.equals(funStr));
+      assertTrue(funObj.equals(funStr));
     } catch (Exception e) {
-      Assert.fail("Exception thrown: " + e.getMessage());
+      fail("Exception thrown: " + e.getMessage());
     }
   }
 }

@@ -313,8 +313,8 @@ private[cluster] final class JoinSeedNodeProcess(
       // first InitJoinAck reply, but incompatible
       receiveInitJoinAckIncompatibleConfig(joinTo = address, origin = sender(), behavior = Some(done))
 
-    case InitJoinNack(_) => // that seed was uninitialized
-    case ReceiveTimeout  =>
+    case InitJoinNack(_)   => // that seed was uninitialized
+    case _: ReceiveTimeout =>
       if (attempt >= 2)
         logWarning(
           ClusterLogMarker.joinFailed,
@@ -332,6 +332,6 @@ private[cluster] final class JoinSeedNodeProcess(
 
   def done: Actor.Receive = {
     case InitJoinAck(_, _) => // already received one, skip rest
-    case ReceiveTimeout    => context.stop(self)
+    case _: ReceiveTimeout => context.stop(self)
   }
 }

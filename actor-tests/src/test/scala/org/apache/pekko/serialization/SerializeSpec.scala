@@ -43,6 +43,13 @@ object SerializationTests {
           test = "org.apache.pekko.serialization.NoopSerializer"
           test2 = "org.apache.pekko.serialization.NoopSerializer2"
           other = "other.SerializerOutsidePekkoPackage"
+          constructor1 = "org.apache.pekko.serialization.Constructor1Serializer"
+          constructor2 = "org.apache.pekko.serialization.Constructor2Serializer"
+          constructor3 = "org.apache.pekko.serialization.Constructor3Serializer"
+          constructor4 = "org.apache.pekko.serialization.Constructor4Serializer"
+          constructor5 = "org.apache.pekko.serialization.Constructor5Serializer"
+          constructor6 = "org.apache.pekko.serialization.Constructor6Serializer"
+          constructor7 = "org.apache.pekko.serialization.Constructor7Serializer"
         }
 
         serialization-bindings {
@@ -55,6 +62,13 @@ object SerializationTests {
           "org.apache.pekko.serialization.SerializationTests$$D" = test
           "org.apache.pekko.serialization.SerializationTests$$Marker2" = test2
           "org.apache.pekko.serialization.SerializationTests$$AbstractOther" = other
+          "org.apache.pekko.serialization.ConstructorSerializer$$No1" = constructor1
+          "org.apache.pekko.serialization.ConstructorSerializer$$No2" = constructor2
+          "org.apache.pekko.serialization.ConstructorSerializer$$No3" = constructor3
+          "org.apache.pekko.serialization.ConstructorSerializer$$No4" = constructor4
+          "org.apache.pekko.serialization.ConstructorSerializer$$No5" = constructor5
+          "org.apache.pekko.serialization.ConstructorSerializer$$No6" = constructor6
+          "org.apache.pekko.serialization.ConstructorSerializer$$No7" = constructor7
         }
       }
     }
@@ -209,7 +223,7 @@ class SerializeSpec extends PekkoSpec(SerializationTests.serializeConf) {
       ser.serializerFor(classOf[PlainMessage]).getClass should ===(classOf[NoopSerializer])
     }
 
-    "resolve serializer for message extending class with with binding" in {
+    "resolve serializer for message extending class with binding" in {
       ser.serializerFor(classOf[ExtendedPlainMessage]).getClass should ===(classOf[NoopSerializer])
     }
 
@@ -303,6 +317,16 @@ class SerializeSpec extends PekkoSpec(SerializationTests.serializeConf) {
         shutdown(sys)
       }.getMessage should include).regex("Serializer identifier \\[9999\\].*is not unique")
     }
+
+    "look for various constructors" in {
+      ser.serializerFor(classOf[ConstructorSerializer.No1]).getClass should ===(classOf[Constructor1Serializer])
+      ser.serializerFor(classOf[ConstructorSerializer.No2]).getClass should ===(classOf[Constructor2Serializer])
+      ser.serializerFor(classOf[ConstructorSerializer.No3]).getClass should ===(classOf[Constructor3Serializer])
+      ser.serializerFor(classOf[ConstructorSerializer.No4]).getClass should ===(classOf[Constructor4Serializer])
+      ser.serializerFor(classOf[ConstructorSerializer.No5]).getClass should ===(classOf[Constructor5Serializer])
+      ser.serializerFor(classOf[ConstructorSerializer.No6]).getClass should ===(classOf[Constructor6Serializer])
+      ser.serializerFor(classOf[ConstructorSerializer.No7]).getClass should ===(classOf[Constructor7Serializer])
+    }
   }
 }
 
@@ -365,7 +389,7 @@ class VerifySerializabilitySpec extends PekkoSpec(SerializationTests.verifySeria
 class ReferenceSerializationSpec extends PekkoSpec(SerializationTests.mostlyReferenceSystem) {
 
   val ser = SerializationExtension(system)
-  def serializerMustBe(toSerialize: Class[_], expectedSerializer: Class[_]) =
+  def serializerMustBe(toSerialize: Class[?], expectedSerializer: Class[?]) =
     ser.serializerFor(toSerialize).getClass should ===(expectedSerializer)
 
   "Serialization settings from reference.conf" must {
@@ -384,6 +408,7 @@ class ReferenceSerializationSpec extends PekkoSpec(SerializationTests.mostlyRefe
       serializerMustBe(classOf[String], classOf[StringSerializer])
       serializerMustBe(classOf[ByteString.ByteString1], classOf[ByteStringSerializer])
       serializerMustBe(classOf[ByteString.ByteString1C], classOf[ByteStringSerializer])
+      serializerMustBe(classOf[ByteString.ByteString2], classOf[ByteStringSerializer])
       serializerMustBe(classOf[ByteString.ByteStrings], classOf[ByteStringSerializer])
 
     }
@@ -403,7 +428,7 @@ class ReferenceSerializationSpec extends PekkoSpec(SerializationTests.mostlyRefe
 class AllowJavaSerializationSpec extends PekkoSpec(SerializationTests.allowJavaSerializationSystem) {
 
   val ser = SerializationExtension(system)
-  def serializerMustBe(toSerialize: Class[_], expectedSerializer: Class[_]) =
+  def serializerMustBe(toSerialize: Class[?], expectedSerializer: Class[?]) =
     ser.serializerFor(toSerialize).getClass should ===(expectedSerializer)
 
   val address = SerializationTests.Address("120", "Monroe Street", "Santa Clara", "95050")
@@ -429,6 +454,9 @@ class AllowJavaSerializationSpec extends PekkoSpec(SerializationTests.allowJavaS
       serializerMustBe(classOf[java.lang.Integer], classOf[IntSerializer])
       serializerMustBe(classOf[String], classOf[StringSerializer])
       serializerMustBe(classOf[ByteString.ByteString1], classOf[ByteStringSerializer])
+      serializerMustBe(classOf[ByteString.ByteString1C], classOf[ByteStringSerializer])
+      serializerMustBe(classOf[ByteString.ByteString2], classOf[ByteStringSerializer])
+      serializerMustBe(classOf[ByteString.ByteStrings], classOf[ByteStringSerializer])
     }
 
     "not support serialization for other classes" in {
@@ -596,7 +624,7 @@ protected[pekko] class NoopSerializer extends Serializer {
     Array.empty[Byte]
   }
 
-  def fromBinary(bytes: Array[Byte], clazz: Option[Class[_]]): AnyRef = null
+  def fromBinary(bytes: Array[Byte], clazz: Option[Class[?]]): AnyRef = null
 }
 
 protected[pekko] class NoopSerializer2 extends Serializer {
@@ -608,7 +636,7 @@ protected[pekko] class NoopSerializer2 extends Serializer {
     Array.empty[Byte]
   }
 
-  def fromBinary(bytes: Array[Byte], clazz: Option[Class[_]]): AnyRef = null
+  def fromBinary(bytes: Array[Byte], clazz: Option[Class[?]]): AnyRef = null
 }
 
 protected[pekko] class NoopSerializerSameId extends NoopSerializer
@@ -629,5 +657,51 @@ class DeadlockSerializer(system: ExtendedActorSystem) extends Serializer {
 
   def toBinary(o: AnyRef): Array[Byte] = Array.empty[Byte]
 
-  def fromBinary(bytes: Array[Byte], clazz: Option[Class[_]]): AnyRef = null
+  def fromBinary(bytes: Array[Byte], clazz: Option[Class[?]]): AnyRef = null
 }
+
+object ConstructorSerializer {
+  class No1
+  class No2
+  class No3
+  class No4
+  class No5
+  class No6
+  class No7
+}
+
+private[pekko] abstract class ConstructorSerializer extends SerializerWithStringManifest {
+
+  def toBinary(o: AnyRef): Array[Byte] =
+    Array.empty[Byte]
+
+  override def manifest(o: AnyRef): String = "test"
+
+  override def fromBinary(bytes: Array[Byte], manifest: String): AnyRef = "Test"
+}
+
+private[pekko] class Constructor1Serializer(@nowarn("msg=never used") system: ExtendedActorSystem)
+    extends ConstructorSerializer { override def identifier = 100001 }
+
+private[pekko] class Constructor2Serializer(@nowarn("msg=never used") system: ActorSystem)
+    extends ConstructorSerializer { override def identifier = 100002 }
+
+private[pekko] class Constructor3Serializer(@nowarn("msg=never used") system: ClassicActorSystemProvider)
+    extends ConstructorSerializer { override def identifier = 100003 }
+
+private[pekko] class Constructor4Serializer extends ConstructorSerializer { override def identifier = 100004 }
+
+private[pekko] class Constructor5Serializer(
+    @nowarn("msg=never used") system: ExtendedActorSystem,
+    @nowarn("msg=never used") binding: String)
+    extends ConstructorSerializer { override def identifier = 100005 }
+
+private[pekko] class Constructor6Serializer(
+    @nowarn("msg=never used") system: ActorSystem,
+    @nowarn("msg=never used") binding: String)
+    extends ConstructorSerializer { override def identifier = 100006 }
+
+private[pekko] class Constructor7Serializer(
+    @nowarn("msg=never used") system: ClassicActorSystemProvider,
+    @nowarn("msg=never used") binding: String)
+    extends ConstructorSerializer { override def identifier = 100007 }

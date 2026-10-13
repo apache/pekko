@@ -10,16 +10,20 @@ This mailing list also has announcements of releases for Apache projects.
 
 ## Reporting Vulnerabilities
 
-We strongly encourage people to report such problems to our private security mailing list first, before disclosing them in a public forum.
+We strongly encourage people to report such problems privately to the Apache Security team at
+`security@apache.org` first, before disclosing them in a public forum. Apache Pekko does not
+operate a separate project security list.
 
 Please follow the [guidelines](https://www.apache.org/security/) laid down by the Apache Security team.
 
-Ideally, any issues affecting Apache Pekko and Akka should be reported to Apache team first. We will share the
-report with the Lightbend Akka team.
+Ideally, any issues affecting Apache Pekko and its predecessor project should be reported to the Apache Pekko team
+first. We will coordinate responsible disclosure with the affected upstream maintainers when needed.
 
 ## Security Related Documentation
 
- * [Akka security fixes](https://akka.io/security)
+ * [Apache Pekko security announcements](https://pekko.apache.org/docs/pekko/current/security/)
  * @ref:[Java Serialization](../serialization.md#java-serialization)
  * @ref:[Remote deployment allow list](../remoting.md#remote-deployment-allow-list)
- * @ref:[Remote Security](../remoting-artery.md#remote-security)
+ * @ref:[Remote Security](../remote-security.md)
+ * [Security Policy](https://github.com/apache/pekko/blob/main/SECURITY.md)
+ * [Threat Model](https://github.com/apache/pekko/blob/main/THREAT_MODEL.md)

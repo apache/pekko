@@ -19,7 +19,6 @@ import java.util.concurrent.atomic.AtomicInteger
 
 import scala.annotation.nowarn
 import scala.annotation.tailrec
-import scala.collection.immutable
 import scala.concurrent.Await
 import scala.concurrent.duration._
 import scala.reflect.ClassTag
@@ -32,6 +31,7 @@ import pekko.actor.IllegalActorStateException
 import pekko.actor.Terminated
 import pekko.annotation.InternalApi
 import pekko.util.{ BoxedType, Timeout }
+import pekko.util.Helpers.toRootLowerCase
 
 object TestActor {
   type Ignore = Option[PartialFunction[Any, Boolean]]
@@ -253,7 +253,7 @@ trait TestKitBase {
 
   /**
    * Obtain time remaining for execution of the innermost enclosing `within`
-   * block or throw an [[java.lang.AssertionError]] if no `within` block surrounds this
+   * block or throw a [[java.lang.AssertionError]] if no `within` block surrounds this
    * call.
    */
   def remaining: FiniteDuration = end match {
@@ -606,7 +606,7 @@ trait TestKitBase {
   /**
    * Same as `expectMsgAnyClassOf(remainingOrDefault, obj...)`, but correctly treating the timeFactor.
    */
-  def expectMsgAnyClassOf[C](obj: Class[_ <: C]*): C = expectMsgAnyClassOf_internal(remainingOrDefault, obj: _*)
+  def expectMsgAnyClassOf[C](obj: Class[? <: C]*): C = expectMsgAnyClassOf_internal(remainingOrDefault, obj: _*)
 
   /**
    * Receive one message from the test actor and assert that it conforms to
@@ -615,10 +615,10 @@ trait TestKitBase {
    *
    * @return the received object
    */
-  def expectMsgAnyClassOf[C](max: FiniteDuration, obj: Class[_ <: C]*): C =
+  def expectMsgAnyClassOf[C](max: FiniteDuration, obj: Class[? <: C]*): C =
     expectMsgAnyClassOf_internal(max.dilated, obj: _*)
 
-  private def expectMsgAnyClassOf_internal[C](max: FiniteDuration, obj: Class[_ <: C]*): C = {
+  private def expectMsgAnyClassOf_internal[C](max: FiniteDuration, obj: Class[? <: C]*): C = {
     val o = receiveOne(max)
     assert(o ne null, s"timeout ($max) during expectMsgAnyClassOf waiting for ${obj.mkString("(", ", ", ")")}")
     assert(obj.exists(c => BoxedType(c).isInstance(o)), s"found unexpected $o")
@@ -628,7 +628,7 @@ trait TestKitBase {
   /**
    * Same as `expectMsgAllOf(remainingOrDefault, obj...)`, but correctly treating the timeFactor.
    */
-  def expectMsgAllOf[T](obj: T*): immutable.Seq[T] = expectMsgAllOf_internal(remainingOrDefault, obj: _*)
+  def expectMsgAllOf[T](obj: T*): Seq[T] = expectMsgAllOf_internal(remainingOrDefault, obj: _*)
 
   /**
    * Receive a number of messages from the test actor matching the given
@@ -643,7 +643,7 @@ trait TestKitBase {
    *   expectMsgAllOf(1 second, Result1(), Result2())
    * </pre>
    */
-  def expectMsgAllOf[T](max: FiniteDuration, obj: T*): immutable.Seq[T] = expectMsgAllOf_internal(max.dilated, obj: _*)
+  def expectMsgAllOf[T](max: FiniteDuration, obj: T*): Seq[T] = expectMsgAllOf_internal(max.dilated, obj: _*)
 
   private def checkMissingAndUnexpected(
       missing: Seq[Any],
@@ -656,18 +656,18 @@ trait TestKitBase {
       (if (unexpected.isEmpty) "" else unexpected.mkString(unexpectedMessage + " [", ", ", "]")))
   }
 
-  private def expectMsgAllOf_internal[T](max: FiniteDuration, obj: T*): immutable.Seq[T] = {
+  private def expectMsgAllOf_internal[T](max: FiniteDuration, obj: T*): Seq[T] = {
     val recv = receiveN_internal(obj.size, max)
     val missing = obj.filterNot(x => recv.exists(x == _))
     val unexpected = recv.filterNot(x => obj.exists(x == _))
     checkMissingAndUnexpected(missing, unexpected, "not found", "found unexpected")
-    recv.asInstanceOf[immutable.Seq[T]]
+    recv.asInstanceOf[Seq[T]]
   }
 
   /**
    * Same as `expectMsgAllClassOf(remainingOrDefault, obj...)`, but correctly treating the timeFactor.
    */
-  def expectMsgAllClassOf[T](obj: Class[_ <: T]*): immutable.Seq[T] =
+  def expectMsgAllClassOf[T](obj: Class[? <: T]*): Seq[T] =
     internalExpectMsgAllClassOf(remainingOrDefault, obj: _*)
 
   /**
@@ -678,21 +678,21 @@ trait TestKitBase {
    * Wait time is bounded by the given duration, with an AssertionFailure
    * being thrown in case of timeout.
    */
-  def expectMsgAllClassOf[T](max: FiniteDuration, obj: Class[_ <: T]*): immutable.Seq[T] =
+  def expectMsgAllClassOf[T](max: FiniteDuration, obj: Class[? <: T]*): Seq[T] =
     internalExpectMsgAllClassOf(max.dilated, obj: _*)
 
-  private def internalExpectMsgAllClassOf[T](max: FiniteDuration, obj: Class[_ <: T]*): immutable.Seq[T] = {
+  private def internalExpectMsgAllClassOf[T](max: FiniteDuration, obj: Class[? <: T]*): Seq[T] = {
     val recv = receiveN_internal(obj.size, max)
     val missing = obj.filterNot(x => recv.exists(_.getClass eq BoxedType(x)))
     val unexpected = recv.filterNot(x => obj.exists(c => BoxedType(c) eq x.getClass))
     checkMissingAndUnexpected(missing, unexpected, "not found", "found non-matching object(s)")
-    recv.asInstanceOf[immutable.Seq[T]]
+    recv.asInstanceOf[Seq[T]]
   }
 
   /**
    * Same as `expectMsgAllConformingOf(remainingOrDefault, obj...)`, but correctly treating the timeFactor.
    */
-  def expectMsgAllConformingOf[T](obj: Class[_ <: T]*): immutable.Seq[T] =
+  def expectMsgAllConformingOf[T](obj: Class[? <: T]*): Seq[T] =
     internalExpectMsgAllConformingOf(remainingOrDefault, obj: _*)
 
   /**
@@ -706,15 +706,15 @@ trait TestKitBase {
    * Beware that one object may satisfy all given class constraints, which
    * may be counter-intuitive.
    */
-  def expectMsgAllConformingOf[T](max: FiniteDuration, obj: Class[_ <: T]*): immutable.Seq[T] =
+  def expectMsgAllConformingOf[T](max: FiniteDuration, obj: Class[? <: T]*): Seq[T] =
     internalExpectMsgAllConformingOf(max.dilated, obj: _*)
 
-  private def internalExpectMsgAllConformingOf[T](max: FiniteDuration, obj: Class[_ <: T]*): immutable.Seq[T] = {
+  private def internalExpectMsgAllConformingOf[T](max: FiniteDuration, obj: Class[? <: T]*): Seq[T] = {
     val recv = receiveN_internal(obj.size, max)
     val missing = obj.filterNot(x => recv.exists(BoxedType(x).isInstance(_)))
     val unexpected = recv.filterNot(x => obj.exists(c => BoxedType(c).isInstance(x)))
     checkMissingAndUnexpected(missing, unexpected, "not found", "found non-matching object(s)")
-    recv.asInstanceOf[immutable.Seq[T]]
+    recv.asInstanceOf[Seq[T]]
   }
 
   /**
@@ -784,7 +784,7 @@ trait TestKitBase {
    * }}}
    */
   def receiveWhile[T](max: Duration = Duration.Undefined, idle: Duration = Duration.Inf, messages: Int = Int.MaxValue)(
-      f: PartialFunction[AnyRef, T]): immutable.Seq[T] = {
+      f: PartialFunction[AnyRef, T]): Seq[T] = {
     val stop = now + remainingOrDilated(max)
     var msg: Message = NullMessage
 
@@ -818,14 +818,14 @@ trait TestKitBase {
    * Same as `receiveN(n, remaining)` but correctly taking into account
    * Duration.timeFactor.
    */
-  def receiveN(n: Int): immutable.Seq[AnyRef] = receiveN_internal(n, remainingOrDefault)
+  def receiveN(n: Int): Seq[AnyRef] = receiveN_internal(n, remainingOrDefault)
 
   /**
    * Receive N messages in a row before the given deadline.
    */
-  def receiveN(n: Int, max: FiniteDuration): immutable.Seq[AnyRef] = receiveN_internal(n, max.dilated)
+  def receiveN(n: Int, max: FiniteDuration): Seq[AnyRef] = receiveN_internal(n, max.dilated)
 
-  private def receiveN_internal(n: Int, max: Duration): immutable.Seq[AnyRef] = {
+  private def receiveN_internal(n: Int, max: Duration): Seq[AnyRef] = {
     val stop = max + now
     for { x <- 1 to n } yield {
       val timeout = stop - now
@@ -915,7 +915,7 @@ trait TestKitBase {
     expectMsgType[ActorRef]
   }
 
-  private def format(u: TimeUnit, d: Duration) = "%.3f %s".format(d.toUnit(u), u.toString.toLowerCase)
+  private def format(u: TimeUnit, d: Duration) = "%.3f %s".format(d.toUnit(u), toRootLowerCase(u.toString))
 }
 
 /**

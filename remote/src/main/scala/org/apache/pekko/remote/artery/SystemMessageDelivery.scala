@@ -111,7 +111,13 @@ import pekko.util.PrettyDuration.PrettyPrintableDuration
       private def remoteAddressLogParam: String =
         outboundContext.associationState.uniqueRemoteAddress().getOrElse(remoteAddress).toString
 
-      override protected def logSource: Class[_] = classOf[SystemMessageDelivery]
+      private def isFromCurrentRemote(from: UniqueAddress): Boolean =
+        outboundContext.associationState.uniqueRemoteAddress() match {
+          case Some(uniqueRemote) => uniqueRemote == from
+          case None               => from.address == remoteAddress
+        }
+
+      override protected def logSource: Class[?] = classOf[SystemMessageDelivery]
 
       override def preStart(): Unit = {
         val callback = getAsyncCallback[Done] { _ =>
@@ -156,8 +162,8 @@ import pekko.util.PrettyDuration.PrettyPrintableDuration
       // ControlMessageObserver, external call
       override def notify(inboundEnvelope: InboundEnvelope): Unit = {
         inboundEnvelope.message match {
-          case ack: Ack   => if (ack.from.address == remoteAddress) ackCallback.invoke(ack)
-          case nack: Nack => if (nack.from.address == remoteAddress) nackCallback.invoke(nack)
+          case ack: Ack   => if (isFromCurrentRemote(ack.from)) ackCallback.invoke(ack)
+          case nack: Nack => if (isFromCurrentRemote(nack.from)) nackCallback.invoke(nack)
           case _          => // not interested
         }
       }
@@ -351,7 +357,7 @@ import pekko.util.PrettyDuration.PrettyPrintableDuration
 
       def localAddress = inboundContext.localAddress
 
-      override protected def logSource: Class[_] = classOf[SystemMessageAcker]
+      override protected def logSource: Class[?] = classOf[SystemMessageAcker]
 
       // InHandler
       override def onPush(): Unit = {

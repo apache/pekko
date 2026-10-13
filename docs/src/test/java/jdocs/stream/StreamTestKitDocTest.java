@@ -13,11 +13,11 @@
 
 package jdocs.stream;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.Duration;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -35,18 +35,20 @@ import org.apache.pekko.stream.javadsl.*;
 import org.apache.pekko.stream.testkit.*;
 import org.apache.pekko.stream.testkit.javadsl.*;
 import org.apache.pekko.testkit.javadsl.TestKit;
-import org.junit.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 public class StreamTestKitDocTest extends AbstractJavaTest {
 
   static ActorSystem system;
 
-  @BeforeClass
+  @BeforeAll
   public static void setup() {
     system = ActorSystem.create("StreamTestKitDocTest");
   }
 
-  @AfterClass
+  @AfterAll
   public static void tearDown() {
     TestKit.shutdownActorSystem(system);
     system = null;
@@ -61,7 +63,7 @@ public class StreamTestKitDocTest extends AbstractJavaTest {
             .toMat(Sink.fold(0, (agg, next) -> agg + next), Keep.right());
 
     final CompletionStage<Integer> future =
-        Source.from(Arrays.asList(1, 2, 3, 4)).runWith(sinkUnderTest, system);
+        Source.from(List.of(1, 2, 3, 4)).runWith(sinkUnderTest, system);
     final Integer result = future.toCompletableFuture().get(3, TimeUnit.SECONDS);
     assertEquals(20, result.intValue());
     // #strict-collection
@@ -86,7 +88,7 @@ public class StreamTestKitDocTest extends AbstractJavaTest {
         Flow.of(Integer.class).takeWhile(i -> i < 5);
 
     final CompletionStage<Integer> future =
-        Source.from(Arrays.asList(1, 2, 3, 4, 5, 6))
+        Source.from(List.of(1, 2, 3, 4, 5, 6))
             .via(flowUnderTest)
             .runWith(Sink.fold(0, (agg, next) -> agg + next), system);
     final Integer result = future.toCompletableFuture().get(3, TimeUnit.SECONDS);
@@ -98,13 +100,13 @@ public class StreamTestKitDocTest extends AbstractJavaTest {
   public void pipeToTestProbe() throws Exception {
     // #pipeto-testprobe
     final Source<List<Integer>, NotUsed> sourceUnderTest =
-        Source.from(Arrays.asList(1, 2, 3, 4)).grouped(2);
+        Source.from(List.of(1, 2, 3, 4)).grouped(2);
 
     final TestKit probe = new TestKit(system);
     final CompletionStage<List<List<Integer>>> future =
         sourceUnderTest.grouped(2).runWith(Sink.head(), system);
     org.apache.pekko.pattern.Patterns.pipe(future, system.dispatcher()).to(probe.getRef());
-    probe.expectMsg(Duration.ofSeconds(3), Arrays.asList(Arrays.asList(1, 2), Arrays.asList(3, 4)));
+    probe.expectMsg(Duration.ofSeconds(3), List.of(List.of(1, 2), List.of(3, 4)));
     // #pipeto-testprobe
   }
 
@@ -168,7 +170,7 @@ public class StreamTestKitDocTest extends AbstractJavaTest {
   public void testSinkProbe() {
     // #test-sink-probe
     final Source<Integer, NotUsed> sourceUnderTest =
-        Source.from(Arrays.asList(1, 2, 3, 4)).filter(elem -> elem % 2 == 0).map(elem -> elem * 2);
+        Source.from(List.of(1, 2, 3, 4)).filter(elem -> elem % 2 == 0).map(elem -> elem * 2);
 
     sourceUnderTest
         .runWith(TestSink.create(system), system)
@@ -202,7 +204,7 @@ public class StreamTestKitDocTest extends AbstractJavaTest {
     probe.sendError(new Exception("boom"));
 
     ExecutionException exception =
-        Assert.assertThrows(
+        assertThrows(
             ExecutionException.class, () -> future.toCompletableFuture().get(3, TimeUnit.SECONDS));
     assertEquals("boom", exception.getCause().getMessage());
     // #injecting-failure

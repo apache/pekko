@@ -17,7 +17,6 @@ import java.util.Optional
 import java.util.concurrent.ConcurrentHashMap
 
 import scala.annotation.nowarn
-import scala.collection.immutable
 import scala.jdk.CollectionConverters._
 import scala.jdk.OptionConverters._
 import scala.util.{ Failure, Success }
@@ -75,6 +74,11 @@ object JacksonObjectMapperProvider extends ExtensionId[JacksonObjectMapperProvid
       baseConf
   }
 
+  // "unlimited" is accepted as a synonym for -1 in the constraints that treat -1 as no limit
+  private def getLongOrUnlimited(config: Config, path: String): Long =
+    if (config.getString(path) == "unlimited") -1L
+    else config.getLong(path)
+
   private[pekko] def createJsonFactory(
       bindingName: String,
       objectMapperFactory: JacksonObjectMapperFactory,
@@ -86,8 +90,8 @@ object JacksonObjectMapperProvider extends ExtensionId[JacksonObjectMapperProvid
       .maxNumberLength(config.getInt("read.max-number-length"))
       .maxStringLength(config.getInt("read.max-string-length"))
       .maxNameLength(config.getInt("read.max-name-length"))
-      .maxDocumentLength(config.getLong("read.max-document-length"))
-      .maxTokenCount(config.getLong("read.max-token-count"))
+      .maxDocumentLength(getLongOrUnlimited(config, "read.max-document-length"))
+      .maxTokenCount(getLongOrUnlimited(config, "read.max-token-count"))
       .build()
 
     val streamWriteConstraints = StreamWriteConstraints.builder()
@@ -159,7 +163,7 @@ object JacksonObjectMapperProvider extends ExtensionId[JacksonObjectMapperProvid
       .maxNumberLength(config.getInt("read.max-number-length"))
       .maxStringLength(config.getInt("read.max-string-length"))
       .maxNameLength(config.getInt("read.max-name-length"))
-      .maxDocumentLength(config.getLong("read.max-document-length"))
+      .maxDocumentLength(getLongOrUnlimited(config, "read.max-document-length"))
       .build()
 
     val streamWriteConstraints = StreamWriteConstraints.builder()
@@ -320,11 +324,11 @@ object JacksonObjectMapperProvider extends ExtensionId[JacksonObjectMapperProvid
 
   private def configureObjectVisibility(
       bindingName: String,
-      builder: MapperBuilder[ObjectMapper, _],
+      builder: MapperBuilder[ObjectMapper, ?],
       objectMapperFactory: JacksonObjectMapperFactory,
-      config: Config): MapperBuilder[ObjectMapper, _] = {
+      config: Config): MapperBuilder[ObjectMapper, ?] = {
 
-    val configuredVisibility: immutable.Seq[(PropertyAccessor, JsonAutoDetect.Visibility)] =
+    val configuredVisibility: Seq[(PropertyAccessor, JsonAutoDetect.Visibility)] =
       configPairs(config, "visibility").map {
         case (property, visibility) =>
           PropertyAccessor.valueOf(property) -> JsonAutoDetect.Visibility.valueOf(visibility)
@@ -340,17 +344,17 @@ object JacksonObjectMapperProvider extends ExtensionId[JacksonObjectMapperProvid
           case (property, visibility) => localVc = localVc.withVisibility(property, visibility)
         }
         localVc
-      }).asInstanceOf[MapperBuilder[ObjectMapper, _]]
+      }).asInstanceOf[MapperBuilder[ObjectMapper, ?]]
     }
   }
 
   private def configureObjectMapperModules(
       bindingName: String,
-      builder: MapperBuilder[ObjectMapper, _],
+      builder: MapperBuilder[ObjectMapper, ?],
       objectMapperFactory: JacksonObjectMapperFactory,
       config: Config,
       dynamicAccess: DynamicAccess,
-      log: Option[LoggingAdapter]): MapperBuilder[ObjectMapper, _] = {
+      log: Option[LoggingAdapter]): MapperBuilder[ObjectMapper, ?] = {
 
     val configuredModules = config.getStringList("jackson-modules").asScala
     val modules = configuredModules.flatMap { fqcn =>
@@ -380,7 +384,7 @@ object JacksonObjectMapperProvider extends ExtensionId[JacksonObjectMapperProvid
     builder
   }
 
-  private def configPairs(config: Config, section: String): immutable.Seq[(String, String)] = {
+  private def configPairs(config: Config, section: String): Seq[(String, String)] = {
     val cfg = config.getConfig(section)
     cfg.root.keySet().asScala.map(key => key -> cfg.getString(key)).toList
   }
@@ -402,9 +406,9 @@ object JacksonObjectMapperProvider extends ExtensionId[JacksonObjectMapperProvid
     val configuredJsonFactory = createJsonFactory(bindingName, objectMapperFactory, config, jsonFactory)
     val builder = objectMapperFactory.newObjectMapperBuilder(configuredJsonFactory)
     configureObjectMapperFeatures(bindingName, builder, objectMapperFactory, config)
-    configureObjectMapperModules(bindingName, builder.asInstanceOf[MapperBuilder[ObjectMapper, _]],
+    configureObjectMapperModules(bindingName, builder.asInstanceOf[MapperBuilder[ObjectMapper, ?]],
       objectMapperFactory, config, dynamicAccess, log)
-    configureObjectVisibility(bindingName, builder.asInstanceOf[MapperBuilder[ObjectMapper, _]],
+    configureObjectVisibility(bindingName, builder.asInstanceOf[MapperBuilder[ObjectMapper, ?]],
       objectMapperFactory, config)
     builder.build()
   }
@@ -420,10 +424,10 @@ object JacksonObjectMapperProvider extends ExtensionId[JacksonObjectMapperProvid
     val configuredJsonFactory = createCBORFactory(bindingName, objectMapperFactory, config, streamFactory)
     val builder = objectMapperFactory.newCBORMapperBuilder(configuredJsonFactory)
     configureCBORMapperFeatures(bindingName, builder, objectMapperFactory, config)
-    configureObjectMapperModules(bindingName, builder.asInstanceOf[MapperBuilder[ObjectMapper, _]],
+    configureObjectMapperModules(bindingName, builder.asInstanceOf[MapperBuilder[ObjectMapper, ?]],
       objectMapperFactory, config,
       dynamicAccess, log)
-    configureObjectVisibility(bindingName, builder.asInstanceOf[MapperBuilder[ObjectMapper, _]],
+    configureObjectVisibility(bindingName, builder.asInstanceOf[MapperBuilder[ObjectMapper, ?]],
       objectMapperFactory, config)
     builder.build()
   }
@@ -439,7 +443,7 @@ object JacksonObjectMapperProvider extends ExtensionId[JacksonObjectMapperProvid
       case _ => true
     }
 
-  private def features(config: Config, section: String): immutable.Seq[(String, Boolean)] = {
+  private def features(config: Config, section: String): Seq[(String, Boolean)] = {
     val cfg = config.getConfig(section)
     cfg.root.keySet().asScala.map(key => key -> cfg.getBoolean(key)).toList
   }
@@ -613,7 +617,7 @@ class JacksonObjectMapperFactory {
    * the mapper. These modules can be amended programmatically by overriding this method and
    * return the modules that are to be applied to the `ObjectMapper`.
    *
-   * When implementing a `JacksonObjectMapperFactory` with Java the `immutable.Seq` can be
+   * When implementing a `JacksonObjectMapperFactory` with Java the `Seq` can be
    * created with [[pekko.japi.Util.immutableSeq]].
    *
    * @param bindingName bindingName name of this `ObjectMapper`
@@ -622,7 +626,7 @@ class JacksonObjectMapperFactory {
    */
   def overrideConfiguredModules(
       @nowarn("msg=never used") bindingName: String,
-      configuredModules: immutable.Seq[JacksonModule]): immutable.Seq[JacksonModule] =
+      configuredModules: Seq[JacksonModule]): Seq[JacksonModule] =
     configuredModules
 
   /**
@@ -630,7 +634,7 @@ class JacksonObjectMapperFactory {
    * the mapper. These features can be amended programmatically by overriding this method and
    * return the features that are to be applied to the `ObjectMapper`.
    *
-   * When implementing a `JacksonObjectMapperFactory` with Java the `immutable.Seq` can be
+   * When implementing a `JacksonObjectMapperFactory` with Java the `Seq` can be
    * created with [[pekko.japi.Util.immutableSeq]].
    *
    * @param bindingName bindingName name of this `ObjectMapper`
@@ -639,8 +643,8 @@ class JacksonObjectMapperFactory {
    */
   def overrideConfiguredSerializationFeatures(
       @nowarn("msg=never used") bindingName: String,
-      configuredFeatures: immutable.Seq[(SerializationFeature, Boolean)])
-      : immutable.Seq[(SerializationFeature, Boolean)] =
+      configuredFeatures: Seq[(SerializationFeature, Boolean)])
+      : Seq[(SerializationFeature, Boolean)] =
     configuredFeatures
 
   /**
@@ -648,7 +652,7 @@ class JacksonObjectMapperFactory {
    * the mapper. These features can be amended programmatically by overriding this method and
    * return the features that are to be applied to the `ObjectMapper`.
    *
-   * When implementing a `JacksonObjectMapperFactory` with Java the `immutable.Seq` can be
+   * When implementing a `JacksonObjectMapperFactory` with Java the `Seq` can be
    * created with [[pekko.japi.Util.immutableSeq]].
    *
    * @param bindingName bindingName name of this `ObjectMapper`
@@ -657,8 +661,8 @@ class JacksonObjectMapperFactory {
    */
   def overrideConfiguredDeserializationFeatures(
       @nowarn("msg=never used") bindingName: String,
-      configuredFeatures: immutable.Seq[(DeserializationFeature, Boolean)])
-      : immutable.Seq[(DeserializationFeature, Boolean)] =
+      configuredFeatures: Seq[(DeserializationFeature, Boolean)])
+      : Seq[(DeserializationFeature, Boolean)] =
     configuredFeatures
 
   /**
@@ -666,7 +670,7 @@ class JacksonObjectMapperFactory {
    * the mapper. These features can be amended programmatically by overriding this method and
    * return the features that are to be applied to the `ObjectMapper`.
    *
-   * When implementing a `JacksonObjectMapperFactory` with Java the `immutable.Seq` can be
+   * When implementing a `JacksonObjectMapperFactory` with Java the `Seq` can be
    * created with [[pekko.japi.Util.immutableSeq]].
    *
    * @param bindingName bindingName name of this `ObjectMapper`
@@ -675,8 +679,8 @@ class JacksonObjectMapperFactory {
    */
   def overrideConfiguredDateTimeFeatures(
       @nowarn("msg=never used") bindingName: String,
-      configuredFeatures: immutable.Seq[(DateTimeFeature, Boolean)])
-      : immutable.Seq[(DateTimeFeature, Boolean)] =
+      configuredFeatures: Seq[(DateTimeFeature, Boolean)])
+      : Seq[(DateTimeFeature, Boolean)] =
     configuredFeatures
 
   /**
@@ -684,7 +688,7 @@ class JacksonObjectMapperFactory {
    * the mapper. These features can be amended programmatically by overriding this method and
    * return the features that are to be applied to the `ObjectMapper`.
    *
-   * When implementing a `JacksonObjectMapperFactory` with Java the `immutable.Seq` can be
+   * When implementing a `JacksonObjectMapperFactory` with Java the `Seq` can be
    * created with [[pekko.japi.Util.immutableSeq]].
    *
    * @param bindingName bindingName name of this `ObjectMapper`
@@ -693,8 +697,8 @@ class JacksonObjectMapperFactory {
    */
   def overrideConfiguredEnumFeatures(
       @nowarn("msg=never used") bindingName: String,
-      configuredFeatures: immutable.Seq[(EnumFeature, Boolean)])
-      : immutable.Seq[(EnumFeature, Boolean)] =
+      configuredFeatures: Seq[(EnumFeature, Boolean)])
+      : Seq[(EnumFeature, Boolean)] =
     configuredFeatures
 
   /**
@@ -707,7 +711,7 @@ class JacksonObjectMapperFactory {
    */
   def overrideConfiguredMapperFeatures(
       @nowarn("msg=never used") bindingName: String,
-      configuredFeatures: immutable.Seq[(MapperFeature, Boolean)]): immutable.Seq[(MapperFeature, Boolean)] =
+      configuredFeatures: Seq[(MapperFeature, Boolean)]): Seq[(MapperFeature, Boolean)] =
     configuredFeatures
 
   /**
@@ -720,7 +724,7 @@ class JacksonObjectMapperFactory {
    */
   def overrideConfiguredJsonParserFeatures(
       @nowarn("msg=never used") bindingName: String,
-      configuredFeatures: immutable.Seq[(StreamReadFeature, Boolean)]): immutable.Seq[(StreamReadFeature, Boolean)] =
+      configuredFeatures: Seq[(StreamReadFeature, Boolean)]): Seq[(StreamReadFeature, Boolean)] =
     configuredFeatures
 
   /**
@@ -733,8 +737,8 @@ class JacksonObjectMapperFactory {
    */
   def overrideConfiguredJsonGeneratorFeatures(
       @nowarn("msg=never used") bindingName: String,
-      configuredFeatures: immutable.Seq[(StreamWriteFeature, Boolean)])
-      : immutable.Seq[(StreamWriteFeature, Boolean)] =
+      configuredFeatures: Seq[(StreamWriteFeature, Boolean)])
+      : Seq[(StreamWriteFeature, Boolean)] =
     configuredFeatures
 
   /**
@@ -747,7 +751,7 @@ class JacksonObjectMapperFactory {
    */
   def overrideConfiguredStreamReadFeatures(
       @nowarn("msg=never used") bindingName: String,
-      configuredFeatures: immutable.Seq[(StreamReadFeature, Boolean)]): immutable.Seq[(StreamReadFeature, Boolean)] =
+      configuredFeatures: Seq[(StreamReadFeature, Boolean)]): Seq[(StreamReadFeature, Boolean)] =
     configuredFeatures
 
   /**
@@ -760,7 +764,7 @@ class JacksonObjectMapperFactory {
    */
   def overrideConfiguredStreamWriteFeatures(
       @nowarn("msg=never used") bindingName: String,
-      configuredFeatures: immutable.Seq[(StreamWriteFeature, Boolean)]): immutable.Seq[(StreamWriteFeature, Boolean)] =
+      configuredFeatures: Seq[(StreamWriteFeature, Boolean)]): Seq[(StreamWriteFeature, Boolean)] =
     configuredFeatures
 
   /**
@@ -773,7 +777,7 @@ class JacksonObjectMapperFactory {
    */
   def overrideConfiguredJsonReadFeatures(
       @nowarn("msg=never used") bindingName: String,
-      configuredFeatures: immutable.Seq[(JsonReadFeature, Boolean)]): immutable.Seq[(JsonReadFeature, Boolean)] =
+      configuredFeatures: Seq[(JsonReadFeature, Boolean)]): Seq[(JsonReadFeature, Boolean)] =
     configuredFeatures
 
   /**
@@ -786,7 +790,7 @@ class JacksonObjectMapperFactory {
    */
   def overrideConfiguredJsonWriteFeatures(
       @nowarn("msg=never used") bindingName: String,
-      configuredFeatures: immutable.Seq[(JsonWriteFeature, Boolean)]): immutable.Seq[(JsonWriteFeature, Boolean)] =
+      configuredFeatures: Seq[(JsonWriteFeature, Boolean)]): Seq[(JsonWriteFeature, Boolean)] =
     configuredFeatures
 
   /**
@@ -800,8 +804,8 @@ class JacksonObjectMapperFactory {
    */
   def overrideConfiguredVisibility(
       @nowarn("msg=never used") bindingName: String,
-      configuredFeatures: immutable.Seq[(PropertyAccessor, JsonAutoDetect.Visibility)])
-      : immutable.Seq[(PropertyAccessor, JsonAutoDetect.Visibility)] =
+      configuredFeatures: Seq[(PropertyAccessor, JsonAutoDetect.Visibility)])
+      : Seq[(PropertyAccessor, JsonAutoDetect.Visibility)] =
     configuredFeatures
 
 }

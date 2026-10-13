@@ -15,7 +15,7 @@ The `statefulMapConcat` operator doesn't handle upstream's completion signal sin
 
 ## Signature
 
-@apidoc[Flow.statefulMapConcat](Flow) { scala="#statefulMapConcat[T](f:()=&gt;Out=&gt;scala.collection.immutable.Iterable[T]):FlowOps.this.Repr[T]" java="#statefulMapConcat(org.apache.pekko.japi.function.Creator)" } 
+@apidoc[Flow.statefulMapConcat](Flow) { scala="#statefulMapConcat[T](f:()=&gt;Out=&gt;IterableOnce[T]):FlowOps.this.Repr[T]" java="#statefulMapConcat(org.apache.pekko.japi.function.Creator)" } 
 
 ## Description
 

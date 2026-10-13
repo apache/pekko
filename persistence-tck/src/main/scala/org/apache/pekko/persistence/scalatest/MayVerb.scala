@@ -59,7 +59,7 @@ trait MayVerb {
 
   /**
    * Implicitly converts an object of type <code>String</code> to a <code>StringMayWrapper</code>,
-   * to enable <code>may</code> methods to be invokable on that object.
+   * to enable <code>may</code> methods to be invocable on that object.
    */
   implicit def convertToStringMayWrapper(o: String): StringMayWrapperForVerb =
     new StringMayWrapperForVerb {

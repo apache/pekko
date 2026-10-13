@@ -18,7 +18,7 @@ See also:
 * @ref[Source.actorRef](../Source/actorRef.md) This operator without backpressure control
 * @ref[ActorSource.actorRef](../ActorSource/actorRef.md) The operator for the new actors API without backpressure control
 * @ref[ActorSource.actorRefWithBackpressure](../ActorSource/actorRefWithBackpressure.md) The corresponding operator for the new actors API
-* @ref[Source.queue](../Source/queue.md) Materialize a `SourceQueue` onto which elements can be pushed for emitting from the source
+* @ref[Source.queue](../Source/queue.md) Materialize a `BoundedSourceQueue` onto which elements can be pushed for emitting from the source
 
 ## Examples
 

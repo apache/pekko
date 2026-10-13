@@ -15,10 +15,11 @@ package jdocs.stream.operators;
 
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.TimeUnit;
 import jdocs.AbstractJavaTest;
@@ -29,20 +30,20 @@ import org.apache.pekko.japi.Pair;
 import org.apache.pekko.stream.javadsl.*;
 // #imports
 import org.apache.pekko.testkit.javadsl.TestKit;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 public class WithContextTest extends AbstractJavaTest {
 
   static ActorSystem system;
 
-  @BeforeClass
+  @BeforeAll
   public static void setup() {
     system = ActorSystem.create("WithContextTest");
   }
 
-  @AfterClass
+  @AfterAll
   public static void tearDown() {
     TestKit.shutdownActorSystem(system);
     system = null;
@@ -54,7 +55,7 @@ public class WithContextTest extends AbstractJavaTest {
 
     // values with their contexts as pairs
     Collection<Pair<String, Integer>> values =
-        Arrays.asList(Pair.create("eins", 1), Pair.create("zwei", 2), Pair.create("drei", 3));
+        List.of(Pair.create("eins", 1), Pair.create("zwei", 2), Pair.create("drei", 3));
 
     // a regular source with pairs as elements
     Source<Pair<String, Integer>, NotUsed> source = Source.from(values);
@@ -108,7 +109,7 @@ public class WithContextTest extends AbstractJavaTest {
 
     // running the flow with some sample data and asserting the outcome
     Collection<Pair<String, Integer>> values =
-        Arrays.asList(Pair.create("eins", 1), Pair.create("zwei", 2), Pair.create("drei", 3));
+        List.of(Pair.create("eins", 1), Pair.create("zwei", 2), Pair.create("drei", 3));
 
     SourceWithContext<String, Integer, NotUsed> source =
         Source.from(values).asSourceWithContext(Pair::second).map(Pair::first);
@@ -119,5 +120,30 @@ public class WithContextTest extends AbstractJavaTest {
     assertThat(
         list, hasItems(Pair.create("yins", 1), Pair.create("zwyi", 2), Pair.create("dryi", 3)));
     // #asFlowWithContext
+  }
+
+  @Test
+  public void documentWithContextOperators() throws Exception {
+    // #withContextOperators
+    Collection<Pair<String, Integer>> values =
+        List.of(
+            Pair.create("eins", 1),
+            Pair.create("eins", 2),
+            Pair.create("zwei", 3),
+            Pair.create("drei", 4));
+
+    SourceWithContext<String, Integer, NotUsed> filtered =
+        Source.from(values)
+            .asSourceWithContext(Pair::second)
+            .map(Pair::first)
+            .dropRepeated()
+            .mapOption(
+                word -> word.startsWith("z") ? Optional.empty() : Optional.of(word.toUpperCase()))
+            .take(2);
+
+    CompletionStage<List<Pair<String, Integer>>> result = filtered.runWith(Sink.seq(), system);
+    List<Pair<String, Integer>> list = result.toCompletableFuture().get(1, TimeUnit.SECONDS);
+    assertEquals(List.of(Pair.create("EINS", 1), Pair.create("DREI", 4)), list);
+    // #withContextOperators
   }
 }

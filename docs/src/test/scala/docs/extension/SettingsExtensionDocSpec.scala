@@ -29,8 +29,8 @@ import pekko.actor.ClassicActorSystemProvider
 
 //#imports
 
-import org.apache.pekko.actor.Actor
-import org.apache.pekko.testkit.PekkoSpec
+import pekko.actor.Actor
+import pekko.testkit.PekkoSpec
 
 //#extension
 class SettingsImpl(config: Config) extends Extension {

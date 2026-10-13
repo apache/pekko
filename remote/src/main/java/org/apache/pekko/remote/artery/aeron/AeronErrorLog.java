@@ -65,12 +65,12 @@ public class AeronErrorLog {
             lastObservationTimestamp,
             encodedException) -> {
           log.error(
-              String.format(
-                  "Aeron error: %d observations from %s to %s for:%n %s",
-                  observationCount,
-                  Helpers.timestamp(firstObservationTimestamp),
-                  Helpers.timestamp(lastObservationTimestamp),
-                  encodedException));
+              "Aeron error: %d observations from %s to %s for:%n %s"
+                  .formatted(
+                      observationCount,
+                      Helpers.timestamp(firstObservationTimestamp),
+                      Helpers.timestamp(lastObservationTimestamp),
+                      encodedException));
           lastTimestamp.set(Math.max(lastTimestamp.get(), lastObservationTimestamp));
         },
         sinceTimestamp);

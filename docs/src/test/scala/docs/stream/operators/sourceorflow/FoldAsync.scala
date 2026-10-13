@@ -21,19 +21,21 @@ import pekko.stream.scaladsl.Source
 import scala.concurrent.{ ExecutionContext, Future }
 //#imports
 
-object FoldAsync extends App {
+object FoldAsync {
+  def main(args: Array[String]): Unit = {
 
-  implicit val system: ActorSystem = ActorSystem()
-  implicit val ec: ExecutionContext = system.dispatcher
+    implicit val system: ActorSystem = ActorSystem()
+    implicit val ec: ExecutionContext = system.dispatcher
 
-  // #foldAsync
-  case class Histogram(low: Long = 0, high: Long = 0) {
-    def add(i: Int): Future[Histogram] =
-      if (i < 100) Future { copy(low = low + 1) } else Future { copy(high = high + 1) }
+    // #foldAsync
+    case class Histogram(low: Long = 0, high: Long = 0) {
+      def add(i: Int): Future[Histogram] =
+        if (i < 100) Future { copy(low = low + 1) } else Future { copy(high = high + 1) }
+    }
+
+    Source(1 to 150).foldAsync(Histogram())((acc, n) => acc.add(n)).runForeach(println)
+
+    // Prints: Histogram(99,51)
+    // #foldAsync
   }
-
-  Source(1 to 150).foldAsync(Histogram())((acc, n) => acc.add(n)).runForeach(println)
-
-  // Prints: Histogram(99,51)
-  // #foldAsync
 }

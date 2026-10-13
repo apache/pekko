@@ -16,6 +16,8 @@ a function has to be provided to calculate the individual cost of each element.
 
 The throttle operator combines well with the @ref[`queue`](./../Source/queue.md) operator to adapt the speeds on both ends of the `queue`-`throttle` pair.
 
+When a cost-calculation function is supplied, this operator adheres to the ActorAttributes.SupervisionStrategy attribute. On Supervision.Resume the offending element is dropped; Supervision.Restart behaves the same as Supervision.Resume because throttle keeps no accumulated per-element state.
+
 See also @ref:[Buffers and working with rate](../../stream-rate.md) for related operators.
 
 ## Example

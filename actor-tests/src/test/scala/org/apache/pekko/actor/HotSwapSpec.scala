@@ -13,7 +13,8 @@
 
 package org.apache.pekko.actor
 
-import org.apache.pekko.testkit._
+import org.apache.pekko
+import pekko.testkit._
 
 object HotSwapSpec {
   abstract class Becomer extends Actor {}

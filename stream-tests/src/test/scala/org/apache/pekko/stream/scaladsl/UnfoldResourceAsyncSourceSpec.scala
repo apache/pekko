@@ -26,6 +26,7 @@ import pekko.Done
 import pekko.stream.ActorAttributes
 import pekko.stream.Materializer
 import pekko.stream.Supervision
+import pekko.stream.SystemMaterializer
 import pekko.stream.impl.PhasedFusingActorMaterializer
 import pekko.stream.impl.StreamSupervisor
 import pekko.stream.impl.StreamSupervisor.Children
@@ -126,6 +127,40 @@ class UnfoldResourceAsyncSourceSpec extends StreamSpec(UnboundedMailboxConfig) {
       firstRead.success(Done)
 
       resource.closed.futureValue
+    }
+
+    "wait for pending read before closing resource when stream is cancelled" in {
+      val readStarted = Promise[Done]()
+      val readCompleted = Promise[Option[Int]]()
+      val closeProbe = TestProbe()
+      val out = TestSubscriber.manualProbe[Int]()
+
+      val terminated = Source
+        .unfoldResourceAsync[Int, Unit](
+          () => Future.successful(()),
+          _ => {
+            readStarted.success(Done)
+            readCompleted.future
+          },
+          _ => {
+            closeProbe.ref ! readCompleted.isCompleted
+            Future.successful(Done)
+          })
+        .watchTermination(Keep.right)
+        .toMat(Sink.fromSubscriber(out))(Keep.left)
+        .run()
+
+      val subscription = out.expectSubscription()
+      subscription.request(1)
+      readStarted.future.futureValue
+
+      subscription.cancel()
+      terminated.futureValue
+      closeProbe.expectNoMessage(200.millis)
+
+      readCompleted.success(Some(1))
+      closeProbe.expectMsg(true)
+      closeProbe.expectNoMessage(200.millis)
     }
 
     "fail when create throws exception" in {
@@ -325,9 +360,6 @@ class UnfoldResourceAsyncSourceSpec extends StreamSpec(UnboundedMailboxConfig) {
     }
 
     "use dedicated blocking-io-dispatcher by default" in {
-      // use a separate materializer to ensure we know what child is our stream
-      implicit val materializer = Materializer(system)
-
       Source
         .unfoldResourceAsync[String, Unit](
           () => Promise[Unit]().future, // never complete
@@ -335,7 +367,8 @@ class UnfoldResourceAsyncSourceSpec extends StreamSpec(UnboundedMailboxConfig) {
           _ => ???)
         .runWith(Sink.ignore)
 
-      materializer.asInstanceOf[PhasedFusingActorMaterializer].supervisor.tell(StreamSupervisor.GetChildren, testActor)
+      SystemMaterializer(system).materializer.asInstanceOf[PhasedFusingActorMaterializer].supervisor.tell(
+        StreamSupervisor.GetChildren, testActor)
       val ref = expectMsgType[Children].children.find(_.path.toString contains "unfoldResourceSourceAsync").get
       assertDispatcher(ref, ActorAttributes.IODispatcher.dispatcher)
     }

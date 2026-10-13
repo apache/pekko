@@ -10,6 +10,8 @@
 -XX:+UseCompressedOops
 -XX:MetaspaceSize=512M
 -XX:-ClassUnloadingWithConcurrentMark
--Djava.security.egd=file:/dev/./urandom
+# Non-blocking seed source. Keep the plain path: `/dev/./urandom` switches the
+# default SecureRandom away from NativePRNG (to DRBG, or SHA1PRNG on JDK 8).
+-Djava.security.egd=file:/dev/urandom
 -Dpekko.ci-server=true
 -Dio.netty.leakDetection.level=PARANOID

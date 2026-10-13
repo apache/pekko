@@ -14,7 +14,6 @@
 package org.apache.pekko.persistence.typed.internal
 
 import scala.annotation.nowarn
-import scala.collection.immutable
 
 import org.apache.pekko
 import pekko.actor.ActorRef
@@ -54,7 +53,7 @@ private[pekko] trait JournalInteractions[C, E, S] {
   def setup: BehaviorSetup[C, E, S]
 
   protected def internalPersist(
-      ctx: ActorContext[_],
+      ctx: ActorContext[?],
       cmd: Any,
       state: Running.RunningState[S, C],
       event: EventOrTaggedOrReplicated,
@@ -88,15 +87,15 @@ private[pekko] trait JournalInteractions[C, E, S] {
 
   @InternalStableApi
   private[pekko] def onWriteInitiated(
-      @nowarn("msg=never used") ctx: ActorContext[_],
+      @nowarn("msg=never used") ctx: ActorContext[?],
       @nowarn("msg=never used") cmd: Any,
       @nowarn("msg=never used") repr: PersistentRepr): Unit = ()
 
   protected def internalPersistAll(
-      ctx: ActorContext[_],
+      ctx: ActorContext[?],
       cmd: Any,
       state: Running.RunningState[S, C],
-      events: immutable.Seq[EventToPersist]): Running.RunningState[S, C] = {
+      events: Seq[EventToPersist]): Running.RunningState[S, C] = {
     if (events.nonEmpty) {
       var newState = state
 
@@ -129,12 +128,15 @@ private[pekko] trait JournalInteractions[C, E, S] {
 
   @InternalStableApi
   private[pekko] def onWritesInitiated(
-      @nowarn("msg=never used") ctx: ActorContext[_],
+      @nowarn("msg=never used") ctx: ActorContext[?],
       @nowarn("msg=never used") cmd: Any,
-      @nowarn("msg=never used") repr: immutable.Seq[PersistentRepr]): Unit = ()
+      @nowarn("msg=never used") repr: Seq[PersistentRepr]): Unit = ()
 
   protected def replayEvents(fromSeqNr: Long, toSeqNr: Long): Unit = {
     setup.internalLogger.debug2("Replaying events: from: {}, to: {}", fromSeqNr, toSeqNr)
+    setup.journal.tell(
+      JournalProtocol.ReplayMessagesWithBatching(setup.writerIdentity.instanceId),
+      setup.selfClassic)
     setup.journal.tell(
       ReplayMessages(fromSeqNr, toSeqNr, setup.recovery.replayMax, setup.persistenceId.id, setup.selfClassic),
       setup.selfClassic)
@@ -197,7 +199,7 @@ private[pekko] trait SnapshotInteractions[C, E, S] {
   def setup: BehaviorSetup[C, E, S]
 
   /**
-   * Instructs the snapshot store to load the specified snapshot and send it via an [[SnapshotOffer]]
+   * Instructs the snapshot store to load the specified snapshot and send it via a [[SnapshotOffer]]
    * to the running [[PersistentActor]].
    */
   protected def loadSnapshot(criteria: SnapshotSelectionCriteria, toSequenceNr: Long): Unit = {
@@ -223,11 +225,15 @@ private[pekko] trait SnapshotInteractions[C, E, S] {
     }
   }
 
-  /** Deletes the snapshots up to and including the `sequenceNr`. */
-  protected def internalDeleteSnapshots(fromSequenceNr: Long, toSequenceNr: Long): Unit = {
+  /**
+   * Deletes the snapshots up to and including the `sequenceNr`.
+   * Uses `minSequenceNr = 0L` to always delete from the beginning, which simplifies
+   * the retention bookkeeping by removing the need to track a separate lower bound.
+   */
+  protected def internalDeleteSnapshots(toSequenceNr: Long): Unit = {
     if (toSequenceNr > 0) {
-      val snapshotCriteria = SnapshotSelectionCriteria(minSequenceNr = fromSequenceNr, maxSequenceNr = toSequenceNr)
-      setup.internalLogger.debug2("Deleting snapshots from sequenceNr [{}] to [{}]", fromSequenceNr, toSequenceNr)
+      val snapshotCriteria = SnapshotSelectionCriteria(minSequenceNr = 0L, maxSequenceNr = toSequenceNr)
+      setup.internalLogger.debug("Deleting snapshots to sequenceNr [{}]", toSequenceNr)
       setup.snapshotStore
         .tell(SnapshotProtocol.DeleteSnapshots(setup.persistenceId.id, snapshotCriteria), setup.selfClassic)
     }

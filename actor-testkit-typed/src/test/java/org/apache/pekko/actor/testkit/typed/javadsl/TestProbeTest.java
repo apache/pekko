@@ -13,23 +13,20 @@
 
 package org.apache.pekko.actor.testkit.typed.javadsl;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.Duration;
-import java.util.Arrays;
 import java.util.List;
+import org.apache.pekko.actor.testkit.typed.annotations.JUnitJupiterTestKit;
 import org.apache.pekko.actor.testkit.typed.scaladsl.TestProbeSpec;
 import org.apache.pekko.actor.testkit.typed.scaladsl.TestProbeSpec.*;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
-import org.scalatestplus.junit.JUnitSuite;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
-public class TestProbeTest extends JUnitSuite {
+@ExtendWith({TestKitJUnitJupiterExtension.class, LogCapturingExtension.class})
+public class TestProbeTest {
 
-  @ClassRule public static TestKitJunitResource testKit = new TestKitJunitResource();
-
-  @Rule public final LogCapturing logCapturing = new LogCapturing();
+  @JUnitJupiterTestKit public ActorTestKit testKit = new JUnitJupiterTestKitBuilder().build();
 
   @Test
   public void testReceiveMessage() {
@@ -61,10 +58,14 @@ public class TestProbeTest extends JUnitSuite {
     probe.expectNoMessage();
   }
 
-  @Test(expected = AssertionError.class)
+  @Test
   public void testReceiveMessageFailOnTimeout() {
-    TestProbe<EventT> probe = TestProbe.create(testKit.system());
-    probe.receiveMessage(Duration.ofMillis(100));
+    assertThrows(
+        AssertionError.class,
+        () -> {
+          TestProbe<EventT> probe = TestProbe.create(testKit.system());
+          probe.receiveMessage(Duration.ofMillis(100));
+        });
   }
 
   @Test
@@ -92,12 +93,16 @@ public class TestProbeTest extends JUnitSuite {
     assertEquals("some result", awaitAssertResult);
   }
 
-  @Test(expected = Exception.class)
+  @Test
   public void testAwaitAssertThrowingCheckedException() {
-    TestProbe<String> probe = TestProbe.create(testKit.system());
-    probe.awaitAssert(
+    assertThrows(
+        Exception.class,
         () -> {
-          throw new Exception("checked exception");
+          TestProbe<String> probe = TestProbe.create(testKit.system());
+          probe.awaitAssert(
+              () -> {
+                throw new Exception("checked exception");
+              });
         });
   }
 
@@ -126,7 +131,7 @@ public class TestProbeTest extends JUnitSuite {
               else if (message.equals("two")) return FishingOutcomes.complete();
               else return FishingOutcomes.fail("error");
             });
-    assertEquals(Arrays.asList("two"), results);
+    assertEquals(List.of("two"), results);
   }
 
   @Test

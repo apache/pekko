@@ -13,7 +13,7 @@
 
 package jdocs.stream;
 
-import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
@@ -27,20 +27,20 @@ import org.apache.pekko.stream.javadsl.*;
 import org.apache.pekko.stream.javadsl.Tcp.OutgoingConnection;
 import org.apache.pekko.testkit.javadsl.TestKit;
 import org.apache.pekko.util.ByteString;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 public class CompositionDocTest extends AbstractJavaTest {
 
   static ActorSystem system;
 
-  @BeforeClass
+  @BeforeAll
   public static void setup() {
     system = ActorSystem.create("CompositionDocTest");
   }
 
-  @AfterClass
+  @AfterAll
   public static void tearDown() {
     TestKit.shutdownActorSystem(system);
     system = null;
@@ -199,7 +199,7 @@ public class CompositionDocTest extends AbstractJavaTest {
                 builder -> {
                   final UniformFanInShape<Integer, Integer> merge = builder.add(Merge.create(2));
                   builder.from(builder.add(Source.single(0))).toFanIn(merge);
-                  builder.from(builder.add(Source.from(Arrays.asList(2, 3, 4)))).toFanIn(merge);
+                  builder.from(builder.add(Source.from(List.of(2, 3, 4)))).toFanIn(merge);
                   // Exposing exactly one output port
                   return new SourceShape<Integer>(merge.out());
                 }));

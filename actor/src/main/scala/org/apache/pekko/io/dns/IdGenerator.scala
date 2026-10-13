@@ -18,10 +18,11 @@
 package org.apache.pekko.io.dns
 
 import java.security.SecureRandom
-import java.util.Random
 import java.util.concurrent.ThreadLocalRandom
+import java.util.random.RandomGenerator
 
-import org.apache.pekko.annotation.InternalApi
+import org.apache.pekko
+import pekko.annotation.InternalApi
 
 /**
  * INTERNAL API
@@ -62,10 +63,10 @@ private[pekko] object IdGenerator {
   /**
    * @return a random sequence of ids for production
    */
-  def random(rand: java.util.Random): IdGenerator =
+  def random(rand: RandomGenerator): IdGenerator =
     () => (rand.nextInt(UnsignedShortBound) + Short.MinValue).toShort
 
-  private[pekko] class EnhancedDoubleHashGenerator(seed: Random) extends IdGenerator {
+  private[pekko] class EnhancedDoubleHashGenerator(seed: RandomGenerator) extends IdGenerator {
 
     /**
      * An efficient thread safe generator of pseudo random shorts based on

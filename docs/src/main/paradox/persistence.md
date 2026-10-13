@@ -136,6 +136,17 @@ until other recoveries have been completed. This is configured by:
 pekko.persistence.max-concurrent-recoveries = 50
 ```
 
+Journal plugins based on `AsyncWriteJournal` also bound each individual recovery. They replay at most
+`replay-batch-size` event sequence numbers and wait until the recovering actor has processed that batch before
+requesting the next one. The default is `1000`; it can be changed in the journal plugin configuration, for example:
+
+```
+pekko.persistence.journal.my-plugin.replay-batch-size = 500
+```
+
+This setting limits replay pressure on the persistent actor's mailbox without limiting the total number of events
+that are recovered.
+
 @@@ note
 
 Accessing the @scala[`sender()`]@java[sender with `getSender()`] for replayed messages will always result in a `deadLetters` reference,
@@ -204,13 +215,17 @@ The actor will always receive a `RecoveryCompleted` message, even if there are n
 in the journal and the snapshot store is empty, or if it's a new persistent actor with a previously
 unused `persistenceId`.
 
+If handling `RecoveryCompleted` throws an exception, the failure is reported to the parent supervisor
+as an `ActorInitializationException`. The default supervision strategy stops the actor, while a custom
+supervision strategy may resume or restart it.
+
 If there is a problem with recovering the state of the actor from the journal, `onRecoveryFailure`
 is called (logging the error by default) and the actor will be stopped.
 
 ### Internal stash
 
 The persistent actor has a private @ref:[stash](actors.md#stash) for internally caching incoming messages during
-[recovery](#recovery) or the @scala[@scaladoc[persist](pekko.persistence.PersistentActor#persist[A](event:A)(handler:A=%3EUnit):Unit)]@java[@javadoc[persist](pekko.persistence.AbstractPersistentActorLike#persist(A,org.apache.pekko.japi.Procedure))]\@scala[@scaladoc[persistAll](pekko.persistence.PersistentActor#persistAll[A](events:Seq[A])(handler:A=%3EUnit):Unit)]@java[@javadoc[persistAll](pekko.persistence.AbstractPersistentActorLike#persistAll(java.lang.Iterable,org.apache.pekko.japi.Procedure))] method persisting events. You can still use/inherit from the
+[recovery](#recovery) or the @scala[@scaladoc[persist](pekko.persistence.PersistentActor#persist[A](event:A)(handler:A=%3EUnit):Unit)]@java[@javadoc[persist](pekko.persistence.AbstractPersistentActorLike#persist(A,org.apache.pekko.japi.Procedure))]@scala[ or @scaladoc[persistAll](pekko.persistence.PersistentActor#persistAll[A](events:Seq[A])(handler:A=%3EUnit):Unit)]@java[ or @javadoc[persistAll](pekko.persistence.AbstractPersistentActorLike#persistAll(java.lang.Iterable,org.apache.pekko.japi.Procedure))] method persisting events. You can still use/inherit from the
 @apidoc[actor.Stash] interface. The internal stash cooperates with the normal stash by hooking into @apidoc[unstashAll](actor.Stash) {scala="#unstashAll():Unit" java="#unstashAll()"}
 making sure messages are unstashed properly to the internal stash to maintain ordering guarantees.
 
@@ -606,7 +621,7 @@ saved snapshot matches the specified `SnapshotSelectionCriteria` will replay all
 In order to use snapshots, a default snapshot-store (`pekko.persistence.snapshot-store.plugin`) must be configured,
 or the @scala[`PersistentActor`]@java[persistent actor] can pick a snapshot store explicitly by overriding @scala[`def snapshotPluginId: String`]@java[`String snapshotPluginId()`].
 
-Because some use cases may not benefit from or need snapshots, it is perfectly valid not to not configure a snapshot store.
+Because some use cases may not benefit from or need snapshots, it is perfectly valid not to configure a snapshot store.
 However, Pekko will log a warning message when this situation is detected and then continue to operate until
 an actor tries to store a snapshot, at which point the operation will fail (by replying with an @apidoc[persistence.SaveSnapshotFailure] for example).
 
@@ -619,7 +634,7 @@ Note that the "persistence mode" of @ref:[Cluster Sharding](cluster-sharding.md)
 A persistent actor can delete individual snapshots by calling the @apidoc[deleteSnapshot](persistence.Snapshotter) {scala="#deleteSnapshot(sequenceNr:Long):Unit" java="#deleteSnapshot(long)"} method with the sequence number of
 when the snapshot was taken.
 
-To bulk-delete a range of snapshots matching scala/org/apache/pekko/persistence.SnapshotSelectionCriteria],
+To bulk-delete a range of snapshots matching @apidoc[persistence.SnapshotSelectionCriteria],
 persistent actors should use the @apidoc[deleteSnapshots](persistence.Snapshotter) {scala="#deleteSnapshots(criteria:org.apache.pekko.persistence.SnapshotSelectionCriteria):Unit" java="#deleteSnapshots(org.apache.pekko.persistence.SnapshotSelectionCriteria)"} method. Depending on the journal used this might be inefficient. It is 
 best practice to do specific deletes with `deleteSnapshot` or to include a `minSequenceNr` as well as a `maxSequenceNr`
 for the `SnapshotSelectionCriteria`.
@@ -707,7 +722,7 @@ the persistent actor will resend these before sending any other messages.
 
 Deliver requires a `deliveryIdToMessage` function to pass the provided `deliveryId` into the message so that the correlation
 between `deliver` and `confirmDelivery` is possible. The `deliveryId` must do the round trip. Upon receipt
-of the message, the destination actor will send the same``deliveryId`` wrapped in a confirmation message back to the sender.
+of the message, the destination actor will send the same `deliveryId` wrapped in a confirmation message back to the sender.
 The sender will then use it to call `confirmDelivery` method to complete the delivery routine.
 
 Scala
@@ -745,7 +760,7 @@ The default value can be configured with the `pekko.persistence.at-least-once-de
 configuration key. The method can be overridden by implementation classes to return non-default values.
 
 The maximum number of messages that will be sent at each redelivery burst is defined by the
-@apidoc[redeliverBurstLimit](persistence.AtLeastOnceDeliveryLike) {scala="#redeliveryBurstLimit:Int" java="#redeliveryBurstLimit()"} method (burst frequency is half of the redelivery interval). If there's a lot of
+@apidoc[redeliveryBurstLimit](persistence.AtLeastOnceDeliveryLike) {scala="#redeliveryBurstLimit:Int" java="#redeliveryBurstLimit()"} method (burst frequency is half of the redelivery interval). If there's a lot of
 unconfirmed messages (e.g. if the destination is not available for a long time), this helps to prevent an overwhelming
 amount of messages to be sent at once. The default value can be configured with the
 `pekko.persistence.at-least-once-delivery.redelivery-burst-limit` configuration key. The method can be overridden
@@ -760,7 +775,7 @@ configuration key. The method can be overridden by implementation classes to ret
 
 The @scala[@scaladoc[AtLeastOnceDelivery](pekko.persistence.AtLeastOnceDelivery) trait]@java[@javadoc[AbstractPersistentActorWithAtLeastOnceDelivery](pekko.persistence.AbstractPersistentActorWithAtLeastOnceDelivery) class] holds messages in memory until their successful delivery has been confirmed.
 The maximum number of unconfirmed messages that the actor is allowed to hold in memory
-is defined by the @apidoc[maxUnconfirmedMessages](persistence.AtLeastOnceDeliveryLike) {scala="#maxUnconfirmedMessages:Int" java="#maxUnconfirmedMessages()"} method. If this limit is exceed the `deliver` method will
+is defined by the @apidoc[maxUnconfirmedMessages](persistence.AtLeastOnceDeliveryLike) {scala="#maxUnconfirmedMessages:Int" java="#maxUnconfirmedMessages()"} method. If this limit is exceeded the `deliver` method will
 not accept more messages and it will throw @apidoc[AtLeastOnceDelivery.MaxUnconfirmedMessagesExceededException].
 The default value can be configured with the `pekko.persistence.at-least-once-delivery.max-unconfirmed-messages`
 configuration key. The method can be overridden by implementation classes to return non-default values.
@@ -821,7 +836,7 @@ it must add
 
 @@snip [PersistenceSerializerDocSpec.scala](/docs/src/test/scala/docs/persistence/PersistenceSerializerDocSpec.scala) { #custom-serializer-config }
 
-to the application configuration. If not specified, an exception will be throw when trying to persist events or snapshots.
+to the application configuration. If not specified, an exception will be thrown when trying to persist events or snapshots.
 
 For more advanced schema evolution techniques refer to the @ref:[Persistence - Schema Evolution](persistence-schema-evolution.md) documentation.
 
@@ -844,12 +859,13 @@ in your Pekko configuration. Also note that for the LevelDB Java port, you will 
 @@dependency[sbt,Maven,Gradle] {
   group="org.iq80.leveldb"
   artifact="leveldb"
-  version="0.9"
+  version="0.12"
 }
 
-@@@ note { title="Java 17" }
+@@@ note
 
-When using LevelDB with Java 17 you have to add JVM flag `--add-opens=java.base/java.nio=ALL-UNNAMED`.
+LevelDB requires the JVM flag `--add-opens=java.base/java.nio=ALL-UNNAMED` on the JDK 17+ runtimes required by
+this Pekko version.
 
 @@@
 

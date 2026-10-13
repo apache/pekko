@@ -24,6 +24,9 @@ page describes how to use dispatchers with `pekko-actor-typed`, which has depend
 A Pekko `MessageDispatcher` is what makes Pekko Actors "tick", it is the engine of the machine so to speak.
 All `MessageDispatcher` implementations are also an @scala[`ExecutionContext`]@java[`Executor`], which means that they can be used
 to execute arbitrary code, for instance @scala[`Future`s]@java[`CompletableFuture`s].
+On fork-join dispatchers, a worker waiting for fork/join subtasks can help execute other tasks submitted to the same dispatcher.
+This nested execution is supported, but work that blocks on external resources should still use a dedicated dispatcher as described
+in @ref:[Blocking Needs Careful Management](#blocking-needs-careful-management).
 
 ## Default dispatcher
 
@@ -99,7 +102,7 @@ There are 2 different types of message dispatchers:
     * Use cases: Default dispatcher, Bulkheading
     * Driven by: `java.util.concurrent.ExecutorService`.
       Specify using "executor" using "fork-join-executor", "thread-pool-executor" or the fully-qualified
-      class name of an `org.apache.pekko.dispatcher.ExecutorServiceConfigurator` implementation.
+      class name of an `org.apache.pekko.dispatch.ExecutorServiceConfigurator` implementation.
 
 * **PinnedDispatcher**
 
@@ -125,13 +128,26 @@ section and the `default-dispatcher` section of the @ref:[configuration](../gene
 The `parallelism-max` for the `fork-join-executor` does not set the upper bound on the total number of threads
 allocated by the ForkJoinPool. It is a setting specifically talking about the number of *hot*
 threads the pool will keep running in order to reduce the latency of handling a new incoming task.
-You can read more about parallelism in the JDK's [ForkJoinPool documentation](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ForkJoinPool.html).
+You can read more about parallelism in the JDK's [ForkJoinPool documentation](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/ForkJoinPool.html).
 
-When Running on Java 9+, you can use `maximum-pool-size` to set the upper bound on the total number of threads allocated by the ForkJoinPool.
+You can use `maximum-pool-size` to set the upper bound on the total number of threads allocated by the ForkJoinPool.
+
+When running on Java 25+, the `minimum-runnable` setting for the `fork-join-executor` defaults to a JDK-aware value
+(`min(8, max(1, parallelism / 2))`) instead of the historical `1`. This raises the number of compensation threads the
+pool will create when workers block, mitigating the asyncMode (FIFO) compensation regression tracked in
+[JDK-8300995](https://bugs.openjdk.org/browse/JDK-8300995) / [JDK-8321335](https://bugs.openjdk.org/browse/JDK-8321335)
+that, in Pekko nightly tests, surfaces most clearly on the JDK 25 line and can cause actor-heavy workloads to starve.
+Set `minimum-runnable` explicitly (any non-negative integer) to opt out of the auto-selection — for example
+`minimum-runnable = 1` restores the previous default, and `minimum-runnable = 0` disables compensation entirely.
 
 **Experimental**: When Running on Java 21+, you can use `virtualize=on` to enable the virtual threads feature.
-When using virtual threads, all virtual threads will use the same `unparker`, so you may want to
-increase the number of `jdk.unparker.maxPoolSize`.
+When `virtualize=on` is used with a dispatcher executor such as `fork-join-executor` or `thread-pool-executor`, Pekko
+uses that dispatcher's own executor as the virtual-thread scheduler. This preserves dispatcher isolation instead of
+routing all virtual threads through the JVM-wide default virtual-thread scheduler. The JVM still uses a shared
+`unparker`, so you may want to increase the number of `jdk.unparker.maxPoolSize`.
+The setting can also be enabled with a system property such as
+`-Dpekko.actor.default-dispatcher.fork-join-executor.virtualize=on`. Pekko's reference configuration keeps it `off` by
+default; use an explicit application or test configuration when opting in.
 
 #### Requirements
 
@@ -145,7 +161,7 @@ increase the number of `jdk.unparker.maxPoolSize`.
 @@@ note
 
 The `thread-pool-executor` dispatcher is implemented using by a `java.util.concurrent.ThreadPoolExecutor`.
-You can read more about it in the JDK's [ThreadPoolExecutor documentation](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ThreadPoolExecutor.html).
+You can read more about it in the JDK's [ThreadPoolExecutor documentation](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/ThreadPoolExecutor.html).
 
 @@@
 
@@ -221,7 +237,7 @@ Java
 
 Here the app is sending 100 messages to `BlockingActor`s and `PrintActor`s and large numbers
 of `pekko.actor.default-dispatcher` threads are handling requests. When you run the above code,
-you will likely to see the entire application gets stuck somewhere like this:
+you will likely see the entire application gets stuck somewhere like this:
 
 ```
 >　PrintActor: 44
@@ -244,7 +260,7 @@ The orange portion of the thread shows that it is idle. Idle threads are fine -
 they're ready to accept new work. However, a large number of turquoise (blocked, or sleeping as in our example) threads
 leads to thread starvation.
 
-![dispatcher-behaviour-on-bad-code.png](../images/dispatcher-behaviour-on-bad-code.png)
+![dispatcher-behavior-on-bad-code.png](../images/dispatcher-behavior-on-bad-code.png)
 
 In the above example we put the code under load by sending hundreds of messages to blocking actors
 which causes threads of the default dispatcher to be blocked.
@@ -316,7 +332,7 @@ Java
 
 The thread pool behavior is shown in the below diagram.
 
-![dispatcher-behaviour-on-good-code.png](../images/dispatcher-behaviour-on-good-code.png)
+![dispatcher-behavior-on-good-code.png](../images/dispatcher-behavior-on-good-code.png)
 
 Messages sent to @scala[`SeparateDispatcherFutureActor`]@java[`SeparateDispatcherCompletionStageActor`] and `PrintActor` are handled by the default dispatcher - the
 green lines, which represent the actual execution.
@@ -378,8 +394,11 @@ Configuring a dispatcher with virtual threads, requires Java 21 or above:
 
 @@snip [DispatcherDocSpec.scala](/docs/src/test/scala/docs/dispatcher/DispatcherDocSpec.scala) { #virtual-thread-dispatcher-config }
 
-With this, an actor will run in a virtual thread, so you may want to configure it further with :
-`jdk.virtualThreadScheduler.parallelism` ,`jdk.virtualThreadScheduler.maxPoolSize` and `jdk.unparker.maxPoolSize`.
+With this, an actor will run in a virtual thread, so you may want to configure it further with
+dispatcher pool settings such as `parallelism-min` and `parallelism-max`, and with `jdk.unparker.maxPoolSize` if the
+shared unparker becomes a bottleneck.
+You can enable the same setting from the command line with a system property such as
+`-Dpekko.actor.default-dispatcher.fork-join-executor.virtualize=on`.
 
 ### Fixed pool size
 

@@ -21,57 +21,65 @@ import scala.concurrent.duration._
 import org.apache.pekko
 import pekko.{ actor => classic }
 import pekko.annotation.InternalApi
+import pekko.util.OptionVal
 
 @InternalApi
 private[pekko] object ActorContextAdapter {
 
-  private def toClassicImp[U](context: TypedActorContext[_]): classic.ActorContext =
+  private def toClassicImp[U](context: TypedActorContext[?]): classic.ActorContext =
     context match {
-      case adapter: ActorContextAdapter[_] => adapter.classicContext
+      case adapter: ActorContextAdapter[?] => adapter.classicActorContext
       case _                               =>
         throw new UnsupportedOperationException(
           "Only adapted classic ActorContext permissible " +
           s"($context of class ${context.getClass.getName})")
     }
 
-  def toClassic[U](context: scaladsl.ActorContext[_]): classic.ActorContext =
+  def toClassic[U](context: scaladsl.ActorContext[?]): classic.ActorContext =
     toClassicImp(context)
 
-  def toClassic[U](context: javadsl.ActorContext[_]): classic.ActorContext =
+  def toClassic[U](context: javadsl.ActorContext[?]): classic.ActorContext =
     toClassicImp(context)
 }
 
 /**
- * INTERNAL API. Wrapping an [[pekko.actor.ActorContext]] as an [[TypedActorContext]].
+ * INTERNAL API. Wrapping a [[pekko.actor.ActorContext]] as a [[TypedActorContext]].
  */
-@InternalApi private[pekko] final class ActorContextAdapter[T](
-    val classicContext: classic.ActorContext,
-    adapter: ActorAdapter[T])
+@InternalApi private[pekko] final class ActorContextAdapter[T](adapter: ActorAdapter[T])
     extends ActorContextImpl[T] {
 
   import ActorRefAdapter.toClassic
 
   private[pekko] override def currentBehavior: Behavior[T] = adapter.currentBehavior
 
-  final override val self = ActorRefAdapter(classicContext.self)
-  final override val system = ActorSystemAdapter(classicContext.system)
-  private[pekko] def classicActorContext = classicContext
+  // optimization to avoid adapter allocation unless used
+  // self documented as thread safe, on purpose not volatile since
+  // lazily created because creating adapter is idempotent
+  private var _self: OptionVal[ActorRef[T]] = OptionVal.None
+  override def self: ActorRef[T] = {
+    if (_self.isEmpty) {
+      _self = OptionVal.Some(ActorRefAdapter(classicActorContext.self))
+    }
+    _self.get
+  }
+  override def system = ActorSystemAdapter(classicActorContext.system)
+  private[pekko] def classicActorContext = adapter.context
   override def children: Iterable[ActorRef[Nothing]] = {
     checkCurrentActorThread()
-    classicContext.children.map(ActorRefAdapter(_))
+    classicActorContext.children.map(ActorRefAdapter(_))
   }
   override def child(name: String): Option[ActorRef[Nothing]] = {
     checkCurrentActorThread()
-    classicContext.child(name).map(ActorRefAdapter(_))
+    classicActorContext.child(name).map(ActorRefAdapter(_))
   }
   override def spawnAnonymous[U](behavior: Behavior[U], props: Props = Props.empty): ActorRef[U] = {
     checkCurrentActorThread()
-    ActorRefFactoryAdapter.spawnAnonymous(classicContext, behavior, props, rethrowTypedFailure = true)
+    ActorRefFactoryAdapter.spawnAnonymous(classicActorContext, behavior, props, rethrowTypedFailure = true)
   }
 
   override def spawn[U](behavior: Behavior[U], name: String, props: Props = Props.empty): ActorRef[U] = {
     checkCurrentActorThread()
-    ActorRefFactoryAdapter.spawn(classicContext, behavior, name, props, rethrowTypedFailure = true)
+    ActorRefFactoryAdapter.spawn(classicActorContext, behavior, name, props, rethrowTypedFailure = true)
   }
 
   override def stop[U](child: ActorRef[U]): Unit = {
@@ -79,12 +87,12 @@ private[pekko] object ActorContextAdapter {
     if (child.path.parent == self.path) { // only if a direct child
       toClassic(child) match {
         case f: pekko.actor.FunctionRef =>
-          val cell = classicContext.asInstanceOf[pekko.actor.ActorCell]
+          val cell = classicActorContext.asInstanceOf[pekko.actor.ActorCell]
           cell.removeFunctionRef(f)
         case c =>
-          classicContext.child(child.path.name) match {
+          classicActorContext.child(child.path.name) match {
             case Some(`c`) =>
-              classicContext.stop(c)
+              classicActorContext.stop(c)
             case _ =>
             // child that was already stopped
           }
@@ -105,37 +113,37 @@ private[pekko] object ActorContextAdapter {
 
   override def watch[U](other: ActorRef[U]): Unit = {
     checkCurrentActorThread()
-    classicContext.watch(toClassic(other))
+    classicActorContext.watch(toClassic(other))
   }
   override def watchWith[U](other: ActorRef[U], msg: T): Unit = {
     checkCurrentActorThread()
-    classicContext.watchWith(toClassic(other), msg)
+    classicActorContext.watchWith(toClassic(other), msg)
   }
   override def unwatch[U](other: ActorRef[U]): Unit = {
     checkCurrentActorThread()
-    classicContext.unwatch(toClassic(other))
+    classicActorContext.unwatch(toClassic(other))
   }
   var receiveTimeoutMsg: T = null.asInstanceOf[T]
   override def setReceiveTimeout(d: FiniteDuration, msg: T): Unit = {
     checkCurrentActorThread()
     receiveTimeoutMsg = msg
-    classicContext.setReceiveTimeout(d)
+    classicActorContext.setReceiveTimeout(d)
   }
   override def cancelReceiveTimeout(): Unit = {
     checkCurrentActorThread()
 
     receiveTimeoutMsg = null.asInstanceOf[T]
-    classicContext.setReceiveTimeout(Duration.Undefined)
+    classicActorContext.setReceiveTimeout(Duration.Undefined)
   }
-  override def executionContext: ExecutionContextExecutor = classicContext.dispatcher
+  override def executionContext: ExecutionContextExecutor = classicActorContext.dispatcher
   override def scheduleOnce[U](delay: FiniteDuration, target: ActorRef[U], msg: U): classic.Cancellable = {
-    import classicContext.dispatcher
-    classicContext.system.scheduler.scheduleOnce(delay, toClassic(target), msg)
+    classicActorContext.system.scheduler.scheduleOnce(delay, toClassic(target), msg)(classicActorContext.dispatcher)
   }
   override private[pekko] def internalSpawnMessageAdapter[U](f: U => T, _name: String): ActorRef[U] = {
-    val cell = classicContext.asInstanceOf[pekko.actor.ActorCell]
+    val cell = classicActorContext.asInstanceOf[pekko.actor.ActorCell]
     // apply the function inside the actor by wrapping the msg and f, handled by ActorAdapter
-    val ref = cell.addFunctionRef((_, msg) => classicContext.self ! AdaptMessage[U, T](msg.asInstanceOf[U], f), _name)
+    val ref =
+      cell.addFunctionRef((_, msg) => classicActorContext.self ! AdaptMessage[U, T](msg.asInstanceOf[U], f), _name)
     ActorRefAdapter[U](ref)
   }
 

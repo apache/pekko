@@ -20,7 +20,6 @@ import org.apache.pekko.actor.typed.javadsl.ActorContext;
 import org.apache.pekko.actor.typed.javadsl.Behaviors;
 import org.apache.pekko.persistence.typed.DeleteEventsFailed;
 import org.apache.pekko.persistence.typed.DeleteSnapshotsFailed;
-import org.apache.pekko.persistence.typed.RecoveryCompleted;
 import org.apache.pekko.persistence.typed.SnapshotFailed;
 import org.apache.pekko.persistence.typed.SnapshotSelectionCriteria;
 import org.apache.pekko.persistence.typed.javadsl.CommandHandler;
@@ -97,13 +96,7 @@ public class BasicPersistentBehaviorTest {
       // #command
       interface Command {}
 
-      public static class Add implements Command {
-        public final String data;
-
-        public Add(String data) {
-          this.data = data;
-        }
-      }
+      public record Add(String data) implements Command {}
 
       public enum Clear implements Command {
         INSTANCE
@@ -111,17 +104,12 @@ public class BasicPersistentBehaviorTest {
 
       interface Event {}
 
-      public static class Added implements Event {
-        public final String data;
-
-        public Added(String data) {
-          this.data = data;
-        }
-      }
+      public record Added(String data) implements Event {}
 
       public enum Cleared implements Event {
         INSTANCE
       }
+
       // #command
 
       // #state
@@ -144,6 +132,7 @@ public class BasicPersistentBehaviorTest {
           return new State(latest);
         }
       }
+
       // #state
 
       // #behavior
@@ -167,10 +156,11 @@ public class BasicPersistentBehaviorTest {
       public CommandHandler<Command, Event, State> commandHandler() {
         return newCommandHandlerBuilder()
             .forAnyState()
-            .onCommand(Add.class, command -> Effect().persist(new Added(command.data)))
+            .onCommand(Add.class, command -> Effect().persist(new Added(command.data())))
             .onCommand(Clear.class, command -> Effect().persist(Cleared.INSTANCE))
             .build();
       }
+
       // #command-handler
 
       // #event-handler
@@ -178,7 +168,7 @@ public class BasicPersistentBehaviorTest {
       public EventHandler<State, Event> eventHandler() {
         return newEventHandlerBuilder()
             .forAnyState()
-            .onEvent(Added.class, (state, event) -> state.addItem(event.data))
+            .onEvent(Added.class, (state, event) -> state.addItem(event.data()))
             .onEvent(Cleared.class, () -> new State())
             .build();
       }
@@ -195,13 +185,7 @@ public class BasicPersistentBehaviorTest {
 
       interface Command {}
 
-      public static class Add implements Command {
-        public final String data;
-
-        public Add(String data) {
-          this.data = data;
-        }
-      }
+      public record Add(String data) implements Command {}
 
       public enum Clear implements Command {
         INSTANCE
@@ -209,13 +193,7 @@ public class BasicPersistentBehaviorTest {
 
       interface Event {}
 
-      public static class Added implements Event {
-        public final String data;
-
-        public Added(String data) {
-          this.data = data;
-        }
-      }
+      public record Added(String data) implements Event {}
 
       public enum Cleared implements Event {
         INSTANCE
@@ -270,7 +248,7 @@ public class BasicPersistentBehaviorTest {
 
       private Effect<Event, State> onAdd(Add command) {
         return Effect()
-            .persist(new Added(command.data))
+            .persist(new Added(command.data()))
             .thenRun(newState -> subscriber.tell(newState));
       }
 
@@ -287,7 +265,7 @@ public class BasicPersistentBehaviorTest {
       public EventHandler<State, Event> eventHandler() {
         return newEventHandlerBuilder()
             .forAnyState()
-            .onEvent(Added.class, (state, event) -> state.addItem(event.data))
+            .onEvent(Added.class, (state, event) -> state.addItem(event.data()))
             .onEvent(Cleared.class, () -> new State())
             .build();
       }
@@ -307,6 +285,7 @@ public class BasicPersistentBehaviorTest {
       interface Event {}
 
       public static class State {}
+
       // #supervision
 
       public static Behavior<Command> create(PersistenceId persistenceId) {
@@ -347,12 +326,13 @@ public class BasicPersistentBehaviorTest {
       public SignalHandler<State> signalHandler() {
         return newSignalHandlerBuilder()
             .onSignal(
-                RecoveryCompleted.instance(),
+                org.apache.pekko.persistence.typed.RecoveryCompleted.instance(),
                 state -> {
                   throw new RuntimeException("TODO: add some end-of-recovery side-effect here");
                 })
             .build();
       }
+
       // #recovery
 
       // #recovery-disabled
@@ -360,6 +340,7 @@ public class BasicPersistentBehaviorTest {
       public Recovery recovery() {
         return Recovery.disabled();
       }
+
       // #recovery-disabled
 
       // #tagging
@@ -389,6 +370,7 @@ public class BasicPersistentBehaviorTest {
       interface Event {}
 
       public static class State {}
+
       // #wrapPersistentBehavior
 
       public static Behavior<Command> create(PersistenceId persistenceId) {
@@ -430,6 +412,7 @@ public class BasicPersistentBehaviorTest {
       public Optional<Integer> stashCapacity() {
         return Optional.of(100);
       }
+
       // #custom-stash-buffer
 
       // #wrapPersistentBehavior
@@ -526,6 +509,7 @@ public class BasicPersistentBehaviorTest {
       public boolean shouldSnapshot(State state, Event event, long sequenceNr) {
         return event instanceof BookingCompleted;
       }
+
       // #snapshottingPredicate
 
       // #retentionCriteria
@@ -533,6 +517,7 @@ public class BasicPersistentBehaviorTest {
       public RetentionCriteria retentionCriteria() {
         return RetentionCriteria.snapshotEvery(100, 2);
       }
+
       // #retentionCriteria
 
       // #retentionCriteriaWithSignals
@@ -601,6 +586,7 @@ public class BasicPersistentBehaviorTest {
       interface Event {}
 
       public static class State {}
+
       // #actor-context
 
       public static Behavior<Command> create(PersistenceId persistenceId) {

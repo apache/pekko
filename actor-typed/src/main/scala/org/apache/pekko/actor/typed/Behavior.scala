@@ -22,8 +22,10 @@ import pekko.actor.InvalidMessageException
 import pekko.actor.typed.internal.{ BehaviorImpl, BehaviorTags, InterceptorImpl, Supervisor }
 import pekko.actor.typed.internal.BehaviorImpl.DeferredBehavior
 import pekko.actor.typed.internal.BehaviorImpl.StoppedBehavior
+import pekko.actor.typed.internal.CachedProps
 import pekko.annotation.DoNotInherit
 import pekko.annotation.InternalApi
+import pekko.util.OptionVal
 
 /**
  * The behavior of an actor defines how it reacts to the messages that it
@@ -47,6 +49,12 @@ import pekko.annotation.InternalApi
  */
 @DoNotInherit
 abstract class Behavior[T](private[pekko] val _tag: Int) { behavior =>
+
+  /**
+   * INTERNAL API
+   */
+  @InternalApi
+  @volatile private[pekko] var _internalClassicPropsCache: OptionVal[CachedProps] = OptionVal.None
 
   /**
    * Narrow the type of this Behavior, which is always a safe operation. This
@@ -90,8 +98,10 @@ class SuperviseBehavior[T] private[pekko] (
    *
    * Only exceptions of the given type (and their subclasses) will be handled by this supervision behavior.
    */
-  def onFailure[Thr <: Throwable](clazz: Class[Thr], strategy: SupervisorStrategy): SuperviseBehavior[T] =
-    onFailure(strategy)(ClassTag(clazz))
+  def onFailure[Thr <: Throwable](clazz: Class[Thr], strategy: SupervisorStrategy): SuperviseBehavior[T] = {
+    implicit val ct: ClassTag[Thr] = ClassTag(clazz)
+    onFailure(strategy)
+  }
 
   private[pekko] def unwrap: Behavior[T] = wrapped
 }

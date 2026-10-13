@@ -15,7 +15,6 @@ package org.apache.pekko.persistence.fsm
 
 import scala.annotation.nowarn
 import scala.annotation.varargs
-import scala.collection.immutable
 import scala.concurrent.ExecutionContextExecutor
 import scala.concurrent.duration._
 import scala.reflect.ClassTag
@@ -26,6 +25,7 @@ import pekko.annotation.InternalApi
 import pekko.persistence.{ PersistentActor, RecoveryCompleted, SnapshotOffer }
 import pekko.persistence.fsm.PersistentFSM.FSMState
 import pekko.persistence.serialization.Message
+import pekko.util.Helpers.toRootLowerCase
 
 import com.typesafe.config.Config
 
@@ -48,7 +48,7 @@ private[pekko] object SnapshotAfter extends ExtensionId[SnapshotAfter] with Exte
  */
 private[pekko] class SnapshotAfter(config: Config) extends Extension {
   val key = "pekko.persistence.fsm.snapshot-after"
-  val snapshotAfterValue = config.getString(key).toLowerCase match {
+  val snapshotAfterValue = toRootLowerCase(config.getString(key)) match {
     case "off" => None
     case _     => Some(config.getInt(key))
   }
@@ -147,7 +147,7 @@ trait PersistentFSM[S <: FSMState, D, E] extends PersistentActor with Persistent
    * Persist FSM State and FSM State Data
    */
   override private[pekko] def applyState(nextState: State): Unit = {
-    var eventsToPersist: immutable.Seq[Any] = nextState.domainEvents.toList
+    var eventsToPersist: Seq[Any] = nextState.domainEvents.toList
 
     // Prevent StateChangeEvent persistence when staying in the same state, except when state defines a timeout
     if (nextState.notifies || nextState.timeout.nonEmpty) {
@@ -266,7 +266,7 @@ object PersistentFSM {
   final case class Transition[S](fsmRef: ActorRef, from: S, to: S, timeout: Option[FiniteDuration])
 
   /**
-   * Send this to an [[pekko.actor.FSM]] to request first the [[PersistentFSM.CurrentState]]
+   * Send this to a [[pekko.actor.FSM]] to request first the [[PersistentFSM.CurrentState]]
    * and then a series of [[PersistentFSM.Transition]] updates. Cancel the subscription
    * using [[PersistentFSM.UnsubscribeTransitionCallBack]].
    */
@@ -309,6 +309,7 @@ object PersistentFSM {
   /** INTERNAL API */
   @InternalApi
   private[persistence] final case class TimeoutMarker(generation: Long)
+  private[persistence] final case class ListenerTerminated(actorRef: ActorRef)
 
   /** INTERNAL API */
   @InternalApi
@@ -485,7 +486,7 @@ object PersistentFSM {
   final case class Event[D](event: Any, stateData: D) extends NoSerializationVerificationNeeded
 
   /**
-   * Case class representing the state of the [[pekko.actor.FSM]] whithin the
+   * Case class representing the state of the [[pekko.actor.FSM]] within the
    * `onTermination` block.
    */
   final case class StopEvent[S, D](reason: Reason, currentState: S, stateData: D)

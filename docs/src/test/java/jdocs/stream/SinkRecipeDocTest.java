@@ -21,13 +21,13 @@ import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.japi.function.Function;
 import org.apache.pekko.stream.javadsl.Sink;
 import org.apache.pekko.stream.javadsl.Source;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 public class SinkRecipeDocTest extends AbstractJavaTest {
   static ActorSystem system;
 
-  @BeforeClass
+  @BeforeAll
   public static void setup() {
     system = ActorSystem.create("SinkRecipeDocTest");
   }

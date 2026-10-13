@@ -18,13 +18,14 @@ import java.util.concurrent.CompletionStage
 
 import scala.annotation.unchecked.uncheckedVariance
 import scala.annotation.varargs
-import scala.collection.immutable
 import scala.jdk.CollectionConverters._
 import scala.jdk.DurationConverters._
 import scala.jdk.FutureConverters._
 import scala.jdk.OptionConverters._
 import scala.reflect.ClassTag
 import scala.util.control.NonFatal
+
+import org.jspecify.annotations.Nullable
 
 import org.apache.pekko
 import pekko.NotUsed
@@ -125,7 +126,7 @@ final class SubSource[Out, Mat](
    *     +----------------------------+
    * }}}
    */
-  def to(sink: Graph[SinkShape[Out], _]): RunnableGraph[Mat] =
+  def to(sink: Graph[SinkShape[Out], ?]): RunnableGraph[Mat] =
     RunnableGraph.fromGraph(delegate.to(sink))
 
   /**
@@ -351,7 +352,7 @@ final class SubSource[Out, Mat](
    * as they are illegal as stream elements - according to the Reactive Streams specification.
    *
    * This operator doesn't handle upstream's completion signal since the state kept in the closure can be lost.
-   * Use [[pekko.stream.javadsl.Flow.statefulMap]], or return an [[StatefulMapConcatAccumulator]] instead.
+   * Use [[pekko.stream.javadsl.Flow.statefulMap]], or return a [[StatefulMapConcatAccumulator]] instead.
    *
    * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
    *
@@ -541,6 +542,10 @@ final class SubSource[Out, Mat](
   /**
    * Run the given function when the first element is received.
    *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute. On `Supervision.Resume` the
+   * first element is dropped and the function is not retried; on `Supervision.Restart` the next
+   * element is treated as the first.
+   *
    * '''Emits when''' upstream emits an element
    *
    * '''Backpressures when''' downstream backpressures
@@ -571,7 +576,7 @@ final class SubSource[Out, Mat](
    *          and the second parameter indicates whether the downstream was cancelled normally.
    * @since 1.3.0
    */
-  def doOnCancel(f: function.Procedure2[_ >: Throwable, java.lang.Boolean]): SubSource[Out, Mat] =
+  def doOnCancel(f: function.Procedure2[? >: Throwable, java.lang.Boolean]): SubSource[Out, Mat] =
     new SubSource(delegate.doOnCancel((cause, wasCancelledNormally) => f(cause, wasCancelledNormally)))
 
   /**
@@ -730,6 +735,9 @@ final class SubSource[Out, Mat](
    *
    * The `f` function must return a non-null value for all elements, otherwise the stage will fail.
    *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute (applied to the key function).
+   * On `Supervision.Resume` the offending element is skipped; on `Supervision.Restart` the current group is dropped.
+   *
    * '''Emits when''' the delimiter function returns a different value than the previous element's result
    *
    * '''Backpressures when''' a chunk has been assembled and downstream backpressures
@@ -750,6 +758,8 @@ final class SubSource[Out, Mat](
    *
    * The `f` function must return a non-null value , and the `costFn` must return a non-negative result for all inputs,
    * otherwise the stage will fail.
+   *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute (applied to both the key and cost functions). On `Supervision.Resume` the offending element is skipped; on `Supervision.Restart` the current group is dropped.
    *
    * '''Emits when''' the delimiter function returns a different value than the previous element's result, or exceeds the `maxWeight`.
    *
@@ -785,22 +795,21 @@ final class SubSource[Out, Mat](
   /**
    * Ensure stream boundedness by limiting the number of elements from upstream.
    * If the number of incoming elements exceeds max, it will signal
-   * upstream failure `StreamLimitException` downstream.
+   * upstream failure `StreamLimitReachedException` downstream.
    *
    * Due to input buffering some elements may have been
    * requested from upstream publishers that will then not be processed downstream
    * of this step.
    *
-   * The stream will be completed without producing any elements if `n` is zero
-   * or negative.
-   *
-   * '''Emits when''' the specified number of elements to take has not yet been reached
+   * '''Emits when''' upstream emits and the number of emitted elements has not reached max
    *
    * '''Backpressures when''' downstream backpressures
    *
-   * '''Completes when''' the defined number of elements has been taken or upstream completes
+   * '''Completes when''' upstream completes and the number of emitted elements has not reached max
    *
-   * '''Cancels when''' the defined number of elements has been taken or downstream cancels
+   * '''Errors when''' the total number of incoming elements exceeds max
+   *
+   * '''Cancels when''' downstream cancels
    *
    * See also [[Flow.take]], [[Flow.takeWithin]], [[Flow.takeWhile]]
    */
@@ -810,24 +819,23 @@ final class SubSource[Out, Mat](
    * Ensure stream boundedness by evaluating the cost of incoming elements
    * using a cost function. Exactly how many elements will be allowed to travel downstream depends on the
    * evaluated cost of each element. If the accumulated cost exceeds max, it will signal
-   * upstream failure `StreamLimitException` downstream.
+   * upstream failure `StreamLimitReachedException` downstream.
    *
    * Due to input buffering some elements may have been
    * requested from upstream publishers that will then not be processed downstream
    * of this step.
    *
-   * The stream will be completed without producing any elements if `n` is zero
-   * or negative.
-   *
    * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
    *
-   * '''Emits when''' the specified number of elements to take has not yet been reached
+   * '''Emits when''' upstream emits and the accumulated cost has not reached max
    *
    * '''Backpressures when''' downstream backpressures
    *
-   * '''Completes when''' the defined number of elements has been taken or upstream completes
+   * '''Completes when''' upstream completes and the accumulated cost has not reached max
    *
-   * '''Cancels when''' the defined number of elements has been taken or downstream cancels
+   * '''Errors when''' the accumulated cost exceeds max
+   *
+   * '''Cancels when''' downstream cancels
    *
    * See also [[Flow.take]], [[Flow.takeWithin]], [[Flow.takeWhile]]
    */
@@ -997,7 +1005,7 @@ final class SubSource[Out, Mat](
    * Examples:
    *
    * {{{
-   * Source<Integer, ?> nums = Source.from(Arrays.asList(0, 1, 2, 3));
+   * Source<Integer, ?> nums = Source.from(List.of(0, 1, 2, 3));
    * nums.intersperse(",");            //   1 , 2 , 3
    * nums.intersperse("[", ",", "]");  // [ 1 , 2 , 3 ]
    * }}}
@@ -1031,7 +1039,7 @@ final class SubSource[Out, Mat](
    * Examples:
    *
    * {{{
-   * Source<Integer, ?> nums = Source.from(Arrays.asList(0, 1, 2, 3));
+   * Source<Integer, ?> nums = Source.from(List.of(0, 1, 2, 3));
    * nums.intersperse(",");            //   1 , 2 , 3
    * nums.intersperse("[", ",", "]");  // [ 1 , 2 , 3 ]
    * }}}
@@ -1077,6 +1085,10 @@ final class SubSource[Out, Mat](
    * The last group before end-of-stream will contain the buffered elements
    * since the previously emitted group.
    *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute. On `Supervision.Resume` the
+   * offending element is skipped and the current group is kept; on `Supervision.Restart` the current
+   * group is dropped.
+   *
    * '''Emits when''' the configured time elapses since the last group has been emitted or weight limit reached
    *
    * '''Backpressures when''' downstream backpressures, and buffered group (+ pending element) weighs more than `maxWeight`
@@ -1100,6 +1112,10 @@ final class SubSource[Out, Mat](
    * Empty groups will not be emitted if no elements are received from upstream.
    * The last group before end-of-stream will contain the buffered elements
    * since the previously emitted group.
+   *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute. On `Supervision.Resume` the
+   * offending element is skipped and the current group is kept; on `Supervision.Restart` the current
+   * group is dropped.
    *
    * '''Emits when''' the configured time elapses since the last group has been emitted or weight limit reached
    *
@@ -1270,6 +1286,10 @@ final class SubSource[Out, Mat](
    *
    * Internal buffer has default capacity 16. You can set buffer size by calling `addAttributes(inputBuffer)`
    *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute. On `Supervision.Resume` the
+   * offending element is dropped; on `Supervision.Restart` the delay strategy is recreated from the
+   * supplier (already-buffered elements keep their delays).
+   *
    * '''Emits when''' there is a pending element in the buffer and configured time for this element elapsed
    *  * EmitEarly - strategy do not wait to emit element if buffer is full
    *
@@ -1323,7 +1343,7 @@ final class SubSource[Out, Mat](
    *
    * @since 1.3.0
    */
-  def recover(clazz: Class[_ <: Throwable], creator: function.Creator[Out]): SubSource[Out, Mat] =
+  def recover(clazz: Class[? <: Throwable], creator: function.Creator[Out]): SubSource[Out, Mat] =
     new SubSource(delegate.recover {
       case elem if clazz.isInstance(elem) => creator.create()
     })
@@ -1344,7 +1364,7 @@ final class SubSource[Out, Mat](
    *
    * @since 1.3.0
    */
-  def recover(clazz: Class[_ <: Throwable], fallbackValue: Out): SubSource[Out, Mat] =
+  def recover(clazz: Class[? <: Throwable], fallbackValue: Out): SubSource[Out, Mat] =
     new SubSource(delegate.recover {
       case elem if clazz.isInstance(elem) => fallbackValue
     })
@@ -1365,7 +1385,7 @@ final class SubSource[Out, Mat](
    *
    * @since 1.3.0
    */
-  def recover(p: function.Predicate[_ >: Throwable], creator: function.Creator[Out]): SubSource[Out, Mat] =
+  def recover(p: function.Predicate[? >: Throwable], creator: function.Creator[Out]): SubSource[Out, Mat] =
     new SubSource(delegate.recover {
       case elem if p.test(elem) => creator.create()
     })
@@ -1386,7 +1406,7 @@ final class SubSource[Out, Mat](
    *
    * @since 1.3.0
    */
-  def recover(p: function.Predicate[_ >: Throwable], fallbackValue: Out): SubSource[Out, Mat] =
+  def recover(p: function.Predicate[? >: Throwable], fallbackValue: Out): SubSource[Out, Mat] =
     new SubSource(delegate.recover {
       case elem if p.test(elem) => fallbackValue
     })
@@ -1398,6 +1418,8 @@ final class SubSource[Out, Mat](
    *
    * Since the underlying failure signal onError arrives out-of-band, it might jump over existing elements.
    * This operator can recover the failure signal, but not the skipped elements, which will be dropped.
+   *
+   * It will keep trying to recover indefinitely, if you want to limit the number of attempts, use `recoverWithRetries`.
    *
    * '''Emits when''' element is available from the upstream or upstream is failed and element is available
    * from alternative Source
@@ -1468,7 +1490,7 @@ final class SubSource[Out, Mat](
    * '''Cancels when''' downstream cancels
    *  @since 1.1.0
    */
-  def onErrorComplete(clazz: Class[_ <: Throwable]): SubSource[Out, Mat] = onErrorComplete(ex => clazz.isInstance(ex))
+  def onErrorComplete(clazz: Class[? <: Throwable]): SubSource[Out, Mat] = onErrorComplete(ex => clazz.isInstance(ex))
 
   /**
    * onErrorComplete allows to complete the stream when an upstream error occurs.
@@ -1485,7 +1507,7 @@ final class SubSource[Out, Mat](
    * '''Cancels when''' downstream cancels
    *  @since 1.1.0
    */
-  def onErrorComplete(predicate: function.Predicate[_ >: Throwable]): SubSource[Out, Mat] =
+  def onErrorComplete(predicate: function.Predicate[? >: Throwable]): SubSource[Out, Mat] =
     new SubSource(delegate.onErrorComplete {
       case ex: Throwable if predicate.test(ex) => true
     })
@@ -1511,7 +1533,7 @@ final class SubSource[Out, Mat](
    * @param errorConsumer function invoked when an error occurs
    * @since 1.3.0
    */
-  def onErrorContinue(errorConsumer: function.Procedure[_ >: Throwable]): SubSource[Out, Mat] =
+  def onErrorContinue(errorConsumer: function.Procedure[? >: Throwable]): SubSource[Out, Mat] =
     new SubSource(delegate.onErrorContinue[Throwable](errorConsumer.apply))
 
   /**
@@ -1537,7 +1559,7 @@ final class SubSource[Out, Mat](
    * @since 1.3.0
    */
   def onErrorContinue[T <: Throwable](clazz: Class[T],
-      errorConsumer: function.Procedure[_ >: Throwable]): SubSource[Out, Mat] =
+      errorConsumer: function.Procedure[? >: Throwable]): SubSource[Out, Mat] =
     new SubSource(delegate.onErrorContinue(clazz.isInstance)(errorConsumer.apply))
 
   /**
@@ -1562,8 +1584,8 @@ final class SubSource[Out, Mat](
    * @param errorConsumer function invoked when an error occurs
    * @since 1.3.0
    */
-  def onErrorContinue[T <: Throwable](p: function.Predicate[_ >: Throwable],
-      errorConsumer: function.Procedure[_ >: Throwable]): SubSource[Out, Mat] =
+  def onErrorContinue[T <: Throwable](p: function.Predicate[? >: Throwable],
+      errorConsumer: function.Procedure[? >: Throwable]): SubSource[Out, Mat] =
     new SubSource(delegate.onErrorContinue(p.test)(errorConsumer.apply))
 
   /**
@@ -1585,7 +1607,7 @@ final class SubSource[Out, Mat](
    * @since 1.3.0
    */
   def onErrorResume[T >: Out](
-      fallback: function.Function[_ >: Throwable, _ <: Graph[SourceShape[T], NotUsed]]): SubSource[T, Mat] =
+      fallback: function.Function[? >: Throwable, ? <: Graph[SourceShape[T], NotUsed]]): SubSource[T, Mat] =
     new SubSource(delegate.recoverWith {
       case NonFatal(ex) => fallback(ex)
     })
@@ -1610,8 +1632,8 @@ final class SubSource[Out, Mat](
    * @since 1.3.0
    */
   def onErrorResume[T >: Out](
-      clazz: Class[_ <: Throwable],
-      fallback: function.Function[_ >: Throwable, _ <: Graph[SourceShape[T], NotUsed]]): SubSource[T, Mat] =
+      clazz: Class[? <: Throwable],
+      fallback: function.Function[? >: Throwable, ? <: Graph[SourceShape[T], NotUsed]]): SubSource[T, Mat] =
     new SubSource(delegate.recoverWith {
       case NonFatal(ex) if clazz.isInstance(ex) => fallback(ex)
     })
@@ -1636,8 +1658,8 @@ final class SubSource[Out, Mat](
    * @since 1.3.0
    */
   def onErrorResume[T >: Out](
-      predicate: function.Predicate[_ >: Throwable],
-      fallback: function.Function[_ >: Throwable, _ <: Graph[SourceShape[T], NotUsed]]): SubSource[T, Mat] =
+      predicate: function.Predicate[? >: Throwable],
+      fallback: function.Function[? >: Throwable, ? <: Graph[SourceShape[T], NotUsed]]): SubSource[T, Mat] =
     new SubSource(delegate.recoverWith {
       case NonFatal(ex) if predicate.test(ex) => fallback(ex)
     })
@@ -1855,12 +1877,19 @@ final class SubSource[Out, Mat](
    * element until new element comes from the upstream. For example an expand step might repeat the last element for
    * the subscriber until it receives an update from upstream.
    *
-   * This element will never "drop" upstream elements as all elements go through at least one extrapolation step.
-   * This means that if the upstream is actually faster than the upstream it will be backpressured by the downstream
-   * subscriber.
+   * Under normal operation all upstream elements go through at least one extrapolation step.
+   * If supervision drops a failed element, that element is not emitted.
+   * If the upstream is actually faster than the downstream it will be backpressured by the downstream subscriber.
    *
-   * Expand does not support [[pekko.stream.Supervision#restart]] and [[pekko.stream.Supervision#resume]].
-   * Exceptions from the `expander` function will complete the stream with failure.
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
+   *
+   * If the `expander` function or the iterator it produces throws during evaluation (`hasNext`/`next`) and the
+   * supervision decision is [[pekko.stream.Supervision#stop]] the stream fails. If the supervision decision is
+   * [[pekko.stream.Supervision#resume]] the failed element is dropped and the stream continues, keeping current
+   * extrapolation state when available. If the supervision decision is [[pekko.stream.Supervision#restart]] the
+   * failed element is dropped and the current extrapolation state is reset. Note that iterator-evaluation failures
+   * necessarily discard the current iterator under both `resume` and `restart`, because a corrupt iterator cannot
+   * be reused.
    *
    * See also [[#extrapolate]] for a version that always preserves the original element and allows for an initial "startup" element.
    *
@@ -1885,8 +1914,14 @@ final class SubSource[Out, Mat](
    * This is achieved by introducing "extrapolated" elements - based on those from upstream - whenever downstream
    * signals demand.
    *
-   * Extrapolate does not support [[pekko.stream.Supervision#restart]] and [[pekko.stream.Supervision#resume]].
-   * Exceptions from the `extrapolate` function will complete the stream with failure.
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
+   *
+   * If the `extrapolator` function or the iterator it produces throws during evaluation (`hasNext`/`next`) and the
+   * supervision decision is [[pekko.stream.Supervision#stop]] the stream fails. If the supervision decision is
+   * [[pekko.stream.Supervision#resume]] the failed element is dropped and any previously active extrapolation is
+   * retained. If the supervision decision is [[pekko.stream.Supervision#restart]] the failed element is dropped and
+   * the current extrapolation state is reset. For iterator-evaluation failures, `resume` and `restart` both discard
+   * the corrupt iterator because it cannot be reused.
    *
    * See also [[#expand]] for a version that can overwrite the original element.
    *
@@ -1913,8 +1948,14 @@ final class SubSource[Out, Mat](
    * This is achieved by introducing "extrapolated" elements - based on those from upstream - whenever downstream
    * signals demand.
    *
-   * Extrapolate does not support [[pekko.stream.Supervision#restart]] and [[pekko.stream.Supervision#resume]].
-   * Exceptions from the `extrapolate` function will complete the stream with failure.
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
+   *
+   * If the `extrapolator` function or the iterator it produces throws during evaluation (`hasNext`/`next`) and the
+   * supervision decision is [[pekko.stream.Supervision#stop]] the stream fails. If the supervision decision is
+   * [[pekko.stream.Supervision#resume]] the failed element is dropped and any previously active extrapolation is
+   * retained. If the supervision decision is [[pekko.stream.Supervision#restart]] the failed element is dropped and
+   * the current extrapolation state is reset. For iterator-evaluation failures, `resume` and `restart` both discard
+   * the corrupt iterator because it cannot be reused.
    *
    * See also [[#expand]] for a version that can overwrite the original element.
    *
@@ -2026,7 +2067,7 @@ final class SubSource[Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    */
-  def flatMapConcat[T, M](f: function.Function[Out, _ <: Graph[SourceShape[T], M]]): SubSource[T, Mat] =
+  def flatMapConcat[T, M](f: function.Function[Out, ? <: Graph[SourceShape[T], M]]): SubSource[T, Mat] =
     new SubSource(delegate.flatMapConcat(x => f(x)))
 
   /**
@@ -2046,7 +2087,7 @@ final class SubSource[Out, Mat](
    */
   def flatMapConcat[T, M](
       parallelism: Int,
-      f: function.Function[Out, _ <: Graph[SourceShape[T], M]]): SubSource[T, Mat] =
+      f: function.Function[Out, ? <: Graph[SourceShape[T], M]]): SubSource[T, Mat] =
     new SubSource(delegate.flatMapConcat(parallelism, x => f(x)))
 
   /**
@@ -2062,7 +2103,7 @@ final class SubSource[Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    */
-  def flatMapMerge[T, M](breadth: Int, f: function.Function[Out, _ <: Graph[SourceShape[T], M]]): SubSource[T, Mat] =
+  def flatMapMerge[T, M](breadth: Int, f: function.Function[Out, ? <: Graph[SourceShape[T], M]]): SubSource[T, Mat] =
     new SubSource(delegate.flatMapMerge(breadth, o => f(o)))
 
   /**
@@ -2081,7 +2122,7 @@ final class SubSource[Out, Mat](
    *
    * @since 1.2.0
    */
-  def switchMap[T, M](f: function.Function[Out, _ <: Graph[SourceShape[T], M]]): SubSource[T, Mat] =
+  def switchMap[T, M](f: function.Function[Out, ? <: Graph[SourceShape[T], M]]): SubSource[T, Mat] =
     new SubSource(delegate.switchMap(o => f(o)))
 
   /**
@@ -2159,7 +2200,7 @@ final class SubSource[Out, Mat](
    */
   @varargs
   @SafeVarargs
-  def concatAllLazy(those: Graph[SourceShape[Out], _]*): SubSource[Out, Mat] =
+  def concatAllLazy(those: Graph[SourceShape[Out], ?]*): SubSource[Out, Mat] =
     new SubSource(delegate.concatAllLazy(those: _*))
 
   /**
@@ -2248,8 +2289,32 @@ final class SubSource[Out, Mat](
    *
    * '''Cancels when''' downstream or Sink cancels
    */
-  def alsoTo(that: Graph[SinkShape[Out], _]): SubSource[Out, Mat] =
+  def alsoTo(that: Graph[SinkShape[Out], ?]): SubSource[Out, Mat] =
     new SubSource(delegate.alsoTo(that))
+
+  /**
+   * Attaches the given [[Sink]] to this [[Source]], meaning that elements that pass
+   * through will also be sent to the [[Sink]].
+   *
+   * When `propagateCancellation` is `false`, cancellation or failure of the side [[Sink]]
+   * will not cancel the main stream. Elements will continue to flow to the main downstream only.
+   *
+   * When `propagateCancellation` is `true` (the default), this behaves identically to [[#alsoTo]].
+   *
+   * '''Emits when''' element is available and demand exists both from the Sink and the downstream.
+   *
+   * '''Backpressures when''' downstream or Sink backpressures
+   *
+   * '''Completes when''' upstream completes
+   *
+   * '''Cancels when''' downstream cancels (the side [[Sink]] is also cancelled).
+   *                        When `propagateCancellation` is `true`, cancellation or failure of
+   *                        the side [[Sink]] also cancels the downstream.
+   *
+   * @since 2.0.0
+   */
+  def alsoTo(that: Graph[SinkShape[Out], ?], propagateCancellation: Boolean): SubSource[Out, Mat] =
+    new SubSource(delegate.alsoTo(that, propagateCancellation))
 
   /**
    * Attaches the given [[Sink]]s to this [[Source]], meaning that elements that passes
@@ -2267,7 +2332,7 @@ final class SubSource[Out, Mat](
    */
   @varargs
   @SafeVarargs
-  def alsoToAll(those: Graph[SinkShape[Out], _]*): SubSource[Out, Mat] =
+  def alsoToAll(those: Graph[SinkShape[Out], ?]*): SubSource[Out, Mat] =
     new SubSource(delegate.alsoToAll(those: _*))
 
   /**
@@ -2282,7 +2347,7 @@ final class SubSource[Out, Mat](
    *
    * '''Cancels when''' any of the downstreams cancel
    */
-  def divertTo(that: Graph[SinkShape[Out], _], when: function.Predicate[Out]): SubSource[Out, Mat] =
+  def divertTo(that: Graph[SinkShape[Out], ?], when: function.Predicate[Out]): SubSource[Out, Mat] =
     new SubSource(delegate.divertTo(that, when.test))
 
   /**
@@ -2301,7 +2366,7 @@ final class SubSource[Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    */
-  def wireTap(that: Graph[SinkShape[Out], _]): SubSource[Out, Mat] =
+  def wireTap(that: Graph[SinkShape[Out], ?]): SubSource[Out, Mat] =
     new SubSource(delegate.wireTap(that))
 
   /**
@@ -2316,7 +2381,7 @@ final class SubSource[Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    */
-  def merge(that: Graph[SourceShape[Out], _]): SubSource[Out, Mat] =
+  def merge(that: Graph[SourceShape[Out], ?]): SubSource[Out, Mat] =
     new SubSource(delegate.merge(that))
 
   /**
@@ -2332,13 +2397,14 @@ final class SubSource[Out, Mat](
    * '''Cancels when''' downstream cancels
    */
   def mergeAll(
-      those: java.util.List[_ <: Graph[SourceShape[Out], _ <: Any]],
+      @Nullable those: java.util.List[? <: Graph[SourceShape[Out], ? <: Any]],
       eagerComplete: Boolean): SubSource[Out, Mat] = {
-    val seq = if (those ne null) CollectionUtil.toSeq(those).collect {
-      case source: Source[Out @unchecked, _] => source.asScala
+    import pekko.util.Collections._
+    val seq = if (those ne null) those.collectToImmutableSeq {
+      case source: Source[Out @unchecked, ?] => source.asScala
       case other                             => other
     }
-    else immutable.Seq()
+    else Seq()
     new SubSource(delegate.mergeAll(seq, eagerComplete))
   }
 
@@ -2349,7 +2415,7 @@ final class SubSource[Out, Mat](
    *
    * Example:
    * {{{
-   * Source.from(Arrays.asList(1, 2, 3)).interleave(Source.from(Arrays.asList(4, 5, 6, 7), 2)
+   * Source.from(List.of(1, 2, 3)).interleave(Source.from(List.of(4, 5, 6, 7)), 2)
    * // 1, 2, 4, 5, 3, 6, 7
    * }}}
    *
@@ -2366,7 +2432,7 @@ final class SubSource[Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    */
-  def interleave(that: Graph[SourceShape[Out], _], segmentSize: Int): SubSource[Out, Mat] =
+  def interleave(that: Graph[SourceShape[Out], ?], segmentSize: Int): SubSource[Out, Mat] =
     new SubSource(delegate.interleave(that, segmentSize))
 
   /**
@@ -2390,14 +2456,15 @@ final class SubSource[Out, Mat](
    * '''Cancels when''' downstream cancels
    */
   def interleaveAll(
-      those: java.util.List[_ <: Graph[SourceShape[Out], _ <: Any]],
+      @Nullable those: java.util.List[? <: Graph[SourceShape[Out], ? <: Any]],
       segmentSize: Int,
       eagerClose: Boolean): SubSource[Out, Mat] = {
-    val seq = if (those ne null) CollectionUtil.toSeq(those).collect {
-      case source: Source[Out @unchecked, _] => source.asScala
+    import pekko.util.Collections._
+    val seq = if (those ne null) those.collectToImmutableSeq {
+      case source: Source[Out @unchecked, ?] => source.asScala
       case other                             => other
     }
-    else immutable.Seq()
+    else Seq()
     new SubSource(delegate.interleaveAll(seq, segmentSize, eagerClose))
   }
 
@@ -2476,7 +2543,7 @@ final class SubSource[Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    */
-  def zip[T](source: Graph[SourceShape[T], _]): SubSource[pekko.japi.Pair[Out @uncheckedVariance, T], Mat] =
+  def zip[T](source: Graph[SourceShape[T], ?]): SubSource[pekko.japi.Pair[Out @uncheckedVariance, T], Mat] =
     new SubSource(delegate.zip(source).map { case (o, t) => pekko.japi.Pair.create(o, t) })
 
   /**
@@ -2491,7 +2558,7 @@ final class SubSource[Out, Mat](
    * '''Cancels when''' downstream cancels
    */
   def zipAll[U, A >: Out](
-      that: Graph[SourceShape[U], _],
+      that: Graph[SourceShape[U], ?],
       thisElem: A,
       thatElem: U): SubSource[pekko.japi.Pair[A, U], Mat] =
     new SubSource(delegate.zipAll(that, thisElem, thatElem).map { case (a, u) => Pair.create(a, u) })
@@ -2508,12 +2575,18 @@ final class SubSource[Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    */
-  def zipLatest[T](source: Graph[SourceShape[T], _]): SubSource[pekko.japi.Pair[Out @uncheckedVariance, T], Mat] =
+  def zipLatest[T](source: Graph[SourceShape[T], ?]): SubSource[pekko.japi.Pair[Out @uncheckedVariance, T], Mat] =
     new SubSource(delegate.zipLatest(source).map { case (o, t) => pekko.japi.Pair.create(o, t) })
 
   /**
    * Put together the elements of current [[Flow]] and the given [[Source]]
    * into a stream of combined elements using a combiner function.
+   *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
+   *
+   * If the combiner function throws and the supervision decision is [[pekko.stream.Supervision#stop]]
+   * the stream fails. If the supervision decision is [[pekko.stream.Supervision#resume]] or
+   * [[pekko.stream.Supervision#restart]] the zipped element is dropped and the stream continues.
    *
    * '''Emits when''' all of the inputs has an element available
    *
@@ -2524,7 +2597,7 @@ final class SubSource[Out, Mat](
    * '''Cancels when''' downstream cancels
    */
   def zipWith[Out2, Out3](
-      that: Graph[SourceShape[Out2], _],
+      that: Graph[SourceShape[Out2], ?],
       combine: function.Function2[Out, Out2, Out3]): SubSource[Out3, Mat] =
     new SubSource(delegate.zipWith[Out2, Out3](that)(combinerToScala(combine)))
 
@@ -2542,7 +2615,7 @@ final class SubSource[Out, Mat](
    * '''Cancels when''' downstream cancels
    */
   def zipLatestWith[Out2, Out3](
-      that: Graph[SourceShape[Out2], _],
+      that: Graph[SourceShape[Out2], ?],
       combine: function.Function2[Out, Out2, Out3]): SubSource[Out3, Mat] =
     new SubSource(delegate.zipLatestWith[Out2, Out3](that)(combinerToScala(combine)))
 
@@ -2741,6 +2814,10 @@ final class SubSource[Out, Mat](
    * The throttle `mode` is [[pekko.stream.ThrottleMode.Shaping]], which makes pauses before emitting messages to
    * meet throttle rate.
    *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute. On `Supervision.Resume` the
+   * offending element is dropped; `Supervision.Restart` behaves the same as `Supervision.Resume`
+   * because throttle keeps no accumulated per-element state.
+   *
    * '''Emits when''' upstream emits an element and configured time per each element elapsed
    *
    * '''Backpressures when''' downstream backpressures or the incoming rate is higher than the speed limit
@@ -2784,6 +2861,10 @@ final class SubSource[Out, Mat](
    *  `maximumBurst` parameter to automatically calculate the `maximumBurst` based on the given rate (`cost/per`).
    *  In other words the throttler always enforces the rate limit when `maximumBurst` parameter is given, but in
    *  certain cases (mostly due to limited scheduler resolution) it enforces a tighter bound than what was prescribed.
+   *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute. On `Supervision.Resume` the
+   * offending element is dropped; `Supervision.Restart` behaves the same as `Supervision.Resume`
+   * because throttle keeps no accumulated per-element state.
    *
    * '''Emits when''' upstream emits an element and configured time per each element elapsed
    *
@@ -2881,7 +2962,7 @@ final class SubSource[Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    */
-  def log(name: String, extract: function.Function[Out, Any], log: LoggingAdapter): SubSource[Out, Mat] =
+  def log(name: String, extract: function.Function[Out, Any], @Nullable log: LoggingAdapter): SubSource[Out, Mat] =
     new SubSource(delegate.log(name, e => extract.apply(e))(log))
 
   /**
@@ -2922,7 +3003,7 @@ final class SubSource[Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    */
-  def log(name: String, log: LoggingAdapter): SubSource[Out, Mat] =
+  def log(name: String, @Nullable log: LoggingAdapter): SubSource[Out, Mat] =
     this.log(name, ConstantFun.javaIdentityFunction[Out], log)
 
   /**
@@ -2969,7 +3050,7 @@ final class SubSource[Out, Mat](
       name: String,
       marker: function.Function[Out, LogMarker],
       extract: function.Function[Out, Any],
-      log: MarkerLoggingAdapter): SubSource[Out, Mat] =
+      @Nullable log: MarkerLoggingAdapter): SubSource[Out, Mat] =
     new SubSource(delegate.logWithMarker(name, e => marker.apply(e), e => extract.apply(e))(log))
 
   /**
@@ -3016,7 +3097,7 @@ final class SubSource[Out, Mat](
   def logWithMarker(
       name: String,
       marker: function.Function[Out, LogMarker],
-      log: MarkerLoggingAdapter): SubSource[Out, Mat] =
+      @Nullable log: MarkerLoggingAdapter): SubSource[Out, Mat] =
     this.logWithMarker(name, marker, ConstantFun.javaIdentityFunction[Out], log)
 
   /**
@@ -3042,6 +3123,13 @@ final class SubSource[Out, Mat](
    * Aggregate input elements into an arbitrary data structure that can be completed and emitted downstream
    * when custom condition is met which can be triggered by aggregate or timer.
    * It can be thought of a more general [[groupedWeightedWithin]].
+   *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
+   *
+   * If `allocate`, `aggregate`, `harvest`, or timer predicate throws and the supervision decision is
+   * [[pekko.stream.Supervision#stop]] the stream fails. If the supervision decision is
+   * [[pekko.stream.Supervision#resume]] or [[pekko.stream.Supervision#restart]], the failing element or
+   * aggregate is dropped and the stream continues.
    *
    * '''Emits when''' the aggregation function decides the aggregate is complete or the timer function returns true
    *

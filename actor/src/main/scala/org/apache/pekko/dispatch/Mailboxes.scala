@@ -73,7 +73,7 @@ private[pekko] class Mailboxes(
 
   private val mailboxTypeConfigurators = new ConcurrentHashMap[String, MailboxType]
 
-  private val mailboxBindings: Map[Class[_ <: Any], String] = {
+  private val mailboxBindings: Map[Class[? <: Any], String] = {
     import scala.jdk.CollectionConverters._
     settings.config
       .getConfig("pekko.actor.mailbox.requirements")
@@ -81,7 +81,7 @@ private[pekko] class Mailboxes(
       .unwrapped
       .asScala
       .toMap
-      .foldLeft(Map.empty[Class[_ <: Any], String]) {
+      .foldLeft(Map.empty[Class[? <: Any], String]) {
         case (m, (k, v)) =>
           dynamicAccess
             .getClassFor[Any](k)
@@ -107,18 +107,18 @@ private[pekko] class Mailboxes(
   /**
    * Returns a mailbox type as specified in configuration, based on the type, or if not defined None.
    */
-  def lookupByQueueType(queueType: Class[_ <: Any]): MailboxType = lookup(lookupId(queueType))
+  def lookupByQueueType(queueType: Class[? <: Any]): MailboxType = lookup(lookupId(queueType))
 
-  private final val rmqClass = classOf[RequiresMessageQueue[_]]
+  private final val rmqClass = classOf[RequiresMessageQueue[?]]
 
   /**
    * Return the required message queue type for this class if any.
    */
-  def getRequiredType(actorClass: Class[_ <: Actor]): Class[_] =
+  def getRequiredType(actorClass: Class[? <: Actor]): Class[?] =
     Reflect.findMarker(actorClass, rmqClass) match {
       case t: ParameterizedType =>
         t.getActualTypeArguments.head match {
-          case c: Class[_] => c
+          case c: Class[?] => c
           case x           =>
             throw new IllegalArgumentException(s"no wildcard type allowed in RequireMessageQueue argument (was [$x])")
         }
@@ -127,7 +127,6 @@ private[pekko] class Mailboxes(
     }
 
   // don’t care if this happens twice
-  private var mailboxSizeWarningIssued = false
   private var mailboxNonZeroPushTimeoutWarningIssued = false
 
   def getMailboxRequirement(config: Config) = config.getString("mailbox-requirement") match {
@@ -135,14 +134,14 @@ private[pekko] class Mailboxes(
     case x                    => dynamicAccess.getClassFor[AnyRef](x).get
   }
 
-  def getProducedMessageQueueType(mailboxType: MailboxType): Class[_] = {
-    val pmqClass = classOf[ProducesMessageQueue[_]]
+  def getProducedMessageQueueType(mailboxType: MailboxType): Class[?] = {
+    val pmqClass = classOf[ProducesMessageQueue[?]]
     if (!pmqClass.isAssignableFrom(mailboxType.getClass)) classOf[MessageQueue]
     else
       Reflect.findMarker(mailboxType.getClass, pmqClass) match {
         case t: ParameterizedType =>
           t.getActualTypeArguments.head match {
-            case c: Class[_] => c
+            case c: Class[?] => c
             case x           =>
               throw new IllegalArgumentException(
                 s"no wildcard type allowed in ProducesMessageQueue argument (was [$x])")
@@ -161,7 +160,7 @@ private[pekko] class Mailboxes(
     val actorClass = props.actorClass()
     lazy val actorRequirement = getRequiredType(actorClass)
 
-    val mailboxRequirement: Class[_] = getMailboxRequirement(dispatcherConfig)
+    val mailboxRequirement: Class[?] = getMailboxRequirement(dispatcherConfig)
 
     val hasMailboxRequirement: Boolean = mailboxRequirement != classOf[MessageQueue]
 
@@ -169,18 +168,8 @@ private[pekko] class Mailboxes(
       dispatcherConfig.hasPath("mailbox-type") &&
       dispatcherConfig.getString("mailbox-type") != Deploy.NoMailboxGiven
 
-    // TODO remove in Akka 2.3
-    if (!hasMailboxType && !mailboxSizeWarningIssued && dispatcherConfig.hasPath("mailbox-size")) {
-      eventStream.publish(
-        Warning(
-          "mailboxes",
-          getClass,
-          s"ignoring setting 'mailbox-size' for dispatcher [$id], you need to specify 'mailbox-type=bounded'"))
-      mailboxSizeWarningIssued = true
-    }
-
     def verifyRequirements(mailboxType: MailboxType): MailboxType = {
-      lazy val mqType: Class[_] = getProducedMessageQueueType(mailboxType)
+      lazy val mqType: Class[?] = getProducedMessageQueueType(mailboxType)
       if (hasMailboxRequirement && !mailboxRequirement.isAssignableFrom(mqType))
         throw new IllegalArgumentException(
           s"produced message queue type [$mqType] does not fulfill requirement for dispatcher [$id]. " +
@@ -194,8 +183,10 @@ private[pekko] class Mailboxes(
 
     if (deploy.mailbox != Deploy.NoMailboxGiven) {
       verifyRequirements(lookup(deploy.mailbox))
-    } else if (deploy.dispatcher != Deploy.NoDispatcherGiven && deploy.dispatcher != Deploy
-        .DispatcherSameAsParent && hasMailboxType) {
+    } else if (deploy.dispatcher != Deploy.NoDispatcherGiven &&
+      deploy.dispatcher !=
+        Deploy
+          .DispatcherSameAsParent && hasMailboxType) {
       verifyRequirements(lookup(dispatcherConfig.getString("id")))
     } else if (hasRequiredType(actorClass)) {
       try verifyRequirements(lookupByQueueType(getRequiredType(actorClass)))
@@ -212,9 +203,9 @@ private[pekko] class Mailboxes(
   /**
    * Check if this class can have a required message queue type.
    */
-  def hasRequiredType(actorClass: Class[_ <: Actor]): Boolean = rmqClass.isAssignableFrom(actorClass)
+  def hasRequiredType(actorClass: Class[? <: Actor]): Boolean = rmqClass.isAssignableFrom(actorClass)
 
-  private def lookupId(queueType: Class[_]): String =
+  private def lookupId(queueType: Class[?]): String =
     mailboxBindings.get(queueType) match {
       case None    => throw new ConfigurationException(s"Mailbox Mapping for [$queueType] not configured")
       case Some(s) => s
@@ -225,7 +216,6 @@ private[pekko] class Mailboxes(
       case null =>
         // It doesn't matter if we create a mailbox type configurator that isn't used due to concurrent lookup.
         val newConfigurator = id match {
-          // TODO RK remove these two for Akka 2.3
           case "unbounded"                               => UnboundedMailbox()
           case "bounded"                                 => new BoundedMailbox(settings, config(id))
           case _ if id.startsWith(BoundedCapacityPrefix) =>

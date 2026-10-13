@@ -198,7 +198,12 @@ private final case class SavedIslandData(
 
   private var segments: java.util.ArrayList[SegmentInfo] = _
   private var activePhases: java.util.ArrayList[PhaseIsland[Any]] = _
-  private var forwardWires: java.util.ArrayList[ForwardWire] = _
+  // Forward wires stored as sorted parallel arrays by key (global offset).
+  // Avoids java.lang.Integer boxing, per-operation allocation, and provides
+  // better cache locality than IntMap's Patricia trie nodes.
+  private var forwardWireKeys: Array[Int] = _
+  private var forwardWireValues: Array[ForwardWire] = _
+  private var forwardWireCount: Int = 0
   private var islandStateStack: java.util.ArrayList[SavedIslandData] = _
 
   private var currentPhase: PhaseIsland[Any] = defaultPhase.apply(settings, attributes, materializer, nextIslandName())
@@ -277,22 +282,26 @@ private final case class SavedIslandData(
     currentPhase.assignPort(in, localInSlot, logic)
 
     // Check if there was any forward wiring that has this offset/slot as its target
-    // First try to find such wiring
-    var forwardWire: ForwardWire = null
-    if ((forwardWires ne null) && !forwardWires.isEmpty) {
-      var i = 0
-      while (i < forwardWires.size()) {
-        forwardWire = forwardWires.get(i)
-        if (forwardWire.toGlobalOffset == currentGlobalOffset) {
-          if (Debug) println(s"    there is a forward wire to this slot $forwardWire")
-          forwardWires.remove(i)
-          i = Int.MaxValue // Exit the loop
-        } else {
-          forwardWire = null // Didn't found it yet
-          i += 1
-        }
-      }
-    }
+    val forwardWire: ForwardWire =
+      if (forwardWireCount > 0) {
+        val idx = java.util.Arrays.binarySearch(forwardWireKeys, 0, forwardWireCount, currentGlobalOffset)
+        if (idx >= 0) {
+          val fw = forwardWireValues(idx)
+          forwardWireCount -= 1
+          if (idx < forwardWireCount) {
+            System.arraycopy(forwardWireKeys, idx + 1, forwardWireKeys, idx, forwardWireCount - idx)
+            System.arraycopy(forwardWireValues, idx + 1, forwardWireValues, idx, forwardWireCount - idx)
+          }
+          forwardWireValues(forwardWireCount) = null
+          if (forwardWireCount == 0) {
+            forwardWireKeys = null
+            forwardWireValues = null
+          }
+          fw
+        } else null
+      } else null
+    if ((forwardWire ne null) && Debug)
+      println(s"    there is a forward wire to this slot $forwardWire")
 
     // If there is a forward wiring we need to resolve it
     if (forwardWire ne null) {
@@ -361,8 +370,9 @@ private final case class SavedIslandData(
 
       // The forward wire tracking data structure is only allocated when needed. Many graphs have no forward wires
       // even though it might have islands.
-      if (forwardWires eq null) {
-        forwardWires = new java.util.ArrayList[ForwardWire](8)
+      if (forwardWireKeys eq null) {
+        forwardWireKeys = new Array[Int](4)
+        forwardWireValues = new Array[ForwardWire](4)
       }
 
       val forwardWire = ForwardWire(
@@ -373,7 +383,24 @@ private final case class SavedIslandData(
         currentPhase)
 
       if (Debug) println(s"    wiring is forward, recording $forwardWire")
-      forwardWires.add(forwardWire)
+      if (forwardWireCount == forwardWireKeys.length) {
+        val newLen = forwardWireKeys.length * 2
+        val newKeys = new Array[Int](newLen)
+        val newValues = new Array[ForwardWire](newLen)
+        System.arraycopy(forwardWireKeys, 0, newKeys, 0, forwardWireCount)
+        System.arraycopy(forwardWireValues, 0, newValues, 0, forwardWireCount)
+        forwardWireKeys = newKeys
+        forwardWireValues = newValues
+      }
+      val insertPos = java.util.Arrays.binarySearch(forwardWireKeys, 0, forwardWireCount, absoluteOffset)
+      val pos = if (insertPos < 0) -(insertPos + 1) else insertPos
+      if (pos < forwardWireCount) {
+        System.arraycopy(forwardWireKeys, pos, forwardWireKeys, pos + 1, forwardWireCount - pos)
+        System.arraycopy(forwardWireValues, pos, forwardWireValues, pos + 1, forwardWireCount - pos)
+      }
+      forwardWireKeys(pos) = absoluteOffset
+      forwardWireValues(pos) = forwardWire
+      forwardWireCount += 1
     }
 
   }
@@ -424,7 +451,7 @@ private final case class SavedIslandData(
 
   override def withNamePrefix(name: String): PhasedFusingActorMaterializer = this.copy(flowNames = flowNames.copy(name))
 
-  private[this] def createFlowName(): String = flowNames.next()
+  private def createFlowName(): String = flowNames.next()
 
   // note that this will never be overridden on a per-graph-stage basis regardless of more specific attributes
   override lazy val executionContext: ExecutionContextExecutor =
@@ -698,11 +725,11 @@ private[pekko] object GraphStageIsland {
     islandName: String,
     subflowFuser: OptionVal[GraphInterpreterShell => ActorRef])
     extends PhaseIsland[GraphStageLogic] {
-  private[this] val logics = new util.ArrayList[GraphStageLogic](16)
+  private val logics = new util.ArrayList[GraphStageLogic](16)
 
   private var connections = new Array[Connection](16)
   private var maxConnections = 0
-  private var outConnections: List[Connection] = Nil
+  private var outConnections: java.util.ArrayList[Connection] = _
   private var fullIslandName: OptionVal[String] = OptionVal.None
 
   val shell = new GraphInterpreterShell(connections = null, logics = null, effectiveAttributes, materializer)
@@ -742,7 +769,8 @@ private[pekko] object GraphStageIsland {
 
   def outConn(): Connection = {
     val connection = new Connection(0, null, null, null, null)
-    outConnections ::= connection
+    if (outConnections eq null) outConnections = new util.ArrayList[Connection](4)
+    outConnections.add(connection)
     connection
   }
 
@@ -800,20 +828,22 @@ private[pekko] object GraphStageIsland {
 
   override def onIslandReady(): Unit = {
 
-    val totalConnections = maxConnections + outConnections.size + 1
+    val outConnSize = if (outConnections ne null) outConnections.size() else 0
+    val totalConnections = maxConnections + outConnSize + 1
     val finalConnections = java.util.Arrays.copyOf(connections, totalConnections)
 
     var i = maxConnections + 1
-    var outConns = outConnections
+    var j = 0
     while (i < totalConnections) {
-      val conn = outConns.head
-      outConns = outConns.tail
+      val conn = outConnections.get(j)
+      j += 1
       if (conn.inHandler eq null) failOnMissingHandler(conn.inOwner)
       else if (conn.outHandler eq null) failOnMissingHandler(conn.outOwner)
       finalConnections(i) = conn
       conn.id = i
       i += 1
     }
+    outConnections = null
 
     shell.connections = finalConnections
     shell.logics = logics.toArray(GraphStageIsland.emptyLogicArray)
@@ -923,7 +953,7 @@ private[pekko] object GraphStageIsland {
 
   override def takePublisher(slot: Int, publisher: Publisher[Any], attributes: Attributes): Unit = {
     subscriberOrVirtualPublisher match {
-      case v: VirtualPublisher[_]        => v.registerPublisher(publisher)
+      case v: VirtualPublisher[?]        => v.registerPublisher(publisher)
       case s: Subscriber[Any] @unchecked => publisher.subscribe(s)
       case _                             => throw new IllegalStateException() // won't happen, compiler exhaustiveness check pleaser
     }
@@ -942,7 +972,7 @@ private[pekko] object GraphStageIsland {
  */
 @InternalApi private[pekko] final class ProcessorModulePhase() extends PhaseIsland[Processor[Any, Any]] {
   override def name: String = "ProcessorModulePhase"
-  private[this] var processor: Processor[Any, Any] = _
+  private var processor: Processor[Any, Any] = _
 
   override def materializeAtomic(mod: AtomicModule[Shape, Any], attributes: Attributes): (Processor[Any, Any], Any) = {
     val procAndMat = mod.asInstanceOf[ProcessorModule[Any, Any, Any]].createProcessor()

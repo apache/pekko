@@ -234,7 +234,7 @@ final class BidiFlow[-I1, +O1, -I2, +O2, +Mat](
 }
 
 object BidiFlow {
-  private[this] val _identity: BidiFlow[Any, Any, Any, Any, NotUsed] =
+  private val _identity: BidiFlow[Any, Any, Any, Any, NotUsed] =
     BidiFlow.fromFlows(Flow[Any], Flow[Any])
 
   def identity[A, B]: BidiFlow[A, A, B, B, NotUsed] = _identity.asInstanceOf[BidiFlow[A, A, B, B, NotUsed]]
@@ -313,7 +313,7 @@ object BidiFlow {
 
   /**
    * If the time between two processed elements *in any direction* exceed the provided timeout, the stream is failed
-   * with a [[org.apache.pekko.StreamIdleTimeoutException]].
+   * with a `StreamIdleTimeoutException`.
    *
    * There is a difference between this operator and having two idleTimeout Flows assembled into a BidiStage.
    * If the timeout is configured to be 1 seconds, then this operator will not fail even though there are elements flowing

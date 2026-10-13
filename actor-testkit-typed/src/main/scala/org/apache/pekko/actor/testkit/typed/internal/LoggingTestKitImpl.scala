@@ -48,7 +48,7 @@ import org.slf4j.event.Level
     source: Option[String],
     messageContains: Option[String],
     messageRegex: Option[Regex],
-    cause: Option[Class[_ <: Throwable]],
+    cause: Option[Class[? <: Throwable]],
     mdc: Map[String, String],
     checkExcess: Boolean,
     custom: Option[Function[LoggingEvent, Boolean]])
@@ -95,7 +95,7 @@ import org.slf4j.event.Level
       todo > 0
   }
 
-  override def expect[T](code: => T)(implicit system: ActorSystem[_]): T = {
+  override def expect[T](code: => T)(implicit system: ActorSystem[?]): T = {
     val effectiveLoggerName = loggerName.getOrElse("")
     checkLogback(system)
     TestAppender.setupTestAppender(effectiveLoggerName)
@@ -120,10 +120,10 @@ import org.slf4j.event.Level
     }
   }
 
-  override def expect[T](system: ActorSystem[_], code: Supplier[T]): T =
+  override def expect[T](system: ActorSystem[?], code: Supplier[T]): T =
     expect(code.get())(system)
 
-  private def checkLogback(system: ActorSystem[_]): Unit = {
+  private def checkLogback(system: ActorSystem[?]): Unit = {
     if (!system.dynamicAccess.classIsOnClasspath("ch.qos.logback.classic.spi.ILoggingEvent")) {
       throw new IllegalStateException("LoggingEventFilter requires logback-classic dependency in classpath.")
     }
@@ -166,7 +166,7 @@ import org.slf4j.event.Level
   override def withCustom(newCustom: Function[LoggingEvent, Boolean]): LoggingTestKitImpl =
     copy(custom = Option(newCustom))
 
-  override def withCause(newCause: Class[_ <: Throwable]): javadsl.LoggingTestKit =
+  override def withCause(newCause: Class[? <: Throwable]): javadsl.LoggingTestKit =
     copy(cause = Option(newCause))
 
 }

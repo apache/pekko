@@ -24,6 +24,7 @@ import scala.jdk.CollectionConverters._
 
 import org.apache.pekko
 import pekko.actor.NoSerializationVerificationNeeded
+import pekko.annotation.DoNotInherit
 import pekko.io.IpVersionSelector
 import pekko.routing.ConsistentHashingRouter.ConsistentHashable
 
@@ -37,7 +38,8 @@ import pekko.routing.ConsistentHashingRouter.ConsistentHashable
  */
 object DnsProtocol {
 
-  sealed trait RequestType
+  /** Not for user extension */
+  @DoNotInherit sealed trait RequestType
   final case class Ip(ipv4: Boolean = true, ipv6: Boolean = true) extends RequestType
   case object Srv extends RequestType
 
@@ -57,7 +59,7 @@ object DnsProtocol {
   def srvRequestType(): RequestType = Srv
 
   /**
-   * Sending this to the [[internal.AsyncDnsManager]] will either lead to a [[Resolved]] or a [[pekko.actor.Status.Failure]] response.
+   * Sending this to the `AsyncDnsManager` will either lead to a [[Resolved]] or a [[pekko.actor.Status.Failure]] response.
    * If request type are both, both resolutions must succeed or the response is a failure.
    */
   final case class Resolve(name: String, requestType: RequestType) extends ConsistentHashable {

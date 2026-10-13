@@ -28,7 +28,53 @@ import pekko.actor.InternalActorRef
 import pekko.event.Logging
 import pekko.event.LoggingAdapter
 import pekko.remote.artery._
+import pekko.util.FastFrequencySketch
 import pekko.util.OptionVal
+
+/**
+ * INTERNAL API
+ *
+ * Abstraction over frequency sketch implementations used for heavy hitter detection in Artery compression.
+ */
+private[remote] trait FrequencySketch[T] {
+  def increment(value: T): Unit
+  def frequency(value: T): Long
+}
+
+/**
+ * INTERNAL API
+ *
+ * Wrapper around CountMinSketch that implements the FrequencySketch interface.
+ */
+private[remote] final class CountMinSketchFrequencySketch[T](depth: Int, width: Int, seed: Int)
+    extends FrequencySketch[T] {
+  private val cms = new CountMinSketch(depth, width, seed)
+
+  override def increment(value: T): Unit = {
+    cms.addObjectAndEstimateCount(value, 1)
+  }
+
+  override def frequency(value: T): Long = {
+    cms.estimateCount(value)
+  }
+}
+
+/**
+ * INTERNAL API
+ *
+ * Wrapper around FastFrequencySketch that implements the FrequencySketch interface.
+ */
+private[remote] final class FastFrequencySketchWrapper[T](capacity: Int) extends FrequencySketch[T] {
+  private val sketch = FastFrequencySketch[T](capacity)
+
+  override def increment(value: T): Unit = {
+    sketch.increment(value)
+  }
+
+  override def frequency(value: T): Long = {
+    sketch.frequency(value).toLong
+  }
+}
 
 /**
  * INTERNAL API
@@ -73,26 +119,24 @@ private[remote] final class InboundCompressionsImpl(
     flightRecorder: RemotingFlightRecorder = NoOpRemotingFlightRecorder)
     extends InboundCompressions {
 
-  private[this] val _actorRefsIns = new Long2ObjectHashMap[InboundActorRefCompression]()
-  private[this] val _inboundActorRefsLog = Logging(system, classOf[InboundActorRefCompression])
-  private val createInboundActorRefsForOrigin = new LongFunction[InboundActorRefCompression] {
-    override def apply(originUid: Long): InboundActorRefCompression = {
+  private val _actorRefsIns = new Long2ObjectHashMap[InboundActorRefCompression]()
+  private val _inboundActorRefsLog = Logging(system, classOf[InboundActorRefCompression])
+  private val createInboundActorRefsForOrigin: LongFunction[InboundActorRefCompression] =
+    (originUid: Long) => {
       val actorRefHitters = new TopHeavyHitters[ActorRef](settings.ActorRefs.Max)
       new InboundActorRefCompression(_inboundActorRefsLog, settings, originUid, inboundContext, actorRefHitters)
     }
-  }
   private def actorRefsIn(originUid: Long): InboundActorRefCompression =
     _actorRefsIns.computeIfAbsent(originUid, createInboundActorRefsForOrigin)
 
-  private[this] val _classManifestsIns = new Long2ObjectHashMap[InboundManifestCompression]()
+  private val _classManifestsIns = new Long2ObjectHashMap[InboundManifestCompression]()
 
-  private[this] val _inboundManifestLog = Logging(system, classOf[InboundManifestCompression])
-  private val createInboundManifestsForOrigin = new LongFunction[InboundManifestCompression] {
-    override def apply(originUid: Long): InboundManifestCompression = {
+  private val _inboundManifestLog = Logging(system, classOf[InboundManifestCompression])
+  private val createInboundManifestsForOrigin: LongFunction[InboundManifestCompression] =
+    (originUid: Long) => {
       val manifestHitters = new TopHeavyHitters[String](settings.Manifests.Max)
       new InboundManifestCompression(_inboundManifestLog, settings, originUid, inboundContext, manifestHitters)
     }
-  }
   private def classManifestsIn(originUid: Long): InboundManifestCompression =
     _classManifestsIns.computeIfAbsent(originUid, createInboundManifestsForOrigin)
 
@@ -345,14 +389,21 @@ private[remote] abstract class InboundCompression[T >: Null](
     inboundContext: InboundContext,
     val heavyHitters: TopHeavyHitters[T]) {
 
-  private[this] var tables: InboundCompression.Tables[T] = InboundCompression.Tables.empty
+  private var tables: InboundCompression.Tables[T] = InboundCompression.Tables.empty
 
   // We should not continue sending advertisements to an association that might be dead (not quarantined yet)
-  @volatile private[this] var alive = true
-  private[this] var resendCount = 0
-  private[this] val maxResendCount = 3
+  @volatile private var alive = true
+  private var resendCount = 0
+  private val maxResendCount = 3
 
-  private[this] val cms = new CountMinSketch(16, 1024, System.currentTimeMillis().toInt)
+  private val frequencySketch: FrequencySketch[T] = settings.FrequencySketchImplementation match {
+    case "count-min-sketch" =>
+      new CountMinSketchFrequencySketch[T](depth = 16, width = 1024, seed = System.currentTimeMillis().toInt)
+    case "fast-frequency-sketch" =>
+      new FastFrequencySketchWrapper[T](capacity = settings.ActorRefs.Max)
+    case other =>
+      throw new IllegalStateException(s"Unknown frequency-sketch-implementation: $other")
+  }
 
   log.debug("Initializing {} for originUid [{}]", Logging.simpleName(getClass), originUid)
 
@@ -442,8 +493,13 @@ private[remote] abstract class InboundCompression[T >: Null](
    * Empty keys are omitted.
    */
   def increment(@nowarn("msg=never used") remoteAddress: Address, value: T, n: Long): Unit = {
-    val count = cms.addObjectAndEstimateCount(value, n)
-    addAndCheckIfheavyHitterDetected(value, count)
+    var i = 0
+    while (i < n) {
+      frequencySketch.increment(value)
+      i += 1
+    }
+    val frequency = frequencySketch.frequency(value)
+    addAndCheckIfheavyHitterDetected(value, frequency)
     alive = true
   }
 
@@ -537,7 +593,7 @@ private[remote] abstract class InboundCompression[T >: Null](
   }
 
   override def toString =
-    s"""${Logging.simpleName(getClass)}(countMinSketch: $cms, heavyHitters: $heavyHitters)"""
+    s"""${Logging.simpleName(getClass)}(frequencySketch: $frequencySketch, heavyHitters: $heavyHitters)"""
 
 }
 

@@ -6,12 +6,14 @@ Partitions this stream into chunks by a delimiter function and a weight limit.
 
 ## Signature
 
-@apidoc[Source.groupedAdjacentByWeighted](Source) { scala="#groupedAdjacentByWeighted(f:Out=&gt;T,maxWeight:Long)(costFn:Out=&gt;Long):FlowOps.this.Repr[scala.collection.immutable.Seq[Out]]" java="#groupedAdjacentBy(org.apache.pekko.japi.function.Function,long,org.apache.pekko.japi.function.Function)" }
-@apidoc[Flow.groupedAdjacentByWeighted](Flow) { scala="#groupedAdjacentByWeighted(f:Out=&gt;T,maxWeight:Long)(costFn:Out=&gt;Long):FlowOps.this.Repr[scala.collection.immutable.Seq[Out]]" java="#groupedAdjacentBy(org.apache.pekko.japi.function.Function,long,org.apache.pekko.japi.function.Function)" }
+@apidoc[Source.groupedAdjacentByWeighted](Source) { scala="#groupedAdjacentByWeighted[T](f:Out=&gt;T,maxWeight:Long)(costFn:Out=&gt;Long):FlowOps.this.Repr[Seq[Out]]" java="#groupedAdjacentByWeighted(org.apache.pekko.japi.function.Function,long,org.apache.pekko.japi.function.Function)" }
+@apidoc[Flow.groupedAdjacentByWeighted](Flow) { scala="#groupedAdjacentByWeighted[T](f:Out=&gt;T,maxWeight:Long)(costFn:Out=&gt;Long):FlowOps.this.Repr[Seq[Out]]" java="#groupedAdjacentByWeighted(org.apache.pekko.japi.function.Function,long,org.apache.pekko.japi.function.Function)" }
 
 ## Description
 
-Partitions this stream into chunks by a delimiter function.
+Partitions this stream into chunks by a delimiter function and a weight limit.
+
+Adheres to the ActorAttributes.SupervisionStrategy attribute (applied to both the key and cost functions). On `Supervision.Resume` the offending element is skipped; on `Supervision.Restart` the current group is dropped.
 
 See also:
 

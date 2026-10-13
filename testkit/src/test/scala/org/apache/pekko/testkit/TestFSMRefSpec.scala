@@ -15,7 +15,8 @@ package org.apache.pekko.testkit
 
 import scala.concurrent.duration._
 
-import org.apache.pekko.actor._
+import org.apache.pekko
+import pekko.actor._
 
 class TestFSMRefSpec extends PekkoSpec {
 

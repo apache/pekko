@@ -57,8 +57,8 @@ The following sections discuss this behavior in more detail:
 ### Message delivery
 The delivery semantics provided by messaging subsystems typically fall into the following categories:
 
- * **At-most-once delivery** &#8212; each message is delivered zero or one time; in more causal terms it means that messages can be lost, but are never duplicated.
- * **At-least-once delivery** &#8212; potentially multiple attempts are made to deliver each message, until at least one succeeds; again, in more causal terms this means that messages can be duplicated but are never lost.
+ * **At-most-once delivery** &#8212; each message is delivered zero or one time; in more casual terms it means that messages can be lost, but are never duplicated.
+ * **At-least-once delivery** &#8212; potentially multiple attempts are made to deliver each message, until at least one succeeds; again, in more casual terms this means that messages can be duplicated but are never lost.
  * **Exactly-once delivery** &#8212; each message is delivered exactly once to the recipient; the message can neither be lost nor be duplicated.
 
 The first behavior, the one used by Pekko, is the cheapest and results in the highest performance. It has the least implementation overhead because it can be done in a fire-and-forget fashion without keeping the state at the sending end or in the transport mechanism. The second, at-least-once, requires retries to counter transport losses. This adds the overhead of keeping the state at the sending end and having an acknowledgment mechanism at the receiving end. Exactly-once delivery is most expensive, and results in the worst performance: in addition to the overhead added by at-least-once delivery, it requires the state to be kept at the receiving end in order to filter out
@@ -128,7 +128,7 @@ Scala
 :   @@snip [DeviceInProgress.scala](/docs/src/test/scala/typed/tutorial_3/DeviceInProgress.scala) { #device-with-read }
 
 Java
-:   @@snip [DeviceInProgress2.java](/docs/src/test/java/jdocs/typed/tutorial_3/inprogress2/Device.java) { #device-with-read }
+:   @@snip [Device.java](/docs/src/test/java/jdocs/typed/tutorial_3/inprogress2/Device.java) { #device-with-read }
 
 Note in the code that:
 
@@ -153,7 +153,7 @@ Now, the actor needs a way to change the state of the temperature when it receiv
 
 ## Adding a write protocol
 
-The purpose of the write protocol is to update the `currentTemperature` field when the actor receives a message that contains the temperature. Again, it is tempting to define the write protocol as a very simple message, something like this:
+The purpose of the write protocol is to update the `lastTemperatureReading` field when the actor receives a message that contains the temperature. Again, it is tempting to define the write protocol as a very simple message, something like this:
 
 Scala
 :   @@snip [DeviceInProgress.scala](/docs/src/test/scala/typed/tutorial_3/DeviceInProgress.scala) { #write-protocol-1 }
@@ -165,7 +165,7 @@ However, this approach does not take into account that the sender of the record 
 Just like in the case of temperature queries and responses, it is also a good idea to include an ID field to provide maximum flexibility.
 
 Scala
-:   @@snip [DeviceInProgress.scala](/docs/src/test/scala/typed/tutorial_3/Device.scala) { #write-protocol }
+:   @@snip [Device.scala](/docs/src/test/scala/typed/tutorial_3/Device.scala) { #write-protocol }
 
 Java
 :   @@snip [Device.java](/docs/src/test/java/jdocs/typed/tutorial_3/Device.java) { #write-protocol }
@@ -182,10 +182,10 @@ Java
 
 We should also write a new test case now, exercising both the read/query and write/record functionality together:
 
-Scala:
+Scala
 :   @@snip [DeviceSpec.scala](/docs/src/test/scala/typed/tutorial_3/DeviceSpec.scala) { #device-write-read-test }
 
-Java:
+Java
 :   @@snip [DeviceTest.java](/docs/src/test/java/jdocs/typed/tutorial_3/DeviceTest.java) { #device-write-read-test }
 
 ## What's Next?

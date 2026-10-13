@@ -1,17 +1,17 @@
 # alsoToAll
 
-Attaches the given @apidoc[Source]s to this @apidoc[Flow], meaning that elements that pass through this @apidoc[Flow] will also be sent to all those @apidoc[Sink]s.
+Attaches the given @apidoc[Sink]s to this @apidoc[Flow], meaning that elements that pass through this @apidoc[Flow] will also be sent to all those @apidoc[Sink]s.
 
 @ref[Fan-out operators](../index.md#fan-out-operators)
 
 ## Signature
 
-@apidoc[Source.alsoToAll](Source) { scala="#alsoToAll(that:org.apache.pekko.stream.Graph[org.apache.pekko.stream.SinkShape[Out],_]*):FlowOps.this.Repr[Out]" java="#alsoToAll(org.apache.pekko.stream.Graph*)" }
-@apidoc[Flow.alsoToAll](Flow) { scala="#alsoToAll(that:org.apache.pekko.stream.Graph[org.apache.pekko.stream.SinkShape[Out],_]*):FlowOps.this.Repr[Out]" java="#alsoToAll(org.apache.pekko.stream.Graph*)" }
+@apidoc[Source.alsoToAll](Source) { scala="#alsoToAll(those:org.apache.pekko.stream.Graph[org.apache.pekko.stream.SinkShape[Out],_]*):FlowOps.this.Repr[Out]" java="#alsoToAll(org.apache.pekko.stream.Graph*)" }
+@apidoc[Flow.alsoToAll](Flow) { scala="#alsoToAll(those:org.apache.pekko.stream.Graph[org.apache.pekko.stream.SinkShape[Out],_]*):FlowOps.this.Repr[Out]" java="#alsoToAll(org.apache.pekko.stream.Graph*)" }
 
 ## Description
 
-Attaches the given @apidoc[Source] s to this @apidoc[Flow], meaning that elements that pass through this @apidoc[Flow]
+Attaches the given @apidoc[Sink]s to this @apidoc[Flow], meaning that elements that pass through this @apidoc[Flow]
 will also be sent to all those @apidoc[Sink]s.
 
 ## Reactive Streams semantics
@@ -24,7 +24,7 @@ will also be sent to all those @apidoc[Sink]s.
 
 **completes** when upstream completes
 
-**cancels** when downstream or or any of the @apidoc[Sink]s cancels
+**cancels** when downstream or any of the @apidoc[Sink]s cancels
 
 @@@
 

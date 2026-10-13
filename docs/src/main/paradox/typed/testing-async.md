@@ -137,8 +137,24 @@ Scala
 Java
 :  @@snip [AsyncTestingExampleTest.java](/actor-testkit-typed/src/test/java/jdocs/org/apache/pekko/actor/testkit/typed/javadsl/JunitIntegrationExampleTest.java) { #junit-integration }
 
+@@@ div { .group-java }
+
+If you are using JUnit Jupiter (JUnit 5 or later), annotate the test class with
+`@ExtendWith(TestKitJUnitJupiterExtension.class)` and the test kit field with `@JUnitJupiterTestKit`.
+@javadoc[JUnitJupiterTestKitBuilder](pekko.actor.testkit.typed.javadsl.JUnitJupiterTestKitBuilder) creates the test kit,
+optionally with a custom name, configuration or existing `ActorSystem`. The extension shuts down the test kit after
+all tests in the class have run.
+
+@@snip [JUnitJupiterIntegrationExampleTest.java](/actor-testkit-typed/src/test/java/jdocs/org/apache/pekko/actor/testkit/typed/javadsl/JUnitJupiterIntegrationExampleTest.java) { #junit-jupiter-integration }
+
+The dependency on JUnit Jupiter is also marked as optional from the test kit module, so your project must explicitly
+include a dependency on `junit-jupiter` to use this. The earlier `TestKitJUnit5Extension`, `@JUnit5TestKit` and
+`JUnit5TestKitBuilder` are deprecated in favour of these.
+
+@@@
+
 As you may have noticed @scaladoc[ScalaTestWithActorTestKit](pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit) is an abstract class
-which means its problematic if you want treat a given test suite as a value and extend it in multiple ways (i.e. as an example you happen to be using 
+which means it's problematic if you want to treat a given test suite as a value and extend it in multiple ways (i.e. as an example you happen to be using 
 [testcontainers-scala](https://github.com/testcontainers/testcontainers-scala) and hypothetically you want to extend the same test for each different type of database
 you support).
 
@@ -194,9 +210,9 @@ of another library.
 
 ### Controlling the scheduler
 
-It can be hard to reliably unit test specific scenario's when your actor relies on timing:
+It can be hard to reliably unit test specific scenarios when your actor relies on timing:
 especially when running many tests in parallel it can be hard to get the timing just right.
-Making such tests more reliable by using generous timeouts make the tests take a long time to run.
+Making such tests more reliable by using generous timeouts makes the tests take a long time to run.
 
 For such situations, we provide a scheduler where you can manually, explicitly advance the clock.
 
@@ -260,6 +276,14 @@ Scala
 
 Java
 :  @@snip [LogCapturingExampleTest.java](/actor-testkit-typed/src/test/java/jdocs/org/apache/pekko/actor/testkit/typed/javadsl/LogCapturingExampleTest.java) { #log-capturing }
+
+@@@ div { .group-java }
+
+With JUnit Jupiter, register the `LogCapturingExtension` with `@ExtendWith` instead of using a `@Rule`:
+
+@@snip [LogCapturingExtensionExampleTest.java](/actor-testkit-typed/src/test/java/jdocs/org/apache/pekko/actor/testkit/typed/javadsl/LogCapturingExtensionExampleTest.java) { #log-capturing-junit-jupiter }
+
+@@@
 
 Then you also need to configure the `CapturingAppender` and `CapturingAppenderDelegate` in
 `src/test/resources/logback-test.xml`:

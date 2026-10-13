@@ -19,7 +19,8 @@ package org.apache.pekko.stream.testkit
 
 import java.util.concurrent.TimeUnit
 
-import org.apache.pekko.testkit.TestKitBase
+import org.apache.pekko
+import pekko.testkit.TestKitBase
 
 import org.scalatest.time.{ Millis, Span }
 

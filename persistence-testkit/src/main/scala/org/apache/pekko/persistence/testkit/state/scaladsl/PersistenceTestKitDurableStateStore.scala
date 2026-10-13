@@ -15,7 +15,6 @@ package org.apache.pekko.persistence.testkit.state.scaladsl
 
 import java.util.concurrent.atomic.AtomicLong
 
-import scala.collection.immutable
 import scala.concurrent.Future
 
 import org.apache.pekko
@@ -53,6 +52,14 @@ class PersistenceTestKitDurableStateStore[A](val system: ExtendedActorSystem)
   private implicit val sys: ExtendedActorSystem = system
   private val persistence = Persistence(system)
   private var store = Map.empty[String, Record[A]]
+
+  private[pekko] def clearAll(): Unit = this.synchronized {
+    store = Map.empty
+  }
+
+  private[pekko] def clearByPersistenceId(persistenceId: String): Unit = this.synchronized {
+    store = store - persistenceId
+  }
 
   private val (publisher, changesSource) =
     ActorSource
@@ -188,7 +195,7 @@ class PersistenceTestKitDurableStateStore[A](val system: ExtendedActorSystem)
   override def sliceForPersistenceId(persistenceId: String): Int =
     persistence.sliceForPersistenceId(persistenceId)
 
-  override def sliceRanges(numberOfRanges: Int): immutable.Seq[Range] =
+  override def sliceRanges(numberOfRanges: Int): Seq[Range] =
     persistence.sliceRanges(numberOfRanges)
 
   override def currentPersistenceIds(afterId: Option[String], limit: Long): Source[String, NotUsed] =

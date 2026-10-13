@@ -22,21 +22,21 @@ import org.apache.pekko.stream.javadsl.Compression;
 import org.apache.pekko.stream.javadsl.Source;
 import org.apache.pekko.testkit.javadsl.TestKit;
 import org.apache.pekko.util.ByteString;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 public class RecipeDecompress extends RecipeTest {
 
   static ActorSystem system;
 
-  @BeforeClass
+  @BeforeAll
   public static void setup() {
     system = ActorSystem.create("RecipeDecompress");
   }
 
-  @AfterClass
+  @AfterAll
   public static void tearDown() {
     TestKit.shutdownActorSystem(system);
     system = null;
@@ -60,6 +60,6 @@ public class RecipeDecompress extends RecipeTest {
             .toCompletableFuture()
             .get(1, TimeUnit.SECONDS);
     String decompressedString = decompressedData.utf8String();
-    Assert.assertEquals("Hello World", decompressedString);
+    Assertions.assertEquals("Hello World", decompressedString);
   }
 }

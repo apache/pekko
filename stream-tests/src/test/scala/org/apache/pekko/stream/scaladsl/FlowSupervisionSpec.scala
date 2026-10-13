@@ -13,7 +13,6 @@
 
 package org.apache.pekko.stream.scaladsl
 
-import scala.collection.immutable
 import scala.concurrent.Await
 import scala.concurrent.duration._
 import scala.util.control.NoStackTrace
@@ -32,7 +31,7 @@ class FlowSupervisionSpec extends StreamSpec {
 
   val failingMap = Flow[Int].map(n => if (n == 3) throw exc else n)
 
-  def run(f: Flow[Int, Int, NotUsed]): immutable.Seq[Int] =
+  def run(f: Flow[Int, Int, NotUsed]): Seq[Int] =
     Await.result(Source((1 to 5).toSeq ++ (1 to 5)).via(f).limit(1000).runWith(Sink.seq), 3.seconds)
 
   "Stream supervision" must {

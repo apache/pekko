@@ -13,7 +13,8 @@
 
 package org.apache.pekko.util
 
-import org.apache.pekko.actor.{ ActorPath, ActorRef, ActorRefProvider, MinimalActorRef }
+import org.apache.pekko
+import pekko.actor.{ ActorPath, ActorRef, ActorRefProvider, MinimalActorRef }
 
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec

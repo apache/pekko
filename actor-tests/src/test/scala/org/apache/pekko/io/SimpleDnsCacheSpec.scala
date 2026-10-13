@@ -16,7 +16,6 @@ package org.apache.pekko.io
 import java.net.InetAddress
 import java.util.concurrent.atomic.AtomicLong
 
-import scala.collection.immutable
 import scala.concurrent.duration._
 
 import org.apache.pekko
@@ -38,7 +37,7 @@ class SimpleDnsCacheSpec extends AnyWordSpec with Matchers {
       val ttl = Ttl.fromPositive(5000.millis)
       val cacheEntry = DnsProtocol.Resolved(
         "test.local",
-        immutable.Seq(ARecord("test.local", ttl, InetAddress.getByName("127.0.0.1"))))
+        Seq(ARecord("test.local", ttl, InetAddress.getByName("127.0.0.1"))))
       cache.put(("test.local", Ip()), cacheEntry, ttl)
 
       cache.cached(DnsProtocol.Resolve("test.local")) should ===(Some(cacheEntry))
@@ -57,7 +56,7 @@ class SimpleDnsCacheSpec extends AnyWordSpec with Matchers {
       val cacheEntry =
         DnsProtocol.Resolved(
           "test.local",
-          immutable.Seq(ARecord("test.local", ttl, InetAddress.getByName("127.0.0.1"))))
+          Seq(ARecord("test.local", ttl, InetAddress.getByName("127.0.0.1"))))
       cache.put(("test.local", Ip()), cacheEntry, ttl)
 
       cache.cached(DnsProtocol.Resolve("test.local")) should ===(Some(cacheEntry))

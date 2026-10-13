@@ -52,11 +52,11 @@ events. This can be useful if snapshot serialization format has changed in an in
 not be used when events have been deleted.
 
 In order to use snapshots, a default snapshot-store (`pekko.persistence.snapshot-store.plugin`) must be configured,
-or you can pick a snapshot store for for a specific `EventSourcedBehavior` by
+or you can pick a snapshot store for a specific `EventSourcedBehavior` by
 @scala[defining it with `withSnapshotPluginId` of the `EventSourcedBehavior`]@java[overriding `snapshotPluginId` in
 the `EventSourcedBehavior`].
 
-Because some use cases may not benefit from or need snapshots, it is perfectly valid not to not configure a snapshot store.
+Because some use cases may not benefit from or need snapshots, it is perfectly valid not to configure a snapshot store.
 However, Pekko will log a warning message when this situation is detected and then continue to operate until
 an actor tries to store a snapshot, at which point the operation will fail.
 
@@ -95,7 +95,7 @@ Scala
 Java
 :  @@snip [BasicPersistentBehaviorTest.java](/persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/BasicPersistentBehaviorTest.java) { #retentionCriteria #snapshottingPredicate }
 
-Snapshot deletion is triggered after saving a new snapshot.
+Snapshot deletion is triggered after successfully saving a new snapshot.
 
 The above example will save snapshots automatically every `numberOfEvents = 100`. Snapshots that have sequence
 number less than the sequence number of the saved snapshot minus `keepNSnapshots * numberOfEvents` (`100 * 2`) are automatically

@@ -69,11 +69,11 @@ private[remote] class ArteryAeronUdpTransport(_system: ExtendedActorSystem, _pro
 
   override type LifeCycle = AeronLifecycle
 
-  private[this] val mediaDriver = new AtomicReference[Option[MediaDriver]](None)
-  @volatile private[this] var aeron: Aeron = _
-  @volatile private[this] var aeronCounterTask: Cancellable = _
-  @volatile private[this] var aeronErrorLogTask: Cancellable = _
-  @volatile private[this] var aeronErrorLog: AeronErrorLog = _
+  private val mediaDriver = new AtomicReference[Option[MediaDriver]](None)
+  @volatile private var aeron: Aeron = _
+  @volatile private var aeronCounterTask: Cancellable = _
+  @volatile private var aeronErrorLogTask: Cancellable = _
+  @volatile private var aeronErrorLog: AeronErrorLog = _
 
   private val taskRunner = new TaskRunner(system, settings.Advanced.Aeron.IdleCpuLevel)
 
@@ -190,13 +190,13 @@ private[remote] class ArteryAeronUdpTransport(_system: ExtendedActorSystem, _pro
     ctx.availableImageHandler(new AvailableImageHandler {
       override def onAvailableImage(img: Image): Unit = {
         if (log.isDebugEnabled)
-          log.debug(s"onAvailableImage from ${img.sourceIdentity} session ${img.sessionId}")
+          log.debug("onAvailableImage from {} session {}", img.sourceIdentity, img.sessionId)
       }
     })
     ctx.unavailableImageHandler(new UnavailableImageHandler {
       override def onUnavailableImage(img: Image): Unit = {
         if (log.isDebugEnabled)
-          log.debug(s"onUnavailableImage from ${img.sourceIdentity} session ${img.sessionId}")
+          log.debug("onUnavailableImage from {} session {}", img.sourceIdentity, img.sessionId)
 
         // freeSessionBuffer in AeronSource FragmentAssembler
         streamMatValues.get.valuesIterator.foreach {
@@ -405,12 +405,11 @@ private[remote] class ArteryAeronUdpTransport(_system: ExtendedActorSystem, _pro
             .run()(materializer)
 
         val lane = inboundSink(envelopeBufferPool)
-        val completedValues: Vector[Future[Done]] =
-          (0 until inboundLanes).iterator
-            .map { _ =>
-              laneHub.toMat(lane)(Keep.right).run()(materializer)
-            }
-            .to(immutable.Vector)
+        val completedValues: Vector[Future[Done]] = (0 until inboundLanes).iterator
+          .map { _ =>
+            laneHub.toMat(lane)(Keep.right).run()(materializer)
+          }
+          .to(immutable.Vector)
 
         implicit val ec = system.dispatchers.internalDispatcher
 
@@ -482,9 +481,9 @@ private[remote] class ArteryAeronUdpTransport(_system: ExtendedActorSystem, _pro
     import java.nio.channels.DatagramChannel
 
     val socket = DatagramChannel.open().socket()
-    socket.bind(new InetSocketAddress(hostname, 0))
-    val port = socket.getLocalPort
-    socket.close()
-    port
+    try {
+      socket.bind(new InetSocketAddress(hostname, 0))
+      socket.getLocalPort
+    } finally socket.close()
   }
 }

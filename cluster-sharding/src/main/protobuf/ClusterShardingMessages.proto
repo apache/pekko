@@ -111,6 +111,10 @@ message CurrentRegions {
   repeated Address regions = 1;
 }
 
+message StopShards {
+  repeated string shards = 1;
+}
+
 /**
  * Defines a remote address.
  */

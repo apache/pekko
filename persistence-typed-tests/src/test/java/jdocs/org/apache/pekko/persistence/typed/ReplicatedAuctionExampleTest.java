@@ -14,19 +14,21 @@
 package jdocs.org.apache.pekko.persistence.typed;
 
 import static jdocs.org.apache.pekko.persistence.typed.AuctionEntity.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.apache.pekko.actor.testkit.typed.javadsl.LogCapturing;
-import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJunitResource;
+import org.apache.pekko.actor.testkit.typed.annotations.JUnitJupiterTestKit;
+import org.apache.pekko.actor.testkit.typed.javadsl.ActorTestKit;
+import org.apache.pekko.actor.testkit.typed.javadsl.JUnitJupiterTestKitBuilder;
+import org.apache.pekko.actor.testkit.typed.javadsl.LogCapturingExtension;
+import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJUnitJupiterExtension;
 import org.apache.pekko.actor.testkit.typed.javadsl.TestProbe;
 import org.apache.pekko.actor.typed.ActorRef;
 import org.apache.pekko.actor.typed.Behavior;
@@ -46,17 +48,17 @@ import org.apache.pekko.persistence.typed.javadsl.ReplicatedEventSourcing;
 import org.apache.pekko.persistence.typed.javadsl.ReplicationContext;
 import org.apache.pekko.persistence.typed.javadsl.SignalHandler;
 import org.apache.pekko.serialization.jackson.CborSerializable;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
-import org.scalatestplus.junit.JUnitSuite;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
-public class ReplicatedAuctionExampleTest extends JUnitSuite {
-  @ClassRule
-  public static final TestKitJunitResource testKit =
-      new TestKitJunitResource(PersistenceTestKitPlugin.getInstance().config());
-
-  @Rule public final LogCapturing logCapturing = new LogCapturing();
+@ExtendWith(TestKitJUnitJupiterExtension.class)
+@ExtendWith(LogCapturingExtension.class)
+public class ReplicatedAuctionExampleTest {
+  @JUnitJupiterTestKit
+  public ActorTestKit testKit =
+      new JUnitJupiterTestKitBuilder()
+          .withCustomConfig(PersistenceTestKitPlugin.getInstance().config())
+          .build();
 
   @Test
   public void auctionExample() {
@@ -106,7 +108,7 @@ class AuctionEntity
   public static ReplicaId R1 = new ReplicaId("R1");
   public static ReplicaId R2 = new ReplicaId("R2");
 
-  public static Set<ReplicaId> ALL_REPLICAS = new HashSet<>(Arrays.asList(R1, R2));
+  public static Set<ReplicaId> ALL_REPLICAS = Set.of(R1, R2);
 
   private final ActorContext<Command> context;
   private final TimerScheduler<Command> timers;
@@ -250,8 +252,7 @@ class AuctionEntity
     AuctionState addFinishedAtReplica(String replica) {
       Set<String> s = new HashSet<>(finishedAtDc);
       s.add(replica);
-      return new AuctionState(
-          false, highestBid, highestCounterOffer, Collections.unmodifiableSet(s));
+      return new AuctionState(false, highestBid, highestCounterOffer, Set.copyOf(s));
     }
 
     public AuctionState close() {

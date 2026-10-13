@@ -613,4 +613,30 @@ class SupervisorSpec
     killExpectNoRestart(pingpong)
   }
 
+  "respects maxNrOfRetries with withinTimeRange whose toMillis exceeds Int.MaxValue (OneForOneStrategy)" in {
+    // 30 days = 2,592,000,000 ms which silently overflowed to a negative Int before the fix,
+    // causing retriesInWindowOkay to always return true (unlimited restarts)
+    val supervisor = system.actorOf(Props(
+      new Supervisor(OneForOneStrategy(maxNrOfRetries = 2, withinTimeRange = 30.days)(classOf[Exception] :: Nil))))
+
+    val pingpong = child(supervisor, Props(new PingPongActor(testActor)))
+
+    kill(pingpong)
+    kill(pingpong)
+    killExpectNoRestart(pingpong)
+  }
+
+  "respects maxNrOfRetries with withinTimeRange whose toMillis exceeds Int.MaxValue (AllForOneStrategy)" in {
+    // 30 days = 2,592,000,000 ms which silently overflowed to a negative Int before the fix,
+    // causing retriesInWindowOkay to always return true (unlimited restarts)
+    val supervisor = system.actorOf(Props(
+      new Supervisor(AllForOneStrategy(maxNrOfRetries = 2, withinTimeRange = 30.days)(classOf[Exception] :: Nil))))
+
+    val pingpong = child(supervisor, Props(new PingPongActor(testActor)))
+
+    kill(pingpong)
+    kill(pingpong)
+    killExpectNoRestart(pingpong)
+  }
+
 }

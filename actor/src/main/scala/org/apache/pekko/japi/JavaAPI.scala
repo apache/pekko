@@ -19,6 +19,7 @@ import scala.runtime.AbstractPartialFunction
 import scala.util.control.NoStackTrace
 
 import org.apache.pekko
+import pekko.annotation.DoNotInherit
 import pekko.util.Collections.EmptyImmutableSeq
 
 /**
@@ -36,7 +37,9 @@ object Pair {
 }
 
 object JavaPartialFunction {
-  sealed abstract class NoMatchException extends RuntimeException with NoStackTrace
+
+  /** Not for user extension */
+  @DoNotInherit sealed abstract class NoMatchException extends RuntimeException with NoStackTrace
   case object NoMatch extends NoMatchException
   final def noMatch(): RuntimeException = NoMatch
 }
@@ -55,9 +58,9 @@ object JavaPartialFunction {
  * {{{
  * new JavaPartialFunction<Object, String>() {
  *   public String apply(Object in, boolean isCheck) {
- *     if (in instanceof TheThing) {
+ *     if (in instanceof TheThing theThing) {
  *       if (isCheck) return null; // to spare the expensive or side-effecting code
- *       return doSomethingWithTheThing((TheThing) in);
+ *       return doSomethingWithTheThing(theThing);
  *     } else {
  *       throw noMatch();
  *     }
@@ -106,24 +109,24 @@ object Util {
   def classTag[T](clazz: Class[T]): ClassTag[T] = ClassTag(clazz)
 
   /**
-   * Returns an immutable.Seq representing the provided array of Classes,
+   * Returns an immutable Seq representing the provided array of Classes,
    * an overloading of the generic immutableSeq in Util, to accommodate for erasure.
    */
-  def immutableSeq(arr: Array[Class[_]]): immutable.Seq[Class[_]] = immutableSeq[Class[_]](arr)
+  def immutableSeq(arr: Array[Class[?]]): Seq[Class[?]] = immutableSeq[Class[?]](arr)
 
   /**
    * Turns an array into an immutable Scala sequence (by copying it).
    */
-  def immutableSeq[T](arr: Array[T]): immutable.Seq[T] =
+  def immutableSeq[T](arr: Array[T]): Seq[T] =
     if ((arr ne null) && arr.length > 0) arr.toIndexedSeq else Nil
 
   /**
-   * Turns an [[java.lang.Iterable]] into an immutable Scala sequence (by copying it).
+   * Turns a [[java.lang.Iterable]] into an immutable Scala sequence (by copying it).
    */
-  def immutableSeq[T](iterable: java.lang.Iterable[T]): immutable.Seq[T] =
+  def immutableSeq[T](iterable: java.lang.Iterable[T]): Seq[T] =
     iterable match {
-      case imm: immutable.Seq[_] => imm.asInstanceOf[immutable.Seq[T]]
-      case other                 =>
+      case imm: Seq[?] => imm.asInstanceOf[Seq[T]]
+      case other       =>
         val i = other.iterator()
         if (i.hasNext) {
           val builder = new immutable.VectorBuilder[T]
@@ -134,7 +137,7 @@ object Util {
         } else EmptyImmutableSeq
     }
 
-  def immutableSingletonSeq[T](value: T): immutable.Seq[T] = value :: Nil
+  def immutableSingletonSeq[T](value: T): Seq[T] = value :: Nil
 
   def javaArrayList[T](seq: Seq[T]): java.util.List[T] = {
     val size = seq.size
@@ -144,7 +147,7 @@ object Util {
   }
 
   /**
-   * Turns an [[java.lang.Iterable]] into an immutable Scala IndexedSeq (by copying it).
+   * Turns a [[java.lang.Iterable]] into an immutable Scala IndexedSeq (by copying it).
    */
   def immutableIndexedSeq[T](iterable: java.lang.Iterable[T]): immutable.IndexedSeq[T] =
     immutableSeq(iterable).toVector

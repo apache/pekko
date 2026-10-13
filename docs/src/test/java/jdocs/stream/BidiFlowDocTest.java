@@ -14,10 +14,9 @@
 package jdocs.stream;
 
 import static org.apache.pekko.util.ByteString.emptyByteString;
-import static org.junit.Assert.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import java.nio.ByteOrder;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.TimeUnit;
@@ -33,20 +32,20 @@ import org.apache.pekko.testkit.javadsl.TestKit;
 import org.apache.pekko.util.ByteIterator;
 import org.apache.pekko.util.ByteString;
 import org.apache.pekko.util.ByteStringBuilder;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 public class BidiFlowDocTest extends AbstractJavaTest {
 
   static ActorSystem system;
 
-  @BeforeClass
+  @BeforeAll
   public static void setup() {
     system = ActorSystem.create("FlowDocTest");
   }
 
-  @AfterClass
+  @AfterAll
   public static void tearDown() {
     TestKit.shutdownActorSystem(system);
     system = null;
@@ -111,14 +110,11 @@ public class BidiFlowDocTest extends AbstractJavaTest {
   public static Message fromBytes(ByteString bytes) {
     // #implementation-details-elided
     final ByteIterator it = bytes.iterator();
-    switch (it.getByte()) {
-      case 1:
-        return new Ping(it.getInt(ByteOrder.LITTLE_ENDIAN));
-      case 2:
-        return new Pong(it.getInt(ByteOrder.LITTLE_ENDIAN));
-      default:
-        throw new RuntimeException("message format error");
-    }
+    return switch (it.getByte()) {
+      case 1 -> new Ping(it.getInt(ByteOrder.LITTLE_ENDIAN));
+      case 2 -> new Pong(it.getInt(ByteOrder.LITTLE_ENDIAN));
+      default -> throw new RuntimeException("message format error");
+    };
     // #implementation-details-elided
   }
 
@@ -267,14 +263,14 @@ public class BidiFlowDocTest extends AbstractJavaTest {
                     .build());
     final Flow<Message, Message, NotUsed> flow = stack.atop(stack.reversed()).join(pingpong);
     final CompletionStage<List<Message>> result =
-        Source.from(Arrays.asList(0, 1, 2))
+        Source.from(List.of(0, 1, 2))
             .<Message>map(id -> new Ping(id))
             .via(flow)
             .grouped(10)
             .runWith(Sink.<List<Message>>head(), system);
     assertArrayEquals(
         new Message[] {new Pong(0), new Pong(1), new Pong(2)},
-        result.toCompletableFuture().get(1, TimeUnit.SECONDS).toArray(new Message[0]));
+        result.toCompletableFuture().get(1, TimeUnit.SECONDS).toArray(Message[]::new));
     // #compose
   }
 }

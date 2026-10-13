@@ -141,7 +141,7 @@ class TestKit(system: ActorSystem) {
 
   /**
    * Obtain time remaining for execution of the innermost enclosing `within`
-   * block or throw an [[java.lang.AssertionError]] if no `within` block surrounds this
+   * block or throw a [[java.lang.AssertionError]] if no `within` block surrounds this
    * call.
    */
   def getRemaining: java.time.Duration = tp.remaining.toJava
@@ -400,7 +400,7 @@ class TestKit(system: ActorSystem) {
    * Same as `expectMsgAnyClassOf(remainingOrDefault, obj...)`, but correctly treating the timeFactor.
    */
   @varargs
-  def expectMsgAnyClassOf[T](objs: Class[_]*): T = tp.expectMsgAnyClassOf(objs: _*).asInstanceOf[T]
+  def expectMsgAnyClassOf[T](objs: Class[?]*): T = tp.expectMsgAnyClassOf(objs: _*).asInstanceOf[T]
 
   /**
    * Receive one message from the test actor and assert that it conforms to
@@ -408,7 +408,7 @@ class TestKit(system: ActorSystem) {
    * with an AssertionFailure being thrown in case of timeout.
    */
   @varargs
-  def expectMsgAnyClassOf[T](max: java.time.Duration, objs: Class[_]*): T =
+  def expectMsgAnyClassOf[T](max: java.time.Duration, objs: Class[?]*): T =
     tp.expectMsgAnyClassOf(max.toScala, objs: _*).asInstanceOf[T]
 
   /**

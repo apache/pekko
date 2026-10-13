@@ -43,9 +43,10 @@ The Aeron dependency needs to be explicitly added if using the `aeron-udp` trans
   version2="$aeron_version$"
 }
 
-@@@ note { title="Java 17" }
+@@@ note
 
-When using Aeron with Java 17 you have to add JVM flag `--add-opens=java.base/sun.nio.ch=ALL-UNNAMED`.
+Aeron requires the JVM flag `--add-opens=java.base/sun.nio.ch=ALL-UNNAMED` on the JDK 17+ runtimes required by
+this Pekko version.
 
 @@@
 
@@ -92,6 +93,14 @@ listening for connections and handling messages as not to interfere with other a
 
 The example above only illustrates the bare minimum of properties you have to add to enable remoting.
 All settings are described in @ref:[Remote Configuration](#remote-configuration-artery).
+
+### Shutdown
+
+Artery first flushes outstanding remote messages and then aborts its streams during `ActorSystem` termination.
+The `pekko.remote.artery.advanced.shutdown-streams-timeout` setting limits how long Artery waits for those streams to
+complete. If the timeout expires, Artery proceeds with transport shutdown so a stalled stream cannot indefinitely
+delay transport-specific shutdown handling. The separate
+`pekko.remote.artery.advanced.shutdown-flush-timeout` setting controls the preceding flush.
 
 ## Introduction
 
@@ -152,6 +161,28 @@ officially supported. If you're on a Big Endian processor, such as Sparc, it is 
 @ref:[Rolling update](additional/rolling-updates.md) is not supported when changing from one transport to another.
 
 @@@
+
+### TCP Magic Header
+
+When using the `tcp` or `tls-tcp` transport, a 4-byte "magic header" is sent at the start of each connection.
+This header is used to detect and reject accidental or invalid connections.
+
+The magic header is configured by `pekko.remote.artery.advanced.tcp-magic`, which is an array of allowed values.
+The first value in the array is used when sending (outbound connections). All values are accepted when
+receiving (inbound connections). The default is `["PEKK", "AKKA"]`.
+
+Each value must produce at least 4 UTF-8 bytes; extra bytes are ignored. Non-ASCII characters may occupy
+multiple UTF-8 bytes (2-4 bytes each).
+
+The magic header has evolved across versions:
+
+ * Akka and Pekko up to 1.6.x only support `"AKKA"` as the magic header.
+ * Pekko 1.7.x sends `"AKKA"` but accepts both `"AKKA"` and `"PEKK"`, enabling future upgrades.
+ * Pekko 2.x (and above) sends `"PEKK"` by default but accepts both `"PEKK"` and `"AKKA"`.
+
+Because Pekko 1.7.x+ and 2.x accept both values by default, rolling upgrades between these versions
+do not require changing the `tcp-magic` configuration. Once all nodes are running Pekko 2.x, you may
+remove `"AKKA"` from the array if desired.
 
 ## Canonical address
 
@@ -260,198 +291,17 @@ be delivered just fine.
 
 ## Remote Security
 
-An @apidoc[actor.ActorSystem] should not be exposed via Pekko Remote (Artery) over plain Aeron/UDP or TCP to an untrusted
-network (e.g. Internet). It should be protected by network security, such as a firewall. If that is not considered
-as enough protection @ref:[TLS with mutual authentication](#remote-tls) should be enabled.
-
-Best practice is that Pekko remoting nodes should only be accessible from the adjacent network. Note that if TLS is
-enabled with mutual authentication there is still a risk that an attacker can gain access to a valid certificate by
-compromising any node with certificates issued by the same internal PKI tree.
-
-By default, @ref[Java serialization](serialization.md#java-serialization) is disabled in Pekko.
-That is also security best-practice because of its multiple
-[known attack surfaces](https://community.microfocus.com/cyberres/fortify/f/fortify-discussions/317555/the-perils-of-java-deserialization).
+See @ref:[Remote Security](remote-security.md) for security considerations for Pekko Remoting.
 
 <a id="remote-tls"></a>
 ### Configuring SSL/TLS for Pekko Remoting
 
-In addition to what is described here, you can read the blog post addressing this aspect for Pekko [Securing Pekko cluster communication in Kubernetes](https://akka.io/blog/article/2021/10/27/akka-cluster-mtls).
-
-SSL can be used as the remote transport by using the `tls-tcp` transport:
-
-```
-pekko.remote.artery {
-  transport = tls-tcp
-}
-```
-
-Next the actual SSL/TLS parameters have to be configured:
-
-```
-pekko.remote.artery {
-  transport = tls-tcp
-
-  ssl.config-ssl-engine {
-    key-store = "/example/path/to/mykeystore.jks"
-    trust-store = "/example/path/to/mytruststore.jks"
-
-    key-store-password = ${SSL_KEY_STORE_PASSWORD}
-    key-password = ${SSL_KEY_PASSWORD}
-    trust-store-password = ${SSL_TRUST_STORE_PASSWORD}
-
-    protocol = "TLSv1.3"
-
-    enabled-algorithms = [TLS_AES_256_GCM_SHA384]
-  }
-}
-```
-
-Always use [substitution from environment variables](https://github.com/lightbend/config#optional-system-or-env-variable-overrides)
-for passwords. Don't define real passwords in config files.
-
-According to [RFC 7525](https://www.rfc-editor.org/rfc/rfc7525.html) the recommended algorithms to use with TLS 1.2 (as of writing this document) are:
-
- * TLS_DHE_RSA_WITH_AES_128_GCM_SHA256
- * TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
- * TLS_DHE_RSA_WITH_AES_256_GCM_SHA384
- * TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-
-For TLS 1.3, these are good options:
-
- * TLS_AES_128_GCM_SHA256
- * TLS_AES_256_GCM_SHA384
- * TLS_CHACHA20_POLY1305_SHA256 (may not be supported on Java 8 runtimes)
-
-You should always check the latest information about security and algorithm recommendations though before you configure your system.
-
-Since a Pekko remoting is inherently @ref:[peer-to-peer](general/remoting.md#symmetric-communication) both the key-store as well as trust-store
-need to be configured on each remoting node participating in the cluster.
-
-The official [Java Secure Socket Extension documentation](https://docs.oracle.com/javase/8/docs/technotes/guides/security/jsse/JSSERefGuide.html)
-as well as the [Oracle documentation on creating KeyStore and TrustStores](https://docs.oracle.com/cd/E19509-01/820-3503/6nf1il6er/index.html)
-are both great resources to research when setting up security on the JVM. Please consult those resources when troubleshooting
-and configuring SSL.
-
-Mutual authentication between TLS peers is enabled by default. Mutual authentication means that the passive side
-(the TLS server side) of a connection will also request and verify a certificate from the connecting peer.
-Without this mode only the client side is requesting and verifying certificates. While Pekko is a peer-to-peer
-technology, each connection between nodes starts out from one side (the "client") towards the other (the "server").
-
-Note that if TLS is enabled with mutual authentication there is still a risk that an attacker can gain access to a
-valid certificate by compromising any node with certificates issued by the same internal PKI tree.
-
-It's recommended that you enable hostname verification with
-`pekko.remote.artery.ssl.config-ssl-engine.hostname-verification=on`.
-When enabled it will verify that the destination hostname matches the hostname in the peer's certificate.
-
-In deployments where hostnames are dynamic and not known up front it can make sense to leave the hostname verification off.
-
-You have a few choices how to set up certificates and hostname verification:
-
-* Have a single set of keys and a single certificate for all nodes and *disable* hostname checking
-    * The single set of keys and the single certificate is distributed to all nodes. The certificate can
-      be self-signed as it is distributed both as a certificate for authentication but also as the trusted certificate.
-    * If the keys/certificate are lost, someone else can connect to your cluster.
-    * Adding nodes to the cluster is simple as the key material can be deployed / distributed to the new node.
-* Have a single set of keys and a single certificate for all nodes that contains all of the host names and *enable*
-  hostname checking.
-    * This means that only the hosts mentioned in the certificate can connect to the cluster.
-    * It cannot be checked, though, if the node you talk to is actually the node it is supposed to be (or if it is one
-      of the other nodes). This seems like a minor restriction as you'll have to trust all cluster nodes the same in an
-      Pekko cluster anyway.
-    * The certificate can be self-signed in which case the same single certificate is distributed and trusted on all
-      nodes (but see the next bullet)
-    * Adding a new node means that its host name needs to conform to the trusted host names in the certificate.
-      That either means to foresee new hosts, use a wildcard certificate, or use a full CA in the first place,
-      so you can later issue more certificates if more nodes are to be added (but then you already get into the
-      territory of the next solution).
-    * If a certificate is stolen, it can only be used to connect to the cluster from a node reachable via a hostname
-      that is trusted in the certificate. It would require tampering with DNS to allow other nodes to get access to
-      the cluster (however, tampering DNS might be easier in an internal setting than on internet scale).
-* Have a CA and then keys/certificates, one for each node, and *enable*  host name checking.
-    * Basically like internet HTTPS but that you only trust the internal CA and then issue certificates for each new node.
-    * Needs a PKI, the CA certificate is trusted on all nodes, the individual certificates are used for authentication.
-    * Only the CA certificate and the key/certificate for a node is distributed.
-    * If keys/certificates are stolen, only the same node can access the cluster (unless DNS is tampered with as well).
-      You can revoke single certificates.
-
-See also a description of the settings in the @ref:[Remote Configuration](#remote-configuration-artery) section.
-
-@@@ note
-
-When using SHA1PRNG on Linux it's recommended specify `-Djava.security.egd=file:/dev/urandom` as argument
-to the JVM to prevent blocking. It is NOT as secure because it reuses the seed.
-
-@@@
-
-
+See @ref:[Configuring SSL/TLS for Pekko Remoting](remote-security.md#remote-tls). For Kubernetes deployments, also see
+@ref:[mTLS with rotated certificates in Kubernetes](remote-security.md#mtls-with-rotated-certificates-in-kubernetes).
 
 ### Untrusted Mode
 
-As soon as an actor system can connect to another remotely, it may in principle
-send any possible message to any actor contained within that remote system. One
-example may be sending a @apidoc[actor.PoisonPill] to the system guardian, shutting
-that system down. This is not always desired, and it can be disabled with the
-following setting:
-
-```
-pekko.remote.artery.untrusted-mode = on
-```
-
-This disallows sending of system messages (actor life-cycle commands,
-DeathWatch, etc.) and any message extending @apidoc[actor.PossiblyHarmful] to the
-system on which this flag is set. Should a client send them nonetheless they
-are dropped and logged (at DEBUG level in order to reduce the possibilities for
-a denial of service attack). `PossiblyHarmful` covers the predefined
-messages like @apidoc[actor.PoisonPill] and @apidoc[actor.Kill], but it can also be added
-as a marker trait to user-defined messages.
-
-@@@ warning
-
-Untrusted mode does not give full protection against attacks by itself.
-It makes it slightly harder to perform malicious or unintended actions but
-it should be noted that @ref:[Java serialization](serialization.md#java-serialization)
-should still not be enabled.
-Additional protection can be achieved when running in an untrusted network by
-network security (e.g. firewalls) and/or enabling @ref:[TLS with mutual authentication](#remote-tls).
-
-@@@
-
-Messages sent with actor selection are by default discarded in untrusted mode, but
-permission to receive actor selection messages can be granted to specific actors
-defined in configuration:
-
-```
-pekko.remote.artery.trusted-selection-paths = ["/user/receptionist", "/user/namingService"]
-```
-
-
-The actual message must still not be of type `PossiblyHarmful`.
-
-In summary, the following operations are ignored by a system configured in
-untrusted mode when incoming via the remoting layer:
-
- * remote deployment (which also means no remote supervision)
- * remote DeathWatch
- * @apidoc[system.stop()](actor.ActorRefFactory) {scala="#stop(actor:org.apache.pekko.actor.ActorRef):Unit" java="#stop(org.apache.pekko.actor.ActorRef)"}, @apidoc[actor.PoisonPill], @apidoc[actor.Kill]
- * sending any message which extends from the @apidoc[actor.PossiblyHarmful] marker
-interface, which includes @apidoc[actor.Terminated]
- * messages sent with actor selection, unless destination defined in `trusted-selection-paths`.
-
-@@@ note
-
-Enabling the untrusted mode does not remove the capability of the client to
-freely choose the target of its message sends, which means that messages not
-prohibited by the above rules can be sent to any actor in the remote system.
-It is good practice for a client-facing system to only contain a well-defined
-set of entry point actors, which then forward requests (possibly after
-performing validation) to another actor system containing the actual worker
-actors. If messaging between these two server-side systems is done using
-local @apidoc[actor.ActorRef] (they can be exchanged safely between actor systems
-within the same JVM), you can restrict the messages on this interface by
-marking them @apidoc[actor.PossiblyHarmful] so that a client cannot forge them.
-
-@@@
+See @ref:[Untrusted Mode](remote-security.md#untrusted-mode).
 
 ## Quarantine
 
@@ -650,7 +500,7 @@ in case of heavy traffic by using a dedicated subchannel.
 specific events
  * Providing protocol stability across major Pekko versions to support rolling updates of large-scale systems
 
-The main incompatible change from the previous implementation that the protocol field of the string representation of an
+The main incompatible change from the previous implementation is that the protocol field of the string representation of an
 @apidoc[actor.ActorRef] is always *pekko* instead of the previously used *pekko.tcp* or *pekko.ssl.tcp*. Configuration properties
 are also different.
 
@@ -687,7 +537,7 @@ path patterns that have to be specified in the actor system's configuration on b
 pekko.remote.artery.large-message-destinations = [
    "/user/largeMessageActor",
    "/user/largeMessagesGroup/*",
-   "/user/anotherGroup/*/largeMesssages",
+   "/user/anotherGroup/*/largeMessages",
    "/user/thirdGroup/**",
    "/temp/session-ask-actor*"
 ]
@@ -696,8 +546,8 @@ pekko.remote.artery.large-message-destinations = [
 This means that all messages sent to the following actors will pass through the dedicated, large messages channel:
 
  * `/user/largeMessageActor`
- * `/user/largeMessageActorGroup/actor1`
- * `/user/largeMessageActorGroup/actor2`
+ * `/user/largeMessagesGroup/actor1`
+ * `/user/largeMessagesGroup/actor2`
  * `/user/anotherGroup/actor1/largeMessages`
  * `/user/anotherGroup/actor2/largeMessages`
  * `/user/thirdGroup/actor3/`
@@ -745,13 +595,13 @@ Given that Aeron jar files are in the classpath the standalone media driver can 
 java io.aeron.driver.MediaDriver
 ```
 
-The needed classpath:
+The classpath would be approximately (but you will need to fix up the version numbers):
 
 ```
-Agrona-0.5.4.jar:aeron-driver-1.0.1.jar:aeron-client-1.0.1.jar
+agrona-2.6.0.jar:aeron-driver-1.53.1.jar:aeron-client-1.53.1.jar
 ```
 
-You find those jar files on [Maven Central](https://search.maven.org/), or you can create a
+You find those jar files on [Sonatype Central](https://central.sonatype.com/), or you can create a
 package with your preferred build tool.
 
 You can pass [Aeron properties](https://github.com/real-logic/Aeron/wiki/Configuration-Options) as
@@ -784,7 +634,7 @@ aeron.threading.mode=SHARED_NETWORK
 #aeron.sender.idle.strategy=org.agrona.concurrent.BusySpinIdleStrategy
 #aeron.receiver.idle.strategy=org.agrona.concurrent.BusySpinIdleStrategy
 
-# use same director in pekko.remote.artery.advanced.aeron-dir config
+# use same directory in pekko.remote.artery.advanced.aeron.aeron-dir config
 # of the Pekko application
 aeron.dir=/dev/shm/aeron
 ```
@@ -905,8 +755,9 @@ Any space used in the mount will count towards your container's memory usage.
 
 ### Flight Recorder
 
-When running on JDK 11 Artery specific flight recording is available through the [Java Flight Recorder (JFR)](https://openjdk.java.net/jeps/328).
-The flight recorder is automatically enabled by detecting JDK 11 but can be disabled if needed by setting `pekko.java-flight-recorder.enabled = false`.
+Artery specific flight recording is available through the [Java Flight Recorder (JFR)](https://openjdk.java.net/jeps/328),
+which is included in all JDK versions supported by Pekko. It is automatically enabled but can be disabled if needed
+by setting `pekko.java-flight-recorder.enabled = false`.
 
 Low overhead Artery specific events are emitted by default when JFR is enabled, higher overhead events needs a custom settings template and are not enabled automatically with the `profiling` JFR template.
 To enable those create a copy of the `profiling` template and enable all `Pekko` sub category events, for example through the JMC GUI. 

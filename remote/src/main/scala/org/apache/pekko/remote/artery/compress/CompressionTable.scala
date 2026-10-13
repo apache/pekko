@@ -49,7 +49,8 @@ private[remote] final class CompressionTable[T](
       import scala.jdk.CollectionConverters._
       require(
         _dictionary.values.iterator().asScala.min == 0,
-        "Compression table should start allocating from 0, yet lowest allocated id was " + _dictionary.values
+        "Compression table should start allocating from 0, yet lowest allocated id was " +
+        _dictionary.values
           .iterator()
           .asScala
           .min)
@@ -90,7 +91,7 @@ private[remote] final class CompressionTable[T](
   }
 
   override def equals(obj: Any): Boolean = obj match {
-    case other: CompressionTable[_] =>
+    case other: CompressionTable[?] =>
       originUid == other.originUid && version == other.version && _dictionary == other._dictionary
     case _ => false
   }
@@ -100,10 +101,8 @@ private[remote] final class CompressionTable[T](
 private[remote] object CompressionTable {
   final val NotCompressedId = -1
 
-  final val CompareBy2ndValue: Comparator[(Object, Int)] = new Comparator[(Object, Int)] {
-    override def compare(o1: (Object, Int), o2: (Object, Int)): Int =
-      o1._2.compare(o2._2)
-  }
+  final val CompareBy2ndValue: Comparator[(Object, Int)] =
+    (o1: (Object, Int), o2: (Object, Int)) => o1._2.compare(o2._2)
   def compareBy2ndValue[T]: Comparator[Tuple2[T, Int]] = CompareBy2ndValue.asInstanceOf[Comparator[(T, Int)]]
 
   private def newObject2IntHashMap[T](initialCapacity: Int): Object2IntHashMap[T] = {

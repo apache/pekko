@@ -21,6 +21,7 @@ import pekko.actor.Actor
 import pekko.actor.ActorLogMarker
 import pekko.actor.ActorRef
 import pekko.actor.AllDeadLetters
+import pekko.actor.CoordinatedShutdown
 import pekko.actor.DeadLetter
 import pekko.actor.DeadLetterActorRef
 import pekko.actor.DeadLetterSuppression
@@ -35,6 +36,22 @@ class DeadLetterListener extends Actor {
   val eventStream: EventStream = context.system.eventStream
   protected val maxCount: Int = context.system.settings.LogDeadLetters
   private val isAlwaysLoggingDeadLetters = maxCount == Int.MaxValue
+  // When dead-letter logging during shutdown is disabled we must stop logging as soon as the
+  // system starts terminating, not only once this listener is finally stopped at the very end of
+  // CoordinatedShutdown. Otherwise dead letters produced throughout the (potentially long) shutdown
+  // are still logged unconditionally. See issue #3256.
+  private val logDeadLettersDuringShutdown = context.system.settings.LogDeadLettersDuringShutdown
+  // The `pekko.coordinated-shutdown` config, used to resolve the EFFECTIVE (per-reason)
+  // `terminate-actor-system` value of an in-progress shutdown; see `terminatingShutdownInProgress`.
+  private val coordinatedShutdownConfig = context.system.settings.config.getConfig("pekko.coordinated-shutdown")
+  // Resolved lazily so that handling a dead letter never forces CoordinatedShutdown initialization
+  // from the actor's constructor. At worst the first dead letter triggers the one-time extension
+  // initialization; afterwards this just caches the reference and avoids a per-dead-letter lookup.
+  private lazy val coordinatedShutdown = CoordinatedShutdown(context.system)
+  // Cached decision of whether the in-progress coordinated shutdown actually terminates the system.
+  // The shutdown reason is set once and never changes, so this is computed at most once. Accessed
+  // only from the actor's own thread, so a plain var is sufficient.
+  private var shutdownTerminatesSystem: Option[Boolean] = None
   protected var count: Int = 0
 
   override def preStart(): Unit = {
@@ -72,7 +89,7 @@ class DeadLetterListener extends Actor {
 
   private def receiveWithAlwaysLogging: Receive = {
     case d: AllDeadLetters =>
-      if (!isWrappedSuppressed(d)) {
+      if (!isSuppressed(d)) {
         incrementCount()
         logDeadLetter(d, doneMsg = "")
       }
@@ -80,7 +97,7 @@ class DeadLetterListener extends Actor {
 
   private def receiveWithMaxCountLogging: Receive = {
     case d: AllDeadLetters =>
-      if (!isWrappedSuppressed(d)) {
+      if (!isSuppressed(d)) {
         incrementCount()
         if (count == maxCount) {
           logDeadLetter(d, ", no more dead letters will be logged")
@@ -93,7 +110,7 @@ class DeadLetterListener extends Actor {
 
   private def receiveWithSuspendLogging(suspendDuration: FiniteDuration): Receive = {
     case d: AllDeadLetters =>
-      if (!isWrappedSuppressed(d)) {
+      if (!isSuppressed(d)) {
         incrementCount()
         if (count == maxCount) {
           val doneMsg = s", no more dead letters will be logged in next [${suspendDuration.pretty}]"
@@ -106,7 +123,7 @@ class DeadLetterListener extends Actor {
 
   private def receiveWhenSuspended(suspendDuration: FiniteDuration, suspendDeadline: Deadline): Receive = {
     case d: AllDeadLetters =>
-      if (!isWrappedSuppressed(d)) {
+      if (!isSuppressed(d)) {
         incrementCount()
         if (suspendDeadline.isOverdue()) {
           val doneMsg = s", of which ${count - maxCount - 1} were not logged. The counter will be reset now"
@@ -150,6 +167,34 @@ class DeadLetterListener extends Actor {
   private def isReal(snd: ActorRef): Boolean = {
     (snd ne ActorRef.noSender) && (snd ne context.system.deadLetters) && !snd.isInstanceOf[DeadLetterActorRef]
   }
+
+  private def isSuppressed(d: AllDeadLetters): Boolean =
+    isWrappedSuppressed(d) || suppressedDuringShutdown
+
+  // Suppress logging while a terminating coordinated shutdown is in progress and dead-letter logging
+  // during shutdown is disabled (`pekko.log-dead-letters-during-shutdown`, `off` by default).
+  private def suppressedDuringShutdown: Boolean =
+    !logDeadLettersDuringShutdown && terminatingShutdownInProgress
+
+  // True while a coordinated shutdown that actually terminates this ActorSystem is in progress.
+  // `terminate-actor-system` can be overridden per shutdown reason (CoordinatedShutdown
+  // reason-overrides), so the decision must be taken from the EFFECTIVE config for the active reason
+  // rather than from the base setting: a non-terminating run leaves a shutdown reason set on a
+  // still-running system and must NOT suppress logging, otherwise dead-letter logging would be
+  // silently disabled for the rest of that system's life (issue #3256). `confWithOverrides` is the
+  // same resolution CoordinatedShutdown itself uses to decide whether to terminate the system.
+  private def terminatingShutdownInProgress: Boolean =
+    coordinatedShutdown.shutdownReason() match {
+      case reason @ Some(_) =>
+        shutdownTerminatesSystem.getOrElse {
+          val terminates =
+            CoordinatedShutdown.confWithOverrides(coordinatedShutdownConfig, reason).getBoolean(
+              "terminate-actor-system")
+          shutdownTerminatesSystem = Some(terminates)
+          terminates
+        }
+      case None => false
+    }
 
   private def isWrappedSuppressed(d: AllDeadLetters): Boolean = {
     d.message match {

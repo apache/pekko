@@ -23,6 +23,8 @@ import pekko.stream.testkit._
 
 import org.reactivestreams.Subscriber
 
+import com.typesafe.config.ConfigFactory
+
 object GraphFlowSpec {
   val source1 = Source(0 to 3)
 
@@ -50,11 +52,15 @@ object GraphFlowSpec {
 }
 
 @nowarn
-class GraphFlowSpec extends StreamSpec {
+class GraphFlowSpec
+    extends StreamSpec(ConfigFactory.parseString("""
+    pekko.stream.materializer.initial-input-buffer-size = 2
+    pekko.stream.materializer.max-input-buffer-size = 16
+    """)) {
 
   import GraphFlowSpec._
 
-  val settings = ActorMaterializerSettings(system).withInputBuffer(initialSize = 2, maxSize = 16)
+  val settings = ActorMaterializerSettings(system)
 
   implicit val materializer: Materializer = ActorMaterializer(settings)
 

@@ -19,7 +19,6 @@ import java.util.concurrent.ThreadFactory
 import java.util.concurrent.atomic.{ AtomicLong, AtomicReference }
 
 import scala.annotation.tailrec
-import scala.collection.immutable
 import scala.concurrent.{ Await, ExecutionContext, Future, Promise }
 import scala.concurrent.duration._
 import scala.util.control.NonFatal
@@ -132,6 +131,15 @@ class LightArrayRevolverScheduler(config: Config, log: LoggingAdapter, threadFac
     super.scheduleWithFixedDelay(initialDelay, delay)(runnable)
   }
 
+  /**
+   * <p>
+   *   Opentelemetry Java Instrumentation relies on this method so avoid changing it. The agent replaces the
+   *   `runnable` argument with a wrapper that carries the scheduling context into every run.
+   *   See https://github.com/apache/pekko/issues/3472
+   * </p>
+   */
+  // see https://github.com/open-telemetry/opentelemetry-java-instrumentation/blob/6f9ca5672ce84edbbe36ce0e14386c31d68f479f/instrumentation/pekko/pekko-actor-1.0/javaagent/src/main/java/io/opentelemetry/javaagent/instrumentation/pekkoactor/v1_0/PekkoScheduleInstrumentation.java
+  @noinline // Not inlined so that the agent can match the method in the bytecode
   override protected def schedule(initialDelay: FiniteDuration, delay: FiniteDuration, runnable: Runnable)(
       implicit executor: ExecutionContext): Cancellable = {
     checkPeriod(delay)
@@ -161,6 +169,15 @@ class LightArrayRevolverScheduler(config: Config, log: LoggingAdapter, threadFac
     }
   }
 
+  /**
+   * <p>
+   *   Opentelemetry Java Instrumentation relies on this method so avoid changing it. The agent replaces the
+   *   `runnable` argument with a wrapper that carries the scheduling context into the run.
+   *   See https://github.com/apache/pekko/issues/3472
+   * </p>
+   */
+  // see https://github.com/open-telemetry/opentelemetry-java-instrumentation/blob/6f9ca5672ce84edbbe36ce0e14386c31d68f479f/instrumentation/pekko/pekko-actor-1.0/javaagent/src/main/java/io/opentelemetry/javaagent/instrumentation/pekkoactor/v1_0/PekkoScheduleInstrumentation.java
+  @noinline // Not inlined so that the agent can match the method in the bytecode
   override def scheduleOnce(delay: FiniteDuration, runnable: Runnable)(
       implicit executor: ExecutionContext): Cancellable =
     try schedule(executor, runnable, roundUp(delay))
@@ -235,9 +252,9 @@ class LightArrayRevolverScheduler(config: Config, log: LoggingAdapter, threadFac
         s"Task scheduled with [${delayNanos.nanos.toSeconds}] seconds delay, " +
         s"which is too far in future, maximum delay is [${(tickNanos * Int.MaxValue).nanos.toSeconds - 1}] seconds")
 
-  private val stopped = new AtomicReference[Promise[immutable.Seq[TimerTask]]]
-  private def stop(): Future[immutable.Seq[TimerTask]] = {
-    val p = Promise[immutable.Seq[TimerTask]]()
+  private val stopped = new AtomicReference[Promise[Seq[TimerTask]]]
+  private def stop(): Future[Seq[TimerTask]] = {
+    val p = Promise[Seq[TimerTask]]()
     if (stopped.compareAndSet(null, p)) {
       // Interrupting the timer thread to make it shut down faster is not good since
       // it could be in the middle of executing the scheduled tasks, which might not
@@ -254,7 +271,7 @@ class LightArrayRevolverScheduler(config: Config, log: LoggingAdapter, threadFac
     val wheel = Array.fill(WheelSize)(new TaskQueue)
     var spareTaskQueue = new TaskQueue
 
-    private def clearAll(): immutable.Seq[TimerTask] = {
+    private def clearAll(): Seq[TimerTask] = {
       @tailrec def collect(q: TaskQueue, acc: Vector[TimerTask]): Vector[TimerTask] = {
         q.poll() match {
           case null => acc
@@ -271,11 +288,12 @@ class LightArrayRevolverScheduler(config: Config, log: LoggingAdapter, threadFac
         node.value.ticks match {
           case 0     => node.value.executeTask()
           case ticks =>
-            val futureTick = ((
-              time - start + // calculate the nanos since timer start
-              (ticks * tickNanos) + // adding the desired delay
-              tickNanos - 1 // rounding up
-            ) / tickNanos).toInt // and converting to slot number
+            val futureTick =
+              ((
+                time - start + // calculate the nanos since timer start
+                (ticks * tickNanos) + // adding the desired delay
+                tickNanos - 1 // rounding up
+              ) / tickNanos).toInt // and converting to slot number
             // tick is an Int that will wrap around, but toInt of futureTick gives us modulo operations
             // and the difference (offset) will be correct in any case
             val offset = futureTick - tick
@@ -337,7 +355,7 @@ class LightArrayRevolverScheduler(config: Config, log: LoggingAdapter, threadFac
         }
         executeBucket()
         wheel(bucket) = putBack
-        // we know tasks is empty now, so we can re-use it next tick
+        // we know tasks is empty now, so we can reuse it next tick
         spareTaskQueue = tasks
 
         tick += 1
@@ -356,7 +374,7 @@ class LightArrayRevolverScheduler(config: Config, log: LoggingAdapter, threadFac
 }
 
 object LightArrayRevolverScheduler {
-  private[this] val taskHandle: VarHandle = {
+  private val taskHandle: VarHandle = {
     val lookup = MethodHandles.privateLookupIn(classOf[TaskHolder], MethodHandles.lookup())
     lookup.findVarHandle(classOf[TaskHolder], "task", classOf[Runnable])
   }
@@ -416,8 +434,8 @@ object LightArrayRevolverScheduler {
     override def isCancelled: Boolean = task eq CancelledTask
   }
 
-  private[this] val CancelledTask = new Runnable { def run = () }
-  private[this] val ExecutedTask = new Runnable { def run = () }
+  private val CancelledTask: Runnable = () => ()
+  private val ExecutedTask: Runnable = () => ()
 
   private val NotCancellable: TimerTask = new TimerTask {
     def cancel(): Boolean = false

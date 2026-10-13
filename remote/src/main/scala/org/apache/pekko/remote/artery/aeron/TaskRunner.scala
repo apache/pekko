@@ -127,10 +127,10 @@ private[pekko] class TaskRunner(system: ExtendedActorSystem, val idleCpuLevel: I
   import TaskRunner._
 
   private val log = Logging(system, classOf[TaskRunner])
-  private[this] var running = false
-  private[this] val cmdQueue = new CommandQueue
-  private[this] val tasks = new ArrayBag[Task]
-  private[this] val shutdown = Promise[Done]()
+  private var running = false
+  private val cmdQueue = new CommandQueue
+  private val tasks = new ArrayBag[Task]
+  private val shutdown = Promise[Done]()
 
   private val idleStrategy = createIdleStrategy(idleCpuLevel)
   private var reset = false

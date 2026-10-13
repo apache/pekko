@@ -13,9 +13,8 @@
 
 package jdocs.stream.javadsl.cookbook;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import org.apache.pekko.NotUsed;
@@ -23,19 +22,19 @@ import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.stream.javadsl.Sink;
 import org.apache.pekko.stream.javadsl.Source;
 import org.apache.pekko.testkit.javadsl.TestKit;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 public class RecipeFlattenList extends RecipeTest {
   static ActorSystem system;
 
-  @BeforeClass
+  @BeforeAll
   public static void setup() {
     system = ActorSystem.create("RecipeFlattenList");
   }
 
-  @AfterClass
+  @AfterAll
   public static void tearDown() {
     TestKit.shutdownActorSystem(system);
     system = null;
@@ -47,9 +46,7 @@ public class RecipeFlattenList extends RecipeTest {
       {
         Source<List<Message>, NotUsed> someDataSource =
             Source.from(
-                Arrays.asList(
-                    Arrays.asList(new Message("1")),
-                    Arrays.asList(new Message("2"), new Message("3"))));
+                List.of(List.of(new Message("1")), List.of(new Message("2"), new Message("3"))));
 
         // #flattening-lists
         Source<List<Message>, NotUsed> myData = someDataSource;

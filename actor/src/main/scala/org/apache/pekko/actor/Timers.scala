@@ -55,10 +55,9 @@ trait Timers extends Actor {
           case OptionVal.Some(m: AutoReceivedMessage) =>
             context.asInstanceOf[ActorCell].autoReceiveMessage(Envelope(m, self, context.system))
           case OptionVal.Some(m) =>
-            if (this.isInstanceOf[Stash]) {
-              // this is important for stash interaction, as stash will look directly at currentMessage #24557
-              actorCell.currentMessage = actorCell.currentMessage.copy(message = m)
-            }
+            // Keep the cell-wide current message consistent with the message delivered to receive.
+            // Stash and failure handling both read currentMessage directly.
+            actorCell.currentMessage = actorCell.currentMessage.copy(message = m)
             super.aroundReceive(receive, m)
           case _ => // discard
         }
@@ -92,6 +91,38 @@ abstract class AbstractActorWithTimers extends AbstractActor with Timers {
  * @since 1.1.0
  */
 abstract class UntypedAbstractActorWithTimers extends UntypedAbstractActor with Timers {
+
+  /**
+   * Start and cancel timers via the enclosed `TimerScheduler`.
+   */
+  final def getTimers: TimerScheduler = timers
+}
+
+/**
+ * Java API: Support for scheduled `self` messages via [[TimerScheduler]], with logging.
+ *
+ * Timers are bound to the lifecycle of the actor that owns it,
+ * and thus are cancelled automatically when it is restarted or stopped.
+ *
+ * @since 2.0.0
+ */
+abstract class AbstractLoggingActorWithTimers extends AbstractActor with Timers with ActorLogging {
+
+  /**
+   * Start and cancel timers via the enclosed `TimerScheduler`.
+   */
+  final def getTimers: TimerScheduler = timers
+}
+
+/**
+ * Java API: Support for scheduled `self` messages via [[TimerScheduler]], with logging.
+ *
+ * Timers are bound to the lifecycle of the actor that owns it,
+ * and thus are cancelled automatically when it is restarted or stopped.
+ *
+ * @since 2.0.0
+ */
+abstract class UntypedAbstractLoggingActorWithTimers extends UntypedAbstractActor with Timers with ActorLogging {
 
   /**
    * Start and cancel timers via the enclosed `TimerScheduler`.

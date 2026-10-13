@@ -15,6 +15,10 @@ Combines elements from multiple sources through a `combine` function and passes 
 Combines elements from multiple sources through a `combine` function and passes the
 returned value downstream.
 
+This operator adheres to the `ActorAttributes.SupervisionStrategy` attribute for exceptions thrown by the
+`combine` function. On `Supervision.Stop` the stream fails; on `Supervision.Resume` and `Supervision.Restart`
+the failing zipped element is dropped and the stream continues.
+
 See also:
 
  * @ref:[zip](zip.md)

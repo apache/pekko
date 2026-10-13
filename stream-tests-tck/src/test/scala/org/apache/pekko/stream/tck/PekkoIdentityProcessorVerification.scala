@@ -20,7 +20,8 @@ import java.util.concurrent.TimeUnit
 import org.scalatestplus.testng.TestNGSuiteLike
 import org.testng.annotations.AfterClass
 
-import org.apache.pekko.stream.testkit.TestPublisher
+import org.apache.pekko
+import pekko.stream.testkit.TestPublisher
 
 import org.reactivestreams.{ Processor, Publisher, Subscriber, Subscription }
 import org.reactivestreams.tck.IdentityProcessorVerification
@@ -47,7 +48,7 @@ abstract class PekkoIdentityProcessorVerification[T](env: TestEnvironment, publi
       override def onError(t: Throwable): Unit = sub.onError(t)
       override def onComplete(): Unit = sub.onComplete()
       override def onNext(t: T): Unit = sub.onNext(t)
-      override def subscribe(s: Subscriber[_ >: T]): Unit = pub.subscribe(s)
+      override def subscribe(s: Subscriber[? >: T]): Unit = pub.subscribe(s)
     }
   }
 

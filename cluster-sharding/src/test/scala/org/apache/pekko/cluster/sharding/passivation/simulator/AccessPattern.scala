@@ -20,6 +20,7 @@ import pekko.NotUsed
 import pekko.cluster.sharding.ShardRegion.EntityId
 import pekko.stream.scaladsl._
 import pekko.util.ByteString
+import pekko.util.Helpers.toRootLowerCase
 
 trait AccessPattern {
   def isSynthetic: Boolean
@@ -137,7 +138,7 @@ object TraceFileReader {
    */
   final class Text(path: String) extends TraceFileReader(path: String) {
     override def entityIds: Source[EntityId, NotUsed] = lines.mapConcat { line =>
-      line.split("[^\\w-]+").filter(_.nonEmpty).map(_.toLowerCase)
+      line.split("[^\\w-]+").filter(_.nonEmpty).map(toRootLowerCase)
     }
   }
 

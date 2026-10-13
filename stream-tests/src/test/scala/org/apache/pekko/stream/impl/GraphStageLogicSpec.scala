@@ -260,17 +260,42 @@ class GraphStageLogicSpec extends StreamSpec with GraphInterpreterSpecKit with S
 
       // note: a bit dangerous assumptions about connection and logic positions here
       // if anything around creating the logics and connections in the builder changes this may fail
+      // Save references before execute() since afterStageHasRun releases completed logics
+      val gLogic = interpreter.logics(1)
+      val passThroughLogic = interpreter.logics(2)
       interpreter.complete(interpreter.connections(0))
       interpreter.cancel(interpreter.connections(1), SubscriptionWithCancelException.NoMoreElementsNeeded)
-      interpreter.execute(2)
+      interpreter.execute(1)
 
       expectMsg("postStop2")
-      expectNoMessage(Duration.Zero)
+      interpreter.isSuspended should ===(true)
+      interpreter.isStageCompleted(gLogic) should ===(true)
+      interpreter.isStageCompleted(passThroughLogic) should ===(false)
+      interpreter.logics(gLogic.stageId) should be(null)
+      interpreter.logics(passThroughLogic.stageId) shouldBe theSameInstanceAs(passThroughLogic)
+      interpreter.activeStage should be(null)
 
+      val upstreamConnection = interpreter.connections(0)
+      upstreamConnection.inOwner should be(null)
+      upstreamConnection.inHandler should be(null)
+
+      val partiallyReleasedConnection = interpreter.connections(1)
+      partiallyReleasedConnection.outOwner should be(null)
+      partiallyReleasedConnection.outHandler should be(null)
+      partiallyReleasedConnection.inOwner shouldBe theSameInstanceAs(passThroughLogic)
+      partiallyReleasedConnection.inHandler should not be null
+
+      val snapshot = interpreter.toSnapshot
+      val partiallyReleasedConnectionSnapshot = snapshot.connections(1)
+      partiallyReleasedConnectionSnapshot.out should ===(snapshot.logics(gLogic.stageId))
+      partiallyReleasedConnectionSnapshot.in should ===(snapshot.logics(passThroughLogic.stageId))
+      partiallyReleasedConnectionSnapshot.out.label should ===("<completed>")
+      partiallyReleasedConnectionSnapshot.in.label should not be "<completed>"
+
+      interpreter.execute(1)
+      expectNoMessage(Duration.Zero)
       interpreter.isCompleted should ===(false)
       interpreter.isSuspended should ===(false)
-      interpreter.isStageCompleted(interpreter.logics(1)) should ===(true)
-      interpreter.isStageCompleted(interpreter.logics(2)) should ===(false)
     }
 
     "not allow push from constructor" in {

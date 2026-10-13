@@ -17,7 +17,6 @@ import java.util.concurrent.ThreadLocalRandom
 import java.util.concurrent.atomic.AtomicLong
 
 import scala.annotation.nowarn
-import scala.collection.immutable
 import scala.concurrent.Await
 import scala.concurrent.duration._
 import scala.util.control.NoStackTrace
@@ -48,23 +47,32 @@ object FlowSpec {
 }
 
 @nowarn // tests type assignments compile
-class FlowSpec extends StreamSpec(ConfigFactory.parseString("pekko.actor.debug.receive=off\npekko.loglevel=INFO")) {
+class FlowSpec extends StreamSpec(ConfigFactory.parseString("""
+    pekko.actor.debug.receive = off
+    pekko.loglevel = INFO
+    pekko.stream.materializer.initial-input-buffer-size = 2
+    pekko.stream.materializer.max-input-buffer-size = 2
+  """)) {
   import FlowSpec._
 
-  val settings = ActorMaterializerSettings(system).withInputBuffer(initialSize = 2, maxSize = 2)
+  val settings = ActorMaterializerSettings(system)
 
   implicit val materializer: Materializer = ActorMaterializer(settings)
 
   val identity: Flow[Any, Any, NotUsed] => Flow[Any, Any, NotUsed] = in => in.map(e => e)
   val identity2: Flow[Any, Any, NotUsed] => Flow[Any, Any, NotUsed] = in => identity(in)
 
-  val toPublisher: (Source[Any, _], Materializer) => Publisher[Any] =
+  private def withInputBuffer[In, Out, M](initialSize: Int, maxSize: Int)(
+      stream: Flow[In, In, NotUsed] => Flow[In, Out, M]): Flow[In, In, NotUsed] => Flow[In, Out, M] =
+    flow => stream(flow).withAttributes(Attributes.inputBuffer(initialSize, maxSize))
+
+  val toPublisher: (Source[Any, ?], Materializer) => Publisher[Any] =
     (f, m) => f.runWith(Sink.asPublisher(false))(m)
 
-  def toFanoutPublisher[In, Out](elasticity: Int): (Source[Out, _], Materializer) => Publisher[Out] =
+  def toFanoutPublisher[In, Out](elasticity: Int): (Source[Out, ?], Materializer) => Publisher[Out] =
     (f, m) => f.runWith(Sink.asPublisher(true).withAttributes(Attributes.inputBuffer(elasticity, elasticity)))(m)
 
-  def materializeIntoSubscriberAndPublisher[In, Out](flow: Flow[In, Out, _]): (Subscriber[In], Publisher[Out]) = {
+  def materializeIntoSubscriberAndPublisher[In, Out](flow: Flow[In, Out, ?]): (Subscriber[In], Publisher[Out]) = {
     flow.runWith(Source.asSubscriber[In], Sink.asPublisher[Out](false))
   }
 
@@ -72,8 +80,8 @@ class FlowSpec extends StreamSpec(ConfigFactory.parseString("pekko.actor.debug.r
 
     for ((name, op) <- List("identity" -> identity, "identity2" -> identity2); n <- List(1, 2, 4)) {
       s"request initial elements from upstream ($name, $n)" in {
-        new ChainSetup(op, settings.withInputBuffer(initialSize = n, maxSize = n), toPublisher) {
-          upstream.expectRequest(upstreamSubscription, this.settings.maxInputBufferSize)
+        new ChainSetup(withInputBuffer(n, n)(op), settings, toPublisher) {
+          upstream.expectRequest(upstreamSubscription, n)
         }
       }
     }
@@ -123,7 +131,7 @@ class FlowSpec extends StreamSpec(ConfigFactory.parseString("pekko.actor.debug.r
     }
 
     "cancel upstream when single subscriber cancels subscription while receiving data" in {
-      new ChainSetup(identity, settings.withInputBuffer(initialSize = 1, maxSize = 1), toPublisher) {
+      new ChainSetup(withInputBuffer(1, 1)(identity), settings, toPublisher) {
         downstreamSubscription.request(5)
         upstreamSubscription.expectRequest(1)
         upstreamSubscription.sendNext("test")
@@ -196,9 +204,9 @@ class FlowSpec extends StreamSpec(ConfigFactory.parseString("pekko.actor.debug.r
     }
 
     "subscribe Subscriber" in {
-      val flow: Flow[String, String, _] = Flow[String]
+      val flow: Flow[String, String, ?] = Flow[String]
       val c1 = TestSubscriber.manualProbe[String]()
-      val sink: Sink[String, _] = flow.to(Sink.fromSubscriber(c1))
+      val sink: Sink[String, ?] = flow.to(Sink.fromSubscriber(c1))
       val publisher: Publisher[String] = Source(List("1", "2", "3")).runWith(Sink.asPublisher(false))
       Source.fromPublisher(publisher).to(sink).run()
 
@@ -240,7 +248,7 @@ class FlowSpec extends StreamSpec(ConfigFactory.parseString("pekko.actor.debug.r
     "perform transformation operation and subscribe Subscriber" in {
       val flow = Flow[Int].map(_.toString)
       val c1 = TestSubscriber.manualProbe[String]()
-      val sink: Sink[Int, _] = flow.to(Sink.fromSubscriber(c1))
+      val sink: Sink[Int, ?] = flow.to(Sink.fromSubscriber(c1))
       val publisher: Publisher[Int] = Source(List(1, 2, 3)).runWith(Sink.asPublisher(false))
       Source.fromPublisher(publisher).to(sink).run()
 
@@ -286,18 +294,18 @@ class FlowSpec extends StreamSpec(ConfigFactory.parseString("pekko.actor.debug.r
     }
 
     "be covariant" in {
-      val f1: Source[Fruit, _] = Source.fromIterator[Fruit](fruits)
+      val f1: Source[Fruit, ?] = Source.fromIterator[Fruit](fruits)
       val p1: Publisher[Fruit] = Source.fromIterator[Fruit](fruits).runWith(Sink.asPublisher(false))
-      val f2: SubFlow[Fruit, _, Source[Fruit, NotUsed]#Repr, _] =
+      val f2: SubFlow[Fruit, ?, Source[Fruit, NotUsed]#Repr, ?] =
         Source.fromIterator[Fruit](fruits).splitWhen(_ => true)
-      val f3: SubFlow[Fruit, _, Source[Fruit, NotUsed]#Repr, _] =
+      val f3: SubFlow[Fruit, ?, Source[Fruit, NotUsed]#Repr, ?] =
         Source.fromIterator[Fruit](fruits).groupBy(2, _ => true)
-      val f4: Source[(immutable.Seq[Fruit], Source[Fruit, _]), _] = Source.fromIterator[Fruit](fruits).prefixAndTail(1)
-      val d1: SubFlow[Fruit, _, Flow[String, Fruit, NotUsed]#Repr, _] =
+      val f4: Source[(Seq[Fruit], Source[Fruit, ?]), ?] = Source.fromIterator[Fruit](fruits).prefixAndTail(1)
+      val d1: SubFlow[Fruit, ?, Flow[String, Fruit, NotUsed]#Repr, ?] =
         Flow[String].map(_ => new Apple).splitWhen(_ => true)
-      val d2: SubFlow[Fruit, _, Flow[String, Fruit, NotUsed]#Repr, _] =
+      val d2: SubFlow[Fruit, ?, Flow[String, Fruit, NotUsed]#Repr, ?] =
         Flow[String].map(_ => new Apple).groupBy(2, _ => true)
-      val d3: Flow[String, (immutable.Seq[Apple], Source[Fruit, _]), _] =
+      val d3: Flow[String, (Seq[Apple], Source[Fruit, ?]), ?] =
         Flow[String].map(_ => new Apple).prefixAndTail(1)
     }
 
@@ -338,7 +346,7 @@ class FlowSpec extends StreamSpec(ConfigFactory.parseString("pekko.actor.debug.r
 
   "A Flow with multiple subscribers (FanOutBox)" must {
     "adapt speed to the currently slowest subscriber" in {
-      new ChainSetup(identity, settings.withInputBuffer(initialSize = 1, maxSize = 1), toFanoutPublisher(1)) {
+      new ChainSetup(withInputBuffer(1, 1)(identity), settings, toFanoutPublisher(1)) {
         val downstream2 = TestSubscriber.manualProbe[Any]()
         publisher.subscribe(downstream2)
         val downstream2Subscription = downstream2.expectSubscription()
@@ -364,7 +372,7 @@ class FlowSpec extends StreamSpec(ConfigFactory.parseString("pekko.actor.debug.r
     }
 
     "support slow subscriber with fan-out 2" in {
-      new ChainSetup(identity, settings.withInputBuffer(initialSize = 1, maxSize = 1), toFanoutPublisher(2)) {
+      new ChainSetup(withInputBuffer(1, 1)(identity), settings, toFanoutPublisher(2)) {
         val downstream2 = TestSubscriber.manualProbe[Any]()
         publisher.subscribe(downstream2)
         val downstream2Subscription = downstream2.expectSubscription()
@@ -403,7 +411,7 @@ class FlowSpec extends StreamSpec(ConfigFactory.parseString("pekko.actor.debug.r
     }
 
     "support incoming subscriber while elements were requested before" in {
-      new ChainSetup(identity, settings.withInputBuffer(initialSize = 1, maxSize = 1), toFanoutPublisher(1)) {
+      new ChainSetup(withInputBuffer(1, 1)(identity), settings, toFanoutPublisher(1)) {
         downstreamSubscription.request(5)
         upstream.expectRequest(upstreamSubscription, 1)
         upstreamSubscription.sendNext("a1")
@@ -440,7 +448,7 @@ class FlowSpec extends StreamSpec(ConfigFactory.parseString("pekko.actor.debug.r
     }
 
     "be unblocked when blocking subscriber cancels subscription" in {
-      new ChainSetup(identity, settings.withInputBuffer(initialSize = 1, maxSize = 1), toFanoutPublisher(1)) {
+      new ChainSetup(withInputBuffer(1, 1)(identity), settings, toFanoutPublisher(1)) {
         val downstream2 = TestSubscriber.manualProbe[Any]()
         publisher.subscribe(downstream2)
         val downstream2Subscription = downstream2.expectSubscription()
@@ -476,7 +484,7 @@ class FlowSpec extends StreamSpec(ConfigFactory.parseString("pekko.actor.debug.r
     }
 
     "call future subscribers' onError after onSubscribe if initial upstream was completed" in {
-      new ChainSetup(identity, settings.withInputBuffer(initialSize = 1, maxSize = 1), toFanoutPublisher(1)) {
+      new ChainSetup(withInputBuffer(1, 1)(identity), settings, toFanoutPublisher(1)) {
         val downstream2 = TestSubscriber.manualProbe[Any]()
         // don't link it just yet
 
@@ -515,8 +523,8 @@ class FlowSpec extends StreamSpec(ConfigFactory.parseString("pekko.actor.debug.r
 
     "call future subscribers' onError should be called instead of onSubscribed after initial upstream reported an error" in {
       new ChainSetup[Int, String, NotUsed](
-        _.map(_ => throw TestException),
-        settings.withInputBuffer(initialSize = 1, maxSize = 1),
+        withInputBuffer(1, 1)(_.map(_ => throw TestException)),
+        settings,
         toFanoutPublisher(1)) {
         downstreamSubscription.request(1)
         upstreamSubscription.expectRequest(1)
@@ -533,7 +541,7 @@ class FlowSpec extends StreamSpec(ConfigFactory.parseString("pekko.actor.debug.r
     }
 
     "call future subscribers' onError when all subscriptions were cancelled" in {
-      new ChainSetup(identity, settings.withInputBuffer(initialSize = 1, maxSize = 1), toFanoutPublisher(16)) {
+      new ChainSetup(withInputBuffer(1, 1)(identity), settings, toFanoutPublisher(16)) {
         upstreamSubscription.expectRequest(1)
         downstreamSubscription.cancel()
         upstreamSubscription.expectCancellation()

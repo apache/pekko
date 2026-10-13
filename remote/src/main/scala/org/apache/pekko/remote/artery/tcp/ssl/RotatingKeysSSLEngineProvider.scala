@@ -30,8 +30,8 @@ import scala.concurrent.duration._
 
 import org.apache.pekko
 import pekko.actor.ActorSystem
-import pekko.annotation.ApiMayChange
 import pekko.annotation.InternalApi
+import pekko.event.LogMarker
 import pekko.event.Logging
 import pekko.event.MarkerLoggingAdapter
 import pekko.remote.artery.tcp.SSLEngineProvider
@@ -47,15 +47,10 @@ import com.typesafe.config.Config
  * Variation on ConfigSSLEngineProvider that will periodically reload the keys and certificates
  * from disk, to facilitate rolling updates of certificates.
  *
- * This class is still ApiMayChange because it can likely be further harmonized with
- * the standard ConfigSSLEngineProvider. Also the location and default values of the
- * configuration may change in future versions of Apache Pekko.
- *
  * This provider does not perform hostname verification, but instead allows checking
  * that the remote certificate has a subject name that matches the subject name of
  * the configured certificate.
  */
-@ApiMayChange
 final class RotatingKeysSSLEngineProvider(val config: Config, protected val log: MarkerLoggingAdapter)
     extends SSLEngineProvider {
 
@@ -69,9 +64,17 @@ final class RotatingKeysSSLEngineProvider(val config: Config, protected val log:
   private val SSLKeyFile: String = config.getString("key-file")
   private val SSLCertFile: String = config.getString("cert-file")
   private val SSLCACertFile: String = config.getString("ca-cert-file")
+  private val SSLKeystorePassword: String = config.getString("keystore-password")
 
   private val sslEngineConfig = new SSLEngineConfig(config)
   import sslEngineConfig._
+
+  // log default password warning once
+  if (SSLKeystorePassword == "changeit")
+    log.warning(
+      LogMarker.Security,
+      "TLS/SSL rotating-keys-engine is configured with the default keystore password. " +
+      "Set pekko.remote.artery.ssl.rotating-keys-engine.keystore-password to a secure value for production.")
 
   // build a PRNG (created once, reused on every instance of SSLContext
   private val rng: SecureRandom = SecureRandomFactory.createSecureRandom(SSLRandomNumberGenerator, log)
@@ -103,10 +106,11 @@ final class RotatingKeysSSLEngineProvider(val config: Config, protected val log:
 
   // Construct the cached instance
   private def constructContext(): ConfiguredContext = {
-    val (privateKey, cert, cacert) = readFiles()
+    val (privateKey, cert, cacerts) = readFiles()
     try {
-      val keyManagers: Array[KeyManager] = PemManagersProvider.buildKeyManagers(privateKey, cert, cacert)
-      val trustManagers: Array[TrustManager] = PemManagersProvider.buildTrustManagers(cacert)
+      val keyManagers: Array[KeyManager] =
+        PemManagersProvider.buildKeyManagers(privateKey, cert, cacerts, SSLKeystorePassword)
+      val trustManagers: Array[TrustManager] = PemManagersProvider.buildTrustManagers(cacerts)
 
       val sessionVerifier = new PeerSubjectVerifier(cert)
 
@@ -123,12 +127,17 @@ final class RotatingKeysSSLEngineProvider(val config: Config, protected val log:
     }
   }
 
-  private def readFiles(): (PrivateKey, X509Certificate, Certificate) = {
+  private def readFiles(): (PrivateKey, X509Certificate, Seq[Certificate]) = {
     try {
-      val cacert: Certificate = PemManagersProvider.loadCertificate(SSLCACertFile)
+      // the CA file may bundle several certificates, all of them are trusted
+      val cacerts: Seq[Certificate] = PemManagersProvider.loadCertificates(SSLCACertFile)
+      if (cacerts.isEmpty)
+        throw new SslTransportException(
+          s"Server SSL connection could not be established because no certificate was found in [$SSLCACertFile]",
+          null)
       val cert: X509Certificate = PemManagersProvider.loadCertificate(SSLCertFile).asInstanceOf[X509Certificate]
       val privateKey: PrivateKey = PemManagersProvider.loadPrivateKey(SSLKeyFile)
-      (privateKey, cert, cacert)
+      (privateKey, cert, cacerts)
     } catch {
       case e: FileNotFoundException =>
         throw new SslTransportException(

@@ -30,10 +30,10 @@ import pekko.persistence.typed.ReplicaId
  */
 object ReplicatedShardingExtension extends ExtensionId[ReplicatedShardingExtension] {
 
-  override def createExtension(system: ActorSystem[_]): ReplicatedShardingExtension =
+  override def createExtension(system: ActorSystem[?]): ReplicatedShardingExtension =
     new ReplicatedShardingExtensionImpl(system)
 
-  def get(system: ActorSystem[_]): ReplicatedShardingExtension = apply(system)
+  def get(system: ActorSystem[?]): ReplicatedShardingExtension = apply(system)
 
 }
 

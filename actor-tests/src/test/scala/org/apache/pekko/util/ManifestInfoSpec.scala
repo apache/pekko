@@ -13,7 +13,8 @@
 
 package org.apache.pekko.util
 
-import org.apache.pekko.testkit.PekkoSpec
+import org.apache.pekko
+import pekko.testkit.PekkoSpec
 
 class ManifestInfoSpec extends PekkoSpec {
   "ManifestInfo" should {

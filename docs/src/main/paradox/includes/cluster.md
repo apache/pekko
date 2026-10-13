@@ -20,7 +20,7 @@ their physical location in the cluster.
 <!--- #cluster-ddata --->
 ### Distributed Data
 
-Distributed Data is useful when you need to share data between nodes in an
+Distributed Data is useful when you need to share data between nodes in a
 Pekko Cluster. The data is accessed with an actor providing a key-value store like API.
 
 <!--- #cluster-ddata --->
@@ -59,8 +59,8 @@ Reliable delivery and flow control of messages between actors in the Cluster.
 <!--- #sharding-persistence-mode-deprecated --->
 @@@ warning
 
-Persistence for state store mode is deprecated. It is recommended to migrate to `ddata` for the coordinator state and if using replicated entities
-migrate to `eventsourced` for the replicated entities state.
+The `persistence` state store mode is deprecated. It is recommended to migrate to `ddata` for the coordinator state and if using remembered entities
+migrate to `eventsourced` for the remembered entities state.
 
 The data written by the deprecated `persistence` state store mode for remembered entities can be read by the new remember entities `eventsourced` mode.
 

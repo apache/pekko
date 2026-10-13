@@ -6,7 +6,8 @@ Provide a sliding window over the incoming stream and pass the windows as groups
 
 ## Signature
 
-@apidoc[Flow.sliding](Flow) { scala="#sliding(n:Int,step:Int):FlowOps.this.Repr[scala.collection.immutable.Seq[Out]]" java="#sliding(int,int)" } 
+@apidoc[Source.sliding](Source) { scala="#sliding(n:Int,step:Int):FlowOps.this.Repr[Seq[Out]]" java="#sliding(int,int)" }
+@apidoc[Flow.sliding](Flow) { scala="#sliding(n:Int,step:Int):FlowOps.this.Repr[Seq[Out]]" java="#sliding(int,int)" } 
 
 ## Description
 
@@ -26,7 +27,7 @@ Java
 :   @@snip [Sliding.java](/docs/src/test/java/jdocs/stream/operators/sourceorflow/Sliding.java) { #sliding-1 }
 
 If the stream stops without having seen enough elements to fill a window, the last window will have as many elements
-was emitted before the stream ended. Here we also provide a step to move two elements forward for each window:   
+were emitted before the stream ended. Here we also provide a step to move two elements forward for each window:   
 
 Scala
 :   @@snip [Sliding.scala](/docs/src/test/scala/docs/stream/operators/sourceorflow/Sliding.scala) { #sliding-2 }

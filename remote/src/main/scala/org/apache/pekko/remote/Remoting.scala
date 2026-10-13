@@ -14,12 +14,13 @@
 package org.apache.pekko.remote
 
 import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.TimeoutException
 
 import scala.annotation.nowarn
 import scala.collection.immutable
-import scala.collection.immutable.{ HashMap, Seq }
+import scala.collection.immutable.HashMap
 import scala.concurrent.{ Await, Future, Promise }
 import scala.concurrent.duration._
 import scala.util.{ Failure, Success }
@@ -39,7 +40,6 @@ import pekko.remote.Remoting.TransportSupervisor
 import pekko.remote.transport._
 import pekko.remote.transport.PekkoPduCodec.Message
 import pekko.remote.transport.Transport.{ ActorAssociationEventListener, AssociationEventListener, InboundAssociation }
-import pekko.util.ByteString.UTF_8
 import pekko.util.OptionVal
 
 import com.typesafe.config.Config
@@ -48,7 +48,7 @@ import com.typesafe.config.Config
  * INTERNAL API
  */
 private[remote] object AddressUrlEncoder {
-  def apply(address: Address): String = URLEncoder.encode(address.toString, UTF_8)
+  def apply(address: Address): String = URLEncoder.encode(address.toString, StandardCharsets.UTF_8)
 }
 
 /**
@@ -325,6 +325,16 @@ private[remote] object EndpointManager {
   final case class Listen(addressesPromise: Promise[Seq[(PekkoProtocolTransport, Address)]]) extends RemotingCommand
   case object StartupFinished extends RemotingCommand
   case object ShutdownAndFlush extends RemotingCommand
+
+  /**
+   * <p>
+   *   Opentelemetry Java Instrumentation relies on this class so avoid changing it. The agent captures the
+   *   sender's context in the constructor and carries it over in the four-argument `copy`, which is the one
+   *   used to add a sequence number.
+   *   See https://github.com/apache/pekko/issues/3472
+   * </p>
+   */
+  // see https://github.com/open-telemetry/opentelemetry-java-instrumentation/pull/19823
   @InternalStableApi
   final case class Send(
       message: Any,
@@ -373,6 +383,7 @@ private[remote] object EndpointManager {
   final case class Quarantined(uid: Int, timeOfRelease: Deadline) extends EndpointPolicy {
     override def isTombstone: Boolean = true
   }
+  private final case class ResumableReader(writer: ActorRef, remoteAddress: Address, uid: Int)
 
   // Not threadsafe -- only to be used in HeadActor
   class EndpointRegistry {
@@ -536,6 +547,8 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
     context.system.scheduler.scheduleWithFixedDelay(pruneInterval, pruneInterval, self, Prune)
 
   var pendingReadHandoffs = Map[ActorRef, PekkoProtocolHandle]()
+  private var readOnlyReaderResumptions = Map[ActorRef, ResumableReader]()
+  private var readOnlyEndpointHandles = Map[ActorRef, PekkoProtocolHandle]()
   var stashedInbound = Map[ActorRef, Vector[InboundAssociation]]()
 
   def handleStashedInbound(endpoint: ActorRef, writerIsIdle: Boolean): Unit = {
@@ -675,7 +688,7 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
 
   val accepting: Receive = {
     case ManagementCommand(cmd) =>
-      val allStatuses: immutable.Seq[Future[Boolean]] =
+      val allStatuses: Seq[Future[Boolean]] =
         transportMapping.values.iterator.map(transport => transport.managementCommand(cmd)).to(immutable.IndexedSeq)
       Future.foldLeft(allStatuses)(true)(_ && _).map(ManagementCommandAck.apply).pipeTo(sender())
 
@@ -783,13 +796,17 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
     case ia @ InboundAssociation(_: PekkoProtocolHandle) =>
       handleInboundAssociation(ia, writerIsIdle = false)
     case EndpointWriter.StoppedReading(endpoint) =>
-      acceptPendingReader(takingOverFrom = endpoint)
+      acceptPendingReader(takingOverFrom = endpoint, resumeReadingFrom = Some(endpoint))
     case Terminated(endpoint) =>
-      acceptPendingReader(takingOverFrom = endpoint)
-      endpoints.unregisterEndpoint(endpoint)
+      if (pendingReadHandoffs.contains(endpoint))
+        endpoints.unregisterEndpoint(endpoint)
+      if (!acceptPendingReader(takingOverFrom = endpoint, resumeReadingFrom = None)) {
+        resumeReadingIfNeeded(readOnlyEndpoint = endpoint)
+        endpoints.unregisterEndpoint(endpoint)
+      }
       handleStashedInbound(endpoint, writerIsIdle = false)
     case EndpointWriter.TookOver(endpoint, handle) =>
-      removePendingReader(takingOverFrom = endpoint, withHandle = handle)
+      completePendingReaderTakeOver(takingOverFrom = endpoint, withHandle = handle)
     case ReliableDeliverySupervisor.GotUid(uid, remoteAddress) =>
       val refuseUidOption = endpoints.refuseUid(remoteAddress)
       endpoints.writableEndpointWithPolicyFor(remoteAddress) match {
@@ -844,6 +861,10 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
           pendingReadHandoffs
             .get(endpoint)
             .foreach(_.disassociate("the existing readOnly association was replaced by a new incoming one", log))
+          readOnlyEndpointHandles.get(endpoint).foreach { previousHandle =>
+            handle.inboundMessageDispatched = previousHandle.inboundMessageDispatched
+            readOnlyEndpointHandles += endpoint -> handle
+          }
           pendingReadHandoffs += endpoint -> handle
           endpoint ! EndpointWriter.TakeOver(handle, self)
           endpoints.writableEndpointWithPolicyFor(handle.remoteAddress) match {
@@ -959,12 +980,17 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
     })
   }
 
-  private def acceptPendingReader(takingOverFrom: ActorRef): Unit = {
+  private def acceptPendingReader(takingOverFrom: ActorRef, resumeReadingFrom: Option[ActorRef]): Boolean = {
     if (pendingReadHandoffs.contains(takingOverFrom)) {
       val handle = pendingReadHandoffs(takingOverFrom)
       pendingReadHandoffs -= takingOverFrom
       eventPublisher.notifyListeners(AssociatedEvent(handle.localAddress, handle.remoteAddress, inbound = true))
 
+      val inheritedResumableReader = readOnlyReaderResumptions.get(takingOverFrom).filter(
+        resumableReaderMatchesHandle(_, readOnlyEndpoint = takingOverFrom, handle = handle))
+      val resumableReader = resumeReadingFrom
+        .map(writer => ResumableReader(writer, handle.remoteAddress, handle.handshakeInfo.uid))
+        .orElse(inheritedResumableReader)
       val endpoint = createEndpoint(
         handle.remoteAddress,
         handle.localAddress,
@@ -973,12 +999,88 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
         Some(handle),
         writing = false)
       endpoints.registerReadOnlyEndpoint(handle.remoteAddress, endpoint, handle.handshakeInfo.uid)
-    }
+      readOnlyReaderResumptions -= takingOverFrom
+      readOnlyEndpointHandles -= takingOverFrom
+      resumableReader.foreach {
+        case resumableReader @ ResumableReader(writer, remoteAddress, uid) =>
+          readOnlyReaderResumptions += endpoint -> resumableReader
+          readOnlyEndpointHandles += endpoint -> handle
+          log.debug(
+            "Registered passive read handoff fallback for [{}] with UID [{}] from writable endpoint [{}] to read-only endpoint [{}]",
+            remoteAddress,
+            uid,
+            writer,
+            endpoint)
+      }
+      true
+    } else false
   }
 
-  private def removePendingReader(takingOverFrom: ActorRef, withHandle: PekkoProtocolHandle): Unit = {
-    if (pendingReadHandoffs.get(takingOverFrom).exists(handle => handle == withHandle))
+  private def resumeReadingIfNeeded(readOnlyEndpoint: ActorRef): Unit = {
+    readOnlyReaderResumptions.get(readOnlyEndpoint).foreach {
+      case ResumableReader(writer, remoteAddress, uid) =>
+        endpoints.writableEndpointWithPolicyFor(remoteAddress) match {
+          case Some(Pass(`writer`, Some(`uid`))) =>
+            if (readOnlyEndpointHandles.get(readOnlyEndpoint).forall(_.inboundMessageDispatched.get())) {
+              log.warning(
+                "Reconnecting outbound endpoint [{}] for [{}] with UID [{}] after passive read-only endpoint [{}] " +
+                "dispatched messages and then stopped, because resuming the original reader could violate message ordering",
+                writer,
+                remoteAddress,
+                uid,
+                readOnlyEndpoint)
+              writer ! ReliableDeliverySupervisor.Reconnect
+            } else {
+              log.info(
+                "Resuming outbound reader [{}] for [{}] with UID [{}] after passive read-only endpoint [{}] stopped",
+                writer,
+                remoteAddress,
+                uid,
+                readOnlyEndpoint)
+              writer ! EndpointWriter.ResumeReading
+            }
+          case currentPolicy =>
+            log.debug(
+              "Not resuming outbound reader [{}] for [{}] with UID [{}] after passive read-only endpoint [{}] stopped",
+              writer,
+              remoteAddress,
+              uid,
+              readOnlyEndpoint)
+            log.debug(
+              "Current endpoint policy when skipping passive read handoff fallback for [{}] is [{}]",
+              remoteAddress,
+              currentPolicy)
+        }
+    }
+    readOnlyReaderResumptions -= readOnlyEndpoint
+    readOnlyEndpointHandles -= readOnlyEndpoint
+  }
+
+  private def resumableReaderMatchesHandle(
+      resumableReader: ResumableReader,
+      readOnlyEndpoint: ActorRef,
+      handle: PekkoProtocolHandle): Boolean = {
+    val ResumableReader(writer, remoteAddress, uid) = resumableReader
+    val matchesCurrentHandle = remoteAddress == handle.remoteAddress && uid == handle.handshakeInfo.uid
+    if (!matchesCurrentHandle && log.isDebugEnabled)
+      log.debug(
+        s"""Dropping passive read handoff fallback for [$remoteAddress] with UID [$uid] from writable endpoint
+           |[$writer] because read-only endpoint [$readOnlyEndpoint] now handles [${handle.remoteAddress}]
+           |with UID [${handle.handshakeInfo.uid}]""".stripMargin)
+    matchesCurrentHandle
+  }
+
+  private def completePendingReaderTakeOver(takingOverFrom: ActorRef, withHandle: PekkoProtocolHandle): Unit = {
+    if (pendingReadHandoffs.get(takingOverFrom).exists(handle => handle == withHandle)) {
       pendingReadHandoffs -= takingOverFrom
+      endpoints.registerReadOnlyEndpoint(withHandle.remoteAddress, takingOverFrom, withHandle.handshakeInfo.uid)
+      if (!readOnlyReaderResumptions
+          .get(takingOverFrom)
+          .forall(resumableReaderMatchesHandle(_, readOnlyEndpoint = takingOverFrom, handle = withHandle))) {
+        readOnlyReaderResumptions -= takingOverFrom
+        readOnlyEndpointHandles -= takingOverFrom
+      }
+    }
   }
 
   private def createEndpoint(

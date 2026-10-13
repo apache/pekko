@@ -2,7 +2,7 @@
 
 Apache Pekko 1.3.x releases support Java 8 and above.
 
-# 1.3.0
+## 1.3.0
 
 Pekko 1.3.0 has some bug fixes, new features, performance updates and dependency upgrades. See the [GitHub Milestone for 1.3.0](https://github.com/apache/pekko/milestone/21?closed=1) for a fuller list of changes.
 
@@ -23,8 +23,8 @@ This release includes a number of changes from Akka 2.7.0, which have recently b
 * ByteString: new indexOf overloaded method that allows from and to ([PR2272](https://github.com/apache/pekko/pull/2272))
 * JavaDSL TestKit: add shutdownActorSystem that takes Java Duration params ([PR2277](https://github.com/apache/pekko/pull/2277))
 * Add Flow#onErrorContinue operator ([PR2322](https://github.com/apache/pekko/pull/2322))
-* Add missing onErrorResume to SubFlow and SubSource ([PR2336](https://github.com/apache/pekko/pull/2336))
-* Add more recover operators for Java DSL ([PR2337](https://github.com/apache/pekko/pull/2337))
+* Add missing onErrorResume to SubFlow and SubSource ([PR2337](https://github.com/apache/pekko/pull/2337))
+* Add more recover operators for Java DSL ([PR2336](https://github.com/apache/pekko/pull/2336))
 * Add doOnFirst operator ([PR2363](https://github.com/apache/pekko/pull/2363))
 * Add doOnCancel operator ([PR2375](https://github.com/apache/pekko/pull/2375))
 * Add actor-typed Java DSL AbstractMatchingBehavior ([PR2379](https://github.com/apache/pekko/pull/2379))

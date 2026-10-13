@@ -18,7 +18,6 @@ import java.util.concurrent.TimeoutException
 import java.util.concurrent.atomic.AtomicReference
 
 import scala.annotation.nowarn
-import scala.collection.immutable
 import scala.concurrent.{ Await, ExecutionContext, Future }
 import scala.concurrent.duration._
 import scala.reflect.classTag
@@ -54,11 +53,11 @@ object Player {
       case Transition(_, f: ClientFSM.State, t: ClientFSM.State)
           if f == AwaitDone && t == Connected => // SI-5900 workaround
         waiting ! Done; context.stop(self)
-      case t: Transition[_] =>
+      case t: Transition[?] =>
         waiting ! Status.Failure(new RuntimeException("unexpected transition: " + t)); context.stop(self)
       case CurrentState(_, s: ClientFSM.State) if s == Connected => // SI-5900 workaround
         waiting ! Done; context.stop(self)
-      case _: CurrentState[_] =>
+      case _: CurrentState[?] =>
     }
 
   }
@@ -69,7 +68,7 @@ object Player {
 /**
  * The Player is the client component of the
  * [[pekko.remote.testconductor.TestConductorExt]] extension. It registers with
- * the [[pekko.remote.testconductor.Conductor]]’s [[pekko.remote.testconductor.Controller]]
+ * the [[pekko.remote.testconductor.Conductor]]’s `Controller`
  * in order to participate in barriers and enable network failure injection.
  */
 trait Player { this: TestConductorExt =>
@@ -105,13 +104,13 @@ trait Player { this: TestConductorExt =>
    * Enter the named barriers, one after the other, in the order given. Will
    * throw an exception in case of timeouts or other errors.
    */
-  def enter(name: String*): Unit = enter(Settings.BarrierTimeout, name.to(immutable.Seq))
+  def enter(name: String*): Unit = enter(Settings.BarrierTimeout, name.to(Seq))
 
   /**
    * Enter the named barriers, one after the other, in the order given. Will
    * throw an exception in case of timeouts or other errors.
    */
-  def enter(timeout: Timeout, name: immutable.Seq[String]): Unit = {
+  def enter(timeout: Timeout, name: Seq[String]): Unit = {
     system.log.debug("entering barriers " + name.mkString("(", ", ", ")"))
     val stop = Deadline.now + timeout.duration
     name.foreach { b =>
@@ -162,7 +161,7 @@ private[pekko] object ClientFSM {
 /**
  * This is the controlling entity on the [[pekko.remote.testconductor.Player]]
  * side: in a first step it registers itself with a symbolic name and its remote
- * address at the [[pekko.remote.testconductor.Controller]], then waits for the
+ * address at the `Controller`, then waits for the
  * `Done` message which signals that all other expected test participants have
  * done the same. After that, it will pass barrier requests to and from the
  * coordinator and react to the [[pekko.remote.testconductor.Conductor]]’s
@@ -313,7 +312,8 @@ private[pekko] class ClientFSM(name: RoleName, controllerAddr: InetSocketAddress
       } catch {
         case NonFatal(ex) =>
           // silence this one to not make tests look like they failed, it's not really critical
-          log.debug(s"Failed closing channel with ${ex.getClass.getName} ${ex.getMessage}")
+          if (log.isDebugEnabled)
+            log.debug("Failed closing channel with {} {}", ex.getClass.getName, ex.getMessage)
       }
   }
 

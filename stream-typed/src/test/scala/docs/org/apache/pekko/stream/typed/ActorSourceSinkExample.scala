@@ -21,7 +21,7 @@ import pekko.actor.typed.scaladsl.Behaviors
 object ActorSourceSinkExample {
 
   def compileOnlySourceRef() = {
-    implicit val system: ActorSystem[_] = ActorSystem(Behaviors.empty, "ActorSourceSinkExample")
+    implicit val system: ActorSystem[?] = ActorSystem(Behaviors.empty, "ActorSourceSinkExample")
 
     // #actor-source-ref
     import org.apache.pekko
@@ -80,7 +80,7 @@ object ActorSourceSinkExample {
           sender(streamActor, 0)
         }
 
-      private def runStream(ackReceiver: ActorRef[Emitted.type])(implicit system: ActorSystem[_]): ActorRef[Event] = {
+      private def runStream(ackReceiver: ActorRef[Emitted.type])(implicit system: ActorSystem[?]): ActorRef[Event] = {
         val source =
           ActorSource.actorRefWithBackpressure[Event, Emitted.type](
             // get demand signalled to this actor receiving Ack
@@ -128,7 +128,7 @@ object ActorSourceSinkExample {
   }
 
   def compileOnlyAcotrRef() = {
-    implicit val system: ActorSystem[_] = ActorSystem(Behaviors.empty, "ActorSourceSinkExample")
+    implicit val system: ActorSystem[?] = ActorSystem(Behaviors.empty, "ActorSourceSinkExample")
 
     def targetActor(): ActorRef[Protocol] = ???
 
@@ -154,7 +154,7 @@ object ActorSourceSinkExample {
   }
 
   def compileOnlySinkWithBackpressure() = {
-    implicit val system: ActorSystem[_] = ActorSystem(Behaviors.empty, "ActorSourceSinkExample")
+    implicit val system: ActorSystem[?] = ActorSystem(Behaviors.empty, "ActorSourceSinkExample")
 
     def targetActor(): ActorRef[Protocol] = ???
 

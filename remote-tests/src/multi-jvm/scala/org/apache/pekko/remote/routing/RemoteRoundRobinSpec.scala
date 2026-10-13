@@ -17,12 +17,13 @@ import scala.collection.immutable
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
-import org.apache.pekko.actor.{ Actor, ActorRef, Address, PoisonPill, Props }
-import org.apache.pekko.pattern.ask
-import org.apache.pekko.remote.RemotingMultiNodeSpec
-import org.apache.pekko.remote.testkit.MultiNodeConfig
-import org.apache.pekko.routing._
-import org.apache.pekko.testkit._
+import org.apache.pekko
+import pekko.actor.{ Actor, ActorRef, Address, PoisonPill, Props }
+import pekko.pattern.ask
+import pekko.remote.RemotingMultiNodeSpec
+import pekko.remote.testkit.MultiNodeConfig
+import pekko.routing._
+import pekko.testkit._
 
 import com.typesafe.config.ConfigFactory
 

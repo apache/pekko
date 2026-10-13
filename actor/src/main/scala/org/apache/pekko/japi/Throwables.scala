@@ -53,7 +53,7 @@ object Throwables {
   /**
    * Throws the given `Throwable`, without requiring the caller to declare it in a `throws` clause.
    * @param t the `Throwable` to throw
-   * @throws T the type of the `Throwable` to throw
+   * @throws java.lang.Throwable the type of the `Throwable` to throw
    * @return never returns normally, but has return type `R` to allow usage in expressions
    * @since 2.0.0
    */

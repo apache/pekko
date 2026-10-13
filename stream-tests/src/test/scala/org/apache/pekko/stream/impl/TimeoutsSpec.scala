@@ -131,6 +131,49 @@ class TimeoutsSpec extends StreamSpec {
       ex.getMessage should ===("No elements passed in the last 1 second.")
     }
 
+    "not fail before timeout elapses from stream start" in {
+      val upstreamProbe = TestPublisher.probe[Int]()
+      val downstreamProbe = TestSubscriber.probe[Int]()
+      val timeout = 1.second
+
+      Source.fromPublisher(upstreamProbe).idleTimeout(timeout).runWith(Sink.fromSubscriber(downstreamProbe))
+
+      // After materialization, the deadline should be set relative to preStart,
+      // not construction time. No timeout error should occur within the timeout period.
+      downstreamProbe.request(1)
+      downstreamProbe.expectNoMessage(timeout - 200.millis)
+
+      // Send an element to keep the stream alive, then verify no premature timeout
+      upstreamProbe.sendNext(42)
+      downstreamProbe.expectNext(42)
+
+      upstreamProbe.sendComplete()
+      downstreamProbe.expectComplete()
+    }
+
+    "not fail prematurely when materialization is delayed under load" in {
+      import system.dispatcher
+      val timeout = 300.millis
+      val streamCount = 30
+
+      // Run many streams concurrently to create materializer scheduling pressure.
+      // Source.maybe never emits, so the idle timeout should fire after ~timeout.
+      val futures = (1 to streamCount).map { _ =>
+        Source.maybe[Int]
+          .idleTimeout(timeout)
+          .recover { case _: StreamIdleTimeoutException => -1 }
+          .takeWithin(timeout * 4)
+          .runWith(Sink.headOption)
+      }
+
+      val results = Await.result(Future.sequence(futures), 10.seconds)
+      // Each stream should get -1 (idle timeout after proper wait) or None (takeWithin)
+      // It should NOT fail immediately upon materialization
+      results.foreach { result =>
+        result should (be(Some(-1)).or(be(None)))
+      }
+    }
+
   }
 
   "BackpressureTimeout" must {
@@ -227,6 +270,23 @@ class TimeoutsSpec extends StreamSpec {
       subscriber.expectNext(1)
 
       subscriber.expectNoMessage(2.second)
+
+      publisher.sendComplete()
+      subscriber.expectComplete()
+    }
+
+    "not fail before timeout elapses from stream start" in {
+      val publisher = TestPublisher.probe[Int]()
+      val subscriber = TestSubscriber.probe[Int]()
+      val timeout = 1.second
+
+      Source.fromPublisher(publisher).backpressureTimeout(timeout).runWith(Sink.fromSubscriber(subscriber))
+
+      // After materialization, the deadline should be set relative to preStart,
+      // not construction time. No timeout error should occur within the timeout period
+      // even without any demand from downstream.
+      subscriber.ensureSubscription()
+      subscriber.expectNoMessage(timeout - 200.millis)
 
       publisher.sendComplete()
       subscriber.expectComplete()
@@ -346,6 +406,39 @@ class TimeoutsSpec extends StreamSpec {
       upRead.expectSubscriptionAndError(te)
       downRead.expectSubscriptionAndError(te)
       downWrite.expectCancellation()
+    }
+
+    "not fail before timeout elapses from stream start" in {
+      val upWrite = TestPublisher.probe[String]()
+      val upRead = TestSubscriber.probe[Int]()
+      val downWrite = TestPublisher.probe[Int]()
+      val downRead = TestSubscriber.probe[String]()
+      val timeout = 1.second
+
+      RunnableGraph
+        .fromGraph(GraphDSL.create() { implicit b =>
+          import GraphDSL.Implicits._
+          val timeoutStage = b.add(BidiFlow.bidirectionalIdleTimeout[String, Int](timeout))
+          Source.fromPublisher(upWrite) ~> timeoutStage.in1
+          timeoutStage.out1             ~> Sink.fromSubscriber(downRead)
+          Sink.fromSubscriber(upRead) <~ timeoutStage.out2
+          timeoutStage.in2 <~ Source.fromPublisher(downWrite)
+          ClosedShape
+        })
+        .run()
+
+      upRead.request(1)
+      downRead.request(1)
+
+      // After materialization, the deadline should be set relative to preStart,
+      // not construction time. No timeout error should occur within the timeout period.
+      upRead.expectNoMessage(timeout - 200.millis)
+      downRead.expectNoMessage(0.millis)
+
+      upWrite.sendComplete()
+      downWrite.sendComplete()
+      upRead.expectComplete()
+      downRead.expectComplete()
     }
 
   }

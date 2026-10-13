@@ -18,7 +18,6 @@ import pekko.NotUsed
 import pekko.pattern.StatusReply
 
 //#imports
-import org.apache.pekko
 import pekko.stream.scaladsl.{ Flow, Sink, Source }
 import pekko.stream.typed.scaladsl.ActorFlow
 import pekko.actor.typed.ActorRef
@@ -30,7 +29,6 @@ import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
 import pekko.stream.testkit.TestSubscriber
 import org.scalatest.wordspec.AnyWordSpecLike
 
-import scala.collection.immutable
 import scala.concurrent.duration._
 import scala.concurrent.{ Await, Future }
 
@@ -77,7 +75,7 @@ class ActorFlowSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike {
     })
 
     "produce asked elements" in {
-      val in: Future[immutable.Seq[Reply]] =
+      val in: Future[Seq[Reply]] =
         Source
           .repeat("hello")
           .via(ActorFlow.ask(replier)((el, replyTo: ActorRef[Reply]) => Asking(el, replyTo)))
@@ -88,7 +86,7 @@ class ActorFlowSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike {
     }
 
     "produce asked elements with context " in {
-      val in: Future[immutable.Seq[(Reply, Long)]] =
+      val in: Future[Seq[(Reply, Long)]] =
         Source
           .repeat("hello")
           .zipWithIndex
@@ -100,7 +98,7 @@ class ActorFlowSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike {
     }
 
     "produced status success elements unwrap " in {
-      val in: Future[immutable.Seq[String]] =
+      val in: Future[Seq[String]] =
         Source
           .repeat("hello")
           .via(ActorFlow.askWithStatus(replierWithSuccess)((el, replyTo: ActorRef[StatusReply[String]]) =>
@@ -112,7 +110,7 @@ class ActorFlowSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike {
     }
 
     "produced status success elements unwrap with context " in {
-      val in: Future[immutable.Seq[(String, Long)]] =
+      val in: Future[Seq[(String, Long)]] =
         Source
           .repeat("hello")
           .zipWithIndex
@@ -125,7 +123,7 @@ class ActorFlowSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike {
     }
 
     "produce status error elements unwrap " in {
-      val in: Future[immutable.Seq[String]] =
+      val in: Future[Seq[String]] =
         Source
           .repeat("hello")
           .via(ActorFlow.askWithStatus(replierWithError)((el, replyTo: ActorRef[StatusReply[String]]) =>
@@ -139,7 +137,7 @@ class ActorFlowSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike {
     }
 
     "produce status error elements unwrap with context" in {
-      val in: Future[immutable.Seq[(String, Long)]] =
+      val in: Future[Seq[(String, Long)]] =
         Source
           .repeat("hello")
           .zipWithIndex
@@ -172,7 +170,7 @@ class ActorFlowSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike {
       val askFlowExplicit: Flow[String, Reply, NotUsed] =
         ActorFlow.ask(ref)(makeMessage = (el, replyTo: ActorRef[Reply]) => Asking(el, replyTo))
 
-      val in: Future[immutable.Seq[String]] =
+      val in: Future[Seq[String]] =
         Source(1 to 50).map(_.toString).via(askFlow).map(_.msg).runWith(Sink.seq)
       // #ask
       askFlowExplicit.map(identity)

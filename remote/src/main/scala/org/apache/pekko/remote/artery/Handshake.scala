@@ -93,7 +93,7 @@ private[remote] class OutboundHandshake(
       private val uniqueRemoteAddressListener: UniqueAddress => Unit =
         peer => uniqueRemoteAddressAsyncCallback.invoke(peer)
 
-      override protected def logSource: Class[_] = classOf[OutboundHandshake]
+      override protected def logSource: Class[?] = classOf[OutboundHandshake]
 
       override def preStart(): Unit = {
         scheduleOnce(HandshakeTimeout, timeout)

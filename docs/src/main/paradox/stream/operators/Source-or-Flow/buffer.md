@@ -28,7 +28,9 @@ handled according to the specified `OverflowStrategy`:
 
 **backpressures** when `OverflowStrategy` is `backpressure` and buffer is full
 
-**completes** when upstream completes and buffered elements has been drained, or when `OverflowStrategy` is `fail`, the buffer is full and a new element arrives
+**completes** when upstream completes and buffered elements has been drained
+
+**fails** when `OverflowStrategy` is `fail`, the buffer is full and a new element arrives
 
 @@@
 

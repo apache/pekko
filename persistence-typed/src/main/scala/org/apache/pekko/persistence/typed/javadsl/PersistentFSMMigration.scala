@@ -32,7 +32,7 @@ object PersistentFSMMigration {
    * Create a snapshot adapter that will adapt snapshots created by a PersistentFSM into
    * the correct State type of a [[EventSourcedBehavior]]
    * @param adapt Takes in the state identifier, snapshot persisted by the PersistentFSM and the state timeout and
-   *              returns the `State` that should be given to the the [[EventSourcedBehavior]]
+   *              returns the `State` that should be given to the [[EventSourcedBehavior]]
    * @tparam State State type of the [[EventSourcedBehavior]]
    * @return A [[SnapshotAdapter]] to be used with a [[EventSourcedBehavior]]
    */

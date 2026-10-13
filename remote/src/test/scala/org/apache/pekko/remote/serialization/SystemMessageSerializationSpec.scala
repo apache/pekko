@@ -54,7 +54,7 @@ class SystemMessageSerializationSpec extends PekkoSpec(SystemMessageSerializatio
       "Watch(ref, ref)" -> Watch(testRef, testRef2),
       "Unwatch(ref, ref)" -> Unwatch(testRef, testRef2),
       "Failed(ref, ex, uid)" -> Failed(testRef, new TestException("test4"), 42),
-      "DeathWatchNotification(ref, confimed, addressTerminated)" ->
+      "DeathWatchNotification(ref, confirmed, addressTerminated)" ->
       DeathWatchNotification(testRef, existenceConfirmed = true, addressTerminated = true)).foreach {
       case (scenario, item) =>
         s"resolve serializer for [$scenario]" in {

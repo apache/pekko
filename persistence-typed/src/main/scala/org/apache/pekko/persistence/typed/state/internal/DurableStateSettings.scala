@@ -22,6 +22,7 @@ import org.apache.pekko
 import pekko.actor.typed.ActorSystem
 import pekko.annotation.InternalApi
 import pekko.persistence.Persistence
+import pekko.util.Helpers.toRootLowerCase
 
 import com.typesafe.config.Config
 
@@ -31,18 +32,32 @@ import com.typesafe.config.Config
 @InternalApi private[pekko] object DurableStateSettings {
 
   def apply(
-      system: ActorSystem[_],
+      system: ActorSystem[?],
       durableStateStorePluginId: String,
       customStashCapacity: Option[Int]): DurableStateSettings =
-    apply(system.settings.config, durableStateStorePluginId, customStashCapacity)
+    apply(system, durableStateStorePluginId, None, customStashCapacity)
+
+  def apply(
+      system: ActorSystem[?],
+      durableStateStorePluginId: String,
+      durableStateStorePluginConfig: Option[Config],
+      customStashCapacity: Option[Int]): DurableStateSettings =
+    apply(system.settings.config, durableStateStorePluginId, durableStateStorePluginConfig, customStashCapacity)
 
   def apply(
       config: Config,
       durableStateStorePluginId: String,
+      customStashCapacity: Option[Int]): DurableStateSettings =
+    apply(config, durableStateStorePluginId, None, customStashCapacity)
+
+  def apply(
+      config: Config,
+      durableStateStorePluginId: String,
+      durableStateStorePluginConfig: Option[Config],
       customStashCapacity: Option[Int]): DurableStateSettings = {
     val typedConfig = config.getConfig("pekko.persistence.typed")
 
-    val stashOverflowStrategy = typedConfig.getString("stash-overflow-strategy").toLowerCase match {
+    val stashOverflowStrategy = toRootLowerCase(typedConfig.getString("stash-overflow-strategy")) match {
       case "drop"  => StashOverflowStrategy.Drop
       case "fail"  => StashOverflowStrategy.Fail
       case unknown =>
@@ -54,7 +69,8 @@ import com.typesafe.config.Config
 
     val logOnStashing = typedConfig.getBoolean("log-stashing")
 
-    val durableStateStoreConfig = durableStateStoreConfigFor(config, durableStateStorePluginId)
+    val durableStateStoreConfig =
+      durableStateStoreConfigFor(config, durableStateStorePluginId, durableStateStorePluginConfig)
     val recoveryTimeout: FiniteDuration =
       durableStateStoreConfig.getDuration("recovery-timeout", TimeUnit.MILLISECONDS).millis
 
@@ -69,20 +85,26 @@ import com.typesafe.config.Config
       logOnStashing = logOnStashing,
       recoveryTimeout,
       durableStateStorePluginId,
+      durableStateStorePluginConfig,
       useContextLoggerForInternalLogging,
       recurseWhenUnstashingReadOnlyCommands)
   }
 
-  private def durableStateStoreConfigFor(config: Config, pluginId: String): Config = {
+  private def durableStateStoreConfigFor(
+      config: Config,
+      pluginId: String,
+      pluginConfig: Option[Config]): Config = {
+    val mergedConfig = pluginConfig.map(_.withFallback(config)).getOrElse(config)
+
     def defaultPluginId = {
-      val configPath = config.getString("pekko.persistence.state.plugin")
+      val configPath = mergedConfig.getString("pekko.persistence.state.plugin")
       Persistence.verifyPluginConfigIsDefined(configPath, "Default DurableStateStore")
       configPath
     }
 
     val configPath = if (pluginId == "") defaultPluginId else pluginId
-    Persistence.verifyPluginConfigExists(config, configPath, "DurableStateStore")
-    config.getConfig(configPath).withFallback(config.getConfig("pekko.persistence.state-plugin-fallback"))
+    Persistence.verifyPluginConfigExists(mergedConfig, configPath, "DurableStateStore")
+    mergedConfig.getConfig(configPath).withFallback(mergedConfig.getConfig("pekko.persistence.state-plugin-fallback"))
   }
 
 }
@@ -97,6 +119,7 @@ private[pekko] final case class DurableStateSettings(
     logOnStashing: Boolean,
     recoveryTimeout: FiniteDuration,
     durableStateStorePluginId: String,
+    durableStateStorePluginConfig: Option[Config],
     useContextLoggerForInternalLogging: Boolean,
     recurseWhenUnstashingReadOnlyCommands: Boolean) {
 

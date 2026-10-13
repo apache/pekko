@@ -29,12 +29,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout current branch (full)
-        uses: actions/checkout@v6.0.0
+        uses: actions/checkout@v7.0.1
         with:
           fetch-depth: 0
           persist-credentials: false
 
-      - name: Check project is formatted
-        uses: jrouly/scalafmt-native-action@14620cde093e5ff6bfbbecd4f638370024287b9d # v4
+      - name: Setup Coursier
+        uses: coursier/setup-action@648df969f41ef15fda2baba8b37f9fa3d16390a3 # v3.0.4
         with:
-          arguments: '--list --mode diff-ref=origin/main'
+          apps: scalafmt
+
+      - name: Check project is formatted
+        run: scalafmt --list --mode diff-ref=origin/main

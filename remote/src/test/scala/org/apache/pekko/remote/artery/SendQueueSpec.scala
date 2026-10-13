@@ -28,6 +28,7 @@ import pekko.stream.testkit.TestSubscriber
 import pekko.stream.testkit.scaladsl.TestSink
 import pekko.testkit.ImplicitSender
 import pekko.testkit.PekkoSpec
+import pekko.testkit.TestDuration
 
 object SendQueueSpec {
 
@@ -129,7 +130,7 @@ class SendQueueSpec extends PekkoSpec("""
           if (!sendQueue.offer(round * 1000 + n))
             fail(s"offer failed at round $round message $n")
         }
-        downstream.expectNext((1 to burstSize).map(_ + round * 1000).toList)
+        downstream.expectNext(30.seconds.dilated, (1 to burstSize).map(_ + round * 1000).toList)
         downstream.request(1)
       }
 
@@ -178,14 +179,14 @@ class SendQueueSpec extends PekkoSpec("""
             Source.fromGraph(new SendQueue[String](sendToDeadLetters)).toMat(TestSink())(Keep.both).run()
 
           f(queue, sendQueue, downstream)
-          downstream.expectNext("a")
+          downstream.expectNext(15.seconds.dilated, "a")
 
           sendQueue.offer("b")
-          downstream.expectNext("b")
+          downstream.expectNext(15.seconds.dilated, "b")
           sendQueue.offer("c")
           sendQueue.offer("d")
-          downstream.expectNext("c")
-          downstream.expectNext("d")
+          downstream.expectNext(15.seconds.dilated, "c")
+          downstream.expectNext(15.seconds.dilated, "d")
           downstream.cancel()
         }
       }

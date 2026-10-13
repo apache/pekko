@@ -22,7 +22,7 @@ import pekko.actor.ActorRef
 import pekko.annotation.InternalApi
 import pekko.persistence.journal.Tagged
 import pekko.persistence.query.EventEnvelope
-import pekko.persistence.query.Sequence
+import pekko.persistence.query.Offset
 import pekko.persistence.testkit.EventStorage
 import pekko.persistence.testkit.PersistenceTestKitPlugin
 import pekko.persistence.testkit.PersistenceTestKitPlugin.TagWrite
@@ -59,6 +59,7 @@ private[pekko] object EventsByTagStage {
 @InternalApi
 final private[pekko] class EventsByTagStage(
     tag: String,
+    offset: Offset,
     storage: EventStorage)
     extends GraphStage[SourceShape[EventEnvelope]] {
   import EventsByTagStage._
@@ -70,6 +71,7 @@ final private[pekko] class EventsByTagStage(
     new GraphStageLogicWithLogging(shape) with OutHandler {
       private var state = Option.empty[State]
       private var stageActorRef: ActorRef = null
+      private val isAfterOffset = TimestampOffsets.isAfter(offset)
       override def preStart(): Unit = {
         stageActorRef = getStageActor(receiveNotifications).ref
         materializer.system.eventStream.subscribe(stageActorRef, classOf[PersistenceTestKitPlugin.TagWrite])
@@ -91,14 +93,17 @@ final private[pekko] class EventsByTagStage(
             .tryReadByTag(tag)
             .sortBy(pr => (pr.timestamp, pr.sequenceNr))
             .find { pr =>
-              state.forall(_.isAfter(pr.timestamp, pr.sequenceNr))
+              state match {
+                case Some(s) => s.isAfter(pr.timestamp, pr.sequenceNr)
+                case None    => isAfterOffset(pr)
+              }
             }
 
           log.debug("tryPush available. State {} event {}", state, maybeNextEvent)
 
           maybeNextEvent.foreach { pr =>
             push(out,
-              EventEnvelope(Sequence(pr.sequenceNr), pr.persistenceId, pr.sequenceNr,
+              EventEnvelope(TimestampOffsets.offsetFor(pr), pr.persistenceId, pr.sequenceNr,
                 pr.payload match {
                   case Tagged(payload, _) => payload
                   case payload            => payload

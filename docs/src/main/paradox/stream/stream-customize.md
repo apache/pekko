@@ -64,7 +64,7 @@ In order to emit from a @apidoc[stream.*.Source] in a backpressured stream one n
 To receive the necessary events one needs to register a subclass of @scala[@scaladoc[OutHandler](pekko.stream.stage.OutHandler)] @java[@javadoc[AbstractOutHandler](pekko.stream.stage.AbstractOutHandler)] with the output port
 (@apidoc[stream.Outlet]). This handler will receive events related to the lifecycle of the port. In our case we need to
 override `onPull()` which indicates that we are free to emit a single element. There is another callback,
-`onDownstreamFinish()` which is called if the downstream cancelled. Since the default behavior of that callback is
+`onDownstreamFinish(cause)` which is called if the downstream cancelled. Since the default behavior of that callback is
 to stop the operator, we don't need to override it. In the `onPull` callback we will emit the next number. This
 is how it looks like in the end:
 
@@ -87,7 +87,7 @@ Similarly, to create a custom @apidoc[stream.*.Sink] one can register a subclass
 The @apidoc[onPush()](stage.InHandler) {scala="#onPush():Unit" java="#onPush()"} callback is used to signal the handler a new element has been pushed to the operator,
 and can hence be grabbed and used. `onPush()` can be overridden to provide custom behavior.
 Please note, most Sinks would need to request upstream elements as soon as they are created: this can be
-done by calling @apidoc[pull(inlet)](stage.OutHandler) {scala="#onPull():Unit" java="#onPull()"} in the @apidoc[preStart()](stage.GraphStageLogic) {scala="#preStart():Unit" java="#preStart()"} callback.
+done by calling @apidoc[pull(inlet)](stage.GraphStageLogic) {scala="#pull[T](in:org.apache.pekko.stream.Inlet[T]):Unit" java="#pull(org.apache.pekko.stream.Inlet)"} in the @apidoc[preStart()](stage.GraphStageLogic) {scala="#preStart():Unit" java="#preStart()"} callback.
 
 Scala
 :   @@snip [GraphStageDocSpec.scala](/docs/src/test/scala/docs/stream/GraphStageDocSpec.scala) { #custom-sink-example }
@@ -133,7 +133,8 @@ in that state.
 
 The following operations are available for *input* ports:
 
- * `pull(in)` requests a new element from an input port. This is only possible after the port has been pushed by upstream.
+ * `pull(in)` requests a new element from an input port. This is only possible if the port is not closed and has not already been pulled
+(i.e. after a previous element has been pushed by upstream, or initially before any element has been requested).
  * `grab(in)` acquires the element that has been received during an `onPush()`. It cannot be called again until the
 port is pushed again by the upstream.
  * `cancel(in)` closes the input port.
@@ -217,7 +218,7 @@ Java
 :   @@snip [GraphStageDocTest.java](/docs/src/test/java/jdocs/stream/GraphStageDocTest.java) { #one-to-one }
 
 Map is a typical example of a one-to-one transformation of a stream where
-demand is passed along upstream elements passed on downstream.
+demand is passed along upstream and elements are passed on downstream.
 
 To demonstrate a many-to-one operator we will implement
 filter. The conceptual wiring of `Filter` looks like this:
@@ -295,7 +296,7 @@ operator has been completed. This can be done by overriding the `onUpstreamFinis
 Operators by default automatically stop once all of their ports (input and output) have been closed externally or internally.
 It is possible to opt out from this behavior by invoking `setKeepGoing(true)` (which is not supported from the operator’s
 constructor and usually done in `preStart`). In this case the operator **must** be explicitly closed by calling @apidoc[completeStage()](stage.GraphStageLogic) {scala="#completeStage():Unit" java="#completeStage()"}
-or `@apidoc[failStage(exception)](stage.GraphStageLogic) {scala="#failStage(ex:Throwable):Unit" java="#failStage(java.lang.Throwable)"}. This feature carries the risk of leaking streams and actors, therefore it should be used
+or @apidoc[failStage(exception)](stage.GraphStageLogic) {scala="#failStage(ex:Throwable):Unit" java="#failStage(java.lang.Throwable)"}. This feature carries the risk of leaking streams and actors, therefore it should be used
 with care.
 
 ### Logging inside GraphStages
@@ -388,8 +389,7 @@ Java
 
 ### Integration with actors
 
-**This section is a stub and will be extended in the next release**
-**This is a @ref:[may change](../common/may-change.md) feature***
+**This is a @ref:[may change](../common/may-change.md) feature**
 
 It is possible to acquire an ActorRef that can be addressed from the outside of the operator, similarly how
 @apidoc[stage.AsyncCallback] allows injecting asynchronous events into an operator logic. This reference can be obtained
@@ -427,8 +427,6 @@ Java
 :   @@snip [GraphStageDocTest.java](/docs/src/test/java/jdocs/stream/GraphStageDocTest.java) { #materialized }
 
 ### Using attributes to affect the behavior of an operator
-
-**This section is a stub and will be extended in the next release**
 
 Operators can access the @apidoc[stream.Attributes] object created by the materializer. This contains all the applied (inherited)
 attributes applying to the operator, ordered from least specific (outermost) towards the most specific (innermost)
@@ -475,8 +473,8 @@ Java
 
 ## Thread safety of custom operators
 
-All of the above custom operators (linear or graph) provide a few simple guarantees that implementors can rely on.
-: 
+All of the above custom operators (linear or graph) provide a few simple guarantees that implementers can rely on.
+
  * The callbacks exposed by all of these classes are never called concurrently.
  * The state encapsulated by these classes can be safely modified from the provided callbacks, without any further
 synchronization.
@@ -515,11 +513,12 @@ operator to integrate it into your stream topology. This works with all @scalado
 ports that you connect with the graph DSL.
 
 Advanced Scala users may wonder whether it is possible to write extension methods that enrich `FlowOps` to
-allow nicer syntax. The short answer is that Scala 2 does not support this in a fully generic fashion, the problem is
-that it is impossible to abstract over the kind of stream that is being extended because `Source`, `Flow`
-and `SubFlow` differ in the number and kind of their type parameters. While it would be possible to write
-an implicit class that enriches them generically, this class would require explicit instantiation with all type
-parameters due to [SI-2712](https://github.com/scala/bug/issues/2712). For a partial workaround that unifies
+allow nicer syntax. The short answer is that this is not possible in a fully generic fashion, the problem is
+that it is hard to abstract over the kind of stream that is being extended because `Source`, `Flow`
+and `SubFlow` differ in the number and kind of their type parameters. Partial unification (the fix for
+[SI-2712](https://github.com/scala/bug/issues/2712)), which is always enabled in Scala 2.13 and Scala 3, helps the
+compiler infer such type constructors, but it does not remove the need to abstract over these differently shaped
+type constructors. For a partial workaround that unifies
 extensions to `Source` and `Flow` see [this sketch by R. Kuhn](https://gist.github.com/rkuhn/2870fcee4937dda2cad5).
 
 A lot simpler is the task of adding an extension method to `Source` as shown below:
@@ -537,6 +536,6 @@ shown in the linked sketch the author encountered such a density of compiler Sta
 that he gave up).
 
 It is interesting to note that a simplified form of this problem has found its way into the [dotty test suite](https://github.com/lampepfl/dotty/pull/1186/files).
-Dotty is the development version of Scala on its way to Scala 3.
+Dotty was the development name of the compiler that became Scala 3.
 
 @@@

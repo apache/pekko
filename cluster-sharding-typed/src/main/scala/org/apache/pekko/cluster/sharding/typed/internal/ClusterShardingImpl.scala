@@ -15,6 +15,7 @@ package org.apache.pekko.cluster.sharding.typed
 package internal
 
 import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 import java.time.Duration
 import java.util.concurrent.CompletionStage
 import java.util.concurrent.ConcurrentHashMap
@@ -44,6 +45,7 @@ import pekko.cluster.sharding.ShardCoordinator
 import pekko.cluster.sharding.ShardCoordinator.ShardAllocationStrategy
 import pekko.cluster.sharding.ShardRegion
 import pekko.cluster.sharding.ShardRegion.{ StartEntity => ClassicStartEntity }
+import pekko.cluster.sharding.internal.RememberEntitiesShardStore
 import pekko.cluster.sharding.typed.scaladsl.EntityContext
 import pekko.cluster.typed.Cluster
 import pekko.event.Logging
@@ -52,20 +54,24 @@ import pekko.japi.function.{ Function => JFunction }
 import pekko.pattern.AskTimeoutException
 import pekko.pattern.PromiseActorRef
 import pekko.pattern.StatusReply
-import pekko.util.{ ByteString, Timeout }
+import pekko.util.Timeout
 
 /**
  * INTERNAL API
  * Extracts entityId and unwraps ShardingEnvelope and StartEntity messages.
  * Other messages are delegated to the given `ShardingMessageExtractor`.
+ * Internal messages from the remember-entities store are filtered out
+ * and should never reach the user-supplied extractor.
  */
 @InternalApi private[pekko] class ExtractorAdapter[E, M](delegate: ShardingMessageExtractor[E, M])
     extends ShardingMessageExtractor[Any, M] {
   override def entityId(message: Any): String = {
     message match {
-      case ShardingEnvelope(entityId, _) => entityId // also covers ClassicStartEntity in ShardingEnvelope
-      case ClassicStartEntity(entityId)  => entityId
-      case msg                           => delegate.entityId(msg.asInstanceOf[E])
+      case ShardingEnvelope(entityId, _)                    => entityId // also covers ClassicStartEntity in ShardingEnvelope
+      case ClassicStartEntity(entityId)                     => entityId
+      case _: RememberEntitiesShardStore.UpdateDone         => null
+      case _: RememberEntitiesShardStore.RememberedEntities => null
+      case msg                                              => delegate.entityId(msg.asInstanceOf[E])
     }
   }
 
@@ -79,7 +85,9 @@ import pekko.util.{ ByteString, Timeout }
       case msg: ClassicStartEntity =>
         // not really of type M, but erased and StartEntity is only handled internally, not delivered to the entity
         msg.asInstanceOf[M]
-      case msg =>
+      case _: RememberEntitiesShardStore.UpdateDone         => null.asInstanceOf[M]
+      case _: RememberEntitiesShardStore.RememberedEntities => null.asInstanceOf[M]
+      case msg                                              =>
         delegate.unwrapMessage(msg.asInstanceOf[E])
     }
   }
@@ -100,14 +108,14 @@ import pekko.util.{ ByteString, Timeout }
 }
 
 /** INTERNAL API */
-@InternalApi private[pekko] final class ClusterShardingImpl(system: ActorSystem[_])
+@InternalApi private[pekko] final class ClusterShardingImpl(system: ActorSystem[?])
     extends javadsl.ClusterSharding
     with scaladsl.ClusterSharding {
 
   import pekko.actor.typed.scaladsl.adapter._
 
   require(
-    system.isInstanceOf[ActorSystemAdapter[_]],
+    system.isInstanceOf[ActorSystemAdapter[?]],
     "only adapted classic actor systems can be used for cluster features")
 
   private val cluster = Cluster(system)
@@ -192,13 +200,10 @@ import pekko.util.{ ByteString, Timeout }
         val shardCommandDelegator: ActorRef[scaladsl.ClusterSharding.ShardCommand] =
           shardCommandActors.computeIfAbsent(
             typeKey.name,
-            new java.util.function.Function[String, ActorRef[scaladsl.ClusterSharding.ShardCommand]] {
-              override def apply(t: String): ActorRef[scaladsl.ClusterSharding.ShardCommand] = {
-                system.systemActorOf(
-                  ShardCommandActor.behavior(stopMessage.getOrElse(PoisonPill)),
-                  URLEncoder.encode(typeKey.name, ByteString.UTF_8) + "ShardCommandDelegator")
-              }
-            })
+            (_: String) =>
+              system.systemActorOf(
+                ShardCommandActor.behavior(stopMessage.getOrElse(PoisonPill)),
+                URLEncoder.encode(typeKey.name, StandardCharsets.UTF_8) + "ShardCommandDelegator"))
 
         def poisonPillInterceptor(behv: Behavior[M]): Behavior[M] = {
           stopMessage match {
@@ -327,14 +332,14 @@ import pekko.util.{ ByteString, Timeout }
 
   override def equals(other: Any): Boolean =
     other match {
-      case eri: EntityRefImpl[_] =>
+      case eri: EntityRefImpl[?] =>
         (eri.entityId == entityId) &&
         (eri.typeKey == typeKey) &&
         (eri.dataCenter == dataCenter)
       case _ => false
     }
 
-  override val refPrefix = URLEncoder.encode(s"${typeKey.name}-$entityId", ByteString.UTF_8)
+  override val refPrefix = URLEncoder.encode(s"${typeKey.name}-$entityId", StandardCharsets.UTF_8)
 
   override def tell(msg: M): Unit =
     shardRegion ! ShardingEnvelope(entityId, msg)
@@ -361,7 +366,7 @@ import pekko.util.{ ByteString, Timeout }
     import pekko.actor.typed.internal.{ adapter => adapt }
 
     // Note: _promiseRef mustn't have a type pattern, since it can be null
-    private[this] val (_ref: ActorRef[U], _future: Future[U], _promiseRef) =
+    private val (_ref: ActorRef[U], _future: Future[U], _promiseRef) =
       if (classic.isTerminated)
         (
           adapt.ActorRefAdapter[U](classic.provider.deadLetters),
@@ -406,13 +411,13 @@ import pekko.util.{ ByteString, Timeout }
   // impl InternalRecipientRef
   override def provider: ActorRefProvider = {
     import pekko.actor.typed.scaladsl.adapter._
-    shardRegion.toTyped.asInstanceOf[InternalRecipientRef[_]].provider
+    shardRegion.toTyped.asInstanceOf[InternalRecipientRef[?]].provider
   }
 
   // impl InternalRecipientRef
   def isTerminated: Boolean = {
     import pekko.actor.typed.scaladsl.adapter._
-    shardRegion.toTyped.asInstanceOf[InternalRecipientRef[_]].isTerminated
+    shardRegion.toTyped.asInstanceOf[InternalRecipientRef[?]].isTerminated
   }
 
   override def toString: String = s"EntityRef($typeKey, $entityId)"
@@ -435,7 +440,7 @@ import pekko.util.{ ByteString, Timeout }
   import pekko.cluster.sharding.ShardRegion.{ Passivate => ClassicPassivate }
 
   def behavior(stopMessage: Any): Behavior[scaladsl.ClusterSharding.ShardCommand] = {
-    def sendClassicPassivate(entity: ActorRef[_], classicSystem: actor.ActorSystem): Unit = {
+    def sendClassicPassivate(entity: ActorRef[?], classicSystem: actor.ActorSystem): Unit = {
       val classicRef = entity.toClassic
       val pathToShard = classicRef.path.elements.take(4).mkString("/")
       classicSystem.actorSelection(pathToShard).tell(ClassicPassivate(stopMessage), classicRef)

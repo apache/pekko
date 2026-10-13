@@ -20,8 +20,8 @@ import org.apache.pekko
 import pekko.actor.ActorRef
 import pekko.annotation.InternalApi
 import pekko.cluster.sharding.ShardRegion.ShardId
-import pekko.cluster.sharding.internal.AbstractLeastShardAllocationStrategy.RegionEntry
-import pekko.cluster.sharding.internal.AbstractLeastShardAllocationStrategy.ShardSuitabilityOrdering
+import pekko.cluster.sharding.internal.ClusterShardAllocationMixin.RegionEntry
+import pekko.cluster.sharding.internal.ClusterShardAllocationMixin.ShardSuitabilityOrdering
 
 /**
  * INTERNAL API
@@ -115,8 +115,9 @@ import pekko.cluster.sharding.internal.AbstractLeastShardAllocationStrategy.Shar
         if (numberOfRegions == 0 || numberOfShards == 0) {
           emptyRebalanceResult
         } else {
-          val optimalPerRegion = numberOfShards / numberOfRegions + (if (numberOfShards % numberOfRegions == 0) 0
-                                                                     else 1)
+          val optimalPerRegion = numberOfShards / numberOfRegions +
+            (if (numberOfShards % numberOfRegions == 0) 0
+             else 1)
 
           val result1 = rebalancePhase1(numberOfShards, optimalPerRegion, sortedRegionEntries)
 

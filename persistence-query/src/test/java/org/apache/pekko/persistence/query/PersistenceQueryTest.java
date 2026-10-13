@@ -15,14 +15,14 @@ package org.apache.pekko.persistence.query;
 
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.actor.ActorSystem;
-import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
-import org.junit.ClassRule;
+import org.apache.pekko.testkit.PekkoJUnitJupiterActorSystemResource;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 public class PersistenceQueryTest {
 
-  @ClassRule
-  public static PekkoJUnitActorSystemResource actorSystemResource =
-      new PekkoJUnitActorSystemResource(PersistenceQueryTest.class.getName());
+  @RegisterExtension
+  static PekkoJUnitJupiterActorSystemResource actorSystemResource =
+      new PekkoJUnitJupiterActorSystemResource(PersistenceQueryTest.class.getName());
 
   private final ActorSystem system = actorSystemResource.getSystem();
 

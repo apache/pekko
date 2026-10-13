@@ -6,18 +6,14 @@ Integration with Reactive Streams, materializes into a `org.reactivestreams.Subs
 
 ## Signature
 
-Scala
-:   @@snip[JavaFlowSupport.scala](/stream/src/main/scala/org/apache/pekko/stream/scaladsl/JavaFlowSupport.scala) { #asSubscriber }
-
-Java
-:   @@snip[AsSubscriber.java](/docs/src/test/java/jdocs/stream/operators/source/AsSubscriber.java) { #api }
+@apidoc[Source.asSubscriber](Source$) { scala="#asSubscriber[T]:org.apache.pekko.stream.scaladsl.Source[T,org.reactivestreams.Subscriber[T]]" java="#asSubscriber()" }
 
 ## Description
 
 If you want to create a @apidoc[Source] that gets its elements from another library that supports
 [Reactive Streams](https://www.reactive-streams.org/), you can use `Source.asSubscriber`.
 Each time this @apidoc[Source] is materialized, it produces a materialized value of type
-@javadoc[org.reactivestreams.Subscriber](java.util.concurrent.Flow.Subscriber).
+`org.reactivestreams.Subscriber`.
 This `org.reactivestreams.Subscriber` can be attached to a
 [Reactive Streams](https://www.reactive-streams.org/) `org.reactivestreams.Publisher`
 to populate it.
@@ -30,12 +26,14 @@ through @scala[`org.apache.pekko.stream.scaladsl.JavaFlowSupport.Source#asSubscr
 
 ## Example
 
+The examples below use the `JavaFlowSupport` variant, which works with the `java.util.concurrent.Flow` interfaces.
+
 Suppose we use a database client that supports [Reactive Streams](https://www.reactive-streams.org/),
 we could create a @apidoc[Source] that queries the database for its rows. That @apidoc[Source] can then
 be used for further processing, for example creating a @apidoc[Source] that contains the names of the
 rows.
 
-Note that since the database is queried for each materialization, the `rowSource` can be safely re-used.
+Note that since the database is queried for each materialization, the `rowSource` can be safely reused.
 Because both the database driver and Pekko Streams support [Reactive Streams](https://www.reactive-streams.org/),
 backpressure is applied throughout the stream, preventing us from running out of memory when the database
 rows are consumed slower than they are produced by the database.

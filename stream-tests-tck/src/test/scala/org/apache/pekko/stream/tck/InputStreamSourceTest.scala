@@ -25,17 +25,20 @@ import org.reactivestreams.Publisher
 class InputStreamSourceTest extends PekkoPublisherVerification[ByteString] {
 
   def createPublisher(elements: Long): Publisher[ByteString] = {
+    def inputStream = new InputStream {
+      private var remaining = elements
+      override def read(): Int = {
+        if (remaining > 0) {
+          remaining -= 1
+          1
+        } else -1
+      }
+    }
+
     StreamConverters
-      .fromInputStream(() =>
-        new InputStream {
-          @volatile var num = 0
-          override def read(): Int = {
-            num += 1
-            num
-          }
-        })
+      // The TCK counts publisher elements, so emit one byte per ByteString.
+      .fromInputStream(() => inputStream, chunkSize = 1)
       .withAttributes(ActorAttributes.dispatcher("pekko.test.stream-dispatcher"))
-      .take(elements)
       .runWith(Sink.asPublisher(false))
   }
 }

@@ -50,7 +50,7 @@ within the same cluster. Similar functionality as the @apidoc[ClusterClient] is
 provided more efficiently by @ref:[Distributed Publish Subscribe in Cluster](distributed-pub-sub.md) for actors that
 belong to the same cluster.
 
-The connecting system must have its `org.apache.pekko.actor.provider` set  to `remote` or `cluster` when using
+The connecting system must have its `pekko.actor.provider` set  to `remote` or `cluster` when using
 the cluster client.
 
 The receptionist is supposed to be started on all nodes, or all nodes with a specified role,
@@ -93,9 +93,9 @@ what clients are connected to.
 Response messages from the destination actor are tunneled via the receptionist
 to avoid inbound connections from other cluster nodes to the client:
 
-* @scala[@scaladoc[`sender()`](pekko.actor.Actor)]@java[@javadoc[`getSender()`](pekko.actor.Actor)], as seen by the destination actor, is not the client itself,
+* @scala[@scaladoc[`sender()`](pekko.actor.Actor)]@java[@javadoc[`getSender()`](pekko.actor.AbstractActor#getSender())], as seen by the destination actor, is not the client itself,
   but the receptionist
-* @scala[@scaladoc[`sender()`](pekko.actor.Actor)] @java[@javadoc[`getSender()`](pekko.actor.Actor)] of the response messages, sent back from the destination and seen by the client,
+* @scala[@scaladoc[`sender()`](pekko.actor.Actor)] @java[@javadoc[`getSender()`](pekko.actor.AbstractActor#getSender())] of the response messages, sent back from the destination and seen by the client,
   is `deadLetters`
 
 since the client should normally send subsequent messages via the @apidoc[ClusterClient].
@@ -163,7 +163,7 @@ It is recommended to load the extension when the actor system is started by defi
 `pekko.extensions` configuration property:
 
 ```
-pekko.extensions = ["pekko.cluster.client.ClusterClientReceptionist"]
+pekko.extensions = ["org.apache.pekko.cluster.client.ClusterClientReceptionist"]
 ```
 
 ## Events
@@ -222,7 +222,7 @@ It is possible to make the cluster client stop entirely if it cannot find a rece
 within a configurable interval. This is configured with the `reconnect-timeout`, which defaults to `off`.
 This can be useful when initial contacts are provided from some kind of service registry, cluster node addresses
 are entirely dynamic and the entire cluster might shut down or crash, be restarted on new addresses. Since the
-client will be stopped in that case a monitoring actor can watch it and upon `Terminate` a new set of initial
+client will be stopped in that case a monitoring actor can watch it and upon `Terminated` a new set of initial
 contacts can be fetched and a new cluster client started.
 
 ## Migration to Apache Pekko gRPC
@@ -253,8 +253,8 @@ An example is provided to illustrate an approach to migrate from the deprecated 
 with minimal changes to your existing code. The example is intended to be copied and adjusted to your needs.
 It will not be provided as a published artifact.
 
-* [pekko-samples/pekko-sample-cluster-cluster-client-grpc-scala](https://github.com/apache/pekko-samples/tree/main/pekko-sample-cluster-client-grpc-scala) implemented in Scala
-* [pekko-samples/pekko-sample-cluster-cluster-client-grpc-java](https://github.com/apache/pekko-samples/tree/main/pekko-sample-cluster-client-grpc-java) implemented in Java
+* [pekko-samples/pekko-sample-cluster-client-grpc-scala](https://github.com/apache/pekko-samples/tree/main/pekko-sample-cluster-client-grpc-scala) implemented in Scala
+* [pekko-samples/pekko-sample-cluster-client-grpc-java](https://github.com/apache/pekko-samples/tree/main/pekko-sample-cluster-client-grpc-java) implemented in Java
 
 The example is still using an actor on the client-side to have an API that is very close
 to the original Cluster Client. The messages this actor can handle correspond to the

@@ -6,8 +6,8 @@ After completion of the original upstream the elements of the given source will 
 
 ## Signature
 
-@apidoc[Source.concat](Source) { scala="#concatLazy[U&gt;:Out,Mat2](that:org.apache.pekko.stream.Graph[org.apache.pekko.stream.SourceShape[U],Mat2]):FlowOps.this.Repr[U]" java="#concatLazy(org.apache.pekko.stream.Graph)" }
-@apidoc[Flow.concat](Flow) { scala="#concatLazy[U&gt;:Out,Mat2](that:org.apache.pekko.stream.Graph[org.apache.pekko.stream.SourceShape[U],Mat2]):FlowOps.this.Repr[U]" java="#concatLazy(org.apache.pekko.stream.Graph)" }
+@apidoc[Source.concatLazy](Source) { scala="#concatLazy[U&gt;:Out,Mat2](that:org.apache.pekko.stream.Graph[org.apache.pekko.stream.SourceShape[U],Mat2]):FlowOps.this.Repr[U]" java="#concatLazy(org.apache.pekko.stream.Graph)" }
+@apidoc[Flow.concatLazy](Flow) { scala="#concatLazy[U&gt;:Out,Mat2](that:org.apache.pekko.stream.Graph[org.apache.pekko.stream.SourceShape[U],Mat2]):FlowOps.this.Repr[U]" java="#concatLazy(org.apache.pekko.stream.Graph)" }
 
 
 ## Description

@@ -29,7 +29,23 @@ import pekko.testkit.TestActorRef
 import pekko.testkit.TestProbe
 import pekko.util.SerializedSuspendableExecutionContext
 
-class ExecutionContextSpec extends PekkoSpec with DefaultTimeout {
+object ExecutionContextSpec {
+  val BatchingDispatcher = "pekko.test.batching-dispatcher"
+
+  val config = s"""
+    $BatchingDispatcher = $${pekko.actor.default-dispatcher}
+    $BatchingDispatcher.fork-join-executor.virtualize = off
+    """
+}
+
+class ExecutionContextSpec extends PekkoSpec(ExecutionContextSpec.config) with DefaultTimeout {
+  import ExecutionContextSpec._
+
+  def batchingDispatcher: ExecutionContextExecutor = {
+    val dispatcher = system.dispatchers.lookup(BatchingDispatcher)
+    dispatcher.isInstanceOf[BatchingExecutor] should ===(true)
+    dispatcher
+  }
 
   "An ExecutionContext" must {
 
@@ -53,9 +69,7 @@ class ExecutionContextSpec extends PekkoSpec with DefaultTimeout {
     }
 
     "be able to use Batching" in {
-      system.dispatcher.isInstanceOf[BatchingExecutor] should ===(true)
-
-      import system.dispatcher
+      implicit val dispatcher: ExecutionContextExecutor = batchingDispatcher
 
       def batchable[T](f: => T)(implicit ec: ExecutionContext): Unit =
         ec.execute(new Batchable {
@@ -82,9 +96,34 @@ class ExecutionContextSpec extends PekkoSpec with DefaultTimeout {
       Await.result(p.future, timeout.duration) should ===(())
     }
 
+    "continue the outer batch after reentrant batch execution" in {
+      Seq(true, false).foreach { resubmit =>
+        val submitted = new java.util.ArrayDeque[Runnable]()
+        val executor = new BatchingExecutor {
+          override protected def unbatchedExecute(runnable: Runnable): Unit = submitted.add(runnable)
+          override protected def resubmitOnBlock: Boolean = resubmit
+          override def batchable(runnable: Runnable): Boolean = true
+        }
+        val completed = new AtomicInteger(0)
+        var innerBatch: Runnable = null
+
+        executor.execute(() => {
+          executor.execute(() => completed.incrementAndGet())
+          // Model a pool worker executing another submitted batch while helping a join.
+          innerBatch.run()
+          completed.incrementAndGet()
+        })
+        val outerBatch = submitted.remove()
+        executor.execute(() => completed.incrementAndGet())
+        innerBatch = submitted.remove()
+
+        outerBatch.run()
+        completed.get should ===(3)
+      }
+    }
+
     "be able to avoid starvation when Batching is used and Await/blocking is called" in {
-      system.dispatcher.isInstanceOf[BatchingExecutor] should ===(true)
-      import system.dispatcher
+      implicit val dispatcher: ExecutionContextExecutor = batchingDispatcher
 
       def batchable[T](f: => T)(implicit ec: ExecutionContext): Unit =
         ec.execute(new Batchable {
@@ -108,8 +147,7 @@ class ExecutionContextSpec extends PekkoSpec with DefaultTimeout {
     }
 
     "work with tasks that use blocking{} multiple times" in {
-      system.dispatcher.isInstanceOf[BatchingExecutor] should be(true)
-      import system.dispatcher
+      implicit val dispatcher: ExecutionContextExecutor = batchingDispatcher
 
       val f = Future(()).flatMap { _ =>
         // this needs to be within an OnCompleteRunnable so that things are added to the batch
@@ -135,8 +173,7 @@ class ExecutionContextSpec extends PekkoSpec with DefaultTimeout {
     }
 
     "work with tasks that block inside blocking" in {
-      system.dispatcher.isInstanceOf[BatchingExecutor] should be(true)
-      import system.dispatcher
+      implicit val dispatcher: ExecutionContextExecutor = batchingDispatcher
 
       val f = Future(()).flatMap { _ =>
         blocking {
@@ -153,14 +190,11 @@ class ExecutionContextSpec extends PekkoSpec with DefaultTimeout {
     "work with same-thread executor plus blocking" in {
       val ec = scala.concurrent.ExecutionContext.parasitic
       var x = 0
-      ec.execute(new Runnable {
-        override def run = {
-          ec.execute(new Runnable {
-            override def run = blocking {
-              x = 1
-            }
+      ec.execute(() => {
+        ec.execute(() =>
+          blocking {
+            x = 1
           })
-        }
       })
       x should be(1)
     }
@@ -212,7 +246,7 @@ class ExecutionContextSpec extends PekkoSpec with DefaultTimeout {
     "be suspendable and resumable" in {
       val sec = SerializedSuspendableExecutionContext(1)(ExecutionContext.global)
       val counter = new AtomicInteger(0)
-      def perform(f: Int => Int) = sec.execute(new Runnable { def run = counter.set(f(counter.get)) })
+      def perform(f: Int => Int) = sec.execute(() => counter.set(f(counter.get)))
       perform(_ + 1)
       perform(x => { sec.suspend(); x * 2 })
       awaitCond(counter.get == 2)
@@ -239,7 +273,7 @@ class ExecutionContextSpec extends PekkoSpec with DefaultTimeout {
       val throughput = 25
       val sec = SerializedSuspendableExecutionContext(throughput)(underlying)
       sec.suspend()
-      def perform(f: Int => Int) = sec.execute(new Runnable { def run = counter.set(f(counter.get)) })
+      def perform(f: Int => Int) = sec.execute(() => counter.set(f(counter.get)))
 
       val total = 1000
       (1 to total).foreach { _ =>
@@ -256,7 +290,7 @@ class ExecutionContextSpec extends PekkoSpec with DefaultTimeout {
       val sec = SerializedSuspendableExecutionContext(1)(ExecutionContext.global)
       val total = 10000
       val counter = new AtomicInteger(0)
-      def perform(f: Int => Int) = sec.execute(new Runnable { def run = counter.set(f(counter.get)) })
+      def perform(f: Int => Int) = sec.execute(() => counter.set(f(counter.get)))
 
       (1 to total).foreach { i =>
         perform(c => if (c == (i - 1)) c + 1 else c)
@@ -275,7 +309,7 @@ class ExecutionContextSpec extends PekkoSpec with DefaultTimeout {
       val throughput = 25
       val sec = SerializedSuspendableExecutionContext(throughput)(underlying)
       sec.suspend()
-      def perform(f: Int => Int) = sec.execute(new Runnable { def run = counter.set(f(counter.get)) })
+      def perform(f: Int => Int) = sec.execute(() => counter.set(f(counter.get)))
       perform(_ + 1)
       (1 to 10).foreach { _ =>
         perform(identity)

@@ -13,7 +13,8 @@
 
 package org.apache.pekko.remote.artery.compress
 
-import org.apache.pekko.actor._
+import org.apache.pekko
+import pekko.actor._
 
 object CompressionTestUtils {
 

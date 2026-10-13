@@ -16,7 +16,6 @@ package org.apache.pekko.actor.typed.delivery.internal
 import java.util.concurrent.TimeoutException
 
 import scala.annotation.nowarn
-import scala.collection.immutable
 import scala.reflect.ClassTag
 import scala.util.Failure
 import scala.util.Success
@@ -136,7 +135,7 @@ object ProducerControllerImpl {
       replyAfterStore: Map[SeqNr, ActorRef[SeqNr]],
       supportResend: Boolean,
       unconfirmed: Vector[ConsumerController.SequencedMessage[A]],
-      remainingChunks: immutable.Seq[SequencedMessage[A]],
+      remainingChunks: Seq[SequencedMessage[A]],
       storeMessageSentInProgress: SeqNr,
       firstSeqNr: SeqNr,
       producer: ActorRef[ProducerController.RequestNext[A]],
@@ -251,7 +250,7 @@ object ProducerControllerImpl {
       requested = false,
       currentSeqNr = loadedState.currentSeqNr,
       confirmedSeqNr = loadedState.highestConfirmedSeqNr,
-      requestedSeqNr = 1L,
+      requestedSeqNr = loadedState.currentSeqNr,
       replyAfterStore = Map.empty,
       supportResend = true,
       unconfirmed = unconfirmed,
@@ -330,8 +329,8 @@ object ProducerControllerImpl {
         val msgAdapter: ActorRef[A] = context.messageAdapter(msg => Msg(msg))
         val requested =
           if (state.unconfirmed.isEmpty) {
-            flightRecorder.producerRequestNext(producerId, 1L, 0)
-            state.producer ! RequestNext(producerId, 1L, 0L, msgAdapter, context.self)
+            flightRecorder.producerRequestNext(producerId, state.currentSeqNr, state.confirmedSeqNr)
+            state.producer ! RequestNext(producerId, state.currentSeqNr, state.confirmedSeqNr, msgAdapter, context.self)
             true
           } else {
             context.log.debug("Starting with [{}] unconfirmed.", state.unconfirmed.size)
@@ -344,12 +343,12 @@ object ProducerControllerImpl {
     }
   }
 
-  def enforceLocalProducer(ref: ActorRef[_]): Unit = {
+  def enforceLocalProducer(ref: ActorRef[?]): Unit = {
     if (ref.path.address.hasGlobalScope)
       throw new IllegalArgumentException(s"Consumer [$ref] should be local.")
   }
 
-  def createChunks[A](m: A, chunkSize: Int, serialization: Serialization): immutable.Seq[ChunkedMessage] = {
+  def createChunks[A](m: A, chunkSize: Int, serialization: Serialization): Seq[ChunkedMessage] = {
     val mAnyRef = m.asInstanceOf[AnyRef]
     // serialization exceptions are thrown
     val bytes = serialization.serialize(mAnyRef).get
@@ -408,7 +407,7 @@ private class ProducerControllerImpl[A: ClassTag](
     def onMsg(
         seqMsg: SequencedMessage[A],
         newReplyAfterStore: Map[SeqNr, ActorRef[SeqNr]],
-        newRemainingChunks: immutable.Seq[SequencedMessage[A]]): Behavior[InternalCommand] = {
+        newRemainingChunks: Seq[SequencedMessage[A]]): Behavior[InternalCommand] = {
       checkOnMsgRequestedState()
       if (seqMsg.isLastChunk != newRemainingChunks.isEmpty)
         throw new IllegalStateException(
@@ -713,7 +712,8 @@ private class ProducerControllerImpl[A: ClassTag](
     }
 
     def receiveSendChunk(): Behavior[InternalCommand] = {
-      if (s.remainingChunks.nonEmpty && s.remainingChunks.head.seqNr <= s.requestedSeqNr && s
+      if (s.remainingChunks.nonEmpty && s.remainingChunks.head.seqNr <= s.requestedSeqNr &&
+        s
           .storeMessageSentInProgress == 0) {
         if (traceEnabled)
           context.log.trace("Send next chunk seqNr [{}].", s.remainingChunks.head.seqNr)
@@ -732,7 +732,7 @@ private class ProducerControllerImpl[A: ClassTag](
       }
     }
 
-    def chunk(m: A, ack: Boolean): immutable.Seq[SequencedMessage[A]] = {
+    def chunk(m: A, ack: Boolean): Seq[SequencedMessage[A]] = {
       val chunkSize = settings.chunkLargeMessagesBytes
       if (chunkSize > 0) {
         val chunkedMessages = createChunks(m, chunkSize, serialization)
@@ -806,7 +806,7 @@ private class ProducerControllerImpl[A: ClassTag](
           active(s.copy(remainingChunks = chunks, storeMessageSentInProgress = seqMsg.seqNr))
         }
 
-      case StoreMessageSentCompleted(sent: MessageSent[_]) =>
+      case StoreMessageSentCompleted(sent: MessageSent[?]) =>
         receiveStoreMessageSentCompleted(sent.seqNr)
 
       case f: StoreMessageSentFailed[A @unchecked] =>

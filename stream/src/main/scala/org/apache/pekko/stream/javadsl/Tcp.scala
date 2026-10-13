@@ -36,6 +36,7 @@ import pekko.actor.ExtensionId
 import pekko.actor.ExtensionIdProvider
 import pekko.annotation.InternalApi
 import pekko.io.Inet.SocketOption
+import pekko.japi.Util.immutableSeq
 import pekko.japi.function
 import pekko.stream.Materializer
 import pekko.stream.SystemMaterializer
@@ -177,7 +178,7 @@ class Tcp(system: ExtendedActorSystem) extends pekko.actor.Extension {
       idleTimeout: Optional[java.time.Duration]): Source[IncomingConnection, CompletionStage[ServerBinding]] =
     Source.fromGraph(
       delegate
-        .bind(interface, port, backlog, CollectionUtil.toSeq(options), halfClose, optionalDurationToScala(idleTimeout))
+        .bind(interface, port, backlog, immutableSeq(options), halfClose, optionalDurationToScala(idleTimeout))
         .map(new IncomingConnection(_))
         .mapMaterializedValue(_.map(new ServerBinding(_))(parasitic).asJava))
 
@@ -197,7 +198,7 @@ class Tcp(system: ExtendedActorSystem) extends pekko.actor.Extension {
         .mapMaterializedValue(_.map(new ServerBinding(_))(parasitic).asJava))
 
   /**
-   * Creates an [[Tcp.OutgoingConnection]] instance representing a prospective TCP client connection to the given endpoint.
+   * Creates a [[Tcp.OutgoingConnection]] instance representing a prospective TCP client connection to the given endpoint.
    *
    * Note that the ByteString chunk boundaries are not retained across the network,
    * to achieve application level chunks you have to introduce explicit framing in your streams,
@@ -228,14 +229,14 @@ class Tcp(system: ExtendedActorSystem) extends pekko.actor.Extension {
         .outgoingConnection(
           remoteAddress,
           localAddress.toScala,
-          CollectionUtil.toSeq(options),
+          immutableSeq(options),
           halfClose,
           optionalDurationToScala(connectTimeout),
           optionalDurationToScala(idleTimeout))
         .mapMaterializedValue(_.map(new OutgoingConnection(_))(parasitic).asJava))
 
   /**
-   * Creates an [[Tcp.OutgoingConnection]] without specifying options.
+   * Creates a [[Tcp.OutgoingConnection]] without specifying options.
    * It represents a prospective TCP client connection to the given endpoint.
    *
    * Note that the ByteString chunk boundaries are not retained across the network,
@@ -249,7 +250,7 @@ class Tcp(system: ExtendedActorSystem) extends pekko.actor.Extension {
         .mapMaterializedValue(_.map(new OutgoingConnection(_))(parasitic).asJava))
 
   /**
-   * Creates an [[Tcp.OutgoingConnection]] with TLS.
+   * Creates a [[Tcp.OutgoingConnection]] with TLS.
    * The returned flow represents a TCP client connection to the given endpoint where all bytes in and
    * out go through TLS.
    *
@@ -267,7 +268,7 @@ class Tcp(system: ExtendedActorSystem) extends pekko.actor.Extension {
         .mapMaterializedValue(_.map(new OutgoingConnection(_))(parasitic).asJava))
 
   /**
-   * Creates an [[Tcp.OutgoingConnection]] with TLS.
+   * Creates a [[Tcp.OutgoingConnection]] with TLS.
    * The returned flow represents a TCP client connection to the given endpoint where all bytes in and
    * out go through TLS.
    *
@@ -291,7 +292,7 @@ class Tcp(system: ExtendedActorSystem) extends pekko.actor.Extension {
           remoteAddress,
           createSSLEngine = () => createSSLEngine.create(),
           localAddress.toScala,
-          CollectionUtil.toSeq(options),
+          immutableSeq(options),
           optionalDurationToScala(connectTimeout),
           optionalDurationToScala(idleTimeout),
           session =>
@@ -342,7 +343,7 @@ class Tcp(system: ExtendedActorSystem) extends pekko.actor.Extension {
           port,
           createSSLEngine = () => createSSLEngine.create(),
           backlog,
-          CollectionUtil.toSeq(options),
+          immutableSeq(options),
           optionalDurationToScala(idleTimeout),
           session =>
             verifySession.apply(session).toScala match {

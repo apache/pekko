@@ -142,6 +142,10 @@ private[pekko] object AdapterClusterImpl {
         adaptedCluster.joinSeedNodes(addresses)
         Behaviors.same
 
+      case SetAppVersionLater(version) =>
+        adaptedCluster.setAppVersionLater(version)
+        Behaviors.same
+
       case PrepareForFullClusterShutdown =>
         adaptedCluster.prepareForFullClusterShutdown()
         Behaviors.same
@@ -155,10 +159,10 @@ private[pekko] object AdapterClusterImpl {
  * INTERNAL API:
  */
 @InternalApi
-private[pekko] final class AdapterClusterImpl(system: ActorSystem[_]) extends Cluster {
+private[pekko] final class AdapterClusterImpl(system: ActorSystem[?]) extends Cluster {
   import AdapterClusterImpl._
 
-  require(system.isInstanceOf[ActorSystemAdapter[_]], "only adapted actor systems can be used for cluster features")
+  require(system.isInstanceOf[ActorSystemAdapter[?]], "only adapted actor systems can be used for cluster features")
   private val classicCluster = pekko.cluster.Cluster(system)
 
   override def selfMember: Member = classicCluster.selfMember

@@ -15,7 +15,8 @@ package org.apache.pekko.cluster
 
 import scala.collection.immutable.TreeMap
 
-import org.apache.pekko.testkit.PekkoSpec
+import org.apache.pekko
+import pekko.testkit.PekkoSpec
 
 class VectorClockSpec extends PekkoSpec {
   import VectorClock._

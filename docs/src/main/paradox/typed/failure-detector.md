@@ -34,7 +34,7 @@ specific node is up or down. Rather than only answering "yes" or "no" to the
 question "is the node down?" it returns a `phi` value representing the
 likelihood that the node is down.
  
-The following chart illustrates how *phi* increase with increasing time since the
+The following chart illustrates how *phi* increases with increasing time since the
 previous heartbeat.
 
 ![phi1.png](../images/phi1.png)
@@ -49,7 +49,7 @@ a standard deviation of 100 ms.
 
 To be able to survive sudden abnormalities, such as garbage collection pauses and
 transient network failures the failure detector is configured with a margin, which
-you may want to adjust depending on you environment.
+you may want to adjust depending on your environment.
 This is how the curve looks like for `failure-detector.acceptable-heartbeat-pause` configured to
 3 seconds.
 

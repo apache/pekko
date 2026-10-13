@@ -24,7 +24,7 @@ To use Pekko Actors, add the following dependency in your project:
 
 Both the Java and Scala DSLs of Pekko modules are bundled in the same JAR. For a smooth development experience,
 when using an IDE such as Eclipse or IntelliJ, you can disable the auto-importer from suggesting `javadsl`
-imports when working in Scala, or viceversa. See @ref:[IDE Tips](../additional/ide.md). 
+imports when working in Scala, or vice versa. See @ref:[IDE Tips](../additional/ide.md). 
 
 @@project-info{ projectId="actor-typed" }
 
@@ -162,14 +162,6 @@ The console output may look like this:
 ```
 
 You will also need to add a @ref:[logging dependency](logging.md) to see that output when running.
-
-@@@ div { .group-scala }
-
-#### Here is another example:
-
-@@snip [IntroSpec.scala](/actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/IntroSpec.scala) { #hello-world-main }
-
-@@@
 
 
 ## A More Complex Example
@@ -415,8 +407,8 @@ problematic, so passing an @scala[`ActorRef[PublishSessionMessage]`]@java[`Actor
 #### AbstractMatchingBehavior API
 
 The `AbstractBehavior` API makes use of a builder on receipt of the first message by the actor.  The `Receive` built
-by this builder performs `instanceof` checks and casts "behind the scenes".  Pattern-matching features introduced in Java
-17 and refined in subsequent versions improve the ergonomics of expressing this logic directly in code.  Users of other
+by this builder performs `instanceof` checks and casts "behind the scenes".  Pattern matching for `instanceof`
+(Java 16+) and pattern matching for `switch` (Java 21+) improve the ergonomics of expressing this logic directly in code.  Users of other
 JVM languages (such as Kotlin) may also prefer to not use a builder while using the Java DSL (note that the Scala DSL's
 `AbstractBehavior` does not make use of builders).
 

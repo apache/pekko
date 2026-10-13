@@ -19,40 +19,49 @@ import java.security.cert.CertificateException
 import java.util.concurrent.TimeoutException
 import javax.net.ssl._
 
-import scala.collection.immutable
 import scala.concurrent.Await
-import scala.concurrent.Future
+import scala.concurrent.{ Future, Promise }
 import scala.concurrent.duration._
-import scala.util.Random
+import scala.util.{ Failure, Random, Success }
 
 import org.apache.pekko
-import pekko.NotUsed
+import pekko.{ Done, NotUsed }
 import pekko.pattern.{ after => later }
 import pekko.stream._
 import pekko.stream.TLSProtocol._
 import pekko.stream.impl.fusing.GraphStages.SimpleLinearGraphStage
+import pekko.stream.impl.io.{ TlsGraphStage, TlsModule }
 import pekko.stream.scaladsl._
 import pekko.stream.stage._
 import pekko.stream.testkit._
 import pekko.testkit.TestDuration
 import pekko.testkit.WithLogCapturing
-import pekko.util.{ ByteString, JavaVersion }
+import pekko.util.ByteString
 
 object TlsSpec {
 
   val rnd = new Random
 
-  val TLS12Ciphers: Set[String] = Set("TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA", "TLS_RSA_WITH_AES_128_CBC_SHA")
+  // Use forward-secrecy enabled cipher suites that are supported in Java 17+
+  // TLS_RSA_* cipher suites have been disabled by default in Java 17+
+  val TLS12Ciphers: Set[String] = Set(
+    "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256",
+    "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384")
   val TLS13Ciphers: Set[String] = Set("TLS_AES_128_GCM_SHA256", "TLS_AES_256_GCM_SHA384")
 
   def initWithTrust(trustPath: String, protocol: String): SSLContext = {
     val password = "changeme"
 
+    // KeyStore.load does not close the stream it is given
     val keyStore = KeyStore.getInstance(KeyStore.getDefaultType)
-    keyStore.load(getClass.getResourceAsStream("/keystore"), password.toCharArray)
+    val keyStoreStream = getClass.getResourceAsStream("/keystore")
+    try keyStore.load(keyStoreStream, password.toCharArray)
+    finally if (keyStoreStream ne null) keyStoreStream.close()
 
     val trustStore = KeyStore.getInstance(KeyStore.getDefaultType)
-    trustStore.load(getClass.getResourceAsStream(trustPath), password.toCharArray)
+    val trustStoreStream = getClass.getResourceAsStream(trustPath)
+    try trustStore.load(trustStoreStream, password.toCharArray)
+    finally if (trustStoreStream ne null) trustStoreStream.close()
 
     val keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm)
     keyManagerFactory.init(keyStore, password.toCharArray)
@@ -107,12 +116,34 @@ object TlsSpec {
     """
 }
 
-class TlsSpec extends StreamSpec(TlsSpec.configOverrides) with WithLogCapturing {
+class TlsSpec extends AbstractTlsSpec(useLegacyActor = true)
+class TlsGraphStageSpec extends AbstractTlsSpec(useLegacyActor = false)
+
+abstract class AbstractTlsSpec(useLegacyActor: Boolean)
+    extends StreamSpec(TlsSpec.configOverrides)
+    with WithLogCapturing {
   import GraphDSL.Implicits._
   import TlsSpec._
   import system.dispatcher
 
-  "SslTls" must {
+  /**
+   * Build a TLS BidiFlow without going through the global TLS engine setting so
+   * each subclass can independently exercise the legacy actor path or the GraphStage path
+   * within the same JVM.
+   */
+  protected def tlsBidi(
+      createSSLEngine: () => SSLEngine,
+      verifySession: SSLSession => scala.util.Try[Unit] = _ => Success(()),
+      closing: TLSClosing): BidiFlow[SslTlsOutbound, ByteString, ByteString, SslTlsInbound, NotUsed] =
+    if (useLegacyActor)
+      BidiFlow.fromGraph(
+        TlsModule(Attributes.none, () => createSSLEngine(), verifySession, closing))
+    else
+      BidiFlow
+        .fromGraph(new TlsGraphStage(createSSLEngine, verifySession, closing))
+        .withAttributes(TlsGraphStage.StreamTlsAttributes)
+
+  s"SslTls (${if (useLegacyActor) "legacy actor path" else "GraphStage path"})" must {
     "work for TLSv1.2" must { workFor("TLSv1.2", TLS12Ciphers) }
 
     "work for TLSv1.3" must { workFor("TLSv1.3", TLS13Ciphers) }
@@ -159,13 +190,13 @@ class TlsSpec extends StreamSpec(TlsSpec.configOverrides) with WithLogCapturing 
       }
 
       def clientTls(closing: TLSClosing) =
-        TLS(() => createSSLEngine(sslContext, Client), closing)
+        tlsBidi(() => createSSLEngine(sslContext, Client), closing = closing)
 
       def badClientTls(closing: TLSClosing) =
-        TLS(() => createSSLEngine(initWithTrust("/badtruststore", protocol), Client), closing)
+        tlsBidi(() => createSSLEngine(initWithTrust("/badtruststore", protocol), Client), closing = closing)
 
       def serverTls(closing: TLSClosing) =
-        TLS(() => createSSLEngine(sslContext, Server), closing)
+        tlsBidi(() => createSSLEngine(sslContext, Server), closing = closing)
 
       trait Named {
         def name: String =
@@ -251,7 +282,7 @@ class TlsSpec extends StreamSpec(TlsSpec.configOverrides) with WithLogCapturing 
         def leftClosing: TLSClosing = IgnoreComplete
         def rightClosing: TLSClosing = IgnoreComplete
 
-        def inputs: immutable.Seq[SslTlsOutbound]
+        def inputs: Seq[SslTlsOutbound]
         def output: ByteString
 
         protected def send(str: String) = SendBytes(ByteString(str))
@@ -293,7 +324,7 @@ class TlsSpec extends StreamSpec(TlsSpec.configOverrides) with WithLogCapturing 
       }
 
       object CompletedImmediately extends PayloadScenario {
-        override def inputs: immutable.Seq[SslTlsOutbound] = Nil
+        override def inputs: Seq[SslTlsOutbound] = Nil
         override def output = ByteString.empty
 
         override def leftClosing: TLSClosing = EagerClose
@@ -377,31 +408,20 @@ class TlsSpec extends StreamSpec(TlsSpec.configOverrides) with WithLogCapturing 
         }
       }
 
-      object SessionRenegotiationFirstOne extends PayloadScenario {
-        override def flow = logCipherSuite
-        def inputs = NegotiateNewSession.withCipherSuites("TLS_RSA_WITH_AES_128_CBC_SHA") :: send("hello") :: Nil
-        def output = ByteString("TLS_RSA_WITH_AES_128_CBC_SHAhello")
-      }
-
       object SessionRenegotiationFirstTwo extends PayloadScenario {
         override def flow = logCipherSuite
-        def inputs = NegotiateNewSession.withCipherSuites("TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA") :: send("hello") :: Nil
-        def output = ByteString("TLS_ECDHE_RSA_WITH_AES_128_CBC_SHAhello")
+        def inputs = NegotiateNewSession.withCipherSuites("TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256") :: send("hello") ::
+          Nil
+        def output = ByteString("TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256hello")
       }
 
       val renegotiationScenarios = if (protocol == "TLSv1.2") {
-        if (JavaVersion.majorVersion <= 21)
-          Seq(
-            SessionRenegotiationBySender,
-            SessionRenegotiationByReceiver,
-            SessionRenegotiationFirstOne,
-            SessionRenegotiationFirstTwo)
-        else
-          // skip SessionRenegotiationFirstOne as it uses a weak cipher suite and the test will fail
-          Seq(
-            SessionRenegotiationBySender,
-            SessionRenegotiationByReceiver,
-            SessionRenegotiationFirstTwo)
+        // skip SessionRenegotiationFirstOne as it uses TLS_RSA_WITH_AES_128_CBC_SHA
+        // which is a weak cipher suite that is disabled by default in Java 17+
+        Seq(
+          SessionRenegotiationBySender,
+          SessionRenegotiationByReceiver,
+          SessionRenegotiationFirstTwo)
       } else
         // TLSv1.3 doesn't support renegotiation
         Nil
@@ -447,11 +467,12 @@ class TlsSpec extends StreamSpec(TlsSpec.configOverrides) with WithLogCapturing 
               .collect { case SessionBytes(_, b) => b }
               .scan(ByteString.empty)(_ ++ _)
               .filter(_.nonEmpty)
-              .via(new Timeout(10.seconds))
+              .via(new Timeout(15.seconds.dilated))
               .dropWhile(_.size < scenario.output.size)
               .runWith(Sink.headOption)
 
-          Await.result(output, 12.seconds).getOrElse(ByteString.empty).utf8String should be(scenario.output.utf8String)
+          Await.result(output, 17.seconds.dilated).getOrElse(ByteString.empty).utf8String should be(
+            scenario.output.utf8String)
 
           commPattern.cleanup()
         }
@@ -484,6 +505,30 @@ class TlsSpec extends StreamSpec(TlsSpec.configOverrides) with WithLogCapturing 
 
         val clientErrText = Await.result(clientErr, 1.second).getMessage
         clientErrText should include("unable to find valid certification path to requested target")
+      }
+
+      "abort the transport when session verification fails" in {
+        val verificationFailure = new SSLException("session verification failed")
+        val rejectingClientTls = tlsBidi(
+          () => createSSLEngine(sslContext, Client),
+          verifySession = _ => Failure(verificationFailure),
+          closing = IgnoreBoth)
+        val clientToServerDone = Promise[Done]()
+        val clientToServer = Flow[ByteString].watchTermination { (_, done) =>
+          done.onComplete(clientToServerDone.tryComplete)
+          NotUsed
+        }
+        val transport = BidiFlow.fromFlows(clientToServer, Flow[ByteString])
+        val serverApplication: Flow[SslTlsInbound, SslTlsOutbound, NotUsed] =
+          Flow.fromSinkAndSource(Sink.ignore, Source.maybe[SslTlsOutbound])
+
+        Source
+          .maybe[SslTlsOutbound]
+          .via(rejectingClientTls.atop(transport).atop(serverTls(IgnoreBoth).reversed).join(serverApplication))
+          .runWith(Sink.ignore)
+
+        val failure = intercept[SSLException](Await.result(clientToServerDone.future, 3.seconds.dilated))
+        (failure should be).theSameInstanceAs(verificationFailure)
       }
 
       "reliably cancel subscriptions when TransportIn fails early" in {
@@ -573,9 +618,9 @@ class TlsSpec extends StreamSpec(TlsSpec.configOverrides) with WithLogCapturing 
             case SessionTruncated   => SendBytes(ByteString.empty)
             case SessionBytes(_, b) => SendBytes(b)
           }
-          val clientTls = TLS(
+          val clientTls = tlsBidi(
             () => createSSLEngine2(sslContext, Client, hostnameVerification = true, hostInfo = Some((hostName, 80))),
-            EagerClose)
+            closing = EagerClose)
 
           val flow = clientTls.atop(serverTls(EagerClose).reversed).join(rhs)
 

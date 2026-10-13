@@ -15,12 +15,13 @@ package docs.extension
 
 import java.util.concurrent.atomic.AtomicLong
 
-import org.apache.pekko.actor.Actor
-import org.apache.pekko.actor.ClassicActorSystemProvider
-import org.apache.pekko.testkit.PekkoSpec
+import org.apache.pekko
+import pekko.actor.Actor
+import pekko.actor.ClassicActorSystemProvider
+import pekko.testkit.PekkoSpec
 
 //#extension
-import org.apache.pekko.actor.Extension
+import pekko.actor.Extension
 
 class CountExtensionImpl extends Extension {
   // Since this Extension is a shared instance
@@ -33,7 +34,6 @@ class CountExtensionImpl extends Extension {
 //#extension
 
 //#extensionid
-import org.apache.pekko
 import pekko.actor.ActorSystem
 import pekko.actor.ExtensionId
 import pekko.actor.ExtensionIdProvider

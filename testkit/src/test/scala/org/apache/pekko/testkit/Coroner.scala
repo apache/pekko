@@ -128,7 +128,7 @@ object Coroner {
         watchedHandle.finished()
       }
     }
-    new Thread(new Runnable { def run = triggerReportIfOverdue(duration) }, "Coroner").start()
+    new Thread(() => triggerReportIfOverdue(duration), "Coroner").start()
     watchedHandle.waitForStart()
     watchedHandle
   }

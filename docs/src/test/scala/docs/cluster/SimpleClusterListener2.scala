@@ -13,9 +13,10 @@
 
 package docs.cluster
 
-import org.apache.pekko.actor.{ Actor, ActorLogging }
-import org.apache.pekko.cluster.Cluster
-import org.apache.pekko.cluster.ClusterEvent._
+import org.apache.pekko
+import pekko.actor.{ Actor, ActorLogging }
+import pekko.cluster.Cluster
+import pekko.cluster.ClusterEvent._
 
 class SimpleClusterListener2 extends Actor with ActorLogging {
 

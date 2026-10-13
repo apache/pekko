@@ -13,7 +13,7 @@
 
 package jdocs.stream.operators.sourceorflow;
 
-import java.util.Arrays;
+import java.util.List;
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.actor.typed.ActorSystem;
 import org.apache.pekko.stream.javadsl.Source;
@@ -24,8 +24,8 @@ public class MergeLatest {
 
   public static void example() {
     // #mergeLatest
-    Source<Integer, NotUsed> prices = Source.from(Arrays.asList(100, 101, 99, 103));
-    Source<Integer, NotUsed> quantities = Source.from(Arrays.asList(1, 3, 4, 2));
+    Source<Integer, NotUsed> prices = Source.from(List.of(100, 101, 99, 103));
+    Source<Integer, NotUsed> quantities = Source.from(List.of(1, 3, 4, 2));
 
     prices
         .mergeLatest(quantities, true)

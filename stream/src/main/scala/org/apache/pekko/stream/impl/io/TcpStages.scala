@@ -268,8 +268,8 @@ private[stream] object ConnectionSourceStage {
 
     @nowarn("msg=deprecated")
     private val writeBufferSize = inheritedAttributes
-      .get[TcpAttributes.TcpWriteBufferSize](
-        TcpAttributes.TcpWriteBufferSize(eagerMaterializer.settings.ioSettings.tcpWriteBufferSize))
+      .get[TcpAttributes.TcpWriteBufferSize](TcpAttributes.TcpWriteBufferSize(
+        eagerMaterializer.settings.tcpWriteBufferSize))
       .size
 
     private var writeBuffer = ByteString.empty
@@ -280,7 +280,7 @@ private[stream] object ConnectionSourceStage {
     private var connectionClosePending = false
 
     @nowarn("msg=deprecated")
-    private val coalesceWrites = eagerMaterializer.settings.ioSettings.coalesceWrites
+    private val coalesceWrites = eagerMaterializer.settings.coalesceWrites
     private def coalesceWritesDisabled = coalesceWrites == 0
     private var writeDelayCountDown = 0
     private var previousWriteBufferSize = 0
@@ -322,7 +322,12 @@ private[stream] object ConnectionSourceStage {
           stageActor.watch(connection)
           connection ! Register(self, keepOpenOnPeerClosed = true, useResumeWriting = false)
           if (isAvailable(bytesOut)) connection ! ResumeReading
-          if (isClosed(bytesIn)) connection ! ConfirmedClose
+          if (isClosed(bytesIn))
+            // Upstream finished before the connection was established. Honor the half-close
+            // setting: ConfirmedClose only closes the write side (half-close), while Close
+            // tears down the whole connection. Always sending ConfirmedClose here would keep
+            // the read side open even when half-close is disabled (issue #3255).
+            connection ! (if (role.halfClose) ConfirmedClose else Close)
           else pull(bytesIn)
         case other => log.warning("Unexpected message to connecting TcpStage: [{}]", other.getClass)
       }
@@ -359,7 +364,8 @@ private[stream] object ConnectionSourceStage {
           // round trip to the connection actor, or if reaching the configured maximum number of round trips, or
           // if writeBuffer capacity has been exceeded.
           writeDelayCountDown -= 1
-          if (writeDelayCountDown == 0 || previousWriteBufferSize == writeBuffer.length || writeBuffer.length >= writeBufferSize)
+          if (writeDelayCountDown == 0 || previousWriteBufferSize == writeBuffer.length ||
+            writeBuffer.length >= writeBufferSize)
             sendWriteBuffer()
           else
             sendWriteDelay()
@@ -395,23 +401,26 @@ private[stream] object ConnectionSourceStage {
     }
 
     private def closeConnectionUpstreamFinished(): Unit = {
-      if (isClosed(bytesOut) || !role.halfClose) {
+      if (connection eq null) {
+        // This is an outbound connection for which upstream finished before the connection
+        // was even established. The close is deferred until the connection is established;
+        // the `connecting` handler inspects `isClosed(bytesIn)` and closes the connection
+        // honoring the half-close setting. Dereferencing `connection` here would otherwise
+        // throw a NullPointerException when half-close is disabled (issue #3255).
+      } else if (isClosed(bytesOut) || !role.halfClose) {
         // Reading has stopped before, either because of cancel, or PeerClosed, so just Close now
         // (or half-close is turned off)
         if (writeInProgress)
           connectionClosePending = true // will continue when WriteAck is received and writeBuffer drained
         else
           connection ! Close
-      } else if (connection ne null) {
+      } else {
         // We still read, so we only close the write side
         if (writeInProgress)
           connectionClosePending = true // will continue when WriteAck is received and writeBuffer drained
         else
           connection ! ConfirmedClose
       }
-      // Otherwise, this is an outbound connection with half-close enabled for which upstream finished
-      // before the connection was even established.
-      // In that case we half-close the connection as soon as it's connected
     }
 
     private def closeConnectionDownstreamFinished(): Unit = {

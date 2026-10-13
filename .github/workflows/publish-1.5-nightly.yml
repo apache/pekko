@@ -1,0 +1,72 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+# Based on Apache Arrow's java-nightly workflow
+# https://github.com/apache/arrow/blob/master/.github/workflows/java_nightly.yml
+name: Publish nightly 1.5 snapshots
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  publish-nightly:
+    name: Publish 1.5 nightly
+    runs-on: ubuntu-22.04
+    if: github.repository == 'apache/pekko'
+    env:
+      DEVELOCITY_ACCESS_KEY: ${{ secrets.DEVELOCITY_ACCESS_KEY }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+          persist-credentials: false
+          ref: 1.5.x
+
+      - name: Setup Java 11
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: 11
+
+      - name: Install sbt
+        uses: sbt/setup-sbt@6158cb0903b8ceeae04f830055f3155e1b6a5ad7 # v1.5.11
+
+      - name: Cache Coursier cache
+        uses: coursier/cache-action@95e5b1029b6b86e7bac033ee44a0697d8a527d2d # v8.1.1
+
+      - name: Install Graphviz
+        run: |-
+          sudo apt-get install graphviz
+
+      - name: Report MIMA incompatibility issues
+        run: |-
+          sbt +mimaReportBinaryIssues
+
+      - name: Publish to Apache Maven repo
+        env:
+          NEXUS_USER: ${{ secrets.NEXUS_USER }}
+          NEXUS_PW: ${{ secrets.NEXUS_PW }}
+        run: sbt -Dsbt.repository.publish.attempts=10 +publish
+
+      - name: Build Documentation
+        run: |-
+          sbt -Dpekko.genjavadoc.enabled=true docs/paradox unidoc

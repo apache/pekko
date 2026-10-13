@@ -14,7 +14,7 @@
 package org.apache.pekko.stream.javadsl;
 
 import static org.apache.pekko.Done.done;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.TimeUnit;
@@ -23,19 +23,19 @@ import org.apache.pekko.stream.*;
 import org.apache.pekko.stream.testkit.TestPublisher;
 import org.apache.pekko.stream.testkit.TestSubscriber;
 import org.apache.pekko.stream.testkit.Utils;
-import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
+import org.apache.pekko.testkit.PekkoJUnitJupiterActorSystemResource;
 import org.apache.pekko.testkit.PekkoSpec;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
-public class KillSwitchTest extends StreamTest {
+public class KillSwitchTest extends StreamTestJupiter {
   public KillSwitchTest() {
     super(actorSystemResource);
   }
 
-  @ClassRule
-  public static PekkoJUnitActorSystemResource actorSystemResource =
-      new PekkoJUnitActorSystemResource("KillSwitchTest", PekkoSpec.testConf());
+  @RegisterExtension
+  static PekkoJUnitJupiterActorSystemResource actorSystemResource =
+      new PekkoJUnitJupiterActorSystemResource("KillSwitchTest", PekkoSpec.testConf());
 
   @Test
   public void beAbleToUseKillSwitch() throws Exception {

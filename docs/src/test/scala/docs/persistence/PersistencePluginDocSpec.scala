@@ -13,18 +13,17 @@
 
 package docs.persistence
 
-import scala.collection.immutable
-import org.apache.pekko.actor.ActorSystem
-import org.apache.pekko.testkit.TestKit
+import scala.concurrent.Future
+import scala.concurrent.duration._
+import scala.util.Try
+
 import com.typesafe.config._
+import org.apache.pekko
+import pekko.actor.ActorSystem
+import pekko.testkit.TestKit
 import org.scalatest.wordspec.AnyWordSpec
 
-import scala.concurrent.Future
-import scala.util.Try
-import scala.concurrent.duration._
-
 //#plugin-imports
-import org.apache.pekko
 import pekko.persistence._
 import pekko.persistence.journal._
 import pekko.persistence.snapshot._
@@ -116,8 +115,8 @@ class PersistencePluginDocSpec extends AnyWordSpec {
 }
 
 object SharedLeveldbPluginDocSpec {
-  import org.apache.pekko.actor._
-  import org.apache.pekko.persistence.journal.leveldb.SharedLeveldbJournal
+  import pekko.actor._
+  import pekko.persistence.journal.leveldb.SharedLeveldbJournal
 
   val config =
     """
@@ -153,9 +152,9 @@ trait SharedLeveldbPluginDocSpec {
   val system: ActorSystem
 
   {
-    import org.apache.pekko.actor._
+    import pekko.actor._
     // #shared-store-creation
-    import org.apache.pekko.persistence.journal.leveldb.SharedLeveldbStore
+    import pekko.persistence.journal.leveldb.SharedLeveldbStore
 
     val store = system.actorOf(Props[SharedLeveldbStore](), "store")
     // #shared-store-creation
@@ -164,7 +163,7 @@ trait SharedLeveldbPluginDocSpec {
 
 class MyJournal extends AsyncWriteJournal {
   // #sync-journal-plugin-api
-  def asyncWriteMessages(messages: immutable.Seq[AtomicWrite]): Future[immutable.Seq[Try[Unit]]] =
+  def asyncWriteMessages(messages: Seq[AtomicWrite]): Future[Seq[Try[Unit]]] =
     Future.fromTry(Try {
       // blocking call here
       ???
@@ -192,7 +191,7 @@ class MySnapshotStore extends SnapshotStore {
 
 object PersistenceTCKDoc {
   object example1 {
-    import org.apache.pekko.persistence.journal.JournalSpec
+    import pekko.persistence.journal.JournalSpec
 
     // #journal-tck-scala
     class MyJournalSpec
@@ -208,7 +207,7 @@ object PersistenceTCKDoc {
     // #journal-tck-scala
   }
   object example2 {
-    import org.apache.pekko.persistence.snapshot.SnapshotStoreSpec
+    import pekko.persistence.snapshot.SnapshotStoreSpec
 
     // #snapshot-store-tck-scala
     class MySnapshotStoreSpec
@@ -222,10 +221,31 @@ object PersistenceTCKDoc {
     }
     // #snapshot-store-tck-scala
   }
+  object example2b {
+    import pekko.persistence.state.DurableStateStoreSpec
+
+    // #durable-state-tck-scala
+    class MyDurableStateStoreSpec
+        extends DurableStateStoreSpec(
+          config = ConfigFactory.parseString("""
+        pekko.persistence.state.plugin = "my.durable-state.plugin"
+        """)) {
+
+      override def supportsDeleteWithRevisionCheck: CapabilityFlag =
+        true // or CapabilityFlag.on
+
+      override def supportsUpsertWithRevisionCheck: CapabilityFlag =
+        true // or CapabilityFlag.on
+
+      override def supportsSerialization: CapabilityFlag =
+        true // or CapabilityFlag.on
+    }
+    // #durable-state-tck-scala
+  }
   object example3 {
     import java.io.File
 
-    import org.apache.pekko.persistence.journal.JournalSpec
+    import pekko.persistence.journal.JournalSpec
     import org.iq80.leveldb.util.FileUtils
 
     // #journal-tck-before-after-scala

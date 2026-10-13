@@ -26,6 +26,7 @@ import com.google.common.jimfs.{ Configuration, Jimfs }
 
 import org.apache.pekko
 import pekko.stream._
+import pekko.stream.SystemMaterializer
 import pekko.stream.impl.{ PhasedFusingActorMaterializer, StreamSupervisor }
 import pekko.stream.impl.StreamSupervisor.Children
 import pekko.stream.scaladsl.{ FileIO, Keep, Source }
@@ -38,8 +39,6 @@ import org.scalatest.concurrent.ScalaFutures
 @nowarn
 class FileSinkSpec extends StreamSpec(UnboundedMailboxConfig) with ScalaFutures {
 
-  val settings = ActorMaterializerSettings(system).withDispatcher("pekko.actor.default-dispatcher")
-  implicit val materializer: Materializer = ActorMaterializer(settings)
   val fs = Jimfs.newFileSystem("FileSinkSpec", Configuration.unix())
 
   val TestLines = {
@@ -171,7 +170,7 @@ class FileSinkSpec extends StreamSpec(UnboundedMailboxConfig) with ScalaFutures 
       targetFile { f =>
         val forever = Source.maybe.toMat(FileIO.toPath(f))(Keep.left).run()
         try {
-          materializer
+          SystemMaterializer(system).materializer
             .asInstanceOf[PhasedFusingActorMaterializer]
             .supervisor
             .tell(StreamSupervisor.GetChildren, testActor)
@@ -195,7 +194,7 @@ class FileSinkSpec extends StreamSpec(UnboundedMailboxConfig) with ScalaFutures 
             Keep.left)
           .run()
         try {
-          materializer
+          SystemMaterializer(system).materializer
             .asInstanceOf[PhasedFusingActorMaterializer]
             .supervisor
             .tell(StreamSupervisor.GetChildren, testActor)

@@ -452,11 +452,11 @@ class InteractionPatternsSpec extends ScalaTestWithActorTestKit with AnyWordSpec
     }
     // #per-session-child
 
-    val requestor = createTestProbe[Home.ReadyToLeaveHome]()
+    val requester = createTestProbe[Home.ReadyToLeaveHome]()
 
     val home = spawn(Home(), "home")
-    home ! Home.LeaveHome("Bobby", requestor.ref)
-    requestor.expectMessage(Home.ReadyToLeaveHome("Bobby", Keys(), Wallet()))
+    home ! Home.LeaveHome("Bobby", requester.ref)
+    requester.expectMessage(Home.ReadyToLeaveHome("Bobby", Keys(), Wallet()))
   }
 
   "contain a sample for ask from outside the actor system" in {
@@ -495,7 +495,7 @@ class InteractionPatternsSpec extends ScalaTestWithActorTestKit with AnyWordSpec
     // the ask is failed with a TimeoutException
     implicit val timeout: Timeout = 3.seconds
     // implicit ActorSystem in scope
-    implicit val system: ActorSystem[_] = theSystem
+    implicit val system: ActorSystem[?] = theSystem
 
     val result: Future[CookieFabric.Reply] = cookieFabric.ask(ref => CookieFabric.GiveMeCookies(3, ref))
 
@@ -560,7 +560,7 @@ class InteractionPatternsSpec extends ScalaTestWithActorTestKit with AnyWordSpec
     // the ask is failed with a TimeoutException
     implicit val timeout: Timeout = 3.seconds
     // implicit ActorSystem in scope
-    implicit val system: ActorSystem[_] = theSystem
+    implicit val system: ActorSystem[?] = theSystem
 
     val result: Future[CookieFabric.Cookies] = cookieFabric.askWithStatus(ref => CookieFabric.GiveMeCookies(3, ref))
 
@@ -635,7 +635,7 @@ class InteractionPatternsSpec extends ScalaTestWithActorTestKit with AnyWordSpec
               }
 
             case WrappedUpdateResult(result, replyTo) =>
-              // send result to original requestor
+              // send result to original requester
               replyTo ! result
               // decrease operationsInProgress counter
               next(dataAccess, operationsInProgress - 1)

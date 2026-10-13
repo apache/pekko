@@ -14,27 +14,24 @@
 package org.apache.pekko.actor.typed.javadsl;
 
 import static org.apache.pekko.actor.typed.javadsl.Behaviors.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 import java.time.Duration;
 import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.actor.SupervisorStrategy;
-import org.apache.pekko.actor.testkit.typed.javadsl.LogCapturing;
 import org.apache.pekko.actor.typed.ActorRef;
 import org.apache.pekko.actor.typed.Behavior;
 import org.apache.pekko.actor.typed.Signal;
 import org.apache.pekko.actor.typed.Terminated;
 import org.apache.pekko.actor.typed.internal.adapter.SchedulerAdapter;
-import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
+import org.apache.pekko.testkit.PekkoJUnitJupiterActorSystemResource;
 import org.apache.pekko.testkit.PekkoSpec;
 import org.apache.pekko.testkit.javadsl.TestKit;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
-import org.scalatestplus.junit.JUnitSuite;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
-public class AdapterTest extends JUnitSuite {
+public class AdapterTest {
 
   static org.apache.pekko.actor.Props classic1() {
     return org.apache.pekko.actor.Props.create(Classic1.class, () -> new Classic1());
@@ -254,11 +251,9 @@ public class AdapterTest extends JUnitSuite {
     return Adapter.props(() -> typed2());
   }
 
-  @ClassRule
-  public static PekkoJUnitActorSystemResource actorSystemResource =
-      new PekkoJUnitActorSystemResource("ActorSelectionTest", PekkoSpec.testConf());
-
-  @Rule public final LogCapturing logCapturing = new LogCapturing();
+  @RegisterExtension
+  static PekkoJUnitJupiterActorSystemResource actorSystemResource =
+      new PekkoJUnitJupiterActorSystemResource("ActorSelectionTest", PekkoSpec.testConf());
 
   private final ActorSystem system = actorSystemResource.getSystem();
 

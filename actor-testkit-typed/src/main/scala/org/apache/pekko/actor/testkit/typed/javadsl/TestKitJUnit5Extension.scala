@@ -20,14 +20,16 @@ package org.apache.pekko.actor.testkit.typed.javadsl
 import org.junit.jupiter.api.extension.{ AfterAllCallback, BeforeTestExecutionCallback, ExtensionContext }
 import org.junit.platform.commons.support.AnnotationSupport
 
-import org.apache.pekko.actor.testkit.typed.annotations.JUnit5TestKit
+import org.apache.pekko
+import pekko.actor.testkit.typed.annotations.JUnit5TestKit
 
+@deprecated("Use TestKitJUnitJupiterExtension instead", "2.0.0")
 final class TestKitJUnit5Extension() extends AfterAllCallback with BeforeTestExecutionCallback {
 
   var testKit: Option[ActorTestKit] = None
 
   /**
-   * Get a reference to the field annotated with `@JUnit5Testkit` [[JUnit5TestKit]]
+   * Get a reference to the field annotated with `@JUnit5TestKit`
    */
   override def beforeTestExecution(context: ExtensionContext): Unit = {
     val testInstance: Option[AnyRef] =

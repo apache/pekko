@@ -37,6 +37,8 @@ import pekko.persistence.typed.state.scaladsl._
 
 import org.slf4j.LoggerFactory
 
+import com.typesafe.config.Config
+
 @InternalApi
 private[pekko] object DurableStateBehaviorImpl {
 
@@ -46,10 +48,23 @@ private[pekko] object DurableStateBehaviorImpl {
   final case class GetPersistenceId(replyTo: ActorRef[PersistenceId]) extends Signal
 
   /**
-   * Used by DurableStateBehaviorTestKit to retrieve the state.
+   * Used by DurableStateBehaviorTestKit to retrieve the `persistenceId` without invoking user signal handlers.
+   */
+  final case class GetPersistenceIdForTestKit(replyTo: ActorRef[PersistenceId]) extends InternalProtocol
+
+  /**
+   * Used to retrieve a non-null state.
    * Can't be a Signal because those are not stashed.
    */
   final case class GetState[State](replyTo: ActorRef[State]) extends InternalProtocol
+
+  /**
+   * Used by DurableStateBehaviorTestKit to retrieve the state.
+   * The response envelope supports a `null` state.
+   */
+  final case class GetStateWithReply[State](replyTo: ActorRef[GetStateReply[State]]) extends InternalProtocol
+
+  final case class GetStateReply[State](currentState: State)
 
 }
 
@@ -58,8 +73,9 @@ private[pekko] final case class DurableStateBehaviorImpl[Command, State](
     persistenceId: PersistenceId,
     emptyState: State,
     commandHandler: DurableStateBehavior.CommandHandler[Command, State],
-    loggerClass: Class[_],
+    loggerClass: Class[?],
     durableStateStorePluginId: Option[String] = None,
+    durableStateStorePluginConfig: Option[Config] = None,
     tag: String = "",
     snapshotAdapter: SnapshotAdapter[State] = NoOpSnapshotAdapter.instance[State],
     supervisionStrategy: SupervisorStrategy = SupervisorStrategy.stop,
@@ -76,11 +92,15 @@ private[pekko] final case class DurableStateBehaviorImpl[Command, State](
   override def apply(context: typed.TypedActorContext[Command]): Behavior[Command] = {
     val ctx = context.asScala
     val hasCustomLoggerName = ctx match {
-      case internalCtx: ActorContextImpl[_] => internalCtx.hasCustomLoggerName
+      case internalCtx: ActorContextImpl[?] => internalCtx.hasCustomLoggerName
       case _                                => false
     }
     if (!hasCustomLoggerName) ctx.setLoggerName(loggerClass)
-    val settings = DurableStateSettings(ctx.system, durableStateStorePluginId.getOrElse(""), customStashCapacity)
+    val settings = DurableStateSettings(
+      ctx.system,
+      durableStateStorePluginId.getOrElse(""),
+      durableStateStorePluginConfig,
+      customStashCapacity)
 
     // stashState outside supervise because StashState should survive restarts due to persist failures
     val stashState = new StashState(ctx.asInstanceOf[ActorContext[InternalProtocol]], settings)
@@ -160,7 +180,7 @@ private[pekko] final case class DurableStateBehaviorImpl[Command, State](
   }
 
   @InternalStableApi
-  private[pekko] def initialize(@nowarn("msg=never used") context: ActorContext[_]): Unit = ()
+  private[pekko] def initialize(@nowarn("msg=never used") context: ActorContext[?]): Unit = ()
 
   override def receiveSignal(handler: PartialFunction[(State, Signal), Unit]): DurableStateBehavior[Command, State] =
     copy(signalHandler = handler)
@@ -169,6 +189,9 @@ private[pekko] final case class DurableStateBehaviorImpl[Command, State](
     require(id != null, "DurableStateBehavior plugin id must not be null; use empty string for 'default' state store")
     copy(durableStateStorePluginId = if (id != "") Some(id) else None)
   }
+
+  override def withDurableStateStorePluginConfig(config: Option[Config]): DurableStateBehavior[Command, State] =
+    copy(durableStateStorePluginConfig = config)
 
   override def withTag(tag: String): DurableStateBehavior[Command, State] =
     copy(tag = tag)

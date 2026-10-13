@@ -13,8 +13,6 @@
 
 package org.apache.pekko.persistence.query.typed.scaladsl
 
-import scala.collection.immutable
-
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.annotation.ApiMayChange
@@ -28,6 +26,8 @@ import pekko.stream.scaladsl.Source
  *
  * `EventsBySliceQuery` that is using a timestamp based offset should also implement [[EventTimestampQuery]] and
  * [[LoadEventQuery]].
+ *
+ * See also [[EventsBySliceFirehoseQuery]].
  *
  * API May Change
  */
@@ -68,6 +68,6 @@ trait EventsBySliceQuery extends ReadJournal {
 
   def sliceForPersistenceId(persistenceId: String): Int
 
-  def sliceRanges(numberOfRanges: Int): immutable.Seq[Range]
+  def sliceRanges(numberOfRanges: Int): Seq[Range]
 
 }

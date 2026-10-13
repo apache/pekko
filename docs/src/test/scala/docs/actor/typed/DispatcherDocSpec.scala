@@ -13,7 +13,8 @@
 
 package docs.actor.typed
 
-import org.apache.pekko.actor.typed.scaladsl.ActorContext
+import org.apache.pekko
+import pekko.actor.typed.scaladsl.ActorContext
 
 object DispatcherDocSpec {
 

@@ -38,21 +38,9 @@ interface ReplicatorDocSample {
       INSTANCE
     }
 
-    public static class GetValue implements Command {
-      public final ActorRef<Integer> replyTo;
+    public record GetValue(ActorRef<Integer> replyTo) implements Command {}
 
-      public GetValue(ActorRef<Integer> replyTo) {
-        this.replyTo = replyTo;
-      }
-    }
-
-    public static class GetCachedValue implements Command {
-      public final ActorRef<Integer> replyTo;
-
-      public GetCachedValue(ActorRef<Integer> replyTo) {
-        this.replyTo = replyTo;
-      }
-    }
+    public record GetCachedValue(ActorRef<Integer> replyTo) implements Command {}
 
     enum Unsubscribe implements Command {
       INSTANCE
@@ -60,31 +48,15 @@ interface ReplicatorDocSample {
 
     private interface InternalCommand extends Command {}
 
-    private static class InternalUpdateResponse implements InternalCommand {
-      final Replicator.UpdateResponse<GCounter> rsp;
+    private record InternalUpdateResponse(Replicator.UpdateResponse<GCounter> rsp)
+        implements InternalCommand {}
 
-      InternalUpdateResponse(Replicator.UpdateResponse<GCounter> rsp) {
-        this.rsp = rsp;
-      }
-    }
+    private record InternalGetResponse(
+        Replicator.GetResponse<GCounter> rsp, ActorRef<Integer> replyTo)
+        implements InternalCommand {}
 
-    private static class InternalGetResponse implements InternalCommand {
-      final Replicator.GetResponse<GCounter> rsp;
-      final ActorRef<Integer> replyTo;
-
-      InternalGetResponse(Replicator.GetResponse<GCounter> rsp, ActorRef<Integer> replyTo) {
-        this.rsp = rsp;
-        this.replyTo = replyTo;
-      }
-    }
-
-    private static final class InternalSubscribeResponse implements InternalCommand {
-      final Replicator.SubscribeResponse<GCounter> rsp;
-
-      InternalSubscribeResponse(Replicator.SubscribeResponse<GCounter> rsp) {
-        this.rsp = rsp;
-      }
-    }
+    private record InternalSubscribeResponse(Replicator.SubscribeResponse<GCounter> rsp)
+        implements InternalCommand {}
 
     public static Behavior<Command> create(Key<GCounter> key) {
       return Behaviors.setup(
@@ -151,13 +123,13 @@ interface ReplicatorDocSample {
     private Behavior<Command> onGetValue(GetValue cmd) {
       replicatorAdapter.askGet(
           askReplyTo -> new Replicator.Get<>(key, Replicator.readLocal(), askReplyTo),
-          rsp -> new InternalGetResponse(rsp, cmd.replyTo));
+          rsp -> new InternalGetResponse(rsp, cmd.replyTo()));
 
       return this;
     }
 
     private Behavior<Command> onGetCachedValue(GetCachedValue cmd) {
-      cmd.replyTo.tell(cachedValue);
+      cmd.replyTo().tell(cachedValue);
       return this;
     }
 
@@ -167,9 +139,9 @@ interface ReplicatorDocSample {
     }
 
     private Behavior<Command> onInternalGetResponse(InternalGetResponse msg) {
-      if (msg.rsp instanceof Replicator.GetSuccess<GCounter> rsp) {
+      if (msg.rsp() instanceof Replicator.GetSuccess<GCounter> rsp) {
         int value = rsp.get(key).getValue().intValue();
-        msg.replyTo.tell(value);
+        msg.replyTo().tell(value);
         return this;
       } else {
         // not dealing with failures
@@ -178,7 +150,7 @@ interface ReplicatorDocSample {
     }
 
     private Behavior<Command> onInternalSubscribeResponse(InternalSubscribeResponse msg) {
-      if (msg.rsp instanceof Replicator.Changed<GCounter> rsp) {
+      if (msg.rsp() instanceof Replicator.Changed<GCounter> rsp) {
         GCounter counter = rsp.get(key);
         cachedValue = counter.getValue().intValue();
         return this;

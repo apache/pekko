@@ -13,9 +13,11 @@
 
 package docs.stream
 
-import org.apache.pekko.stream.scaladsl._
-import org.apache.pekko.stream.{ DelayOverflowStrategy, KillSwitches }
-import org.apache.pekko.testkit.PekkoSpec
+import org.apache.pekko
+import pekko.stream.scaladsl._
+import pekko.stream.{ DelayOverflowStrategy, KillSwitches }
+import pekko.testkit.PekkoSpec
+
 import docs.CompileOnlySpec
 
 import scala.concurrent.Await
@@ -29,7 +31,7 @@ class KillSwitchDocSpec extends PekkoSpec with CompileOnlySpec {
 
       // format: OFF
       //#unique-shutdown
-      val countingSrc = Source(Stream.from(1)).delay(1.second, DelayOverflowStrategy.backpressure)
+      val countingSrc = Source(LazyList.from(1)).delay(1.second, DelayOverflowStrategy.backpressure)
       val lastSnk = Sink.last[Int]
 
       val (killSwitch, last) = countingSrc
@@ -50,7 +52,7 @@ class KillSwitchDocSpec extends PekkoSpec with CompileOnlySpec {
 
       // format: OFF
       //#unique-abort
-      val countingSrc = Source(Stream.from(1)).delay(1.second, DelayOverflowStrategy.backpressure)
+      val countingSrc = Source(LazyList.from(1)).delay(1.second, DelayOverflowStrategy.backpressure)
       val lastSnk = Sink.last[Int]
 
       val (killSwitch, last) = countingSrc
@@ -71,7 +73,7 @@ class KillSwitchDocSpec extends PekkoSpec with CompileOnlySpec {
     "control graph completion with shutdown" in compileOnlySpec {
       // format: OFF
       //#shared-shutdown
-      val countingSrc = Source(Stream.from(1)).delay(1.second, DelayOverflowStrategy.backpressure)
+      val countingSrc = Source(LazyList.from(1)).delay(1.second, DelayOverflowStrategy.backpressure)
       val lastSnk = Sink.last[Int]
       val sharedKillSwitch = KillSwitches.shared("my-kill-switch")
 
@@ -98,7 +100,7 @@ class KillSwitchDocSpec extends PekkoSpec with CompileOnlySpec {
 
       // format: OFF
       //#shared-abort
-      val countingSrc = Source(Stream.from(1)).delay(1.second)
+      val countingSrc = Source(LazyList.from(1)).delay(1.second)
       val lastSnk = Sink.last[Int]
       val sharedKillSwitch = KillSwitches.shared("my-kill-switch")
 

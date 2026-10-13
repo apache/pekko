@@ -55,7 +55,7 @@ class EventSourcedProducerQueueSpec
     with LogCapturing {
 
   private val pidCounter = new AtomicInteger(0)
-  private def nextPid(): PersistenceId = PersistenceId.ofUniqueId(s"pid-${pidCounter.incrementAndGet()})")
+  private def nextPid(): PersistenceId = PersistenceId.ofUniqueId(s"pid-${pidCounter.incrementAndGet()}")
 
   private val journalOperations = createTestProbe[InmemJournal.Operation]()
   system.eventStream ! EventStream.Subscribe(journalOperations.ref)

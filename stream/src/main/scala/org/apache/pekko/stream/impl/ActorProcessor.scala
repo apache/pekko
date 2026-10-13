@@ -19,45 +19,9 @@ import org.apache.pekko
 import pekko.actor._
 import pekko.annotation.InternalApi
 import pekko.event.Logging
-import pekko.stream.{ AbruptTerminationException, Attributes }
-import pekko.stream.ActorAttributes
 import pekko.stream.impl.ActorSubscriberMessage.{ OnComplete, OnError, OnNext, OnSubscribe }
 
-import org.reactivestreams.{ Processor, Subscriber, Subscription }
-
-/**
- * INTERNAL API
- */
-@InternalApi private[pekko] object ActorProcessor {
-
-  def apply[I, O](impl: ActorRef): ActorProcessor[I, O] = {
-    val p = new ActorProcessor[I, O](impl)
-    // Resolve cyclic dependency with actor. This MUST be the first message no matter what.
-    impl ! ExposedPublisher(p.asInstanceOf[ActorPublisher[Any]])
-    p
-  }
-}
-
-/**
- * INTERNAL API
- */
-@InternalApi private[pekko] class ActorProcessor[I, O](impl: ActorRef)
-    extends ActorPublisher[O](impl)
-    with Processor[I, O] {
-  override def onSubscribe(s: Subscription): Unit = {
-    ReactiveStreamsCompliance.requireNonNullSubscription(s)
-    impl ! OnSubscribe(s)
-  }
-  override def onError(t: Throwable): Unit = {
-    ReactiveStreamsCompliance.requireNonNullException(t)
-    impl ! OnError(t)
-  }
-  override def onComplete(): Unit = impl ! OnComplete
-  override def onNext(elem: I): Unit = {
-    ReactiveStreamsCompliance.requireNonNullElement(elem)
-    impl ! OnNext(elem)
-  }
-}
+import org.reactivestreams.{ Subscriber, Subscription }
 
 /**
  * INTERNAL API
@@ -258,73 +222,6 @@ import org.reactivestreams.{ Processor, Subscriber, Subscription }
       downstreamCompleted = true
       exposedPublisher.shutdown(Some(new ActorPublisher.NormalShutdownException))
       pump.pump()
-  }
-
-}
-
-private[pekko] object ActorProcessorImpl {
-  case object SubscriptionTimeout
-}
-
-/**
- * INTERNAL API
- */
-@InternalApi private[pekko] abstract class ActorProcessorImpl(attributes: Attributes)
-    extends Actor
-    with ActorLogging
-    with Pump {
-
-  private val debugLoggingEnabled = attributes.mandatoryAttribute[ActorAttributes.DebugLogging].enabled
-
-  protected val primaryInputs: Inputs = {
-    val initialInputBufferSize = attributes.mandatoryAttribute[Attributes.InputBuffer].initial
-    new BatchingInputBuffer(initialInputBufferSize, this) {
-      override def inputOnError(e: Throwable): Unit = ActorProcessorImpl.this.onError(e)
-    }
-  }
-
-  protected val primaryOutputs: Outputs = new SimpleOutputs(self, this)
-  def subTimeoutHandling: Receive
-
-  /**
-   * Subclass may override [[#activeReceive]]
-   */
-  final override def receive = new ExposedPublisherReceive(activeReceive, unhandled) {
-    override def receiveExposedPublisher(ep: ExposedPublisher): Unit = {
-      primaryOutputs.subreceive(ep)
-      context.become(activeReceive)
-    }
-  }
-
-  def activeReceive: Receive =
-    primaryInputs.subreceive.orElse[Any, Unit](primaryOutputs.subreceive).orElse(subTimeoutHandling)
-
-  protected def onError(e: Throwable): Unit = fail(e)
-
-  protected def fail(e: Throwable): Unit = {
-    if (debugLoggingEnabled)
-      log.debug("fail due to: {}", e.getMessage)
-    primaryInputs.cancel()
-    primaryOutputs.error(e)
-    context.stop(self)
-  }
-
-  override def pumpFinished(): Unit = {
-    primaryInputs.cancel()
-    primaryOutputs.complete()
-    context.stop(self)
-  }
-
-  override def pumpFailed(e: Throwable): Unit = fail(e)
-
-  override def postStop(): Unit = {
-    primaryInputs.cancel()
-    primaryOutputs.error(AbruptTerminationException(self))
-  }
-
-  override def postRestart(reason: Throwable): Unit = {
-    super.postRestart(reason)
-    throw new IllegalStateException("This actor cannot be restarted", reason)
   }
 
 }

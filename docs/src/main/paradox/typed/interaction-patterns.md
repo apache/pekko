@@ -207,7 +207,7 @@ Sometimes, you need to interact with actors from the outside of the actor system
 @scala[To do this we use `ask` (or the symbolic `?`) implicitly added to @scaladoc[ActorRef](pekko.actor.typed.ActorRef) by `org.apache.pekko.actor.typed.scaladsl.AskPattern._`
 to send a message to an actor and get a `Future[Response]` back. `ask` takes implicit @scaladoc[Timeout](pekko.util.Timeout) and @scaladoc[ActorSystem](org.apache.pekko.actor.typed.ActorSystem) parameters.]
 @java[To do this we use `org.apache.pekko.actor.typed.javadsl.AskPattern.ask` to send a message to an actor and get a 
-`CompletionState[Response]` back.]
+`CompletionStage<Response>` back.]
 
 **Example:**
 
@@ -220,9 +220,9 @@ Java
 :  @@snip [InteractionPatternsTest.java](/actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/InteractionPatternsTest.java) { #standalone-ask }
 
 Note that validation errors are also explicit in the message protocol. The `GiveMeCookies` request can reply
-with `Cookies` or `InvalidRequest`. The requestor has to decide how to handle an `InvalidRequest` reply. Sometimes
+with `Cookies` or `InvalidRequest`. The requester has to decide how to handle an `InvalidRequest` reply. Sometimes
 it should be treated as a failed @scala[@scaladoc[Future](scala.concurrent.Future)]@java[@javadoc[CompletionStage](java.util.concurrent.CompletionStage)] and for that the reply can be mapped on the
-requestor side. See also the [Generic response wrapper](#generic-response-wrapper) for replies that are either a success or an error.
+requester side. See also the [Generic response wrapper](#generic-response-wrapper) for replies that are either a success or an error.
 
 Scala
 :  @@snip [InteractionPatternsSpec.scala](/actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/InteractionPatternsSpec.scala) { #standalone-ask-fail-future }
@@ -236,7 +236,7 @@ Java
 
 **Problems:**
 
- * It is easy to accidentally close over and unsafely mutable state with the callbacks on the returned @scala[@scaladoc[Future](scala.concurrent.Future)]@java[@javadoc[CompletionStage](java.util.concurrent.CompletionStage)] as those will be executed on a different thread
+ * It is easy to accidentally close over and unsafely mutate state with the callbacks on the returned @scala[@scaladoc[Future](scala.concurrent.Future)]@java[@javadoc[CompletionStage](java.util.concurrent.CompletionStage)] as those will be executed on a different thread
  * There can only be a single response to one `ask` (see @ref:[per session child Actor](#per-session-child-actor))
  * When `ask` times out, the receiving actor does not know and may still process it to completion, or even start processing it after the fact
 
@@ -247,12 +247,12 @@ Having to define two response classes and a shared supertype for every request t
 where you also have to make sure the messages can be serialized to be sent over the network.
 
 To help with this a generic status-response type is included in Pekko: @apidoc[StatusReply], everywhere where `ask` can be used
-there is also a second method @apidoc[askWithStatus](typed.*.ActorFlow$) {scala="#askWithStatus[I,Q,A](parallelism:Int)(ref:org.apache.pekko.actor.typed.ActorRef[Q])(makeMessage:(I,org.apache.pekko.actor.typed.ActorRef[org.apache.pekko.pattern.StatusReply[A]])=%3EQ)(implicittimeout:org.apache.pekko.util.Timeout):org.apache.pekko.stream.scaladsl.Flow[I,A,org.apache.pekko.NotUsed]" java="#askWithStatus(int,org.apache.pekko.actor.typed.ActorRef,java.time.Duration,java.util.function.BiFunction)"} which, given that the response is a `StatusReply` will unwrap successful responses
+there is also a second method @apidoc[askWithStatus](typed.*.ActorContext) {scala="#askWithStatus[Req,Res](target:org.apache.pekko.actor.typed.RecipientRef[Req],createRequest:org.apache.pekko.actor.typed.ActorRef[org.apache.pekko.pattern.StatusReply[Res]]=%3EReq)(mapResponse:scala.util.Try[Res]=%3ET)(implicitresponseTimeout:org.apache.pekko.util.Timeout,implicitclassTag:scala.reflect.ClassTag[Res]):Unit" java="#askWithStatus(java.lang.Class,org.apache.pekko.actor.typed.RecipientRef,java.time.Duration,org.apache.pekko.japi.function.Function,org.apache.pekko.japi.function.Function2)"} which, given that the response is a `StatusReply` will unwrap successful responses
 and help with handling validation errors. Pekko includes pre-built serializers for the type, so in the normal use case a clustered 
 application only needs to provide a serializer for the successful result.
 
 For the case where the successful reply does not contain an actual value but is more of an acknowledgment there is a pre defined
-@scala[@scaladoc[StatusReply.Ack](pekko.pattern.StatusReply$#Ack:org.apache.pekko.pattern.StatusReply[org.apache.pekko.Done])]@java[@javadoc[StatusReply.ack()](pekko.pattern.StatusReply$#ack())] of type @scala[`StatusReply[Done]`]@java[`StatusReply<Done>`].
+@scala[@scaladoc[StatusReply.Ack](pekko.pattern.StatusReply$#Ack:org.apache.pekko.pattern.StatusReply[org.apache.pekko.Done])]@java[@javadoc[StatusReply.ack()](pekko.pattern.StatusReply#ack())] of type @scala[`StatusReply[Done]`]@java[`StatusReply<Done>`].
 
 Errors are preferably sent as a text describing what is wrong, but using exceptions to attach a type is also possible.
 
@@ -339,7 +339,7 @@ Therefore it is better to map the result to a message and perform further proces
    an external service
  * The actor needs to continue processing when the @scala[`Future`]@java[`CompletionStage`] has completed
  * Keep context from the original request and use that when the @scala[`Future`]@java[`CompletionStage`] has completed,
-   for example an `replyTo` actor reference
+   for example a `replyTo` actor reference
  
 **Problems:**
 
@@ -413,7 +413,7 @@ Java
 
 **Useful when:**
 
- * Aggregating replies are performed in the same way at multiple places and should be extracted to a more general
+ * Aggregating replies is performed in the same way at multiple places and should be extracted to a more general
    purpose actor.
  * A single incoming request should result in multiple interactions with other actors before a result can be built,
    for example aggregation of several results
@@ -487,15 +487,15 @@ This can be used with any type of @apidoc[actor.typed.Behavior], including @apid
 * Both periodic and single message timers are supported. 
 * The `TimerScheduler` is mutable in itself, because it performs and manages the side effects of registering the scheduled tasks.
 * The `TimerScheduler` is bound to the lifecycle of the actor that owns it and is cancelled automatically when the actor is stopped.
-* `Behaviors.withTimers` can also be used inside @apidoc[Behaviors.supervise](typed.*.Behaviors$) {scala="#supervise[T](wrapped:actor.typed.Behavior[T]):org.apache.pekko.actor.typed.scaladsl.Behaviors.Supervise[T]" java="#supervise(org.apache.pekko.actor.typed.Behavior)"} and it will automatically cancel the started timers correctly when the actor is restarted, so that the new incarnation will not receive scheduled messages from a previous incarnation.
+* `Behaviors.withTimers` can also be used inside @apidoc[Behaviors.supervise](typed.*.Behaviors$) {scala="#supervise[T](wrapped:org.apache.pekko.actor.typed.Behavior[T]):org.apache.pekko.actor.typed.scaladsl.Behaviors.Supervise[T]" java="#supervise(org.apache.pekko.actor.typed.Behavior)"} and it will automatically cancel the started timers correctly when the actor is restarted, so that the new incarnation will not receive scheduled messages from a previous incarnation.
 
 ### Schedule periodically
 
 Scheduling of recurring messages can have two different characteristics:
 
 * fixed-delay - The delay between sending subsequent messages will always be (at least) the given `delay`.
-  Use @apidoc[startTimerWithFixedDelay](actor.TimerScheduler) {scala="#startTimerWithFixedDelay(key:Any,msg:Any,initialDelay:scala.concurrent.duration.FiniteDuration,delay:scala.concurrent.duration.FiniteDuration):Unit" java="#startTimerWithFixedDelay(java.lang.Object,java.lang.Object,java.time.Duration,java.time.Duration)"}.
-* fixed-rate - The frequency of execution over time will meet the given `interval`. Use @apidoc[startTimerAtFixedRate](actor.TimerScheduler) {scala="#startTimerAtFixedRate(key:Any,msg:Any,interval:scala.concurrent.duration.FiniteDuration):Unit" java="#startTimerAtFixedRate(java.lang.Object,java.lang.Object,java.time.Duration,java.time.Duration)"}.
+  Use @apidoc[startTimerWithFixedDelay](typed.*.TimerScheduler) {scala="#startTimerWithFixedDelay(key:Any,msg:T,initialDelay:scala.concurrent.duration.FiniteDuration,delay:scala.concurrent.duration.FiniteDuration):Unit" java="#startTimerWithFixedDelay(java.lang.Object,T,java.time.Duration,java.time.Duration)"}.
+* fixed-rate - The frequency of execution over time will meet the given `interval`. Use @apidoc[startTimerAtFixedRate](typed.*.TimerScheduler) {scala="#startTimerAtFixedRate(key:Any,msg:T,interval:scala.concurrent.duration.FiniteDuration):Unit" java="#startTimerAtFixedRate(java.lang.Object,T,java.time.Duration)"}.
 
 If you are uncertain of which one to use you should pick `startTimerWithFixedDelay`.
 
@@ -509,12 +509,12 @@ it is appropriate for activities where it is more important to keep the frequenc
 than in the long run.
 
 When using **fixed-rate** it will compensate the delay for a subsequent task if the previous messages were delayed
-too long. In such cases, the actual sending interval will differ from the interval passed to the `scheduleAtFixedRate`
+too long. In such cases, the actual sending interval will differ from the interval passed to the `startTimerAtFixedRate`
 method.
 
 If the tasks are delayed longer than the `interval`, the subsequent message will be sent immediately after the
 prior one. This also has the consequence that after long garbage collection pauses or other reasons when the JVM
-was suspended all "missed" tasks will execute when the process wakes up again. For example, `scheduleAtFixedRate`
+was suspended all "missed" tasks will execute when the process wakes up again. For example, `startTimerAtFixedRate`
 with an interval of 1 second and the process is suspended for 30 seconds will result in 30 messages being sent
 in rapid succession to catch up. In the long run, the frequency of execution will be exactly the reciprocal of
 the specified `interval`.
@@ -525,8 +525,8 @@ timer that ticks once every second for ten seconds.
 
 @@@ warning
 
-`scheduleAtFixedRate` can result in bursts of scheduled messages after long garbage collection pauses,
-which may in worst case cause undesired load on the system. `scheduleWithFixedDelay` is often preferred.
+`startTimerAtFixedRate` can result in bursts of scheduled messages after long garbage collection pauses,
+which may in worst case cause undesired load on the system. `startTimerWithFixedDelay` is often preferred.
 
 @@@
 
@@ -537,7 +537,7 @@ take into account that an actor may move or get passivated.
 
 The normal pattern for expecting a reply is to include an @apidoc[actor.typed.ActorRef] in the message, typically a message adapter. This can be used
 for a sharded actor but if @scala[@scaladoc[ctx.self](pekko.actor.typed.scaladsl.ActorContext#self:org.apache.pekko.actor.typed.ActorRef[T])]@java[@javadoc[ctx.getSelf()](pekko.actor.typed.javadsl.ActorContext#getSelf())] is sent and the sharded actor is moved or passivated then the reply
-will sent to dead letters.
+will be sent to dead letters.
 
 An alternative is to send the `entityId` in the message and have the reply sent via sharding.
 

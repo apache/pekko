@@ -13,7 +13,7 @@
 
 package jdocs.stream.operators.sourceorflow;
 
-import java.util.Arrays;
+import java.util.List;
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.stream.javadsl.Source;
@@ -24,14 +24,14 @@ public class FlatMapConcat {
   // #flatmap-concat
   // e.g. could be a query to a database
   private Source<String, NotUsed> lookupCustomerEvents(String customerId) {
-    return Source.from(Arrays.asList(customerId + "-event-1", customerId + "-event-2"));
+    return Source.from(List.of(customerId + "-event-1", customerId + "-event-2"));
   }
 
   // #flatmap-concat
 
   void example() {
     // #flatmap-concat
-    Source.from(Arrays.asList("customer-1", "customer-2"))
+    Source.from(List.of("customer-1", "customer-2"))
         .flatMapConcat(this::lookupCustomerEvents)
         .runForeach(System.out::println, system);
     // prints - events from each customer consecutively

@@ -37,7 +37,7 @@ class IdleSpec extends AbstractEntityPassivationSpec(IdleSpec.config, expectedEn
     "passivate entities when they haven't seen messages for the configured duration" in {
       val region = start()
 
-      val lastSendNanoTime1 = System.nanoTime()
+      val lastSendNanoTime1 = clock.currentTime()
       region ! Envelope(shard = 1, id = 1, message = "A")
       region ! Envelope(shard = 2, id = 2, message = "B")
       Thread.sleep((configuredIdleTimeout / 2).toMillis)
@@ -45,7 +45,7 @@ class IdleSpec extends AbstractEntityPassivationSpec(IdleSpec.config, expectedEn
       Thread.sleep((configuredIdleTimeout / 2).toMillis)
       region ! Envelope(shard = 2, id = 2, message = "D")
       Thread.sleep((configuredIdleTimeout / 2).toMillis)
-      val lastSendNanoTime2 = System.nanoTime()
+      val lastSendNanoTime2 = clock.currentTime()
       region ! Envelope(shard = 2, id = 2, message = "E")
 
       expectReceived(id = 1, message = "A")

@@ -13,13 +13,12 @@
 
 package org.apache.pekko.actor.setup;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Optional;
-import org.junit.Test;
-import org.scalatestplus.junit.JUnitSuite;
+import org.junit.jupiter.api.Test;
 
-public class ActorSystemSetupTest extends JUnitSuite {
+public class ActorSystemSetupTest {
 
   static class JavaSetup extends Setup {
     public final String name;

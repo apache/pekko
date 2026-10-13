@@ -15,7 +15,8 @@ package org.apache.pekko.util
 
 import scala.util.Random
 
-import org.apache.pekko.testkit.PekkoSpec
+import org.apache.pekko
+import pekko.testkit.PekkoSpec
 
 class TokenBucketSpec extends PekkoSpec {
 

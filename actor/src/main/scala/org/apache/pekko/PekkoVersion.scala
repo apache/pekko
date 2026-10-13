@@ -13,7 +13,8 @@
 
 package org.apache.pekko
 
-import org.apache.pekko.annotation.InternalApi
+import org.apache.pekko
+import pekko.annotation.InternalApi
 
 final class UnsupportedPekkoVersion private[pekko] (msg: String) extends RuntimeException(msg)
 

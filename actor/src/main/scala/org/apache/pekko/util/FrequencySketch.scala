@@ -32,7 +32,8 @@ package org.apache.pekko.util
 import scala.annotation.nowarn
 import scala.util.hashing.MurmurHash3
 
-import org.apache.pekko.annotation.InternalApi
+import org.apache.pekko
+import pekko.annotation.InternalApi
 
 /**
  * INTERNAL API
@@ -60,8 +61,11 @@ private[pekko] object FrequencySketch {
       resetMultiplier: Double = 10,
       depth: Int = 4,
       counterBits: Int = 4)(implicit hasher: Hasher[A]): FrequencySketch[A] = {
-    val width = widthMultiplier * Bits.ceilingPowerOfTwo(capacity)
-    val resetSize = (resetMultiplier * capacity).toInt
+    val widthLong = widthMultiplier.toLong * Bits.ceilingPowerOfTwo(capacity).toLong
+    require(widthLong <= Int.MaxValue,
+      s"computed width ($widthLong) exceeds Int.MaxValue; reduce capacity or widthMultiplier")
+    val width = widthLong.toInt
+    val resetSize = math.min(Int.MaxValue.toLong, (resetMultiplier * capacity).toLong).toInt
     new FrequencySketch(depth, width, counterBits, resetSize, hasher)
   }
 
@@ -135,25 +139,25 @@ private[pekko] final class FrequencySketch[A](
 
   private final val SlotBits = 64
 
-  private[this] val counterWidth = counterBits
-  private[this] val slots = SlotBits / counterWidth
-  private[this] val rowWidth = math.max(1, width / slots)
-  private[this] val columnMask = width - 1
-  private[this] val slotShift = FrequencySketch.Bits.powerOfTwoExponent(slots)
-  private[this] val slotMask = slots - 1
-  private[this] val counterShift = FrequencySketch.Bits.powerOfTwoExponent(counterWidth)
-  private[this] val counterMask = if (counterBits == 64) Long.MaxValue else (1L << counterWidth) - 1
+  private val counterWidth = counterBits
+  private val slots = SlotBits / counterWidth
+  private val rowWidth = math.max(1, width / slots)
+  private val columnMask = width - 1
+  private val slotShift = FrequencySketch.Bits.powerOfTwoExponent(slots)
+  private val slotMask = slots - 1
+  private val counterShift = FrequencySketch.Bits.powerOfTwoExponent(counterWidth)
+  private val counterMask = if (counterBits == 64) Long.MaxValue else (1L << counterWidth) - 1
 
-  private[this] val oddMask = (1 to slots).foldLeft(1L)((mask, count) => mask | (1L << (count * counterWidth)))
+  private val oddMask = (1 to slots).foldLeft(1L)((mask, count) => mask | (1L << (count * counterWidth)))
 
-  private[this] val resetMask = {
+  private val resetMask = {
     val counterResetMask = counterMask >> 1
     (1 to slots).foldLeft(counterResetMask)((mask, count) => mask | (counterResetMask << (count * counterWidth)))
   }
 
-  private[this] val matrix = Array.fill[Array[Long]](depth)(Array.ofDim[Long](rowWidth))
-  private[this] val rowSizes = Array.ofDim[Int](depth)
-  private[this] var updatedSize = 0
+  private val matrix = Array.fill[Array[Long]](depth)(Array.ofDim[Long](rowWidth))
+  private val rowSizes = Array.ofDim[Int](depth)
+  private var updatedSize = 0
 
   /**
    * Get the current size of the sketch (the number of incremented counters).
@@ -256,8 +260,11 @@ private[pekko] object FastFrequencySketch {
    * @return a configured FastFrequencySketch
    */
   def apply[A](capacity: Int, widthMultiplier: Int = 4, resetMultiplier: Double = 10): FastFrequencySketch[A] = {
-    val width = widthMultiplier * FrequencySketch.Bits.ceilingPowerOfTwo(capacity)
-    val resetSize = (resetMultiplier * capacity).toInt
+    val widthLong = widthMultiplier.toLong * FrequencySketch.Bits.ceilingPowerOfTwo(capacity).toLong
+    require(widthLong <= Int.MaxValue,
+      s"computed width ($widthLong) exceeds Int.MaxValue; reduce capacity or widthMultiplier")
+    val width = widthLong.toInt
+    val resetSize = math.min(Int.MaxValue.toLong, (resetMultiplier * capacity).toLong).toInt
     new FastFrequencySketch(width, resetSize)
   }
 }
@@ -294,12 +301,12 @@ private[pekko] final class FastFrequencySketch[A](width: Int, resetSize: Int) {
   private final val Seed2 = 0x9AE16A3B2F90404FL
   private final val Seed3 = 0xCBF29CE484222325L
 
-  private[this] val rowWidth = math.max(1, width >>> SlotShift)
-  private[this] val indexMask = width - 1
+  private val rowWidth = math.max(1, width >>> SlotShift)
+  private val indexMask = width - 1
 
-  private[this] val matrix = Array.fill[Array[Long]](Depth)(Array.ofDim[Long](rowWidth))
-  private[this] val rowSizes = Array.ofDim[Int](Depth)
-  private[this] var updatedSize = 0
+  private val matrix = Array.fill[Array[Long]](Depth)(Array.ofDim[Long](rowWidth))
+  private val rowSizes = Array.ofDim[Int](Depth)
+  private var updatedSize = 0
 
   def size: Int = updatedSize
 
@@ -395,7 +402,9 @@ private[pekko] object FrequencySketchUtil {
     val indexDigits = digits(rowWidth)
     val counterDigits = math.max(2, digits(counterMax))
     def divider(start: String, line: String, separator1: String, separator: String, end: String): String =
-      start + (line * (indexDigits + 2)) + separator1 + (line * (counterDigits + 2)) +
+      start +
+      (line * (indexDigits + 2)) + separator1 +
+      (line * (counterDigits + 2)) +
       ((separator + (line * (counterDigits + 2))) * (slots - 1)) + end + "\n"
     val builder = new StringBuilder
     builder ++= divider("╔", "═", "╦", "╤", "╗")
@@ -407,8 +416,9 @@ private[pekko] object FrequencySketchUtil {
     builder ++= "║\n"
     for (row <- matrix.indices) {
       for (column <- matrix(0).indices) {
-        builder ++= (if (column == 0) divider("╠", "═", "╬", "╪", "╣")
-                     else divider("╟", "─", "╫", "┼", "╢"))
+        builder ++=
+          (if (column == 0) divider("╠", "═", "╬", "╪", "╣")
+           else divider("╟", "─", "╫", "┼", "╢"))
         builder ++= s"║ %${indexDigits}d ".format(column)
         var shift = 0
         while (shift < 64) {

@@ -13,7 +13,8 @@
 
 package org.apache.pekko.stream.javadsl
 
-import org.apache.pekko.stream._
+import org.apache.pekko
+import pekko.stream._
 
 /**
  * Factories for creating stream refs.

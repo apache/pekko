@@ -27,15 +27,15 @@ import org.apache.pekko.actor.*;
 import org.apache.pekko.persistence.*;
 import org.apache.pekko.persistence.japi.journal.JavaJournalSpec;
 import org.apache.pekko.persistence.japi.snapshot.JavaSnapshotStoreSpec;
+import org.apache.pekko.persistence.japi.state.JavaDurableStateStoreSpec;
 import org.apache.pekko.persistence.journal.japi.*;
 import org.apache.pekko.persistence.journal.leveldb.SharedLeveldbJournal;
 import org.apache.pekko.persistence.journal.leveldb.SharedLeveldbStore;
 import org.apache.pekko.persistence.snapshot.japi.*;
 // #plugin-imports
 import org.iq80.leveldb.util.FileUtils;
-import org.junit.runner.RunWith;
-import org.scalatestplus.junit.JUnitRunner;
 
+@SuppressWarnings({"deprecation", "unchecked"})
 public class LambdaPersistencePluginDocTest {
 
   static Object o1 =
@@ -142,7 +142,6 @@ public class LambdaPersistencePluginDocTest {
   static Object o2 =
       new Object() {
         // #journal-tck-java
-        @RunWith(JUnitRunner.class)
         class MyJournalSpecTest extends JavaJournalSpec {
 
           public MyJournalSpecTest() {
@@ -163,7 +162,6 @@ public class LambdaPersistencePluginDocTest {
   static Object o3 =
       new Object() {
         // #snapshot-store-tck-java
-        @RunWith(JUnitRunner.class)
         class MySnapshotStoreTest extends JavaSnapshotStoreSpec {
 
           public MySnapshotStoreTest() {
@@ -176,11 +174,34 @@ public class LambdaPersistencePluginDocTest {
         // #snapshot-store-tck-java
       };
 
+  static Object o3b =
+      new Object() {
+        // #durable-state-tck-java
+        class MyDurableStateStoreTest extends JavaDurableStateStoreSpec {
+
+          public MyDurableStateStoreTest() {
+            super(
+                ConfigFactory.parseString(
+                    "pekko.persistence.state.plugin = \"my.durable-state.plugin\""));
+          }
+
+          @Override
+          public CapabilityFlag supportsDeleteWithRevisionCheck() {
+            return CapabilityFlag.on();
+          }
+
+          @Override
+          public CapabilityFlag supportsUpsertWithRevisionCheck() {
+            return CapabilityFlag.on();
+          }
+        }
+        // #durable-state-tck-java
+      };
+
   static Object o4 =
       new Object() {
         // https://github.com/pekko/pekko/issues/26826
         // #journal-tck-before-after-java
-        @RunWith(JUnitRunner.class)
         class MyJournalSpecTest extends JavaJournalSpec {
 
           List<File> storageLocations = new ArrayList<File>();

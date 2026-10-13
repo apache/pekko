@@ -41,7 +41,7 @@ Scala
 Java
 :  @@snip [MailboxDocTest.java](/actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/MailboxDocTest.java) { #select-mailbox }
 
-@apidoc[fromConfig](MailboxSelector$) {scala="#fromConfig(path:String):org.apache.pekko.actor.typed.MailboxSelector" java="#fromConfig(java.lang.String)"} takes an absolute config path to a block defining the dispatcher in the config file:
+@apidoc[fromConfig](MailboxSelector$) {scala="#fromConfig(path:String):org.apache.pekko.actor.typed.MailboxSelector" java="#fromConfig(java.lang.String)"} takes an absolute config path to a block defining the mailbox in the config file:
 
 @@snip [MailboxDocSpec.scala](/actor-typed-tests/src/test/resources/mailbox-config-sample.conf) { }
 
@@ -52,7 +52,7 @@ The default mailbox is used when the mailbox is not specified and is the @apidoc
 ### Which Configuration is passed to the Mailbox Type
 
 Each mailbox type is implemented by a class which extends @apidoc[MailboxType](MailboxType)
-and takes two constructor arguments: a @apidoc[ActorSystem.Settings](typed.Settings) object and
+and takes two constructor arguments: a @apidoc[actor.ActorSystem.Settings](actor.ActorSystem.Settings) object and
 a [Config](https://lightbend.github.io/config/latest/api/index.html?com/typesafe/config/Config.html) section. The latter is computed by obtaining the named
 configuration section from the @apidoc[ActorSystem](typed.ActorSystem) configuration, overriding its
 `id` key with the configuration path of the mailbox type and adding a
@@ -60,7 +60,7 @@ fall-back to the default mailbox configuration section.
 
 ### Interoperability with DispatcherSelector
 
-The @apidoc[MailboxSelector](MailboxSelector$) will create a @apidoc[Props](typed.Props) instance that can be both set up Dispatcher and Mailbox,
+The @apidoc[MailboxSelector](MailboxSelector$) will create a @apidoc[Props](typed.Props) instance that can set up both the dispatcher and the mailbox,
 which means that you can continue to set up Dispatcher through chain calls.
 
 Scala
@@ -115,7 +115,7 @@ Pekko ships with a number of mailbox implementations:
     * Bounded: No
     * Configuration name: `"org.apache.pekko.dispatch.UnboundedStablePriorityMailbox"`
 
-Other bounded mailbox implementations which will block the sender if the capacity is reached and
+Other bounded mailbox implementations will block the sender if the capacity is reached and
 configured with non-zero `mailbox-push-timeout-time`. 
 
 @@@ note

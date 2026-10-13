@@ -23,6 +23,7 @@ import language.implicitConversions
 import org.apache.pekko
 import pekko.actor._
 import pekko.japi.function.{ Effect, Function2, Predicate, Predicate2, Procedure, Procedure2, Procedure3 }
+import pekko.japi.Pair
 import pekko.japi.pf.{ FSMTransitionHandlerBuilder, UnitMatch, UnitPFBuilder }
 import pekko.routing.{ Deafen, Listen, Listeners }
 
@@ -85,9 +86,8 @@ import pekko.routing.{ Deafen, Listen, Listeners }
  *
  * Another feature is that other actors may subscribe for transition events by
  * sending a <code>SubscribeTransitionCallback</code> message to this actor.
- * Stopping a listener without unregistering will not remove the listener from the
- * subscription list; use <code>UnsubscribeTransitionCallback</code> before stopping
- * the listener.
+ * Stopping a listener will remove it from the subscription list. Subscriptions
+ * may also be removed explicitly with <code>UnsubscribeTransitionCallback</code>.
  *
  * State timeouts set an upper bound to the time which may pass before another
  * message is received in the current state. If no external message is
@@ -154,8 +154,8 @@ trait PersistentFSMBase[S, D, E] extends Actor with Listeners with ActorLogging 
     register(stateName, stateFunction, Option(stateTimeout))
 
   /**
-   * Set initial state. Call this method from the constructor before the [[#initialize]] method.
-   * If different state is needed after a restart this method, followed by [[#initialize]], can
+   * Set initial state. Call this method from the constructor before the `initialize` method.
+   * If different state is needed after a restart this method, followed by `initialize`, can
    * be used in the actor life cycle hooks [[pekko.actor.Actor#preStart]] and [[pekko.actor.Actor#postRestart]].
    *
    * @param stateName initial state designator
@@ -482,9 +482,32 @@ trait PersistentFSMBase[S, D, E] extends Actor with Listeners with ActorLogging 
    * transition handling
    */
   private var transitionEvent: List[TransitionHandler] = Nil
+  private var watchedListeners: Set[ActorRef] = Set.empty
   private def handleTransition(prev: S, next: S): Unit = {
     val tuple = (prev, next)
     for (te <- transitionEvent) { if (te.isDefinedAt(tuple)) te(tuple) }
+  }
+
+  private def addListener(actorRef: ActorRef): Unit = {
+    if (listeners.add(actorRef)) {
+      context.asInstanceOf[ActorCell].isWatching(actorRef) match {
+        case false =>
+          context.watchWith(actorRef, ListenerTerminated(actorRef))
+          watchedListeners += actorRef
+        case true =>
+          log.warning(
+            "Listener [{}] is already watched by this FSM; it will not be automatically removed on termination. " +
+            "Use UnsubscribeTransitionCallBack explicitly.",
+            actorRef)
+      }
+    }
+  }
+
+  private def removeListener(actorRef: ActorRef): Unit = {
+    if (listeners.remove(actorRef) && watchedListeners.contains(actorRef)) {
+      watchedListeners -= actorRef
+      context.unwatch(actorRef)
+    }
   }
 
   /*
@@ -510,19 +533,20 @@ trait PersistentFSMBase[S, D, E] extends Actor with Listeners with ActorLogging 
         processMsg(msg, t)
       }
     case SubscribeTransitionCallBack(actorRef) =>
-      // TODO Use context.watch(actor) and receive Terminated(actor) to clean up list
-      listeners.add(actorRef)
+      addListener(actorRef)
       // send current state back as reference point
       actorRef ! CurrentState(self, currentState.stateName, currentState.timeout)
     case Listen(actorRef) =>
-      // TODO Use context.watch(actor) and receive Terminated(actor) to clean up list
-      listeners.add(actorRef)
+      addListener(actorRef)
       // send current state back as reference point
       actorRef ! CurrentState(self, currentState.stateName, currentState.timeout)
     case UnsubscribeTransitionCallBack(actorRef) =>
-      listeners.remove(actorRef)
+      removeListener(actorRef)
     case Deafen(actorRef) =>
+      removeListener(actorRef)
+    case ListenerTerminated(actorRef) =>
       listeners.remove(actorRef)
+      watchedListeners -= actorRef
     case value =>
       if (timeoutFuture.isDefined) {
         timeoutFuture.get.cancel()
@@ -798,8 +822,8 @@ abstract class AbstractPersistentFSMBase[S, D, E] extends PersistentFSMBase[S, D
     when(stateName, stateTimeout)(stateFunctionBuilder.build())
 
   /**
-   * Set initial state. Call this method from the constructor before the [[#initialize]] method.
-   * If different state is needed after a restart this method, followed by [[#initialize]], can
+   * Set initial state. Call this method from the constructor before the `initialize` method.
+   * If different state is needed after a restart this method, followed by `initialize`, can
    * be used in the actor life cycle hooks [[pekko.actor.Actor#preStart]] and [[pekko.actor.Actor#postRestart]].
    *
    * @param stateName initial state designator
@@ -809,8 +833,8 @@ abstract class AbstractPersistentFSMBase[S, D, E] extends PersistentFSMBase[S, D
     startWith(stateName, stateData, null: FiniteDuration)
 
   /**
-   * Set initial state. Call this method from the constructor before the [[#initialize]] method.
-   * If different state is needed after a restart this method, followed by [[#initialize]], can
+   * Set initial state. Call this method from the constructor before the `initialize` method.
+   * If different state is needed after a restart this method, followed by `initialize`, can
    * be used in the actor life cycle hooks [[pekko.actor.Actor#preStart]] and [[pekko.actor.Actor#postRestart]].
    *
    * @param stateName initial state designator
@@ -827,8 +851,13 @@ abstract class AbstractPersistentFSMBase[S, D, E] extends PersistentFSMBase[S, D
    * <b>Multiple handlers may be installed, and every one of them will be
    * called, not only the first one matching.</b>
    */
-  final def onTransition(transitionHandlerBuilder: FSMTransitionHandlerBuilder[S]): Unit =
-    onTransition(transitionHandlerBuilder.build().asInstanceOf[TransitionHandler])
+  final def onTransition(transitionHandlerBuilder: FSMTransitionHandlerBuilder[S]): Unit = {
+    val pf = transitionHandlerBuilder.build()
+    onTransition(new TransitionHandler {
+      def isDefinedAt(in: (S, S)): Boolean = pf.isDefinedAt(Pair(in._1, in._2))
+      def apply(in: (S, S)): Unit = pf(Pair(in._1, in._2))
+    })
+  }
 
   /**
    * Add a handler which is called upon each state transition, i.e. not when
@@ -857,7 +886,7 @@ abstract class AbstractPersistentFSMBase[S, D, E] extends PersistentFSMBase[S, D
     onTermination(stopBuilder.build().asInstanceOf[PartialFunction[StopEvent, Unit]])
 
   /**
-   * Create an [[pekko.japi.pf.FSMStateFunctionBuilder]] with the first case statement set.
+   * Create a [[pekko.japi.pf.FSMStateFunctionBuilder]] with the first case statement set.
    *
    * A case statement that matches on an event and data type and a predicate.
    *
@@ -875,7 +904,7 @@ abstract class AbstractPersistentFSMBase[S, D, E] extends PersistentFSMBase[S, D
     new FSMStateFunctionBuilder[S, D, E]().event(eventType, dataType, predicate, apply)
 
   /**
-   * Create an [[pekko.japi.pf.FSMStateFunctionBuilder]] with the first case statement set.
+   * Create a [[pekko.japi.pf.FSMStateFunctionBuilder]] with the first case statement set.
    *
    * A case statement that matches on an event and data type.
    *
@@ -891,7 +920,7 @@ abstract class AbstractPersistentFSMBase[S, D, E] extends PersistentFSMBase[S, D
     new FSMStateFunctionBuilder[S, D, E]().event(eventType, dataType, apply)
 
   /**
-   * Create an [[pekko.japi.pf.FSMStateFunctionBuilder]] with the first case statement set.
+   * Create a [[pekko.japi.pf.FSMStateFunctionBuilder]] with the first case statement set.
    *
    * A case statement that matches if the event type and predicate matches.
    *
@@ -907,7 +936,7 @@ abstract class AbstractPersistentFSMBase[S, D, E] extends PersistentFSMBase[S, D
     new FSMStateFunctionBuilder[S, D, E]().event(eventType, predicate, apply)
 
   /**
-   * Create an [[pekko.japi.pf.FSMStateFunctionBuilder]] with the first case statement set.
+   * Create a [[pekko.japi.pf.FSMStateFunctionBuilder]] with the first case statement set.
    *
    * A case statement that matches if the event type matches.
    *
@@ -919,7 +948,7 @@ abstract class AbstractPersistentFSMBase[S, D, E] extends PersistentFSMBase[S, D
     new FSMStateFunctionBuilder[S, D, E]().event(eventType, apply)
 
   /**
-   * Create an [[pekko.japi.pf.FSMStateFunctionBuilder]] with the first case statement set.
+   * Create a [[pekko.japi.pf.FSMStateFunctionBuilder]] with the first case statement set.
    *
    * A case statement that matches if the predicate matches.
    *
@@ -933,7 +962,7 @@ abstract class AbstractPersistentFSMBase[S, D, E] extends PersistentFSMBase[S, D
     new FSMStateFunctionBuilder[S, D, E]().event(predicate, apply)
 
   /**
-   * Create an [[pekko.japi.pf.FSMStateFunctionBuilder]] with the first case statement set.
+   * Create a [[pekko.japi.pf.FSMStateFunctionBuilder]] with the first case statement set.
    *
    * A case statement that matches on the data type and if any of the event types
    * in the list match or any of the event instances in the list compares equal.
@@ -950,7 +979,7 @@ abstract class AbstractPersistentFSMBase[S, D, E] extends PersistentFSMBase[S, D
     new FSMStateFunctionBuilder[S, D, E]().event(eventMatches, dataType, apply)
 
   /**
-   * Create an [[pekko.japi.pf.FSMStateFunctionBuilder]] with the first case statement set.
+   * Create a [[pekko.japi.pf.FSMStateFunctionBuilder]] with the first case statement set.
    *
    * A case statement that matches if any of the event types in the list match or any
    * of the event instances in the list compares equal.
@@ -964,7 +993,7 @@ abstract class AbstractPersistentFSMBase[S, D, E] extends PersistentFSMBase[S, D
     new FSMStateFunctionBuilder[S, D, E]().event(eventMatches, apply)
 
   /**
-   * Create an [[pekko.japi.pf.FSMStateFunctionBuilder]] with the first case statement set.
+   * Create a [[pekko.japi.pf.FSMStateFunctionBuilder]] with the first case statement set.
    *
    * A case statement that matches on the data type and if the event compares equal.
    *
@@ -980,7 +1009,7 @@ abstract class AbstractPersistentFSMBase[S, D, E] extends PersistentFSMBase[S, D
     new FSMStateFunctionBuilder[S, D, E]().eventEquals(event, dataType, apply)
 
   /**
-   * Create an [[pekko.japi.pf.FSMStateFunctionBuilder]] with the first case statement set.
+   * Create a [[pekko.japi.pf.FSMStateFunctionBuilder]] with the first case statement set.
    *
    * A case statement that matches if the event compares equal.
    *
@@ -992,7 +1021,7 @@ abstract class AbstractPersistentFSMBase[S, D, E] extends PersistentFSMBase[S, D
     new FSMStateFunctionBuilder[S, D, E]().eventEquals(event, apply)
 
   /**
-   * Create an [[pekko.japi.pf.FSMStateFunctionBuilder]] with the first case statement set.
+   * Create a [[pekko.japi.pf.FSMStateFunctionBuilder]] with the first case statement set.
    *
    * A case statement that matches on any type of event.
    *
@@ -1003,7 +1032,7 @@ abstract class AbstractPersistentFSMBase[S, D, E] extends PersistentFSMBase[S, D
     new FSMStateFunctionBuilder[S, D, E]().anyEvent(apply)
 
   /**
-   * Create an [[pekko.japi.pf.FSMTransitionHandlerBuilder]] with the first case statement set.
+   * Create a [[pekko.japi.pf.FSMTransitionHandlerBuilder]] with the first case statement set.
    *
    * A case statement that matches on a from state and a to state.
    *
@@ -1016,7 +1045,7 @@ abstract class AbstractPersistentFSMBase[S, D, E] extends PersistentFSMBase[S, D
     new FSMTransitionHandlerBuilder[S]().state(fromState, toState, apply)
 
   /**
-   * Create an [[pekko.japi.pf.FSMTransitionHandlerBuilder]] with the first case statement set.
+   * Create a [[pekko.japi.pf.FSMTransitionHandlerBuilder]] with the first case statement set.
    *
    * A case statement that matches on a from state and a to state.
    *
@@ -1029,9 +1058,9 @@ abstract class AbstractPersistentFSMBase[S, D, E] extends PersistentFSMBase[S, D
     new FSMTransitionHandlerBuilder[S]().state(fromState, toState, apply)
 
   /**
-   * Create an [[pekko.japi.pf.FSMStopBuilder]] with the first case statement set.
+   * Create a [[pekko.japi.pf.FSMStopBuilder]] with the first case statement set.
    *
-   * A case statement that matches on an [[PersistentFSM.Reason]].
+   * A case statement that matches on a [[PersistentFSM.Reason]].
    *
    * @param reason  the reason for the termination
    * @param apply  an action to apply to the event and state data if there is a match
@@ -1041,7 +1070,7 @@ abstract class AbstractPersistentFSMBase[S, D, E] extends PersistentFSMBase[S, D
     new FSMStopBuilder[S, D]().stop(reason, apply)
 
   /**
-   * Create an [[pekko.japi.pf.FSMStopBuilder]] with the first case statement set.
+   * Create a [[pekko.japi.pf.FSMStopBuilder]] with the first case statement set.
    *
    * A case statement that matches on a reason type.
    *
@@ -1053,7 +1082,7 @@ abstract class AbstractPersistentFSMBase[S, D, E] extends PersistentFSMBase[S, D
     new FSMStopBuilder[S, D]().stop(reasonType, apply)
 
   /**
-   * Create an [[pekko.japi.pf.FSMStopBuilder]] with the first case statement set.
+   * Create a [[pekko.japi.pf.FSMStopBuilder]] with the first case statement set.
    *
    * A case statement that matches on a reason type and a predicate.
    *

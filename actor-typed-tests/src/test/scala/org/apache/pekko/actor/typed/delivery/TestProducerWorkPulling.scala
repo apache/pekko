@@ -22,7 +22,7 @@ import pekko.actor.typed.scaladsl.Behaviors
 
 object TestProducerWorkPulling {
 
-  trait Command
+  sealed trait Command
   final case class RequestNext(sendTo: ActorRef[TestConsumer.Job]) extends Command
   private case object Tick extends Command
 

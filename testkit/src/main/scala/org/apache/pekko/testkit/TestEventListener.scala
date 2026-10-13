@@ -15,7 +15,6 @@ package org.apache.pekko.testkit
 
 import java.lang.{ Iterable => JIterable }
 
-import scala.collection.immutable
 import scala.concurrent.duration.Duration
 import scala.reflect.ClassTag
 import scala.util.matching.Regex
@@ -24,6 +23,7 @@ import org.apache.pekko
 import pekko.actor.{ ActorSystem, DeadLetter, UnhandledMessage }
 import pekko.actor.Dropped
 import pekko.actor.NoSerializationVerificationNeeded
+import pekko.annotation.DoNotInherit
 import pekko.dispatch.sysmsg.{ SystemMessage, Terminate }
 import pekko.event.Logging
 import pekko.event.Logging.{ Debug, Error, Info, InitializeLogger, LogEvent, LoggerInitialized, Warning }
@@ -38,8 +38,10 @@ import pekko.util.BoxedType
  * You should always prefer the filter methods in the package object
  * (see `org.apache.pekko.testkit` `filterEvents` and `filterException`) or on the
  * EventFilter implementations.
+ *
+ * Not for user extension
  */
-sealed trait TestEvent
+@DoNotInherit sealed trait TestEvent
 
 /**
  * Implementation helpers of the EventFilter facilities: send <code>Mute</code>
@@ -52,9 +54,9 @@ sealed trait TestEvent
  */
 object TestEvent {
   object Mute {
-    def apply(filter: EventFilter, filters: EventFilter*): Mute = new Mute(filter +: filters.to(immutable.Seq))
+    def apply(filter: EventFilter, filters: EventFilter*): Mute = new Mute(filter +: filters.to(Seq))
   }
-  final case class Mute(filters: immutable.Seq[EventFilter]) extends TestEvent with NoSerializationVerificationNeeded {
+  final case class Mute(filters: Seq[EventFilter]) extends TestEvent with NoSerializationVerificationNeeded {
 
     /**
      * Java API: create a Mute command from a list of filters
@@ -62,9 +64,9 @@ object TestEvent {
     def this(filters: JIterable[EventFilter]) = this(immutableSeq(filters))
   }
   object UnMute {
-    def apply(filter: EventFilter, filters: EventFilter*): UnMute = new UnMute(filter +: filters.to(immutable.Seq))
+    def apply(filter: EventFilter, filters: EventFilter*): UnMute = new UnMute(filter +: filters.to(Seq))
   }
-  final case class UnMute(filters: immutable.Seq[EventFilter])
+  final case class UnMute(filters: Seq[EventFilter])
       extends TestEvent
       with NoSerializationVerificationNeeded {
 
@@ -321,7 +323,7 @@ object EventFilter {
  * If you want to match all Error events, the most efficient is to use <code>Left("")</code>.
  */
 final case class ErrorFilter(
-    throwable: Class[_],
+    throwable: Class[?],
     override val source: Option[String],
     override val message: Either[String, Regex],
     override val complete: Boolean)(occurrences: Int)
@@ -352,7 +354,7 @@ final case class ErrorFilter(
    *   whether the event’s message must match the given message string or pattern completely
    */
   def this(
-      throwable: Class[_],
+      throwable: Class[?],
       source: String,
       message: String,
       pattern: Boolean,
@@ -369,7 +371,7 @@ final case class ErrorFilter(
   /**
    * Java API: filter only on the given type of exception
    */
-  def this(throwable: Class[_]) = this(throwable, null, null, false, false, Int.MaxValue)
+  def this(throwable: Class[?]) = this(throwable, null, null, false, false, Int.MaxValue)
 
 }
 
@@ -529,7 +531,7 @@ object DeadLettersFilter {
  * Filter which matches DeadLetter events, if the wrapped message conforms to the
  * given type.
  */
-final case class DeadLettersFilter(val messageClass: Class[_])(occurrences: Int) extends EventFilter(occurrences) {
+final case class DeadLettersFilter(val messageClass: Class[?])(occurrences: Int) extends EventFilter(occurrences) {
 
   def matches(event: LogEvent) = {
     event match {

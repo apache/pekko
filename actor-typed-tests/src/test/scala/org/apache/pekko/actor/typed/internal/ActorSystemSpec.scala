@@ -156,9 +156,7 @@ class ActorSystemSpec
       withSystem("thread", Behaviors.empty[String]) { sys =>
         val p = Promise[Int]()
         sys.threadFactory
-          .newThread(new Runnable {
-            def run(): Unit = p.success(42)
-          })
+          .newThread(() => p.success(42))
           .start()
         p.future.futureValue should ===(42)
       }
@@ -191,8 +189,9 @@ class ActorSystemSpec
         "guardian-mailbox",
         Behaviors.receive[WhatsYourMailbox] {
           case (context, WhatsYourMailbox(replyTo)) =>
-            replyTo ! context
-              .asInstanceOf[ActorContextImpl[_]]
+            replyTo !
+            context
+              .asInstanceOf[ActorContextImpl[?]]
               .classicActorContext
               .asInstanceOf[Dispatch]
               .mailbox

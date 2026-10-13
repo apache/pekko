@@ -404,12 +404,12 @@ public class LambdaPersistenceDocTest {
             getSender().tell(c, getSelf());
 
             persistAsync(
-                String.format("evt-%s-1", c),
+                "evt-%s-1".formatted(c),
                 e -> {
                   getSender().tell(e, getSelf());
                 });
             persistAsync(
-                String.format("evt-%s-2", c),
+                "evt-%s-2".formatted(c),
                 e -> {
                   getSender().tell(e, getSelf());
                 });
@@ -458,18 +458,18 @@ public class LambdaPersistenceDocTest {
 
           private void handleCommand(String c) {
             persistAsync(
-                String.format("evt-%s-1", c),
+                "evt-%s-1".formatted(c),
                 e -> {
                   getSender().tell(e, getSelf());
                 });
             persistAsync(
-                String.format("evt-%s-2", c),
+                "evt-%s-2".formatted(c),
                 e -> {
                   getSender().tell(e, getSelf());
                 });
 
             deferAsync(
-                String.format("evt-%s-3", c),
+                "evt-%s-3".formatted(c),
                 e -> {
                   getSender().tell(e, getSelf());
                 });
@@ -521,18 +521,18 @@ public class LambdaPersistenceDocTest {
 
           private void handleCommand(String c) {
             persist(
-                String.format("evt-%s-1", c),
+                "evt-%s-1".formatted(c),
                 e -> {
                   sender().tell(e, self());
                 });
             persist(
-                String.format("evt-%s-2", c),
+                "evt-%s-2".formatted(c),
                 e -> {
                   sender().tell(e, self());
                 });
 
             defer(
-                String.format("evt-%s-3", c),
+                "evt-%s-3".formatted(c),
                 e -> {
                   sender().tell(e, self());
                 });
@@ -576,17 +576,17 @@ public class LambdaPersistenceDocTest {
                     String.class,
                     msg -> {
                       persist(
-                          String.format("%s-outer-1", msg),
+                          "%s-outer-1".formatted(msg),
                           event -> {
                             getSender().tell(event, getSelf());
-                            persist(String.format("%s-inner-1", event), replyToSender);
+                            persist("%s-inner-1".formatted(event), replyToSender);
                           });
 
                       persist(
-                          String.format("%s-outer-2", msg),
+                          "%s-outer-2".formatted(msg),
                           event -> {
                             getSender().tell(event, getSelf());
-                            persist(String.format("%s-inner-2", event), replyToSender);
+                            persist("%s-inner-2".formatted(event), replyToSender);
                           });
                     })
                 .build();
@@ -637,17 +637,17 @@ public class LambdaPersistenceDocTest {
                     String.class,
                     msg -> {
                       persistAsync(
-                          String.format("%s-outer-1", msg),
+                          "%s-outer-1".formatted(msg),
                           event -> {
                             getSender().tell(event, getSelf());
-                            persistAsync(String.format("%s-inner-1", event), replyToSender);
+                            persistAsync("%s-inner-1".formatted(event), replyToSender);
                           });
 
                       persistAsync(
-                          String.format("%s-outer-2", msg),
+                          "%s-outer-2".formatted(msg),
                           event -> {
                             getSender().tell(event, getSelf());
-                            persistAsync(String.format("%s-inner-1", event), replyToSender);
+                            persistAsync("%s-inner-1".formatted(event), replyToSender);
                           });
                     })
                 .build();

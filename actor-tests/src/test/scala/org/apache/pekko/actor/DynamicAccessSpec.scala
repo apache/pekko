@@ -13,7 +13,6 @@
 
 package org.apache.pekko.actor
 
-import scala.collection.immutable
 import scala.concurrent.Await
 import scala.concurrent.duration._
 import scala.util.{ Failure, Success, Try }
@@ -29,6 +28,20 @@ abstract class TestSuperclass {
 class TestClassWithStringConstructor(val name: String) extends TestSuperclass
 class TestClassWithDefaultConstructor extends TestSuperclass {
   override def name = "default"
+}
+class TestClassWithPrivateConstructor private () extends TestSuperclass {
+  override def name = "private"
+}
+object TestClassWithPrivateConstructor {
+  def direct(): TestClassWithPrivateConstructor = new TestClassWithPrivateConstructor()
+}
+class TestClassWithThrowingConstructor(@scala.annotation.nowarn("msg=never used") value: String)
+    extends TestSuperclass {
+  throw new IllegalArgumentException("user-bug")
+  override def name = "unreachable"
+}
+object TestDynamicAccessObject extends TestSuperclass {
+  override def name = "object"
 }
 
 class DynamicAccessSpec extends AnyWordSpec with Matchers with BeforeAndAfterAll {
@@ -74,6 +87,29 @@ class DynamicAccessSpec extends AnyWordSpec with Matchers with BeforeAndAfterAll
       dynamicAccess.classIsOnClasspath("org.apache.pekko.actor.Actor") should ===(true)
     }
 
+    "reuse constructor handles without changing private constructor access" in {
+      val clazz = classOf[TestClassWithPrivateConstructor]
+      dynamicAccess.createInstanceFor[TestClassWithPrivateConstructor](clazz, Nil).get.name should ===("private")
+      dynamicAccess.createInstanceFor[TestClassWithPrivateConstructor](clazz, Nil).get.name should ===("private")
+    }
+
+    "preserve the target exception from a failing constructor" in {
+      val result = dynamicAccess.createInstanceFor[TestClassWithThrowingConstructor](
+        classOf[TestClassWithThrowingConstructor],
+        Seq(classOf[String] -> "ignored"))
+      val exception = result.failed.get
+      exception shouldBe a[IllegalArgumentException]
+      exception.getMessage should ===("user-bug")
+    }
+
+    "reuse the Scala object field handle" in {
+      val withoutSuffix =
+        dynamicAccess.getObjectFor[TestSuperclass]("org.apache.pekko.actor.TestDynamicAccessObject").get
+      val withSuffix = dynamicAccess.getObjectFor[TestSuperclass]("org.apache.pekko.actor.TestDynamicAccessObject$").get
+      (withoutSuffix should be).theSameInstanceAs(TestDynamicAccessObject)
+      (withSuffix should be).theSameInstanceAs(TestDynamicAccessObject)
+    }
+
     def instantiateWithDefaultOrStringCtor(fqcn: String): Try[TestSuperclass] =
       // recoverWith doesn't work with scala 2.13.0-M5
       // https://github.com/scala/bug/issues/11242
@@ -81,8 +117,8 @@ class DynamicAccessSpec extends AnyWordSpec with Matchers with BeforeAndAfterAll
         case s: Success[TestSuperclass]        => s
         case Failure(_: NoSuchMethodException) =>
           dynamicAccess
-            .createInstanceFor[TestSuperclass](fqcn, immutable.Seq((classOf[String], "string ctor argument")))
-        case f: Failure[_] => f
+            .createInstanceFor[TestSuperclass](fqcn, Seq((classOf[String], "string ctor argument")))
+        case f: Failure[?] => f
       }
 
   }

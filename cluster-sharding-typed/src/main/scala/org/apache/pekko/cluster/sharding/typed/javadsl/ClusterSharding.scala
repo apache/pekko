@@ -21,6 +21,8 @@ import java.util.concurrent.CompletionStage
 import scala.annotation.nowarn
 import scala.jdk.OptionConverters._
 
+import org.jspecify.annotations.Nullable
+
 import org.apache.pekko
 import pekko.actor.typed.ActorRef
 import pekko.actor.typed.ActorSystem
@@ -41,7 +43,7 @@ trait EntityFactory[M] {
 }
 
 object ClusterSharding {
-  def get(system: ActorSystem[_]): ClusterSharding =
+  def get(system: ActorSystem[?]): ClusterSharding =
     scaladsl.ClusterSharding(system).asJava
 
   /**
@@ -86,7 +88,7 @@ object ClusterSharding {
  * in the cluster, registering the supported entity types with the [[ClusterSharding#init]]
  * method, which returns the `ShardRegion` actor reference for a named entity type.
  * Messages to the entities are always sent via that `ActorRef`, i.e. the local `ShardRegion`.
- * Messages can also be sent via the [[EntityRef]] retrieved with [[ClusterSharding#entityRefFor]],
+ * Messages can also be sent via the [[EntityRef]] retrieved with `entityRefFor`,
  * which will also send via the local `ShardRegion`.
  *
  * Some settings can be configured as described in the `pekko.cluster.sharding`
@@ -130,7 +132,7 @@ object ClusterSharding {
  * persistent (durable), e.g. with `pekko-persistence`, so that it can be recovered at the new
  * location.
  *
- * The logic that decides which shards to rebalance is defined in a plugable shard
+ * The logic that decides which shards to rebalance is defined in a pluggable shard
  * allocation strategy. The default implementation `LeastShardAllocationStrategy`
  * picks shards for handoff from the ShardRegion` with most number of previously allocated shards.
  * They will then be allocated to the `ShardRegion` with least number of previously allocated shards,
@@ -279,7 +281,7 @@ final class Entity[M, E] private (
   /**
    * Additional settings, typically loaded from configuration.
    */
-  def withSettings(newSettings: ClusterShardingSettings): Entity[M, E] =
+  def withSettings(@Nullable newSettings: ClusterShardingSettings): Entity[M, E] =
     copy(settings = Optional.ofNullable(newSettings))
 
   /**
@@ -288,7 +290,7 @@ final class Entity[M, E] private (
    * It can be useful to define a custom stop message if the entity needs to perform
    * some asynchronous cleanup or interactions before stopping.
    */
-  def withStopMessage(newStopMessage: M): Entity[M, E] =
+  def withStopMessage(@Nullable newStopMessage: M): Entity[M, E] =
     copy(stopMessage = Optional.ofNullable(newStopMessage))
 
   /**
@@ -298,7 +300,8 @@ final class Entity[M, E] private (
    * shards is then defined by `numberOfShards` in `ClusterShardingSettings`, which by default
    * is configured with `pekko.cluster.sharding.number-of-shards`.
    */
-  def withMessageExtractor[Envelope](newExtractor: ShardingMessageExtractor[Envelope, M]): Entity[M, Envelope] =
+  def withMessageExtractor[Envelope](
+      @Nullable newExtractor: ShardingMessageExtractor[Envelope, M]): Entity[M, Envelope] =
     new Entity(
       createBehavior,
       typeKey,
@@ -313,7 +316,7 @@ final class Entity[M, E] private (
   /**
    *  Run the Entity actors on nodes with the given role.
    */
-  def withRole(role: String): Entity[M, E] =
+  def withRole(@Nullable role: String): Entity[M, E] =
     copy(role = Optional.ofNullable(role))
 
   /**
@@ -322,13 +325,14 @@ final class Entity[M, E] private (
    * dataCenter does not match the data center of the current node the `ShardRegion` will be started
    * in proxy mode.
    */
-  def withDataCenter(newDataCenter: String): Entity[M, E] = copy(dataCenter = Optional.ofNullable(newDataCenter))
+  def withDataCenter(@Nullable newDataCenter: String): Entity[M, E] =
+    copy(dataCenter = Optional.ofNullable(newDataCenter))
 
   /**
    * Allocation strategy which decides on which nodes to allocate new shards,
    * [[ClusterSharding#defaultShardAllocationStrategy]] is used if this is not specified.
    */
-  def withAllocationStrategy(newAllocationStrategy: ShardAllocationStrategy): Entity[M, E] =
+  def withAllocationStrategy(@Nullable newAllocationStrategy: ShardAllocationStrategy): Entity[M, E] =
     copy(allocationStrategy = Optional.ofNullable(newAllocationStrategy))
 
   private def copy(
@@ -440,7 +444,7 @@ object EntityTypeKey {
 /**
  * A reference to an sharded Entity, which allows `ActorRef`-like usage.
  *
- * An [[EntityRef]] is NOT an [[pekko.actor.typed.ActorRef ActorRef]]–by design–in order to be explicit about the fact that the life-cycle
+ * An [[EntityRef]] is NOT a [[pekko.actor.typed.ActorRef ActorRef]]–by design–in order to be explicit about the fact that the life-cycle
  * of a sharded Entity is very different than a plain Actor. Most notably, this is shown by features of Entities
  * such as re-balancing (an active Entity to a different node) or passivation. Both of which are aimed to be completely
  * transparent to users of such Entity. In other words, if this were to be a plain ActorRef, it would be possible to
@@ -490,7 +494,7 @@ object EntityTypeKey {
   /**
    * The same as [[ask]] but only for requests that result in a response of type [[pekko.pattern.StatusReply]].
    * If the response is a [[pekko.pattern.StatusReply#success]] the returned future is completed successfully with the wrapped response.
-   * If the status response is a [[pekko.pattern.StatusReply#error]] the returned future will be failed with the
+   * If the status response is a `StatusReply.error` the returned future will be failed with the
    * exception in the error (normally a [[pekko.pattern.StatusReply.ErrorMessage]]).
    */
   def askWithStatus[Res](f: ActorRef[StatusReply[Res]] => M, timeout: Duration): CompletionStage[Res]

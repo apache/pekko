@@ -71,9 +71,9 @@ private[pekko] object LocalReceptionist extends ReceptionistBehaviorProvider {
    */
   private final case class State(
       services: TypedMultiMap[AbstractServiceKey, Service],
-      servicesPerActor: Map[ActorRef[_], Set[AbstractServiceKey]],
+      servicesPerActor: Map[ActorRef[?], Set[AbstractServiceKey]],
       subscriptions: TypedMultiMap[AbstractServiceKey, Subscriber],
-      subscriptionsPerActor: Map[ActorRef[_], Set[AbstractServiceKey]]) {
+      subscriptionsPerActor: Map[ActorRef[?], Set[AbstractServiceKey]]) {
 
     def serviceInstanceAdded[Key <: AbstractServiceKey](key: Key)(serviceInstance: ActorRef[key.Protocol]): State = {
       val newServices = services.inserted(key)(serviceInstance)
@@ -101,7 +101,7 @@ private[pekko] object LocalReceptionist extends ReceptionistBehaviorProvider {
       copy(services = newServices, servicesPerActor = newServicePerActor)
     }
 
-    def serviceInstanceRemoved(serviceInstance: ActorRef[_]): State = {
+    def serviceInstanceRemoved(serviceInstance: ActorRef[?]): State = {
       val keys = servicesPerActor.getOrElse(serviceInstance, Set.empty)
       val newServices =
         if (keys.isEmpty) services
@@ -140,7 +140,7 @@ private[pekko] object LocalReceptionist extends ReceptionistBehaviorProvider {
       copy(subscriptions = newSubscriptions, subscriptionsPerActor = newSubscriptionsPerActor)
     }
 
-    def subscriberRemoved(subscriber: ActorRef[_]): State = {
+    def subscriberRemoved(subscriber: ActorRef[?]): State = {
       val keys = subscriptionsPerActor.getOrElse(subscriber, Set.empty)
       if (keys.isEmpty) this
       else {

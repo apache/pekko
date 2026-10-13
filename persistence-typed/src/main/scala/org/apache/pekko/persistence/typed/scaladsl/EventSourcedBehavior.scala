@@ -53,7 +53,7 @@ object EventSourcedBehavior {
    */
   type EventHandler[State, Event] = (State, Event) => State
 
-  private val logPrefixSkipList = classOf[EventSourcedBehavior[_, _, _]].getName :: Nil
+  private val logPrefixSkipList = classOf[EventSourcedBehavior[?, ?, ?]].getName :: Nil
 
   /**
    * Create a `Behavior` for a persistent actor.
@@ -68,7 +68,7 @@ object EventSourcedBehavior {
       emptyState: State,
       commandHandler: (State, Command) => Effect[Event, State],
       eventHandler: (State, Event) => State): EventSourcedBehavior[Command, Event, State] = {
-    val loggerClass = LoggerClass.detectLoggerClassFromStack(classOf[EventSourcedBehavior[_, _, _]], logPrefixSkipList)
+    val loggerClass = LoggerClass.detectLoggerClassFromStack(classOf[EventSourcedBehavior[?, ?, ?]], logPrefixSkipList)
     EventSourcedBehaviorImpl(persistenceId, emptyState, commandHandler, eventHandler, loggerClass)
   }
 
@@ -82,7 +82,7 @@ object EventSourcedBehavior {
       emptyState: State,
       commandHandler: (State, Command) => ReplyEffect[Event, State],
       eventHandler: (State, Event) => State): EventSourcedBehavior[Command, Event, State] = {
-    val loggerClass = LoggerClass.detectLoggerClassFromStack(classOf[EventSourcedBehavior[_, _, _]], logPrefixSkipList)
+    val loggerClass = LoggerClass.detectLoggerClassFromStack(classOf[EventSourcedBehavior[?, ?, ?]], logPrefixSkipList)
     EventSourcedBehaviorImpl(persistenceId, emptyState, commandHandler, eventHandler, loggerClass)
   }
 
@@ -113,11 +113,11 @@ object EventSourcedBehavior {
   /**
    * The last sequence number that was persisted, can only be called from inside the handlers of an `EventSourcedBehavior`
    */
-  def lastSequenceNumber(context: ActorContext[_]): Long = {
+  def lastSequenceNumber(context: ActorContext[?]): Long = {
     @tailrec
-    def extractConcreteBehavior(beh: Behavior[_]): Behavior[_] =
+    def extractConcreteBehavior(beh: Behavior[?]): Behavior[?] =
       beh match {
-        case interceptor: InterceptorImpl[_, _] => extractConcreteBehavior(interceptor.nestedBehavior)
+        case interceptor: InterceptorImpl[?, ?] => extractConcreteBehavior(interceptor.nestedBehavior)
         case concrete                           => concrete
       }
 
@@ -187,7 +187,7 @@ object EventSourcedBehavior {
    * been persisted.
    *
    * Snapshots triggered by `snapshotWhen` will not trigger deletes of old snapshots and events if
-   * [[EventSourcedBehavior.withRetention]] with [[RetentionCriteria.snapshotEvery]] is used together with
+   * [[EventSourcedBehavior.withRetention]] with `RetentionCriteria.snapshotEvery` is used together with
    * `snapshotWhen`. Such deletes are only triggered by snapshots matching the `numberOfEvents` in the
    * [[RetentionCriteria]].
    */
@@ -205,10 +205,17 @@ object EventSourcedBehavior {
   def withTagger(tagger: Event => Set[String]): EventSourcedBehavior[Command, Event, State]
 
   /**
+   * The `tagger` function should give event tags, which will be used in persistence query.
+   * The state passed to the tagger allows for toggling a tag with one event but keep all events after it tagged
+   * based on a property or the type of the state.
+   */
+  def withTaggerForState(tagger: (State, Event) => Set[String]): EventSourcedBehavior[Command, Event, State]
+
+  /**
    * Transform the event to another type before giving to the journal. Can be used to wrap events
    * in types Journals understand but is of a different type than `Event`.
    */
-  def eventAdapter(adapter: EventAdapter[Event, _]): EventSourcedBehavior[Command, Event, State]
+  def eventAdapter(adapter: EventAdapter[Event, ?]): EventSourcedBehavior[Command, Event, State]
 
   /**
    * Transform the state to another type before giving to the journal. Can be used to transform older

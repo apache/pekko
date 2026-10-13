@@ -24,7 +24,7 @@ Java
 
 @@@div { .callout }
 
-**emits** while the provided viaFlow is runs with defined elements
+**emits** while the provided viaFlow runs with defined elements
 
 **backpressures** when the viaFlow runs for the defined elements and downstream backpressures
 

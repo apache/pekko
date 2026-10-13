@@ -14,9 +14,9 @@
 package org.apache.pekko.persistence.typed
 
 import scala.annotation.varargs
-import scala.collection.immutable
 
 import org.apache.pekko
+import pekko.annotation.DoNotInherit
 import pekko.annotation.InternalApi
 
 /**
@@ -75,8 +75,9 @@ abstract class EventAdapter[E, P] {
   def fromJournal(p: P, manifest: String): EventSeq[E]
 }
 
-sealed trait EventSeq[+A] {
-  def events: immutable.Seq[A]
+/** Not for user extension */
+@DoNotInherit sealed trait EventSeq[+A] {
+  def events: Seq[A]
   def isEmpty: Boolean = events.isEmpty
   def nonEmpty: Boolean = events.nonEmpty
   def size: Int
@@ -96,24 +97,24 @@ object EventSeq {
   }
 
   /** Scala API */
-  final def apply[A](events: immutable.Seq[A]): EventSeq[A] = EventsSeq(events)
+  final def apply[A](events: Seq[A]): EventSeq[A] = EventsSeq(events)
 
 }
 
 /** INTERNAL API */
 @InternalApi private[pekko] final case class SingleEventSeq[A](event: A) extends EventSeq[A] {
-  override def events: immutable.Seq[A] = List(event)
+  override def events: Seq[A] = List(event)
   override def size: Int = 1
 }
 
 /** INTERNAL API */
 @InternalApi private[pekko] case object EmptyEventSeq extends EventSeq[Nothing] {
-  override def events: immutable.Seq[Nothing] = Nil
+  override def events: Seq[Nothing] = Nil
   override def size: Int = 0
 }
 
 /** INTERNAL API */
-@InternalApi private[pekko] final case class EventsSeq[A](override val events: immutable.Seq[A]) extends EventSeq[A] {
+@InternalApi private[pekko] final case class EventsSeq[A](override val events: Seq[A]) extends EventSeq[A] {
   override def size: Int = events.size
 }
 

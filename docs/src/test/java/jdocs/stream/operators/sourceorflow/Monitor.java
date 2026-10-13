@@ -14,7 +14,7 @@
 package jdocs.stream.operators.sourceorflow;
 
 import java.time.Duration;
-import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
@@ -52,7 +52,7 @@ public class Monitor {
 
     // #monitor
     Source<Integer, FlowMonitor<Integer>> monitoredSource =
-        Source.fromIterator(() -> Arrays.asList(0, 1, 2, 3, 4, 5).iterator())
+        Source.fromIterator(() -> List.of(0, 1, 2, 3, 4, 5).iterator())
             .throttle(5, Duration.ofSeconds(1))
             .monitorMat(Keep.right());
 

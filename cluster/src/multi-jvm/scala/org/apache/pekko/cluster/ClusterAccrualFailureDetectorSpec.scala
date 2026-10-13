@@ -100,7 +100,8 @@ abstract class ClusterAccrualFailureDetectorSpec
       enterBarrier("after-2")
     }
 
-    "mark node as 'unavailable' if a node in the cluster is shut down (and its heartbeats stops)" taggedAs LongRunningTest in {
+    "mark node as 'unavailable' if a node in the cluster is shut down (and its heartbeats stops)" taggedAs
+    LongRunningTest in {
       runOn(first) {
         testConductor.exit(third, 0).await
       }

@@ -15,7 +15,6 @@ package org.apache.pekko.persistence.journal.chaos
 
 import java.util.concurrent.ThreadLocalRandom
 
-import scala.collection.immutable
 import scala.concurrent.Future
 import scala.util.Try
 import scala.util.control.NonFatal
@@ -50,7 +49,7 @@ class ChaosJournal extends AsyncWriteJournal {
 
   def random = ThreadLocalRandom.current
 
-  override def asyncWriteMessages(messages: immutable.Seq[AtomicWrite]): Future[immutable.Seq[Try[Unit]]] =
+  override def asyncWriteMessages(messages: Seq[AtomicWrite]): Future[Seq[Try[Unit]]] =
     try Future.successful {
         if (shouldFail(writeFailureRate)) throw new WriteFailedException(messages.flatMap(_.payload))
         else

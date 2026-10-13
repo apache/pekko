@@ -35,10 +35,16 @@ import pekko.util.ByteString
   val Undefined = Int.MinValue
 
   /**
-   * The first 4 bytes of a new connection must be these `0x64 0x75 0x75 0x64` (AKKA).
+   * The default 4-byte magic header for Pekko (PEKK).
    * The purpose of the "magic" is to detect and reject weird (accidental) accesses.
    */
-  val Magic = ByteString('A'.toByte, 'K'.toByte, 'K'.toByte, 'A'.toByte)
+  val DefaultMagic = ByteString('P'.toByte, 'E'.toByte, 'K'.toByte, 'K'.toByte)
+
+  /**
+   * The legacy 4-byte magic header from Akka (AKKA).
+   * Used for backward compatibility with Pekko 1.x.
+   */
+  val LegacyMagic = ByteString('A'.toByte, 'K'.toByte, 'K'.toByte, 'A'.toByte)
 
   /**
    * When establishing the connection this header is sent first.
@@ -46,12 +52,12 @@ import pekko.util.ByteString
    * inbound streams.
    *
    * The purpose of the "magic" is to detect and reject weird (accidental) accesses.
-   * The magic 4 bytes are `0x64 0x75 0x75 0x64` (AKKA).
+   * The magic 4 bytes are configurable via `pekko.remote.artery.advanced.tcp-magic`.
    *
-   * The streamId` is encoded as 1 byte.
+   * The `streamId` is encoded as 1 byte.
    */
-  def encodeConnectionHeader(streamId: Int): ByteString =
-    Magic ++ ByteString.fromArrayUnsafe(Array(streamId.toByte))
+  def encodeConnectionHeader(magic: ByteString, streamId: Int): ByteString =
+    magic ++ ByteString.fromArrayUnsafe(Array(streamId.toByte))
 
   /**
    * Each frame starts with the frame header that contains the length
@@ -69,8 +75,14 @@ import pekko.util.ByteString
 /**
  * INTERNAL API
  */
-@InternalApi private[pekko] class TcpFraming(flightRecorder: RemotingFlightRecorder = NoOpRemotingFlightRecorder)
+@InternalApi private[pekko] class TcpFraming(
+    acceptedMagic: Seq[ByteString] = List(TcpFraming.DefaultMagic),
+    flightRecorder: RemotingFlightRecorder = NoOpRemotingFlightRecorder,
+    maximumFrameSize: Int = Int.MaxValue,
+    maximumLargeFrameSize: Int = Int.MaxValue)
     extends ByteStringParser[EnvelopeBuffer] {
+
+  private val magicLength = acceptedMagic.head.length
 
   override def createLogic(inheritedAttributes: Attributes): GraphStageLogic = new ParsingLogic {
 
@@ -79,26 +91,42 @@ import pekko.util.ByteString
 
     case object ReadMagic extends Step {
       override def parse(reader: ByteReader): ParseResult[EnvelopeBuffer] = {
-        val magic = reader.take(TcpFraming.Magic.length)
-        if (magic == TcpFraming.Magic)
+        val receivedMagic = reader.take(magicLength)
+        if (acceptedMagic.contains(receivedMagic))
           ParseResult(None, ReadStreamId)
         else
           throw new FramingException(
             "Stream didn't start with expected magic bytes, " +
-            s"got [${(magic ++ reader.remainingData).take(10).map("%02x".format(_)).mkString(" ")}] " +
+            s"got [${java.util.HexFormat.ofDelimiter(" ").formatHex((receivedMagic ++ reader.remainingData).take(10).toArray)}] " +
             "Connection is rejected. Probably invalid accidental access.")
       }
     }
     case object ReadStreamId extends Step {
-      override def parse(reader: ByteReader): ParseResult[EnvelopeBuffer] =
-        ParseResult(None, ReadFrame(reader.readByte()))
+      override def parse(reader: ByteReader): ParseResult[EnvelopeBuffer] = {
+        val streamId = reader.readByte()
+        // A connection carries a single stream for its lifetime; the large-message
+        // stream is allowed bigger frames than the control and ordinary streams.
+        val maxFrameSize =
+          if (streamId == ArteryTransport.LargeStreamId) maximumLargeFrameSize else maximumFrameSize
+        ParseResult(None, ReadFrame(streamId, maxFrameSize))
+      }
     }
-    case class ReadFrame(streamId: Int) extends Step {
+    case class ReadFrame(streamId: Int, maxFrameSize: Int) extends Step {
       override def onTruncation(): Unit =
         failStage(new FramingException("Stream finished but there was a truncated final frame in the buffer"))
 
       override def parse(reader: ByteReader): ParseResult[EnvelopeBuffer] = {
         val frameLength = reader.readIntLE()
+        // frameLength is read from the wire before any data is buffered; reject an
+        // out-of-range value here so a peer cannot drive a huge allocation (which
+        // would be a fatal OutOfMemoryError on the shared inbound stream) by
+        // declaring an oversized or negative frame. FramingException tears down
+        // only this connection.
+        if (frameLength < 0 || frameLength > maxFrameSize)
+          throw new FramingException(
+            s"Frame length [$frameLength] for stream [$streamId] is out of range, " +
+            s"must be between 0 and the maximum frame size [$maxFrameSize]. " +
+            "Connection is rejected.")
         val buffer = createBuffer(reader.take(frameLength))
         ParseResult(Some(buffer), this)
       }

@@ -13,10 +13,13 @@
 
 package org.apache.pekko.stream
 
+import org.apache.pekko.annotation.DoNotInherit
+
 /**
  * Represents a mode that decides how to deal exceed rate for Throttle operator
+ * Not for user extension
  */
-sealed abstract class ThrottleMode
+@DoNotInherit sealed abstract class ThrottleMode
 
 object ThrottleMode {
 

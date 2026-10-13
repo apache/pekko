@@ -18,11 +18,12 @@ import java.util.concurrent.{ CompletableFuture, CompletionStage }
 import java.util.stream.Collector
 
 import scala.annotation.unchecked.uncheckedVariance
-import scala.collection.immutable
 import scala.concurrent.ExecutionContext
 import scala.jdk.FutureConverters._
 import scala.jdk.OptionConverters._
 import scala.util.Try
+
+import org.jspecify.annotations.Nullable
 
 import org.apache.pekko
 import pekko._
@@ -156,7 +157,7 @@ object Sink {
    * result container, optionally transformed into a final representation after all input elements have been processed.
    * The ``Collector`` can also do reduction at the end. Reduction processing is performed sequentially.
    */
-  def collect[U, In](collector: Collector[In, _ <: Any, U]): Sink[In, CompletionStage[U]] =
+  def collect[U, In](collector: Collector[In, ? <: Any, U]): Sink[In, CompletionStage[U]] =
     StreamConverters.javaCollector(() => collector)
 
   /**
@@ -433,13 +434,13 @@ object Sink {
    * Combine several sinks with fan-out strategy like `Broadcast` or `Balance` and returns `Sink`.
    */
   def combine[T, U](
-      output1: Sink[U, _],
-      output2: Sink[U, _],
-      rest: java.util.List[Sink[U, _]],
+      output1: Sink[U, ?],
+      output2: Sink[U, ?],
+      @Nullable rest: java.util.List[Sink[U, ?]],
       fanOutStrategy: function.Function[java.lang.Integer, Graph[UniformFanOutShape[T, U], NotUsed]])
       : Sink[T, NotUsed] = {
     import scala.jdk.CollectionConverters._
-    val seq = if (rest ne null) rest.asScala.map(_.asScala).toSeq else immutable.Seq()
+    val seq = if (rest ne null) rest.asScala.map(_.asScala).toSeq else Seq()
     new Sink(scaladsl.Sink.combine(output1.asScala, output2.asScala, seq: _*)(num => fanOutStrategy.apply(num)))
   }
 
@@ -462,20 +463,21 @@ object Sink {
    * @since 1.1.0
    */
   def combine[T, U, M](
-      sinks: java.util.List[_ <: Graph[SinkShape[U], M]],
+      @Nullable sinks: java.util.List[? <: Graph[SinkShape[U], M]],
       fanOutStrategy: function.Function[java.lang.Integer, Graph[UniformFanOutShape[T, U], NotUsed]])
       : Sink[T, java.util.List[M]] = {
-    val seq = if (sinks ne null) CollectionUtil.toSeq(sinks).collect {
+    import pekko.util.Collections._
+    val seq = if (sinks ne null) sinks.collectToImmutableSeq {
       case sink: Sink[U @unchecked, M @unchecked] => sink.asScala
       case other                                  => other
     }
-    else immutable.Seq()
+    else Seq()
     import scala.jdk.CollectionConverters._
     new Sink(scaladsl.Sink.combine(seq)(size => fanOutStrategy(size)).mapMaterializedValue(_.asJava))
   }
 
   /**
-   * Creates a `Sink` that is materialized as an [[pekko.stream.javadsl.SinkQueueWithCancel]].
+   * Creates a `Sink` that is materialized as a [[pekko.stream.javadsl.SinkQueueWithCancel]].
    * [[pekko.stream.javadsl.SinkQueueWithCancel.pull]] method is pulling element from the stream and returns ``CompletionStage[Option[T]]``.
    * `CompletionStage` completes when element is available.
    *
@@ -496,7 +498,7 @@ object Sink {
     new Sink(scaladsl.Sink.queue[T](maxConcurrentPulls).mapMaterializedValue(_.asJava))
 
   /**
-   * Creates a `Sink` that is materialized as an [[pekko.stream.javadsl.SinkQueueWithCancel]].
+   * Creates a `Sink` that is materialized as a [[pekko.stream.javadsl.SinkQueueWithCancel]].
    * [[pekko.stream.javadsl.SinkQueueWithCancel.pull]] method is pulling element from the stream and returns ``CompletionStage[Option[T]]``.
    * `CompletionStage` completes when element is available.
    *
@@ -523,6 +525,26 @@ object Sink {
    */
   def completionStageSink[T, M](future: CompletionStage[Sink[T, M]]): Sink[T, CompletionStage[M]] =
     lazyCompletionStageSink[T, M](() => future)
+
+  /**
+   * Turn a `CompletionStage[Sink]` into a Sink that will consume the values of the source when the future completes
+   * successfully. If the `CompletionStage` is completed with a failure the stream is failed.
+   *
+   * Unlike [[completionStageSink]] and [[lazyCompletionStageSink]], this operator materializes the inner sink as
+   * soon as the future completes, even if no elements have arrived yet. This means empty streams complete normally
+   * rather than failing with [[NeverMaterializedException]]. At most one element that arrives before the future
+   * completes is buffered.
+   *
+   * The materialized future value is completed with the materialized value of the inner sink once it has been
+   * materialized, or failed if the `CompletionStage` itself fails or if materialization of the inner sink fails.
+   * Upstream failures or downstream cancellations that occur before the inner sink is materialized are propagated
+   * through the inner sink rather than failing the materialized value directly.
+   *
+   * @since 1.5.0
+   */
+  def eagerCompletionStageSink[T, M](future: CompletionStage[Sink[T, M]]): Sink[T, CompletionStage[M]] =
+    new Sink(scaladsl.Sink.eagerFutureSink(future.asScala.map(_.asScala)(ExecutionContext.parasitic)))
+      .mapMaterializedValue(_.asJava)
 
   /**
    * Defers invoking the `create` function to create a sink until there is a first element passed from upstream.
@@ -608,6 +630,9 @@ final class Sink[In, Mat](delegate: scaladsl.Sink[In, Mat]) extends Graph[SinkSh
    * Useful for when you need a materialized value of a Sink when handing it out to someone to materialize it for you.
    *
    * Note that the `ActorSystem` can be used as the `systemProvider` parameter.
+   *
+   * Note that `preMaterialize` is implemented through a reactive streams `Subscriber` which means that a buffer is
+   * introduced and that errors are not propagated upstream but are turned into cancellations without error details.
    */
   def preMaterialize(systemProvider: ClassicActorSystemProvider)
       : japi.Pair[Mat @uncheckedVariance, Sink[In @uncheckedVariance, NotUsed]] = {
@@ -622,6 +647,9 @@ final class Sink[In, Mat](delegate: scaladsl.Sink[In, Mat]) extends Graph[SinkSh
    * Useful for when you need a materialized value of a Sink when handing it out to someone to materialize it for you.
    *
    * Prefer the method taking an ActorSystem unless you have special requirements.
+   *
+   * Note that `preMaterialize` is implemented through a reactive streams `Subscriber` which means that a buffer is
+   * introduced and that errors are not propagated upstream but are turned into cancellations without error details.
    */
   def preMaterialize(
       materializer: Materializer): japi.Pair[Mat @uncheckedVariance, Sink[In @uncheckedVariance, NotUsed]] = {

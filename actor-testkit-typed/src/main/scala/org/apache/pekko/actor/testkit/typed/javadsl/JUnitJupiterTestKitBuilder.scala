@@ -26,13 +26,13 @@ import com.typesafe.config.Config
 
 final class JUnitJupiterTestKitBuilder() {
 
-  var system: Option[ActorSystem[_]] = None
+  var system: Option[ActorSystem[?]] = None
 
   var customConfig: Config = ApplicationTestConfig
 
   var name: String = TestKitUtils.testNameFromCallStack(classOf[JUnitJupiterTestKitBuilder])
 
-  def withSystem(system: ActorSystem[_]): JUnitJupiterTestKitBuilder = {
+  def withSystem(system: ActorSystem[?]): JUnitJupiterTestKitBuilder = {
     this.system = Some(system)
     this
   }

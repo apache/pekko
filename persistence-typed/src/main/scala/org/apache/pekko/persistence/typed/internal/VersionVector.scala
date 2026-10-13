@@ -12,10 +12,12 @@
  */
 
 package org.apache.pekko.persistence.typed.internal
+
 import scala.annotation.tailrec
 import scala.collection.immutable.TreeMap
 
-import org.apache.pekko.annotation.InternalApi
+import org.apache.pekko
+import pekko.annotation.InternalApi
 
 /**
  * INTERNAL API

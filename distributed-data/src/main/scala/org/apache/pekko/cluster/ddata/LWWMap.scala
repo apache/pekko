@@ -174,7 +174,7 @@ final class LWWMap[A, B] private[pekko] (private[pekko] val underlying: ORMap[A,
   override def toString: String = s"LWW$entries" // e.g. LWWMap(a -> 1, b -> 2)
 
   override def equals(o: Any): Boolean = o match {
-    case other: LWWMap[_, _] => underlying == other.underlying
+    case other: LWWMap[?, ?] => underlying == other.underlying
     case _                   => false
   }
 
@@ -186,4 +186,7 @@ object LWWMapKey {
 }
 
 @SerialVersionUID(1L)
-final case class LWWMapKey[A, B](_id: String) extends Key[LWWMap[A, B]](_id) with ReplicatedDataSerialization
+final case class LWWMapKey[A, B](_id: String) extends Key[LWWMap[A, B]](_id) with ReplicatedDataSerialization {
+  override def withId(newId: Key.KeyId): LWWMapKey[A, B] =
+    LWWMapKey(newId)
+}

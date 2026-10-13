@@ -44,7 +44,7 @@ class StatusReplySpec extends PekkoSpec with ScalaFutures {
       }
     }
     "not throw exception if null" in {
-      (null: StatusReply[_]) match {
+      (null: StatusReply[?]) match {
         case StatusReply.Success(_) => fail()
         case StatusReply.Error(_)   => fail()
         case _                      =>
@@ -64,6 +64,10 @@ class StatusReplySpec extends PekkoSpec with ScalaFutures {
       }
     }
 
+    "include exception type in toString for non text-error" in {
+      StatusReply.Error(TestException("boho!")).toString should include("TestException")
+    }
+
     "flatten a Future[StatusReply]" in {
       import system.dispatcher
       StatusReply.flattenStatusFuture(Future(StatusReply.Success("woho"))).futureValue should ===("woho")
@@ -73,6 +77,73 @@ class StatusReplySpec extends PekkoSpec with ScalaFutures {
       StatusReply.flattenStatusFuture(Future(StatusReply.Error(TestException("boo")))).failed.futureValue should ===(
         TestException("boo"))
 
+    }
+
+    "create from Try success" in {
+      import scala.util.Success
+      val reply = StatusReply.fromTry(Success("woho"))
+      reply.isSuccess should ===(true)
+      reply.getValue should ===("woho")
+    }
+
+    "create from Try failure with message" in {
+      import scala.util.Failure
+      val reply = StatusReply.fromTry(Failure(TestException("boo")))
+      reply.isError should ===(true)
+      reply.getError.getMessage should ===("boo")
+      reply.getError shouldBe a[StatusReply.ErrorMessage]
+    }
+
+    "create from Try failure keeping exception" in {
+      import scala.util.Failure
+      val reply = StatusReply.fromTryKeepException(Failure(TestException("boo")))
+      reply.isError should ===(true)
+      reply.getError should ===(TestException("boo"))
+    }
+
+    "create from Try success via fromTryKeepException" in {
+      import scala.util.Success
+      val reply = StatusReply.fromTryKeepException(Success("woho"))
+      reply.isSuccess should ===(true)
+      reply.getValue should ===("woho")
+    }
+
+    "create from Try failure with null message" in {
+      import scala.util.Failure
+      val reply = StatusReply.fromTry(Failure(new RuntimeException()))
+      reply.isError should ===(true)
+      reply.getError.getMessage should ===("java.lang.RuntimeException")
+    }
+
+    "create from Callable success" in {
+      val reply = StatusReply.fromCallable[String](() => "woho")
+      reply.isSuccess should ===(true)
+      reply.getValue should ===("woho")
+    }
+
+    "create from Callable failure with message" in {
+      val reply = StatusReply.fromCallable[String](() => throw TestException("boo"))
+      reply.isError should ===(true)
+      reply.getError.getMessage should ===("boo")
+      reply.getError shouldBe a[StatusReply.ErrorMessage]
+    }
+
+    "create from CallableKeepException success" in {
+      val reply = StatusReply.fromCallableKeepException[String](() => "woho")
+      reply.isSuccess should ===(true)
+      reply.getValue should ===("woho")
+    }
+
+    "create from CallableKeepException failure keeping exception" in {
+      val reply = StatusReply.fromCallableKeepException[String](() => throw TestException("boo"))
+      reply.isError should ===(true)
+      reply.getError should ===(TestException("boo"))
+    }
+
+    "create from Callable failure with null message" in {
+      val reply = StatusReply.fromCallable[String](() => throw new RuntimeException())
+      reply.isError should ===(true)
+      reply.getError.getMessage should ===("java.lang.RuntimeException")
     }
   }
 

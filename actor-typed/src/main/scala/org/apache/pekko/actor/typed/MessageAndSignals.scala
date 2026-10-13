@@ -38,8 +38,9 @@ trait Signal
  * Lifecycle signal that is fired upon restart of the Actor before replacing
  * the behavior with the fresh one (i.e. this signal is received within the
  * behavior that failed).
+ * Not for user extension
  */
-sealed abstract class PreRestart extends Signal
+@DoNotInherit sealed abstract class PreRestart extends Signal
 case object PreRestart extends PreRestart {
   def instance: PreRestart = this
 }
@@ -48,8 +49,9 @@ case object PreRestart extends PreRestart {
  * Lifecycle signal that is fired after this actor and all its child actors
  * (transitively) have terminated. The [[Terminated]] signal is only sent to
  * registered watchers after this signal has been processed.
+ * Not for user extension
  */
-sealed abstract class PostStop extends Signal
+@DoNotInherit sealed abstract class PostStop extends Signal
 // comment copied onto object for better hints in IDEs
 /**
  * Lifecycle signal that is fired after this actor and all its child actors

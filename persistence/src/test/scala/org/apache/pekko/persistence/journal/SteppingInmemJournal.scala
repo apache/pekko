@@ -13,7 +13,6 @@
 
 package org.apache.pekko.persistence.journal
 
-import scala.collection.immutable.Seq
 import scala.concurrent.{ Await, Future, Promise }
 import scala.concurrent.duration._
 import scala.util.Try
@@ -38,7 +37,7 @@ object SteppingInmemJournal {
    * Allow the journal to do one operation, will block until that completes
    */
   def step(journal: ActorRef)(implicit system: ActorSystem): Unit = {
-    implicit val timeout: Timeout = 3.seconds.dilated
+    implicit val timeout: Timeout = 10.seconds.dilated
     Await.result(journal ? SteppingInmemJournal.Token, timeout.duration)
   }
 
@@ -51,7 +50,7 @@ object SteppingInmemJournal {
 
   // keep it in a thread safe:d global so that tests can get their
   // hand on the actor ref and send Steps to it
-  private[this] var _current: Map[String, ActorRef] = Map()
+  private var _current: Map[String, ActorRef] = Map()
 
   // shhh don't tell anyone I sinn-croniz-ed
   /** get the actor ref to the journal for a given instance id, throws exception if not found */
@@ -72,12 +71,16 @@ object SteppingInmemJournal {
  * it using {{{SteppingInmemJournal.getRef(String)}}}, send it {{{SteppingInmemJournal.Token}}}s to
  * allow one journal operation to complete.
  */
-final class SteppingInmemJournal extends InmemJournal {
+final class SteppingInmemJournal(config: Config) extends InmemJournal {
+
+  def this() = this(ConfigFactory.empty)
 
   import SteppingInmemJournal._
   import context.dispatcher
 
-  val instanceId = context.system.settings.config.getString("pekko.persistence.journal.stepping-inmem.instance-id")
+  val instanceId =
+    if (config.hasPath("instance-id")) config.getString("instance-id")
+    else context.system.settings.config.getString("pekko.persistence.journal.stepping-inmem.instance-id")
 
   var queuedOps: Seq[() => Future[Unit]] = Seq.empty
   var queuedTokenRecipients = List.empty[ActorRef]

@@ -28,7 +28,7 @@ Java
 
 **emits** when element is available from the currently consumed upstream
 
-**backpressures** when upstream backpressures
+**backpressures** when downstream backpressures
 
 **completes** when both upstreams have completed
 

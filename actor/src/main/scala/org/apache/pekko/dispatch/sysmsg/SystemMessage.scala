@@ -202,7 +202,7 @@ private[pekko] class EarliestFirstSystemMessageList(val head: SystemMessage) ext
 private[pekko] sealed trait SystemMessage extends PossiblyHarmful with Serializable {
   // Next fields are only modifiable via the SystemMessageList value class
   @transient
-  private[sysmsg] var next: SystemMessage = _
+  private[sysmsg] var next: SystemMessage = null
 
   def unlink(): Unit = next = null
 

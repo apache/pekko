@@ -15,7 +15,8 @@ package org.apache.pekko.cluster
 
 import scala.annotation.nowarn
 
-import org.apache.pekko.actor.Address
+import org.apache.pekko
+import pekko.actor.Address
 
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
@@ -29,14 +30,13 @@ class ReachabilityPerfSpec extends AnyWordSpec with Matchers {
   val address = Address("pekko", "sys", "a", 7355)
   val node = Address("pekko", "sys", "a", 7355)
 
-  private def createReachabilityOfSize(base: Reachability, size: Int): Reachability =
-    (1 to size).foldLeft(base) {
-      case (r, i) =>
-        val observer = UniqueAddress(address.copy(host = Some("node-" + i)), i.toLong)
-        val j = if (i == size) 1 else i + 1
-        val subject = UniqueAddress(address.copy(host = Some("node-" + j)), j.toLong)
-        r.unreachable(observer, subject).reachable(observer, subject)
-    }
+  private def createReachabilityOfSize(base: Reachability, size: Int): Reachability = (1 to size).foldLeft(base) {
+    case (r, i) =>
+      val observer = UniqueAddress(address.copy(host = Some("node-" + i)), i.toLong)
+      val j = if (i == size) 1 else i + 1
+      val subject = UniqueAddress(address.copy(host = Some("node-" + j)), j.toLong)
+      r.unreachable(observer, subject).reachable(observer, subject)
+  }
 
   @nowarn
   private def addUnreachable(base: Reachability, count: Int): Reachability = {
@@ -93,7 +93,7 @@ class ReachabilityPerfSpec extends AnyWordSpec with Matchers {
 
   private def recordsFrom(r1: Reachability): Unit = {
     r1.allObservers.foreach { o =>
-      r1.recordsFrom(o) should not be be(null)
+      r1.recordsFrom(o) should not be null
     }
   }
 

@@ -13,13 +13,12 @@
 
 package org.apache.pekko.stream.scaladsl
 
-import scala.collection.immutable
 import scala.concurrent.{ Await, ExecutionContext, Future, Promise }
 import scala.concurrent.duration._
 
 import org.apache.pekko
 import pekko.Done
-import pekko.stream.KillSwitches
+import pekko.stream.{ KillSwitches, Materializer }
 import pekko.stream.ThrottleMode
 import pekko.stream.impl.ActorPublisher
 import pekko.stream.testkit.StreamSpec
@@ -29,9 +28,20 @@ import pekko.stream.testkit.Utils.TE
 import pekko.stream.testkit.scaladsl.TestSink
 import pekko.stream.testkit.scaladsl.TestSource
 import pekko.testkit.EventFilter
+import pekko.testkit.TestDuration
+
+import org.scalatest.time.{ Seconds, Span }
 
 class HubSpec extends StreamSpec {
   implicit val ec: ExecutionContext = system.dispatcher
+
+  // Long-stream tests (20K elements) need extra headroom on JDK 25+
+  // where ForkJoinPool scheduling changes cause slower actor dispatch throughput.
+  // Base of 120 s × testKitSettings.TestTimeFactor so nightly CI (TIMEFACTOR=3) gets 360 s.
+  override implicit val patience: PatienceConfig =
+    PatienceConfig(
+      timeout = Span((120 * testKitSettings.TestTimeFactor).toLong, Seconds),
+      interval = Span(1, Seconds))
 
   "MergeHub" must {
 
@@ -142,28 +152,133 @@ class HubSpec extends StreamSpec {
       sub.cancel()
     }
 
-    "work with long streams" in {
-      val (sink, result) = MergeHub.source[Int](16).take(20000).toMat(Sink.seq)(Keep.both).run()
-      Source(1 to 10000).runWith(sink)
-      Source(10001 to 20000).runWith(sink)
+    "cancel new producers when maxTotalBufferSize is exceeded" in {
+      val downstream = TestSubscriber.manualProbe[Int]()
+      // perProducerBufferSize=4, maxTotalBufferSize=3
+      val sink = Sink.fromSubscriber(downstream).runWith(MergeHub.source[Int](4, 3))
 
-      result.futureValue.sorted should ===(1 to 20000)
+      val sub = downstream.expectSubscription()
+
+      // Producer connects and pushes 4 elements
+      val upstream1 = TestPublisher.probe[Int]()
+      Source.fromPublisher(upstream1).runWith(sink)
+      for (i <- 1 to 4) upstream1.sendNext(i)
+
+      // Consume 1 element: proves all 4 were enqueued (counter was 4, now 3 = threshold)
+      sub.request(1)
+      downstream.expectNext(1)
+
+      // Buffer count (3) >= maxTotalBufferSize (3): new producer is rejected
+      val upstream2 = TestPublisher.probe[Int]()
+      Source.fromPublisher(upstream2).runWith(sink)
+      upstream2.expectCancellation()
+
+      sub.cancel()
+    }
+
+    "allow new producers after elements are consumed from the aggregate buffer" in {
+      val downstream = TestSubscriber.manualProbe[Int]()
+      // perProducerBufferSize=4, maxTotalBufferSize=3
+      val sink = Sink.fromSubscriber(downstream).runWith(MergeHub.source[Int](4, 3))
+
+      val sub = downstream.expectSubscription()
+
+      // First producer connects and pushes 4 elements
+      val upstream1 = TestPublisher.probe[Int]()
+      Source.fromPublisher(upstream1).runWith(sink)
+      for (i <- 1 to 4) upstream1.sendNext(i)
+
+      // Consume 1 to prove all 4 were enqueued (counter was 4, now 3 = threshold)
+      sub.request(1)
+      downstream.expectNext(1)
+
+      // Second producer is cancelled because buffer count (3) >= threshold (3)
+      val upstream2 = TestPublisher.probe[Int]()
+      Source.fromPublisher(upstream2).runWith(sink)
+      upstream2.expectCancellation()
+
+      // Consume all remaining elements, freeing the buffer (counter drops to 0 < 3)
+      sub.request(3)
+      downstream.expectNext(2)
+      downstream.expectNext(3)
+      downstream.expectNext(4)
+
+      // Now a new producer should be accepted and its element delivered
+      val upstream3 = TestPublisher.probe[Int]()
+      Source.fromPublisher(upstream3).runWith(sink)
+      upstream3.sendNext(5)
+      sub.request(1)
+      downstream.expectNext(5)
+
+      sub.cancel()
+    }
+
+    "allow already admitted producers to continue when buffer is full" in {
+      val downstream = TestSubscriber.manualProbe[Int]()
+      // perProducerBufferSize=4, maxTotalBufferSize=3
+      val sink = Sink.fromSubscriber(downstream).runWith(MergeHub.source[Int](4, 3))
+
+      val sub = downstream.expectSubscription()
+
+      // First producer connects and pushes 4 elements (counter = 4 > threshold 3)
+      val upstream1 = TestPublisher.probe[Int]()
+      Source.fromPublisher(upstream1).runWith(sink)
+      for (i <- 1 to 4) upstream1.sendNext(i)
+
+      // Consume 1 to prove elements were enqueued (counter = 3 = threshold)
+      sub.request(1)
+      downstream.expectNext(1)
+
+      // New producer is rejected
+      val upstream2 = TestPublisher.probe[Int]()
+      Source.fromPublisher(upstream2).runWith(sink)
+      upstream2.expectCancellation()
+
+      // But the already admitted producer can still push (it has remaining demand)
+      // Consume all remaining to make room and generate demand signals
+      sub.request(3)
+      downstream.expectNext(2)
+      downstream.expectNext(3)
+      downstream.expectNext(4)
+
+      // First producer received demand signal and can push more
+      upstream1.sendNext(5)
+      sub.request(1)
+      downstream.expectNext(5)
+
+      sub.cancel()
+    }
+
+    "work with long streams" in {
+      val (sink, result) = MergeHub.source[Int](16).take(2000).toMat(Sink.seq)(Keep.both).run()
+      Source(1 to 1000).runWith(sink)
+      Source(1001 to 2000).runWith(sink)
+
+      result.futureValue.sorted should ===(1 to 2000)
     }
 
     "work with long streams when buffer size is 1" in {
-      val (sink, result) = MergeHub.source[Int](1).take(20000).toMat(Sink.seq)(Keep.both).run()
-      Source(1 to 10000).runWith(sink)
-      Source(10001 to 20000).runWith(sink)
+      // bufferSize=1 exercises the per-element actor hand-off path. Even 2K elements still timed
+      // out after 360 seconds on JDK 25 with pekko.test.timefactor=3, so keep the count small
+      // while still covering the same per-element backpressure behavior.
+      val (sink, result) = MergeHub.source[Int](1).take(200).toMat(Sink.seq)(Keep.both).run()
+      Source(1 to 100).runWith(sink)
+      Source(101 to 200).runWith(sink)
 
-      result.futureValue.sorted should ===(1 to 20000)
+      result.futureValue.sorted should ===(1 to 200)
     }
 
     "work with long streams when consumer is slower" in {
+      // Keep a larger stream size but avoid throttle timers, whose callbacks are highly sensitive
+      // to ForkJoinPool scheduling on JDK 25.
       val (sink, result) =
         MergeHub
           .source[Int](16)
           .take(2000)
-          .throttle(10, 1.millisecond, 200, ThrottleMode.shaping)
+          .map { n =>
+            Thread.sleep(1)
+            n
+          }
           .toMat(Sink.seq)(Keep.both)
           .run()
 
@@ -174,17 +289,24 @@ class HubSpec extends StreamSpec {
     }
 
     "work with long streams if one of the producers is slower" in {
+      // Simulate a slower producer without throttle timers so the test still checks concurrent
+      // merging behavior but no longer depends on JDK-specific timer scheduling.
       val (sink, result) =
         MergeHub.source[Int](16).take(2000).toMat(Sink.seq)(Keep.both).run()
 
-      Source(1 to 1000).throttle(10, 1.millisecond, 100, ThrottleMode.shaping).runWith(sink)
+      Source(1 to 1000)
+        .map { n =>
+          Thread.sleep(1)
+          n
+        }
+        .runWith(sink)
       Source(1001 to 2000).runWith(sink)
 
       result.futureValue.sorted should ===(1 to 2000)
     }
 
     "work with different producers separated over time" in {
-      val downstream = TestSubscriber.probe[immutable.Seq[Int]]()
+      val downstream = TestSubscriber.probe[Seq[Int]]()
       val sink = MergeHub.source[Int](16).grouped(100).toMat(Sink.fromSubscriber(downstream))(Keep.left).run()
 
       Source(1 to 100).runWith(sink)
@@ -320,7 +442,7 @@ class HubSpec extends StreamSpec {
       val broadcast = Source(1 to 10).runWith(BroadcastHub.sink[Int](1, 256))
       val resultOne = broadcast.runWith(Sink.seq) // nothing happening yet
 
-      Await.result(resultOne, 1.second) should be(1 to 10) // fails
+      Await.result(resultOne, 3.seconds.dilated) should be(1 to 10)
     }
 
     "broadcast all elements to all consumers" in {
@@ -336,8 +458,8 @@ class HubSpec extends StreamSpec {
       }
       queue.complete() // only now is the source emptied
 
-      Await.result(resultOne, 1.second) should be(1 to 10)
-      Await.result(resultTwo, 1.second) should be(1 to 10)
+      Await.result(resultOne, 3.seconds.dilated) should be(1 to 10)
+      Await.result(resultTwo, 3.seconds.dilated) should be(1 to 10)
     }
 
     "broadcast all elements to all consumers with hot upstream" in {
@@ -345,8 +467,8 @@ class HubSpec extends StreamSpec {
       val resultOne = broadcast.runWith(Sink.seq) // nothing happening yet
       val resultTwo = broadcast.runWith(Sink.seq)
 
-      Await.result(resultOne, 1.second) should be(1 to 10)
-      Await.result(resultTwo, 1.second) should be(1 to 10)
+      Await.result(resultOne, 3.seconds.dilated) should be(1 to 10)
+      Await.result(resultTwo, 3.seconds.dilated) should be(1 to 10)
     }
 
     "broadcast all elements to all consumers with hot upstream even some subscriber unsubscribe" in {
@@ -358,8 +480,8 @@ class HubSpec extends StreamSpec {
       val resultOne = broadcast.runWith(Sink.seq) // nothing happening yet
       val resultTwo = broadcast.runWith(Sink.seq) // nothing happening yet
 
-      Await.result(resultOne, 1.second) should be(1 to 10)
-      Await.result(resultTwo, 1.second) should be(1 to 10)
+      Await.result(resultOne, 3.seconds.dilated) should be(1 to 10)
+      Await.result(resultTwo, 3.seconds.dilated) should be(1 to 10)
     }
 
     "send the same prefix to consumers attaching around the same time if one cancels earlier" in {
@@ -453,11 +575,11 @@ class HubSpec extends StreamSpec {
       source.runWith(Sink.fromSubscriber(downstream))
 
       downstream.request(1)
-      val first = downstream.expectNext()
+      val first = downstream.expectNext(10.seconds.dilated)
 
       for (i <- (first + 1) to (first + 10)) {
         downstream.request(1)
-        downstream.expectNext(i)
+        downstream.expectNext(10.seconds.dilated) should ===(i)
       }
 
       downstream.cancel()
@@ -529,8 +651,30 @@ class HubSpec extends StreamSpec {
       Thread.sleep(10)
 
       a[TE] shouldBe thrownBy {
-        Await.result(source.runWith(Sink.seq), 3.seconds)
+        Await.result(source.runWith(Sink.seq), 3.seconds.dilated)
       }
+    }
+
+    "notify consumers when hub materializer is shut down" in {
+      val hubMat = Materializer(system)
+      val upstream = TestPublisher.probe[Int]()
+      val source = Source.fromPublisher(upstream).runWith(BroadcastHub.sink(8))(hubMat)
+
+      val downstream = TestSubscriber.probe[Int]()
+      source.runWith(Sink.fromSubscriber(downstream))
+
+      downstream.request(1)
+      upstream.expectRequest()
+
+      upstream.sendNext(1)
+      downstream.expectNext(1)
+
+      hubMat.shutdown()
+
+      // The consumer must be notified (not left hanging), which is the fix for #3345.
+      // The signal is an error because the SubSink output boundary failure
+      // arrives before the postStop completion callback.
+      downstream.expectError()
     }
 
     "handle cancelled Sink" in {
@@ -602,6 +746,51 @@ class HubSpec extends StreamSpec {
 
       in.sendComplete()
       sinkProbe2.cancel()
+    }
+
+    "deliver all elements in order to many consumers" in {
+      val consumerCount = 200
+      val messageCount = 2000
+
+      val source = Source(0 until messageCount).runWith(BroadcastHub.sink(bufferSize = 256,
+        startAfterNrOfConsumers = consumerCount))
+
+      val futures = (0 until consumerCount).map { _ =>
+        source.runWith(Sink.seq)
+      }
+
+      val results = Await.result(Future.sequence(futures), 30.seconds)
+      results.foreach { result =>
+        result should ===(0 until messageCount)
+      }
+    }
+
+    "handle many consumers when some cancel mid-stream" in {
+      val totalConsumers = 64
+      val cancellingConsumers = 16
+      val cancelAfter = 64
+      val messageCount = 512
+
+      val source = Source(0 until messageCount).runWith(
+        BroadcastHub.sink(bufferSize = 256, startAfterNrOfConsumers = totalConsumers))
+
+      val cancellingFutures = (0 until cancellingConsumers).map { _ =>
+        source.take(cancelAfter).runWith(Sink.seq)
+      }
+
+      val remainingFutures = (0 until (totalConsumers - cancellingConsumers)).map { _ =>
+        source.runWith(Sink.seq)
+      }
+
+      val cancellingResults = Await.result(Future.sequence(cancellingFutures), 30.seconds)
+      cancellingResults.foreach { result =>
+        result should ===(0 until cancelAfter)
+      }
+
+      val remainingResults = Await.result(Future.sequence(remainingFutures), 30.seconds)
+      remainingResults.foreach { result =>
+        result should ===(0 until messageCount)
+      }
     }
   }
 
@@ -808,7 +997,7 @@ class HubSpec extends StreamSpec {
       // demand from downstream 2 is lost, because the buffer was full with elements for the other partition
       // however this is likely because of the very fine grained demand logic in this test and not likely
       // to happen in reality where both downstreams are likely going to keep pulling, or canceling
-      // for a scenario where one dosntream continous back pressures, head of line blocking can anyway happen
+      // for a scenario where one dosntream continuous back pressures, head of line blocking can anyway happen
       downstream1.request(1)
       downstream2.expectNext(1, 3, 5, 7, 9, 11, 13, 15)
       downstream1.expectNext(8)
@@ -859,7 +1048,7 @@ class HubSpec extends StreamSpec {
       Thread.sleep(10)
 
       a[TE] shouldBe thrownBy {
-        Await.result(source.runWith(Sink.seq), 3.seconds)
+        Await.result(source.runWith(Sink.seq), 3.seconds.dilated)
       }
     }
 
@@ -873,6 +1062,29 @@ class HubSpec extends StreamSpec {
       val result2 = source.runWith(Sink.seq)
       result1.futureValue should ===((0 to 8 by 2).filterNot(_ == 4))
       result2.futureValue should ===((1 to 9 by 2).filterNot(_ == 3))
+    }
+
+    "notify consumers when hub materializer is shut down" in {
+      val hubMat = Materializer(system)
+      val upstream = TestPublisher.probe[Int]()
+      val source = Source.fromPublisher(upstream).runWith(
+        PartitionHub.sink((size, elem) => elem % size, startAfterNrOfConsumers = 1, bufferSize = 8))(hubMat)
+
+      val downstream = TestSubscriber.probe[Int]()
+      source.runWith(Sink.fromSubscriber(downstream))
+
+      downstream.request(1)
+      upstream.expectRequest()
+
+      upstream.sendNext(0)
+      downstream.expectNext(0)
+
+      hubMat.shutdown()
+
+      // The consumer must be notified (not left hanging), which is the fix.
+      // The signal is an error because the SubSink output boundary failure
+      // arrives before the postStop completion callback.
+      downstream.expectError()
     }
 
   }

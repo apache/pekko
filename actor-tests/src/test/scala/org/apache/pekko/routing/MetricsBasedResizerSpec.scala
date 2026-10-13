@@ -150,6 +150,10 @@ class MetricsBasedResizerSpec extends PekkoSpec(ResizerSpec.config) with Default
 
       val router = TestRouter(routees(2))
       router.sendToAll(await = true)
+      // Send additional messages to ensure mailbox is non-empty when checked,
+      // avoiding a race condition where currentMessage could be null momentarily
+      router.mockSend(await = false, routeeIdx = 0)
+      router.mockSend(await = false, routeeIdx = 1)
 
       resizer.reportMessageCount(router.routees, router.msgs.size)
       resizer.record.underutilizationStreak shouldBe empty
@@ -187,8 +191,13 @@ class MetricsBasedResizerSpec extends PekkoSpec(ResizerSpec.config) with Default
         underutilizationStreak = Some(UnderUtilizationStreak(start = LocalDateTime.now, highestUtilization = 1)))
 
       val router = TestRouter(routees(3))
+      // Send messages to routee 0 and 1, await ensures the actor started processing
       router.mockSend(await = true, routeeIdx = 0)
       router.mockSend(await = true, routeeIdx = 1)
+      // Send additional messages to ensure mailbox is non-empty when checked,
+      // avoiding a race condition where currentMessage could be null momentarily
+      router.mockSend(await = false, routeeIdx = 0)
+      router.mockSend(await = false, routeeIdx = 1)
 
       resizer.reportMessageCount(router.routees, router.msgs.size)
       resizer.record.underutilizationStreak.get.highestUtilization shouldBe 2
@@ -226,12 +235,12 @@ class MetricsBasedResizerSpec extends PekkoSpec(ResizerSpec.config) with Default
     "record the performance log with the correct pool size" in {
       val resizer = DefaultOptimalSizeExploringResizer()
       val router = TestRouter(routees(2))
-      val msgs = router.sendToAll(await = true)
+      val msgs1 = router.sendToAll(await = true)
+      val msgs2 = router.sendToAll(await = false)
       resizer.reportMessageCount(router.routees, router.msgs.size)
-      msgs.head.second.open()
+      msgs1.head.second.open()
 
-      router.mockSend(await = true, routeeIdx = 0)
-      router.mockSend(await = false, routeeIdx = 1)
+      Await.ready(msgs2.head.first, timeout.duration)
       resizer.reportMessageCount(router.routees, router.msgs.size)
       resizer.performanceLog.get(2) should not be empty
 

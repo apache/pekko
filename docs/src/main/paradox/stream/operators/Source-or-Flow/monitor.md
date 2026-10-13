@@ -6,8 +6,10 @@ Materializes to a `FlowMonitor` that monitors messages flowing through or comple
 
 ## Signature
 
-@apidoc[Source.monitor](Source) { scala="#monitor[Mat2]()(combine:(Mat,org.apache.pekko.stream.FlowMonitor[Out])=&gt;Mat2):FlowOpsMat.this.ReprMat[Out,Mat2]" java="#monitor()" }
-@apidoc[Flow.monitor](Flow) { scala="#monitor[Mat2]()(combine:(Mat,org.apache.pekko.stream.FlowMonitor[Out])=&gt;Mat2):FlowOpsMat.this.ReprMat[Out,Mat2]" java="#monitor()" }
+@apidoc[Source.monitor](Source) { scala="#monitor:FlowOpsMat.this.ReprMat[Out,(Mat,org.apache.pekko.stream.FlowMonitor[Out])]" java="#monitor()" }
+@apidoc[Flow.monitor](Flow) { scala="#monitor:FlowOpsMat.this.ReprMat[Out,(Mat,org.apache.pekko.stream.FlowMonitor[Out])]" java="#monitor()" }
+@apidoc[Source.monitorMat](Source) { scala="#monitorMat[Mat2](combine:(Mat,org.apache.pekko.stream.FlowMonitor[Out])=&gt;Mat2):FlowOpsMat.this.ReprMat[Out,Mat2]" java="#monitorMat(org.apache.pekko.japi.function.Function2)" }
+@apidoc[Flow.monitorMat](Flow) { scala="#monitorMat[Mat2](combine:(Mat,org.apache.pekko.stream.FlowMonitor[Out])=&gt;Mat2):FlowOpsMat.this.ReprMat[Out,Mat2]" java="#monitorMat(org.apache.pekko.japi.function.Function2)" }
 
 
 ## Description
@@ -21,7 +23,7 @@ and get information about the stream.
 
 The example below uses the `monitorMat` variant of `monitor`. The only difference between the two operators is 
 that `monitorMat` has a `combine` argument so we can decide which materialization value to keep. In the sample 
-below be `Keep.right` so only the `FlowMonitor[Int]` is returned. 
+below it is `Keep.right` so only the `FlowMonitor[Int]` is returned. 
 
 Scala
 :   @@snip [Monitor.scala](/docs/src/test/scala/docs/stream/operators/sourceorflow/Monitor.scala) { #monitor }

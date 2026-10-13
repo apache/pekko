@@ -15,7 +15,6 @@ package org.apache.pekko.cluster
 
 import org.apache.pekko
 import pekko.actor.Address
-import pekko.annotation.ApiMayChange
 import pekko.annotation.InternalApi
 import pekko.cluster.sbr.DowningStrategy
 import pekko.event.LogMarker
@@ -25,7 +24,6 @@ import pekko.event.LogMarker
  * No guarantee that it will remain binary compatible, but the marker names and properties
  * are considered public API and will not be changed without notice.
  */
-@ApiMayChange
 object ClusterLogMarker {
 
   /**

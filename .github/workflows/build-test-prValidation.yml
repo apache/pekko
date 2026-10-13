@@ -26,7 +26,7 @@ jobs:
       DEVELOCITY_ACCESS_KEY: ${{ secrets.DEVELOCITY_ACCESS_KEY }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v6.0.0
+        uses: actions/checkout@v7.0.1
         with:
           # we don't know what commit the last tag was it's safer to get entire repo so previousStableVersion resolves
           fetch-depth: 0
@@ -34,16 +34,16 @@ jobs:
           persist-credentials: false
 
       - name: Cache Coursier cache
-        uses: coursier/cache-action@bebeeb0e6f48ebad66d3783946588ecf43114433 # 6.4.8
+        uses: coursier/cache-action@95e5b1029b6b86e7bac033ee44a0697d8a527d2d # 8.1.1
 
       - name: Setup Java 17
-        uses: actions/setup-java@v5
+        uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: 17
 
       - name: Install sbt
-        uses: sbt/setup-sbt@3e125ece5c3e5248e18da9ed8d2cce3d335ec8dd # v1.1.14
+        uses: sbt/setup-sbt@6158cb0903b8ceeae04f830055f3155e1b6a5ad7 # v1.5.11
 
       - name: Code style check
         run: |-
@@ -51,15 +51,18 @@ jobs:
           sbt \
           -Dsbt.override.build.repos=false \
           -Dsbt.log.noformat=false \
-          javafmtCheckAll
+          checkCodeStyle
   pull-request-validation:
     name: Check / Tests
     runs-on: ubuntu-22.04
     env:
       DEVELOCITY_ACCESS_KEY: ${{ secrets.DEVELOCITY_ACCESS_KEY }}
+    strategy:
+      matrix:
+        scalaVersion: ["scala213", "scala3", "next"]
     steps:
       - name: Checkout
-        uses: actions/checkout@v6.0.0
+        uses: actions/checkout@v7.0.1
         with:
           # we don't know what commit the last tag was it's safer to get entire repo so previousStableVersion resolves
           fetch-depth: 0
@@ -67,22 +70,23 @@ jobs:
           persist-credentials: false
 
       - name: Setup Java 17
-        uses: actions/setup-java@v5
+        uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: 17
 
       - name: Install sbt
-        uses: sbt/setup-sbt@3e125ece5c3e5248e18da9ed8d2cce3d335ec8dd # v1.1.14
+        uses: sbt/setup-sbt@6158cb0903b8ceeae04f830055f3155e1b6a5ad7 # v1.5.11
 
       - name: Cache Coursier cache
-        uses: coursier/cache-action@bebeeb0e6f48ebad66d3783946588ecf43114433 # 6.4.8
+        uses: coursier/cache-action@95e5b1029b6b86e7bac033ee44a0697d8a527d2d # 8.1.1
 
       - name: Enable jvm-opts
         run: cp .jvmopts-ci .jvmopts
 
       - name: sbt validateCompile
         run: |-
+          scala_version="$(bash .github/scripts/resolve-scala-version.sh "${{ matrix.scalaVersion }}")"
           sbt \
           -Dpekko.mima.enabled=false \
           -Dpekko.test.multi-in-test=false \
@@ -94,10 +98,11 @@ jobs:
           -Dpekko.test.multi-node=false \
           -Dsbt.log.noformat=false \
           -Dpekko.log.timestamps=true \
-          validateCompile
+          "++ ${scala_version}! validateCompile"
 
       - name: sbt validatePullRequest
         run: |-
+          scala_version="$(bash .github/scripts/resolve-scala-version.sh "${{ matrix.scalaVersion }}")"
           sbt \
           -Dpekko.mima.enabled=false \
           -Dpekko.test.multi-in-test=false \
@@ -110,7 +115,7 @@ jobs:
           -Dsbt.log.noformat=false \
           -Dpekko.log.timestamps=true \
           -Dio.netty.leakDetection.level=PARANOID \
-          validatePullRequest
+          "++ ${scala_version}! validatePullRequest"
 
   pekko-classic-remoting-tests:
     name: Pekko Classic Remoting Tests
@@ -123,7 +128,7 @@ jobs:
           - cluster/test distributed-data/test cluster-tools/test cluster-metrics/test
     steps:
       - name: Checkout
-        uses: actions/checkout@v6.0.0
+        uses: actions/checkout@v7.0.1
         with:
           # we don't know what commit the last tag was it's safer to get entire repo so previousStableVersion resolves
           fetch-depth: 0
@@ -131,16 +136,16 @@ jobs:
           persist-credentials: false
 
       - name: Setup Java 17
-        uses: actions/setup-java@v5
+        uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: 17
 
       - name: Install sbt
-        uses: sbt/setup-sbt@3e125ece5c3e5248e18da9ed8d2cce3d335ec8dd # v1.1.14
+        uses: sbt/setup-sbt@6158cb0903b8ceeae04f830055f3155e1b6a5ad7 # v1.5.11
 
       - name: Cache Coursier cache
-        uses: coursier/cache-action@bebeeb0e6f48ebad66d3783946588ecf43114433 # 6.4.8
+        uses: coursier/cache-action@95e5b1029b6b86e7bac033ee44a0697d8a527d2d # 8.1.1
 
       - name: Enable jvm-opts
         run: cp .jvmopts-ci .jvmopts
@@ -151,7 +156,7 @@ jobs:
         # note that this is not running any multi-jvm tests because multi-in-test=false
         run: |-
           sbt \
-          -Djava.security.egd=file:/dev/./urandom \
+          -Djava.security.egd=file:/dev/urandom \
           -Dpekko.remote.artery.enabled=off \
           -Dpekko.test.timefactor=2 \
           -Dpekko.actor.testkit.typed.timefactor=2 \
@@ -161,13 +166,13 @@ jobs:
           clean ${{ matrix.command }}
           
   jdk-21-extra-tests:
-    name: Java 21 Extra Tests (including all tests that need Java 9+)
+    name: Java 21 Extra Tests
     runs-on: ubuntu-22.04
     env:
       DEVELOCITY_ACCESS_KEY: ${{ secrets.DEVELOCITY_ACCESS_KEY }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v6.0.0
+        uses: actions/checkout@v7.0.1
         with:
           # we don't know what commit the last tag was it's safer to get entire repo so previousStableVersion resolves
           fetch-depth: 0
@@ -175,21 +180,21 @@ jobs:
           persist-credentials: false
 
       - name: Setup Java 21
-        uses: actions/setup-java@v5
+        uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: 21
 
       - name: Install sbt
-        uses: sbt/setup-sbt@3e125ece5c3e5248e18da9ed8d2cce3d335ec8dd # v1.1.14
+        uses: sbt/setup-sbt@6158cb0903b8ceeae04f830055f3155e1b6a5ad7 # v1.5.11
 
       - name: Cache Coursier cache
-        uses: coursier/cache-action@bebeeb0e6f48ebad66d3783946588ecf43114433 # 6.4.8
+        uses: coursier/cache-action@95e5b1029b6b86e7bac033ee44a0697d8a527d2d # 8.1.1
 
       - name: Enable jvm-opts
         run: cp .jvmopts-ci .jvmopts
 
-      - name: sbt TestJdk9/test
+      - name: sbt TestJdk21/test
         run: |-
           sbt \
           -Dpekko.mima.enabled=false \
@@ -203,4 +208,4 @@ jobs:
           -Dsbt.log.noformat=false \
           -Dpekko.log.timestamps=true \
           -Dio.netty.leakDetection.level=PARANOID \
-          TestJdk9/test        
+          TestJdk21/test

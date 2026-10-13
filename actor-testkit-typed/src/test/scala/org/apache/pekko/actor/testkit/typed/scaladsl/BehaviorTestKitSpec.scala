@@ -64,6 +64,8 @@ object BehaviorTestKitSpec {
     case class CancelScheduleCommand(key: Any) extends Command
     case class IsTimerActive(key: Any, replyTo: ActorRef[Boolean]) extends Command
     case class AskForCookiesFrom(distributor: ActorRef[CookieDistributor.Command]) extends Command
+    case class ScheduleOnceCommand(delay: FiniteDuration, target: ActorRef[String], message: String,
+        replyTo: ActorRef[pekko.actor.Cancellable]) extends Command
 
     val init: Behavior[Command] = Behaviors.withTimers { timers =>
       Behaviors
@@ -126,7 +128,11 @@ object BehaviorTestKitSpec {
               replyTo ! Done
               Behaviors.same
             case CreateMessageAdapter(messageClass, f, replyTo) =>
-              val adaptor = context.messageAdapter(f)(ClassTag(messageClass))
+              def createAdapter[U](messageClass: Class[U], f: U => Command): ActorRef[U] = {
+                implicit val classTag: ClassTag[U] = ClassTag(messageClass)
+                context.messageAdapter(f)
+              }
+              val adaptor = createAdapter(messageClass, f)
               replyTo.foreach(_ ! adaptor.unsafeUpcast)
               Behaviors.same
             case Log(what) =>
@@ -164,6 +170,10 @@ object BehaviorTestKitSpec {
                 case scala.util.Success(cfy) => Log(s"Got ${cfy.nrCookies} cookies from distributor")
                 case scala.util.Failure(ex)  => Log(s"Failed to get cookies: ${ex.getMessage}")
               }
+              Behaviors.same
+            case ScheduleOnceCommand(delay, target, message, replyTo) =>
+              val cancellable = context.scheduleOnce(delay, target, message)
+              replyTo ! cancellable
               Behaviors.same
             case unexpected =>
               throw new RuntimeException(s"Unexpected command: $unexpected")
@@ -210,7 +220,7 @@ class BehaviorTestKitSpec extends AnyWordSpec with Matchers with LogCapturing {
     "allow assertions on effect type" in {
       val testkit = BehaviorTestKit[Parent.Command](Parent.init)
       testkit.run(SpawnAnonymous(1))
-      val spawnAnonymous = testkit.expectEffectType[Effect.SpawnedAnonymous[_]]
+      val spawnAnonymous = testkit.expectEffectType[Effect.SpawnedAnonymous[?]]
       spawnAnonymous.props should ===(Props.empty)
     }
 
@@ -401,7 +411,7 @@ class BehaviorTestKitSpec extends AnyWordSpec with Matchers with LogCapturing {
       val sessionRef =
         testkit.runAsk[ActorRef[String]](SpawnSession(_, h.ref)).receiveReply()
 
-      val s = testkit.expectEffectType[SpawnedAnonymous[_]]
+      val s = testkit.expectEffectType[SpawnedAnonymous[?]]
       // must be able to get the created ref, even without explicit reply
       s.ref shouldBe sessionRef
 
@@ -423,7 +433,7 @@ class BehaviorTestKitSpec extends AnyWordSpec with Matchers with LogCapturing {
       testkit.expectEffect(Stopped(child.childName))
 
       testkit.run(SpawnChild)
-      val newChild = testkit.expectEffectType[Spawned[_]]
+      val newChild = testkit.expectEffectType[Spawned[?]]
       child.childName shouldBe newChild.childName
     }
   }
@@ -526,6 +536,30 @@ class BehaviorTestKitSpec extends AnyWordSpec with Matchers with LogCapturing {
 
       testkit.run(CancelScheduleCommand("abc"))
       testkit.expectEffect(Effect.TimerCancelled("abc"))
+    }
+  }
+
+  "BehaviorTestKit's scheduleOnce" must {
+    "return a Cancellable that follows the Cancellable contract" in {
+      val testkit = BehaviorTestKit[Parent.Command](Parent.init)
+      val target = TestInbox[String]("target")
+      val replyTo = TestInbox[pekko.actor.Cancellable]("cancellable")
+      val delay = 42.seconds
+
+      testkit.run(ScheduleOnceCommand(delay, target.ref, "hello", replyTo.ref))
+
+      testkit.expectEffectPF {
+        case Effect.Scheduled(`delay`, _, "hello") =>
+      }
+
+      val cancellable = replyTo.receiveMessage()
+      cancellable.isCancelled shouldBe false
+
+      cancellable.cancel() shouldBe true
+      cancellable.isCancelled shouldBe true
+
+      cancellable.cancel() shouldBe false
+      cancellable.isCancelled shouldBe true
     }
   }
 

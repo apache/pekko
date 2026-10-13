@@ -36,7 +36,7 @@ import org.apache.pekko.stream.javadsl.RunnableGraph;
 import java.util.concurrent.CompletableFuture;
 // #maybe
 
-import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 // #imports
@@ -49,13 +49,13 @@ public class SourceDocExamples {
     final ActorSystem system = null;
 
     // #source-from-example
-    Source<Integer, NotUsed> ints = Source.from(Arrays.asList(0, 1, 2, 3, 4, 5));
+    Source<Integer, NotUsed> ints = Source.from(List.of(0, 1, 2, 3, 4, 5));
     ints.runForeach(System.out::println, system);
 
     String text =
         "Perfection is finally attained not when there is no longer more to add,"
             + "but when there is no longer anything to take away.";
-    Source<String, NotUsed> words = Source.from(Arrays.asList(text.split("\\s")));
+    Source<String, NotUsed> words = Source.from(List.of(text.split("\\s")));
     words.runForeach(System.out::println, system);
     // #source-from-example
   }

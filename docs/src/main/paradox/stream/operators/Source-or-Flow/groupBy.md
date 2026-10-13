@@ -22,9 +22,9 @@ of closing these elements might get lost.
 
 @@@ warning
 
-If `allowClosedSubstreamRecreation` is set to `false` (default behavior) the operators keeps track of all
+If `allowClosedSubstreamRecreation` is set to `false` (default behavior) the operator keeps track of all
 keys of streams that have already been closed. If you expect an infinite number of keys this can cause
-memory issues. Elements belonging to those keys are drained directly and not send to the substream.
+memory issues. Elements belonging to those keys are drained directly and not sent to the substream.
 
 @@@
 
@@ -41,7 +41,8 @@ Java
 @@@div { .callout }
 
 **emits** an element for which the grouping function returns a group that has not yet been created. Emits the new group
-there is an element pending for a group whose substream backpressures
+
+**backpressures** when there is an element pending for a group whose substream backpressures
 
 **completes** when upstream completes (Until the end of stream it is not possible to know whether new substreams will be needed or not)
 

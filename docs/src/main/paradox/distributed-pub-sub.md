@@ -47,15 +47,8 @@ same side of a network partition.
 You can send messages via the mediator on any node to registered actors on
 any other node.
 
-There a two different modes of message delivery, explained in the sections
+There are two different modes of message delivery, explained in the sections
 @ref:[Publish](#distributed-pub-sub-publish) and @ref:[Send](#distributed-pub-sub-send) below.
-
-@@@ div { .group-scala }
-
-A more comprehensive sample is available in the
-tutorial named [Pekko Clustered PubSub with Scala!](https://github.com/typesafehub/activator-pekko-clustering).
-
-@@@
 
 <a id="distributed-pub-sub-publish"></a>
 ## Publish
@@ -236,4 +229,4 @@ pekko.extensions = ["org.apache.pekko.cluster.pubsub.DistributedPubSub"]
 As in @ref:[Message Delivery Reliability](general/message-delivery-reliability.md) of Pekko, message delivery guarantee in distributed pub sub modes is **at-most-once delivery**.
 In other words, messages can be lost over the wire.
 
-If you are looking for at-least-once delivery guarantee, we recommend [Pekko Connectors]($pekko.doc.dns$/docs/pekko-connectors-kafka/current/).
+If you are looking for at-least-once delivery guarantee, we recommend [Pekko Connectors Kafka]($pekko.doc.dns$/docs/pekko-connectors-kafka/current/).

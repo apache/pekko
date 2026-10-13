@@ -13,16 +13,21 @@
 
 package org.apache.pekko.cluster.ddata
 
+import org.apache.pekko
+import pekko.cluster.ddata.Key.UnspecificKey
+
 object Key {
 
   /**
    * Extract the [[Key#id]].
    */
-  def unapply(k: Key[_]): Option[String] = Some(k.id)
+  def unapply(k: Key[?]): Option[String] = Some(k.id)
 
   private[pekko] type KeyR = Key[ReplicatedData]
 
   type KeyId = String
+
+  final case class UnspecificKey(_id: KeyId) extends Key[ReplicatedData](_id) with ReplicatedDataSerialization
 
 }
 
@@ -36,8 +41,11 @@ object Key {
  */
 abstract class Key[+T <: ReplicatedData](val id: Key.KeyId) extends Serializable {
 
+  def withId(newId: Key.KeyId): Key[ReplicatedData] =
+    UnspecificKey(newId)
+
   override final def equals(o: Any): Boolean = o match {
-    case k: Key[_] => id == k.id
+    case k: Key[?] => id == k.id
     case _         => false
   }
 

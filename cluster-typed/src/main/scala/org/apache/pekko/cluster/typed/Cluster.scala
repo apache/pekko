@@ -13,7 +13,9 @@
 
 package org.apache.pekko.cluster.typed
 
-import scala.collection.immutable
+import java.util.concurrent.CompletionStage
+
+import scala.concurrent.Future
 
 import org.apache.pekko
 import pekko.actor.Address
@@ -24,6 +26,7 @@ import pekko.cluster._
 import pekko.cluster.ClusterEvent.{ ClusterDomainEvent, CurrentClusterState }
 import pekko.cluster.typed.internal.AdapterClusterImpl
 import pekko.japi.Util
+import pekko.util.Version
 
 /**
  * Messages for subscribing to changes in the cluster state
@@ -111,7 +114,7 @@ object Join {
  * When it has successfully joined it must be restarted to be able to join another
  * cluster or to join the same cluster again.
  */
-final case class JoinSeedNodes(seedNodes: immutable.Seq[Address]) extends ClusterCommand {
+final case class JoinSeedNodes(seedNodes: Seq[Address]) extends ClusterCommand {
   seedNodes.foreach(_.checkHostCharacters())
 
   /**
@@ -126,6 +129,30 @@ final case class JoinSeedNodes(seedNodes: immutable.Seq[Address]) extends Cluste
    */
   def this(seedNodes: java.util.List[Address]) = this(Util.immutableSeq(seedNodes))
 
+}
+
+/**
+ * Scala API: If the `appVersion` is read from an external system (e.g. Kubernetes) it can be defined after
+ * system startup but before joining by completing the `appVersion` `Future`. In that case,
+ * `SetAppVersionLater` should be sent before [[Join]] or [[JoinSeedNodes]]. It's fine to send
+ * `Join` or `JoinSeedNodes` immediately afterwards (before the `Future` is completed). The join will
+ * then wait for the `appVersion` to be completed.
+ */
+final case class SetAppVersionLater(appVersion: Future[Version]) extends ClusterCommand
+
+object SetAppVersionLater {
+
+  /**
+   * Java API: If the `appVersion` is read from an external system (e.g. Kubernetes) it can be defined after
+   * system startup but before joining by completing the `appVersion` `CompletionStage`. In that case,
+   * `SetAppVersionLater` should be sent before [[Join]] or [[JoinSeedNodes]]. It's fine to send
+   * `Join` or `JoinSeedNodes` immediately afterwards (before the `CompletionStage` is completed). The join will
+   * then wait for the `appVersion` to be completed.
+   */
+  def create(appVersion: CompletionStage[Version]): SetAppVersionLater = {
+    import scala.jdk.FutureConverters._
+    SetAppVersionLater(appVersion.asScala)
+  }
 }
 
 /**
@@ -185,12 +212,12 @@ case object PrepareForFullClusterShutdown extends PrepareForFullClusterShutdown 
  */
 object Cluster extends ExtensionId[Cluster] {
 
-  def createExtension(system: ActorSystem[_]): Cluster = new AdapterClusterImpl(system)
+  def createExtension(system: ActorSystem[?]): Cluster = new AdapterClusterImpl(system)
 
   /**
    * Java API
    */
-  def get(system: ActorSystem[_]): Cluster = apply(system)
+  def get(system: ActorSystem[?]): Cluster = apply(system)
 }
 
 /**
@@ -223,7 +250,7 @@ abstract class Cluster extends Extension {
 }
 
 object ClusterSetup {
-  def apply[T <: Extension](createExtension: ActorSystem[_] => Cluster): ClusterSetup =
+  def apply[T <: Extension](createExtension: ActorSystem[?] => Cluster): ClusterSetup =
     new ClusterSetup(createExtension(_))
 
 }
@@ -233,5 +260,5 @@ object ClusterSetup {
  * to replace the default implementation of the [[Cluster]] extension. Intended
  * for tests that need to replace extension with stub/mock implementations.
  */
-final class ClusterSetup(createExtension: java.util.function.Function[ActorSystem[_], Cluster])
+final class ClusterSetup(createExtension: java.util.function.Function[ActorSystem[?], Cluster])
     extends ExtensionSetup[Cluster](Cluster, createExtension)

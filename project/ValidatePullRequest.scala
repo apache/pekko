@@ -36,7 +36,7 @@ object PekkoValidatePullRequest extends AutoPlugin {
 
   override lazy val projectConfigurations = Seq(ValidatePR)
 
-  lazy val additionalTasks = settingKey[Seq[TaskKey[_]]]("Additional tasks for pull request validation")
+  lazy val additionalTasks = settingKey[Seq[TaskKey[?]]]("Additional tasks for pull request validation")
 
   override lazy val globalSettings = Seq(credentials ++= {
       // todo this should probably be supplied properly
@@ -123,4 +123,13 @@ object UnidocWithPrValidation extends AutoPlugin {
 
   override lazy val trigger = noTrigger
   override lazy val projectSettings = Seq(additionalTasks += Compile / unidoc)
+}
+
+object MetaInfLicenseFilesWithPrValidation extends AutoPlugin {
+  import AddMetaInfLicenseFiles.autoImport._
+  import PekkoValidatePullRequest._
+
+  override lazy val trigger = allRequirements
+  override lazy val requires = PekkoValidatePullRequest && AddMetaInfLicenseFiles
+  override lazy val projectSettings = Seq(additionalTasks += Compile / checkPackageBinMetaInfLegalFiles)
 }

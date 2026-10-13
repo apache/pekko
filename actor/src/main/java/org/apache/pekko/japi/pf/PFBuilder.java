@@ -17,7 +17,7 @@ import org.apache.pekko.japi.function.Function;
 import org.apache.pekko.japi.function.Predicate;
 
 /**
- * A builder for {@link scala.PartialFunction}.
+ * A builder for {@code scala.PartialFunction}.
  *
  * @param <I> the input type, that this PartialFunction will be applied to
  * @param <R> the return type, that the results of the application will have

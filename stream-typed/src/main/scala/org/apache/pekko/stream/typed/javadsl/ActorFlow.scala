@@ -47,8 +47,8 @@ object ActorFlow {
    * still be in the mailbox, so defaulting to sending the second one a bit earlier than when first ask has replied maintains
    * a slightly healthier throughput.
    *
-   * The operator fails with an [[pekko.stream.WatchedActorTerminatedException]] if the target actor is terminated,
-   * or with an [[java.util.concurrent.TimeoutException]] in case the ask exceeds the timeout passed in.
+   * The operator fails with a [[pekko.stream.WatchedActorTerminatedException]] if the target actor is terminated,
+   * or with a [[java.util.concurrent.TimeoutException]] in case the ask exceeds the timeout passed in.
    *
    * Adheres to the [[pekko.stream.ActorAttributes.SupervisionStrategy]] attribute.
    *
@@ -76,8 +76,8 @@ object ActorFlow {
       .asJava
 
   /**
-   * Use for messages whose response is known to be a [[pekko.pattern.StatusReply]]. When a [[pekko.pattern.StatusReply#success]] response
-   * arrives the future is completed with the wrapped value, if a [[pekko.pattern.StatusReply#error]] arrives the future is instead
+   * Use for messages whose response is known to be a [[pekko.pattern.StatusReply]]. When a `StatusReply.success` response
+   * arrives the future is completed with the wrapped value, if a `StatusReply.error` arrives the future is instead
    * failed.
    */
   def askWithStatus[I, Q, A](
@@ -103,8 +103,8 @@ object ActorFlow {
    *
    * otherwise `Nothing` will be assumed, which is most likely not what you want.
    *
-   * The operator fails with an [[pekko.stream.WatchedActorTerminatedException]] if the target actor is terminated,
-   * or with an [[java.util.concurrent.TimeoutException]] in case the ask exceeds the timeout passed in.
+   * The operator fails with a [[pekko.stream.WatchedActorTerminatedException]] if the target actor is terminated,
+   * or with a [[java.util.concurrent.TimeoutException]] in case the ask exceeds the timeout passed in.
    *
    * Adheres to the [[pekko.stream.ActorAttributes.SupervisionStrategy]] attribute.
    *
@@ -132,8 +132,8 @@ object ActorFlow {
       .asJava
 
   /**
-   * Use for messages whose response is known to be a [[pekko.pattern.StatusReply]]. When a [[pekko.pattern.StatusReply#success]] response
-   * arrives the future is completed with the wrapped value, if a [[pekko.pattern.StatusReply#error]] arrives the future is instead
+   * Use for messages whose response is known to be a [[pekko.pattern.StatusReply]]. When a `StatusReply.success` response
+   * arrives the future is completed with the wrapped value, if a `StatusReply.error` arrives the future is instead
    * failed.
    */
   def askWithStatus[I, Q, A](
@@ -163,8 +163,8 @@ object ActorFlow {
       .asJava
 
   /**
-   * Use for messages whose response is known to be a [[pekko.pattern.StatusReply]]. When a [[pekko.pattern.StatusReply#success]] response
-   * arrives the future is completed with the wrapped value, if a [[pekko.pattern.StatusReply#error]] arrives the future is instead
+   * Use for messages whose response is known to be a [[pekko.pattern.StatusReply]]. When a `StatusReply.success` response
+   * arrives the future is completed with the wrapped value, if a `StatusReply.error` arrives the future is instead
    * failed.
    */
   def askWithStatusAndContext[I, Q, A, Ctx](

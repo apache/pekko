@@ -167,8 +167,10 @@ final class ClusterSingletonManagerSettings(
 
 /**
  * Marker trait for remote messages with special serializer.
+ *
+ * Not for user extension
  */
-sealed trait ClusterSingletonMessage extends Serializable
+@DoNotInherit sealed trait ClusterSingletonMessage extends Serializable
 
 object ClusterSingletonManager {
 
@@ -219,7 +221,7 @@ object ClusterSingletonManager {
     case object HandOverDone extends ClusterSingletonMessage
 
     /**
-     * Sent from from previous oldest to new oldest to
+     * Sent from previous oldest to new oldest to
      * initiate the normal hand-over process.
      * Especially useful when new node joins and becomes
      * oldest immediately, without knowing who was previous
@@ -297,7 +299,10 @@ object ClusterSingletonManager {
       val cluster = Cluster(context.system)
       // sort by age, oldest first
       val ageOrdering = Member.ageOrdering
-      var membersByAge: immutable.SortedSet[Member] = immutable.SortedSet.empty(ageOrdering)
+      var membersByAge: immutable.SortedSet[Member] = {
+        implicit val ord: Ordering[Member] = ageOrdering
+        immutable.SortedSet.empty[Member]
+      }
 
       var changes = Vector.empty[AnyRef]
 
@@ -337,8 +342,9 @@ object ClusterSingletonManager {
 
       def handleInitial(state: CurrentClusterState): Unit = {
         // all members except Joining and WeaklyUp
+        implicit val ord: Ordering[Member] = ageOrdering
         membersByAge = immutable.SortedSet
-          .empty(ageOrdering)
+          .empty[Member]
           .union(state.members.filter(m => m.upNumber != Int.MaxValue && matchingRole(m)))
 
         // If there is some removal in progress of an older node it's not safe to immediately become oldest,

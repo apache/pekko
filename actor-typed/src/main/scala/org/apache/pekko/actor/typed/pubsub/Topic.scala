@@ -134,7 +134,9 @@ object Topic {
   /**
    * Java API: Create a topic actor behavior for the given topic name and message class
    */
-  def create[T](messageClass: Class[T], topicName: String): Behavior[Command[T]] =
-    apply[T](topicName)(ClassTag(messageClass))
+  def create[T](messageClass: Class[T], topicName: String): Behavior[Command[T]] = {
+    implicit val ct: ClassTag[T] = ClassTag(messageClass)
+    apply[T](topicName)
+  }
 
 }

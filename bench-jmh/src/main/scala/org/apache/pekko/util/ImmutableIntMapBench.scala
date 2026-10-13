@@ -27,33 +27,33 @@ import org.openjdk.jmh.annotations._
 @Measurement(iterations = 10, time = 15, timeUnit = TimeUnit.MICROSECONDS, batchSize = 1)
 class ImmutableIntMapBench {
 
-  @tailrec private[this] final def add(n: Int, c: ImmutableIntMap = ImmutableIntMap.empty): ImmutableIntMap =
+  @tailrec private final def add(n: Int, c: ImmutableIntMap = ImmutableIntMap.empty): ImmutableIntMap =
     if (n >= 0) add(n - 1, c.updated(n, n))
     else c
 
-  @tailrec private[this] final def contains(n: Int, by: Int, to: Int, in: ImmutableIntMap, b: Boolean): Boolean =
+  @tailrec private final def contains(n: Int, by: Int, to: Int, in: ImmutableIntMap, b: Boolean): Boolean =
     if (n <= to) {
       val result = in.contains(n)
       contains(n + by, by, to, in, result)
     } else b
 
-  @tailrec private[this] final def get(n: Int, by: Int, to: Int, in: ImmutableIntMap, b: Int): Int =
+  @tailrec private final def get(n: Int, by: Int, to: Int, in: ImmutableIntMap, b: Int): Int =
     if (n <= to) {
       val result = in.get(n)
       get(n + by, by, to, in, result)
     } else b
 
-  @tailrec private[this] final def hashCode(n: Int, in: ImmutableIntMap, b: Int): Int =
+  @tailrec private final def hashCode(n: Int, in: ImmutableIntMap, b: Int): Int =
     if (n >= 0) {
       val result = in.hashCode
       hashCode(n - 1, in, result)
     } else b
 
-  @tailrec private[this] final def updateIfAbsent(n: Int, by: Int, to: Int, in: ImmutableIntMap): ImmutableIntMap =
+  @tailrec private final def updateIfAbsent(n: Int, by: Int, to: Int, in: ImmutableIntMap): ImmutableIntMap =
     if (n <= to) updateIfAbsent(n + by, by, to, in.updateIfAbsent(n, n))
     else in
 
-  @tailrec private[this] final def getKey(iterations: Int, key: Int, from: ImmutableIntMap): ImmutableIntMap = {
+  @tailrec private final def getKey(iterations: Int, key: Int, from: ImmutableIntMap): ImmutableIntMap = {
     if (iterations > 0 && key != Int.MinValue) {
       val k = from.get(key)
       getKey(iterations - 1, k, from)

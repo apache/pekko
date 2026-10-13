@@ -21,7 +21,7 @@ For rolling updates related to Pekko dependency version upgrades and the migrati
 
 ## Serialization Compatibility
 
-There are two parts of Pekko that need careful consideration when performing an rolling update.
+There are two parts of Pekko that need careful consideration when performing a rolling update.
 
 1. Compatibility of remote message protocols. Old nodes may send messages to new nodes and vice versa.
 1. Serialization format of persisted events and snapshots. New nodes must be able to read old data, and
@@ -57,6 +57,10 @@ pekko.cluster.app-version = 1.2.3
 
 To understand which is old and new it compares the version numbers using normal conventions,
 see @apidoc[util.Version] for more details.
+
+When using [Kubernetes Deployments](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/) with `RollingUpdate`
+strategy you should enable the @extref:[app-version from Deployment feature from Pekko Management](pekko-management:rolling-updates.html#app-version-from-deployment)
+to automatically define the `app-version` from the Kubernetes `deployment.kubernetes.io/revision` annotation.
 
 Rebalance is also disabled during rolling updates, since shards from stopped nodes are anyway supposed to be
 started on new nodes. Messages to shards that were stopped on the old nodes will allocate corresponding shards
@@ -105,7 +109,7 @@ For example, it is possible to migrate Cluster Sharding from Classic to Typed Ac
 
 * Deploy with the new nodes set to `pekko.cluster.configuration-compatibility-check.enforce-on-join = off`
 and ensure all nodes are in this state
-* Deploy again and with the new nodes set to `pekko.cluster.configuration-compatibility-check.enforce-on-join = on`. 
+* Deploy again with the new nodes set to `pekko.cluster.configuration-compatibility-check.enforce-on-join = on`. 
   
 Full documentation about enforcing these checks on joining nodes and optionally adding custom checks can be found in  
 @ref:[Pekko Cluster configuration compatibility checks](../typed/cluster.md#configuration-compatibility-check).
@@ -126,12 +130,12 @@ If you need to change any of the following aspects of sharding it will require a
  
 ### Cluster configuration change
 
-* A full restart is required if you change the [SBR strategy]($pekko.doc.dns$/docs/pekko/current/split-brain-resolver.html#strategies)
+* A full restart is required if you change the @ref:[SBR strategy](../split-brain-resolver.md#strategies)
 
 ### Migrating from PersistentFSM to EventSourcedBehavior
 
 If you've @ref:[migrated from `PersistentFSM` to `EventSourcedBehavior`](../persistence-fsm.md#migration-to-eventsourcedbehavior)
-and are using PersistenceFSM with Cluster Sharding, a full shutdown is required as shards can move between new and old nodes.
+and are using PersistentFSM with Cluster Sharding, a full shutdown is required as shards can move between new and old nodes.
   
 ### Migrating from classic remoting to Artery
 
@@ -141,6 +145,27 @@ which has a completely different protocol, a rolling update is not supported.
 ### Changing remoting transport
 
 Rolling update is not supported when @ref:[changing the remoting transport](../remoting-artery.md#selecting-a-transport).
+
+### Changing TCP magic header
+
+The TCP magic header (`pekko.remote.artery.advanced.tcp-magic`) is used to validate connections between nodes.
+It is an array of allowed values. The first value is used when sending (outbound connections); all values
+are accepted when receiving (inbound connections).
+
+The magic header has evolved across versions:
+
+ * Akka and Pekko up to 1.6.x only support `"AKKA"` as the magic header.
+ * Pekko 1.7.x sends `"AKKA"` but accepts both `"AKKA"` and `"PEKK"`, enabling future upgrades.
+ * Pekko 2.x (and above) sends `"PEKK"` by default but accepts both `"PEKK"` and `"AKKA"`.
+
+Because Pekko 1.7.x+ and 2.x accept both values by default, rolling upgrades between these versions
+do not require changing the `tcp-magic` configuration.
+
+Pekko 1.6.x and earlier reject the `"PEKK"` header that Pekko 2.x sends by default. Upgrade to Pekko 1.7.x
+first, or, if you upgrade from Pekko 1.6.x or earlier directly to 2.x, set
+`pekko.remote.artery.advanced.tcp-magic = ["AKKA", "PEKK"]` on the 2.x nodes until all nodes run 2.x.
+
+If you remove `"AKKA"` from the array, nodes running older versions will be unable to connect.
 
 ### Migrating from Classic Sharding to Typed Sharding
 

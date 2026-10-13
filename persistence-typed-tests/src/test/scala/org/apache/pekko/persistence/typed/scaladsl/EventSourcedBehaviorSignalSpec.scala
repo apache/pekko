@@ -17,7 +17,6 @@
 
 package org.apache.pekko.persistence.typed.scaladsl
 
-import scala.collection.immutable
 import scala.concurrent.Future
 import scala.concurrent.duration._
 import scala.util.Try
@@ -42,7 +41,7 @@ import com.typesafe.config.ConfigFactory
 
 // Custom journal that checks event flags to determine whether to reject or fail writes
 class SignalTestJournal extends InmemJournal {
-  override def asyncWriteMessages(messages: immutable.Seq[AtomicWrite]): Future[immutable.Seq[Try[Unit]]] = {
+  override def asyncWriteMessages(messages: Seq[AtomicWrite]): Future[Seq[Try[Unit]]] = {
     // Check if any of the events have the shouldReject or shouldFail flag set
     val shouldReject = messages.exists { atomicWrite =>
       atomicWrite.payload.exists { persistentRepr =>

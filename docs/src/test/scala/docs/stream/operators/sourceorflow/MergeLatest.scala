@@ -12,30 +12,34 @@
  */
 
 package docs.stream.operators.sourceorflow
-import org.apache.pekko.actor.ActorSystem
-import org.apache.pekko.stream.scaladsl.Source
 
-object MergeLatest extends App {
-  implicit val system: ActorSystem = ActorSystem()
+import org.apache.pekko
+import pekko.actor.ActorSystem
+import pekko.stream.scaladsl.Source
 
-  // #mergeLatest
-  val prices = Source(List(100, 101, 99, 103))
-  val quantity = Source(List(1, 3, 4, 2))
+object MergeLatest {
+  def main(args: Array[String]): Unit = {
+    implicit val system: ActorSystem = ActorSystem()
 
-  prices
-    .mergeLatest(quantity)
-    .map {
-      case price :: quantity :: Nil => price * quantity
-    }
-    .runForeach(println)
+    // #mergeLatest
+    val prices = Source(List(100, 101, 99, 103))
+    val quantity = Source(List(1, 3, 4, 2))
 
-  // prints something like:
-  // 100
-  // 101
-  // 303
-  // 297
-  // 396
-  // 412
-  // 206
-  // #mergeLatest
+    prices
+      .mergeLatest(quantity)
+      .map {
+        case price :: quantity :: Nil => price * quantity
+      }
+      .runForeach(println)
+
+    // prints something like:
+    // 100
+    // 101
+    // 303
+    // 297
+    // 396
+    // 412
+    // 206
+    // #mergeLatest
+  }
 }

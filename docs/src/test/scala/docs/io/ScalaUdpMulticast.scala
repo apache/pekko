@@ -16,11 +16,13 @@ package docs.io
 import java.net.{ InetAddress, InetSocketAddress, NetworkInterface, StandardProtocolFamily }
 import java.net.DatagramSocket
 import java.nio.channels.DatagramChannel
+import java.nio.charset.StandardCharsets
 
-import org.apache.pekko.actor.{ Actor, ActorLogging, ActorRef }
-import org.apache.pekko.io.Inet.{ DatagramChannelCreator, SocketOptionV2 }
-import org.apache.pekko.io.{ IO, Udp }
-import org.apache.pekko.util.ByteString
+import org.apache.pekko
+import pekko.actor.{ Actor, ActorLogging, ActorRef }
+import pekko.io.Inet.{ DatagramChannelCreator, SocketOptionV2 }
+import pekko.io.{ IO, Udp }
+import pekko.util.ByteString
 
 //#inet6-protocol-family
 final case class Inet6ProtocolFamily() extends DatagramChannelCreator {
@@ -51,7 +53,7 @@ class Listener(iface: String, group: String, port: Int, sink: ActorRef) extends 
       log.info("Bound to {}", to)
       sink ! b
     case Udp.Received(data, remote) =>
-      val msg = data.decodeString("utf-8")
+      val msg = data.decodeString(StandardCharsets.UTF_8)
       log.info("Received '{}' from {}", msg, remote)
       sink ! msg
   }

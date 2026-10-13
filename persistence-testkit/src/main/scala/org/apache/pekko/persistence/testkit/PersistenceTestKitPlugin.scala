@@ -14,7 +14,6 @@
 package org.apache.pekko.persistence.testkit
 
 import scala.annotation.nowarn
-import scala.collection.immutable
 import scala.concurrent.Future
 import scala.util.Try
 
@@ -45,7 +44,7 @@ class PersistenceTestKitPlugin(@nowarn("msg=never used") cfg: Config, cfgPath: S
   }
   private val eventStream = context.system.eventStream
 
-  override def asyncWriteMessages(messages: immutable.Seq[AtomicWrite]): Future[immutable.Seq[Try[Unit]]] = {
+  override def asyncWriteMessages(messages: Seq[AtomicWrite]): Future[Seq[Try[Unit]]] = {
     Future.fromTry(Try(messages.map(aw => {
       val timestamp = CurrentTime.now()
       val data = aw.payload.map(pl =>
@@ -181,7 +180,8 @@ object PersistenceTestKitSnapshotPlugin {
     Map(
       "pekko.persistence.snapshot-store.plugin" -> PluginId,
       s"$PluginId.class" -> classOf[PersistenceTestKitSnapshotPlugin].getName,
-      s"$PluginId.snapshot-is-optional" -> false // fallback isn't used by the testkit
+      s"$PluginId.snapshot-is-optional" -> false, // fallback isn't used by the testkit
+      s"$PluginId.only-one-snapshot" -> false // fallback isn't used by the testkit
     ).asJava)
 
 }

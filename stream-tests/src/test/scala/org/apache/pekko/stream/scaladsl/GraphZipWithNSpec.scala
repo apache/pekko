@@ -13,21 +13,21 @@
 
 package org.apache.pekko.stream.scaladsl
 
-import scala.collection.immutable
+import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import org.apache.pekko
 import pekko.stream._
-import pekko.stream.testkit._
-import pekko.testkit.EventFilter
+import pekko.stream.testkit.TestSubscriber
+import pekko.stream.testkit.TwoStreamsSetup
 
 class GraphZipWithNSpec extends TwoStreamsSetup {
   import GraphDSL.Implicits._
 
   override type Outputs = Int
 
-  override def fixture(b: GraphDSL.Builder[_]): Fixture = new Fixture {
-    val zip = b.add(ZipWithN((_: immutable.Seq[Int]).sum)(2))
+  override def fixture(b: GraphDSL.Builder[?]): Fixture = new Fixture {
+    val zip = b.add(ZipWithN((_: Seq[Int]).sum)(2))
     override def left: Inlet[Int] = zip.in(0)
     override def right: Inlet[Int] = zip.in(1)
     override def out: Outlet[Int] = zip.out
@@ -40,7 +40,7 @@ class GraphZipWithNSpec extends TwoStreamsSetup {
 
       RunnableGraph
         .fromGraph(GraphDSL.create() { implicit b =>
-          val zip = b.add(ZipWithN((_: immutable.Seq[Int]).sum)(2))
+          val zip = b.add(ZipWithN((_: Seq[Int]).sum)(2))
           Source(1 to 4)         ~> zip.in(0)
           Source(10 to 40 by 10) ~> zip.in(1)
 
@@ -69,7 +69,7 @@ class GraphZipWithNSpec extends TwoStreamsSetup {
 
       RunnableGraph
         .fromGraph(GraphDSL.create() { implicit b =>
-          val zip = b.add(ZipWithN((_: immutable.Seq[Int]).foldLeft(1)(_ / _))(2))
+          val zip = b.add(ZipWithN((_: Seq[Int]).foldLeft(1)(_ / _))(2))
 
           Source(1 to 4)  ~> zip.in(0)
           Source(-2 to 2) ~> zip.in(1)
@@ -86,14 +86,47 @@ class GraphZipWithNSpec extends TwoStreamsSetup {
       probe.expectNext(1 / 1 / -2)
       probe.expectNext(1 / 2 / -1)
 
-      EventFilter[ArithmeticException](occurrences = 1).intercept {
-        subscription.request(2)
-      }
+      subscription.request(2)
       probe.expectError() match {
         case a: java.lang.ArithmeticException => a.getMessage should be("/ by zero")
         case unexpected                       => throw new RuntimeException(s"Unexpected: $unexpected")
       }
       probe.expectNoMessage(200.millis)
+    }
+
+    "fail stream when zipper throws and supervision is Stop" in {
+      val ex = new RuntimeException("boom")
+      val result = Source
+        .zipWithN[Int, Int](s => if (s.head == 3) throw ex else s.sum)(Seq(Source(1 to 4), Source(1 to 4)))
+        .withAttributes(ActorAttributes.supervisionStrategy(Supervision.stoppingDecider))
+        .runWith(Sink.seq)
+      result.failed.futureValue shouldBe ex
+    }
+
+    "fail stream when zipper throws and supervision defaults to Stop" in {
+      val ex = new RuntimeException("boom")
+      val result = Source
+        .zipWithN[Int, Int](s => if (s.head == 3) throw ex else s.sum)(Seq(Source(1 to 4), Source(1 to 4)))
+        .runWith(Sink.seq)
+      result.failed.futureValue shouldBe ex
+    }
+
+    "resume when zipper throws and drop failed zipped element" in {
+      val future = Source
+        .zipWithN[Int, Int](s => if (s.head == 3) throw new RuntimeException("boom") else s.sum)(
+          Seq(Source(1 to 4), Source(1 to 4)))
+        .withAttributes(ActorAttributes.supervisionStrategy(Supervision.resumingDecider))
+        .runWith(Sink.seq)
+      Await.result(future, 3.seconds) shouldBe Seq(2, 4, 8)
+    }
+
+    "restart when zipper throws and drop failed zipped element" in {
+      val future = Source
+        .zipWithN[Int, Int](s => if (s.head == 3) throw new RuntimeException("boom") else s.sum)(
+          Seq(Source(1 to 4), Source(1 to 4)))
+        .withAttributes(ActorAttributes.supervisionStrategy(Supervision.restartingDecider))
+        .runWith(Sink.seq)
+      Await.result(future, 3.seconds) shouldBe Seq(2, 4, 8)
     }
 
     commonTests()
@@ -135,7 +168,7 @@ class GraphZipWithNSpec extends TwoStreamsSetup {
 
       RunnableGraph
         .fromGraph(GraphDSL.create() { implicit b =>
-          val zip = b.add(ZipWithN((_: immutable.Seq[Int]).sum)(3))
+          val zip = b.add(ZipWithN((_: Seq[Int]).sum)(3))
 
           Source.single(1) ~> zip.in(0)
           Source.single(2) ~> zip.in(1)
@@ -160,7 +193,7 @@ class GraphZipWithNSpec extends TwoStreamsSetup {
 
       RunnableGraph
         .fromGraph(GraphDSL.create() { implicit b =>
-          val zip = b.add(ZipWithN((_: immutable.Seq[Int]).sum)(30))
+          val zip = b.add(ZipWithN((_: Seq[Int]).sum)(30))
 
           (0 to 29).foreach { n =>
             Source.single(n) ~> zip.in(n)

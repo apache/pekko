@@ -20,4 +20,5 @@ import pekko.persistence.journal.JournalSpec
 
 class InmemJournalSpec extends JournalSpec(config = PersistenceSpec.config("inmem", "InmemJournalSpec")) {
   override protected def supportsRejectingNonSerializableObjects: CapabilityFlag = CapabilityFlag.off()
+  override protected def supportsReplayWindowSpanningDeletedPrefix: CapabilityFlag = CapabilityFlag.on()
 }

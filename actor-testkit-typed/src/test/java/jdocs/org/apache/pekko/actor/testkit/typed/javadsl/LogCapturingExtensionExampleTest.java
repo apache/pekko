@@ -29,6 +29,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 // test code copied from LogCapturingExampleTest.java
 
+// #log-capturing-junit-jupiter
 @DisplayName("JUnitJupiter log capturing")
 @ExtendWith(TestKitJUnitJupiterExtension.class)
 @ExtendWith(LogCapturingExtension.class)

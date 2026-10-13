@@ -13,7 +13,7 @@
 
 package org.apache.pekko.stream.javadsl;
 
-/** Determines mode in which [[Framing]] operates. */
+/** Determines mode in which {@code Framing} operates. */
 public enum FramingTruncation {
   ALLOW,
   DISALLOW

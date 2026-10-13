@@ -44,7 +44,7 @@ object AsSubscriber {
       });
 
   val names: Source[String, NotUsed] =
-    // rowSource can be re-used, since it will start a new
+    // rowSource can be reused, since it will start a new
     // query for each materialization, fully supporting backpressure
     // for each materialized stream:
     rowSource.map(row => row.name)

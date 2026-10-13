@@ -13,8 +13,9 @@
 
 package docs.stream.operators.source
 
-import org.apache.pekko.NotUsed
-import org.apache.pekko.stream.scaladsl.Source
+import org.apache.pekko
+import pekko.NotUsed
+import pekko.stream.scaladsl.Source
 
 object Unfold {
 

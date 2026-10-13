@@ -13,7 +13,7 @@
 
 package org.apache.pekko.stream.io;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.OutputStream;
 import java.util.concurrent.CompletionStage;
@@ -21,24 +21,25 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import org.apache.pekko.stream.IOOperationIncompleteException;
 import org.apache.pekko.stream.IOResult;
-import org.apache.pekko.stream.StreamTest;
+import org.apache.pekko.stream.StreamTestJupiter;
 import org.apache.pekko.stream.javadsl.Source;
 import org.apache.pekko.stream.javadsl.StreamConverters;
 import org.apache.pekko.stream.testkit.Utils;
-import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
+import org.apache.pekko.testkit.PekkoJUnitJupiterActorSystemResource;
 import org.apache.pekko.util.ByteString;
-import org.junit.Assert;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
-public class OutputStreamSinkTest extends StreamTest {
+public class OutputStreamSinkTest extends StreamTestJupiter {
   public OutputStreamSinkTest() {
     super(actorSystemResource);
   }
 
-  @ClassRule
-  public static PekkoJUnitActorSystemResource actorSystemResource =
-      new PekkoJUnitActorSystemResource("OutputStreamSinkTest", Utils.UnboundedMailboxConfig());
+  @RegisterExtension
+  static PekkoJUnitJupiterActorSystemResource actorSystemResource =
+      new PekkoJUnitJupiterActorSystemResource(
+          "OutputStreamSinkTest", Utils.UnboundedMailboxConfig());
 
   @Test
   public void mustSignalFailureViaFailingFuture() {
@@ -59,14 +60,14 @@ public class OutputStreamSinkTest extends StreamTest {
             .runWith(StreamConverters.fromOutputStream(() -> os), system);
 
     ExecutionException exception =
-        Assert.assertThrows(
-            "CompletableFuture.get() should throw ExecutionException",
+        Assertions.assertThrows(
             ExecutionException.class,
-            () -> resultFuture.toCompletableFuture().get(3, TimeUnit.SECONDS));
+            () -> resultFuture.toCompletableFuture().get(3, TimeUnit.SECONDS),
+            "CompletableFuture.get() should throw ExecutionException");
     assertEquals(
-        "The cause of ExecutionException should be IOOperationIncompleteException",
+        IOOperationIncompleteException.class,
         exception.getCause().getClass(),
-        IOOperationIncompleteException.class);
-    assertEquals(exception.getCause().getCause().getMessage(), "Can't accept more data.");
+        "The cause of ExecutionException should be IOOperationIncompleteException");
+    assertEquals("Can't accept more data.", exception.getCause().getCause().getMessage());
   }
 }

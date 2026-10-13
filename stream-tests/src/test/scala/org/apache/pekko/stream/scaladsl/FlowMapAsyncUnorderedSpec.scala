@@ -15,6 +15,7 @@ package org.apache.pekko.stream.scaladsl
 
 import java.util.concurrent.LinkedBlockingQueue
 import java.util.concurrent.atomic.AtomicInteger
+import java.util.concurrent.locks.LockSupport
 
 import scala.annotation.tailrec
 import scala.concurrent.Await
@@ -25,9 +26,12 @@ import scala.util.control.NoStackTrace
 
 import org.apache.pekko
 import pekko.stream.ActorAttributes.supervisionStrategy
+import pekko.stream.Attributes
 import pekko.stream.Supervision.resumingDecider
 import pekko.stream.testkit._
 import pekko.stream.testkit.scaladsl._
+import pekko.testkit.EventFilter
+import pekko.testkit.TestDuration
 import pekko.testkit.TestLatch
 import pekko.testkit.TestProbe
 
@@ -334,7 +338,14 @@ class FlowMapAsyncUnorderedSpec extends StreamSpec {
             try {
               val (promise, enqueued) = queue.take()
               val wakeup = enqueued + delay
-              while (System.nanoTime() < wakeup) {}
+              @tailrec def waitUntilWakeup(): Unit = {
+                val remaining = wakeup - System.nanoTime()
+                if (remaining > 0) {
+                  LockSupport.parkNanos(remaining)
+                  waitUntilWakeup()
+                }
+              }
+              waitUntilWakeup()
               counter.decrementAndGet()
               promise.success(count)
               count += 1
@@ -361,9 +372,60 @@ class FlowMapAsyncUnorderedSpec extends StreamSpec {
         Source(1 to N)
           .mapAsyncUnordered(parallelism)(_ => deferred())
           .runFold(0)((c, _) => c + 1)
-          .futureValue(Timeout(3.seconds)) should ===(N)
+          .futureValue(Timeout(3.seconds.dilated)) should ===(N)
       } finally {
         timer.interrupt()
+      }
+    }
+
+    "log error when future fails with resume supervision" in {
+      EventFilter.error(
+        start = "Supervision strategy resumed after exception in MapAsyncUnordered",
+        occurrences = 1).intercept {
+        val result = Source(1 to 5)
+          .mapAsyncUnordered(4)(n =>
+            if (n == 3) Future.failed(new Exception("err3") with NoStackTrace)
+            else Future.successful(n))
+          .withAttributes(supervisionStrategy(resumingDecider))
+          .runWith(Sink.seq)
+
+        result.futureValue.toSet should ===(Set(1, 2, 4, 5))
+      }
+    }
+
+    "log error when mapAsyncUnordered function throws with resume supervision" in {
+      implicit val ec = system.dispatcher
+      EventFilter.error(
+        start = "Supervision strategy resumed after exception in MapAsyncUnordered",
+        occurrences = 1).intercept {
+        val result = Source(1 to 5)
+          .mapAsyncUnordered(4)(n =>
+            if (n == 3) throw Utils.TE("err-sync")
+            else Future(n))
+          .withAttributes(supervisionStrategy(resumingDecider))
+          .runWith(Sink.seq)
+
+        result.futureValue.toSet should ===(Set(1, 2, 4, 5))
+      }
+    }
+
+    "not log when log level is Off and resume supervision is used" in {
+      EventFilter.error(
+        start = "Supervision strategy resumed after exception in MapAsyncUnordered",
+        occurrences = 0).intercept {
+        val result = Source(1 to 5)
+          .mapAsyncUnordered(4)(n =>
+            if (n == 3) Future.failed(new Exception("err3") with NoStackTrace)
+            else Future.successful(n))
+          .withAttributes(
+            supervisionStrategy(resumingDecider) and
+            Attributes.logLevels(
+              onElement = Attributes.LogLevels.Off,
+              onFinish = Attributes.LogLevels.Off,
+              onFailure = Attributes.LogLevels.Off))
+          .runWith(Sink.seq)
+
+        result.futureValue.toSet should ===(Set(1, 2, 4, 5))
       }
     }
 

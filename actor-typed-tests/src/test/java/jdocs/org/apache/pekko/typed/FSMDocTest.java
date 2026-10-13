@@ -14,8 +14,8 @@
 package jdocs.org.apache.pekko.typed;
 
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.Collections;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.pekko.actor.typed.ActorRef;

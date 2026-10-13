@@ -13,6 +13,7 @@
 
 package org.apache.pekko.persistence
 
+import java.util.Locale
 import scala.concurrent.duration._
 import scala.util.Failure
 import scala.util.control.NoStackTrace
@@ -95,7 +96,7 @@ object AtLeastOnceDeliverySpec {
         if (payload.isEmpty)
           sender() ! InvalidReq
         else {
-          val destination = destinations(payload.take(1).toUpperCase)
+          val destination = destinations(payload.take(1).toUpperCase(Locale.ROOT))
           if (async)
             persistAsync(AcceptedReq(payload, destination)) { evt =>
               updateState(evt)
@@ -207,7 +208,8 @@ class AtLeastOnceDeliverySpec
 
   "AtLeastOnceDelivery" must {
     List(true, false).foreach { deliverUsingActorSelection =>
-      s"deliver messages in order when nothing is lost (using actorSelection: $deliverUsingActorSelection)" taggedAs TimingTest in {
+      s"deliver messages in order when nothing is lost (using actorSelection: $deliverUsingActorSelection)" taggedAs
+      TimingTest in {
         val probe = TestProbe()
         val probeA = TestProbe()
         val destinations = Map("A" -> system.actorOf(destinationProps(probeA.ref)).path)
@@ -256,7 +258,7 @@ class AtLeastOnceDeliverySpec
 
     "not allow using actorSelection with wildcards" in {
       system.actorOf(Props(classOf[DeliverToStarSelection], name)) ! "anything, really."
-      expectMsgType[Failure[_]].toString should include("not supported")
+      expectMsgType[Failure[?]].toString should include("not supported")
     }
 
     "re-deliver lost messages after restart" taggedAs TimingTest in {
@@ -293,7 +295,8 @@ class AtLeastOnceDeliverySpec
       probeA.expectNoMessage(1.second)
     }
 
-    "re-send replayed deliveries with an 'initially in-order' strategy, before delivering fresh messages" taggedAs TimingTest in {
+    "re-send replayed deliveries with an 'initially in-order' strategy, before delivering fresh messages" taggedAs
+    TimingTest in {
       val probe = TestProbe()
       val probeA = TestProbe()
       val dst = system.actorOf(destinationProps(probeA.ref))

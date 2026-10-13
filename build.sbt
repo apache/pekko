@@ -9,15 +9,26 @@
 
 import net.bzzt.reproduciblebuilds.ReproducibleBuildsPlugin.reproducibleBuildsCheckResolver
 
-scalaVersion := Dependencies.allScalaVersions.head
+scalaVersion := Dependencies.publishedScalaVersions.head
 
 ThisBuild / versionScheme := Some(VersionScheme.SemVerSpec)
+// Add  (Jupiter) test runtime to all modules for sbt-jupiter-interface discovery
+ThisBuild / libraryDependencies +=
+  "com.github.sbt.junit" % "jupiter-interface" % JupiterKeys.jupiterVersion.value % Test
 sourceDistName := "apache-pekko"
 sourceDistIncubating := false
 
 ThisBuild / reproducibleBuildsCheckResolver := Resolver.ApacheMavenStagingRepo
 
 ThisBuild / pekkoCoreProject := true
+
+Global / excludeLintKeys ++= Set(
+  projectInfoVersion,
+  logManager,
+  unidocProjectFilter,
+  fork,
+  javacOptions
+)
 
 enablePlugins(
   UnidocRoot,
@@ -26,6 +37,9 @@ enablePlugins(
   ScalafixIgnoreFilePlugin,
   JavaFormatterPlugin)
 disablePlugins(MimaPlugin)
+
+ThisBuild / javafmtFormatterCompatibleJavaVersion := 17
+ThisBuild / javafmtSortImports := false
 
 addCommandAlias("checkCodeStyle", "scalafmtCheckAll; scalafmtSbtCheck; javafmtCheckAll; +headerCheckAll")
 addCommandAlias("applyCodeStyle", "+headerCreateAll; scalafmtAll; scalafmtSbt; javafmtAll")
@@ -123,10 +137,10 @@ lazy val actor = pekkoModule("actor")
   .enablePlugins(BoilerplatePlugin, SbtOsgi)
 
 lazy val actorTests = pekkoModule("actor-tests")
-  .configs(Jdk9.TestJdk9)
+  .configs(Jdk21.TestJdk21)
   .dependsOn(testkit % "compile->compile;test->test", actor)
   .settings(Dependencies.actorTests)
-  .enablePlugins(NoPublish, Jdk9)
+  .enablePlugins(NoPublish, Jdk21)
   .disablePlugins(MimaPlugin)
 
 lazy val pekkoScalaNightly = pekkoModule("scala-nightly")
@@ -367,11 +381,17 @@ lazy val protobufV3 = pekkoModule("protobuf-v3")
         // https://github.com/sbt/sbt-assembly/issues/400
         .inLibrary(Dependencies.Compile.Provided.protobufRuntime)
         .inProject),
+    assembly / assemblyMergeStrategy := {
+      case "META-INF/LICENSE" | "META-INF/NOTICE" => sbtassembly.MergeStrategy.concat
+      case "META-INF/COPYING.protobuf"            => sbtassembly.MergeStrategy.first
+      case path                                   => (assembly / assemblyMergeStrategy).value(path)
+    },
     assembly / assemblyOption := (assembly / assemblyOption).value.withIncludeScala(false).withIncludeBin(true),
     autoScalaLibrary := false, // do not include scala dependency in pom
     exportJars := true, // in dependent projects, use assembled and shaded jar
-    makePomConfiguration := makePomConfiguration.value
-      .withConfigurations(Vector(Compile)), // prevent original dependency to be added to pom as runtime dep
+    makePomConfiguration :=
+      makePomConfiguration.value
+        .withConfigurations(Vector(Compile)), // prevent original dependency to be added to pom as runtime dep
     Compile / packageBin / packagedArtifact := Scoped.mkTuple2(
       (Compile / packageBin / artifact).value,
       ReproducibleBuildsPlugin.postProcessJar(OsgiKeys.bundle.value)),
@@ -392,7 +412,8 @@ lazy val protobufV3 = pekkoModule("protobuf-v3")
     // redefining the fullClasspath with just what we need to avoid the cyclic task dependency
     assembly / fullClasspath := (Runtime / managedClasspath).value ++ (Compile / products).value.map(Attributed.blank),
     assembly / test := {}, // assembly runs tests for unknown reason which introduces another cyclic dependency to packageBin via exportedJars
-    description := s"Apache Pekko Protobuf V3 is a shaded version of the protobuf runtime. Original POM: https://github.com/protocolbuffers/protobuf/blob/v${Dependencies.Protobuf.protobufJavaVersion}/java/pom.xml")
+    description :=
+      s"Apache Pekko Protobuf V3 is a shaded version of the protobuf runtime. Original POM: https://github.com/protocolbuffers/protobuf/blob/v${Dependencies.Protobuf.protobufJavaVersion}/java/pom.xml")
 
 lazy val pki =
   pekkoModule("pki")
@@ -554,6 +575,7 @@ lazy val clusterShardingTyped = pekkoModule("cluster-sharding-typed")
     remoteTests % "test->test",
     remoteTests % "test->test;multi-jvm->multi-jvm",
     jackson % "test->test")
+  .settings(Dependencies.clusterShardingTyped)
   .settings(javacOptions += "-parameters") // for Jackson
   .settings(AutomaticModuleName.settings("pekko.cluster.sharding.typed"))
   // To be able to import ContainerFormats.proto
@@ -568,6 +590,7 @@ lazy val streamTyped = pekkoModule("stream-typed")
     streamTestkit % "test->test",
     actorTestkitTyped % "test->test",
     actorTypedTests % "test->test")
+  .settings(Dependencies.streamTyped)
   .settings(AutomaticModuleName.settings("pekko.stream.typed"))
   .enablePlugins(ScaladocNoVerificationOfDiagrams)
 

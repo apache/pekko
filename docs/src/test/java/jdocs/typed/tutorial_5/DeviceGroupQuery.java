@@ -91,10 +91,11 @@ public class DeviceGroupQuery extends AbstractBehavior<DeviceGroupQuery.Command>
     ActorRef<Device.RespondTemperature> respondTemperatureAdapter =
         context.messageAdapter(Device.RespondTemperature.class, WrappedRespondTemperature::new);
 
-    for (Map.Entry<String, ActorRef<Device.Command>> entry : deviceIdToActor.entrySet()) {
-      context.watchWith(entry.getValue(), new DeviceTerminated(entry.getKey()));
-      entry.getValue().tell(new Device.ReadTemperature(0L, respondTemperatureAdapter));
-    }
+    deviceIdToActor.forEach(
+        (deviceId, actor) -> {
+          context.watchWith(actor, new DeviceTerminated(deviceId));
+          actor.tell(new Device.ReadTemperature(0L, respondTemperatureAdapter));
+        });
     stillWaiting = new HashSet<>(deviceIdToActor.keySet());
   }
 

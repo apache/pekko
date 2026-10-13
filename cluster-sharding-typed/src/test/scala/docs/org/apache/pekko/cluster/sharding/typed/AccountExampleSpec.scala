@@ -13,11 +13,11 @@
 
 package docs.org.apache.pekko.cluster.sharding.typed
 
-import org.apache.pekko.Done
+import org.apache.pekko
+import pekko.Done
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
-import org.apache.pekko
 import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
 import pekko.cluster.sharding.typed.scaladsl.ClusterSharding

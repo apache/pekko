@@ -246,7 +246,7 @@ trait ActorRefFactory {
   def actorOf(props: Props, name: String): ActorRef
 
   /**
-   * Construct an [[pekko.actor.ActorSelection]] from the given path, which is
+   * Construct a [[pekko.actor.ActorSelection]] from the given path, which is
    * parsed for wildcards (these are replaced by regular expressions
    * internally). No attempt is made to verify the existence of any part of
    * the supplied path, it is recommended to send a message and gather the
@@ -264,7 +264,7 @@ trait ActorRefFactory {
   }
 
   /**
-   * Construct an [[pekko.actor.ActorSelection]] from the given path, which is
+   * Construct a [[pekko.actor.ActorSelection]] from the given path, which is
    * parsed for wildcards (these are replaced by regular expressions
    * internally). No attempt is made to verify the existence of any part of
    * the supplied path, it is recommended to send a message and gather the
@@ -418,7 +418,7 @@ private[pekko] class LocalActorRefProvider private[pekko] (
 
   override val ignoreRef: ActorRef = new IgnoreActorRef(this)
 
-  private[this] final val terminationPromise: Promise[Terminated] = Promise[Terminated]()
+  private final val terminationPromise: Promise[Terminated] = Promise[Terminated]()
 
   def terminationFuture: Future[Terminated] = terminationPromise.future
 
@@ -470,18 +470,18 @@ private[pekko] class LocalActorRefProvider private[pekko] (
       if (isWalking)
         message match {
           case null => throw InvalidMessageException("Message is null")
-          case _    => log.error(s"$this received unexpected message [$message]")
+          case _    => log.error("{} received unexpected message [{}]", this, message)
         }
 
     override def sendSystemMessage(message: SystemMessage): Unit = if (isWalking) {
       message match {
         case Failed(child: InternalActorRef, ex, _) =>
-          log.error(ex, s"guardian $child failed, shutting down!")
+          log.error(ex, "guardian {} failed, shutting down!", child)
           causeOfTermination.tryFailure(ex)
           child.stop()
         case Supervise(_, _)           => // TODO register child in some map to keep track of it and enable shutdown after all dead
         case _: DeathWatchNotification => stop()
-        case _                         => log.error(s"$this received unexpected system message [$message]")
+        case _                         => log.error("{} received unexpected system message [{}]", this, message)
       }
     }
   }
@@ -494,7 +494,7 @@ private[pekko] class LocalActorRefProvider private[pekko] (
    * but it also requires these references to be @volatile and lazy.
    */
   @volatile
-  private var system: ActorSystemImpl = _
+  private var system: ActorSystemImpl = null
 
   @volatile
   private var extraNames: Map[String, InternalActorRef] = Map()

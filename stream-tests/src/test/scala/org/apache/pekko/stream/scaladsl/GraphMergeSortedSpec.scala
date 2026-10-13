@@ -28,7 +28,7 @@ class GraphMergeSortedSpec extends TwoStreamsSetup with ScalaCheckPropertyChecks
 
   override type Outputs = Int
 
-  override def fixture(b: GraphDSL.Builder[_]): Fixture = new Fixture {
+  override def fixture(b: GraphDSL.Builder[?]): Fixture = new Fixture {
     val merge = b.add(MergeSorted[Outputs]())
 
     override def left: Inlet[Outputs] = merge.in0
@@ -37,7 +37,7 @@ class GraphMergeSortedSpec extends TwoStreamsSetup with ScalaCheckPropertyChecks
   }
 
   implicit def noShrink[T]: Shrink[T] =
-    Shrink[T](_ => Stream.empty) // do not shrink failures, it only destroys evidence
+    Shrink.withLazyList[T](_ => LazyList.empty) // do not shrink failures, it only destroys evidence
 
   "MergeSorted" must {
 

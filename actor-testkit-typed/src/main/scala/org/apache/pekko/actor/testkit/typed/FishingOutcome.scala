@@ -26,7 +26,8 @@ import pekko.annotation.DoNotInherit
 
 object FishingOutcome {
 
-  sealed trait ContinueOutcome extends FishingOutcome
+  /** Not for user extension */
+  @DoNotInherit sealed trait ContinueOutcome extends FishingOutcome
   case object Continue extends ContinueOutcome
   case object ContinueAndIgnore extends ContinueOutcome
   case object Complete extends FishingOutcome

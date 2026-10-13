@@ -15,7 +15,6 @@ package org.apache.pekko.stream.scaladsl
 
 import scala.annotation.implicitNotFound
 import scala.annotation.unchecked.uncheckedVariance
-import scala.collection.immutable
 import scala.concurrent.Future
 import scala.concurrent.duration.FiniteDuration
 import scala.reflect.ClassTag
@@ -32,8 +31,15 @@ import pekko.event.LoggingAdapter
 import pekko.event.MarkerLoggingAdapter
 import pekko.stream._
 import pekko.stream.Attributes.SourceLocation
+import pekko.stream.impl.FailedConcat
+import pekko.stream.impl.FailedSource
+import pekko.stream.impl.FutureConcat
+import pekko.stream.impl.IterableConcat
+import pekko.stream.impl.JavaStreamConcat
+import pekko.stream.impl.JavaStreamSource
 import pekko.stream.impl.LinearTraversalBuilder
 import pekko.stream.impl.ProcessorModule
+import pekko.stream.impl.RepeatConcat
 import pekko.stream.impl.SetupFlowStage
 import pekko.stream.impl.SingleConcat
 import pekko.stream.impl.Stages.DefaultAttributes
@@ -44,6 +50,7 @@ import pekko.stream.impl.TraversalBuilder
 import pekko.stream.impl.fusing
 import pekko.stream.impl.fusing._
 import pekko.stream.impl.fusing.FlattenMerge
+import pekko.stream.impl.fusing.GraphStages.{ FutureSource, RepeatSource, SingleSource }
 import pekko.stream.stage._
 import pekko.util.ConstantFun
 import pekko.util.OptionVal
@@ -165,6 +172,10 @@ final class Flow[-In, +Out, +Mat](
   /**
    * Materializes this [[Flow]], immediately returning (1) its materialized value, and (2) a newly materialized [[Flow]].
    * The returned flow is partial materialized and do not support multiple times materialization.
+   *
+   * Note that `preMaterialize` is implemented through a reactive streams `Publisher` and `Subscriber` pair which means
+   * that a buffer is introduced and that errors are not propagated upstream but are turned into cancellations without
+   * error details.
    */
   def preMaterialize()(implicit materializer: Materializer): (Mat, ReprMat[Out, NotUsed]) = {
     val ((sub, mat), pub) =
@@ -177,7 +188,7 @@ final class Flow[-In, +Out, +Mat](
    * via the provided [[Sink]] as a new [[Source]].
    *
    * @param source A source that connects to this flow
-   * @param sink A sink which needs to materialize into a [[Future]], typically one
+   * @param sink A sink which needs to materialize into a `Future`, typically one
    *             that collects values such as [[Sink.head]] or [[Sink.seq]]
    * @return A new [[Source]] that contains the results of the [[Flow]] with the provided
    *         [[Source]]'s elements run with the [[Sink]]
@@ -390,7 +401,7 @@ final class Flow[-In, +Out, +Mat](
             override def onSubscribe(s: Subscription): Unit = sub.onSubscribe(s)
             override def onComplete(): Unit = sub.onComplete()
             override def onNext(t: In): Unit = sub.onNext(t)
-            override def subscribe(s: Subscriber[_ >: Out]): Unit = pub.subscribe(s)
+            override def subscribe(s: Subscriber[? >: Out]): Unit = pub.subscribe(s)
           }
       }
 
@@ -420,7 +431,7 @@ object Flow {
   private[stream] val identityTraversalBuilder =
     LinearTraversalBuilder.fromBuilder(GraphStages.identity.traversalBuilder, GraphStages.identity.shape, Keep.right)
 
-  private[this] val identity: Flow[Any, Any, NotUsed] =
+  private val identity: Flow[Any, Any, NotUsed] =
     new Flow[Any, Any, NotUsed](identityTraversalBuilder, GraphStages.identity.shape)
 
   /**
@@ -505,13 +516,7 @@ object Flow {
       case f: Flow[I, O, M]                                       => f
       case f: javadsl.Flow[I, O, M] @unchecked                    => f.asScala
       case g: GraphStageWithMaterializedValue[FlowShape[I, O], M] =>
-        // move these from the operator itself to make the returned source
-        // behave as it is the operator with regards to attributes
-        val attrs = g.traversalBuilder.attributes
-        val noAttrStage = g.withAttributes(Attributes.none)
-        new Flow(
-          LinearTraversalBuilder.fromBuilder(noAttrStage.traversalBuilder, noAttrStage.shape, Keep.right),
-          noAttrStage.shape).withAttributes(attrs)
+        new Flow(LinearTraversalBuilder.fromGraphStage(g), g.shape)
 
       case _ => new Flow(LinearTraversalBuilder.fromBuilder(g.traversalBuilder, g.shape, Keep.right), g.shape)
     }
@@ -548,7 +553,7 @@ object Flow {
    *
    * See also [[fromSinkAndSourceMat]] when access to materialized values of the parameters is needed.
    */
-  def fromSinkAndSource[I, O](sink: Graph[SinkShape[I], _], source: Graph[SourceShape[O], _]): Flow[I, O, NotUsed] =
+  def fromSinkAndSource[I, O](sink: Graph[SinkShape[I], ?], source: Graph[SourceShape[O], ?]): Flow[I, O, NotUsed] =
     fromSinkAndSourceMat(sink, source)(Keep.none)
 
   /**
@@ -643,8 +648,8 @@ object Flow {
    * See also [[fromSinkAndSourceCoupledMat]] when access to materialized values of the parameters is needed.
    */
   def fromSinkAndSourceCoupled[I, O](
-      sink: Graph[SinkShape[I], _],
-      source: Graph[SourceShape[O], _]): Flow[I, O, NotUsed] =
+      sink: Graph[SinkShape[I], ?],
+      source: Graph[SourceShape[O], ?]): Flow[I, O, NotUsed] =
     fromSinkAndSourceCoupledMat(sink, source)(Keep.none)
 
   /**
@@ -906,6 +911,8 @@ trait FlowOps[+Out, +Mat] {
    *
    * Throwing an exception inside `recoverWith` _will_ be logged on ERROR level automatically.
    *
+   * It will keep trying to recover indefinitely, if you want to limit the number of attempts, use `recoverWithRetries`.
+   *
    * '''Emits when''' element is available from the upstream or upstream is failed and element is available
    * from alternative Source
    *
@@ -1112,7 +1119,7 @@ trait FlowOps[+Out, +Mat] {
    * Elements will be passed into this "side channel" function, and any of its results will be ignored.
    *
    * If the wire-tap operation is slow (it backpressures), elements that would've been sent to it will be dropped instead.
-   * It is similar to [[#alsoTo]] which does backpressure instead of dropping elements.
+   * It is similar to `alsoTo` which does backpressure instead of dropping elements.
    *
    * This operation is useful for inspecting the passed through element, usually by means of side-effecting
    * operations (such as `println`, or emitting metrics), for each element without having to modify it.
@@ -1195,7 +1202,7 @@ trait FlowOps[+Out, +Mat] {
    * The `close` function is called only once when the upstream or downstream finishes or fails. You can do some clean-up here,
    * and if the returned value is not empty, it will be emitted to the downstream if available, otherwise the value will be dropped.
    *
-   * Early completion can be done with combination of the [[takeWhile]] operator.
+   * Early completion can be done with combination of the `takeWhile` operator.
    *
    * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
    *
@@ -1226,15 +1233,15 @@ trait FlowOps[+Out, +Mat] {
     ).withAttributes(DefaultAttributes.mapWithResource)
 
   /**
-   * Transform each stream element with the help of an [[AutoCloseable]] resource and close it when the stream finishes or fails.
+   * Transform each stream element with the help of an `AutoCloseable` resource and close it when the stream finishes or fails.
    *
    * The resource creation function is invoked once when the stream is materialized and the returned resource is passed to
    * the mapping function for mapping the first element. The mapping function returns a mapped element to emit
    * downstream. The returned `T` MUST NOT be `null` as it is illegal as stream element - according to the Reactive Streams specification.
    *
-   * The [[AutoCloseable]] resource is closed only once when the upstream or downstream finishes or fails.
+   * The `AutoCloseable` resource is closed only once when the upstream or downstream finishes or fails.
    *
-   * Early completion can be done with combination of the [[takeWhile]] operator.
+   * Early completion can be done with combination of the `takeWhile` operator.
    *
    * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
    *
@@ -1273,7 +1280,7 @@ trait FlowOps[+Out, +Mat] {
    * as they are illegal as stream elements - according to the Reactive Streams specification.
    *
    * This operator doesn't handle upstream's completion signal since the state kept in the closure can be lost.
-   * Use [[FlowOps.statefulMap]], or return an [[StatefulMapConcatAccumulator]] instead.
+   * Use [[FlowOps.statefulMap]], or return a [[StatefulMapConcatAccumulator]] instead.
    *
    * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
    *
@@ -1370,7 +1377,7 @@ trait FlowOps[+Out, +Mat] {
    * The function `partitioner` is always invoked on the elements in the order they arrive.
    * The function `f` is always invoked on the elements which in the same partition in the order they arrive.
    *
-   * If the function `partitioner` or `f` throws an exception or if the [[Future]] is completed
+   * If the function `partitioner` or `f` throws an exception or if the `Future` is completed
    * with failure and the supervision decision is [[pekko.stream.Supervision.Stop]]
    * the stream will be completed with failure, otherwise the stream continues and the current element is dropped.
    *
@@ -1392,7 +1399,7 @@ trait FlowOps[+Out, +Mat] {
   def mapAsyncPartitioned[T, P](parallelism: Int)(
       partitioner: Out => P)(
       f: (Out, P) => Future[T]): Repr[T] = {
-    val graph: Graph[FlowShape[Out, T], _] = if (parallelism == 1) {
+    val graph: Graph[FlowShape[Out, T], ?] = if (parallelism == 1) {
       MapAsyncUnordered(1, elem => f(elem, partitioner(elem)))
     } else {
       new MapAsyncPartitioned(parallelism, orderedOutput = true, partitioner, f)
@@ -1408,7 +1415,7 @@ trait FlowOps[+Out, +Mat] {
    * The function `partitioner` is always invoked on the elements in the order they arrive.
    * The function `f` is always invoked on the elements which in the same partition in the order they arrive.
    *
-   * If the function `partitioner` or `f` throws an exception or if the [[Future]] is completed
+   * If the function `partitioner` or `f` throws an exception or if the `Future` is completed
    * with failure and the supervision decision is [[pekko.stream.Supervision.Stop]]
    * the stream will be completed with failure, otherwise the stream continues and the current element is dropped.
    *
@@ -1430,7 +1437,7 @@ trait FlowOps[+Out, +Mat] {
   def mapAsyncPartitionedUnordered[T, P](parallelism: Int)(
       partitioner: Out => P)(
       f: (Out, P) => Future[T]): Repr[T] = {
-    val graph: Graph[FlowShape[Out, T], _] = if (parallelism == 1) {
+    val graph: Graph[FlowShape[Out, T], ?] = if (parallelism == 1) {
       MapAsyncUnordered(1, elem => f(elem, partitioner(elem)))
     } else {
       new MapAsyncPartitioned(parallelism, orderedOutput = false, partitioner, f)
@@ -1457,7 +1464,7 @@ trait FlowOps[+Out, +Mat] {
    * Similar to the plain ask pattern, the target actor is allowed to reply with `org.apache.pekko.util.Status`.
    * An `org.apache.pekko.util.Status#Failure` will cause the operator to fail with the cause carried in the `Failure` message.
    *
-   * The operator fails with an [[pekko.stream.WatchedActorTerminatedException]] if the target actor is terminated.
+   * The operator fails with a [[pekko.stream.WatchedActorTerminatedException]] if the target actor is terminated.
    *
    * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
    *
@@ -1491,8 +1498,8 @@ trait FlowOps[+Out, +Mat] {
    * Please note that the elements emitted by this operator are in-order with regards to the asks being issued
    * (i.e. same behavior as mapAsync).
    *
-   * The operator fails with an [[pekko.stream.WatchedActorTerminatedException]] if the target actor is terminated,
-   * or with an [[java.util.concurrent.TimeoutException]] in case the ask exceeds the timeout passed in.
+   * The operator fails with a [[pekko.stream.WatchedActorTerminatedException]] if the target actor is terminated,
+   * or with a [[java.util.concurrent.TimeoutException]] in case the ask exceeds the timeout passed in.
    *
    * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
    *
@@ -1531,7 +1538,7 @@ trait FlowOps[+Out, +Mat] {
   }
 
   /**
-   * The operator fails with an [[pekko.stream.WatchedActorTerminatedException]] if the target actor is terminated.
+   * The operator fails with a [[pekko.stream.WatchedActorTerminatedException]] if the target actor is terminated.
    *
    * '''Emits when''' upstream emits
    *
@@ -1589,6 +1596,10 @@ trait FlowOps[+Out, +Mat] {
 
   /**
    * Run the given function when the first element is received.
+   *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute. On `Supervision.Resume` the
+   * first element is dropped and the function is not retried; on `Supervision.Restart` the next
+   * element is treated as the first.
    *
    * '''Emits when''' upstream emits an element
    *
@@ -1691,7 +1702,7 @@ trait FlowOps[+Out, +Mat] {
    *
    * '''Cancels when''' after predicate returned true or downstream cancels
    *
-   * See also [[FlowOps.limit]], [[FlowOps.limitWeighted]], [[FlowOps.takeWhile]]
+   * See also [[FlowOps.limit]], [[FlowOps.limitWeighted]], `FlowOps.takeWhile`
    * @since 1.2.0
    */
   def takeUntil(p: Out => Boolean): Repr[Out] = takeWhile(!p(_), inclusive = true)
@@ -1825,7 +1836,7 @@ trait FlowOps[+Out, +Mat] {
    *
    * '''Cancels when''' downstream cancels
    */
-  def grouped(n: Int): Repr[immutable.Seq[Out]] =
+  def grouped(n: Int): Repr[Seq[Out]] =
     via(GroupedWeighted[Out](n, ConstantFun.oneLong).withAttributes(DefaultAttributes.grouped))
 
   /**
@@ -1844,7 +1855,7 @@ trait FlowOps[+Out, +Mat] {
    *
    * '''Cancels when''' downstream cancels
    */
-  def groupedWeighted(minWeight: Long)(costFn: Out => Long): Repr[immutable.Seq[Out]] =
+  def groupedWeighted(minWeight: Long)(costFn: Out => Long): Repr[Seq[Out]] =
     via(GroupedWeighted[Out](minWeight, costFn))
 
   /**
@@ -1852,6 +1863,9 @@ trait FlowOps[+Out, +Mat] {
    * when the result of the function is not the same as the previous element's result, a chunk is emitted.
    *
    * The `f` function must return a non-null value for all elements, otherwise the stage will fail.
+   *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute (applied to the key function).
+   * On `Supervision.Resume` the offending element is skipped; on `Supervision.Restart` the current group is dropped.
    *
    * '''Emits when''' the delimiter function returns a different value than the previous element's result
    *
@@ -1863,7 +1877,7 @@ trait FlowOps[+Out, +Mat] {
    *
    * @since 1.2.0
    */
-  def groupedAdjacentBy[T](f: Out => T): Repr[immutable.Seq[Out]] =
+  def groupedAdjacentBy[T](f: Out => T): Repr[Seq[Out]] =
     via(GroupedAdjacentByWeighted(f, Long.MaxValue, ConstantFun.oneLong))
 
   /**
@@ -1873,6 +1887,8 @@ trait FlowOps[+Out, +Mat] {
    *
    * The `f` function must return a non-null value , and the `costFn` must return a non-negative result for all inputs,
    * otherwise the stage will fail.
+   *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute (applied to both the key and cost functions). On `Supervision.Resume` the offending element is skipped; on `Supervision.Restart` the current group is dropped.
    *
    * '''Emits when''' the delimiter function returns a different value than the previous element's result, or exceeds the `maxWeight`.
    *
@@ -1884,13 +1900,13 @@ trait FlowOps[+Out, +Mat] {
    *
    * @since 1.2.0
    */
-  def groupedAdjacentByWeighted[T](f: Out => T, maxWeight: Long)(costFn: Out => Long): Repr[immutable.Seq[Out]] =
+  def groupedAdjacentByWeighted[T](f: Out => T, maxWeight: Long)(costFn: Out => Long): Repr[Seq[Out]] =
     via(GroupedAdjacentByWeighted(f, maxWeight, costFn))
 
   /**
    * Ensure stream boundedness by limiting the number of elements from upstream.
    * If the number of incoming elements exceeds max, it will signal
-   * upstream failure `StreamLimitException` downstream.
+   * upstream failure `StreamLimitReachedException` downstream.
    *
    * Due to input buffering some elements may have been
    * requested from upstream publishers that will then not be processed downstream
@@ -1902,11 +1918,11 @@ trait FlowOps[+Out, +Mat] {
    *
    * '''Completes when''' upstream completes and the number of emitted elements has not reached max
    *
-   * '''Errors when''' the total number of incoming element exceeds max
+   * '''Errors when''' the total number of incoming elements exceeds max
    *
    * '''Cancels when''' downstream cancels
    *
-   * See also [[FlowOps.take]], [[FlowOps.takeWithin]], [[FlowOps.takeWhile]]
+   * See also [[FlowOps.take]], [[FlowOps.takeWithin]], `FlowOps.takeWhile`
    */
   def limit(max: Long): Repr[Out] = limitWeighted(max)(_ => 1)
 
@@ -1914,7 +1930,7 @@ trait FlowOps[+Out, +Mat] {
    * Ensure stream boundedness by evaluating the cost of incoming elements
    * using a cost function. Exactly how many elements will be allowed to travel downstream depends on the
    * evaluated cost of each element. If the accumulated cost exceeds max, it will signal
-   * upstream failure `StreamLimitException` downstream.
+   * upstream failure `StreamLimitReachedException` downstream.
    *
    * Due to input buffering some elements may have been
    * requested from upstream publishers that will then not be processed downstream
@@ -1926,13 +1942,13 @@ trait FlowOps[+Out, +Mat] {
    *
    * '''Backpressures when''' downstream backpressures
    *
-   * '''Completes when''' upstream completes and the number of emitted elements has not reached max
+   * '''Completes when''' upstream completes and the accumulated cost has not reached max
    *
-   * '''Errors when''' when the accumulated cost exceeds max
+   * '''Errors when''' the accumulated cost exceeds max
    *
    * '''Cancels when''' downstream cancels
    *
-   * See also [[FlowOps.take]], [[FlowOps.takeWithin]], [[FlowOps.takeWhile]]
+   * See also [[FlowOps.take]], [[FlowOps.takeWithin]], `FlowOps.takeWhile`
    */
   def limitWeighted[T](max: Long)(costFn: Out => Long): Repr[Out] = via(LimitWeighted(max, costFn))
 
@@ -1951,7 +1967,7 @@ trait FlowOps[+Out, +Mat] {
    *
    * '''Cancels when''' downstream cancels
    */
-  def sliding(n: Int, step: Int = 1): Repr[immutable.Seq[Out]] = via(Sliding(n, step))
+  def sliding(n: Int, step: Int = 1): Repr[Seq[Out]] = via(Sliding(n, step))
 
   /**
    * Similar to `fold` but is not a terminal operation,
@@ -2093,7 +2109,7 @@ trait FlowOps[+Out, +Mat] {
    * yielding the next current value.
    *
    * If the stream is empty (i.e. completes before signalling any elements),
-   * the reduce operator will fail its downstream with a [[NoSuchElementException]],
+   * the reduce operator will fail its downstream with a `NoSuchElementException`,
    * which is semantically in-line with that Scala's standard library collections
    * do in such situations.
    *
@@ -2112,7 +2128,7 @@ trait FlowOps[+Out, +Mat] {
   def reduce[T >: Out](f: (T, T) => T): Repr[T] = via(new Reduce[T](f))
 
   /**
-   * Intersperses stream with provided element, similar to how [[scala.collection.immutable.List.mkString]]
+   * Intersperses stream with provided element, similar to how `List.mkString`
    * injects a separator between a List's elements.
    *
    * Additionally can inject start and end marker elements to stream.
@@ -2146,7 +2162,7 @@ trait FlowOps[+Out, +Mat] {
     via(Intersperse(Some(start), inject, Some(end)))
 
   /**
-   * Intersperses stream with provided element, similar to how [[scala.collection.immutable.List.mkString]]
+   * Intersperses stream with provided element, similar to how `List.mkString`
    * injects a separator between a List's elements.
    *
    * Additionally can inject start and end marker elements to stream.
@@ -2188,7 +2204,7 @@ trait FlowOps[+Out, +Mat] {
    *
    * '''Cancels when''' downstream completes
    */
-  def groupedWithin(n: Int, d: FiniteDuration): Repr[immutable.Seq[Out]] =
+  def groupedWithin(n: Int, d: FiniteDuration): Repr[Seq[Out]] =
     via(
       new GroupedWeightedWithin[Out](Long.MaxValue, n, ConstantFun.zeroLong, d)
         .withAttributes(DefaultAttributes.groupedWithin))
@@ -2203,6 +2219,10 @@ trait FlowOps[+Out, +Mat] {
    * `maxWeight` must be positive, and `d` must be greater than 0 seconds, otherwise
    * IllegalArgumentException is thrown.
    *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute. On `Supervision.Resume` the
+   * offending element is skipped and the current group is kept; on `Supervision.Restart` the current
+   * group is dropped.
+   *
    * '''Emits when''' the configured time elapses since the last group has been emitted or weight limit reached
    *
    * '''Backpressures when''' downstream backpressures, and buffered group (+ pending element) weighs more than `maxWeight`
@@ -2211,7 +2231,7 @@ trait FlowOps[+Out, +Mat] {
    *
    * '''Cancels when''' downstream completes
    */
-  def groupedWeightedWithin(maxWeight: Long, d: FiniteDuration)(costFn: Out => Long): Repr[immutable.Seq[Out]] =
+  def groupedWeightedWithin(maxWeight: Long, d: FiniteDuration)(costFn: Out => Long): Repr[Seq[Out]] =
     via(new GroupedWeightedWithin[Out](maxWeight, Int.MaxValue, costFn, d))
 
   /**
@@ -2224,6 +2244,10 @@ trait FlowOps[+Out, +Mat] {
    * `maxWeight` must be positive, `maxNumber` must be positive, and `d` must be greater than 0 seconds,
    * otherwise IllegalArgumentException is thrown.
    *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute. On `Supervision.Resume` the
+   * offending element is skipped and the current group is kept; on `Supervision.Restart` the current
+   * group is dropped.
+   *
    * '''Emits when''' the configured time elapses since the last group has been emitted or weight limit reached
    *
    * '''Backpressures when''' downstream backpressures, and buffered group (+ pending element) weighs more than
@@ -2234,7 +2258,7 @@ trait FlowOps[+Out, +Mat] {
    * '''Cancels when''' downstream completes
    */
   def groupedWeightedWithin(maxWeight: Long, maxNumber: Int, d: FiniteDuration)(
-      costFn: Out => Long): Repr[immutable.Seq[Out]] =
+      costFn: Out => Long): Repr[Seq[Out]] =
     via(new GroupedWeightedWithin[Out](maxWeight, maxNumber, costFn, d))
 
   /**
@@ -2282,6 +2306,10 @@ trait FlowOps[+Out, +Mat] {
    * Delay precision is 10ms to avoid unnecessary timer scheduling cycles.
    *
    * Internal buffer has default capacity 16. You can set buffer size by calling `addAttributes(inputBuffer)`
+   *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute. On `Supervision.Resume` the
+   * offending element is dropped; on `Supervision.Restart` the delay strategy is recreated from the
+   * supplier (already-buffered elements keep their delays).
    *
    * '''Emits when''' there is a pending element in the buffer and configured time for this element elapsed
    *  * EmitEarly - strategy do not wait to emit element if buffer is full
@@ -2497,12 +2525,19 @@ trait FlowOps[+Out, +Mat] {
    * element until new element comes from the upstream. For example an expand step might repeat the last element for
    * the subscriber until it receives an update from upstream.
    *
-   * This element will never "drop" upstream elements as all elements go through at least one extrapolation step.
-   * This means that if the upstream is actually faster than the upstream it will be backpressured by the downstream
-   * subscriber.
+   * Under normal operation all upstream elements go through at least one extrapolation step.
+   * If supervision drops a failed element, that element is not emitted.
+   * If the upstream is actually faster than the downstream it will be backpressured by the downstream subscriber.
    *
-   * Expand does not support [[pekko.stream.Supervision.Restart]] and [[pekko.stream.Supervision.Resume]].
-   * Exceptions from the `seed` function will complete the stream with failure.
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
+   *
+   * If the `expander` function or the iterator it produces throws during evaluation (`hasNext`/`next`) and the
+   * supervision decision is [[pekko.stream.Supervision.Stop]] the stream fails. If the supervision decision is
+   * [[pekko.stream.Supervision.Resume]] the failed element is dropped and the stream continues, keeping current
+   * extrapolation state when available. If the supervision decision is [[pekko.stream.Supervision.Restart]] the
+   * failed element is dropped and the current extrapolation state is reset. Note that iterator-evaluation failures
+   * necessarily discard the current iterator under both `Resume` and `Restart`, because a corrupt iterator cannot
+   * be reused.
    *
    * '''Emits when''' downstream stops backpressuring
    *
@@ -2525,8 +2560,14 @@ trait FlowOps[+Out, +Mat] {
    * This is achieved by introducing "extrapolated" elements - based on those from upstream - whenever downstream
    * signals demand.
    *
-   * Extrapolate does not support [[pekko.stream.Supervision.Restart]] and [[pekko.stream.Supervision.Resume]].
-   * Exceptions from the `extrapolate` function will complete the stream with failure.
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
+   *
+   * If the `extrapolator` function or the iterator it produces throws during evaluation (`hasNext`/`next`) and the
+   * supervision decision is [[pekko.stream.Supervision.Stop]] the stream fails. If the supervision decision is
+   * [[pekko.stream.Supervision.Resume]] the failed element is dropped and any previously active extrapolation is
+   * retained. If the supervision decision is [[pekko.stream.Supervision.Restart]] the failed element is dropped and
+   * the current extrapolation state is reset. For iterator-evaluation failures, `Resume` and `Restart` both discard
+   * the corrupt iterator because it cannot be reused.
    *
    * '''Emits when''' downstream stops backpressuring, AND EITHER upstream emits OR initial element is present OR
    * `extrapolate` is non-empty and applicable
@@ -2594,7 +2635,7 @@ trait FlowOps[+Out, +Mat] {
    *
    * '''Cancels when''' downstream cancels or substream cancels
    */
-  def prefixAndTail[U >: Out](n: Int): Repr[(immutable.Seq[Out], Source[U, NotUsed])] =
+  def prefixAndTail[U >: Out](n: Int): Repr[(Seq[Out], Source[U, NotUsed])] =
     via(new PrefixAndTail[Out](n))
 
   /**
@@ -2619,7 +2660,7 @@ trait FlowOps[+Out, +Mat] {
    *  @param n the number of elements to accumulate before materializing the downstream flow.
    *  @param f a function that produces the downstream flow based on the upstream's prefix.
    */
-  def flatMapPrefix[Out2, Mat2](n: Int)(f: immutable.Seq[Out] => Flow[Out, Out2, Mat2]): Repr[Out2] = {
+  def flatMapPrefix[Out2, Mat2](n: Int)(f: Seq[Out] => Flow[Out, Out2, Mat2]): Repr[Out2] = {
     via(new FlatMapPrefix(n, f))
   }
 
@@ -2705,94 +2746,16 @@ trait FlowOps[+Out, +Mat] {
    * If you expect an infinite number of keys this can cause memory issues. Elements belonging
    * to those keys are drained directly and not send to the substream.
    *
-   * @see [[#groupBy]]
+   * @see `groupBy`
    */
   def groupBy[K](maxSubstreams: Int, f: Out => K): SubFlow[Out, Mat, Repr, Closed] = groupBy(maxSubstreams, f, false)
 
   /**
    * This operation applies the given predicate to all incoming elements and
    * emits them to a stream of output streams, always beginning a new one with
-   * the current element if the given predicate returns true for it. This means
-   * that for the following series of predicate values, three substreams will
-   * be produced with lengths 1, 2, and 3:
-   *
-   * {{{
-   * false,             // element goes into first substream
-   * true, false,       // elements go into second substream
-   * true, false, false // elements go into third substream
-   * }}}
-   *
-   * In case the *first* element of the stream matches the predicate, the first
-   * substream emitted by splitWhen will start from that element. For example:
-   *
-   * {{{
-   * true, false, false // first substream starts from the split-by element
-   * true, false        // subsequent substreams operate the same way
-   * }}}
-   *
-   * The object returned from this method is not a normal [[Source]] or [[Flow]],
-   * it is a [[SubFlow]]. This means that after this operator all transformations
-   * are applied to all encountered substreams in the same fashion. Substream mode
-   * is exited either by closing the substream (i.e. connecting it to a [[Sink]])
-   * or by merging the substreams back together; see the `to` and `mergeBack` methods
-   * on [[SubFlow]] for more information.
-   *
-   * It is important to note that the substreams also propagate back-pressure as
-   * any other stream, which means that blocking one substream will block the `splitWhen`
-   * operator itself—and thereby all substreams—once all internal or
-   * explicit buffers are filled.
-   *
-   * If the split predicate `p` throws an exception and the supervision decision
-   * is [[pekko.stream.Supervision.Stop]] the stream and substreams will be completed
-   * with failure.
-   *
-   * If the split predicate `p` throws an exception and the supervision decision
-   * is [[pekko.stream.Supervision.Resume]] or [[pekko.stream.Supervision.Restart]]
-   * the element is dropped and the stream and substreams continue.
-   *
-   * '''Emits when''' an element for which the provided predicate is true, opening and emitting
-   * a new substream for subsequent element
-   *
-   * '''Backpressures when''' there is an element pending for the next substream, but the previous
-   * is not fully consumed yet, or the substream backpressures
-   *
-   * '''Completes when''' upstream completes
-   *
-   * '''Cancels when''' downstream cancels and substreams cancel on `SubstreamCancelStrategy.drain`, downstream
-   * cancels or any substream cancels on `SubstreamCancelStrategy.propagate`
-   *
-   * See also [[FlowOps.splitAfter]].
-   */
-  @deprecated(
-    "Use .withAttributes(ActorAttributes.supervisionStrategy(equivalentDecider)) rather than a SubstreamCancelStrategy",
-    since = "1.1.0")
-  def splitWhen(substreamCancelStrategy: SubstreamCancelStrategy)(
-      p: Out => Boolean): SubFlow[Out, Mat, Repr, Closed] = {
-    val merge = new SubFlowImpl.MergeBack[Out, Repr] {
-      override def apply[T](flow: Flow[Out, T, NotUsed], breadth: Int): Repr[T] =
-        via(Split
-          .when(p)
-          .withAttributes(ActorAttributes.supervisionStrategy(Split.cancelStrategyToDecider(substreamCancelStrategy))))
-          .map(_.via(flow))
-          .via(new FlattenMerge(breadth))
-    }
-
-    val finish: Sink[Out, NotUsed] => Closed = s =>
-      via(
-        Split
-          .when(p)
-          .withAttributes(ActorAttributes.supervisionStrategy(Split.cancelStrategyToDecider(substreamCancelStrategy))))
-        .to(Sink.foreach(_.runWith(s)(GraphInterpreter.currentInterpreter.materializer)))
-
-    new SubFlowImpl(Flow[Out], merge, finish)
-  }
-
-  /**
-   * This operation applies the given predicate to all incoming elements and
-   * emits them to a stream of output streams, always beginning a new one with
    * the current element if the given predicate returns true for it.
    *
-   * @see [[#splitWhen]]
+   * @see `splitWhen`
    */
   def splitWhen(p: Out => Boolean): SubFlow[Out, Mat, Repr, Closed] = {
     val merge = new SubFlowImpl.MergeBack[Out, Repr] {
@@ -2809,76 +2772,9 @@ trait FlowOps[+Out, +Mat] {
   /**
    * This operation applies the given predicate to all incoming elements and
    * emits them to a stream of output streams. It *ends* the current substream when the
-   * predicate is true. This means that for the following series of predicate values,
-   * three substreams will be produced with lengths 2, 2, and 3:
-   *
-   * {{{
-   * false, true,        // elements go into first substream
-   * false, true,        // elements go into second substream
-   * false, false, true  // elements go into third substream
-   * }}}
-   *
-   * The object returned from this method is not a normal [[Source]] or [[Flow]],
-   * it is a [[SubFlow]]. This means that after this operator all transformations
-   * are applied to all encountered substreams in the same fashion. Substream mode
-   * is exited either by closing the substream (i.e. connecting it to a [[Sink]])
-   * or by merging the substreams back together; see the `to` and `mergeBack` methods
-   * on [[SubFlow]] for more information.
-   *
-   * It is important to note that the substreams also propagate back-pressure as
-   * any other stream, which means that blocking one substream will block the `splitAfter`
-   * operator itself—and thereby all substreams—once all internal or
-   * explicit buffers are filled.
-   *
-   * If the split predicate `p` throws an exception and the supervision decision
-   * is [[pekko.stream.Supervision.Stop]] the stream and substreams will be completed
-   * with failure.
-   *
-   * If the split predicate `p` throws an exception and the supervision decision
-   * is [[pekko.stream.Supervision.Resume]] or [[pekko.stream.Supervision.Restart]]
-   * the element is dropped and the stream and substreams continue.
-   *
-   * '''Emits when''' an element passes through. When the provided predicate is true it emits the element
-   * and opens a new substream for subsequent element
-   *
-   * '''Backpressures when''' there is an element pending for the next substream, but the previous
-   * is not fully consumed yet, or the substream backpressures
-   *
-   * '''Completes when''' upstream completes
-   *
-   * '''Cancels when''' downstream cancels and substreams cancel on `SubstreamCancelStrategy.drain`, downstream
-   * cancels or any substream cancels on `SubstreamCancelStrategy.propagate`
-   *
-   * See also [[FlowOps.splitWhen]].
-   */
-  @deprecated(
-    "Use .withAttributes(ActorAttributes.supervisionStrategy(equivalentDecider)) rather than a SubstreamCancelStrategy",
-    since = "1.1.0")
-  def splitAfter(substreamCancelStrategy: SubstreamCancelStrategy)(
-      p: Out => Boolean): SubFlow[Out, Mat, Repr, Closed] = {
-    val merge = new SubFlowImpl.MergeBack[Out, Repr] {
-      override def apply[T](flow: Flow[Out, T, NotUsed], breadth: Int): Repr[T] =
-        via(Split
-          .after(p)
-          .withAttributes(ActorAttributes.supervisionStrategy(Split.cancelStrategyToDecider(substreamCancelStrategy))))
-          .map(_.via(flow))
-          .via(new FlattenMerge(breadth))
-    }
-    val finish: Sink[Out, NotUsed] => Closed = s =>
-      via(
-        Split
-          .after(p)
-          .withAttributes(ActorAttributes.supervisionStrategy(Split.cancelStrategyToDecider(substreamCancelStrategy))))
-        .to(Sink.foreach(_.runWith(s)(GraphInterpreter.currentInterpreter.materializer)))
-    new SubFlowImpl(Flow[Out], merge, finish)
-  }
-
-  /**
-   * This operation applies the given predicate to all incoming elements and
-   * emits them to a stream of output streams. It *ends* the current substream when the
    * predicate is true.
    *
-   * @see [[#splitAfter]]
+   * @see `splitAfter`
    */
   def splitAfter(p: Out => Boolean): SubFlow[Out, Mat, Repr, Closed] = {
     val merge = new SubFlowImpl.MergeBack[Out, Repr] {
@@ -2924,7 +2820,7 @@ trait FlowOps[+Out, +Mat] {
     map(f).via(new FlattenConcat[T, M](parallelism))
 
   /**
-   * Alias for [[flatMapConcat]], added to enable for comprehensions.
+   * Alias for `flatMapConcat`, added to enable for comprehensions.
    *
    * NOTE: Support for `for` comprehensions is still experimental and it's possible that we might need to change
    * the internal implementation.
@@ -3174,6 +3070,10 @@ trait FlowOps[+Out, +Mat] {
    * The throttle `mode` is [[pekko.stream.ThrottleMode.Shaping]], which makes pauses before emitting messages to
    * meet throttle rate.
    *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute. On `Supervision.Resume` the
+   * offending element is dropped; `Supervision.Restart` behaves the same as `Supervision.Resume`
+   * because throttle keeps no accumulated per-element state.
+   *
    * '''Emits when''' upstream emits an element and configured time per each element elapsed
    *
    * '''Backpressures when''' downstream backpressures or the incoming rate is higher than the speed limit
@@ -3214,6 +3114,10 @@ trait FlowOps[+Out, +Mat] {
    *  `maximumBurst` parameter to automatically calculate the `maximumBurst` based on the given rate (`cost/per`).
    *  In other words the throttler always enforces the rate limit when `maximumBurst` parameter is given, but in
    *  certain cases (mostly due to limited scheduler resolution) it enforces a tighter bound than what was prescribed.
+   *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute. On `Supervision.Resume` the
+   * offending element is dropped; `Supervision.Restart` behaves the same as `Supervision.Resume`
+   * because throttle keeps no accumulated per-element state.
    *
    * '''Emits when''' upstream emits an element and configured time per each element elapsed
    *
@@ -3264,7 +3168,7 @@ trait FlowOps[+Out, +Mat] {
    * By default element and completion signals are logged on debug level, and errors are logged on Error level.
    * This can be adjusted according to your needs by providing a custom [[Attributes.LogLevels]] attribute on the given Flow:
    *
-   * Uses implicit [[LoggingAdapter]] if available, otherwise uses an internally created one,
+   * Uses implicit `LoggingAdapter` if available, otherwise uses an internally created one,
    * which uses `org.apache.pekko.event.Logging(materializer.system, materializer)` as its source (use this class to configure slf4j loggers).
    *
    * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
@@ -3287,7 +3191,7 @@ trait FlowOps[+Out, +Mat] {
    * By default element and completion signals are logged on debug level, and errors are logged on Error level.
    * This can be adjusted according to your needs by providing a custom [[Attributes.LogLevels]] attribute on the given Flow:
    *
-   * Uses implicit [[MarkerLoggingAdapter]] if available, otherwise uses an internally created one,
+   * Uses implicit `MarkerLoggingAdapter` if available, otherwise uses an internally created one,
    * which uses `org.apache.pekko.event.Logging.withMarker(materializer.system, materializer)` as its source (use this class to configure slf4j loggers).
    *
    * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
@@ -3315,7 +3219,7 @@ trait FlowOps[+Out, +Mat] {
    *
    * '''Cancels when''' downstream cancels
    */
-  def zip[U](that: Graph[SourceShape[U], _]): Repr[(Out, U)] = via(zipGraph(that))
+  def zip[U](that: Graph[SourceShape[U], ?]): Repr[(Out, U)] = via(zipGraph(that))
 
   /**
    * Combine the elements of current flow and the given [[Source]] into a stream of tuples.
@@ -3328,7 +3232,7 @@ trait FlowOps[+Out, +Mat] {
    *
    * '''Cancels when''' downstream cancels
    */
-  def zipAll[U, A >: Out](that: Graph[SourceShape[U], _], thisElem: A, thatElem: U): Repr[(A, U)] = {
+  def zipAll[U, A >: Out](that: Graph[SourceShape[U], ?], thisElem: A, thatElem: U): Repr[(A, U)] = {
     via(zipAllFlow(that, thisElem, thatElem))
   }
 
@@ -3378,7 +3282,7 @@ trait FlowOps[+Out, +Mat] {
    *
    * '''Cancels when''' downstream cancels
    */
-  def zipLatest[U](that: Graph[SourceShape[U], _]): Repr[(Out, U)] = via(zipLatestGraph(that))
+  def zipLatest[U](that: Graph[SourceShape[U], ?]): Repr[(Out, U)] = via(zipLatestGraph(that))
 
   protected def zipLatestGraph[U, M](
       that: Graph[SourceShape[U], M]): Graph[FlowShape[Out @uncheckedVariance, (Out, U)], M] =
@@ -3392,6 +3296,12 @@ trait FlowOps[+Out, +Mat] {
    * Put together the elements of current flow and the given [[Source]]
    * into a stream of combined elements using a combiner function.
    *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
+   *
+   * If the combiner function throws and the supervision decision is [[pekko.stream.Supervision.Stop]]
+   * the stream fails. If the supervision decision is [[pekko.stream.Supervision.Resume]] or
+   * [[pekko.stream.Supervision.Restart]] the zipped element is dropped and the stream continues.
+   *
    * '''Emits when''' all of the inputs have an element available
    *
    * '''Backpressures when''' downstream backpressures
@@ -3400,7 +3310,7 @@ trait FlowOps[+Out, +Mat] {
    *
    * '''Cancels when''' downstream cancels
    */
-  def zipWith[Out2, Out3](that: Graph[SourceShape[Out2], _])(combine: (Out, Out2) => Out3): Repr[Out3] =
+  def zipWith[Out2, Out3](that: Graph[SourceShape[Out2], ?])(combine: (Out, Out2) => Out3): Repr[Out3] =
     via(zipWithGraph(that)(combine))
 
   protected def zipWithGraph[Out2, Out3, M](that: Graph[SourceShape[Out2], M])(
@@ -3428,7 +3338,7 @@ trait FlowOps[+Out, +Mat] {
    *
    *   '''Cancels when''' downstream cancels
    */
-  def zipLatestWith[Out2, Out3](that: Graph[SourceShape[Out2], _])(combine: (Out, Out2) => Out3): Repr[Out3] =
+  def zipLatestWith[Out2, Out3](that: Graph[SourceShape[Out2], ?])(combine: (Out, Out2) => Out3): Repr[Out3] =
     zipLatestWith(that, eagerComplete = true)(combine)
 
   /**
@@ -3448,7 +3358,7 @@ trait FlowOps[+Out, +Mat] {
    *
    *   '''Cancels when''' downstream cancels
    */
-  def zipLatestWith[Out2, Out3](that: Graph[SourceShape[Out2], _], eagerComplete: Boolean)(
+  def zipLatestWith[Out2, Out3](that: Graph[SourceShape[Out2], ?], eagerComplete: Boolean)(
       combine: (Out, Out2) => Out3): Repr[Out3] =
     via(zipLatestWithGraph(that, eagerComplete)(combine))
 
@@ -3501,7 +3411,7 @@ trait FlowOps[+Out, +Mat] {
    *
    * '''Cancels when''' downstream cancels
    */
-  def interleave[U >: Out](that: Graph[SourceShape[U], _], segmentSize: Int): Repr[U] =
+  def interleave[U >: Out](that: Graph[SourceShape[U], ?], segmentSize: Int): Repr[U] =
     interleave(that, segmentSize, eagerClose = false)
 
   /**
@@ -3524,7 +3434,7 @@ trait FlowOps[+Out, +Mat] {
    *
    * '''Cancels when''' downstream cancels
    */
-  def interleave[U >: Out](that: Graph[SourceShape[U], _], segmentSize: Int, eagerClose: Boolean): Repr[U] =
+  def interleave[U >: Out](that: Graph[SourceShape[U], ?], segmentSize: Int, eagerClose: Boolean): Repr[U] =
     via(interleaveGraph(that, segmentSize, eagerClose))
 
   protected def interleaveGraph[U >: Out, M](
@@ -3558,7 +3468,7 @@ trait FlowOps[+Out, +Mat] {
    * '''Cancels when''' downstream cancels
    */
   def interleaveAll[U >: Out](
-      those: immutable.Seq[Graph[SourceShape[U], _]],
+      those: Seq[Graph[SourceShape[U], ?]],
       segmentSize: Int,
       eagerClose: Boolean): Repr[U] = those match {
     case those if those.isEmpty => this.asInstanceOf[Repr[U]]
@@ -3608,7 +3518,7 @@ trait FlowOps[+Out, +Mat] {
    *
    * '''Cancels when''' downstream cancels
    */
-  def mergeAll[U >: Out](those: immutable.Seq[Graph[SourceShape[U], _]], eagerComplete: Boolean): Repr[U] =
+  def mergeAll[U >: Out](those: Seq[Graph[SourceShape[U], ?]], eagerComplete: Boolean): Repr[U] =
     those match {
       case those if those.isEmpty => this.asInstanceOf[Repr[U]]
       case _                      =>
@@ -3631,12 +3541,12 @@ trait FlowOps[+Out, +Mat] {
    *
    * '''Completes when''' all upstreams complete (eagerClose=false) or one upstream completes (eagerClose=true)
    */
-  def mergeLatest[U >: Out, M](that: Graph[SourceShape[U], M], eagerComplete: Boolean = false): Repr[immutable.Seq[U]] =
+  def mergeLatest[U >: Out, M](that: Graph[SourceShape[U], M], eagerComplete: Boolean = false): Repr[Seq[U]] =
     via(mergeLatestGraph(that, eagerComplete))
 
   protected def mergeLatestGraph[U >: Out, M](
       that: Graph[SourceShape[U], M],
-      eagerComplete: Boolean): Graph[FlowShape[Out @uncheckedVariance, immutable.Seq[U]], M] =
+      eagerComplete: Boolean): Graph[FlowShape[Out @uncheckedVariance, Seq[U]], M] =
     GraphDSL.createGraph(that) { implicit b => r =>
       val merge = b.add(MergeLatest[U](2, eagerComplete))
       r ~> merge.in(1)
@@ -3805,21 +3715,57 @@ trait FlowOps[+Out, +Mat] {
    *
    * '''Cancels when''' downstream cancels
    */
-  def concatAllLazy[U >: Out](those: Graph[SourceShape[U], _]*): Repr[U] =
+  def concatAllLazy[U >: Out](those: Graph[SourceShape[U], ?]*): Repr[U] =
     internalConcatAll(those.toArray, detached = false)
 
   private def internalConcat[U >: Out, Mat2](that: Graph[SourceShape[U], Mat2], detached: Boolean): Repr[U] =
     that match {
       case source if TraversalBuilder.isEmptySource(source) => this.asInstanceOf[Repr[U]]
       case other                                            =>
-        TraversalBuilder.getSingleSource(other) match {
-          case OptionVal.Some(singleSource) =>
-            via(new SingleConcat(singleSource.elem.asInstanceOf[U]))
-          case _ => via(concatGraph(other, detached))
-        }
+        // DO NOT CHANGE
+        // WHY: only `concatLazy` (detached = false) takes the inlined fast path.
+        // `concat` (detached = true) relies on `Concat(_, detachedInputs = true)` which
+        // wraps each input port with `Detacher`. Detacher.preStart does an eager
+        // `tryPull(in)`, which (a) pulls the LHS upstream at materialization, (b) pulls
+        // the RHS source eagerly so its first element is produced and buffered before
+        // the LHS finishes, and (c) provides a one-element buffer that decouples
+        // upstream/downstream demand (also breaks deadlocks in cyclic graphs).
+        // Inlining the RHS into a single linear stage drops both eager-pull side-effect
+        // timing and the buffer, so for `detached = true` we keep the substream path.
+        if (!detached) {
+          TraversalBuilder.getValuePresentedSource(other) match {
+            case OptionVal.Some(graph) =>
+              // Attributes attached to the inlined source via `withAttributes` (notably
+              // `SupervisionStrategy`, dispatcher hints, log levels) are carried over to
+              // the optimized stage so the value-presented fast path stays behaviourally
+              // identical to the substream-materializing concatGraph path.
+              val sourceAttrs = other.traversalBuilder.attributes
+              graph match {
+                case single: SingleSource[U] @unchecked =>
+                  via(new SingleConcat(single.elem).addAttributes(sourceAttrs))
+                case iterable: IterableSource[U] @unchecked =>
+                  via(new IterableConcat[U](() => iterable.elements.iterator).addAttributes(sourceAttrs))
+                case iterator: IteratorSource[U] @unchecked =>
+                  via(new IterableConcat[U](iterator.createIterator).addAttributes(sourceAttrs))
+                case range: RangeSource[U] @unchecked =>
+                  via(new IterableConcat[U](() => range.range.iterator.asInstanceOf[Iterator[U]]).addAttributes(
+                    sourceAttrs))
+                case javaStream: JavaStreamSource[U, ?] @unchecked =>
+                  via(new JavaStreamConcat[U](javaStream.open).addAttributes(sourceAttrs))
+                case repeat: RepeatSource[U] @unchecked =>
+                  via(new RepeatConcat[U](repeat.elem).addAttributes(sourceAttrs))
+                case futureSource: FutureSource[U] @unchecked =>
+                  via(new FutureConcat[U](futureSource.future).addAttributes(sourceAttrs))
+                case failed: FailedSource[U] @unchecked =>
+                  via(new FailedConcat[U](failed.failure).addAttributes(sourceAttrs))
+                case _ => via(concatGraph(other, detached))
+              }
+            case _ => via(concatGraph(other, detached))
+          }
+        } else via(concatGraph(other, detached))
     }
 
-  private def internalConcatAll[U >: Out](those: Array[Graph[SourceShape[U], _]], detached: Boolean): Repr[U] =
+  private def internalConcatAll[U >: Out](those: Array[Graph[SourceShape[U], ?]], detached: Boolean): Repr[U] =
     those match {
       case those if those.isEmpty     => this.asInstanceOf[Repr[U]]
       case those if those.length == 1 => internalConcat(those.head, detached)
@@ -3959,7 +3905,7 @@ trait FlowOps[+Out, +Mat] {
    * Attaches the given [[Sink]] to this [[Source]], meaning that elements that pass
    * through will also be sent to the [[Sink]].
    *
-   * It is similar to [[#wireTap]] but will backpressure instead of dropping elements when the given [[Sink]] is not ready.
+   * It is similar to `wireTap` but will backpressure instead of dropping elements when the given [[Sink]] is not ready.
    *
    * '''Emits when''' element is available and demand exists both from the Sink and the downstream.
    *
@@ -3969,7 +3915,7 @@ trait FlowOps[+Out, +Mat] {
    *
    * '''Cancels when''' downstream or Sink cancels
    */
-  def alsoTo(that: Graph[SinkShape[Out], _]): Repr[Out] = via(alsoToGraph(that))
+  def alsoTo(that: Graph[SinkShape[Out], ?]): Repr[Out] = via(alsoToGraph(that))
 
   protected def alsoToGraph[M](that: Graph[SinkShape[Out], M]): Graph[FlowShape[Out @uncheckedVariance, Out], M] =
     GraphDSL.createGraph(that) { implicit b => r =>
@@ -3980,10 +3926,48 @@ trait FlowOps[+Out, +Mat] {
     }
 
   /**
+   * Attaches the given [[Sink]] to this [[Flow]], meaning that elements that pass
+   * through will also be sent to the [[Sink]].
+   *
+   * When `propagateCancellation` is `false`, cancellation or failure of the side [[Sink]]
+   * will not cancel the main stream. Elements will continue to flow to the main downstream
+   * only. This is useful for fire-and-forget side sinks (e.g. logging) where the side sink's
+   * availability should not affect the main business stream.
+   *
+   * When `propagateCancellation` is `true` (the default), this behaves identically to `alsoTo`.
+   *
+   * It is similar to `wireTap` but will backpressure instead of dropping elements when the given [[Sink]] is not ready.
+   *
+   * '''Emits when''' element is available and demand exists both from the Sink and the downstream.
+   *
+   * '''Backpressures when''' downstream or Sink backpressures
+   *
+   * '''Completes when''' upstream completes
+   *
+   * '''Cancels when''' downstream cancels (the side [[Sink]] is also cancelled).
+   *                        When `propagateCancellation` is `true`, cancellation or failure of
+   *                        the side [[Sink]] also cancels the downstream.
+   *
+   * @since 2.0.0
+   */
+  def alsoTo(that: Graph[SinkShape[Out], ?], propagateCancellation: Boolean): Repr[Out] =
+    if (propagateCancellation) alsoTo(that)
+    else via(resilientAlsoToGraph(that))
+
+  protected def resilientAlsoToGraph[M](
+      that: Graph[SinkShape[Out], M]): Graph[FlowShape[Out @uncheckedVariance, Out], M] =
+    GraphDSL.createGraph(that) { implicit b => r =>
+      import GraphDSL.Implicits._
+      val bcast = b.add(Broadcast[Out](2, eagerCancel = true, nonEagerCancelOutputs = Set(1)))
+      bcast.out(1) ~> r
+      FlowShape(bcast.in, bcast.out(0))
+    }
+
+  /**
    * Attaches the given [[Sink]]s to this [[Source]], meaning that elements that pass
    * through will also be sent to the [[Sink]].
    *
-   * It is similar to [[#wireTap]] but will backpressure instead of dropping elements when the given [[Sink]]s is not ready.
+   * It is similar to `wireTap` but will backpressure instead of dropping elements when the given [[Sink]]s is not ready.
    *
    * '''Emits when''' element is available and demand exists both from the Sinks and the downstream.
    *
@@ -3993,7 +3977,7 @@ trait FlowOps[+Out, +Mat] {
    *
    * '''Cancels when''' downstream or any of the [[Sink]]s cancels
    */
-  def alsoToAll(those: Graph[SinkShape[Out], _]*): Repr[Out] = those match {
+  def alsoToAll(those: Graph[SinkShape[Out], ?]*): Repr[Out] = those match {
     case those if those.isEmpty => this.asInstanceOf[Repr[Out]]
     case _                      =>
       via(GraphDSL.create() { implicit b =>
@@ -4017,7 +4001,7 @@ trait FlowOps[+Out, +Mat] {
    *
    * '''Cancels when''' any of the downstreams cancel
    */
-  def divertTo(that: Graph[SinkShape[Out], _], when: Out => Boolean): Repr[Out] = via(divertToGraph(that, when))
+  def divertTo(that: Graph[SinkShape[Out], ?], when: Out => Boolean): Repr[Out] = via(divertToGraph(that, when))
 
   protected def divertToGraph[M](
       that: Graph[SinkShape[Out], M],
@@ -4034,7 +4018,7 @@ trait FlowOps[+Out, +Mat] {
    * through will also be sent to the wire-tap Sink, without the latter affecting the mainline flow.
    * If the wire-tap Sink backpressures, elements that would've been sent to it will be dropped instead.
    *
-   * It is similar to [[#alsoTo]] which does backpressure instead of dropping elements.
+   * It is similar to `alsoTo` which does backpressure instead of dropping elements.
    *
    * '''Emits when''' element is available and demand exists from the downstream; the element will
    * also be sent to the wire-tap Sink if there is demand.
@@ -4045,7 +4029,7 @@ trait FlowOps[+Out, +Mat] {
    *
    * '''Cancels when''' downstream cancels
    */
-  def wireTap(that: Graph[SinkShape[Out], _]): Repr[Out] = via(wireTapGraph(that))
+  def wireTap(that: Graph[SinkShape[Out], ?]): Repr[Out] = via(wireTapGraph(that))
 
   protected def wireTapGraph[M](that: Graph[SinkShape[Out], M]): Graph[FlowShape[Out @uncheckedVariance, Out], M] =
     GraphDSL.createGraph(that) { implicit b => r =>
@@ -4074,7 +4058,14 @@ trait FlowOps[+Out, +Mat] {
   /**
    * Aggregate input elements into an arbitrary data structure that can be completed and emitted downstream
    * when custom condition is met which can be triggered by aggregate or timer.
-   * It can be thought of a more general [[groupedWeightedWithin]].
+   * It can be thought of a more general `groupedWeightedWithin`.
+   *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
+   *
+   * If `allocate`, `aggregate`, `harvest`, or timer predicate throws and the supervision decision is
+   * [[pekko.stream.Supervision.Stop]] the stream fails. If the supervision decision is
+   * [[pekko.stream.Supervision.Resume]] or [[pekko.stream.Supervision.Restart]], the failing element or
+   * aggregate is dropped and the stream continues.
    *
    * '''Emits when''' the aggregation function decides the aggregate is complete or the timer function returns true
    *
@@ -4117,7 +4108,7 @@ trait FlowOpsMat[+Out, +Mat] extends FlowOps[Out, Mat] {
     type Closed = FlowOpsMat.this.ClosedMat[M @uncheckedVariance]
     type ClosedMat[+MM] = FlowOpsMat.this.ClosedMat[MM]
   }
-  type ClosedMat[+M] <: Graph[_, M]
+  type ClosedMat[+M] <: Graph[?, M]
 
   /**
    * Transform this [[Flow]] by appending the given processing steps.
@@ -4176,7 +4167,7 @@ trait FlowOpsMat[+Out, +Mat] extends FlowOps[Out, Mat] {
    * mat version of [[#flatMapPrefix]], this method gives access to a future materialized value of the downstream flow.
    * see [[#flatMapPrefix]] for details.
    */
-  def flatMapPrefixMat[Out2, Mat2, Mat3](n: Int)(f: immutable.Seq[Out] => Flow[Out, Out2, Mat2])(
+  def flatMapPrefixMat[Out2, Mat2, Mat3](n: Int)(f: Seq[Out] => Flow[Out, Out2, Mat2])(
       matF: (Mat, Future[Mat2]) => Mat3): ReprMat[Out2, Mat3] = {
     viaMat(new FlatMapPrefix(n, f))(matF)
   }
@@ -4328,7 +4319,7 @@ trait FlowOpsMat[+Out, +Mat] extends FlowOps[Out, Mat] {
    * where appropriate instead of manually writing functions that pass through one of the values.
    */
   def mergeLatestMat[U >: Out, Mat2, Mat3](that: Graph[SourceShape[U], Mat2], eagerClose: Boolean)(
-      matF: (Mat, Mat2) => Mat3): ReprMat[immutable.Seq[U], Mat3] =
+      matF: (Mat, Mat2) => Mat3): ReprMat[Seq[U], Mat3] =
     viaMat(mergeLatestGraph(that, eagerClose))(matF)
 
   /**
@@ -4488,13 +4479,29 @@ trait FlowOpsMat[+Out, +Mat] extends FlowOps[Out, Mat] {
    * Attaches the given [[Sink]] to this [[Flow]], meaning that elements that pass
    * through will also be sent to the [[Sink]].
    *
-   * @see [[#alsoTo]]
+   * @see `alsoTo`
    *
    * It is recommended to use the internally optimized `Keep.left` and `Keep.right` combiners
    * where appropriate instead of manually writing functions that pass through one of the values.
    */
   def alsoToMat[Mat2, Mat3](that: Graph[SinkShape[Out], Mat2])(matF: (Mat, Mat2) => Mat3): ReprMat[Out, Mat3] =
     viaMat(alsoToGraph(that))(matF)
+
+  /**
+   * Attaches the given [[Sink]] to this [[Flow]], meaning that elements that pass
+   * through will also be sent to the [[Sink]].
+   *
+   * @see `alsoTo`
+   *
+   * It is recommended to use the internally optimized `Keep.left` and `Keep.right` combiners
+   * where appropriate instead of manually writing functions that pass through one of the values.
+   *
+   * @since 2.0.0
+   */
+  def alsoToMat[Mat2, Mat3](that: Graph[SinkShape[Out], Mat2], propagateCancellation: Boolean)(
+      matF: (Mat, Mat2) => Mat3): ReprMat[Out, Mat3] =
+    if (propagateCancellation) viaMat(alsoToGraph(that))(matF)
+    else viaMat(resilientAlsoToGraph(that))(matF)
 
   /**
    * Attaches the given [[Sink]] to this [[Flow]], meaning that elements will be sent to the [[Sink]]
@@ -4514,9 +4521,9 @@ trait FlowOpsMat[+Out, +Mat] extends FlowOps[Out, Mat] {
    * through will also be sent to the wire-tap Sink, without the latter affecting the mainline flow.
    * If the wire-tap Sink backpressures, elements that would've been sent to it will be dropped instead.
    *
-   * It is similar to [[#alsoToMat]] which does backpressure instead of dropping elements.
+   * It is similar to `alsoToMat` which does backpressure instead of dropping elements.
    *
-   * @see [[#wireTap]]
+   * @see `wireTap`
    *
    * It is recommended to use the internally optimized `Keep.left` and `Keep.right` combiners
    * where appropriate instead of manually writing functions that pass through one of the values.
@@ -4544,7 +4551,7 @@ trait FlowOpsMat[+Out, +Mat] extends FlowOps[Out, Mat] {
   /**
    * Materializes to `FlowMonitor[Out]` that allows monitoring of the current flow. All events are propagated
    * by the monitor unchanged. Note that the monitor inserts a memory barrier every time it processes an
-   * event, and may therefor affect performance.
+   * event, and may therefore affect performance.
    *
    * The `combine` function is used to combine the `FlowMonitor` with this flow's materialized value.
    */
@@ -4559,7 +4566,7 @@ trait FlowOpsMat[+Out, +Mat] extends FlowOps[Out, Mat] {
    *
    * The `FlowMonitor[Out]` allows monitoring of the current flow. All events are propagated
    * by the monitor unchanged. Note that the monitor inserts a memory barrier every time it processes an
-   * event, and may therefor affect performance.
+   * event, and may therefore affect performance.
    */
   def monitor: ReprMat[Out, (Mat, FlowMonitor[Out])] =
     monitorMat(Keep.both)

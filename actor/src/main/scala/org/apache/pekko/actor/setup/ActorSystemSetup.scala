@@ -30,7 +30,7 @@ import pekko.annotation.InternalApi
 abstract class Setup {
 
   /**
-   * Construct an [[pekko.actor.setup.ActorSystemSetup]] with this setup combined with another one. Allows for
+   * Construct a [[pekko.actor.setup.ActorSystemSetup]] with this setup combined with another one. Allows for
    * fluent creation of settings. If `other` is a setting of the same concrete [[pekko.actor.setup.Setup]] as this
    * it will replace this.
    */
@@ -43,13 +43,13 @@ object ActorSystemSetup {
   val empty = new ActorSystemSetup(Map.empty)
 
   /**
-   * Scala API: Create an [[pekko.actor.setup.ActorSystemSetup]] containing all the provided settings
+   * Scala API: Create a [[pekko.actor.setup.ActorSystemSetup]] containing all the provided settings
    */
   def apply(settings: Setup*): ActorSystemSetup =
     new ActorSystemSetup(settings.map(s => s.getClass -> s).toMap)
 
   /**
-   * Java API: Create an [[pekko.actor.setup.ActorSystemSetup]] containing all the provided settings
+   * Java API: Create a [[pekko.actor.setup.ActorSystemSetup]] containing all the provided settings
    */
   @varargs
   def create(settings: Setup*): ActorSystemSetup = apply(settings: _*)
@@ -61,7 +61,7 @@ object ActorSystemSetup {
  * Constructor is *Internal API*. Use the factory methods [[ActorSystemSetup#create]] and [[ActorSystemSetup#apply]] to create
  * instances.
  */
-final class ActorSystemSetup private[pekko] (@InternalApi private[pekko] val setups: Map[Class[_], AnyRef]) {
+final class ActorSystemSetup private[pekko] (@InternalApi private[pekko] val setups: Map[Class[?], AnyRef]) {
 
   /**
    * Java API: Extract a concrete [[pekko.actor.setup.Setup]] of type `T` if it is defined in the settings.

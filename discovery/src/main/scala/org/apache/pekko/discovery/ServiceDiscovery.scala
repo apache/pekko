@@ -18,9 +18,10 @@ import java.util.Optional
 import java.util.concurrent.CompletionStage
 import java.util.concurrent.TimeUnit
 
-import scala.collection.immutable
 import scala.concurrent.Future
 import scala.concurrent.duration.FiniteDuration
+import scala.jdk.DurationConverters._
+import scala.jdk.FutureConverters._
 import scala.jdk.OptionConverters._
 
 import org.apache.pekko
@@ -38,15 +39,15 @@ object ServiceDiscovery {
   final class DiscoveryTimeoutException(reason: String) extends RuntimeException(reason)
 
   object Resolved {
-    def apply(serviceName: String, addresses: immutable.Seq[ResolvedTarget]): Resolved =
+    def apply(serviceName: String, addresses: Seq[ResolvedTarget]): Resolved =
       new Resolved(serviceName, addresses)
 
-    def unapply(resolved: Resolved): Option[(String, immutable.Seq[ResolvedTarget])] =
+    def unapply(resolved: Resolved): Option[(String, Seq[ResolvedTarget])] =
       Some((resolved.serviceName, resolved.addresses))
   }
 
   /** Result of a successful resolve request */
-  final class Resolved(val serviceName: String, val addresses: immutable.Seq[ResolvedTarget])
+  final class Resolved(val serviceName: String, val addresses: Seq[ResolvedTarget])
       extends DeadLetterSuppression
       with NoSerializationVerificationNeeded {
 
@@ -306,10 +307,17 @@ abstract class ServiceDiscovery {
   /**
    * Scala API: Perform lookup using underlying discovery implementation.
    *
-   * Convenience for when only a name is required.
+   * Convenience lookup accepting a name. If the name is a valid SRV entry, an SRV lookup is done, otherwise
+   * a regular lookup. For more control use the overload accepting a [[Lookup]].
    */
-  def lookup(serviceName: String, resolveTimeout: FiniteDuration): Future[Resolved] =
-    lookup(Lookup(serviceName), resolveTimeout)
+  def lookup(serviceName: String, resolveTimeout: FiniteDuration): Future[Resolved] = {
+    val parsedLookup =
+      if (Lookup.isValidSrv(serviceName))
+        Lookup.parseSrv(serviceName)
+      else
+        Lookup(serviceName)
+    lookup(parsedLookup, resolveTimeout)
+  }
 
   /**
    * Java API: Perform basic lookup using underlying discovery implementation.
@@ -328,11 +336,14 @@ abstract class ServiceDiscovery {
   /**
    * Java API
    *
+   * Convenience lookup accepting a name. If the name is a valid SRV entry, an SRV lookup is done, otherwise
+   * a regular lookup. For more control use the overload accepting a [[Lookup]].
+   *
    * @param serviceName           A name, see discovery-method's docs for how this is interpreted
    * @param resolveTimeout Timeout. Up to the discovery-method to adhere to this and complete the CompletionStage with a
    *                                [DiscoveryTimeoutException]
    */
   def lookup(serviceName: String, resolveTimeout: java.time.Duration): CompletionStage[Resolved] =
-    lookup(Lookup(serviceName), resolveTimeout)
+    lookup(serviceName, resolveTimeout.toScala).asJava
 
 }

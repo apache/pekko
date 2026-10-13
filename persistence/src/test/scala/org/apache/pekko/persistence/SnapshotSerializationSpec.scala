@@ -51,7 +51,7 @@ object SnapshotSerializationSpec {
       bStream.toByteArray
     }
 
-    def fromBinary(bytes: Array[Byte], clazz: Option[Class[_]]): AnyRef = {
+    def fromBinary(bytes: Array[Byte], clazz: Option[Class[?]]): AnyRef = {
       val bStream = new ByteArrayInputStream(bytes)
       val reader = new BufferedReader(new InputStreamReader(bStream))
       new MySnapshot(reader.readLine())

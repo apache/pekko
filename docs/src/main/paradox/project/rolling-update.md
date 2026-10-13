@@ -14,3 +14,18 @@ update completely before starting next update.
 is completely different. It will require a full cluster shutdown and new startup.
 
 @@@
+
+## Upgrading from Pekko 1.x to 2.x
+
+Pekko 2.x is not binary compatible with Pekko 1.x, so all the Pekko modules (and any libraries built on
+Pekko 1.x) must be upgraded together. Read the
+@ref:[migration guide](../migration/migration-guide-1.x-2.x.md) before planning a rolling update, in
+particular the breaking changes and the configuration changes, and check how they affect the messages
+exchanged between nodes, your persisted data and your configuration.
+
+For a rolling update of a cluster from Pekko 1.x to 2.x:
+
+* First upgrade the whole cluster to the latest Pekko 1.7.x release. Pekko 2.x sends a different Artery
+  TCP magic header by default, which Pekko 1.6.x and earlier reject, see
+  @ref:[Changing TCP magic header](../additional/rolling-updates.md#changing-tcp-magic-header).
+* Then roll out Pekko 2.x as a separate update.

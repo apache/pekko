@@ -19,8 +19,11 @@ import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import java.time.Duration;
 import org.apache.pekko.actor.testkit.typed.TestException;
-import org.apache.pekko.actor.testkit.typed.javadsl.LogCapturing;
-import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJunitResource;
+import org.apache.pekko.actor.testkit.typed.annotations.JUnitJupiterTestKit;
+import org.apache.pekko.actor.testkit.typed.javadsl.ActorTestKit;
+import org.apache.pekko.actor.testkit.typed.javadsl.JUnitJupiterTestKitBuilder;
+import org.apache.pekko.actor.testkit.typed.javadsl.LogCapturingExtension;
+import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJUnitJupiterExtension;
 import org.apache.pekko.actor.testkit.typed.javadsl.TestProbe;
 import org.apache.pekko.actor.typed.ActorRef;
 import org.apache.pekko.actor.typed.Behavior;
@@ -28,10 +31,8 @@ import org.apache.pekko.actor.typed.SupervisorStrategy;
 import org.apache.pekko.persistence.typed.PersistenceId;
 import org.apache.pekko.persistence.typed.RecoveryCompleted;
 import org.apache.pekko.persistence.typed.RecoveryFailed;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
-import org.scalatestplus.junit.JUnitSuite;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 class FailingEventSourcedActor extends EventSourcedBehavior<String, String, String> {
 
@@ -88,20 +89,21 @@ class FailingEventSourcedActor extends EventSourcedBehavior<String, String, Stri
   }
 }
 
-public class EventSourcedActorFailureTest extends JUnitSuite {
+@ExtendWith(TestKitJUnitJupiterExtension.class)
+@ExtendWith(LogCapturingExtension.class)
+public class EventSourcedActorFailureTest {
 
   public static final Config config = conf().withFallback(ConfigFactory.load());
 
-  @ClassRule public static final TestKitJunitResource testKit = new TestKitJunitResource(config);
-
-  @Rule public final LogCapturing logCapturing = new LogCapturing();
+  @JUnitJupiterTestKit
+  public ActorTestKit testKit = new JUnitJupiterTestKitBuilder().withCustomConfig(config).build();
 
   public static Behavior<String> fail(
       PersistenceId pid, ActorRef<String> probe, ActorRef<Throwable> recoveryFailureProbe) {
     return new FailingEventSourcedActor(pid, probe, recoveryFailureProbe);
   }
 
-  public static Behavior<String> fail(PersistenceId pid, ActorRef<String> probe) {
+  public Behavior<String> fail(PersistenceId pid, ActorRef<String> probe) {
     return fail(pid, probe, testKit.<Throwable>createTestProbe().ref());
   }
 

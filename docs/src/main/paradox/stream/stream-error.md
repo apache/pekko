@@ -271,7 +271,7 @@ Scala
 Java
 :   @@snip [IntegrationDocTest.java](/docs/src/test/java/jdocs/stream/IntegrationDocTest.java) { #email-address-lookup2 }
 
-The @scala[@scaladoc[Future](scala.concurrent.Future)] @java[@javadoc[CompletionStage](java.util.concurrent.CompletionStage)] is completed @scala[with `Failure`] @java[normally] if the email is not found.
+The @scala[@scaladoc[Future](scala.concurrent.Future)] @java[@javadoc[CompletionStage](java.util.concurrent.CompletionStage)] is completed @scala[with `Failure`] @java[exceptionally] if the email is not found.
 
 Transforming the stream of authors to a stream of email addresses by using the `lookupEmail`
 service can be done with @apidoc[mapAsync](stream.*.Source) {scala="#mapAsync[T](parallelism:Int)(f:Out=%3Escala.concurrent.Future[T]):FlowOps.this.Repr[T]" java="#mapAsync(int,org.apache.pekko.japi.function.Function)"} and we use @scala[@scaladoc[Supervision.resumingDecider](pekko.stream.Supervision$#resumingDecider:org.apache.pekko.stream.Supervision.Deciderwithorg.apache.pekko.japi.function.Function[Throwable,org.apache.pekko.stream.Supervision.Directive])] @java[@javadoc[Supervision.getResumingDecider()](pekko.stream.Supervision#getResumingDecider())] to drop

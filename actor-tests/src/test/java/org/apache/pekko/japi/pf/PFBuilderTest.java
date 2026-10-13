@@ -13,14 +13,13 @@
 
 package org.apache.pekko.japi.pf;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.Test;
-import org.scalatestplus.junit.JUnitSuite;
+import org.junit.jupiter.api.Test;
 import scala.PartialFunction;
 
 @SuppressWarnings("serial")
-public class PFBuilderTest extends JUnitSuite {
+public class PFBuilderTest {
 
   @Test
   public void pfbuilder_matchAny_should_infer_declared_input_type_for_lambda() {

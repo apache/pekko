@@ -13,7 +13,7 @@
 
 package jdocs.stream.javadsl.cookbook;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
@@ -31,21 +31,21 @@ import org.apache.pekko.stream.javadsl.Source;
 import org.apache.pekko.stream.testkit.TestSubscriber;
 import org.apache.pekko.stream.testkit.javadsl.TestSink;
 import org.apache.pekko.testkit.javadsl.TestKit;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 public class RecipeAdhocSourceTest extends RecipeTest {
   static ActorSystem system;
   Duration duration200mills = Duration.ofMillis(200);
 
-  @BeforeClass
+  @BeforeAll
   public static void setup() {
     system = ActorSystem.create("RecipeAdhocSource");
   }
 
-  @AfterClass
+  @AfterAll
   public static void tearDown() {
     TestKit.shutdownActorSystem(system);
     system = null;
@@ -71,7 +71,7 @@ public class RecipeAdhocSourceTest extends RecipeTest {
   // #adhoc-source
 
   @Test
-  @Ignore
+  @Disabled
   public void noStart() throws Exception {
     new TestKit(system) {
       {
@@ -92,7 +92,7 @@ public class RecipeAdhocSourceTest extends RecipeTest {
   }
 
   @Test
-  @Ignore
+  @Disabled
   public void startStream() throws Exception {
     new TestKit(system) {
       {
@@ -106,7 +106,7 @@ public class RecipeAdhocSourceTest extends RecipeTest {
   }
 
   @Test
-  @Ignore
+  @Disabled
   public void shutdownStream() throws Exception {
     new TestKit(system) {
       {
@@ -129,7 +129,7 @@ public class RecipeAdhocSourceTest extends RecipeTest {
   }
 
   @Test
-  @Ignore
+  @Disabled
   public void notShutDownStream() throws Exception {
     new TestKit(system) {
       {
@@ -161,7 +161,7 @@ public class RecipeAdhocSourceTest extends RecipeTest {
   }
 
   @Test
-  @Ignore
+  @Disabled
   public void restartUponDemand() throws Exception {
     new TestKit(system) {
       {
@@ -191,7 +191,7 @@ public class RecipeAdhocSourceTest extends RecipeTest {
   }
 
   @Test
-  @Ignore
+  @Disabled
   public void restartUptoMaxRetries() throws Exception {
     new TestKit(system) {
       {

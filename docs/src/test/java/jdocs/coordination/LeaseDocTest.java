@@ -23,13 +23,12 @@ import org.apache.pekko.coordination.lease.LeaseSettings;
 import org.apache.pekko.coordination.lease.javadsl.Lease;
 import org.apache.pekko.coordination.lease.javadsl.LeaseProvider;
 import org.apache.pekko.testkit.javadsl.TestKit;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.scalatestplus.junit.JUnitSuite;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("unused")
-public class LeaseDocTest extends JUnitSuite {
+public class LeaseDocTest {
   // #lease-example
   static class SampleLease extends Lease {
 
@@ -69,12 +68,12 @@ public class LeaseDocTest extends JUnitSuite {
 
   private static ActorSystem system;
 
-  @BeforeClass
+  @BeforeAll
   public static void setup() {
     system = ActorSystem.create("LeaseDocTest", LeaseDocSpec.config());
   }
 
-  @AfterClass
+  @AfterAll
   public static void teardown() {
     TestKit.shutdownActorSystem(system);
     system = null;

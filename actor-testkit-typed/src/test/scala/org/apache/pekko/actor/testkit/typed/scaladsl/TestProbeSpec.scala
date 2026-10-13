@@ -15,7 +15,8 @@ package org.apache.pekko.actor.testkit.typed.scaladsl
 
 import scala.concurrent.duration._
 
-import org.apache.pekko.actor.typed.scaladsl.Behaviors
+import org.apache.pekko
+import pekko.actor.typed.scaladsl.Behaviors
 
 import org.scalatest.wordspec.AnyWordSpecLike
 

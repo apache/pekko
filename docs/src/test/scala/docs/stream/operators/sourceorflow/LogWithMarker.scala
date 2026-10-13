@@ -13,9 +13,9 @@
 
 package docs.stream.operators.sourceorflow
 
-import org.apache.pekko.stream.scaladsl.Flow
-//#logWithMarker
 import org.apache.pekko
+import pekko.stream.scaladsl.Flow
+//#logWithMarker
 import pekko.event.LogMarker
 import pekko.stream.Attributes
 

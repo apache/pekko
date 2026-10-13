@@ -13,28 +13,14 @@
 
 package jdocs.actor;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class Messages {
   public
   // #immutable-message
-  static class ImmutableMessage {
-    private final int sequenceNumber;
-    private final List<String> values;
-
-    public ImmutableMessage(int sequenceNumber, List<String> values) {
-      this.sequenceNumber = sequenceNumber;
-      this.values = Collections.unmodifiableList(new ArrayList<String>(values));
-    }
-
-    public int getSequenceNumber() {
-      return sequenceNumber;
-    }
-
-    public List<String> getValues() {
-      return values;
+  static record ImmutableMessage(int sequenceNumber, List<String> values) {
+    public ImmutableMessage {
+      values = List.copyOf(values);
     }
   }
 

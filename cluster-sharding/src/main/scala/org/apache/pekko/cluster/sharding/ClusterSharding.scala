@@ -14,6 +14,7 @@
 package org.apache.pekko.cluster.sharding
 
 import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 import java.util.Optional
 import java.util.concurrent.ConcurrentHashMap
 
@@ -50,7 +51,6 @@ import pekko.cluster.singleton.ClusterSingletonManager
 import pekko.event.Logging
 import pekko.pattern.BackoffOpts
 import pekko.pattern.ask
-import pekko.util.ByteString
 
 /**
  * This extension provides sharding functionality of actors in a cluster.
@@ -72,7 +72,7 @@ import pekko.util.ByteString
  * '''ShardRegion''':
  * Each entity actor runs only at one place, and messages can be sent to the entity without
  * requiring the sender to know the location of the destination actor. This is achieved by
- * sending the messages via a [[ShardRegion]] actor, provided by this extension. The [[ShardRegion]]
+ * sending the messages via a `ShardRegion` actor, provided by this extension. The `ShardRegion`
  * knows the shard mappings and routes inbound messages to the entity with the entity id.
  * Messages to the entities are always sent via the local `ShardRegion`.
  * The `ShardRegion` actor is started on each node in the cluster, or group of nodes
@@ -81,7 +81,7 @@ import pekko.util.ByteString
  *
  * Typical usage of this extension:
  *   1. At system startup on each cluster node by registering the supported entity types with
- * the [[ClusterSharding#start]] method
+ * the `ClusterSharding.start` method
  *   1. Retrieve the `ShardRegion` actor for a named entity type with [[ClusterSharding#shardRegion]]
  * Settings can be configured as described in the `pekko.cluster.sharding` section of the `reference.conf`.
  *
@@ -122,7 +122,7 @@ import pekko.util.ByteString
  * location.
  *
  * '''Shard Allocation''':
- * The logic deciding which shards to rebalance is defined in a plugable shard allocation
+ * The logic deciding which shards to rebalance is defined in a pluggable shard allocation
  * strategy. The default implementation `LeastShardAllocationStrategy`
  * picks shards for handoff from the `ShardRegion` with highest number of previously allocated shards.
  * They will then be allocated to the `ShardRegion` with lowest number of previously allocated shards,
@@ -198,10 +198,10 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
 
   /**
    * Scala API: Register a named entity type by defining the [[pekko.actor.Props]] of the entity actor
-   * and functions to extract entity and shard identifier from messages. The [[ShardRegion]] actor
+   * and functions to extract entity and shard identifier from messages. The `ShardRegion` actor
    * for this type can later be retrieved with the [[shardRegion]] method.
    *
-   * This method will start a [[ShardRegion]] in proxy mode when there is no match between the roles of
+   * This method will start a `ShardRegion` in proxy mode when there is no match between the roles of
    * the current cluster node and the role specified in [[ClusterShardingSettings]] passed to this method.
    *
    * Some settings can be configured as described in the `pekko.cluster.sharding` section
@@ -219,7 +219,7 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
    *   rebalancing logic
    * @param handOffStopMessage the message that will be sent to entities when they are to be stopped
    *   for a rebalance or graceful shutdown of a `ShardRegion`, e.g. `PoisonPill`.
-   * @return the actor ref of the [[ShardRegion]] that is to be responsible for the shard
+   * @return the actor ref of the `ShardRegion` that is to be responsible for the shard
    */
   def start(
       typeName: String,
@@ -242,10 +242,10 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
 
   /**
    * Scala API: Register a named entity type by defining the [[pekko.actor.Props]] of the entity actor
-   * and functions to extract entity and shard identifier from messages. The [[ShardRegion]] actor
+   * and functions to extract entity and shard identifier from messages. The `ShardRegion` actor
    * for this type can later be retrieved with the [[shardRegion]] method.
    *
-   * This method will start a [[ShardRegion]] in proxy mode when there is no match between the roles of
+   * This method will start a `ShardRegion` in proxy mode when there is no match between the roles of
    * the current cluster node and the role specified in [[ClusterShardingSettings]] passed to this method.
    *
    * Some settings can be configured as described in the `pekko.cluster.sharding` section
@@ -262,7 +262,7 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
    *   rebalancing logic
    * @param handOffStopMessage the message that will be sent to entities when they are to be stopped
    *   for a rebalance or graceful shutdown of a `ShardRegion`, e.g. `PoisonPill`.
-   * @return the actor ref of the [[ShardRegion]] that is to be responsible for the shard
+   * @return the actor ref of the `ShardRegion` that is to be responsible for the shard
    */
   def start(
       typeName: String,
@@ -318,6 +318,12 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
     } else {
       log.debug("Starting Shard Region Proxy [{}] (no actors will be hosted on this node)...", typeName)
 
+      if (settings.shouldHostCoordinator(cluster)) {
+        // when using another coordinator role than the shard role the coordinator may have to be started
+        val startCoordinatorMsg = StartCoordinatorIfNeeded(typeName, settings, allocationStrategy)
+        guardian ! startCoordinatorMsg
+      }
+
       startProxy(
         typeName,
         settings.role,
@@ -329,13 +335,13 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
 
   /**
    * Register a named entity type by defining the [[pekko.actor.Props]] of the entity actor and
-   * functions to extract entity and shard identifier from messages. The [[ShardRegion]] actor
+   * functions to extract entity and shard identifier from messages. The `ShardRegion` actor
    * for this type can later be retrieved with the [[shardRegion]] method.
    *
    * The default shard allocation strategy [[ShardCoordinator.LeastShardAllocationStrategy]]
    * is used. [[pekko.actor.PoisonPill]] is used as `handOffStopMessage`.
    *
-   * This method will start a [[ShardRegion]] in proxy mode when there is no match between the
+   * This method will start a `ShardRegion` in proxy mode when there is no match between the
    * node roles and the role specified in the [[ClusterShardingSettings]] passed to this method.
    *
    * Some settings can be configured as described in the `pekko.cluster.sharding` section
@@ -349,7 +355,7 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
    *   be `unhandled`, i.e. posted as `Unhandled` messages on the event stream
    * @param extractShardId function to determine the shard id for an incoming message, only messages
    *   that passed the `extractEntityId` will be used
-   * @return the actor ref of the [[ShardRegion]] that is to be responsible for the shard
+   * @return the actor ref of the `ShardRegion` that is to be responsible for the shard
    */
   def start(
       typeName: String,
@@ -365,13 +371,13 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
 
   /**
    * Register a named entity type by defining the [[pekko.actor.Props]] of the entity actor and
-   * functions to extract entity and shard identifier from messages. The [[ShardRegion]] actor
+   * functions to extract entity and shard identifier from messages. The `ShardRegion` actor
    * for this type can later be retrieved with the [[shardRegion]] method.
    *
    * The default shard allocation strategy [[ShardCoordinator.LeastShardAllocationStrategy]]
    * is used. [[pekko.actor.PoisonPill]] is used as `handOffStopMessage`.
    *
-   * This method will start a [[ShardRegion]] in proxy mode when there is no match between the
+   * This method will start a `ShardRegion` in proxy mode when there is no match between the
    * node roles and the role specified in the [[ClusterShardingSettings]] passed to this method.
    *
    * Some settings can be configured as described in the `pekko.cluster.sharding` section
@@ -384,7 +390,7 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
    *   be `unhandled`, i.e. posted as `Unhandled` messages on the event stream
    * @param extractShardId function to determine the shard id for an incoming message, only messages
    *   that passed the `extractEntityId` will be used
-   * @return the actor ref of the [[ShardRegion]] that is to be responsible for the shard
+   * @return the actor ref of the `ShardRegion` that is to be responsible for the shard
    */
   def start(
       typeName: String,
@@ -397,10 +403,10 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
 
   /**
    * Java/Scala API: Register a named entity type by defining the [[pekko.actor.Props]] of the entity actor
-   * and functions to extract entity and shard identifier from messages. The [[ShardRegion]] actor
+   * and functions to extract entity and shard identifier from messages. The `ShardRegion` actor
    * for this type can later be retrieved with the [[#shardRegion]] method.
    *
-   * This method will start a [[ShardRegion]] in proxy mode when there is no match between the
+   * This method will start a `ShardRegion` in proxy mode when there is no match between the
    * node roles and the role specified in the [[ClusterShardingSettings]] passed to this method.
    *
    * Some settings can be configured as described in the `pekko.cluster.sharding` section
@@ -415,7 +421,7 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
    *   rebalancing logic
    * @param handOffStopMessage the message that will be sent to entities when they are to be stopped
    *   for a rebalance or graceful shutdown of a `ShardRegion`, e.g. `PoisonPill`.
-   * @return the actor ref of the [[ShardRegion]] that is to be responsible for the shard
+   * @return the actor ref of the `ShardRegion` that is to be responsible for the shard
    */
   def start(
       typeName: String,
@@ -440,13 +446,13 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
 
   /**
    * Java/Scala API: Register a named entity type by defining the [[pekko.actor.Props]] of the entity actor
-   * and functions to extract entity and shard identifier from messages. The [[ShardRegion]] actor
+   * and functions to extract entity and shard identifier from messages. The `ShardRegion` actor
    * for this type can later be retrieved with the [[#shardRegion]] method.
    *
    * The default shard allocation strategy [[ShardCoordinator.LeastShardAllocationStrategy]]
    * is used. [[pekko.actor.PoisonPill]] is used as `handOffStopMessage`.
    *
-   * This method will start a [[ShardRegion]] in proxy mode when there is no match between the
+   * This method will start a `ShardRegion` in proxy mode when there is no match between the
    * node roles and the role specified in the [[ClusterShardingSettings]] passed to this method.
    *
    * Some settings can be configured as described in the `pekko.cluster.sharding` section
@@ -457,7 +463,7 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
    * @param settings configuration settings, see [[ClusterShardingSettings]]
    * @param messageExtractor functions to extract the entity id, shard id, and the message to send to the
    *   entity from the incoming message
-   * @return the actor ref of the [[ShardRegion]] that is to be responsible for the shard
+   * @return the actor ref of the `ShardRegion` that is to be responsible for the shard
    */
   def start(
       typeName: String,
@@ -472,13 +478,13 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
 
   /**
    * Java/Scala API: Register a named entity type by defining the [[pekko.actor.Props]] of the entity actor
-   * and functions to extract entity and shard identifier from messages. The [[ShardRegion]] actor
+   * and functions to extract entity and shard identifier from messages. The `ShardRegion` actor
    * for this type can later be retrieved with the [[#shardRegion]] method.
    *
    * The default shard allocation strategy [[ShardCoordinator.LeastShardAllocationStrategy]]
    * is used. [[pekko.actor.PoisonPill]] is used as `handOffStopMessage`.
    *
-   * This method will start a [[ShardRegion]] in proxy mode when there is no match between the
+   * This method will start a `ShardRegion` in proxy mode when there is no match between the
    * node roles and the role specified in the [[ClusterShardingSettings]] passed to this method.
    *
    * Some settings can be configured as described in the `pekko.cluster.sharding` section
@@ -488,7 +494,7 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
    * @param entityProps the `Props` of the entity actors that will be created by the `ShardRegion`
    * @param messageExtractor functions to extract the entity id, shard id, and the message to send to the
    *   entity from the incoming message
-   * @return the actor ref of the [[ShardRegion]] that is to be responsible for the shard
+   * @return the actor ref of the `ShardRegion` that is to be responsible for the shard
    */
   def start(typeName: String, entityProps: Props, messageExtractor: ShardRegion.MessageExtractor): ActorRef = {
     start(typeName, entityProps, ClusterShardingSettings(system), messageExtractor)
@@ -497,7 +503,7 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
   /**
    * Scala API: Register a named entity type `ShardRegion` on this node that will run in proxy only mode,
    * i.e. it will delegate messages to other `ShardRegion` actors on other nodes, but not host any
-   * entity actors itself. The [[ShardRegion]] actor for this type can later be retrieved with the
+   * entity actors itself. The `ShardRegion` actor for this type can later be retrieved with the
    * [[#shardRegion]] method.
    *
    * Some settings can be configured as described in the `pekko.cluster.sharding` section
@@ -511,7 +517,7 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
    *   be `unhandled`, i.e. posted as `Unhandled` messages on the event stream
    * @param extractShardId function to determine the shard id for an incoming message, only messages
    *   that passed the `extractEntityId` will be used
-   * @return the actor ref of the [[ShardRegion]] that is to be responsible for the shard
+   * @return the actor ref of the `ShardRegion` that is to be responsible for the shard
    */
   def startProxy(
       typeName: String,
@@ -523,7 +529,7 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
   /**
    * Scala API: Register a named entity type `ShardRegion` on this node that will run in proxy only mode,
    * i.e. it will delegate messages to other `ShardRegion` actors on other nodes, but not host any
-   * entity actors itself. The [[ShardRegion]] actor for this type can later be retrieved with the
+   * entity actors itself. The `ShardRegion` actor for this type can later be retrieved with the
    * [[#shardRegion]] method.
    *
    * Some settings can be configured as described in the `pekko.cluster.sharding` section
@@ -539,7 +545,7 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
    *   be `unhandled`, i.e. posted as `Unhandled` messages on the event stream
    * @param extractShardId function to determine the shard id for an incoming message, only messages
    *   that passed the `extractEntityId` will be used
-   * @return the actor ref of the [[ShardRegion]] that is to be responsible for the shard
+   * @return the actor ref of the `ShardRegion` that is to be responsible for the shard
    */
   def startProxy(
       typeName: String,
@@ -572,7 +578,7 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
   /**
    * Java/Scala API: Register a named entity type `ShardRegion` on this node that will run in proxy only mode,
    * i.e. it will delegate messages to other `ShardRegion` actors on other nodes, but not host any
-   * entity actors itself. The [[ShardRegion]] actor for this type can later be retrieved with the
+   * entity actors itself. The `ShardRegion` actor for this type can later be retrieved with the
    * [[#shardRegion]] method.
    *
    * Some settings can be configured as described in the `pekko.cluster.sharding` section
@@ -583,7 +589,7 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
    *   If the role is not specified all nodes in the cluster are used.
    * @param messageExtractor functions to extract the entity id, shard id, and the message to send to the
    *   entity from the incoming message
-   * @return the actor ref of the [[ShardRegion]] that is to be responsible for the shard
+   * @return the actor ref of the `ShardRegion` that is to be responsible for the shard
    */
   def startProxy(typeName: String, role: Optional[String], messageExtractor: ShardRegion.MessageExtractor): ActorRef =
     startProxy(typeName, role, dataCenter = Optional.empty(), messageExtractor)
@@ -591,7 +597,7 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
   /**
    * Java/Scala API: Register a named entity type `ShardRegion` on this node that will run in proxy only mode,
    * i.e. it will delegate messages to other `ShardRegion` actors on other nodes, but not host any
-   * entity actors itself. The [[ShardRegion]] actor for this type can later be retrieved with the
+   * entity actors itself. The `ShardRegion` actor for this type can later be retrieved with the
    * [[#shardRegion]] method.
    *
    * Some settings can be configured as described in the `pekko.cluster.sharding` section
@@ -604,7 +610,7 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
    *   If None then the same data center as current node.
    * @param messageExtractor functions to extract the entity id, shard id, and the message to send to the
    *   entity from the incoming message
-   * @return the actor ref of the [[ShardRegion]] that is to be responsible for the shard
+   * @return the actor ref of the `ShardRegion` that is to be responsible for the shard
    */
   def startProxy(
       typeName: String,
@@ -631,8 +637,8 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
   def getShardTypeNames: java.util.Set[String] = regions.keySet()
 
   /**
-   * Retrieve the actor reference of the [[ShardRegion]] actor responsible for the named entity type.
-   * The entity type must be registered with the [[#start]] or [[#startProxy]] method before it
+   * Retrieve the actor reference of the `ShardRegion` actor responsible for the named entity type.
+   * The entity type must be registered with the `start` or `startProxy` method before it
    * can be used here. Messages to the entity is always sent via the `ShardRegion`.
    */
   def shardRegion(typeName: String): ActorRef = {
@@ -649,10 +655,10 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
   }
 
   /**
-   * Retrieve the actor reference of the [[ShardRegion]] actor that will act as a proxy to the
+   * Retrieve the actor reference of the `ShardRegion` actor that will act as a proxy to the
    * named entity type running in another data center. A proxy within the same data center can be accessed
    * with [[#shardRegion]] instead of this method. The entity type must be registered with the
-   * [[#startProxy]] method before it can be used here. Messages to the entity is always sent
+   * `startProxy` method before it can be used here. Messages to the entity is always sent
    * via the `ShardRegion`.
    */
   def shardRegionProxy(typeName: String, dataCenter: DataCenter): ActorRef = {
@@ -702,15 +708,21 @@ private[pekko] object ClusterShardingGuardian {
       extractEntityId: ShardRegion.ExtractEntityId,
       extractShardId: ShardRegion.ExtractShardId)
       extends NoSerializationVerificationNeeded
+  final case class StartCoordinatorIfNeeded(
+      typeName: String,
+      settings: ClusterShardingSettings,
+      allocationStrategy: ShardAllocationStrategy)
+      extends NoSerializationVerificationNeeded
   final case class Started(shardRegion: ActorRef) extends NoSerializationVerificationNeeded
 }
 
 /**
- * INTERNAL API. [[ShardRegion]] and [[ShardCoordinator]] actors are created as children
+ * INTERNAL API. `ShardRegion` and [[ShardCoordinator]] actors are created as children
  * of this actor.
  */
 private[pekko] class ClusterShardingGuardian extends Actor {
   import ClusterShardingGuardian._
+  import ShardCoordinator.ShardAllocationStrategy
 
   val cluster = Cluster(context.system)
   val sharding = ClusterSharding(context.system)
@@ -724,35 +736,106 @@ private[pekko] class ClusterShardingGuardian extends Actor {
   private def coordinatorPath(encName: String): String =
     (self.path / coordinatorSingletonManagerName(encName) / "singleton" / "coordinator").toStringWithoutAddress
 
-  private def replicatorSettings(shardingSettings: ClusterShardingSettings) = {
+  private def replicatorSettings(role: Option[String], settings: ClusterShardingSettings) = {
     val configuredSettings =
       ReplicatorSettings(context.system.settings.config.getConfig("pekko.cluster.sharding.distributed-data"))
     // Use members within the data center and with the given role (if any)
-    val replicatorRoles = Set(ClusterSettings.DcRolePrefix + cluster.settings.SelfDataCenter) ++ shardingSettings.role
+    val replicatorRoles = Set(ClusterSettings.DcRolePrefix + cluster.settings.SelfDataCenter) ++ role
     val settingsWithRoles = configuredSettings.withRoles(replicatorRoles)
-    if (shardingSettings.rememberEntities)
+    if (settings.rememberEntities)
       settingsWithRoles
     else
       settingsWithRoles.withDurableKeys(Set.empty[String])
   }
 
-  private def replicator(settings: ClusterShardingSettings): ActorRef = {
-    if (settings.stateStoreMode == ClusterShardingSettings.StateStoreModeDData ||
-      settings.stateStoreMode == ClusterShardingSettings.RememberEntitiesStoreCustom) {
-      // one Replicator per role
-      replicatorByRole.get(settings.role) match {
-        case Some(ref) => ref
-        case None      =>
-          val name = settings.role match {
-            case Some(r) => URLEncoder.encode(r, ByteString.UTF_8) + "Replicator"
-            case None    => "replicator"
-          }
-          val ref = context.actorOf(Replicator.props(replicatorSettings(settings)), name)
-          replicatorByRole = replicatorByRole.updated(settings.role, ref)
-          ref
-      }
-    } else
-      context.system.deadLetters
+  private def replicator(role: Option[String], settings: ClusterShardingSettings): ActorRef = {
+    // one Replicator per role
+    replicatorByRole.get(role) match {
+      case Some(ref) => ref
+      case None      =>
+        val name = role match {
+          case Some(r) => URLEncoder.encode(r, StandardCharsets.UTF_8) + "Replicator"
+          case None    => "replicator"
+        }
+        val ref = context.actorOf(Replicator.props(replicatorSettings(role, settings)), name)
+        replicatorByRole = replicatorByRole.updated(role, ref)
+        ref
+    }
+  }
+
+  private def rememberEntitiesStoreProvider(
+      typeName: String,
+      settings: ClusterShardingSettings): Option[RememberEntitiesProvider] = {
+    if (!settings.rememberEntities) None
+    else {
+      // with the deprecated persistence state store mode we always use the event sourced provider for shard regions
+      // and no store for coordinator (the coordinator is a PersistentActor in that case)
+      val rememberEntitiesProvider =
+        if (settings.stateStoreMode == ClusterShardingSettings.StateStoreModePersistence) {
+          ClusterShardingSettings.RememberEntitiesStoreEventsourced
+        } else {
+          settings.rememberEntitiesStore
+        }
+      Some(rememberEntitiesProvider match {
+        case ClusterShardingSettings.RememberEntitiesStoreDData =>
+          // must run Replicator for DDataRememberEntities on both shard and coordinator roles (if different)
+          val role = if (settings.role == settings.coordinatorSingletonRole) settings.role else None
+          val rep = replicator(role, settings)
+          new DDataRememberEntitiesProvider(typeName, settings, majorityMinCap, rep)
+        case ClusterShardingSettings.RememberEntitiesStoreEventsourced =>
+          new EventSourcedRememberEntitiesProvider(typeName, settings)
+        case ClusterShardingSettings.RememberEntitiesStoreCustom =>
+          new CustomStateStoreModeProvider(typeName, context.system, settings)
+        case unknown =>
+          throw new IllegalArgumentException(s"Unknown store type: $unknown") // compiler exhaustiveness check pleaser
+      })
+    }
+  }
+
+  private def startCoordinatorIfNeeded(
+      typeName: String,
+      allocationStrategy: ShardAllocationStrategy,
+      rememberEntitiesStoreProvider: Option[RememberEntitiesProvider],
+      settings: ClusterShardingSettings): Unit = {
+    import settings.tuningParameters.coordinatorFailureBackoff
+
+    val encName = URLEncoder.encode(typeName, StandardCharsets.UTF_8)
+    val cName = coordinatorSingletonManagerName(encName)
+    if (settings.shouldHostCoordinator(cluster) && context.child(cName).isEmpty) {
+      val coordinatorProps =
+        if (settings.stateStoreMode == ClusterShardingSettings.StateStoreModePersistence) {
+          ShardCoordinator.props(typeName, settings, allocationStrategy)
+        } else {
+          val rep = replicator(settings.coordinatorSingletonRole, settings)
+          ShardCoordinator.props(
+            typeName,
+            settings,
+            allocationStrategy,
+            rep,
+            majorityMinCap,
+            rememberEntitiesStoreProvider)
+        }
+      val singletonProps =
+        BackoffOpts
+          .onStop(
+            childProps = coordinatorProps,
+            childName = "coordinator",
+            minBackoff = coordinatorFailureBackoff,
+            maxBackoff = coordinatorFailureBackoff * 5,
+            randomFactor = 0.2)
+          .withFinalStopMessage(_ == ShardCoordinator.Internal.Terminate)
+          .props
+          .withDeploy(Deploy.local)
+
+      val singletonSettings =
+        settings.coordinatorSingletonSettings.withSingletonName("singleton").withRole(settings.coordinatorSingletonRole)
+
+      context.actorOf(
+        ClusterSingletonManager
+          .props(singletonProps, terminationMessage = ShardCoordinator.Internal.Terminate, singletonSettings)
+          .withDispatcher(context.props.dispatcher),
+        name = cName)
+    }
   }
 
   def receive: Receive = {
@@ -765,69 +848,11 @@ private[pekko] class ClusterShardingGuardian extends Actor {
           allocationStrategy,
           handOffStopMessage) =>
       try {
-        import settings.role
-        import settings.tuningParameters.coordinatorFailureBackoff
-
-        val rep = replicator(settings)
-        val rememberEntitiesStoreProvider: Option[RememberEntitiesProvider] =
-          if (!settings.rememberEntities) None
-          else {
-            // with the deprecated persistence state store mode we always use the event sourced provider for shard regions
-            // and no store for coordinator (the coordinator is a PersistentActor in that case)
-            val rememberEntitiesProvider =
-              if (settings.stateStoreMode == ClusterShardingSettings.StateStoreModePersistence) {
-                ClusterShardingSettings.RememberEntitiesStoreEventsourced
-              } else {
-                settings.rememberEntitiesStore
-              }
-            Some(rememberEntitiesProvider match {
-              case ClusterShardingSettings.RememberEntitiesStoreDData =>
-                new DDataRememberEntitiesProvider(typeName, settings, majorityMinCap, rep)
-              case ClusterShardingSettings.RememberEntitiesStoreEventsourced =>
-                new EventSourcedRememberEntitiesProvider(typeName, settings)
-              case ClusterShardingSettings.RememberEntitiesStoreCustom =>
-                new CustomStateStoreModeProvider(typeName, context.system, settings)
-              case unknown =>
-                throw new IllegalArgumentException(s"Unknown store type: $unknown") // compiler exhaustiveness check pleaser
-            })
-          }
-
-        val encName = URLEncoder.encode(typeName, ByteString.UTF_8)
-        val cName = coordinatorSingletonManagerName(encName)
+        val encName = URLEncoder.encode(typeName, StandardCharsets.UTF_8)
         val cPath = coordinatorPath(encName)
         val shardRegion = context.child(encName).getOrElse {
-          if (context.child(cName).isEmpty) {
-            val coordinatorProps =
-              if (settings.stateStoreMode == ClusterShardingSettings.StateStoreModePersistence) {
-                ShardCoordinator.props(typeName, settings, allocationStrategy)
-              } else {
-                ShardCoordinator
-                  .props(typeName, settings, allocationStrategy, rep, majorityMinCap, rememberEntitiesStoreProvider)
-              }
-            val singletonProps =
-              BackoffOpts
-                .onStop(
-                  childProps = coordinatorProps,
-                  childName = "coordinator",
-                  minBackoff = coordinatorFailureBackoff,
-                  maxBackoff = coordinatorFailureBackoff * 5,
-                  randomFactor = 0.2)
-                .withFinalStopMessage(_ == ShardCoordinator.Internal.Terminate)
-                .props
-                .withDeploy(Deploy.local)
-
-            val singletonSettings = if (settings.coordinatorSingletonOverrideRole) {
-              settings.coordinatorSingletonSettings.withSingletonName("singleton").withRole(role)
-            } else {
-              settings.coordinatorSingletonSettings.withSingletonName("singleton")
-            }
-
-            context.actorOf(
-              ClusterSingletonManager
-                .props(singletonProps, terminationMessage = ShardCoordinator.Internal.Terminate, singletonSettings)
-                .withDispatcher(context.props.dispatcher),
-              name = cName)
-          }
+          val remEntitiesStoreProvider = rememberEntitiesStoreProvider(typeName, settings)
+          startCoordinatorIfNeeded(typeName, allocationStrategy, remEntitiesStoreProvider, settings)
 
           context.actorOf(
             ShardRegion
@@ -839,7 +864,7 @@ private[pekko] class ClusterShardingGuardian extends Actor {
                 extractEntityId = extractEntityId,
                 extractShardId = extractShardId,
                 handOffStopMessage = handOffStopMessage,
-                rememberEntitiesStoreProvider)
+                remEntitiesStoreProvider)
               .withDispatcher(context.props.dispatcher),
             name = encName)
         }
@@ -854,12 +879,13 @@ private[pekko] class ClusterShardingGuardian extends Actor {
 
     case StartProxy(typeName, dataCenter, settings, extractEntityId, extractShardId) =>
       try {
-        val encName = URLEncoder.encode(s"${typeName}Proxy", ByteString.UTF_8)
-        val cPath = coordinatorPath(URLEncoder.encode(typeName, ByteString.UTF_8))
+
+        val encName = URLEncoder.encode(s"${typeName}Proxy", StandardCharsets.UTF_8)
+        val cPath = coordinatorPath(URLEncoder.encode(typeName, StandardCharsets.UTF_8))
         // it must be possible to start several proxies, one per data center
         val actorName = dataCenter match {
           case None    => encName
-          case Some(t) => URLEncoder.encode(typeName + "-" + t, ByteString.UTF_8)
+          case Some(t) => URLEncoder.encode(typeName + "-" + t, StandardCharsets.UTF_8)
         }
         val shardRegion = context.child(actorName).getOrElse {
           context.actorOf(
@@ -880,6 +906,15 @@ private[pekko] class ClusterShardingGuardian extends Actor {
           // don't restart
           // could be InvalidActorNameException if it has already been started
           sender() ! Status.Failure(e)
+      }
+
+    case StartCoordinatorIfNeeded(typeName, settings, allocationStrategy) =>
+      try {
+        val remEntitiesStoreProvider = rememberEntitiesStoreProvider(typeName, settings)
+        startCoordinatorIfNeeded(typeName, allocationStrategy, remEntitiesStoreProvider, settings)
+      } catch {
+        case NonFatal(_) =>
+        // don't restart
       }
 
   }

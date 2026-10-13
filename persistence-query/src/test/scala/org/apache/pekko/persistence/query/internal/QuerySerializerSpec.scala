@@ -34,8 +34,8 @@ class QuerySerializerSpec extends PekkoSpec {
     val serializer = serialization.findSerializerFor(obj).asInstanceOf[SerializerWithStringManifest]
     val manifest = serializer.manifest(obj)
     val bytes = serialization.serialize(obj).get
-    val deserialzied = serialization.deserialize(bytes, serializer.identifier, manifest).get
-    deserialzied shouldBe obj
+    val deserialized = serialization.deserialize(bytes, serializer.identifier, manifest).get
+    deserialized shouldBe obj
   }
 
   "Query serializer" should {
@@ -75,6 +75,36 @@ class QuerySerializerSpec extends PekkoSpec {
       val timeUuidOffset = TimeBasedUUID(UUID.fromString(uuidString))
       verifySerialization(
         EventEnvelope(timeUuidOffset, "TestEntity|id1", 3L, "event1", System.currentTimeMillis(), "TestEntity", 5))
+    }
+
+    "serialize EventEnvelope with filtered and source" in {
+      verifySerialization(
+        EventEnvelope(
+          Sequence(1L),
+          "TestEntity|id1",
+          3L,
+          "event1",
+          System.currentTimeMillis(),
+          "TestEntity",
+          5,
+          filtered = true,
+          source = "backtracking"))
+    }
+
+    "serialize EventEnvelope with source and tags" in {
+      verifySerialization(
+        new EventEnvelope(
+          Sequence(1L),
+          "TestEntity|id1",
+          3L,
+          Some("event1"),
+          System.currentTimeMillis(),
+          None,
+          "TestEntity",
+          5,
+          filtered = false,
+          source = "query",
+          tags = Set("tag1", "tag2")))
     }
 
     "serialize Sequence Offset" in {

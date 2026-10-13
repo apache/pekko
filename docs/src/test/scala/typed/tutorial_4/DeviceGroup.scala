@@ -13,14 +13,17 @@
 
 package typed.tutorial_4
 
-import org.apache.pekko.actor.typed.ActorRef
-import org.apache.pekko.actor.typed.Behavior
-import org.apache.pekko.actor.typed.PostStop
-import org.apache.pekko.actor.typed.Signal
-import org.apache.pekko.actor.typed.scaladsl.AbstractBehavior
-import org.apache.pekko.actor.typed.scaladsl.ActorContext
-import org.apache.pekko.actor.typed.scaladsl.Behaviors
-import org.apache.pekko.actor.typed.scaladsl.LoggerOps
+import scala.annotation.nowarn
+
+import org.apache.pekko
+import pekko.actor.typed.ActorRef
+import pekko.actor.typed.Behavior
+import pekko.actor.typed.PostStop
+import pekko.actor.typed.Signal
+import pekko.actor.typed.scaladsl.AbstractBehavior
+import pekko.actor.typed.scaladsl.ActorContext
+import pekko.actor.typed.scaladsl.Behaviors
+import pekko.actor.typed.scaladsl.LoggerOps
 
 //#device-group-full
 //#device-group-register
@@ -47,6 +50,7 @@ class DeviceGroup(context: ActorContext[DeviceGroup.Command], groupId: String)
 
   context.log.info("DeviceGroup {} started", groupId)
 
+  @nowarn("msg=match may not be exhaustive")
   override def onMessage(msg: Command): Behavior[Command] =
     msg match {
       case trackMsg @ RequestTrackDevice(`groupId`, deviceId, replyTo) =>

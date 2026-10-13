@@ -16,7 +16,7 @@ package org.apache.pekko.persistence.typed.internal
 import scala.annotation.nowarn
 
 import org.apache.pekko
-import pekko.actor.typed.Behavior
+import pekko.actor.typed.{ Behavior, PostStop, PreRestart }
 import pekko.actor.typed.internal.PoisonPill
 import pekko.actor.typed.scaladsl.{ ActorContext, Behaviors }
 import pekko.actor.typed.scaladsl.LoggerOps
@@ -85,13 +85,21 @@ private[pekko] class ReplayingSnapshot[C, E, S](override val setup: BehaviorSetu
           case get: GetSeenSequenceNr      => stashInternal(get)
           case RecoveryPermitGranted       => Behaviors.unhandled // should not happen, we already have the permit
         }
-        .receiveSignal(returnPermitOnStop.orElse {
+        .receiveSignal {
           case (_, PoisonPill) =>
             stay(receivedPoisonPill = true)
+          case (_, PostStop) =>
+            tryReturnRecoveryPermit("PostStop")
+            setup.onSignal(setup.emptyState, PostStop, catchAndLog = true)
+            Behaviors.stopped
+          case (_, PreRestart) =>
+            tryReturnRecoveryPermit("PreRestart")
+            setup.onSignal(setup.emptyState, PreRestart, catchAndLog = true)
+            Behaviors.stopped
           case (_, signal) =>
             if (setup.onSignal(setup.emptyState, signal, catchAndLog = true)) Behaviors.same
             else Behaviors.unhandled
-        })
+        }
     }
     stay(receivedPoisonPillInPreviousPhase)
   }
@@ -120,9 +128,9 @@ private[pekko] class ReplayingSnapshot[C, E, S](override val setup: BehaviorSetu
   }
 
   @InternalStableApi
-  def onRecoveryStart(@nowarn("msg=never used") context: ActorContext[_]): Unit = ()
+  def onRecoveryStart(@nowarn("msg=never used") context: ActorContext[?]): Unit = ()
   @InternalStableApi
-  def onRecoveryFailed(@nowarn("msg=never used") context: ActorContext[_], @nowarn("msg=never used") reason: Throwable)
+  def onRecoveryFailed(@nowarn("msg=never used") context: ActorContext[?], @nowarn("msg=never used") reason: Throwable)
       : Unit = ()
 
   private def onRecoveryTick(snapshot: Boolean): Behavior[InternalProtocol] =

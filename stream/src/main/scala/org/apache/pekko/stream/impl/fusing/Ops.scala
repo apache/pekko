@@ -17,7 +17,6 @@ import java.util.concurrent.TimeUnit.NANOSECONDS
 
 import scala.annotation.nowarn
 import scala.annotation.tailrec
-import scala.collection.immutable
 import scala.collection.immutable.VectorBuilder
 import scala.concurrent.Future
 import scala.concurrent.duration.{ FiniteDuration, _ }
@@ -45,7 +44,7 @@ import pekko.stream.impl.{
   TraversalBuilder
 }
 import pekko.stream.impl.Stages.DefaultAttributes
-import pekko.stream.impl.fusing.GraphStages.{ FutureSource, SimpleLinearGraphStage, SingleSource }
+import pekko.stream.impl.fusing.GraphStages.{ FutureSource, RepeatSource, SimpleLinearGraphStage, SingleSource }
 import pekko.stream.scaladsl.{
   DelayStrategy,
   Source,
@@ -761,47 +760,48 @@ private[stream] object Collect {
   if (start.isDefined) ReactiveStreamsCompliance.requireNonNullElement(start.get)
   if (end.isDefined) ReactiveStreamsCompliance.requireNonNullElement(end.get)
 
-  override def createLogic(attr: Attributes): GraphStageLogic = new GraphStageLogic(shape) with OutHandler {
-    val startInHandler = new InHandler {
-      override def onPush(): Unit = {
-        // if else (to avoid using Iterator[T].flatten in hot code)
-        if (start.isDefined) emitMultiple(out, Iterator(start.get, grab(in)))
-        else emit(out, grab(in))
-        setHandler(in, restInHandler) // switch handler
+  override def createLogic(attr: Attributes): GraphStageLogic =
+    new GraphStageLogic(shape) with InHandler with OutHandler { self =>
+      // Cold path - only used once for the first element
+      val startInHandler = new InHandler {
+        override def onPush(): Unit = {
+          // if else (to avoid using Iterator[T].flatten in hot code)
+          if (start.isDefined) emitMultiple(out, Iterator(start.get, grab(in)))
+          else emit(out, grab(in))
+          setHandler(in, self) // only switch in handler, don't touch out handler
+        }
+
+        override def onUpstreamFinish(): Unit = {
+          emitMultiple(out, Iterator(start, end).flatten)
+          completeStage()
+        }
       }
 
-      override def onUpstreamFinish(): Unit = {
-        emitMultiple(out, Iterator(start, end).flatten)
-        completeStage()
-      }
-    }
-
-    val restInHandler = new InHandler {
+      // Hot path - fused into GraphStageLogic, no separate object allocation
       override def onPush(): Unit = emitMultiple(out, Iterator(inject, grab(in)))
 
       override def onUpstreamFinish(): Unit = {
         if (end.isDefined) emit(out, end.get)
         completeStage()
       }
+
+      override def onPull(): Unit = pull(in)
+
+      setHandler(in, startInHandler)
+      setHandler(out, this)
     }
-
-    def onPull(): Unit = pull(in)
-
-    setHandler(in, startInHandler)
-    setHandler(out, this)
-  }
 }
 
 /**
  * INTERNAL API
  */
 @InternalApi private[pekko] final case class GroupedWeighted[T](minWeight: Long, costFn: T => Long)
-    extends GraphStage[FlowShape[T, immutable.Seq[T]]] {
+    extends GraphStage[FlowShape[T, Seq[T]]] {
   require(minWeight > 0, "minWeight must be greater than 0")
 
   val in = Inlet[T]("GroupedWeighted.in")
-  val out = Outlet[immutable.Seq[T]]("GroupedWeighted.out")
-  override val shape: FlowShape[T, immutable.Seq[T]] = FlowShape(in, out)
+  val out = Outlet[Seq[T]]("GroupedWeighted.out")
+  override val shape: FlowShape[T, Seq[T]] = FlowShape(in, out)
 
   override def initialAttributes: Attributes = DefaultAttributes.groupedWeighted
 
@@ -889,13 +889,13 @@ private[stream] object Collect {
  * INTERNAL API
  */
 @InternalApi private[pekko] final case class Sliding[T](val n: Int, val step: Int)
-    extends GraphStage[FlowShape[T, immutable.Seq[T]]] {
+    extends GraphStage[FlowShape[T, Seq[T]]] {
   require(n > 0, "n must be greater than 0")
   require(step > 0, "step must be greater than 0")
 
   val in = Inlet[T]("Sliding.in")
-  val out = Outlet[immutable.Seq[T]]("Sliding.out")
-  override val shape: FlowShape[T, immutable.Seq[T]] = FlowShape(in, out)
+  val out = Outlet[Seq[T]]("Sliding.out")
+  override val shape: FlowShape[T, Seq[T]] = FlowShape(in, out)
 
   override protected val initialAttributes: Attributes = DefaultAttributes.sliding
 
@@ -953,7 +953,7 @@ private[stream] object Collect {
 
   override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =
     new GraphStageLogic(shape) with InHandler with OutHandler with StageLogging {
-      override protected def logSource: Class[_] = classOf[Buffer[_]]
+      override protected def logSource: Class[?] = classOf[Buffer[?]]
 
       private val buffer: BufferImpl[T] = BufferImpl(size, inheritedAttributes)
 
@@ -1080,16 +1080,20 @@ private[stream] object Collect {
         if (agg != null) {
           push(out, agg)
           left = max
+          agg = null.asInstanceOf[Out]
         }
         if (pending != null) {
           try {
+            val cost = costFn(pending)
             agg = seed(pending)
-            left -= costFn(pending)
+            left -= cost
             pending = null.asInstanceOf[In]
           } catch {
             case NonFatal(ex) =>
               decider(ex) match {
-                case Supervision.Stop    => failStage(ex)
+                case Supervision.Stop =>
+                  failStage(ex)
+                  return
                 case Supervision.Restart => restartState()
                 case Supervision.Resume  =>
                   pending = null.asInstanceOf[In]
@@ -1104,7 +1108,23 @@ private[stream] object Collect {
 
       def onPush(): Unit = {
         val elem = grab(in)
-        val cost = costFn(elem)
+        val cost =
+          try costFn(elem)
+          catch {
+            case NonFatal(ex) =>
+              decider(ex) match {
+                case Supervision.Stop =>
+                  failStage(ex)
+                  return
+                case Supervision.Resume =>
+                  pull(in)
+                  return
+                case Supervision.Restart =>
+                  restartState()
+                  pull(in)
+                  return
+              }
+          }
         contextPropagation.suspendContext()
 
         if (agg == null) {
@@ -1114,7 +1134,9 @@ private[stream] object Collect {
           } catch {
             case NonFatal(ex) =>
               decider(ex) match {
-                case Supervision.Stop    => failStage(ex)
+                case Supervision.Stop =>
+                  failStage(ex)
+                  return
                 case Supervision.Restart =>
                   restartState()
                 case Supervision.Resume =>
@@ -1129,7 +1151,9 @@ private[stream] object Collect {
           } catch {
             case NonFatal(ex) =>
               decider(ex) match {
-                case Supervision.Stop    => failStage(ex)
+                case Supervision.Stop =>
+                  failStage(ex)
+                  return
                 case Supervision.Restart =>
                   restartState()
                 case Supervision.Resume =>
@@ -1138,7 +1162,7 @@ private[stream] object Collect {
         }
 
         if (isAvailable(out)) flush()
-        if (pending == null) pull(in)
+        if (pending == null && !isClosed(in)) pull(in)
       }
 
       override def onUpstreamFinish(): Unit = {
@@ -1152,6 +1176,7 @@ private[stream] object Collect {
         } else if (isClosed(in)) {
           contextPropagation.resumeContext()
           push(out, agg)
+          agg = null.asInstanceOf[Out]
           if (pending == null) completeStage()
           else {
             try {
@@ -1159,19 +1184,21 @@ private[stream] object Collect {
             } catch {
               case NonFatal(ex) =>
                 decider(ex) match {
-                  case Supervision.Stop    => failStage(ex)
+                  case Supervision.Stop =>
+                    failStage(ex)
+                    return
                   case Supervision.Resume  =>
                   case Supervision.Restart =>
                     restartState()
-                    if (!hasBeenPulled(in)) pull(in)
                 }
             }
             pending = null.asInstanceOf[In]
+            if (agg == null) completeStage()
           }
         } else {
           contextPropagation.resumeContext()
           flush()
-          if (!hasBeenPulled(in)) pull(in)
+          if (!isClosed(in) && !hasBeenPulled(in)) pull(in)
         }
 
       }
@@ -1198,50 +1225,94 @@ private[stream] object Collect {
 
   override val shape = FlowShape(in, out)
 
-  override def createLogic(attr: Attributes) = new GraphStageLogic(shape) with InHandler with OutHandler {
-    private var iterator: Iterator[Out] = Iterator.empty
-    private var expanded = false
-    private val contextPropagation = ContextPropagation()
+  override def createLogic(inheritedAttributes: Attributes) =
+    new GraphStageLogic(shape) with InHandler with OutHandler {
+      private lazy val decider = inheritedAttributes.mandatoryAttribute[SupervisionStrategy].decider
+      private var iterator: Iterator[Out] = Iterator.empty
+      private var expanded = false
+      private val contextPropagation = ContextPropagation()
 
-    override def preStart(): Unit = pull(in)
+      override def preStart(): Unit = pull(in)
 
-    def onPush(): Unit = {
-      iterator = extrapolate(grab(in))
-      if (iterator.hasNext) {
-        contextPropagation.suspendContext()
-        if (isAvailable(out)) {
-          expanded = true
-          pull(in)
-          push(out, iterator.next())
-        } else expanded = false
-      } else pull(in)
-    }
-
-    override def onUpstreamFinish(): Unit = {
-      if (iterator.hasNext && !expanded) () // need to wait
-      else completeStage()
-    }
-
-    def onPull(): Unit = {
-      if (iterator.hasNext) {
-        contextPropagation.resumeContext()
-        if (!expanded) {
-          expanded = true
-          if (isClosed(in)) {
-            push(out, iterator.next())
-            completeStage()
-          } else {
-            // expand needs to pull first to be “fair” when upstream is not actually slow
-            pull(in)
-            push(out, iterator.next())
-          }
-        } else push(out, iterator.next())
+      def onPush(): Unit = {
+        val elem = grab(in)
+        try iterator = extrapolate(elem)
+        catch {
+          case NonFatal(ex) =>
+            decider(ex) match {
+              case Supervision.Stop =>
+                failStage(ex)
+              case Supervision.Resume =>
+                if (!isClosed(in) && !hasBeenPulled(in)) pull(in)
+              case Supervision.Restart =>
+                restartState()
+                if (!isClosed(in) && !hasBeenPulled(in)) pull(in)
+            }
+            return
+        }
+        try {
+          if (iterator.hasNext) {
+            contextPropagation.suspendContext()
+            if (isAvailable(out)) {
+              expanded = true
+              pull(in)
+              push(out, iterator.next())
+            } else expanded = false
+          } else pull(in)
+        } catch {
+          case NonFatal(ex) => handleIteratorFailure(ex)
+        }
       }
-    }
 
-    setHandler(in, this)
-    setHandler(out, this)
-  }
+      override def onUpstreamFinish(): Unit = {
+        try {
+          if (iterator.hasNext && !expanded) () // need to wait
+          else completeStage()
+        } catch {
+          case NonFatal(ex) => handleIteratorFailure(ex)
+        }
+      }
+
+      def onPull(): Unit = {
+        try {
+          if (iterator.hasNext) {
+            contextPropagation.resumeContext()
+            if (!expanded) {
+              expanded = true
+              if (isClosed(in)) {
+                push(out, iterator.next())
+                completeStage()
+              } else {
+                // expand needs to pull first to be “fair” when upstream is not actually slow
+                pull(in)
+                push(out, iterator.next())
+              }
+            } else push(out, iterator.next())
+          }
+        } catch {
+          case NonFatal(ex) => handleIteratorFailure(ex)
+        }
+      }
+
+      private def restartState(): Unit = {
+        iterator = Iterator.empty
+        expanded = false
+      }
+
+      private def handleIteratorFailure(ex: Throwable): Unit =
+        decider(ex) match {
+          case Supervision.Stop =>
+            failStage(ex)
+          case Supervision.Resume | Supervision.Restart =>
+            // iterator is corrupt after any hasNext/next failure; must reset for both Resume and Restart
+            restartState()
+            if (isClosed(in)) completeStage()
+            else if (!hasBeenPulled(in)) pull(in)
+        }
+
+      setHandler(in, this)
+      setHandler(out, this)
+    }
 }
 
 /**
@@ -1252,7 +1323,7 @@ private[stream] object Collect {
   final class Holder[T](var elem: Try[T], val cb: AsyncCallback[Holder[T]]) extends (Try[T] => Unit) {
 
     // To support both fail-fast when the supervision directive is Stop
-    // and not calling the decider multiple times (#23888) we need to cache the decider result and re-use that
+    // and not calling the decider multiple times (#23888) we need to cache the decider result and reuse that
     private var cachedSupervisionDirective: OptionVal[Supervision.Directive] = OptionVal.None
 
     def supervisionDirectiveFor(decider: Supervision.Decider, ex: Throwable): Supervision.Directive = {
@@ -1295,10 +1366,36 @@ private[stream] object Collect {
   override val shape = FlowShape(in, out)
 
   override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =
-    new GraphStageLogic(shape) with InHandler with OutHandler {
+    new GraphStageLogic(shape) with InHandler with OutHandler with StageLogging {
+
+      override protected def logSource: Class[?] = classOf[MapAsync[?, ?]]
 
       lazy val decider = inheritedAttributes.mandatoryAttribute[SupervisionStrategy].decider
       var buffer: BufferImpl[Holder[Out]] = _
+
+      private def logSupervisionFailure(ex: Throwable): Unit = {
+        val logAt: LogLevel = inheritedAttributes.get[LogLevels] match {
+          case Some(levels) => levels.onFailure
+          case None         => LogLevels.defaultErrorLevel(materializer.system)
+        }
+        logAt match {
+          case Logging.ErrorLevel =>
+            log.error(ex, "Supervision strategy resumed after exception in MapAsync: {}", ex.getMessage)
+          case Logging.WarningLevel =>
+            log.warning(ex, "Supervision strategy resumed after exception in MapAsync: {}", ex.getMessage)
+          case Logging.InfoLevel =>
+            log.info(
+              "Supervision strategy resumed after exception in MapAsync: {}: {}",
+              Logging.simpleName(ex.getClass),
+              ex.getMessage)
+          case Logging.DebugLevel =>
+            log.debug(
+              "Supervision strategy resumed after exception in MapAsync: {}: {}",
+              Logging.simpleName(ex.getClass),
+              ex.getMessage)
+          case _ => // Off, nop
+        }
+      }
 
       private val futureCB = getAsyncCallback[Holder[Out]](holder =>
         holder.elem match {
@@ -1318,25 +1415,38 @@ private[stream] object Collect {
       override def onPush(): Unit = {
         try {
           val future = f(grab(in))
-          val holder = new Holder[Out](NotYetThere, futureCB)
-          buffer.enqueue(holder)
-
           future.value match {
-            case None    => future.onComplete(holder)(scala.concurrent.ExecutionContext.parasitic)
+            // Not-yet-completed future: reserve this element's ordered slot with a Holder. Listed first so
+            // the pending path costs only a single type check and never evaluates the fast-path guard below
+            // (behaviourally and cost-wise identical to before this fast path was introduced).
+            case None =>
+              val holder = new Holder[Out](NotYetThere, futureCB)
+              buffer.enqueue(holder)
+              future.onComplete(holder)(scala.concurrent.ExecutionContext.parasitic)
+            // Zero-allocation fast path: the future is already completed with a non-null element and
+            // nothing is buffered ahead of it, so ordering is already satisfied and downstream demand is
+            // present. Push straight through, skipping the Holder allocation and the buffer round-trip.
+            case Some(Success(elem)) if (elem != null) && buffer.isEmpty && isAvailable(out) =>
+              push(out, elem)
             case Some(v) =>
+              val holder = new Holder[Out](NotYetThere, futureCB)
+              buffer.enqueue(holder)
               // #20217 the future is already here, optimization: avoid scheduling it on the dispatcher and
               // run the logic directly on this thread
               holder.setElem(v)
               v match {
                 // this optimization also requires us to stop the stage to fail fast if the decider says so:
-                case Failure(ex) if holder.supervisionDirectiveFor(decider, ex) == Supervision.Stop => failStage(ex)
-                case _                                                                              => pushNextIfPossible()
+                case Failure(ex) if holder.supervisionDirectiveFor(decider, ex) == Supervision.Stop =>
+                  failStage(ex)
+                case _ => pushNextIfPossible()
               }
           }
 
         } catch {
           // this logic must only be executed if f throws, not if the future is failed
-          case NonFatal(ex) => if (decider(ex) == Supervision.Stop) failStage(ex)
+          case NonFatal(ex) =>
+            if (decider(ex) == Supervision.Stop) failStage(ex)
+            else logSupervisionFailure(ex)
         }
 
         pullIfNeeded()
@@ -1368,6 +1478,7 @@ private[stream] object Collect {
                 case Supervision.Stop => failStage(ex)
                 case _                =>
                   // try next element
+                  logSupervisionFailure(ex)
                   pushNextIfPossible()
               }
             case Failure(ex) =>
@@ -1401,8 +1512,10 @@ private[stream] object Collect {
   override val shape = FlowShape(in, out)
 
   override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =
-    new GraphStageLogic(shape) with InHandler with OutHandler {
+    new GraphStageLogic(shape) with InHandler with OutHandler with StageLogging {
       override def toString = s"MapAsyncUnordered.Logic(inFlight=$inFlight, buffer=$buffer)"
+
+      override protected def logSource: Class[?] = classOf[MapAsyncUnordered[?, ?]]
 
       private lazy val decider = inheritedAttributes.mandatoryAttribute[SupervisionStrategy].decider
 
@@ -1410,7 +1523,31 @@ private[stream] object Collect {
       private var buffer: BufferImpl[Out] = _
       private val invokeFutureCB: Try[Out] => Unit = getAsyncCallback(futureCompleted).invoke
 
-      private[this] def todo: Int = inFlight + buffer.used
+      private def todo: Int = inFlight + buffer.used
+
+      private def logSupervisionFailure(ex: Throwable): Unit = {
+        val logAt: LogLevel = inheritedAttributes.get[LogLevels] match {
+          case Some(levels) => levels.onFailure
+          case None         => LogLevels.defaultErrorLevel(materializer.system)
+        }
+        logAt match {
+          case Logging.ErrorLevel =>
+            log.error(ex, "Supervision strategy resumed after exception in MapAsyncUnordered: {}", ex.getMessage)
+          case Logging.WarningLevel =>
+            log.warning(ex, "Supervision strategy resumed after exception in MapAsyncUnordered: {}", ex.getMessage)
+          case Logging.InfoLevel =>
+            log.info(
+              "Supervision strategy resumed after exception in MapAsyncUnordered: {}: {}",
+              Logging.simpleName(ex.getClass),
+              ex.getMessage)
+          case Logging.DebugLevel =>
+            log.debug(
+              "Supervision strategy resumed after exception in MapAsyncUnordered: {}: {}",
+              Logging.simpleName(ex.getClass),
+              ex.getMessage)
+          case _ => // Off, nop
+        }
+      }
 
       override def preStart(): Unit = buffer = BufferImpl(parallelism, inheritedAttributes)
 
@@ -1429,8 +1566,11 @@ private[stream] object Collect {
             else if (!hasBeenPulled(in)) tryPull(in)
           case Failure(ex) =>
             if (decider(ex) == Supervision.Stop) failStage(ex)
-            else if (isCompleted) completeStage()
-            else if (!hasBeenPulled(in)) tryPull(in)
+            else {
+              logSupervisionFailure(ex)
+              if (isCompleted) completeStage()
+              else if (!hasBeenPulled(in)) tryPull(in)
+            }
         }
       }
 
@@ -1443,7 +1583,9 @@ private[stream] object Collect {
             case Some(v) => futureCompleted(v)
           }
         } catch {
-          case NonFatal(ex) => if (decider(ex) == Supervision.Stop) failStage(ex)
+          case NonFatal(ex) =>
+            if (decider(ex) == Supervision.Stop) failStage(ex)
+            else logSupervisionFailure(ex)
         }
         if (todo < parallelism && !hasBeenPulled(in)) tryPull(in)
       }
@@ -1470,7 +1612,7 @@ private[stream] object Collect {
 
   override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =
     new GraphStageLogic(shape) with InHandler with OutHandler with StageLogging {
-      override protected def logSource: Class[_] = classOf[Watch[_]]
+      override protected def logSource: Class[?] = classOf[Watch[?]]
 
       override def preStart(): Unit = {
         val self = getStageActor {
@@ -1515,7 +1657,8 @@ private[stream] object Collect {
         log = logAdapter match {
           case Some(l) => l
           case _       =>
-            Logging(materializer.system, materializer)(fromMaterializer)
+            implicit val logSource: LogSource[Materializer] = Log.fromMaterializer
+            Logging(materializer.system, materializer)
         }
       }
 
@@ -1590,7 +1733,7 @@ private[stream] object Collect {
   final val fromMaterializer = new LogSource[Materializer] {
 
     // do not expose private context classes (of OneBoundedInterpreter)
-    override def getClazz(t: Materializer): Class[_] = classOf[Materializer]
+    override def getClazz(t: Materializer): Class[?] = classOf[Materializer]
 
     override def genString(t: Materializer): String = {
       try s"$DefaultLoggerName(${t.supervisor.path})"
@@ -1635,7 +1778,8 @@ private[stream] object Collect {
         log = logAdapter match {
           case Some(l) => l
           case _       =>
-            Logging.withMarker(materializer.system, materializer)(fromMaterializer)
+            implicit val logSource: LogSource[Materializer] = LogWithMarker.fromMaterializer
+            Logging.withMarker(materializer.system, materializer)
         }
       }
 
@@ -1710,7 +1854,7 @@ private[stream] object Collect {
   final val fromMaterializer = new LogSource[Materializer] {
 
     // do not expose private context classes (of OneBoundedInterpreter)
-    override def getClazz(t: Materializer): Class[_] = classOf[Materializer]
+    override def getClazz(t: Materializer): Class[?] = classOf[Materializer]
 
     override def genString(t: Materializer): String = {
       try s"$DefaultLoggerName(${t.supervisor.path})"
@@ -1739,13 +1883,13 @@ private[stream] object Collect {
     val maxNumber: Int,
     val costFn: T => Long,
     val interval: FiniteDuration)
-    extends GraphStage[FlowShape[T, immutable.Seq[T]]] {
+    extends GraphStage[FlowShape[T, Seq[T]]] {
   require(maxWeight > 0, "maxWeight must be greater than 0")
   require(maxNumber > 0, "maxNumber must be greater than 0")
   require(interval > Duration.Zero)
 
   val in = Inlet[T]("in")
-  val out = Outlet[immutable.Seq[T]]("out")
+  val out = Outlet[Seq[T]]("out")
 
   override def initialAttributes = DefaultAttributes.groupedWeightedWithin and SourceLocation.forLambda(costFn)
 
@@ -1773,6 +1917,7 @@ private[stream] object Collect {
       private var totalWeight = 0L
       private var totalNumber = 0
       private var hasElements = false
+      private lazy val decider = inheritedAttributes.mandatoryAttribute[SupervisionStrategy].decider
       private val contextPropagation = ContextPropagation()
 
       override def preStart() = {
@@ -1781,8 +1926,28 @@ private[stream] object Collect {
       }
 
       private def nextElement(elem: T): Unit = {
+        // costFn is user code and may throw; honor supervision strategy.
+        val cost =
+          try costFn(elem)
+          catch {
+            case NonFatal(ex) =>
+              decider(ex) match {
+                case Supervision.Stop =>
+                  failStage(ex)
+                  return
+                case Supervision.Resume =>
+                  // skip the offending element and keep the current group
+                  if (!hasBeenPulled(in)) pull(in)
+                  return
+                case Supervision.Restart =>
+                  // drop the current group and reset the time window, then continue from a fresh accumulator
+                  resetGroupState()
+                  scheduleWithFixedDelay(GroupedWeightedWithin.groupedWeightedWithinTimer, interval, interval)
+                  if (!hasBeenPulled(in)) pull(in)
+                  return
+              }
+          }
         groupEmitted = false
-        val cost = costFn(elem)
         if (cost < 0L)
           failStage(new IllegalArgumentException(s"Negative weight [$cost] for element [$elem] is not allowed"))
         else {
@@ -1823,6 +1988,17 @@ private[stream] object Collect {
             tryCloseGroup()
           }
         }
+      }
+
+      private def resetGroupState(): Unit = {
+        builder.clear()
+        pending = null.asInstanceOf[T]
+        pendingWeight = 0L
+        pushEagerly = false
+        groupEmitted = true
+        totalWeight = 0L
+        totalNumber = 0
+        hasElements = false
       }
 
       private def tryCloseGroup(): Unit = {
@@ -1908,14 +2084,15 @@ private[stream] object Collect {
     new TimerGraphStageLogic(shape) with InHandler with OutHandler {
       import Delay._
 
-      private[this] val size = inheritedAttributes.mandatoryAttribute[InputBuffer].max
+      private val size = inheritedAttributes.mandatoryAttribute[InputBuffer].max
 
-      private[this] val delayStrategy = delayStrategySupplier()
+      private var delayStrategy = delayStrategySupplier()
+      private lazy val decider = inheritedAttributes.mandatoryAttribute[SupervisionStrategy].decider
 
       // buffer has pairs of timestamp of expected push and element
-      private[this] val buffer = BufferImpl[(Long, T)](size, inheritedAttributes)
+      private val buffer = BufferImpl[(Long, T)](size, inheritedAttributes)
 
-      private[this] val onPushWhenBufferFull: () => Unit = overflowStrategy match {
+      private val onPushWhenBufferFull: () => Unit = overflowStrategy match {
         case EmitEarly =>
           () => {
             if (isAvailable(out)) {
@@ -1961,7 +2138,9 @@ private[stream] object Collect {
           onPushWhenBufferFull()
         else {
           grabAndPull()
-          if (!isTimerActive(TimerName)) {
+          // Resume/Restart may drop the current element, leaving the buffer empty.
+          // Restart also recreates the stateful strategy for subsequent elements.
+          if (!buffer.isEmpty && !isTimerActive(TimerName)) {
             val waitTime = nextElementWaitTime()
             if (waitTime <= DelayPrecisionMS && isAvailable(out)) {
               push(out, buffer.dequeue()._2)
@@ -1979,7 +2158,26 @@ private[stream] object Collect {
 
       private def grabAndPull(): Unit = {
         val element = grab(in)
-        buffer.enqueue((System.nanoTime() + delayStrategy.nextDelay(element).toNanos, element))
+        val delay =
+          try delayStrategy.nextDelay(element)
+          catch {
+            case NonFatal(ex) =>
+              decider(ex) match {
+                case Supervision.Stop =>
+                  failStage(ex)
+                  return
+                case Supervision.Resume =>
+                  // Skip only the offending element, keep buffered elements and current strategy state.
+                  if (shouldPull) pull(in)
+                  return
+                case Supervision.Restart =>
+                  // Skip offending element and recreate the potentially stateful strategy.
+                  delayStrategy = delayStrategySupplier()
+                  if (shouldPull) pull(in)
+                  return
+              }
+          }
+        buffer.enqueue((System.nanoTime() + delay.toNanos, element))
         if (shouldPull) pull(in)
       }
 
@@ -2011,7 +2209,9 @@ private[stream] object Collect {
       }
 
       final override protected def onTimer(key: Any): Unit = {
-        if (isAvailable(out))
+        // A Resume/Restart skip (possibly via an overflow handler that already mutated the buffer) can
+        // leave the buffer empty while this timer is still armed; guard against dequeuing an empty buffer.
+        if (isAvailable(out) && !buffer.isEmpty)
           push(out, buffer.dequeue()._2)
 
         completeIfReady()
@@ -2169,6 +2369,7 @@ private[pekko] object TakeWithin {
       override def onPull(): Unit = pull(in)
 
       @nowarn("msg=Any")
+      @tailrec
       def onFailure(ex: Throwable): Unit = {
         import Collect.NotApplied
         if (maximumRetries < 0 || attempt < maximumRetries) {
@@ -2180,25 +2381,35 @@ private[pekko] object TakeWithin {
               TraversalBuilder.getValuePresentedSource(source) match {
                 case OptionVal.Some(graph) => graph match {
                     case singleSource: SingleSource[T @unchecked] => emit(out, singleSource.elem, () => completeStage())
-                    case failed: FailedSource[T @unchecked]       => failStage(failed.failure)
+                    case failed: FailedSource[T @unchecked]       =>
+                      attempt += 1
+                      onFailure(failed.failure)
                     case futureSource: FutureSource[T @unchecked] => futureSource.future.value match {
                         case Some(Success(elem)) => emit(out, elem, () => completeStage())
-                        case Some(Failure(ex))   => failStage(ex)
-                        case None                =>
-                          switchTo(source)
+                        case Some(Failure(ex))   =>
                           attempt += 1
+                          onFailure(ex)
+                        case None =>
+                          attempt += 1
+                          switchTo(source)
                       }
                     case iterableSource: IterableSource[T @unchecked] =>
                       emitMultiple(out, iterableSource.elements, () => completeStage())
-                    case javaStreamSource: JavaStreamSource[T @unchecked, _] =>
+                    case iteratorSource: IteratorSource[T @unchecked] =>
+                      emitMultiple(out, iteratorSource.createIterator(), () => completeStage())
+                    case rangeSource: RangeSource[T @unchecked] =>
+                      emitMultiple(out, rangeSource.range.iterator.asInstanceOf[Iterator[T]], () => completeStage())
+                    case repeatSource: RepeatSource[T @unchecked] =>
+                      emitMultiple(out, Iterator.continually(repeatSource.elem), () => completeStage())
+                    case javaStreamSource: JavaStreamSource[T @unchecked, ?] =>
                       emitMultiple(out, javaStreamSource.open().spliterator(), () => completeStage())
                     case _ =>
-                      switchTo(source)
                       attempt += 1
+                      switchTo(source)
                   }
                 case _ =>
-                  switchTo(source)
                   attempt += 1
+                  switchTo(source)
               }
             case _ => throw new IllegalStateException() // won't happen, compiler exhaustiveness check pleaser
           }

@@ -17,8 +17,9 @@
 
 package docs.stream.operators.sink
 
-import org.apache.pekko.actor.ActorSystem
-import org.apache.pekko.stream.scaladsl.{ Sink, Source }
+import org.apache.pekko
+import pekko.actor.ActorSystem
+import pekko.stream.scaladsl.{ Sink, Source }
 
 import scala.concurrent.duration.DurationInt
 import scala.concurrent.{ Await, ExecutionContextExecutor, Future }

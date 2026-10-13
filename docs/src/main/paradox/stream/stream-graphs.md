@@ -18,7 +18,7 @@ To use Pekko Streams, add the module to your project:
 In Pekko Streams, computation graphs are not expressed using a fluent DSL like linear computations are, instead they are
 written in a more graph-resembling DSL which aims to make translating graph drawings (e.g. from notes taken
 from design discussions, or illustrations in protocol specifications) to and from code simpler. In this section we'll
-dive into the multiple ways of constructing and re-using graphs, as well as explain common pitfalls and how to avoid them.
+dive into the multiple ways of constructing and reusing graphs, as well as explain common pitfalls and how to avoid them.
 
 Graphs are needed whenever you want to perform any kind of fan-in ("multiple inputs") or fan-out ("multiple outputs") operations.
 Considering linear Flows to be like roads, we can picture graph operations as junctions: multiple flows being connected at a single point.
@@ -39,9 +39,9 @@ Pekko Streams currently provide these junctions (for a detailed list see the @re
 
     * @scala[`Broadcast[T]`]@java[`Broadcast<T>`] – *(1 input, N outputs)* given an input element emits to each output
     * @scala[`Balance[T]`]@java[`Balance<T>`] – *(1 input, N outputs)* given an input element emits to one of its output ports
-    * @scala[`Partition[T]]`]@java[`Partition<T>`] – *(1 input, N outputs)* given an input element emits to specified output based on a partition function
+    * @scala[`Partition[T]`]@java[`Partition<T>`] – *(1 input, N outputs)* given an input element emits to specified output based on a partition function
     * @scala[`UnzipWith[In,A,B,...]`]@java[`UnzipWith<In,A,B,...>`] – *(1 input, N outputs)* takes a function of 1 input that given a value for each input emits N output elements (where N <= 20)
-    * @scala[`UnZip[A,B]`]@java[`UnZip<A,B>`] – *(1 input, 2 outputs)* splits a stream of @scala[`(A,B)`]@java[`Pair<A,B>`] tuples into two streams, one of type `A` and one of type `B`
+    * @scala[`Unzip[A,B]`]@java[`Unzip<A,B>`] – *(1 input, 2 outputs)* splits a stream of @scala[`(A,B)`]@java[`Pair<A,B>`] tuples into two streams, one of type `A` and one of type `B`
 
  * **Fan-in**
 
@@ -49,7 +49,7 @@ Pekko Streams currently provide these junctions (for a detailed list see the @re
     * @scala[`MergePreferred[In]`]@java[`MergePreferred<In>`] – like `Merge` but if elements are available on `preferred` port, it picks from it, otherwise randomly from `others`
     * @scala[`MergePrioritized[In]`]@java[`MergePrioritized<In>`] – like `Merge` but if elements are available on all input ports, it picks from them randomly based on their `priority`
     * @scala[`MergeLatest[In]`]@java[`MergeLatest<In>`] – *(N inputs, 1 output)* emits `List[In]`, when i-th input stream emits element, then i-th element in emitted list is updated
-    * @scala[`MergeSequence[In]`]@java[`MergeSequence<In>`] – *(N inputs, 1 output)* emits `List[In]`, where the input streams must represent a partitioned sequence that must be merged back together in order
+    * @scala[`MergeSequence[In]`]@java[`MergeSequence<In>`] – *(N inputs, 1 output)* emits elements of type `In` in sequence order, where the input streams must represent a partitioned sequence that must be merged back together in order
     * @scala[`ZipWith[A,B,...,Out]`]@java[`ZipWith<A,B,...,Out>`] – *(N inputs, 1 output)* which takes a function of N inputs that given a value for each input emits 1 output element
     * @scala[`Zip[A,B]`]@java[`Zip<A,B>`] – *(2 inputs, 1 output)* is a `ZipWith` specialised to zipping input streams of `A` and `B` into a @scala[`(A,B)`]@java[`Pair(A,B)`] tuple stream
     * @scala[`Concat[A]`]@java[`Concat<A>`] – *(2 inputs, 1 output)* concatenates two streams (first consume one, then the second one)
@@ -86,9 +86,9 @@ By looking at the snippets above, it should be apparent that the @scala[`GraphDS
 The reason for this design choice is to enable simpler creation of complex graphs, which may even contain cycles.
 Once the GraphDSL has been constructed though, the @scala[`GraphDSL`]@java[`RunnableGraph`] instance *is immutable, thread-safe, and freely shareable*.
 The same is true of all operators—sources, sinks, and flows—once they are constructed.
-This means that you can safely re-use one given Flow or junction in multiple places in a processing graph.
+This means that you can safely reuse one given Flow or junction in multiple places in a processing graph.
 
-We have seen examples of such re-use already above: the merge and broadcast junctions were imported
+We have seen examples of such reuse already above: the merge and broadcast junctions were imported
 into the graph using `builder.add(...)`, an operation that will make a copy of the blueprint that
 is passed to it and return the inlets and outlets of the resulting copy so that they can be wired up.
 Another alternative is to pass existing graphs—of any shape—into the factory method that produces a
@@ -97,7 +97,7 @@ materialized value of the imported graph while importing via the factory method 
 for more details see @ref[Stream Materialization](stream-flows-and-basics.md#stream-materialization).
 
 In the example below, we prepare a graph that consists of two parallel streams,
-in which we re-use the same instance of `Flow`, yet it will properly be
+in which we reuse the same instance of `Flow`, yet it will properly be
 materialized as two connections between the corresponding Sources and Sinks:
 
 Scala
@@ -125,7 +125,7 @@ all of its different phases in different places and in the end connect them all 
 This can be achieved by @scala[returning a different `Shape` than `ClosedShape`, for example `FlowShape(in, out)`, from the
 function given to `GraphDSL.create`. See @ref:[Predefined shapes](#predefined-shapes) for a list of such predefined shapes.
 Making a `Graph` a `RunnableGraph`]@java[using the returned `Graph` from `GraphDSL.create()` rather than
-passing it to `RunnableGraph.fromGraph()` to wrap it in a `RunnableGraph`.The reason of representing it as a different type is that a
+passing it to `RunnableGraph.fromGraph()` to wrap it in a `RunnableGraph`. The reason of representing it as a different type is that a
 `RunnableGraph`] requires all ports to be connected, and if they are not
 it will throw an exception at construction time, which helps to avoid simple
 wiring errors while working with graphs. A partial graph however allows
@@ -184,7 +184,7 @@ complex element and from there on treat it as simple compound operator for linea
 
 In order to create a Source from a graph the method `Source.fromGraph` is used, to use it we must have a
 @scala[`Graph[SourceShape, T]`]@java[`Graph` with a `SourceShape`]. This is constructed using
-@scala[`GraphDSL.create` and returning a `SourceShape` from the function passed in]@java[`GraphDSL.create` and providing building a `SourceShape` graph].
+@scala[`GraphDSL.create` and returning a `SourceShape` from the function passed in]@java[`GraphDSL.create` and building a graph with a `SourceShape`].
 The single outlet must be provided to the `SourceShape.of` method and will become
 “the sink that must be attached before this Source can run”.
 

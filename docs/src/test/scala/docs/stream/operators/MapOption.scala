@@ -15,8 +15,8 @@ package docs.stream.operators
 
 //#imports
 import org.apache.pekko
-import org.apache.pekko.NotUsed
-import org.apache.pekko.stream.scaladsl._
+import pekko.NotUsed
+import pekko.stream.scaladsl._
 
 //#imports
 

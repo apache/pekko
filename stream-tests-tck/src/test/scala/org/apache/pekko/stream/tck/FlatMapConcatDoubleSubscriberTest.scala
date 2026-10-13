@@ -16,7 +16,8 @@ package org.apache.pekko.stream.tck
 import scala.concurrent.{ Await, Promise }
 import scala.concurrent.duration._
 
-import org.apache.pekko.stream.scaladsl.{ Sink, Source }
+import org.apache.pekko
+import pekko.stream.scaladsl.{ Sink, Source }
 
 import org.reactivestreams.{ Publisher, Subscriber }
 
@@ -26,7 +27,7 @@ class FlatMapConcatDoubleSubscriberTest extends PekkoSubscriberBlackboxVerificat
     val subscriber = Promise[Subscriber[Int]]()
     Source
       .single(Source.fromPublisher(new Publisher[Int] {
-        def subscribe(s: Subscriber[_ >: Int]): Unit =
+        def subscribe(s: Subscriber[? >: Int]): Unit =
           subscriber.success(s.asInstanceOf[Subscriber[Int]])
       }))
       .flatten

@@ -13,7 +13,9 @@
 
 package org.apache.pekko.remote.artery.compress;
 
+import java.nio.ByteOrder;
 import org.apache.pekko.actor.ActorRef;
+import org.apache.pekko.util.SWARUtil;
 
 /**
  * INTERNAL API: Count-Min Sketch datastructure.
@@ -63,7 +65,7 @@ public class CountMinSketch {
   }
 
   /**
-   * Similar to {@code add}, however we reuse the fact that the hask buckets have to be calculated
+   * Similar to {@code add}, however we reuse the fact that the hash buckets have to be calculated
    * for {@code add} already, and a separate {@code estimateCount} operation would have to calculate
    * them again, so we do it all in one go.
    */
@@ -176,7 +178,7 @@ public class CountMinSketch {
         return hashLong(Double.doubleToRawLongBits(d), 0);
       }
       if (o instanceof Float f) {
-        return hashLong(Float.floatToRawIntBits((Float) o), 0);
+        return hashLong(Float.floatToRawIntBits(f), 0);
       }
       if (o instanceof byte[] array) {
         return bytesHash(array, 0);
@@ -198,11 +200,7 @@ public class CountMinSketch {
       // Body
       int i = 0;
       while (len >= 4) {
-        int k = data[i] & 0xFF;
-        k |= (data[i + 1] & 0xFF) << 8;
-        k |= (data[i + 2] & 0xFF) << 16;
-        k |= (data[i + 3] & 0xFF) << 24;
-
+        int k = SWARUtil.getInt(data, i, ByteOrder.LITTLE_ENDIAN);
         h = mix(h, k);
 
         i += 4;

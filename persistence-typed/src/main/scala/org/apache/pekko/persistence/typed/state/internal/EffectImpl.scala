@@ -13,8 +13,6 @@
 
 package org.apache.pekko.persistence.typed.state.internal
 
-import scala.collection.immutable
-
 import org.apache.pekko
 import pekko.actor.typed.ActorRef
 import pekko.annotation.InternalApi
@@ -60,7 +58,7 @@ private[pekko] object CompositeEffect {
 @InternalApi
 private[pekko] final case class CompositeEffect[State](
     persistingEffect: scaladsl.EffectBuilder[State],
-    _sideEffects: immutable.Seq[SideEffect[State]])
+    _sideEffects: Seq[SideEffect[State]])
     extends EffectImpl[State] {
 
   override val state: Option[State] = persistingEffect.state

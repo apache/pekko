@@ -38,7 +38,7 @@ private[pekko] object BalancingRoutingLogic {
  * INTERNAL API
  * Selects the first routee, balancing will be done by the dispatcher.
  */
-@nowarn("msg=@SerialVersionUID has no effect")
+@nowarn("msg=@SerialVersionUID (has no effect|does nothing)")
 @SerialVersionUID(1L)
 private[pekko] final class BalancingRoutingLogic extends RoutingLogic {
   override def select(message: Any, routees: immutable.IndexedSeq[Routee]): Routee =
@@ -79,6 +79,7 @@ private[pekko] final class BalancingRoutingLogic extends RoutingLogic {
  * @param routerDispatcher dispatcher to use for the router head actor, which handles
  *   supervision, death watch and router management messages
  */
+@nowarn("msg=deprecated")
 @SerialVersionUID(1L)
 final case class BalancingPool(
     nrOfInstances: Int,

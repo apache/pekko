@@ -42,7 +42,7 @@ See also:
 
 * @ref[`ActorSink.actorRefWithBackpressure`](../ActorSink/actorRefWithBackpressure.md) Send elements to an actor of the new actors API supporting backpressure
 * @ref[`Sink.actorRef`](../Sink/actorRef.md) The corresponding operator for the classic actors API
-* @ref[`Sink.actorRefWithBackpressue`](../Sink/actorRefWithBackpressure.md) Send elements to an actor of the classic actors API supporting backpressure
+* @ref[`Sink.actorRefWithBackpressure`](../Sink/actorRefWithBackpressure.md) Send elements to an actor of the classic actors API supporting backpressure
 
 ## Reactive Streams semantics
 

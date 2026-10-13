@@ -287,6 +287,50 @@ class SystemMessageDeliverySpec extends AbstractSystemMessageDeliverySpec(System
       sink.expectComplete()
     }
 
+    "be ignored when ACK is from stale remote incarnation" in {
+      val replyProbe = TestProbe()
+      val controlSubject = new TestControlMessageSubject
+      val inboundContextB = new ManualReplyInboundContext(replyProbe.ref, addressB, controlSubject)
+      val inboundContextA = new TestInboundContext(addressB, controlSubject)
+      val outboundContextA =
+        inboundContextA.association(addressB.address).asInstanceOf[TestOutboundContext]
+
+      // Drop msg-3 BEFORE inbound() so SystemMessageAcker never generates a real ACK for it.
+      // This prevents the real ACK(3) from overwriting ACK(2) in ManualReplyInboundContext.
+      val sink = send(sendCount = 3, resendInterval = 1.second, outboundContextA)
+        .via(drop(dropSeqNumbers = Vector(3L)))
+        .via(inbound(inboundContextB))
+        .map(_.message.asInstanceOf[TestSysMsg])
+        .runWith(TestSink[TestSysMsg]())
+
+      sink.request(100)
+      sink.expectNext(TestSysMsg("msg-1"))
+      sink.expectNext(TestSysMsg("msg-2"))
+
+      // Complete handshake so uniqueRemoteAddress is set to the current addressB
+      Await.result(outboundContextA.completeHandshake(addressB), 3.seconds)
+
+      // Deliver valid ACKs for msg-1 and msg-2 (msg-3 was dropped, no ACK generated for it)
+      replyProbe.expectMsg(Ack(1L, addressB))
+      inboundContextB.deliverLastReply()
+      replyProbe.expectMsg(Ack(2L, addressB))
+      inboundContextB.deliverLastReply()
+
+      // Inject a stale ACK from a previous incarnation (same address, different UID)
+      val staleAddress = UniqueAddress(addressB.address, addressB.uid + 1000)
+      controlSubject.sendControl(
+        InboundEnvelope(OptionVal.None, Ack(3L, staleAddress), OptionVal.None, staleAddress.uid, OptionVal.None))
+
+      // msg-3 should NOT have been cleared by the stale ACK,
+      // so it must be resent after the resend interval
+      sink.expectNext(3.seconds, TestSysMsg("msg-3"))
+
+      // Deliver the real ACK from the resend to complete the stream
+      replyProbe.expectMsg(3.seconds, Ack(3L, addressB))
+      inboundContextB.deliverLastReply()
+      sink.expectComplete()
+    }
+
     "deliver all during stress and random dropping" in {
       val N = 500
       val dropRate = 0.05

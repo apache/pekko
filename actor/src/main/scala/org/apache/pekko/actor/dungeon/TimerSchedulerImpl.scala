@@ -90,7 +90,7 @@ import pekko.util.OptionVal
     val nextGen = nextTimerGen()
 
     val timerMsg =
-      if (msg.isInstanceOf[NotInfluenceReceiveTimeout])
+      if (dungeon.ReceiveTimeoutCompat.isNotInfluenceReceiveTimeout(msg))
         NotInfluenceReceiveTimeoutTimerMsg(key, nextGen, this)
       else
         InfluenceReceiveTimeoutTimerMsg(key, nextGen, this)
@@ -149,7 +149,7 @@ import pekko.util.OptionVal
         } else {
           // it was from an old timer that was enqueued in mailbox before canceled
           log.debug(
-            "Received timer [{}] from from old generation [{}], expected generation [{}], discarding",
+            "Received timer [{}] from old generation [{}], expected generation [{}], discarding",
             timerMsg.key,
             timerMsg.generation,
             t.generation)

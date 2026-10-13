@@ -69,8 +69,7 @@ private[pekko] class ImmutableLongMap[A >: Null] private (private val keys: Arra
       val i = Arrays.binarySearch(keys, key)
       if (i >= 0) {
         // existing key, replace value
-        val newValues = new Array[A](values.length)
-        System.arraycopy(values, 0, newValues, 0, values.length)
+        val newValues = values.clone()
         newValues(i) = value
         new ImmutableLongMap(keys, newValues)
       } else {
@@ -128,7 +127,7 @@ private[pekko] class ImmutableLongMap[A >: Null] private (private val keys: Arra
   }
 
   override def equals(obj: Any): Boolean = obj match {
-    case other: ImmutableLongMap[_] =>
+    case other: ImmutableLongMap[?] =>
       if (other eq this) true
       else if (size != other.size) false
       else if (size == 0 && other.size == 0) true

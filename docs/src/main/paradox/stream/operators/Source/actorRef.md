@@ -14,12 +14,14 @@ Materialize an `ActorRef`, sending messages to it will emit them on the stream. 
 a buffer but since communication is one way, there is no back pressure. Handling overflow is done by either dropping
 elements or failing the stream; the strategy is chosen by the user.
 
-The stream can be completed successfully by sending the actor reference a `org.apache.pekko.actor.Status.Success`.
-If the content is `org.apache.pekko.stream.CompletionStrategy.immediately` the completion will be signaled immediately.
-Otherwise, if the content is `org.apache.pekko.stream.CompletionStrategy.draining` (or anything else)
-already buffered elements will be sent out before signaling completion.
-Sending `org.apache.pekko.actor.PoisonPill` will signal completion immediately but this behavior is deprecated and scheduled to be removed.
-Using `org.apache.pekko.actor.ActorSystem.stop` to stop the actor and complete the stream is *not supported*.
+The stream can be completed successfully by sending the actor reference a message that is matched by the
+`completionMatcher`. If the matcher returns `org.apache.pekko.stream.CompletionStrategy.immediately` the completion
+will be signaled immediately. If it returns `org.apache.pekko.stream.CompletionStrategy.draining`, already buffered
+elements will be sent out before signaling completion.
+The stream can be failed by sending a message that is matched by the `failureMatcher`; the extracted `Throwable` is
+used to fail the stream.
+`org.apache.pekko.actor.PoisonPill` and `org.apache.pekko.actor.Kill` messages are ignored (a warning is logged) and
+do not complete the stream. Using `org.apache.pekko.actor.ActorSystem.stop` to stop the actor and complete the stream is *not supported*.
 
 See also:
 

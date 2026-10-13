@@ -9,7 +9,7 @@ The purpose of `reference.conf` files is for libraries, like Pekko, to define de
 an application doesn't define a more specific value. It's also a good place to document the existence and
 meaning of the configuration properties. One library must not try to override properties in its own `reference.conf`
 for properties originally defined by another library's `reference.conf`, because the effective value would be
-nondeterministic when loading the configuration.`
+nondeterministic when loading the configuration.
 
 <a id="config-pekko-actor"></a>
 ### pekko-actor
@@ -20,6 +20,11 @@ nondeterministic when loading the configuration.`
 ### pekko-actor-typed
 
 @@snip [reference.conf](/actor-typed/src/main/resources/reference.conf)
+
+<a id="config-pekko-actor-testkit-typed"></a>
+### pekko-actor-testkit-typed
+
+@@snip [reference.conf](/actor-testkit-typed/src/main/resources/reference.conf)
 
 <a id="config-pekko-cluster-typed"></a>
 ### pekko-cluster-typed
@@ -105,6 +110,16 @@ nondeterministic when loading the configuration.`
 ### pekko-distributed-data
 
 @@snip [reference.conf](/distributed-data/src/main/resources/reference.conf)
+
+<a id="config-pekko-serialization-jackson"></a>
+### pekko-serialization-jackson
+
+@@snip [reference.conf](/serialization-jackson/src/main/resources/reference.conf)
+
+<a id="config-pekko-serialization-jackson3"></a>
+### pekko-serialization-jackson3
+
+@@snip [reference.conf](/serialization-jackson3/src/main/resources/reference.conf)
 
 <a id="config-pekko-stream"></a>
 ### pekko-stream

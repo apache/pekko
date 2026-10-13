@@ -27,10 +27,10 @@ import java.util.concurrent.TimeUnit;
 import java.time.Duration;
 import org.apache.pekko.testkit.TestActors;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 // #import-props
 import org.apache.pekko.actor.Props;
@@ -58,8 +58,10 @@ import java.util.concurrent.CompletionStage;
 // #import-gracefulStop
 // #import-terminated
 import org.apache.pekko.actor.Terminated;
+
 // #import-terminated
 
+@SuppressWarnings("unchecked")
 public class ActorDocTest extends AbstractJavaTest {
 
   public static Config config =
@@ -72,12 +74,12 @@ public class ActorDocTest extends AbstractJavaTest {
 
   static ActorSystem system = null;
 
-  @BeforeClass
+  @BeforeAll
   public static void beforeClass() {
     system = ActorSystem.create("ActorDocTest", config);
   }
 
-  @AfterClass
+  @AfterAll
   public static void afterClass() {
     TestKit.shutdownActorSystem(system);
   }
@@ -94,6 +96,7 @@ public class ActorDocTest extends AbstractJavaTest {
     }
     // #plus-some-behavior
   }
+
   // #context-actorOf
 
   public static class SomeActor extends AbstractActor {
@@ -136,6 +139,7 @@ public class ActorDocTest extends AbstractJavaTest {
       // actual work
     }
   }
+
   // #well-structured
 
   public
@@ -150,9 +154,9 @@ public class ActorDocTest extends AbstractJavaTest {
 
     @Override
     public void onReceive(Object msg) throws Exception {
-      if (msg instanceof Msg1) receiveMsg1((Msg1) msg);
-      else if (msg instanceof Msg2) receiveMsg2((Msg2) msg);
-      else if (msg instanceof Msg3) receiveMsg3((Msg3) msg);
+      if (msg instanceof Msg1 msg1) receiveMsg1(msg1);
+      else if (msg instanceof Msg2 msg2) receiveMsg2(msg2);
+      else if (msg instanceof Msg3 msg3) receiveMsg3(msg3);
       else unhandled(msg);
     }
 
@@ -168,6 +172,7 @@ public class ActorDocTest extends AbstractJavaTest {
       // actual work
     }
   }
+
   // #optimized
 
   public static class ActorWithArgs extends AbstractActor {
@@ -223,6 +228,7 @@ public class ActorDocTest extends AbstractJavaTest {
   static class SomeOtherActor extends AbstractActor {
     // Props(new DemoActor(42)) would not be safe
     ActorRef demoActor = getContext().actorOf(DemoActor.props(42), "demo");
+
     // ...
     // #props-factory
     @Override
@@ -231,6 +237,7 @@ public class ActorDocTest extends AbstractJavaTest {
     }
     // #props-factory
   }
+
   // #props-factory
 
   public
@@ -260,6 +267,7 @@ public class ActorDocTest extends AbstractJavaTest {
           .build();
     }
   }
+
   // #messages-in-companion
 
   public static class LifecycleMethods extends AbstractActor {
@@ -307,6 +315,7 @@ public class ActorDocTest extends AbstractJavaTest {
     public void preStart() {
       target = getContext().actorOf(Props.create(MyActor.class, "target"));
     }
+
     // #preStart
     // #postStop
     @Override
@@ -324,6 +333,7 @@ public class ActorDocTest extends AbstractJavaTest {
       target = null;
       // #clean-up-some-resources
     }
+
     // #postStop
 
     // compilation test only
@@ -410,6 +420,7 @@ public class ActorDocTest extends AbstractJavaTest {
           .build();
     }
   }
+
   // #gracefulStop-actor
 
   @Test
@@ -477,6 +488,7 @@ public class ActorDocTest extends AbstractJavaTest {
       system.terminate();
     }
   }
+
   // #swapper
 
   @Test
@@ -549,6 +561,7 @@ public class ActorDocTest extends AbstractJavaTest {
   static class ReceiveTimeoutActor extends AbstractActor {
     // #receive-timeout
     ActorRef target = getContext().getSystem().deadLetters();
+
     // #receive-timeout
     public ReceiveTimeoutActor() {
       // To set an initial delay
@@ -580,6 +593,7 @@ public class ActorDocTest extends AbstractJavaTest {
           .build();
     }
   }
+
   // #receive-timeout
 
   @Test
@@ -678,6 +692,7 @@ public class ActorDocTest extends AbstractJavaTest {
           .build();
     }
   }
+
   // #hot-swap-actor
 
   @Test
@@ -730,6 +745,7 @@ public class ActorDocTest extends AbstractJavaTest {
           .build();
     }
   }
+
   // #stash
 
   @Test
@@ -765,6 +781,7 @@ public class ActorDocTest extends AbstractJavaTest {
           .build();
     }
   }
+
   // #watch
 
   @Test
@@ -816,6 +833,7 @@ public class ActorDocTest extends AbstractJavaTest {
           .build();
     }
   }
+
   // #identify
 
   @Test

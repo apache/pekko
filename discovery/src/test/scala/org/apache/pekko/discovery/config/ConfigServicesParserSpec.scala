@@ -13,8 +13,6 @@
 
 package org.apache.pekko.discovery.config
 
-import scala.collection.immutable
-
 import org.apache.pekko
 import pekko.discovery.ServiceDiscovery.{ Resolved, ResolvedTarget }
 import pekko.discovery.config.ConfigServicesParserSpec._
@@ -55,10 +53,10 @@ class ConfigServicesParserSpec extends AnyWordSpec with Matchers {
 
       result("service1") shouldEqual Resolved(
         "service1",
-        immutable.Seq(
+        Seq(
           ResolvedTarget(host = "cat", port = Some(1233), address = None),
           ResolvedTarget(host = "dog", port = None, address = None)))
-      result("service2") shouldEqual Resolved("service2", immutable.Seq())
+      result("service2") shouldEqual Resolved("service2", Seq())
     }
   }
 }

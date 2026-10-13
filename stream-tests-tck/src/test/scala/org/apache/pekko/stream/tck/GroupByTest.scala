@@ -30,7 +30,7 @@ class GroupByTest extends PekkoPublisherVerification[Int] {
     else {
       val futureGroupSource =
         Source(iterable(elements)).groupBy(1, _ => "all").prefixAndTail(0).map(_._2).concatSubstreams.runWith(Sink.head)
-      val groupSource = Await.result(futureGroupSource, 3.seconds)
+      val groupSource = Await.result(futureGroupSource, Timeouts.materializerTimeoutMillis.millis)
       groupSource.runWith(Sink.asPublisher(false))
 
     }

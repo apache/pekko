@@ -14,15 +14,14 @@
 package org.apache.pekko.actor
 
 import java.net.URLEncoder
-
-import scala.collection.immutable
+import java.nio.charset.StandardCharsets
 
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
 class RelativeActorPathSpec extends AnyWordSpec with Matchers {
 
-  def elements(path: String): immutable.Seq[String] = RelativeActorPath.unapply(path).getOrElse(Nil)
+  def elements(path: String): Seq[String] = RelativeActorPath.unapply(path).getOrElse(Nil)
 
   "RelativeActorPath" must {
     "match single name" in {
@@ -32,7 +31,7 @@ class RelativeActorPathSpec extends AnyWordSpec with Matchers {
       elements("foo/bar/baz") should ===(List("foo", "bar", "baz"))
     }
     "match url encoded name" in {
-      val name = URLEncoder.encode("pekko://ClusterSystem@127.0.0.1:7355", "UTF-8")
+      val name = URLEncoder.encode("pekko://ClusterSystem@127.0.0.1:7355", StandardCharsets.UTF_8)
       elements(name) should ===(List(name))
     }
     "match path with uid fragment" in {

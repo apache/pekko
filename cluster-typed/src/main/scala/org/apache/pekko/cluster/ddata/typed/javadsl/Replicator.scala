@@ -51,7 +51,8 @@ object Replicator {
 
   @DoNotInherit trait Command extends pekko.cluster.ddata.typed.scaladsl.Replicator.Command
 
-  sealed trait ReadConsistency {
+  /** Not for user extension */
+  @DoNotInherit sealed trait ReadConsistency {
     def timeout: Duration
 
     /** INTERNAL API */
@@ -81,7 +82,8 @@ object Replicator {
     @InternalApi private[pekko] override def toClassic = dd.Replicator.ReadAll(timeout.toScala)
   }
 
-  sealed trait WriteConsistency {
+  /** Not for user extension */
+  @DoNotInherit sealed trait WriteConsistency {
     def timeout: Duration
 
     /** INTERNAL API */
@@ -281,8 +283,10 @@ object Replicator {
 
   /**
    * @see [[Replicator.Subscribe]]
+   *
+   * Not for user extension
    */
-  sealed trait SubscribeResponse[A <: ReplicatedData] extends NoSerializationVerificationNeeded {
+  @DoNotInherit sealed trait SubscribeResponse[A <: ReplicatedData] extends NoSerializationVerificationNeeded {
     def key: Key[A]
   }
 
@@ -314,6 +318,11 @@ object Replicator {
   final case class Deleted[A <: ReplicatedData](key: Key[A]) extends SubscribeResponse[A]
 
   /**
+   * @see [[Replicator.Subscribe]]
+   */
+  final case class Expired[A <: ReplicatedData](key: Key[A]) extends SubscribeResponse[A]
+
+  /**
    * Send this message to the local `Replicator` to delete a data value for the
    * given `key`. The `Replicator` will reply with one of the [[DeleteResponse]] messages.
    */
@@ -323,7 +332,8 @@ object Replicator {
       replyTo: ActorRef[DeleteResponse[A]])
       extends Command
 
-  sealed trait DeleteResponse[A <: ReplicatedData] {
+  /** Not for user extension */
+  @DoNotInherit sealed trait DeleteResponse[A <: ReplicatedData] {
     def key: Key[A]
   }
   final case class DeleteSuccess[A <: ReplicatedData](key: Key[A]) extends DeleteResponse[A]

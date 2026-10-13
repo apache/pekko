@@ -23,11 +23,11 @@ import pekko.annotation.InternalApi
 @InternalApi private[receptionist] object Platform {
   type Aux[P] = AbstractServiceKey { type Protocol = P }
 
-  type Service[K <: Aux[_]] = K match {
+  type Service[K <: Aux[?]] = K match {
     case Aux[t] => ActorRef[t]
   }
 
-  type Subscriber[K <: Aux[_]] = K match {
+  type Subscriber[K <: Aux[?]] = K match {
     case Aux[t] => ActorRef[ReceptionistMessages.Listing[t]]
   }
 }

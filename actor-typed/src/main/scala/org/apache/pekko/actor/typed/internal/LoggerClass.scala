@@ -29,17 +29,17 @@ private[pekko] object LoggerClass {
   private val OPTIONS: java.util.Set[StackWalker.Option] = java.util.Set.of(
     StackWalker.Option.RETAIN_CLASS_REFERENCE, StackWalker.Option.SHOW_HIDDEN_FRAMES)
   private val CLASS_STACK_WALKER: java.util.function.Function[
-    java.util.stream.Stream[StackWalker.StackFrame], Array[Class[_]]] =
+    java.util.stream.Stream[StackWalker.StackFrame], Array[Class[?]]] =
     (frames: java.util.stream.Stream[StackWalker.StackFrame]) =>
       frames.map(frame => frame.getDeclaringClass)
-        .toArray[Class[_]]((size: Int) => new Array[Class[_]](size))
+        .toArray[Class[?]]((size: Int) => new Array[Class[?]](size))
 
-  private def getClassStack: Array[Class[_]] = StackWalker.getInstance(OPTIONS).walk(CLASS_STACK_WALKER)
+  private def getClassStack: Array[Class[?]] = StackWalker.getInstance(OPTIONS).walk(CLASS_STACK_WALKER)
 
   /**
    * Try to extract a logger class from the call stack, if not possible the provided default is used
    */
-  def detectLoggerClassFromStack(default: Class[_], additionalPrefixesToSkip: List[String] = Nil): Class[_] = {
+  def detectLoggerClassFromStack(default: Class[?], additionalPrefixesToSkip: List[String] = Nil): Class[?] = {
     try {
       def skip(name: String): Boolean = {
         def loop(skipList: List[String]): Boolean = skipList match {
@@ -53,7 +53,7 @@ private[pekko] object LoggerClass {
       }
 
       val trace = getClassStack
-      var suitableClass: OptionVal[Class[_]] = OptionVal.None
+      var suitableClass: OptionVal[Class[?]] = OptionVal.None
       var idx = 1 // skip this method/class and right away
       while (suitableClass.isEmpty && idx < trace.length) {
         val clazz = trace(idx)

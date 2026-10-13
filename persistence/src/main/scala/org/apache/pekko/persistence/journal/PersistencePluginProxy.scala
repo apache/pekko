@@ -77,7 +77,7 @@ object PersistencePluginProxyExtension
     with ExtensionIdProvider {
   override def createExtension(system: ExtendedActorSystem): PersistencePluginProxyExtensionImpl =
     new PersistencePluginProxyExtensionImpl(system)
-  override def lookup: ExtensionId[_ <: Extension] = PersistencePluginProxyExtension
+  override def lookup: ExtensionId[? <: Extension] = PersistencePluginProxyExtension
   override def get(system: ActorSystem): PersistencePluginProxyExtensionImpl = super.get(system)
   override def get(system: ClassicActorSystemProvider): PersistencePluginProxyExtensionImpl = super.get(system)
 }
@@ -176,9 +176,9 @@ final class PersistencePluginProxy(config: Config) extends Actor with Stash with
         context.watch(target)
         unstashAll()
         context.become(active(target, address == selfAddress))
-      case _: ActorIdentity => // will retry after ReceiveTimeout
-      case Terminated(_)    =>
-      case ReceiveTimeout   =>
+      case _: ActorIdentity  => // will retry after ReceiveTimeout
+      case Terminated(_)     =>
+      case _: ReceiveTimeout =>
         sendIdentify(address)
     }: Receive).orElse(init)
 
@@ -212,7 +212,9 @@ final class PersistencePluginProxy(config: Config) extends Actor with Stash with
           }
         case ReplayMessages(_, _, _, _, persistentActor) =>
           persistentActor ! ReplayMessagesFailure(timeoutException())
-        case DeleteMessagesTo(_, toSequenceNr, persistentActor) =>
+        // The following ReplayMessages request has already failed, so control messages don't need a response.
+        case ReplayMessagesWithBatching(_) | ReplayMessagesCancel | ReplayBatchAck(_) | ReplayBatchCancel(_) => ()
+        case DeleteMessagesTo(_, toSequenceNr, persistentActor)                                              =>
           persistentActor ! DeleteMessagesFailure(timeoutException(), toSequenceNr)
       }
 

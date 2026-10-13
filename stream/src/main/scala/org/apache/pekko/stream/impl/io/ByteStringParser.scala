@@ -191,7 +191,7 @@ import pekko.util.ByteString
 
   class ByteReader(input: ByteString) {
 
-    private[this] var off = 0
+    private var off = 0
 
     def hasRemaining: Boolean = off < input.length
     def remainingSize: Int = input.length - off
@@ -215,17 +215,48 @@ import pekko.util.ByteString
 
     def readByte(): Int =
       if (off < input.length) {
-        val x = input(off)
+        // bounds already checked above, and off never goes backwards, so skip the check in apply
+        val x = input.byteAtUnchecked(off)
         off += 1
         x & 0xFF
       } else throw NeedMoreData
-    def readShortLE(): Int = readByte() | (readByte() << 8)
-    def readIntLE(): Int = readShortLE() | (readShortLE() << 16)
-    def readLongLE(): Long = (readIntLE() & 0xFFFFFFFFL) | ((readIntLE() & 0xFFFFFFFFL) << 32)
+    def readShortLE(): Int = {
+      if (off + 2 > input.length) throw NeedMoreData
+      val result = input.readShortLEUnchecked(off) & 0xFFFF
+      off += 2
+      result
+    }
+    def readIntLE(): Int = {
+      if (off + 4 > input.length) throw NeedMoreData
+      val result = input.readIntLEUnchecked(off)
+      off += 4
+      result
+    }
+    def readLongLE(): Long = {
+      if (off + 8 > input.length) throw NeedMoreData
+      val result = input.readLongLEUnchecked(off)
+      off += 8
+      result
+    }
 
-    def readShortBE(): Int = (readByte() << 8) | readByte()
-    def readIntBE(): Int = (readShortBE() << 16) | readShortBE()
-    def readLongBE(): Long = ((readIntBE() & 0xFFFFFFFFL) << 32) | (readIntBE() & 0xFFFFFFFFL)
+    def readShortBE(): Int = {
+      if (off + 2 > input.length) throw NeedMoreData
+      val result = input.readShortBEUnchecked(off) & 0xFFFF
+      off += 2
+      result
+    }
+    def readIntBE(): Int = {
+      if (off + 4 > input.length) throw NeedMoreData
+      val result = input.readIntBEUnchecked(off)
+      off += 4
+      result
+    }
+    def readLongBE(): Long = {
+      if (off + 8 > input.length) throw NeedMoreData
+      val result = input.readLongBEUnchecked(off)
+      off += 8
+      result
+    }
 
     def skip(numBytes: Int): Unit =
       if (off + numBytes <= input.length) off += numBytes

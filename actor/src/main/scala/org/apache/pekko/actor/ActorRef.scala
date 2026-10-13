@@ -46,7 +46,7 @@ object ActorRef {
 /**
  * Immutable and serializable handle to an actor, which may or may not reside
  * on the local host or inside the same [[pekko.actor.ActorSystem]]. An ActorRef
- * can be obtained from an [[pekko.actor.ActorRefFactory]], an interface which
+ * can be obtained from a [[pekko.actor.ActorRefFactory]], an interface which
  * is implemented by ActorSystem and [[pekko.actor.ActorContext]]. This means
  * actors can be created top-level in the ActorSystem or as children of an
  * existing actor, but only from within that actor.
@@ -886,8 +886,8 @@ private[pekko] class VirtualPathContainer(
   // AddressTerminatedTopic must be updated together with the variables here.
   // Important: don't include calls to sendSystemMessage inside the synchronized since that can
   // result in deadlock, see issue #26326
-  private[this] var watching = ActorCell.emptyActorRefSet
-  private[this] var _watchedBy: OptionVal[Set[ActorRef]] = OptionVal.Some(ActorCell.emptyActorRefSet)
+  private var watching = ActorCell.emptyActorRefSet
+  private var _watchedBy: OptionVal[Set[ActorRef]] = OptionVal.Some(ActorCell.emptyActorRefSet)
 
   /**
    * INTERNAL API

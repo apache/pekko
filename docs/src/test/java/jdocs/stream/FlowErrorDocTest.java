@@ -13,9 +13,8 @@
 
 package jdocs.stream;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutionException;
@@ -29,38 +28,43 @@ import org.apache.pekko.stream.ActorAttributes;
 import org.apache.pekko.stream.Supervision;
 import org.apache.pekko.stream.javadsl.*;
 import org.apache.pekko.testkit.javadsl.TestKit;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 public class FlowErrorDocTest extends AbstractJavaTest {
 
   private static ActorSystem system;
 
-  @BeforeClass
+  @BeforeAll
   public static void setup() {
     system = ActorSystem.create("FlowDocTest");
   }
 
-  @AfterClass
+  @AfterAll
   public static void tearDown() {
     TestKit.shutdownActorSystem(system);
     system = null;
   }
 
-  @Test(expected = ExecutionException.class)
-  public void demonstrateFailStream() throws Exception {
-    // #stop
-    final Source<Integer, NotUsed> source =
-        Source.from(Arrays.asList(0, 1, 2, 3, 4, 5)).map(elem -> 100 / elem);
-    final Sink<Integer, CompletionStage<Integer>> fold =
-        Sink.<Integer, Integer>fold(0, (acc, elem) -> acc + elem);
-    final CompletionStage<Integer> result = source.runWith(fold, system);
-    // division by zero will fail the stream and the
-    // result here will be a CompletionStage failed with ArithmeticException
-    // #stop
+  @Test
+  public void demonstrateFailStream() {
+    Assertions.assertThrows(
+        ExecutionException.class,
+        () -> {
+          // #stop
+          final Source<Integer, NotUsed> source =
+              Source.from(List.of(0, 1, 2, 3, 4, 5)).map(elem -> 100 / elem);
+          final Sink<Integer, CompletionStage<Integer>> fold =
+              Sink.<Integer, Integer>fold(0, (acc, elem) -> acc + elem);
+          final CompletionStage<Integer> result = source.runWith(fold, system);
+          // division by zero will fail the stream and the
+          // result here will be a CompletionStage failed with ArithmeticException
+          // #stop
 
-    result.toCompletableFuture().get(3, TimeUnit.SECONDS);
+          result.toCompletableFuture().get(3, TimeUnit.SECONDS);
+        });
   }
 
   @Test
@@ -72,7 +76,7 @@ public class FlowErrorDocTest extends AbstractJavaTest {
           else return Supervision.stop();
         };
     final Source<Integer, NotUsed> source =
-        Source.from(Arrays.asList(0, 1, 2, 3, 4, 5))
+        Source.from(List.of(0, 1, 2, 3, 4, 5))
             .map(elem -> 100 / elem)
             .withAttributes(ActorAttributes.withSupervisionStrategy(decider));
     final Sink<Integer, CompletionStage<Integer>> fold = Sink.fold(0, (acc, elem) -> acc + elem);
@@ -103,7 +107,7 @@ public class FlowErrorDocTest extends AbstractJavaTest {
             .filter(elem -> 100 / elem < 50)
             .map(elem -> 100 / (5 - elem))
             .withAttributes(ActorAttributes.withSupervisionStrategy(decider));
-    final Source<Integer, NotUsed> source = Source.from(Arrays.asList(0, 1, 2, 3, 4, 5)).via(flow);
+    final Source<Integer, NotUsed> source = Source.from(List.of(0, 1, 2, 3, 4, 5)).via(flow);
     final Sink<Integer, CompletionStage<Integer>> fold =
         Sink.<Integer, Integer>fold(0, (acc, elem) -> acc + elem);
     final CompletionStage<Integer> result = source.runWith(fold, system);
@@ -131,7 +135,7 @@ public class FlowErrorDocTest extends AbstractJavaTest {
                   else return acc + elem;
                 })
             .withAttributes(ActorAttributes.withSupervisionStrategy(decider));
-    final Source<Integer, NotUsed> source = Source.from(Arrays.asList(1, 3, -1, 5, 7)).via(flow);
+    final Source<Integer, NotUsed> source = Source.from(List.of(1, 3, -1, 5, 7)).via(flow);
     final CompletionStage<List<Integer>> result =
         source.grouped(1000).runWith(Sink.<List<Integer>>head(), system);
     // the negative element cause the scan stage to be restarted,
@@ -139,19 +143,18 @@ public class FlowErrorDocTest extends AbstractJavaTest {
     // result here will be a Future completed with List(0, 1, 4, 0, 5, 12)
     // #restart-section
 
-    assertEquals(
-        Arrays.asList(0, 1, 4, 0, 5, 12), result.toCompletableFuture().get(3, TimeUnit.SECONDS));
+    assertEquals(List.of(0, 1, 4, 0, 5, 12), result.toCompletableFuture().get(3, TimeUnit.SECONDS));
   }
 
   @Test
   public void demonstrateRecover() {
     // #recover
-    Source.from(Arrays.asList(0, 1, 2, 3, 4, 5, 6))
+    Source.from(List.of(0, 1, 2, 3, 4, 5, 6))
         .map(
             n -> {
               // assuming `4` and `5` are unexpected values that could throw exception
-              if (Arrays.asList(4, 5).contains(n))
-                throw new RuntimeException(String.format("Boom! Bad value found: %s", n));
+              if (List.of(4, 5).contains(n))
+                throw new RuntimeException("Boom! Bad value found: %s".formatted(n));
               else return n.toString();
             })
         .recover(
@@ -176,9 +179,9 @@ public class FlowErrorDocTest extends AbstractJavaTest {
   @Test
   public void demonstrateRecoverWithRetries() {
     // #recoverWithRetries
-    Source<String, NotUsed> planB = Source.from(Arrays.asList("five", "six", "seven", "eight"));
+    Source<String, NotUsed> planB = Source.from(List.of("five", "six", "seven", "eight"));
 
-    Source.from(Arrays.asList(0, 1, 2, 3, 4, 5, 6))
+    Source.from(List.of(0, 1, 2, 3, 4, 5, 6))
         .map(
             n -> {
               if (n < 5) return n.toString();

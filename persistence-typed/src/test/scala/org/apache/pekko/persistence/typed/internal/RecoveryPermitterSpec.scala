@@ -45,7 +45,7 @@ object RecoveryPermitterSpec {
 
   object EventState extends State
 
-  trait Command
+  sealed trait Command
 
   case object StopActor extends Command
 

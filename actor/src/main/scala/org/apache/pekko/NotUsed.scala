@@ -13,13 +13,18 @@
 
 package org.apache.pekko
 
+import org.apache.pekko
+import pekko.annotation.DoNotInherit
+
 /**
  * This type is used in generic type signatures wherever the actual value is of no importance.
  * It is a combination of Scala’s `Unit` and Java’s `Void`, which both have different issues when
  * used from the other language. An example use-case is the materialized value of a Pekko Stream for cases
  * where no result shall be returned from materialization.
+ *
+ * Not for user extension
  */
-sealed abstract class NotUsed
+@DoNotInherit sealed abstract class NotUsed
 
 case object NotUsed extends NotUsed {
 

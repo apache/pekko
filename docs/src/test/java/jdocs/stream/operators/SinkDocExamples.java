@@ -34,7 +34,7 @@ public class SinkDocExamples {
   static void reduceExample() {
 
     // #reduce-operator-example
-    Source<Integer, NotUsed> ints = Source.from(Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
+    Source<Integer, NotUsed> ints = Source.from(List.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
     CompletionStage<Integer> sum = ints.runWith(Sink.reduce((a, b) -> a + b), system);
     sum.thenAccept(System.out::println);
     // 55
@@ -43,7 +43,7 @@ public class SinkDocExamples {
 
   static void seqExample() {
     // #seq-operator-example
-    Source<Integer, NotUsed> ints = Source.from(Arrays.asList(1, 2, 3));
+    Source<Integer, NotUsed> ints = Source.from(List.of(1, 2, 3));
     CompletionStage<List<Integer>> result = ints.runWith(Sink.seq(), system);
     result.thenAccept(list -> list.forEach(System.out::println));
     // 1
@@ -65,7 +65,7 @@ public class SinkDocExamples {
     // #takeLast-operator-example
     // pair of (Name, GPA)
     List<Pair<String, Double>> sortedStudents =
-        Arrays.asList(
+        List.of(
             new Pair<>("Benita", 2.1),
             new Pair<>("Adrian", 3.1),
             new Pair<>("Alexis", 4.0),
@@ -97,7 +97,7 @@ public class SinkDocExamples {
 
   static void headExample() {
     // #head-operator-example
-    Source<Integer, NotUsed> source = Source.from(Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
+    Source<Integer, NotUsed> source = Source.from(List.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
     CompletionStage<Integer> result = source.runWith(Sink.head(), system);
     result.thenAccept(System.out::println);
     // 1
@@ -106,7 +106,7 @@ public class SinkDocExamples {
 
   static void lastExample() {
     // #last-operator-example
-    Source<Integer, NotUsed> source = Source.from(Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
+    Source<Integer, NotUsed> source = Source.from(List.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
     CompletionStage<Integer> result = source.runWith(Sink.last(), system);
     result.thenAccept(System.out::println);
     // 10

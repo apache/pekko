@@ -140,7 +140,7 @@ class NettyTransportSettings(config: Config) {
     case dispatcher => Some(dispatcher)
   }
 
-  private[this] def optionSize(s: String): Option[Int] = getBytes(s).toInt match {
+  private def optionSize(s: String): Option[Int] = getBytes(s).toInt match {
     case 0          => None
     case x if x < 0 => throw new ConfigurationException(s"Setting '$s' must be 0 or positive (and fit in an Int)")
     case other      => Some(other)
@@ -420,10 +420,17 @@ class NettyTransport(val settings: NettyTransportSettings, val system: ExtendedA
         .get)
     } else OptionVal.None
 
-  private def sslHandler(isClient: Boolean): SslHandler = {
+  private def sslHandler(isClient: Boolean, remoteAddress: Option[Address] = None): SslHandler = {
     sslEngineProvider match {
       case OptionVal.Some(sslProvider) =>
-        NettySSLSupport(sslProvider, isClient)
+        val hostnameVerification = SslSettings.exists(_.SSLHostnameVerification)
+        if (isClient && hostnameVerification && remoteAddress.isDefined) {
+          val addr = remoteAddress.get
+          val port = addr.port.getOrElse(-1)
+          NettySSLSupport(sslProvider, isClient, log, addr.host, port)
+        } else {
+          NettySSLSupport(sslProvider, isClient, log)
+        }
       case _ =>
         throw new IllegalStateException("Expected enable-ssl=on")
     }
@@ -440,7 +447,7 @@ class NettyTransport(val settings: NettyTransportSettings, val system: ExtendedA
   private def clientPipelineInitializer(remoteAddress: Address): ChannelInitializer[SocketChannel] =
     (ch: SocketChannel) => {
       val pipeline = newPipeline(ch)
-      if (EnableSsl) pipeline.addFirst("SslHandler", sslHandler(isClient = true))
+      if (EnableSsl) pipeline.addFirst("SslHandler", sslHandler(isClient = true, Some(remoteAddress)))
       val handler = new TcpClientHandler(NettyTransport.this, remoteAddress, log)
       pipeline.addLast("clienthandler", handler)
     }

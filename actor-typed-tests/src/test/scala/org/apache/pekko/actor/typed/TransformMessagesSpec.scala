@@ -26,6 +26,7 @@ import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
 import pekko.actor.testkit.typed.scaladsl.TestProbe
 import pekko.actor.typed.scaladsl.Behaviors
 import pekko.actor.typed.scaladsl.adapter._
+import pekko.util.Helpers.toRootLowerCase
 
 import org.scalatest.wordspec.AnyWordSpecLike
 
@@ -143,7 +144,7 @@ class TransformMessagesSpec extends ScalaTestWithActorTestKit with AnyWordSpecLi
 
       def transform(behavior: Behavior[String]): Behavior[String] =
         behavior.transformMessages[String] {
-          case s => s.toLowerCase
+          case s => toRootLowerCase(s)
         }
 
       LoggingTestKit.error[ActorInitializationException].expect {

@@ -51,11 +51,11 @@ private[pekko] trait PluginProvider[T, ScalaDsl, JavaDsl] {
  * INTERNAL API
  */
 @InternalApi
-private[pekko] abstract class PersistencePlugin[ScalaDsl, JavaDsl, T: ClassTag](system: ExtendedActorSystem)(
-    implicit ev: PluginProvider[T, ScalaDsl, JavaDsl]) {
+private[pekko] abstract class PersistencePlugin[ScalaDsl, JavaDsl, T](system: ExtendedActorSystem)(
+    implicit ct: ClassTag[T], ev: PluginProvider[T, ScalaDsl, JavaDsl]) {
 
   private val plugins = new AtomicReference[Map[String, ExtensionId[PluginHolder[ScalaDsl, JavaDsl]]]](Map.empty)
-  private val log = Logging(system, classOf[PersistencePlugin[_, _, _]])
+  private val log = Logging(system, classOf[PersistencePlugin[?, ?, ?]])
 
   @tailrec
   final protected def pluginFor(pluginId: String, readJournalPluginConfig: Config): PluginHolder[ScalaDsl, JavaDsl] = {
@@ -83,10 +83,10 @@ private[pekko] abstract class PersistencePlugin[ScalaDsl, JavaDsl, T: ClassTag](
       s"'reference.conf' is missing persistence plugin config path: '$configPath'")
     val pluginConfig = mergedConfig.getConfig(configPath)
     val pluginClassName = pluginConfig.getString("class")
-    log.debug(s"Create plugin: $configPath $pluginClassName")
+    log.debug("Create plugin: {} {}", configPath, pluginClassName)
     val pluginClass = system.dynamicAccess.getClassFor[AnyRef](pluginClassName).get
 
-    def instantiate(args: collection.immutable.Seq[(Class[_], AnyRef)]) =
+    def instantiate(args: Seq[(Class[?], AnyRef)]) =
       system.dynamicAccess.createInstanceFor[T](pluginClass, args)
 
     instantiate(

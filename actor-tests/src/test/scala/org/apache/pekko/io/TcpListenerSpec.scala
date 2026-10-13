@@ -82,7 +82,7 @@ class TcpListenerSpec extends PekkoSpec("""
       interestCallReceiver.expectMsg(OP_ACCEPT)
     }
 
-    "not accept connections after a previous accept until read is reenabled" in new TestSetup(pullMode = true) {
+    "not accept connections after a previous accept until read is re-enabled" in new TestSetup(pullMode = true) {
       bindListener()
 
       attemptConnectionToEndpoint()

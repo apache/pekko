@@ -33,15 +33,29 @@ import pekko.stream._
 import pekko.stream.testkit.{ ScriptedTest, StreamSpec }
 import pekko.stream.testkit.scaladsl.TestSink
 
+import org.scalatest.time.{ Seconds, Span }
+
 class FlowFlatMapConcatParallelismSpec extends StreamSpec("""
     pekko.stream.materializer.initial-input-buffer-size = 2
   """) with ScriptedTest with FutureTimeoutSupport {
+
+  // 100K-element tests need extra headroom, especially on JDK 25+ where
+  // ForkJoinPool scheduling changes slow down highly-parallel workloads (#2573).
+  // Dilation makes the timeout track CI's pekko.test.timefactor.
+  override implicit val patience: PatienceConfig =
+    PatienceConfig(
+      timeout = Span((60 * testKitSettings.TestTimeFactor).toLong, Seconds),
+      interval = Span(1, Seconds))
+
   val toSeq = Flow[Int].grouped(1000).toMat(Sink.head)(Keep.right)
 
   class BoomException extends RuntimeException("BOOM~~") with NoStackTrace
+
+  val checkValues = List(1, 2, 4, 8, 16, 32, 64, 128)
+
   "A flatMapConcat" must {
 
-    for (i <- 1 until 129) {
+    for (i <- checkValues) {
       s"work with value presented sources with parallelism: $i" in {
         Source(
           List(
@@ -90,7 +104,7 @@ class FlowFlatMapConcatParallelismSpec extends StreamSpec("""
       (sum, seq)
     }
 
-    for (i <- 1 until 129) {
+    for (i <- checkValues) {
       s"work with generated value presented sources with parallelism: $i " in {
         val (sum, sources @ _) = generateRandomValuePresentedSources(100000)
         Source(sources)
@@ -101,7 +115,7 @@ class FlowFlatMapConcatParallelismSpec extends StreamSpec("""
       }
     }
 
-    for (i <- 1 until 129) {
+    for (i <- checkValues) {
       s"work with generated value sequenced sources with parallelism: $i " in {
         val (sum, sources @ _) = generateSequencedValuePresentedSources(100000)
         Source(sources)
@@ -133,6 +147,53 @@ class FlowFlatMapConcatParallelismSpec extends StreamSpec("""
         .onErrorComplete[BoomException]()
         .runWith(toSeq)
         .futureValue should ===(1 to 4)
+    }
+
+    "treat Success(null) future inner sources as completion-without-element" in {
+      // Mirrors GraphStages.FutureSource semantics: Success(null) completes the inner
+      // source without emitting. The optimized fast path must match this.
+      val toIntegerSeq = Flow[Integer].grouped(1000).toMat(Sink.head)(Keep.right)
+      Source(
+        List[Source[Integer, NotUsed]](
+          Source.future(Future.successful[Integer](null)),
+          Source.single[Integer](1),
+          Source.future(after(1.millis)(Future.successful[Integer](null))),
+          Source.lazyFuture(() => Future.successful[Integer](null)),
+          Source.single[Integer](2)))
+        .flatMapConcat(ThreadLocalRandom.current().nextInt(1, 129), identity)
+        .runWith(toIntegerSeq)
+        .futureValue should ===(Seq[Integer](1, 2))
+    }
+
+    "propagate inner-source failure queued behind a Success(null) pending future" in {
+      // Regression: tryPullNextSourceInQueue used to call src.tryPull() for
+      // InflightSource heads, which is a no-op for already-settled sources
+      // (e.g. InflightCompletedFutureSource(Failure(_))). Once the pending
+      // Success(null) head was removed, the failure sat in the queue forever
+      // because nothing surfaced it. Drive the head via pushOut instead.
+      val ex = new BoomException
+      val probe = Source(
+        List[Source[Integer, NotUsed]](
+          Source.future(after(1.millis)(Future.successful[Integer](null))),
+          Source.failed[Integer](ex)))
+        .flatMapConcat(parallelism = 4, identity)
+        .runWith(TestSink())
+      probe.request(1)
+      probe.expectError() should ===(ex)
+    }
+
+    "emit completed future queued behind a Success(null) pending future" in {
+      // Same root cause as above: an InflightCompletedFutureSource(Success(_))
+      // queued behind a Success(null) pending future was stranded because
+      // tryPull() is a no-op on already-settled sources.
+      val toIntegerSeq = Flow[Integer].grouped(1000).toMat(Sink.head)(Keep.right)
+      Source(
+        List[Source[Integer, NotUsed]](
+          Source.future(after(1.millis)(Future.successful[Integer](null))),
+          Source.future(Future.successful[Integer](42))))
+        .flatMapConcat(parallelism = 4, identity)
+        .runWith(toIntegerSeq)
+        .futureValue should ===(Seq[Integer](42))
     }
 
     "work with value presented sources when demands slow" in {

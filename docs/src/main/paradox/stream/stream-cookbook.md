@@ -77,7 +77,7 @@ instead; e.g. `Source.unfold` or `Source.unfoldResource`.
 all the nested elements inside the sequences separately.
 
 The `mapConcat` operation can be used to implement a one-to-many transformation of elements using a mapper function
-in the form of @scala[`In => immutable.Seq[Out]`] @java[`In -> List<Out>`]. In this case we want to map a @scala[`Seq`] @java[`List`] of elements to the elements in the
+in the form of @scala[`In => IterableOnce[Out]`] @java[`In -> java.lang.Iterable<Out>`]. In this case we want to map a @scala[`Seq`] @java[`List`] of elements to the elements in the
 collection itself, so we can call @scala[`mapConcat(identity)`] @java[`mapConcat(l -> l)`].
 
 Scala
@@ -234,7 +234,7 @@ Java
 By extracting the parts specific to *wordcount* into
 
  * a `groupKey` function that defines the groups
- * a `map` map each element to value that is used by the reduce on the substream
+ * a `map` that maps each element to value that is used by the reduce on the substream
  * a `reduce` function that does the actual reduction
 
 we get a generalized version below:
@@ -277,7 +277,7 @@ Java
 ### Adhoc source
 
 **Situation:** The idea is that you have a source which you don't want to start until you have a demand.
-Also, you want to shut it down when there is no more demand, and start it up again there is new demand again.
+Also, you want to shut it down when there is no more demand, and start it up again when there is new demand again.
 
 You can achieve this behavior by combining `lazySource`, `backpressureTimeout` and `recoverWithRetries` as follows:
 
@@ -309,7 +309,7 @@ Java
 
 Alternatively, instead of using a `Zip`, and then using `map` to get the first element of the pairs, we can avoid
 creating the pairs in the first place by using `ZipWith` which takes a two argument function to produce the output
-element. If this function would return a pair of the two argument it would be exactly the behavior of `Zip` so
+element. If this function would return a pair of the two arguments it would be exactly the behavior of `Zip` so
 `ZipWith` is a generalization of zipping.
 
 Scala
@@ -356,7 +356,7 @@ a special `reduce` operation that collapses multiple upstream elements into one 
 the speed of the upstream unaffected by the downstream.
 
 When the upstream is faster, the reducing process of the `conflate` starts. Our reducer function takes
-the freshest element. This in a simple dropping operation.
+the freshest element. This is a simple dropping operation.
 
 Scala
 :   @@snip [RecipeSimpleDrop.scala](/docs/src/test/scala/docs/stream/cookbook/RecipeSimpleDrop.scala) { #simple-drop }

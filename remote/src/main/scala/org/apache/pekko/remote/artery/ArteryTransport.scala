@@ -13,6 +13,7 @@
 
 package org.apache.pekko.remote.artery
 
+import java.nio.ByteBuffer
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicLong
@@ -21,11 +22,12 @@ import java.util.concurrent.atomic.AtomicReference
 import scala.annotation.nowarn
 import scala.annotation.tailrec
 import scala.concurrent.Await
+import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 import scala.concurrent.Promise
 import scala.concurrent.duration._
 import scala.util.Try
-import scala.util.control.NoStackTrace
+import scala.util.control.{ NoStackTrace, NonFatal }
 
 import org.apache.pekko
 import pekko.Done
@@ -35,7 +37,10 @@ import pekko.annotation.InternalStableApi
 import pekko.dispatch.Dispatchers
 import pekko.event.Logging
 import pekko.event.MarkerLoggingAdapter
+import pekko.pattern.after
+import pekko.protobufv3.internal.CodedInputStream
 import pekko.remote.AddressUidExtension
+import pekko.remote.ContainerFormats
 import pekko.remote.RemoteActorRef
 import pekko.remote.RemoteActorRefProvider
 import pekko.remote.RemoteTransport
@@ -50,6 +55,7 @@ import pekko.remote.artery.compress.CompressionProtocol.CompressionMessage
 import pekko.remote.transport.ThrottlerTransportAdapter.Blackhole
 import pekko.remote.transport.ThrottlerTransportAdapter.SetThrottle
 import pekko.remote.transport.ThrottlerTransportAdapter.Unthrottled
+import pekko.serialization.SerializationExtension
 import pekko.stream._
 import pekko.stream.scaladsl.Flow
 import pekko.stream.scaladsl.Keep
@@ -285,13 +291,13 @@ private[remote] abstract class ArteryTransport(_system: ExtendedActorSystem, _pr
   type LifeCycle
 
   // these vars are initialized once in the start method
-  @volatile private[this] var _localAddress: UniqueAddress = _
-  @volatile private[this] var _bindAddress: UniqueAddress = _
-  @volatile private[this] var _addresses: Set[Address] = _
+  @volatile private var _localAddress: UniqueAddress = _
+  @volatile private var _bindAddress: UniqueAddress = _
+  @volatile private var _addresses: Set[Address] = _
   @volatile protected var materializer: Materializer = _
   @volatile protected var controlMaterializer: Materializer = _
-  @volatile private[this] var controlSubject: ControlMessageSubject = _
-  @volatile private[this] var messageDispatcher: MessageDispatcher = _
+  @volatile private var controlSubject: ControlMessageSubject = _
+  @volatile private var messageDispatcher: MessageDispatcher = _
 
   override val log: MarkerLoggingAdapter = Logging.withMarker(system, classOf[ArteryTransport])
 
@@ -310,7 +316,7 @@ private[remote] abstract class ArteryTransport(_system: ExtendedActorSystem, _pr
     } else NoInboundCompressions
   }
 
-  @volatile private[this] var _inboundCompressionAccess: OptionVal[InboundCompressionAccess] = OptionVal.None
+  @volatile private var _inboundCompressionAccess: OptionVal[InboundCompressionAccess] = OptionVal.None
 
   /** Only access compression tables via the CompressionAccess */
   def inboundCompressionAccess: OptionVal[InboundCompressionAccess] = _inboundCompressionAccess
@@ -327,11 +333,13 @@ private[remote] abstract class ArteryTransport(_system: ExtendedActorSystem, _pr
 
   // keyed by the streamId
   protected val streamMatValues = new AtomicReference(Map.empty[Int, InboundStreamMatValues[LifeCycle]])
-  private[this] val hasBeenShutdown = new AtomicBoolean(false)
+  private val hasBeenShutdown = new AtomicBoolean(false)
 
   private val testState = new SharedTestState
 
   protected val inboundLanes = settings.Advanced.InboundLanes
+  private lazy val actorSelectionMessageSerializerId =
+    SerializationExtension(system).serializerFor(classOf[ActorSelectionMessage]).identifier
 
   val largeMessageChannelEnabled: Boolean =
     !settings.LargeMessageDestinations.wildcardTree.isEmpty ||
@@ -460,14 +468,16 @@ private[remote] abstract class ArteryTransport(_system: ExtendedActorSystem, _pr
 
   // Select inbound lane based on destination to preserve message order,
   // Also include the uid of the sending system in the hash to spread
-  // "hot" destinations, e.g. ActorSelection anchor.
+  // "hot" destinations. For ActorSelection, the recipient is typically the
+  // root guardian, so use the selected target path as the destination key.
   protected val inboundLanePartitioner: InboundEnvelope => Int = env => {
     env.recipient match {
       case OptionVal.Some(r) =>
-        val a = r.path.uid
-        val b = env.originUid
-        val hashA = 23 + a
-        val hash: Int = 23 * hashA + java.lang.Long.hashCode(b)
+        val destinationHash =
+          if (env.serializer == actorSelectionMessageSerializerId && (env.envelopeBuffer ne null))
+            ArteryTransport.actorSelectionMessagePathHash(env.envelopeBuffer.byteBuffer).getOrElse(r.path.uid)
+          else r.path.uid
+        val hash = ArteryTransport.inboundLanePartitionHash(destinationHash, env.originUid)
         math.abs(hash % inboundLanes)
       case _ =>
         // the lane is set by the DuplicateHandshakeReq stage, otherwise 0
@@ -599,7 +609,7 @@ private[remote] abstract class ArteryTransport(_system: ExtendedActorSystem, _pr
       case _: AeronTerminated  => // shutdown already in progress
       case cause if isShutdown =>
         // don't restart after shutdown, but log some details so we notice
-        log.warning(s"{} failed after shutdown. {}: {}", streamName, cause.getClass.getName, cause.getMessage)
+        log.warning("{} failed after shutdown. {}: {}", streamName, cause.getClass.getName, cause.getMessage)
       case _: AbruptTerminationException => // ActorSystem shutdown
       case cause                         =>
         if (restartCounter.restart()) {
@@ -630,7 +640,7 @@ private[remote] abstract class ArteryTransport(_system: ExtendedActorSystem, _pr
         else {
           val flushingPromise = Promise[Done]()
           if (log.isDebugEnabled)
-            log.debug(s"Flushing associations [{}]", allAssociations.map(_.remoteAddress).mkString(", "))
+            log.debug("Flushing associations [{}]", allAssociations.map(_.remoteAddress).mkString(", "))
           system.systemActorOf(
             FlushOnShutdown
               .props(flushingPromise, settings.Advanced.ShutdownFlushTimeout, allAssociations)
@@ -650,8 +660,30 @@ private[remote] abstract class ArteryTransport(_system: ExtendedActorSystem, _pr
 
     killSwitch.abort(ShutdownSignal)
     flightRecorder.transportKillSwitchPulled()
+    val streamsStopped = streamsCompleted.recover { case _ => Done }
+    val shutdownStreamsTimeout = settings.Advanced.ShutdownStreamsTimeout
+    val streamsStoppedOrTimedOut =
+      try {
+        val timeoutResult = scheduleShutdownStreamsTimeout(shutdownStreamsTimeout) {
+          if (streamsStopped.isCompleted) streamsStopped
+          else {
+            log.warning(
+              "Graceful shutdown of Artery streams timed out after [{}]. Proceeding with transport shutdown.",
+              shutdownStreamsTimeout.toCoarsest)
+            Future.successful(Done)
+          }
+        }
+        Future.firstCompletedOf(List(streamsStopped, timeoutResult))
+      } catch {
+        case _: IllegalStateException =>
+          log.warning(
+            "Could not schedule the graceful shutdown timeout for Artery streams because the system scheduler is " +
+            "shut down. Proceeding with transport shutdown.")
+          Future.successful(Done)
+      }
+
     for {
-      _ <- streamsCompleted.recover { case _ => Done }
+      _ <- streamsStoppedOrTimedOut
       _ <- shutdownTransport().recover { case _ => Done }
     } yield {
       // no need to explicitly shut down the contained access since it's lifecycle is bound to the Decoder
@@ -660,6 +692,10 @@ private[remote] abstract class ArteryTransport(_system: ExtendedActorSystem, _pr
       Done
     }
   }
+
+  protected def scheduleShutdownStreamsTimeout(timeout: FiniteDuration)(result: => Future[Done])(
+      implicit ec: ExecutionContext): Future[Done] =
+    after(timeout, system.scheduler)(result)
 
   protected def shutdownTransport(): Future[Done]
 
@@ -805,8 +841,8 @@ private[remote] abstract class ArteryTransport(_system: ExtendedActorSystem, _pr
 
   def outboundControl(
       outboundContext: OutboundContext): Sink[OutboundEnvelope, (OutboundControlIngress, Future[Done])] = {
-    val livenessProbeInterval =
-      (settings.Advanced.QuarantineIdleOutboundAfter / 10).max(settings.Advanced.HandshakeRetryInterval)
+    val livenessProbeInterval = (settings.Advanced.QuarantineIdleOutboundAfter / 10).max(
+      settings.Advanced.HandshakeRetryInterval)
     Flow
       .fromGraph(killSwitch.flow[OutboundEnvelope])
       .via(
@@ -978,6 +1014,87 @@ private[remote] object ArteryTransport {
   val ControlStreamId = 1
   val OrdinaryStreamId = 2
   val LargeStreamId = 3
+
+  def inboundLanePartitionHash(destinationHash: Int, originUid: Long): Int = {
+    val hashA = 23 + destinationHash
+    23 * hashA + java.lang.Long.hashCode(originUid)
+  }
+
+  def actorSelectionMessagePathHash(byteBuffer: ByteBuffer): Option[Int] = {
+    val copy = byteBuffer.asReadOnlyBuffer()
+    try Some(actorSelectionMessagePathHash(CodedInputStream.newInstance(copy)))
+    catch {
+      case NonFatal(_) => None
+    }
+  }
+
+  private val SelectionEnvelopePatternTag = 26
+  private val SelectionTypeTag = 8
+  private val SelectionMatcherTag = 18
+
+  private def actorSelectionMessagePathHash(input: CodedInputStream): Int = {
+    var hash = 23
+    var done = false
+    while (!done) {
+      input.readTag() match {
+        case 0 =>
+          done = true
+        case SelectionEnvelopePatternTag =>
+          hash = actorSelectionMessagePathHash(input, input.readRawVarint32(), hash)
+        case tag =>
+          if (!input.skipField(tag))
+            done = true
+      }
+    }
+    hash
+  }
+
+  private def actorSelectionMessagePathHash(input: CodedInputStream, length: Int, currentHash: Int): Int = {
+    val oldLimit = input.pushLimit(length)
+    var patternType = -1
+    var matcherHash: Option[Int] = None
+    var done = false
+    try {
+      while (!done) {
+        input.readTag() match {
+          case 0 =>
+            done = true
+          case SelectionTypeTag =>
+            patternType = input.readEnum()
+          case SelectionMatcherTag =>
+            matcherHash = Some(input.readStringRequireUtf8().hashCode)
+          case tag =>
+            if (!input.skipField(tag))
+              done = true
+        }
+      }
+    } finally {
+      input.popLimit(oldLimit)
+    }
+
+    if (patternType == -1)
+      throw new IllegalArgumentException("ActorSelection Selection pattern without type")
+
+    val hash = 23 * currentHash + patternType
+    matcherHash match {
+      case Some(matcher) => 23 * hash + matcher
+      case None          => hash
+    }
+  }
+
+  def actorSelectionMessagePathHash(selectionEnvelope: ContainerFormats.SelectionEnvelope): Int = {
+    var hash = 23
+    val patterns = selectionEnvelope.getPatternList
+    var i = 0
+    while (i < patterns.size) {
+      val pattern = patterns.get(i)
+      hash = 23 * hash + pattern.getType.getNumber
+      if (pattern.hasMatcher)
+        hash = 23 * hash + pattern.getMatcher.hashCode
+      i += 1
+    }
+    hash
+  }
 
   def streamName(streamId: Int): String =
     streamId match {

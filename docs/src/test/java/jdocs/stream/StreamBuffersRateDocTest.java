@@ -14,7 +14,7 @@
 package jdocs.stream;
 
 import java.time.Duration;
-import java.util.Arrays;
+import java.util.List;
 import jdocs.AbstractJavaTest;
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.actor.ActorSystem;
@@ -22,9 +22,9 @@ import org.apache.pekko.actor.Cancellable;
 import org.apache.pekko.stream.*;
 import org.apache.pekko.stream.javadsl.*;
 import org.apache.pekko.testkit.javadsl.TestKit;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 public class StreamBuffersRateDocTest extends AbstractJavaTest {
 
@@ -32,12 +32,12 @@ public class StreamBuffersRateDocTest extends AbstractJavaTest {
 
   static ActorSystem system;
 
-  @BeforeClass
+  @BeforeAll
   public static void setup() {
     system = ActorSystem.create("StreamBuffersDocTest");
   }
 
-  @AfterClass
+  @AfterAll
   public static void tearDown() {
     TestKit.shutdownActorSystem(system);
     system = null;
@@ -48,7 +48,7 @@ public class StreamBuffersRateDocTest extends AbstractJavaTest {
   @Test
   public void demonstratePipelining() {
     // #pipelining
-    Source.from(Arrays.asList(1, 2, 3))
+    Source.from(List.of(1, 2, 3))
         .map(
             i -> {
               System.out.println("A: " + i);

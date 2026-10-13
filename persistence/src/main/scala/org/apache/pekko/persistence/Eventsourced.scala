@@ -17,12 +17,11 @@ import java.util.UUID
 import java.util.concurrent.atomic.AtomicInteger
 
 import scala.annotation.nowarn
-import scala.collection.immutable
 import scala.concurrent.duration.FiniteDuration
 import scala.util.control.NonFatal
 
 import org.apache.pekko
-import pekko.actor.{ Actor, ActorCell, DeadLetter, StashOverflowException }
+import pekko.actor.{ Actor, ActorCell, ActorInitializationException, DeadLetter, StashOverflowException }
 import pekko.annotation.{ InternalApi, InternalStableApi }
 import pekko.dispatch.Envelope
 import pekko.event.{ Logging, LoggingAdapter }
@@ -253,7 +252,12 @@ private[persistence] trait Eventsourced
 
   /** INTERNAL API. */
   override protected[pekko] def aroundReceive(receive: Receive, message: Any): Unit =
-    currentState.stateReceive(receive, message)
+    message match {
+      case ReplayBatchResponse(`instanceId`, response) if currentState.recoveryRunning =>
+        currentState.stateReceive(receive, response)
+      case _: ReplayBatchResponse => // stale or late replay response
+      case other                  => currentState.stateReceive(receive, other)
+    }
 
   /** INTERNAL API. */
   override protected[pekko] def aroundPreStart(): Unit = {
@@ -416,7 +420,7 @@ private[persistence] trait Eventsourced
    * Internal API
    */
   @InternalApi
-  final private[pekko] def internalPersistAll[A](events: immutable.Seq[A])(handler: A => Unit): Unit = {
+  final private[pekko] def internalPersistAll[A](events: Seq[A])(handler: A => Unit): Unit = {
     if (recoveryRunning)
       throw new IllegalStateException(
         "Cannot persist during replay. Events can be persisted when receiving RecoveryCompleted or later.")
@@ -464,7 +468,7 @@ private[persistence] trait Eventsourced
    * Internal API
    */
   @InternalApi
-  final private[pekko] def internalPersistAllAsync[A](events: immutable.Seq[A])(handler: A => Unit): Unit = {
+  final private[pekko] def internalPersistAllAsync[A](events: Seq[A])(handler: A => Unit): Unit = {
     if (recoveryRunning)
       throw new IllegalStateException(
         "Cannot persist during replay. Events can be persisted when receiving RecoveryCompleted or later.")
@@ -522,7 +526,7 @@ private[persistence] trait Eventsourced
    * If the delete is successful a [[pekko.persistence.DeleteMessagesSuccess]] will be sent to the actor.
    * If the delete fails a [[pekko.persistence.DeleteMessagesFailure]] will be sent to the actor.
    *
-   * The given `toSequenceNr` must be less than or equal to [[Eventsourced#lastSequenceNr]], otherwise
+   * The given `toSequenceNr` must be less than or equal to `lastSequenceNr`, otherwise
    * [[pekko.persistence.DeleteMessagesFailure]] is sent to the actor without performing the delete. All persistent
    * messages may be deleted without specifying the actual sequence number by using `Long.MaxValue`
    * as the `toSequenceNr`.
@@ -544,7 +548,7 @@ private[persistence] trait Eventsourced
    * An [[Eventsourced]] actor can request cleanup by deleting either a range of, or all persistent events.
    * For example, on successful snapshot completion, delete messages within a configurable `snapshotAfter`
    * range that are less than or equal to the given [[SnapshotMetadata.sequenceNr]]
-   * (provided the [[SnapshotMetadata.sequenceNr]] is <= to [[Eventsourced#lastSequenceNr]]).
+   * (provided the [[SnapshotMetadata.sequenceNr]] is <= to `lastSequenceNr`).
    *
    * Or delete all by using `Long.MaxValue` as the `toSequenceNr`
    * {{{ m.copy(sequenceNr = Long.MaxValue) }}}
@@ -648,6 +652,7 @@ private[persistence] trait Eventsourced
         }
 
       {
+        case PersistentRepr(FilteredPayload, _)                                                    => // ignore
         case PersistentRepr(payload, _) if recoveryRunning && _receiveRecover.isDefinedAt(payload) =>
           _receiveRecover(payload)
         case s: SnapshotOffer if _receiveRecover.isDefinedAt(s) =>
@@ -684,6 +689,7 @@ private[persistence] trait Eventsourced
             }
         }
         changeState(recovering(recoveryBehavior, timeout))
+        journal ! ReplayMessagesWithBatching(instanceId)
         journal ! ReplayMessages(lastSequenceNr + 1L, toSnr, replayMax, persistenceId, self)
       }
 
@@ -762,7 +768,7 @@ private[persistence] trait Eventsourced
 
       override def recoveryRunning: Boolean = _recoveryRunning
 
-      override def stateReceive(receive: Receive, message: Any) =
+      override def stateReceive(receive: Receive, message: Any): Unit =
         try message match {
             case ReplayedMessage(p) =>
               try {
@@ -776,6 +782,9 @@ private[persistence] trait Eventsourced
                   finally context.stop(self)
                   returnRecoveryPermit()
               }
+            case ReplayBatchReady(replayId) =>
+              eventSeenInInterval = true
+              journal ! ReplayBatchAck(replayId)
             case RecoverySuccess(highestJournalSeqNr) =>
               timeoutCancellable.cancel()
               onReplaySuccess() // callback for subclass implementation
@@ -783,9 +792,15 @@ private[persistence] trait Eventsourced
               sequenceNr = highestSeqNr
               setLastSequenceNr(highestSeqNr)
               _recoveryRunning = false
-              try Eventsourced.super.aroundReceive(recoveryBehavior, RecoveryCompleted)
-              finally transitToProcessingState() // in finally in case exception and resume strategy
-              // if exception from RecoveryCompleted the permit is returned in below catch
+              try {
+                Eventsourced.super.aroundReceive(recoveryBehavior, RecoveryCompleted)
+              } catch {
+                case NonFatal(t) =>
+                  throw ActorInitializationException(
+                    self,
+                    s"Exception in receiveRecover when handling RecoveryCompleted for persistenceId [$persistenceId]",
+                    t)
+              } finally transitToProcessingState()
               returnRecoveryPermit()
             case ReplayMessagesFailure(cause) =>
               timeoutCancellable.cancel()

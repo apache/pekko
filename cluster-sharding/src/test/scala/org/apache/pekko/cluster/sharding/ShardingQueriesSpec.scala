@@ -27,13 +27,13 @@ class ShardingQueriesSpec extends PekkoSpec {
 
   "ShardsQueryResult" must {
 
-    def nonEmpty(qr: ShardsQueryResult[_]): Boolean =
+    def nonEmpty(qr: ShardsQueryResult[?]): Boolean =
       qr.total > 0 && qr.queried > 0
 
-    def isTotalFailed(qr: ShardsQueryResult[_]): Boolean =
+    def isTotalFailed(qr: ShardsQueryResult[?]): Boolean =
       nonEmpty(qr) && qr.failed.size == qr.total
 
-    def isAllSubsetFailed(qr: ShardsQueryResult[_]): Boolean =
+    def isAllSubsetFailed(qr: ShardsQueryResult[?]): Boolean =
       nonEmpty(qr) && qr.queried < qr.total && qr.failed.size == qr.queried
 
     "reflect nothing to acquire metadata from - 0 shards" in {

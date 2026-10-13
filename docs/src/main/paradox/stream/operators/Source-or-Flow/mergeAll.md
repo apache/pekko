@@ -6,8 +6,8 @@ Merge multiple sources.
 
 ## Signature
 
-@apidoc[Source.mergeAll](Source) { scala="#mergeAll[U&gt;:Out,M](those:immutable.Seq[org.apache.pekko.stream.Graph[org.apache.pekko.stream.SourceShape[U],M]],eagerComplete:Boolean):FlowOps.this.Repr[U]" java="#mergeAll(java.util.List,boolean)" }
-@apidoc[Flow.mergeAll](Flow) { scala="#mergeAll[U&gt;:Out,M](those:immutable.Seq[org.apache.pekko.stream.Graph[org.apache.pekko.stream.SourceShape[U],M]],eagerComplete:Boolean):FlowOps.this.Repr[U]" java="#mergeAll(java.util.List,boolean)" }
+@apidoc[Source.mergeAll](Source) { scala="#mergeAll[U&gt;:Out](those:Seq[org.apache.pekko.stream.Graph[org.apache.pekko.stream.SourceShape[U],_]],eagerComplete:Boolean):FlowOps.this.Repr[U]" java="#mergeAll(java.util.List,boolean)" }
+@apidoc[Flow.mergeAll](Flow) { scala="#mergeAll[U&gt;:Out](those:Seq[org.apache.pekko.stream.Graph[org.apache.pekko.stream.SourceShape[U],_]],eagerComplete:Boolean):FlowOps.this.Repr[U]" java="#mergeAll(java.util.List,boolean)" }
 
 ## Description
 

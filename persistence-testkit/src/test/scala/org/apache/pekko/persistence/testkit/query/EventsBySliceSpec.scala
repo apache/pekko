@@ -17,7 +17,6 @@
 
 package org.apache.pekko.persistence.testkit.query
 
-import scala.collection.immutable.Seq
 import scala.concurrent.duration._
 
 import org.apache.pekko
@@ -28,6 +27,8 @@ import pekko.actor.typed.ActorRef
 import pekko.persistence.Persistence
 import pekko.persistence.query.NoOffset
 import pekko.persistence.query.PersistenceQuery
+import pekko.persistence.query.Sequence
+import pekko.persistence.query.TimestampOffset
 import pekko.persistence.query.typed.EventEnvelope
 import pekko.persistence.testkit.PersistenceTestKitPlugin
 import pekko.persistence.testkit.internal.InMemStorageExtension
@@ -59,7 +60,7 @@ object EventsBySliceSpec {
   }
   case class State()
 
-  def testBehaviour(persistenceId: String) = {
+  def testBehavior(persistenceId: String) = {
     EventSourcedBehavior[Command, String, State](
       PersistenceId.ofUniqueId(makeFullPersistenceId(persistenceId)),
       State(),
@@ -117,7 +118,7 @@ class EventsBySliceSpec
   }
 
   def setupEmpty(persistenceId: String): ActorRef[Command] = {
-    spawn(testBehaviour(persistenceId))
+    spawn(testBehavior(persistenceId))
   }
 
   private lazy val persistence = Persistence(system)
@@ -178,6 +179,32 @@ class EventsBySliceSpec
       ackProbe.expectMessage(Done)
 
       probe.expectNoMessage(100.millis).request(5).expectNext("e-3").expectNext("e-4")
+    }
+
+    "find events after the given offset" in {
+      val ackProbe = createTestProbe[Done]()
+      val ref = setup("o")
+      val first =
+        queries.eventsBySlices[String]("Test", 0, numberOfSlices - 1, NoOffset).runWith(
+          TestSink[EventEnvelope[String]]()).request(2)
+      first.expectNext().offset shouldBe a[TimestampOffset]
+      val offset = first.expectNext().offset
+      first.cancel()
+
+      val probe =
+        queries.eventsBySlices[String]("Test", 0, numberOfSlices - 1, offset).map(_.event).runWith(
+          TestSink[String]()).request(5)
+      probe.expectNext("o-3")
+      ref ! Command("o-4", ackProbe.ref)
+      ackProbe.expectMessage(Done)
+      probe.expectNext("o-4")
+      probe.cancel()
+    }
+
+    "reject unsupported offset types" in {
+      intercept[IllegalArgumentException] {
+        queries.eventsBySlices[String]("Test", 0, numberOfSlices - 1, Sequence(1L))
+      }
     }
 
     "include timestamp in EventEnvelope" in {

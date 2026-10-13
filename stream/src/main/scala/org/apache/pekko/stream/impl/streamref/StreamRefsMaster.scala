@@ -36,8 +36,8 @@ private[stream] object StreamRefsMaster extends ExtensionId[StreamRefsMaster] wi
 @InternalApi
 private[stream] final class StreamRefsMaster extends Extension {
 
-  private[this] val sourceRefStageNames = SeqActorName("SourceRef") // "local target"
-  private[this] val sinkRefStageNames = SeqActorName("SinkRef") // "remote sender"
+  private val sourceRefStageNames = SeqActorName("SourceRef") // "local target"
+  private val sinkRefStageNames = SeqActorName("SinkRef") // "remote sender"
 
   // TODO introduce a master with which all stages running the streams register themselves?
 

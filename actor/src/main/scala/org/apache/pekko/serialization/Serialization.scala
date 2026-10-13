@@ -20,7 +20,6 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicReference
 
 import scala.annotation.tailrec
-import scala.collection.immutable
 import scala.collection.mutable.ArrayBuffer
 import scala.util.{ DynamicVariable, Failure, Try }
 import scala.util.Success
@@ -39,7 +38,7 @@ object Serialization {
   /**
    * Tuple that represents mapping from Class to Serializer
    */
-  type ClassSerializer = (Class[_], Serializer)
+  type ClassSerializer = (Class[?], Serializer)
 
   /**
    * INTERNAL API: This holds a reference to the current transport serialization information used for
@@ -150,9 +149,16 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
   val settings = new Settings(system.settings.config)
   val AllowJavaSerialization: Boolean = system.settings.AllowJavaSerialization
 
-  private[this] val _log = Logging.withMarker(system, getClass.getName)
+  private val _log = Logging.withMarker(system, getClass.getName)
   val log: LoggingAdapter = _log
-  private val manifestCache = new AtomicReference[Map[String, Option[Class[_]]]](Map.empty[String, Option[Class[_]]])
+  private val manifestCache = new AtomicReference[Map[String, Option[Class[?]]]](Map.empty[String, Option[Class[?]]])
+
+  /**
+   * INTERNAL API: maximum nesting depth for a payload that encloses another serialized payload.
+   */
+  @InternalApi
+  private[pekko] val maxNestingDepth: Int =
+    system.settings.config.getInt("pekko.actor.serialization-max-nesting-depth")
 
   /** INTERNAL API */
   @InternalApi private[pekko] def serializationInformation: Serialization.Information =
@@ -197,33 +203,39 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
 
   private def deserializeByteArray(bytes: Array[Byte], serializer: Serializer, manifest: String): AnyRef = {
 
-    @tailrec def updateCache(cache: Map[String, Option[Class[_]]], key: String, value: Option[Class[_]]): Boolean = {
+    @tailrec def updateCache(cache: Map[String, Option[Class[?]]], key: String, value: Option[Class[?]]): Boolean = {
       manifestCache.compareAndSet(cache, cache.updated(key, value)) ||
       updateCache(manifestCache.get, key, value) // recursive, try again
     }
 
     withTransportInformation { () =>
-      serializer match {
-        case s2: SerializerWithStringManifest => s2.fromBinary(bytes, manifest)
-        case s1                               =>
-          if (manifest == "")
-            s1.fromBinary(bytes, None)
-          else {
-            val cache = manifestCache.get
-            cache.get(manifest) match {
-              case Some(cachedClassManifest) => s1.fromBinary(bytes, cachedClassManifest)
-              case None                      =>
-                system.dynamicAccess.getClassFor[AnyRef](manifest) match {
-                  case Success(classManifest) =>
-                    val classManifestOption: Option[Class[_]] = Some(classManifest)
-                    updateCache(cache, manifest, classManifestOption)
-                    s1.fromBinary(bytes, classManifestOption)
-                  case Failure(_) =>
-                    throw new NotSerializableException(
-                      s"Cannot find manifest class [$manifest] for serializer with id [${serializer.identifier}].")
-                }
+      NestedDeserialization.atNextLevel(maxNestingDepth) {
+        serializer match {
+          case s2: SerializerWithStringManifest => s2.fromBinary(bytes, manifest)
+          case s1                               =>
+            if (manifest == "" || !s1.includeManifest)
+              // A conforming peer only sends a manifest for a serializer that asks for one
+              // (see `Serializers.manifestFor`), and a serializer with `includeManifest = false`
+              // ignores the type hint anyway. Resolving a class named by the wire that will not
+              // be used only exposes class loading to whoever wrote the message.
+              s1.fromBinary(bytes, None)
+            else {
+              val cache = manifestCache.get
+              cache.get(manifest) match {
+                case Some(cachedClassManifest) => s1.fromBinary(bytes, cachedClassManifest)
+                case None                      =>
+                  system.dynamicAccess.getClassFor[AnyRef](manifest) match {
+                    case Success(classManifest) =>
+                      val classManifestOption: Option[Class[?]] = Some(classManifest)
+                      updateCache(cache, manifest, classManifestOption)
+                      s1.fromBinary(bytes, classManifestOption)
+                    case Failure(_) =>
+                      throw new NotSerializableException(
+                        s"Cannot find manifest class [$manifest] for serializer with id [${serializer.identifier}].")
+                  }
+              }
             }
-          }
+        }
       }
     }
   }
@@ -291,10 +303,10 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
    * Throws java.io.NotSerializableException if no `serialization-bindings` is configured for the class.
    */
   @throws(classOf[NotSerializableException])
-  def serializerFor(clazz: Class[_]): Serializer =
+  def serializerFor(clazz: Class[?]): Serializer =
     serializerMap.get(clazz) match {
       case null => // bindings are ordered from most specific to least specific
-        def unique(possibilities: immutable.Seq[(Class[_], Serializer)]): Boolean =
+        def unique(possibilities: Seq[(Class[?], Serializer)]): Boolean =
           possibilities.size == 1 || {
             val possibility = possibilities.head
             possibilities.forall(_._1.isAssignableFrom(possibility._1)) ||
@@ -305,7 +317,7 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
           bindings.filter {
             case (c, _) => c.isAssignableFrom(clazz)
           } match {
-            case immutable.Seq() =>
+            case Seq() =>
               throw new NotSerializableException(s"No configured serialization-bindings for class [${clazz.getName}]")
             case possibilities =>
               if (unique(possibilities))
@@ -379,23 +391,47 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
         classOf[DisabledJavaSerializer].getName
       } else serializerFQN
 
-    system.dynamicAccess.createInstanceFor[Serializer](fqn, List(classOf[ExtendedActorSystem] -> system)).recoverWith {
-      case _: NoSuchMethodException =>
-        system.dynamicAccess.createInstanceFor[Serializer](fqn, Nil).recoverWith {
-          case e: NoSuchMethodException =>
-            if (bindingName == "") throw e // compatibility with (public) serializerOf method without bindingName
-            else
-              system.dynamicAccess.createInstanceFor[Serializer](
-                fqn,
-                List(classOf[ExtendedActorSystem] -> system, classOf[String] -> bindingName))
-        }
-    }
+    // Try constructors in order of preference (most specific first)
+    val singleArgConstructors: List[List[(Class[?], AnyRef)]] =
+      List(
+        List(classOf[ExtendedActorSystem] -> system),
+        List(classOf[ActorSystem] -> system),
+        List(classOf[ClassicActorSystemProvider] -> (system: ClassicActorSystemProvider)),
+        Nil)
+
+    val twoArgConstructors: List[List[(Class[?], AnyRef)]] =
+      if (bindingName == "") Nil
+      else
+        List(
+          List(classOf[ExtendedActorSystem] -> system, classOf[String] -> bindingName),
+          List(classOf[ActorSystem] -> system, classOf[String] -> bindingName),
+          List(classOf[ClassicActorSystemProvider] -> (system: ClassicActorSystemProvider),
+            classOf[String] -> bindingName))
+
+    val allConstructors = singleArgConstructors ++ twoArgConstructors
+
+    def tryNext(remaining: List[List[(Class[?], AnyRef)]]): Try[Serializer] =
+      remaining match {
+        case Nil =>
+          Failure(
+            new NoSuchMethodException(
+              s"None of the supported constructors were found for serializer [$fqn]. " +
+              s"Supported constructor shapes (tried in order): " +
+              s"(ExtendedActorSystem), (ActorSystem), (ClassicActorSystemProvider), (), " +
+              s"(ExtendedActorSystem, String), (ActorSystem, String), (ClassicActorSystemProvider, String)."))
+        case args :: rest =>
+          system.dynamicAccess.createInstanceFor[Serializer](fqn, args).recoverWith {
+            case _: NoSuchMethodException => tryNext(rest)
+          }
+      }
+
+    tryNext(allConstructors)
   }
 
   /**
    * Programmatically defined serializers
    */
-  private val serializerDetails: immutable.Seq[SerializerDetails] =
+  private val serializerDetails: Seq[SerializerDetails] =
     (system.settings.setup.get[SerializationSetup] match {
       case None          => Vector.empty
       case Some(setting) => setting.createSerializers(system)
@@ -423,7 +459,7 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
    *  bindings is a Seq of tuple representing the mapping from Class to Serializer.
    *  It is primarily ordered by the most specific classes first, and secondly in the configured order.
    */
-  private[pekko] val bindings: immutable.Seq[ClassSerializer] = {
+  private[pekko] val bindings: Seq[ClassSerializer] = {
     val fromConfig = for {
       (className: String, alias: String) <- settings.SerializationBindings
       if alias != "none" && checkGoogleProtobuf(className)
@@ -445,7 +481,7 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
     }
   }
 
-  private def warnUnexpectedNonPekkoSerializer(clazz: Class[_], ser: Serializer): Boolean = {
+  private def warnUnexpectedNonPekkoSerializer(clazz: Class[?], ser: Serializer): Boolean = {
     val clazzName = clazz.getName
     if (clazzName.startsWith(PekkoPackagePrefix) && !ser.getClass.getName.startsWith(PekkoPackagePrefix)) {
       log.warning(
@@ -471,7 +507,7 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
    * Sort so that subtypes always precede their supertypes, but without
    * obeying any order between unrelated subtypes (insert sort).
    */
-  private def sort(in: Iterable[ClassSerializer]): immutable.Seq[ClassSerializer] =
+  private def sort(in: Iterable[ClassSerializer]): Seq[ClassSerializer] =
     in
       .foldLeft(new ArrayBuffer[ClassSerializer](in.size)) { (buf, ca) =>
         buf.indexWhere(_._1.isAssignableFrom(ca._1)) match {
@@ -480,14 +516,14 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
         }
         buf
       }
-      .to(immutable.Seq)
+      .to(Seq)
 
   /**
    * serializerMap is a Map whose keys is the class that is serializable and values is the serializer
    * to be used for that class.
    */
-  private val serializerMap: ConcurrentHashMap[Class[_], Serializer] =
-    bindings.foldLeft(new ConcurrentHashMap[Class[_], Serializer]) { case (map, (c, s)) => map.put(c, s); map }
+  private val serializerMap: ConcurrentHashMap[Class[?], Serializer] =
+    bindings.foldLeft(new ConcurrentHashMap[Class[?], Serializer]) { case (map, (c, s)) => map.put(c, s); map }
 
   /**
    * Maps from a Serializer Identity (Int) to a Serializer instance (optimization)
@@ -545,9 +581,9 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
   /**
    * INTERNAL API
    */
-  @InternalApi private[pekko] def shouldWarnAboutJavaSerializer(serializedClass: Class[_], serializer: Serializer) = {
+  @InternalApi private[pekko] def shouldWarnAboutJavaSerializer(serializedClass: Class[?], serializer: Serializer) = {
 
-    def suppressWarningOnNonSerializationVerification(serializedClass: Class[_]) = {
+    def suppressWarningOnNonSerializationVerification(serializedClass: Class[?]) = {
       // suppressed, only when warn-on-no-serialization-verification = off, and extending NoSerializationVerificationNeeded
       !isWarningOnNoVerificationEnabled && classOf[NoSerializationVerificationNeeded].isAssignableFrom(serializedClass)
     }

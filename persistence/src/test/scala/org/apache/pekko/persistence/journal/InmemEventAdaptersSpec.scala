@@ -34,7 +34,7 @@ class InmemEventAdaptersSpec extends PekkoSpec {
       |  }
       |
       |  inmem {
-      |    # showcases re-using and concating configuration of adapters
+      |    # showcases reusing and concatenating configuration of adapters
       |
       |    event-adapters {
       |      example  = ${classOf[ExampleEventAdapter].getCanonicalName}

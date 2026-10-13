@@ -16,19 +16,20 @@ package org.apache.pekko.util
 import scala.collection.{ immutable, mutable }
 import scala.concurrent.duration.FiniteDuration
 
-import org.apache.pekko.annotation.InternalApi
+import org.apache.pekko
+import pekko.annotation.InternalApi
 
 /**
  * INTERNAL API
  */
 @InternalApi
 private[pekko] object SegmentedRecencyList {
-  def empty[A](limits: immutable.Seq[Int]): SegmentedRecencyList[A] =
+  def empty[A](limits: Seq[Int]): SegmentedRecencyList[A] =
     new SegmentedRecencyList[A](limits, OptionVal.None)
 
   object withOverallRecency {
-    def empty[A](limits: immutable.Seq[Int]): SegmentedRecencyList[A] =
-      new SegmentedRecencyList[A](limits, OptionVal.Some(new RecencyList.NanoClock))
+    def empty[A](clock: Clock, limits: Seq[Int]): SegmentedRecencyList[A] =
+      new SegmentedRecencyList[A](limits, OptionVal.Some(clock))
   }
 
   private final class Node[A](val value: A) {
@@ -47,9 +48,7 @@ private[pekko] object SegmentedRecencyList {
  * Implemented using doubly-linked lists plus hash map for lookup, so that all operations are constant time.
  */
 @InternalApi
-private[pekko] final class SegmentedRecencyList[A](
-    initialLimits: immutable.Seq[Int],
-    clock: OptionVal[RecencyList.Clock]) {
+private[pekko] final class SegmentedRecencyList[A](initialLimits: Seq[Int], clock: OptionVal[Clock]) {
   import SegmentedRecencyList.Node
 
   private var limits: immutable.IndexedSeq[Int] = initialLimits.toIndexedSeq
@@ -105,7 +104,7 @@ private[pekko] final class SegmentedRecencyList[A](
 
   def leastToMostRecentOf(level: Int): Iterator[A] = segments(level).forwardIterator.map(_.value)
 
-  def removeLeastRecentOverLimit(): immutable.Seq[A] = {
+  def removeLeastRecentOverLimit(): Seq[A] = {
     if (size > totalLimit) {
       adjustProtectedLevels()
       val excess = size - totalLimit
@@ -114,18 +113,18 @@ private[pekko] final class SegmentedRecencyList[A](
     } else Nil
   }
 
-  def removeLeastRecent(): immutable.Seq[A] = segments(lowest).getFirst match {
+  def removeLeastRecent(): Seq[A] = segments(lowest).getFirst match {
     case OptionVal.Some(first) => List(removeNode(first))
     case _                     => Nil
   }
 
-  def removeOverallLeastRecentOutside(duration: FiniteDuration): immutable.Seq[A] = {
+  def removeOverallLeastRecentOutside(duration: FiniteDuration): Seq[A] = {
     if (clock.isEmpty) throw new UnsupportedOperationException("Overall recency is not enabled")
     val min = clock.get.earlierTime(duration)
     overallRecency.forwardIterator.takeWhile(_.timestamp < min).map(removeNode).toList
   }
 
-  def updateLimits(newLimits: immutable.Seq[Int]): Unit = {
+  def updateLimits(newLimits: Seq[Int]): Unit = {
     limits = newLimits.toIndexedSeq
     totalLimit = limits.sum
   }

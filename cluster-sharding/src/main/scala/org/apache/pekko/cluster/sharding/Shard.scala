@@ -14,10 +14,10 @@
 package org.apache.pekko.cluster.sharding
 
 import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 import java.util
 
 import scala.annotation.nowarn
-import scala.collection.immutable.Set
 import scala.concurrent.duration._
 
 import org.apache.pekko
@@ -43,11 +43,13 @@ import pekko.cluster.sharding.internal.EntityPassivationStrategy
 import pekko.cluster.sharding.internal.RememberEntitiesProvider
 import pekko.cluster.sharding.internal.RememberEntitiesShardStore
 import pekko.cluster.sharding.internal.RememberEntitiesShardStore.GetEntities
-import pekko.cluster.sharding.internal.RememberEntityStarter
+import pekko.cluster.sharding.internal.RememberEntityStarterManager
 import pekko.coordination.lease.scaladsl.Lease
 import pekko.coordination.lease.scaladsl.LeaseProvider
 import pekko.event.LoggingAdapter
 import pekko.pattern.pipe
+import pekko.util.Clock
+import pekko.util.Helpers.toRootLowerCase
 import pekko.util.MessageBufferMap
 import pekko.util.OptionVal
 import pekko.util.PrettyDuration._
@@ -105,7 +107,8 @@ private[pekko] object Shard {
       extractEntityId: ShardRegion.ExtractEntityId,
       extractShardId: ShardRegion.ExtractShardId,
       handOffStopMessage: Any,
-      rememberEntitiesProvider: Option[RememberEntitiesProvider]): Props =
+      rememberEntitiesProvider: Option[RememberEntitiesProvider],
+      rememberEntityStarterManager: ActorRef): Props =
     Props(
       new Shard(
         typeName,
@@ -115,11 +118,14 @@ private[pekko] object Shard {
         extractEntityId,
         extractShardId,
         handOffStopMessage,
-        rememberEntitiesProvider)).withDeploy(Deploy.local)
+        rememberEntitiesProvider,
+        rememberEntityStarterManager)).withDeploy(Deploy.local)
 
   case object PassivateIntervalTick extends NoSerializationVerificationNeeded
 
   private final case class EntityTerminated(ref: ActorRef)
+
+  private final case class PassivationStopTimeout(entityId: EntityId) extends NoSerializationVerificationNeeded
 
   @nowarn("msg=never used")
   private final case class RememberedEntityIds(ids: Set[EntityId])
@@ -427,7 +433,8 @@ private[pekko] class Shard(
     extractEntityId: ShardRegion.ExtractEntityId,
     @nowarn("msg=never used") extractShardId: ShardRegion.ExtractShardId,
     handOffStopMessage: Any,
-    rememberEntitiesProvider: Option[RememberEntitiesProvider])
+    rememberEntitiesProvider: Option[RememberEntitiesProvider],
+    rememberEntityStarterManager: ActorRef)
     extends Actor
     with ActorLogging
     with Stash
@@ -463,6 +470,15 @@ private[pekko] class Shard(
     new Entities(log, settings.rememberEntities, verboseDebug, failOnInvalidStateTransition)
   }
 
+  private val passivationStopTimeout: Option[FiniteDuration] = {
+    val config = context.system.settings.config
+    val path = "pekko.cluster.sharding.passivation.stop-timeout"
+    toRootLowerCase(config.getString(path)) match {
+      case "off" | "none" => None
+      case _              => Some(config.getDuration(path, MILLISECONDS).millis)
+    }
+  }
+
   // Messages are buffered while an entity is passivating or waiting for a response
   // for that entity from the remember store
   private val messageBuffers = new MessageBufferMap[EntityId]
@@ -470,7 +486,7 @@ private[pekko] class Shard(
   private var handOffStopper: Option[ActorRef] = None
   private var preparingForShutdown = false
 
-  private val passivationStrategy = EntityPassivationStrategy(settings)
+  private val passivationStrategy = EntityPassivationStrategy(settings, clock = () => Clock(context.system))
 
   import context.dispatcher
   private val passivateIntervalTask = passivationStrategy.scheduledInterval.map { interval =>
@@ -603,9 +619,7 @@ private[pekko] class Shard(
     if (ids.nonEmpty) {
       entities.alreadyRemembered(ids)
       log.debug("{}: Restarting set of [{}] entities", typeName, ids.size)
-      context.actorOf(
-        RememberEntityStarter.props(context.parent, self, shardId, ids, settings),
-        "RememberEntitiesStarter")
+      rememberEntityStarterManager ! RememberEntityStarterManager.StartEntities(self, shardId, ids)
     }
     shardInitialized()
   }
@@ -631,6 +645,7 @@ private[pekko] class Shard(
     case msg: ShardRegion.ShardsUpdated          => shardsUpdated(msg)
     case Passivate(stopMessage)                  => passivate(sender(), stopMessage)
     case PassivateIntervalTick                   => passivateEntitiesAfterInterval()
+    case PassivationStopTimeout(entityId)        => passivationStopTimedOut(entityId)
     case msg: ShardQuery                         => receiveShardQuery(msg)
     case msg: LeaseLost                          => receiveLeaseLost(msg)
     case msg: RememberEntityStoreCrashed         => rememberEntityStoreCrashed(msg)
@@ -708,6 +723,7 @@ private[pekko] class Shard(
           typeName,
           entities.entityId(sender()).getOrElse(s"Unknown actor ${sender()}"))
       passivate(sender(), stopMessage)
+    case PassivationStopTimeout(entityId)        => passivationStopTimedOut(entityId)
     case msg: ShardQuery                         => receiveShardQuery(msg)
     case PassivateIntervalTick                   => stash()
     case msg: RememberEntityStoreCrashed         => rememberEntityStoreCrashed(msg)
@@ -930,6 +946,7 @@ private[pekko] class Shard(
             }
 
           case Passivating(_) =>
+            timers.cancel(PassivationStopTimeout(entityId))
             if (rememberEntitiesStore.isDefined) {
               if (entities.pendingRememberedEntitiesExist()) {
                 // will go in next batch update
@@ -989,9 +1006,27 @@ private[pekko] class Shard(
           entities.entityPassivating(id)
           entity ! stopMessage
           flightRecorder.entityPassivate(id)
+          passivationStopTimeout.foreach { timeout =>
+            val msg = PassivationStopTimeout(id)
+            timers.startSingleTimer(msg, msg, timeout)
+          }
         }
       case _ =>
         log.debug("{}: Unknown entity passivating [{}]. Not sending stopMessage back to entity", typeName, entity)
+    }
+  }
+
+  private def passivationStopTimedOut(entityId: EntityId): Unit = {
+    entities.entityState(entityId) match {
+      case Passivating(ref) =>
+        log.warning(
+          "{}: Entity [{}] did not stop within [{}] after being sent its stop message for passivation, stopping it",
+          typeName,
+          entityId,
+          passivationStopTimeout.map(_.pretty).getOrElse(""))
+        context.stop(ref)
+      case _ =>
+      // entity already stopped, or has been restarted since passivation started
     }
   }
 
@@ -1127,7 +1162,7 @@ private[pekko] class Shard(
     entities.entity(id) match {
       case OptionVal.Some(child) => child
       case _                     =>
-        val name = URLEncoder.encode(id, "utf-8")
+        val name = URLEncoder.encode(id, StandardCharsets.UTF_8)
         val a = context.actorOf(entityProps(id), name)
         context.watchWith(a, EntityTerminated(a))
         log.debug("{}: Started entity [{}] with entity id [{}] in shard [{}]", typeName, a, id, shardId)
@@ -1192,6 +1227,7 @@ private[pekko] class Shard(
 
   override def postStop(): Unit = {
     passivateIntervalTask.foreach(_.cancel())
+    lease.foreach(_.release())
     log.debug("{}: Shard [{}] shutting down", typeName, shardId)
   }
 

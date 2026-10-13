@@ -211,14 +211,14 @@ The recommended approach to do deep serialization of internal actor state is to 
 
 ## Serialization of Pekko's messages
 
-Pekko is using a Protobuf 3 for serialization of messages defined by Pekko. This dependency is
+Pekko uses Protobuf 3 for serialization of messages defined by Pekko. This dependency is
 shaded in the `pekko-protobuf-v3` artifact so that applications can use another version of Protobuf.
 
 Applications should use standard Protobuf dependency and not `pekko-protobuf-v3`.
 
 ## Java serialization
 
-Java serialization is known to be slow and [prone to attacks](https://community.microfocus.com/cyberres/fortify/f/fortify-discussions/317555/the-perils-of-java-deserialization)
+Java serialization is known to be slow and [prone to attacks](https://docs.oracle.com/en/java/javase/25/core/addressing-serialization-vulnerabilities.html)
 of various kinds - it never was designed for high throughput messaging after all.
 One may think that network bandwidth and latency limit the performance of remote messaging, but serialization is a more typical bottleneck.
 
@@ -241,7 +241,7 @@ older systems that rely on Java serialization it can be enabled with the followi
 pekko.actor.allow-java-serialization = on
 ```
 
-Pekko will still log warning when Java serialization is used and to silent that you may add:
+Pekko will still log a warning when Java serialization is used and to silence that you may add:
 
 ```ruby
 pekko.actor.warn-about-java-serializer-usage = off

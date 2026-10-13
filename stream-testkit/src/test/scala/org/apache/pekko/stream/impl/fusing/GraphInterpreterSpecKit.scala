@@ -40,7 +40,7 @@ import pekko.stream.testkit.Utils.TE
  * INTERNAL API
  */
 @InternalApi
-private[pekko] object NoMaterializer extends Materializer {
+private[pekko] case class NoMaterializer(override val system: ActorSystem) extends Materializer {
   override def withNamePrefix(name: String): Materializer =
     throw new UnsupportedOperationException("NoMaterializer cannot be named")
   override def materialize[Mat](runnable: Graph[ClosedShape, Mat]): Mat =
@@ -70,9 +70,6 @@ private[pekko] object NoMaterializer extends Materializer {
 
   override def isShutdown: Boolean = throw new UnsupportedOperationException("NoMaterializer cannot shutdown")
 
-  override def system: ActorSystem =
-    throw new UnsupportedOperationException("NoMaterializer does not have an actorsystem")
-
   override private[pekko] def logger = throw new UnsupportedOperationException("NoMaterializer does not have a logger")
 
   override private[pekko] def supervisor =
@@ -99,19 +96,19 @@ object GraphInterpreterSpecKit {
    * @return Created logics and the maps of all inlets respective outlets to those logics
    */
   private[stream] def createLogics(
-      stages: Array[GraphStageWithMaterializedValue[_ <: Shape, _]],
-      upstreams: Array[UpstreamBoundaryStageLogic[_]],
-      downstreams: Array[DownstreamBoundaryStageLogic[_]],
+      stages: Array[GraphStageWithMaterializedValue[? <: Shape, ?]],
+      upstreams: Array[UpstreamBoundaryStageLogic[?]],
+      downstreams: Array[DownstreamBoundaryStageLogic[?]],
       attributes: Array[Attributes] = Array.empty)(implicit system: ActorSystem)
-      : (Array[GraphStageLogic], SMap[Inlet[_], GraphStageLogic], SMap[Outlet[_], GraphStageLogic]) = {
+      : (Array[GraphStageLogic], SMap[Inlet[?], GraphStageLogic], SMap[Outlet[?], GraphStageLogic]) = {
     if (attributes.nonEmpty && attributes.length != stages.length)
       throw new IllegalArgumentException("Attributes must be either empty or one per stage")
 
     @nowarn("msg=deprecated")
     val defaultAttributes = ActorMaterializerSettings(system).toAttributes
 
-    var inOwners = SMap.empty[Inlet[_], GraphStageLogic]
-    var outOwners = SMap.empty[Outlet[_], GraphStageLogic]
+    var inOwners = SMap.empty[Inlet[?], GraphStageLogic]
+    var outOwners = SMap.empty[Outlet[?], GraphStageLogic]
 
     val logics = new Array[GraphStageLogic](upstreams.length + stages.length + downstreams.length)
     var idx = 0
@@ -209,9 +206,9 @@ object GraphInterpreterSpecKit {
    * Create interpreter connections for all the given `connectedPorts`.
    */
   private[stream] def createConnections(
-      connectedPorts: Seq[(Outlet[_], Inlet[_])],
-      inOwners: SMap[Inlet[_], GraphStageLogic],
-      outOwners: SMap[Outlet[_], GraphStageLogic]): Array[Connection] = {
+      connectedPorts: Seq[(Outlet[?], Inlet[?])],
+      inOwners: SMap[Inlet[?], GraphStageLogic],
+      outOwners: SMap[Outlet[?], GraphStageLogic]): Array[Connection] = {
 
     val connections = new Array[Connection](connectedPorts.size)
     connectedPorts.zipWithIndex.foreach {
@@ -242,7 +239,7 @@ object GraphInterpreterSpecKit {
     }
   }
 
-  private def setPortIds(stage: GraphStageWithMaterializedValue[_ <: Shape, _]): Unit = {
+  private def setPortIds(stage: GraphStageWithMaterializedValue[? <: Shape, ?]): Unit = {
     stage.shape.inlets.zipWithIndex.foreach { case (inlet, idx) => inlet.id = idx }
     stage.shape.outlets.zipWithIndex.foreach { case (inlet, idx) => inlet.id = idx }
   }
@@ -299,10 +296,10 @@ trait GraphInterpreterSpecKit extends StreamSpec {
       override def toString = "Downstream"
     }
 
-    class AssemblyBuilder(operators: Seq[GraphStageWithMaterializedValue[_ <: Shape, _]]) {
-      private var upstreams = Vector.empty[UpstreamBoundaryStageLogic[_]]
-      private var downstreams = Vector.empty[DownstreamBoundaryStageLogic[_]]
-      private var connectedPorts = Vector.empty[(Outlet[_], Inlet[_])]
+    class AssemblyBuilder(operators: Seq[GraphStageWithMaterializedValue[? <: Shape, ?]]) {
+      private var upstreams = Vector.empty[UpstreamBoundaryStageLogic[?]]
+      private var downstreams = Vector.empty[DownstreamBoundaryStageLogic[?]]
+      private var connectedPorts = Vector.empty[(Outlet[?], Inlet[?])]
 
       def connect[T](upstream: UpstreamBoundaryStageLogic[T], in: Inlet[T]): AssemblyBuilder = {
         upstreams :+= upstream
@@ -336,7 +333,7 @@ trait GraphInterpreterSpecKit extends StreamSpec {
       }
 
       _interpreter = new GraphInterpreter(
-        NoMaterializer,
+        NoMaterializer(system),
         logger,
         logics,
         connections,
@@ -346,7 +343,7 @@ trait GraphInterpreterSpecKit extends StreamSpec {
       _interpreter.init(null)
     }
 
-    def builder(operators: GraphStageWithMaterializedValue[_ <: Shape, _]*): AssemblyBuilder =
+    def builder(operators: GraphStageWithMaterializedValue[? <: Shape, ?]*): AssemblyBuilder =
       new AssemblyBuilder(operators.toVector)
 
   }
@@ -527,8 +524,8 @@ trait GraphInterpreterSpecKit extends StreamSpec {
 
     def testException = TE("test")
 
-    private val stagein = Inlet[Int]("sandwitch.in")
-    private val stageout = Outlet[Int]("sandwitch.out")
+    private val stagein = Inlet[Int]("sandwich.in")
+    private val stageout = Outlet[Int]("sandwich.out")
     private val stageshape = FlowShape(stagein, stageout)
 
     // Must be lazy because I turned this stage "inside-out" therefore changing initialization order

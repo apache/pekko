@@ -13,6 +13,8 @@
 
 package org.apache.pekko.stream.impl.streamref
 
+import java.util.concurrent.atomic.AtomicBoolean
+
 import scala.annotation.nowarn
 import scala.util.{ Failure, Success, Try }
 
@@ -30,8 +32,14 @@ import pekko.util.{ OptionVal, PrettyDuration }
 /** INTERNAL API: Implementation class, not intended to be touched directly by end-users */
 @InternalApi
 private[stream] final case class SinkRefImpl[In](initialPartnerRef: ActorRef) extends SinkRef[In] {
+  private val materialized = new AtomicBoolean(false)
+
+  private[stream] def tryClaimMaterialization(): Boolean =
+    materialized.compareAndSet(false, true)
+
   override def sink(): Sink[In, NotUsed] =
-    Sink.fromGraph(new SinkRefStageImpl[In](OptionVal.Some(initialPartnerRef))).mapMaterializedValue(_ => NotUsed)
+    Sink.fromGraph(new SinkRefStageImpl[In](OptionVal.Some(initialPartnerRef), this))
+      .mapMaterializedValue(_ => NotUsed)
 }
 
 /**
@@ -48,7 +56,9 @@ private[stream] final case class SinkRefImpl[In](initialPartnerRef: ActorRef) ex
  * the ref.
  */
 @InternalApi
-private[stream] final class SinkRefStageImpl[In] private[pekko] (val initialPartnerRef: OptionVal[ActorRef])
+private[stream] final class SinkRefStageImpl[In] private[pekko] (
+    val initialPartnerRef: OptionVal[ActorRef],
+    private val owner: SinkRefImpl[?] = null)
     extends GraphStageWithMaterializedValue[SinkShape[In], SourceRef[In]] {
   import SinkRefStageImpl.ActorRefStage
 
@@ -67,24 +77,38 @@ private[stream] final class SinkRefStageImpl[In] private[pekko] (val initialPart
   private[pekko] override def createLogicAndMaterializedValue(
       inheritedAttributes: Attributes,
       eagerMaterializer: Materializer): (GraphStageLogic, SourceRef[In]) = {
+    if (owner != null && !owner.tryClaimMaterialization())
+      throw new IllegalStateException(
+        "This SinkRef has already been materialized. " +
+        "SinkRef is single-use: calling .sink() and materializing it more than once is not supported.")
 
     val logic = new TimerGraphStageLogic(shape) with StageLogging with ActorRefStage with InHandler {
-      override protected def logSource: Class[_] = classOf[SinkRefStageImpl[_]]
+      override protected def logSource: Class[?] = classOf[SinkRefStageImpl[?]]
 
-      private[this] val streamRefsMaster = StreamRefsMaster(eagerMaterializer.system)
+      private val streamRefsMaster = StreamRefsMaster(eagerMaterializer.system)
 
       // settings ---
-      @nowarn("msg=deprecated") // can't remove this settings access without breaking compat
-      private[this] val subscriptionTimeout = {
+      private val subscriptionTimeout = {
         import StreamRefAttributes._
-        val settings = eagerMaterializer.settings.streamRefSettings
+        @nowarn("cat=deprecation") // Materializer.settings is needed for stream-ref default settings.
+        val settings = eagerMaterializer.settings.streamRefDefaultSettings
         inheritedAttributes.get[StreamRefAttributes.SubscriptionTimeout](
           SubscriptionTimeout(settings.subscriptionTimeout))
+      }
+
+      private val finalTerminationSignalDeadline = {
+        import StreamRefAttributes._
+        @nowarn("cat=deprecation") // Materializer.settings is needed for stream-ref default settings.
+        val settings = eagerMaterializer.settings.streamRefDefaultSettings
+        inheritedAttributes
+          .get[StreamRefAttributes.FinalTerminationSignalDeadline](
+            FinalTerminationSignalDeadline(settings.finalTerminationSignalDeadline))
+          .timeout
       }
       // end of settings ---
 
       override protected val stageActorName: String = streamRefsMaster.nextSinkRefStageName()
-      private[this] val self: GraphStageLogic.StageActor =
+      private val self: GraphStageLogic.StageActor =
         getEagerStageActor(eagerMaterializer)(initialReceive)
       override val ref: ActorRef = self.ref
       implicit def selfSender: ActorRef = ref
@@ -97,6 +121,7 @@ private[stream] final class SinkRefStageImpl[In] private[pekko] (val initialPart
         }
 
       val SubscriptionTimeoutTimerKey = "SubscriptionTimeoutKey"
+      val TerminationDeadlineTimerKey = "TerminationDeadlineKey"
 
       // demand management ---
       private var remoteCumulativeDemandReceived: Long = 0L
@@ -108,7 +133,7 @@ private[stream] final class SinkRefStageImpl[In] private[pekko] (val initialPart
       // When this side of the stream has completed/failed, and we await the Terminated() signal back from the partner
       // so we can safely shut down completely; This is to avoid *our* Terminated() signal to reach the partner before the
       // Complete/Fail message does, which can happen on transports such as Artery which use a dedicated lane for system messages (Terminated)
-      private[this] var finishedWithAwaitingPartnerTermination: OptionVal[Try[Done]] = OptionVal.None
+      private var finishedWithAwaitingPartnerTermination: OptionVal[Try[Done]] = OptionVal.None
 
       override def preStart(): Unit = {
         initialPartnerRef match {
@@ -152,10 +177,18 @@ private[stream] final class SinkRefStageImpl[In] private[pekko] (val initialPart
               case OptionVal.Some(_ /* known to be Success*/ ) =>
                 completeStage() // other side has terminated (in response to a completion message) so we can safely terminate
               case _ =>
-                failStage(
-                  RemoteStreamRefActorTerminatedException(
-                    s"Remote target receiver of data $partnerRef terminated. " +
-                    s"Local stream terminating, message loss (on remote side) may have happened."))
+                // The partner may have cancelled or completed gracefully and a RemoteStreamCompleted
+                // or RemoteStreamFailure can still be in flight on the ordinary message lane while the
+                // Terminated (system message lane) overtakes it on transports such as Artery. Wait for
+                // that final signal up to finalTerminationSignalDeadline before assuming message loss,
+                // mirroring the SourceRef side. See https://github.com/akka/akka/issues/30844
+                log.debug(
+                  "[{}] Partner [{}] terminated before final signal, waiting [{}] for an in-flight completion",
+                  stageActorName,
+                  partnerRef,
+                  PrettyDuration.format(finalTerminationSignalDeadline))
+                scheduleOnce(TerminationDeadlineTimerKey, finalTerminationSignalDeadline)
+                setKeepGoing(true)
             }
 
         case (sender, StreamRefsProtocol.CumulativeDemand(d)) =>
@@ -218,6 +251,17 @@ private[stream] final class SinkRefStageImpl[In] private[pekko] (val initialPart
             s"within subscription timeout: ${PrettyDuration.format(subscriptionTimeout.timeout)}!")
 
           throw ex
+
+        case TerminationDeadlineTimerKey =>
+          log.debug(
+            "[{}] No final completion signal arrived from terminated partner [{}] within deadline, " +
+            "assuming message loss",
+            stageActorName,
+            partnerRef)
+          failStage(
+            RemoteStreamRefActorTerminatedException(
+              s"Remote target receiver of data $partnerRef terminated. " +
+              s"Local stream terminating, message loss (on remote side) may have happened."))
 
         case other => throw new IllegalArgumentException(s"Unknown timer key: $other")
       }

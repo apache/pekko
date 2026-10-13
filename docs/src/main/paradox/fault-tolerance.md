@@ -30,9 +30,10 @@ which is a typical source of failure in real world applications. Of course it de
 on the actual application what is possible to do when the data store is unavailable,
 but in this sample we use a best effort re-connect approach.
 
-Read the following source code. The inlined comments explain the different pieces of
-the fault handling and why they are added. It is also highly recommended to run this
-sample as it is easy to follow the log output to understand what is happening at runtime.
+Read the source code of the @ref:[Fault Tolerance Sample](fault-tolerance-sample.md#fault-tolerance-sample).
+The inlined comments explain the different pieces of the fault handling and why they are added.
+It is also highly recommended to run this sample as it is easy to follow the log output to
+understand what is happening at runtime.
 
 ## Creating a Supervisor Strategy
 
@@ -53,7 +54,7 @@ First off, it is a one-for-one strategy, meaning that each child is treated
 separately (an all-for-one strategy works very similarly, the only difference
 is that any decision is applied to all children of the supervisor, not only the
 failing one). 
-In the above example, `10` and @scala[`1 minute`]@java[`Duration.create(1, TimeUnit.MINUTES)`] are passed to the `maxNrOfRetries`
+In the above example, `10` and @scala[`1 minute`]@java[`Duration.ofMinutes(1)`] are passed to the `maxNrOfRetries`
 and `withinTimeRange` parameters respectively, which means that the strategy restarts a child up to 10 restarts per minute.
 The child actor is stopped if the restart count exceeds `maxNrOfRetries` during the `withinTimeRange` duration.
 
@@ -93,7 +94,7 @@ exceptions are handled by default:
  * `Exception` will restart the failing child actor
  * Other types of `Throwable` will be escalated to parent actor
 
-If the exception escalate all the way up to the root guardian it will handle it
+If the exception escalates all the way up to the root guardian it will handle it
 in the same way as the default strategy defined above.
 
 @@@ div { .group-scala }
@@ -260,7 +261,7 @@ There are two basic supervision strategies available for backoff:
 * 'On failure': The supervisor will terminate and then start the supervised actor if it crashes. If the supervised actor stops normally (e.g. through `context.stop`), the supervisor will be terminated and no further attempt to start the supervised actor will be done.
 * 'On stop': The supervisor will terminate and then start the supervised actor if it terminates in any way (consider this for `PersistentActor` since they stop on persistence failures instead of crashing)
 
-To note that this supervision strategy does not restart the actor but rather stops and starts it. Be aware of it if you 
+Note that this supervision strategy does not restart the actor but rather stops and starts it. Be aware of it if you 
 use @scala[`Stash` trait’s] @java[`AbstractActorWithStash`] in combination with the backoff supervision strategy.
 The `preRestart` hook will not be executed if the supervised actor fails or stops and you will miss the opportunity
 to unstash the messages.
@@ -309,7 +310,7 @@ Java
 
 ### Customization
 
-The `org.apache.pekko.pattern.BackoffOnFailureOptions` and `org.apache.pekko.pattern.BackoffOnRestartOptions` can be used to customize the behavior of the back-off supervisor actor.
+The `org.apache.pekko.pattern.BackoffOnFailureOptions` and `org.apache.pekko.pattern.BackoffOnStopOptions` can be used to customize the behavior of the back-off supervisor actor.
 Options are:
 * `withAutoReset`: The backoff is reset if no failure/stop occurs within the duration. This is the default behavior with `minBackoff` as default value
 * `withManualReset`: The child must send `BackoffSupervisor.Reset` to its backoff supervisor (parent)

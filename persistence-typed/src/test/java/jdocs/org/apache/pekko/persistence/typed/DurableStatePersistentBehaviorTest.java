@@ -105,6 +105,10 @@ public class DurableStatePersistentBehaviorTest {
         }
       }
 
+      public enum Delete implements Command<Void> {
+        INSTANCE
+      }
+
       // #command
 
       // #state
@@ -119,6 +123,7 @@ public class DurableStatePersistentBehaviorTest {
           return value;
         }
       }
+
       // #state
 
       // #behavior
@@ -149,6 +154,7 @@ public class DurableStatePersistentBehaviorTest {
                 (state, command) -> Effect().persist(new State(state.get() + command.value)))
             .onCommand(
                 GetValue.class, (state, command) -> Effect().reply(command.replyTo, state.get()))
+            .onCommand(Delete.class, (state, command) -> Effect().delete())
             .build();
       }
       // #command-handler
@@ -234,6 +240,7 @@ public class DurableStatePersistentBehaviorTest {
       interface Command {}
 
       public static class State {}
+
       // #actor-context
 
       public static Behavior<Command> create(PersistenceId persistenceId) {
@@ -279,6 +286,7 @@ public class DurableStatePersistentBehaviorTest {
       interface Command {}
 
       public static class State {}
+
       // #supervision
 
       public static Behavior<Command> create(PersistenceId persistenceId) {
@@ -327,6 +335,7 @@ public class DurableStatePersistentBehaviorTest {
       interface Command {}
 
       public static class State {}
+
       // #wrapPersistentBehavior
 
       public static Behavior<Command> create(PersistenceId persistenceId) {

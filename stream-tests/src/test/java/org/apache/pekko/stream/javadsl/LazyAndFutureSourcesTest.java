@@ -13,27 +13,25 @@
 
 package org.apache.pekko.stream.javadsl;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.TimeUnit;
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.japi.Pair;
-import org.apache.pekko.stream.StreamTest;
-import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
+import org.apache.pekko.stream.StreamTestJupiter;
+import org.apache.pekko.testkit.PekkoJUnitJupiterActorSystemResource;
 import org.apache.pekko.testkit.PekkoSpec;
-import org.junit.ClassRule;
-import org.junit.Test;
-import scala.concurrent.Future;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
-public class LazyAndFutureSourcesTest extends StreamTest {
+public class LazyAndFutureSourcesTest extends StreamTestJupiter {
 
-  @ClassRule
-  public static PekkoJUnitActorSystemResource actorSystemResource =
-      new PekkoJUnitActorSystemResource("LazyAndFutureSourcesTest", PekkoSpec.testConf());
+  @RegisterExtension
+  static PekkoJUnitJupiterActorSystemResource actorSystemResource =
+      new PekkoJUnitJupiterActorSystemResource("LazyAndFutureSourcesTest", PekkoSpec.testConf());
 
   public LazyAndFutureSourcesTest() {
     super(actorSystemResource);
@@ -42,19 +40,11 @@ public class LazyAndFutureSourcesTest extends StreamTest {
   // note these are minimal happy path tests to cover API, more thorough tests are on the Scala side
 
   @Test
-  public void future() throws Exception {
-    CompletionStage<List<String>> result =
-        Source.future(Future.successful("one")).runWith(Sink.seq(), system);
-
-    assertEquals(Arrays.asList("one"), result.toCompletableFuture().get(3, TimeUnit.SECONDS));
-  }
-
-  @Test
   public void completionStage() throws Exception {
     CompletionStage<String> one = CompletableFuture.completedFuture("one");
     CompletionStage<List<String>> result = Source.completionStage(one).runWith(Sink.seq(), system);
 
-    assertEquals(Arrays.asList("one"), result.toCompletableFuture().get(3, TimeUnit.SECONDS));
+    assertEquals(List.of("one"), result.toCompletableFuture().get(3, TimeUnit.SECONDS));
   }
 
   @Test
@@ -66,7 +56,7 @@ public class LazyAndFutureSourcesTest extends StreamTest {
 
     CompletionStage<NotUsed> nestedMatVal = result.first();
     CompletionStage<List<String>> list = result.second();
-    assertEquals(Arrays.asList("one"), list.toCompletableFuture().get(3, TimeUnit.SECONDS));
+    assertEquals(List.of("one"), list.toCompletableFuture().get(3, TimeUnit.SECONDS));
     // Future adaption to completionstage of matval means we cannot count on matval future being
     // completed just because stream is
     nestedMatVal.toCompletableFuture().get(3, TimeUnit.SECONDS);
@@ -76,7 +66,7 @@ public class LazyAndFutureSourcesTest extends StreamTest {
   public void lazySingle() throws Exception {
     CompletionStage<List<String>> list = Source.lazySingle(() -> "one").runWith(Sink.seq(), system);
 
-    assertEquals(Arrays.asList("one"), list.toCompletableFuture().get(3, TimeUnit.SECONDS));
+    assertEquals(List.of("one"), list.toCompletableFuture().get(3, TimeUnit.SECONDS));
   }
 
   @Test
@@ -85,7 +75,7 @@ public class LazyAndFutureSourcesTest extends StreamTest {
         Source.lazyCompletionStage(() -> CompletableFuture.completedFuture("one"))
             .runWith(Sink.seq(), system);
 
-    assertEquals(Arrays.asList("one"), list.toCompletableFuture().get(3, TimeUnit.SECONDS));
+    assertEquals(List.of("one"), list.toCompletableFuture().get(3, TimeUnit.SECONDS));
   }
 
   @Test
@@ -95,7 +85,7 @@ public class LazyAndFutureSourcesTest extends StreamTest {
 
     CompletionStage<NotUsed> nestedMatVal = result.first();
     CompletionStage<List<String>> list = result.second();
-    assertEquals(Arrays.asList("one"), list.toCompletableFuture().get(3, TimeUnit.SECONDS));
+    assertEquals(List.of("one"), list.toCompletableFuture().get(3, TimeUnit.SECONDS));
     // Future adaption to completionstage of matval means we cannot count on matval future being
     // completed just because stream is
     nestedMatVal.toCompletableFuture().get(3, TimeUnit.SECONDS);
@@ -111,7 +101,7 @@ public class LazyAndFutureSourcesTest extends StreamTest {
 
     CompletionStage<NotUsed> nestedMatVal = result.first();
     CompletionStage<List<String>> list = result.second();
-    assertEquals(Arrays.asList("one"), list.toCompletableFuture().get(3, TimeUnit.SECONDS));
+    assertEquals(List.of("one"), list.toCompletableFuture().get(3, TimeUnit.SECONDS));
     // flatMap/thenCompose of matval means we cannot count on matval future being completed just
     // because stream is
     nestedMatVal.toCompletableFuture().get(3, TimeUnit.SECONDS);

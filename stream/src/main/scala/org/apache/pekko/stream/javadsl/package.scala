@@ -20,7 +20,7 @@ package object javadsl {
     f match {
       case x if x eq Keep.left   => scaladsl.Keep.left.asInstanceOf[(M1, M2) => M]
       case x if x eq Keep.right  => scaladsl.Keep.right.asInstanceOf[(M1, M2) => M]
-      case s: Function2[_, _, _] => s.asInstanceOf[(M1, M2) => M]
+      case s: Function2[?, ?, ?] => s.asInstanceOf[(M1, M2) => M]
       case other                 => other.apply _
     }
 }

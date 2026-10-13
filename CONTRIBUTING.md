@@ -14,11 +14,13 @@ If you have questions about the contribution process or discuss specific issues,
 
 Depending on which version (or sometimes module) you want to work on, you should target a specific branch as explained below:
 
-* `main` – active development branch of Pekko
+* `main` – active development branch of Pekko (2.0.x)
 * `1.0.x` – maintenance branch of Pekko 1.0
 * `1.1.x` – maintenance branch of Pekko 1.1
 * `1.2.x` – maintenance branch of Pekko 1.2
-* `1.3.x` – maintenance branch of Pekko 1.3 (unreleased but active development ongoing)
+* there are other `1.N.x` branches for newer minor versions of Pekko
+
+Generally, PRs should start on the `main` branch and we can choose to backport them once merged there.
 
 ### Tags
 
@@ -195,8 +197,36 @@ Strange behavior has been reported by users that have tried it.
 
 Pekko, like most Scala projects, compiles faster with the Graal JIT enabled. The easiest way to use it for compiling Pekko is to:
 
-* Use a JDK > 10
+* Use a JDK >= 17
 * Use the following JVM options for SBT e.g. by adding them to the `SBT_OPTS` environment variable: `-XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCI -XX:+UseJVMCICompiler`
+
+### JDK 21+ Nightly Virtual Threads
+
+The JDK nightly build enables virtual threads for selected dispatchers on JDK 21 and newer with system properties in
+`.github/workflows/nightly-builds.yml`. This is a CI-only opt-in; local runs, PR validation, and the reference
+configuration keep `virtualize = off` unless explicitly overridden.
+For fork-join dispatchers, `virtualize = on` uses each dispatcher's own fork-join pool as the virtual-thread scheduler,
+preserving dispatcher isolation rather than routing the selected dispatchers through the JVM-wide default virtual-thread
+scheduler.
+
+The nightly override covers:
+
+* `pekko.actor.default-dispatcher.fork-join-executor.virtualize=on`
+* `pekko.actor.internal-dispatcher.fork-join-executor.virtualize=on`
+* `pekko.remote.default-remote-dispatcher.fork-join-executor.virtualize=on`
+* `pekko.remote.classic.backoff-remote-dispatcher.fork-join-executor.virtualize=on`
+* `pekko.persistence.dispatchers.default-replay-dispatcher.fork-join-executor.virtualize=on`
+* `pekko.persistence.dispatchers.default-stream-dispatcher.fork-join-executor.virtualize=on`
+* `pekko.test.stream-dispatcher.fork-join-executor.virtualize=on`
+
+When reproducing this workflow locally on JDK 21+, use `cp .jvmopts-ci .jvmopts` for the CI launcher settings and add
+the same virtual-thread `--add-opens` options that the nightly workflow exports through `JDK_JAVA_OPTIONS`:
+
+* `--add-opens=java.base/jdk.internal.misc=ALL-UNNAMED`
+* `--add-opens=java.base/java.lang=ALL-UNNAMED`
+
+The nightly build also keeps the JDK 21+ `minimum-runnable` override because virtualized fork-join dispatchers still use
+carrier threads.
 
 ### The `validatePullRequest` task
 
@@ -212,7 +242,7 @@ To use the task, simply type `validatePullRequest`, and the output should includ
 ```shell
 > validatePullRequest
 [info] Diffing [HEAD] to determine changed modules in PR...
-[info] Detected uncomitted changes in directories (including in dependency analysis): [protobuf,project]
+[info] Detected uncommitted changes in directories (including in dependency analysis): [protobuf,project]
 [info] Detected changes in directories: [actor-tests, project, stream, docs, persistence]
 ```
 
@@ -290,7 +320,10 @@ For a pull request to be considered at all, it has to meet these requirements:
 1. A pull request must be [linked to the issue](https://docs.github.com/en/issues/tracking-your-work-with-issues/linking-a-pull-request-to-an-issue) it aims to resolve in the PR's description (or comments). This can be achieved by writing "Fixes #1234" or similar in PR description.
 1. Licensing rules:
    - Existing files with copyright statements must leave those copyright statements intact
-   - New files should have an Apache license header instead. For an example of this, see [this file](https://github.com/apache/spark/blob/master/core/src/main/scala/org/apache/spark/SparkContext.scala).
+   - If you create a new file but copy in code from other files then you must add the source headers from those original files. If in doubt, leave a comment in your PR and explain where you took the code from. If the copied source comes from an external project, we will need to know about this so that we can decide if the code has an incompatible license and if it's ok, we will still need to mention it in our LICENSE file.
+   - New files that have new code should have a standard Apache license header instead. For an example of this, see [this file](https://github.com/apache/spark/blob/master/core/src/main/scala/org/apache/spark/SparkContext.scala). Do not put the special Pekko license header that mentions Akka in it on the file unless you are copying code from an existing file that contains Akka derived code.
+   - `sbt headerCreate` adds headers to new files - but the command does not know about the origin of the code in the new files
+   - `sbt headerCheck` runs a check to see if files are missing headers
 
 #### Additional guidelines
 

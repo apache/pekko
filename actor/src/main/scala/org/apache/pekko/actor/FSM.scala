@@ -23,7 +23,7 @@ import scala.concurrent.duration.FiniteDuration
 import language.implicitConversions
 
 import org.apache.pekko
-import pekko.annotation.InternalApi
+import pekko.annotation.{ DoNotInherit, InternalApi }
 import pekko.routing.{ Deafen, Listen, Listeners }
 
 object FSM {
@@ -55,7 +55,7 @@ object FSM {
   final case class Transition[S](fsmRef: ActorRef, from: S, to: S)
 
   /**
-   * Send this to an [[pekko.actor.FSM]] to request first the [[FSM.CurrentState]]
+   * Send this to a [[pekko.actor.FSM]] to request first the [[FSM.CurrentState]]
    * and then a series of [[FSM.Transition]] updates. Cancel the subscription
    * using [[FSM.UnsubscribeTransitionCallBack]].
    */
@@ -69,8 +69,10 @@ object FSM {
 
   /**
    * Reason why this [[pekko.actor.FSM]] is shutting down.
+   *
+   * Not for user extension
    */
-  sealed trait Reason
+  @DoNotInherit sealed trait Reason
 
   /**
    * Default reason if calling `stop()`.
@@ -99,6 +101,7 @@ object FSM {
    * INTERNAL API
    */
   private final case class TimeoutMarker(generation: Long)
+  private final case class ListenerTerminated(actorRef: ActorRef)
 
   /** INTERNAL API */
   @InternalApi
@@ -131,7 +134,7 @@ object FSM {
   private[pekko] final case class Timer(name: String, msg: Any, mode: TimerMode, generation: Int, owner: AnyRef)(
       context: ActorContext)
       extends NoSerializationVerificationNeeded {
-    private var ref: Option[Cancellable] = _
+    private var ref: Option[Cancellable] = None
     private val scheduler = context.system.scheduler
     private implicit val executionContext: ExecutionContextExecutor = context.dispatcher
 
@@ -228,13 +231,13 @@ object FSM {
 
     def canEqual(that: Any): Boolean = {
       that match {
-        case _: State[_, _] => true
+        case _: State[?, ?] => true
         case _              => false
       }
     }
 
     override def equals(that: Any) = that match {
-      case other: State[_, _] =>
+      case other: State[?, ?] =>
         other.canEqual(this) &&
         this.stateName == other.stateName &&
         this.stateData == other.stateData &&
@@ -406,9 +409,8 @@ object FSM {
  *
  * Another feature is that other actors may subscribe for transition events by
  * sending a <code>SubscribeTransitionCallback</code> message to this actor.
- * Stopping a listener without unregistering will not remove the listener from the
- * subscription list; use <code>UnsubscribeTransitionCallback</code> before stopping
- * the listener.
+ * Stopping a listener will remove it from the subscription list. Subscriptions
+ * may also be removed explicitly with <code>UnsubscribeTransitionCallback</code>.
  *
  * State timeouts set an upper bound to the time which may pass before another
  * message is received in the current state. If no external message is
@@ -693,7 +695,7 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
    *
    * An initial `currentState -> currentState` notification will be triggered by calling this method.
    *
-   * @see [[#startWith]]
+   * @see `startWith`
    */
   final def initialize(): Unit =
     if (currentState ne null) makeTransition(currentState)
@@ -733,9 +735,9 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
   /*
    * FSM State data and current timeout handling
    */
-  private var currentState: State = _
+  private var currentState: State = null
   private var timeoutFuture: Option[Cancellable] = None
-  private var nextState: State = _
+  private var nextState: State = null
   private var generation: Long = 0L
 
   /*
@@ -779,9 +781,32 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
    * transition handling
    */
   private var transitionEvent: List[TransitionHandler] = Nil
+  private var watchedListeners: Set[ActorRef] = Set.empty
   private def handleTransition(prev: S, next: S): Unit = {
     val tuple = (prev, next)
     for (te <- transitionEvent) { if (te.isDefinedAt(tuple)) te(tuple) }
+  }
+
+  private def addListener(actorRef: ActorRef): Unit = {
+    if (listeners.add(actorRef)) {
+      context.asInstanceOf[ActorCell].isWatching(actorRef) match {
+        case false =>
+          context.watchWith(actorRef, ListenerTerminated(actorRef))
+          watchedListeners += actorRef
+        case true =>
+          log.warning(
+            "Listener [{}] is already watched by this FSM; it will not be automatically removed on termination. " +
+            "Use UnsubscribeTransitionCallBack explicitly.",
+            actorRef)
+      }
+    }
+  }
+
+  private def removeListener(actorRef: ActorRef): Unit = {
+    if (listeners.remove(actorRef) && watchedListeners.contains(actorRef)) {
+      watchedListeners -= actorRef
+      context.unwatch(actorRef)
+    }
   }
 
   /*
@@ -807,19 +832,20 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
         processMsg(msg, t)
       }
     case SubscribeTransitionCallBack(actorRef) =>
-      // TODO Use context.watch(actor) and receive Terminated(actor) to clean up list
-      listeners.add(actorRef)
+      addListener(actorRef)
       // send current state back as reference point
       actorRef ! CurrentState(self, currentState.stateName)
     case Listen(actorRef) =>
-      // TODO Use context.watch(actor) and receive Terminated(actor) to clean up list
-      listeners.add(actorRef)
+      addListener(actorRef)
       // send current state back as reference point
       actorRef ! CurrentState(self, currentState.stateName)
     case UnsubscribeTransitionCallBack(actorRef) =>
-      listeners.remove(actorRef)
+      removeListener(actorRef)
     case Deafen(actorRef) =>
+      removeListener(actorRef)
+    case ListenerTerminated(actorRef) =>
       listeners.remove(actorRef)
+      watchedListeners -= actorRef
     case value =>
       if (timeoutFuture.isDefined) {
         timeoutFuture.get.cancel()

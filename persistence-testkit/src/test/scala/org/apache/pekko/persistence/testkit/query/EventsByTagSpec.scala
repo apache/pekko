@@ -17,7 +17,6 @@
 
 package org.apache.pekko.persistence.testkit.query
 
-import scala.collection.immutable.Seq
 import scala.concurrent.duration._
 
 import org.apache.pekko
@@ -28,6 +27,8 @@ import pekko.actor.typed.ActorRef
 import pekko.persistence.query.EventEnvelope
 import pekko.persistence.query.NoOffset
 import pekko.persistence.query.PersistenceQuery
+import pekko.persistence.query.Sequence
+import pekko.persistence.query.TimestampOffset
 import pekko.persistence.testkit.PersistenceTestKitPlugin
 import pekko.persistence.testkit.query.javadsl.{ PersistenceTestKitReadJournal => JavaPersistenceTestKitReadJournal }
 import pekko.persistence.testkit.query.scaladsl.PersistenceTestKitReadJournal
@@ -57,7 +58,7 @@ object EventsByTagSpec {
   }
   case class State()
 
-  def testBehaviour(persistenceId: String, tags: Set[String]) = {
+  def testBehavior(persistenceId: String, tags: Set[String]) = {
     EventSourcedBehavior[Command, String, State](
       PersistenceId.ofUniqueId(persistenceId),
       State(),
@@ -111,7 +112,7 @@ class EventsByTagSpec
   }
 
   def setupEmpty(persistenceId: String, tags: Set[String]): ActorRef[Command] = {
-    spawn(testBehaviour(persistenceId, tags))
+    spawn(testBehavior(persistenceId, tags))
   }
 
   "Persistent test kit live query EventsByTag" must {
@@ -166,6 +167,29 @@ class EventsByTagSpec
       ackProbe.expectMessage(Done)
 
       probe.expectNoMessage(100.millis).request(5).expectNext("e-3").expectNext("e-4")
+    }
+
+    "find events after the given offset" in {
+      val ackProbe = createTestProbe[Done]()
+      val tag = "offset-tag"
+      val ref = setup("offset", Set(tag))
+      val first = queries.eventsByTag(tag).runWith(TestSink[EventEnvelope]()).request(2)
+      first.expectNext().offset shouldBe a[TimestampOffset]
+      val offset = first.expectNext().offset
+      first.cancel()
+
+      val probe = queries.eventsByTag(tag, offset).map(_.event).runWith(TestSink[Any]()).request(5)
+      probe.expectNext("offset-3")
+      ref ! Command("offset-4", ackProbe.ref)
+      ackProbe.expectMessage(Done)
+      probe.expectNext("offset-4")
+      probe.cancel()
+    }
+
+    "reject unsupported offset types" in {
+      intercept[IllegalArgumentException] {
+        queries.eventsByTag("offset-tag", Sequence(1L))
+      }
     }
 
     "include timestamp in EventEnvelope" in {

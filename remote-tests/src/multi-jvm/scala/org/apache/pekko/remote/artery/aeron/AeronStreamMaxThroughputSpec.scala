@@ -59,8 +59,8 @@ object AeronStreamMaxThroughputSpec extends MultiNodeConfig {
   final case class TestSettings(testName: String, totalMessages: Long, payloadSize: Int)
 
   def iterate(start: Long, end: Long): Iterator[Long] = new AbstractIterator[Long] {
-    private[this] var first = true
-    private[this] var acc = start
+    private var first = true
+    private var acc = start
     def hasNext: Boolean = acc < end
     def next(): Long = {
       if (!hasNext) throw new NoSuchElementException("next on empty iterator")

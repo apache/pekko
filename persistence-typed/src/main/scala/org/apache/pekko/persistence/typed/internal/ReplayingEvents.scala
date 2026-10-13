@@ -14,7 +14,6 @@
 package org.apache.pekko.persistence.typed.internal
 
 import scala.annotation.nowarn
-import scala.collection.immutable
 import scala.concurrent.duration._
 import scala.util.control.NonFatal
 
@@ -28,6 +27,7 @@ import pekko.event.Logging
 import pekko.persistence._
 import pekko.persistence.JournalProtocol._
 import pekko.persistence.typed.EmptyEventSeq
+import pekko.persistence.typed.EventSeq
 import pekko.persistence.typed.EventsSeq
 import pekko.persistence.typed.RecoveryCompleted
 import pekko.persistence.typed.RecoveryFailed
@@ -97,11 +97,11 @@ private[pekko] final class ReplayingEvents[C, E, S](
   onRecoveryStart(setup.context)
 
   @InternalStableApi
-  def onRecoveryStart(@nowarn("msg=never used") context: ActorContext[_]): Unit = ()
+  def onRecoveryStart(@nowarn("msg=never used") context: ActorContext[?]): Unit = ()
   @InternalStableApi
-  def onRecoveryComplete(@nowarn("msg=never used") context: ActorContext[_]): Unit = ()
+  def onRecoveryComplete(@nowarn("msg=never used") context: ActorContext[?]): Unit = ()
   @InternalStableApi
-  def onRecoveryFailed(@nowarn("msg=never used") context: ActorContext[_], @nowarn("msg=never used") reason: Throwable,
+  def onRecoveryFailed(@nowarn("msg=never used") context: ActorContext[?], @nowarn("msg=never used") reason: Throwable,
       @nowarn("msg=never used") event: Option[Any]): Unit =
     ()
 
@@ -131,10 +131,16 @@ private[pekko] final class ReplayingEvents[C, E, S](
   private def onJournalResponse(response: JournalProtocol.Response): Behavior[InternalProtocol] = {
     try {
       response match {
+        case ReplayBatchResponse(actorInstanceId, currentResponse) =>
+          if (actorInstanceId == setup.writerIdentity.instanceId) onJournalResponse(currentResponse)
+          else this
+
         case ReplayedMessage(repr) =>
           var eventForErrorReporting: OptionVal[Any] = OptionVal.None
           try {
-            val eventSeq = setup.eventAdapter.fromJournal(repr.payload, repr.manifest)
+            val eventSeq =
+              if (repr.payload == FilteredPayload) EventSeq.empty // ignore FilteredPayload
+              else setup.eventAdapter.fromJournal(repr.payload, repr.manifest)
             def handleEvent(event: E): Unit = {
               eventForErrorReporting = OptionVal.Some(event)
               state = state.copy(seqNr = repr.sequenceNr, eventsReplayed = state.eventsReplayed + 1)
@@ -192,6 +198,11 @@ private[pekko] final class ReplayingEvents[C, E, S](
               onRecoveryFailure(ex, eventForErrorReporting.toOption)
           }
 
+        case ReplayBatchReady(replayId) =>
+          state = state.copy(eventSeenInInterval = true)
+          setup.journal.tell(ReplayBatchAck(replayId), setup.selfClassic)
+          this
+
         case RecoverySuccess(highestJournalSeqNr) =>
           val highestSeqNr = Math.max(highestJournalSeqNr, state.seqNr)
           state = state.copy(seqNr = highestSeqNr)
@@ -205,7 +216,7 @@ private[pekko] final class ReplayingEvents[C, E, S](
           Behaviors.unhandled
       }
     } catch {
-      case ex: UnstashException[_] =>
+      case ex: UnstashException[?] =>
         // let supervisor handle it, don't treat it as recovery failure
         throw ex
       case NonFatal(cause) =>
@@ -255,6 +266,7 @@ private[pekko] final class ReplayingEvents[C, E, S](
    * @param event the event that was being processed when the exception was thrown
    */
   private def onRecoveryFailure(cause: Throwable, event: Option[Any]): Behavior[InternalProtocol] = {
+    setup.journal.tell(ReplayMessagesCancel, setup.selfClassic)
     onRecoveryFailed(setup.context, cause, event)
     setup.onSignal(state.state, RecoveryFailed(cause), catchAndLog = true)
     setup.cancelRecoveryTimer()
@@ -304,13 +316,15 @@ private[pekko] final class ReplayingEvents[C, E, S](
           replicationControl = Map.empty)
         val running = new Running(setup.setMdcPhase(PersistenceMdc.RunningCmds))
         val initialRunningState = setup.replication match {
-          case Some(replication) => startReplicationStream(setup, runningState, replication)
-          case None              => runningState
+          case Some(replication)
+              if replication.allReplicasAndQueryPlugins.values.forall(_ != ReplicationContextImpl.NoPlugin) =>
+            startReplicationStream(setup, runningState, replication)
+          case _ => runningState
         }
         setup.retention match {
           case criteria: SnapshotCountRetentionCriteriaImpl if criteria.snapshotEveryNEvents <= state.eventsReplayed =>
             internalSaveSnapshot(initialRunningState)
-            new running.StoringSnapshot(initialRunningState, immutable.Seq.empty, SnapshotWithoutRetention)
+            new running.StoringSnapshot(initialRunningState, Seq.empty, SnapshotWithoutRetention)
           case _ =>
             tryUnstashOne(new running.HandlingCommands(initialRunningState))
         }

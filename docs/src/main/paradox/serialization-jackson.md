@@ -16,9 +16,39 @@ To use Jackson Serialization, you must add the following dependency in your proj
   version=PekkoVersion
 }
 
+### Jackson 3
+
+`pekko-serialization-jackson` uses Jackson 2. If you want to use Jackson 3 instead, add the
+`pekko-serialization-jackson3` dependency in place of `pekko-serialization-jackson`:
+
+@@dependency[sbt,Maven,Gradle] {
+  bomGroup=org.apache.pekko bomArtifact=pekko-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  symbol1=PekkoVersion
+  value1="$pekko.version$"
+  group="org.apache.pekko"
+  artifact="pekko-serialization-jackson3_$scala.binary.version$"
+  version=PekkoVersion
+}
+
+The rest of this page applies to both modules, with these differences for `pekko-serialization-jackson3`:
+
+* The classes are in the `org.apache.pekko.serialization.jackson3` package, for example `JacksonMigration`
+  and `JacksonObjectMapperProvider`.
+* The configuration is under `pekko.serialization.jackson3` instead of `pekko.serialization.jackson`,
+  see the @ref:[reference configuration](general/configuration-reference.md#config-pekko-serialization-jackson3).
+* Jackson 3 uses the `tools.jackson` packages (for example `tools.jackson.databind.ObjectMapper`). The
+  annotations are still in `com.fasterxml.jackson.annotation`.
+* Jackson 3 has built-in support for Java 8 date/time types, `Optional` and parameter names, so the
+  `JavaTimeModule`, `Jdk8Module` and `ParameterNamesModule` are not registered in `jackson-modules`. Apart from
+  the Pekko modules, only the Jackson Scala module is registered by default. The date/time features such as
+  `WRITE_DATES_AS_TIMESTAMPS` are configured in a `datetime-features` section instead of `serialization-features`.
+
+Both modules register their serializers with the same names (`jackson-json` and `jackson-cbor`) and the
+same serializer identifiers, so only add one of them to your application.
+
 ## Introduction
 
-You find general concepts for for Pekko serialization in the @ref:[Serialization](serialization.md) section.
+You find general concepts for Pekko serialization in the @ref:[Serialization](serialization.md) section.
 This section describes how to use the Jackson serializer for application specific messages and persistent
 events and snapshots.
 
@@ -77,8 +107,8 @@ and disallowed for deserialization.
 
 @@@ warning
 
-Don't use @javadoc[@JsonTypeInfo(use = Id.CLASS)](com.fasterxml.jackson.annotation.JsonTypeInfo) or @javadoc[ObjectMapper.enableDefaultTyping](com.fasterxml.jackson.databind.ObjectMapper#enableDefaultTyping--) since that is a security risk
-when using @ref:[polymorphic types](#polymorphic-types).
+Don't use @javadoc[@JsonTypeInfo(use = Id.CLASS)](com.fasterxml.jackson.annotation.JsonTypeInfo), @javadoc[@JsonTypeInfo(use = Id.MINIMAL_CLASS)](com.fasterxml.jackson.annotation.JsonTypeInfo)
+or @javadoc[ObjectMapper.enableDefaultTyping](com.fasterxml.jackson.databind.ObjectMapper#enableDefaultTyping--) since that is a security risk when using @ref:[polymorphic types](#polymorphic-types).
 
 @@@
 
@@ -156,8 +186,8 @@ when deserializing.
 
 @@@ warning
 
-Don't use @javadoc[@JsonTypeInfo(use = Id.CLASS)](com.fasterxml.jackson.annotation.JsonTypeInfo) or @javadoc[ObjectMapper.enableDefaultTyping](com.fasterxml.jackson.databind.ObjectMapper#enableDefaultTyping--) since that is a security risk
-when using polymorphic types.
+Don't use @javadoc[@JsonTypeInfo(use = Id.CLASS)](com.fasterxml.jackson.annotation.JsonTypeInfo), @javadoc[@JsonTypeInfo(use = Id.MINIMAL_CLASS)](com.fasterxml.jackson.annotation.JsonTypeInfo)
+or @javadoc[ObjectMapper.enableDefaultTyping](com.fasterxml.jackson.databind.ObjectMapper#enableDefaultTyping--) since that is a security risk when using @ref:[polymorphic types](#polymorphic-types).
 
 @@@
 
@@ -459,10 +489,21 @@ For the `jackson-cbor` and custom bindings other than `jackson-json` compression
 but can be enabled in the same way as the configuration shown above but replacing `jackson-json` with
 the binding name (for example `jackson-cbor`).
 
+The `compression.max-decompressed-size` property limits how large a compressed (gzip or lz4) payload may
+become when it is decompressed during deserialization, guarding against a small message that expands to an
+excessive size. It applies regardless of the `algorithm` setting. The default is `unlimited`, which applies
+no limit (a negative number also means unlimited). Set a size such as `256 MiB`, larger than any payload the
+system legitimately exchanges, to bound decompression. A payload that exceeds the limit is rejected with an
+`IllegalArgumentException` instead of being deserialized. The property can be set in
+`pekko.serialization.jackson.compression` for all bindings, or per binding, for example in
+`pekko.serialization.jackson.jackson-cbor.compression`. The `pekko.serialization.jackson3` serializers have the
+same property under `pekko.serialization.jackson3`. This limit is separate from
+`pekko.serialization.max-decompressed-size`, which applies to other Pekko serializers but not to the Jackson ones.
+
 ## Using Pekko Serialization for embedded types
 
 For types that already have a Pekko Serializer defined that are embedded in types serialized with Jackson the @apidoc[pekko.serialization.jackson.PekkoSerializationSerializer] and
-@apidoc[pekko.serialization.jackson.PekkoSerializationDeserializer] can be used to Pekko Serialization for individual fields. 
+@apidoc[pekko.serialization.jackson.PekkoSerializationDeserializer] can be used to use Pekko Serialization for individual fields. 
 
 The serializer/deserializer are not enabled automatically. The @javadoc[@JsonSerialize](com.fasterxml.jackson.databind.annotation.JsonSerialize) and @javadoc[@JsonDeserialize](com.fasterxml.jackson.databind.annotation.JsonDeserialize) annotation needs to be added
 to the fields containing the types to be serialized with Pekko Serialization.
@@ -531,4 +572,4 @@ you can change the following configuration for better performance of date/time f
 
 @@snip [config](/serialization-jackson/src/test/scala/doc/org/apache/pekko/serialization/jackson/SerializationDocSpec.scala) { #date-time }
 
-Jackson is still be able to deserialize the other format independent of this setting.
+Jackson is still able to deserialize the other format independent of this setting.

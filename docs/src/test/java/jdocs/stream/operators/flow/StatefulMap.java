@@ -25,7 +25,7 @@ public class StatefulMap {
 
   public void indexed() {
     // #zipWithIndex
-    Source.from(Arrays.asList("A", "B", "C", "D"))
+    Source.from(List.of("A", "B", "C", "D"))
         .statefulMap(
             () -> 0L,
             (index, element) -> Pair.create(index + 1, Pair.create(element, index)),
@@ -41,14 +41,12 @@ public class StatefulMap {
 
   public void bufferUntilChanged() {
     // #bufferUntilChanged
-    Source.from(Arrays.asList("A", "B", "B", "C", "C", "C", "D"))
+    Source.from(List.of("A", "B", "B", "C", "C", "C", "D"))
         .statefulMap(
             () -> (List<String>) new LinkedList<String>(),
             (buffer, element) -> {
               if (buffer.size() > 0 && (!buffer.get(0).equals(element))) {
-                return Pair.create(
-                    new LinkedList<>(Collections.singletonList(element)),
-                    Collections.unmodifiableList(buffer));
+                return Pair.create(new LinkedList<>(List.of(element)), List.copyOf(buffer));
               } else {
                 buffer.add(element);
                 return Pair.create(buffer, Collections.<String>emptyList());
@@ -67,7 +65,7 @@ public class StatefulMap {
 
   public void distinctUntilChanged() {
     // #distinctUntilChanged
-    Source.from(Arrays.asList("A", "B", "B", "C", "C", "C", "D"))
+    Source.from(List.of("A", "B", "B", "C", "C", "C", "D"))
         .statefulMap(
             Optional::<String>empty,
             (lastElement, element) -> {
@@ -96,7 +94,7 @@ public class StatefulMap {
             (list, element) -> {
               list.add(element);
               if (list.size() == 3) {
-                return Pair.create(new ArrayList<Integer>(3), Collections.unmodifiableList(list));
+                return Pair.create(new ArrayList<Integer>(3), List.copyOf(list));
               } else {
                 return Pair.create(list, Collections.<Integer>emptyList());
               }

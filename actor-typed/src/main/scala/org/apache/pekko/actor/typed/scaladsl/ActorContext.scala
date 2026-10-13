@@ -105,7 +105,7 @@ trait ActorContext[T] extends TypedActorContext[T] with ClassicActorContextProvi
    * *Warning*: This method is not thread-safe and must not be accessed from threads other
    * than the ordinary actor message processing thread, such as [[scala.concurrent.Future]] callbacks.
    */
-  def setLoggerName(clazz: Class[_]): Unit
+  def setLoggerName(clazz: Class[?]): Unit
 
   /**
    * The list of child Actors created by this Actor during its lifetime that
@@ -146,7 +146,7 @@ trait ActorContext[T] extends TypedActorContext[T] with ClassicActorContextProvi
    * using [[Behavior.interpretMessage]] or [[Behavior.interpretSignal]]
    *
    * note: if given [[pekko.actor.typed.Behavior]] resulting [[Behaviors.same]] that will cause context switching to the given behavior
-   * and if result is [[Behaviors.unhandled]] that will trigger the [[pekko.actor.typed.scaladsl.ActorContext.onUnhandled]]
+   * and if result is [[Behaviors.unhandled]] that will mark the message as unhandled
    * then switching to the given behavior.
    */
   def delegate(delegator: Behavior[T], msg: T): Behavior[T]
@@ -169,7 +169,7 @@ trait ActorContext[T] extends TypedActorContext[T] with ClassicActorContextProvi
    *
    * `watch` is idempotent if it is not mixed with `watchWith`.
    *
-   * It will fail with an [[java.lang.IllegalStateException]] if the same subject was watched before using `watchWith`.
+   * It will fail with a [[java.lang.IllegalStateException]] if the same subject was watched before using `watchWith`.
    * To clear the termination message, unwatch first.
    *
    * *Warning*: This method is not thread-safe and must not be accessed from threads other
@@ -184,7 +184,7 @@ trait ActorContext[T] extends TypedActorContext[T] with ClassicActorContextProvi
    *
    * `watchWith` is idempotent if it is called with the same `msg` and not mixed with `watch`.
    *
-   * It will fail with an [[java.lang.IllegalStateException]] if the same subject was watched before using `watch` or `watchWith` with
+   * It will fail with a [[java.lang.IllegalStateException]] if the same subject was watched before using `watch` or `watchWith` with
    * another termination message. To change the termination message, unwatch first.
    *
    * *Warning*: This method is not thread-safe and must not be accessed from threads other

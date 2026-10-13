@@ -13,17 +13,15 @@
 
 package org.apache.pekko.japi.pf;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-import java.util.Arrays;
 import java.util.List;
 import org.apache.pekko.actor.AbstractActor.Receive;
-import org.junit.Before;
-import org.junit.Test;
-import org.scalatestplus.junit.JUnitSuite;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("serial")
-public class ReceiveBuilderTest extends JUnitSuite {
+public class ReceiveBuilderTest {
 
   public static interface Msg {}
 
@@ -34,33 +32,7 @@ public class ReceiveBuilderTest extends JUnitSuite {
     }
   }
 
-  public static class Msg2 implements Msg {
-    public final String value;
-
-    public Msg2(String value) {
-      this.value = value;
-    }
-
-    @Override
-    public int hashCode() {
-      final int prime = 31;
-      int result = 1;
-      result = prime * result + ((value == null) ? 0 : value.hashCode());
-      return result;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-      if (this == obj) return true;
-      if (obj == null) return false;
-      if (getClass() != obj.getClass()) return false;
-      Msg2 other = (Msg2) obj;
-      if (value == null) {
-        if (other.value != null) return false;
-      } else if (!value.equals(other.value)) return false;
-      return true;
-    }
-
+  public record Msg2(String value) implements Msg {
     @Override
     public String toString() {
       return "Msg2 [value=" + value + "]";
@@ -80,7 +52,7 @@ public class ReceiveBuilderTest extends JUnitSuite {
     result = r;
   }
 
-  @Before
+  @BeforeEach
   public void beforeEach() {
     result = "";
   }
@@ -264,13 +236,13 @@ public class ReceiveBuilderTest extends JUnitSuite {
                   result("match List");
                 })
             .build();
-    List<String> list = Arrays.asList("foo");
+    List<String> list = List.of("foo");
     assertTrue(rcv.onMessage().isDefinedAt(list));
     rcv.onMessage().apply(list);
     assertEquals("match List", result());
   }
 
-  @Test(expected = ClassCastException.class)
+  @Test
   public void shouldThrowWhenUncheckedWithWrongTypes() {
     // note that this doesn't compile with ordinary match
     Receive rcv =
@@ -282,6 +254,6 @@ public class ReceiveBuilderTest extends JUnitSuite {
                 })
             .build();
     assertTrue(rcv.onMessage().isDefinedAt("foo"));
-    rcv.onMessage().apply("foo");
+    assertThrows(ClassCastException.class, () -> rcv.onMessage().apply("foo"));
   }
 }

@@ -43,8 +43,8 @@ object DurableStateBehaviorStashOverflowSpec {
   }
 
   object TestDurableStateStorePlugin {
-    @volatile var instance: Option[TestDurableStateStorePlugin[_]] = None
-    def getInstance(): TestDurableStateStorePlugin[_] = instance.get
+    @volatile var instance: Option[TestDurableStateStorePlugin[?]] = None
+    def getInstance(): TestDurableStateStorePlugin[?] = instance.get
   }
 
   class TestDurableStateStorePlugin[A] extends DurableStateUpdateStore[A] {
@@ -129,7 +129,7 @@ class DurableStateBehaviorStashOverflowSpec
       journal.completeUpsertFuture()
 
       // exactly how many is racy but at least the first stash buffer full should complete
-      probe.receiveMessages(stashCapacity)
+      probe.receiveMessages(stashCapacity, 30.seconds)
     }
   }
 }

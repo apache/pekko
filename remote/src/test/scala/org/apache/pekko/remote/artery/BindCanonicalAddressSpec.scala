@@ -131,5 +131,5 @@ object BindCanonicalAddressSpec {
       remote.artery.enabled = true
       remote.artery.transport = "$transport"
     }
-  """)
+  """).withFallback(ArterySpecSupport.tlsConfig)
 }

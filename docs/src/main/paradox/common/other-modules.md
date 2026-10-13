@@ -1,6 +1,6 @@
 # Other Apache Pekko modules
 
-This page describes modules that compliment libraries from the Pekko core.  See [this overview]($pekko.doc.dns$/docs/pekko/current/typed/guide/modules.html) instead for a guide on the core modules.
+This page describes modules that complement libraries from the Pekko core.  See [this overview]($pekko.doc.dns$/docs/pekko/current/typed/guide/modules.html) instead for a guide on the core modules.
 
 ## [Pekko HTTP]($pekko.doc.dns$/docs/pekko-http/current/)
 

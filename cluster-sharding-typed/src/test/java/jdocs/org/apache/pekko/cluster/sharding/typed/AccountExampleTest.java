@@ -16,8 +16,8 @@ package jdocs.org.apache.pekko.cluster.sharding.typed;
 import static jdocs.org.apache.pekko.cluster.sharding.typed.AccountExampleWithEventHandlersInState.AccountEntity;
 import static jdocs.org.apache.pekko.cluster.sharding.typed.AccountExampleWithEventHandlersInState.AccountEntity.*;
 import static org.apache.pekko.Done.done;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
@@ -26,8 +26,10 @@ import java.time.Duration;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.TimeUnit;
 import org.apache.pekko.Done;
-import org.apache.pekko.actor.testkit.typed.javadsl.LogCapturing;
-import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJunitResource;
+import org.apache.pekko.actor.testkit.typed.annotations.JUnitJupiterTestKit;
+import org.apache.pekko.actor.testkit.typed.javadsl.ActorTestKit;
+import org.apache.pekko.actor.testkit.typed.javadsl.LogCapturingExtension;
+import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJUnitJupiterExtension;
 import org.apache.pekko.actor.testkit.typed.javadsl.TestProbe;
 import org.apache.pekko.cluster.sharding.typed.javadsl.ClusterSharding;
 import org.apache.pekko.cluster.sharding.typed.javadsl.Entity;
@@ -36,12 +38,12 @@ import org.apache.pekko.cluster.typed.Cluster;
 import org.apache.pekko.cluster.typed.Join;
 import org.apache.pekko.pattern.StatusReply;
 import org.apache.pekko.persistence.typed.PersistenceId;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
-import org.scalatestplus.junit.JUnitSuite;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
-public class AccountExampleTest extends JUnitSuite {
+@ExtendWith(TestKitJUnitJupiterExtension.class)
+@ExtendWith(LogCapturingExtension.class)
+public class AccountExampleTest {
 
   public static final Config config =
       ConfigFactory.parseString(
@@ -52,9 +54,7 @@ public class AccountExampleTest extends JUnitSuite {
               + "pekko.persistence.journal.plugin = \"pekko.persistence.journal.inmem\" \n"
               + "pekko.persistence.journal.inmem.test-serialization = on \n");
 
-  @ClassRule public static final TestKitJunitResource testKit = new TestKitJunitResource(config);
-
-  @Rule public final LogCapturing logCapturing = new LogCapturing();
+  @JUnitJupiterTestKit public ActorTestKit testKit = ActorTestKit.create(config);
 
   private ClusterSharding _sharding = null;
 
@@ -126,7 +126,7 @@ public class AccountExampleTest extends JUnitSuite {
     TestProbe<CurrentBalance> getProbe = testKit.createTestProbe(CurrentBalance.class);
     ref.tell(new GetBalance(getProbe.getRef()));
     assertEquals(
-        BigDecimal.valueOf(100), getProbe.expectMessageClass(CurrentBalance.class).balance);
+        BigDecimal.valueOf(100), getProbe.expectMessageClass(CurrentBalance.class).balance());
   }
 
   @Test
@@ -153,7 +153,7 @@ public class AccountExampleTest extends JUnitSuite {
 
     BigDecimal balance =
         ref.ask(GetBalance::new, timeout)
-            .thenApply(currentBalance -> currentBalance.balance)
+            .thenApply(currentBalance -> currentBalance.balance())
             .toCompletableFuture()
             .get(3, TimeUnit.SECONDS);
     assertEquals(BigDecimal.valueOf(90), balance);
@@ -167,8 +167,8 @@ public class AccountExampleTest extends JUnitSuite {
         testKit
             .serializationTestKit()
             .verifySerialization(new Deposit(BigDecimal.valueOf(100), opProbe.getRef()), false);
-    assertEquals(BigDecimal.valueOf(100), deposit2.amount);
-    assertEquals(opProbe.getRef(), deposit2.replyTo);
+    assertEquals(BigDecimal.valueOf(100), deposit2.amount());
+    assertEquals(opProbe.getRef(), deposit2.replyTo());
     testKit
         .serializationTestKit()
         .verifySerialization(new Withdraw(BigDecimal.valueOf(90), opProbe.getRef()), false);

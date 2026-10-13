@@ -16,7 +16,6 @@ package org.apache.pekko.persistence
 import java.util.concurrent.atomic.AtomicInteger
 
 import scala.annotation.nowarn
-import scala.collection.immutable.Seq
 import scala.concurrent.Await
 import scala.concurrent.duration._
 import scala.util.Random
@@ -127,6 +126,24 @@ object PersistentActorSpec {
       extends Behavior3PersistentActor(name)
       with InmemRuntimePluginConfig
 
+  class Behavior4PersistentActor(name: String) extends ExamplePersistentActor(name) {
+    val receiveCommand: Receive = commonBehavior.orElse {
+      case FilteredPayload =>
+        persist(FilteredPayload)(_ => ())
+      case Cmd(data) =>
+        persist(Evt(s"$data-${lastSequenceNr + 1}"))(updateState)
+    }
+
+    override def receiveRecover: Receive = super.receiveRecover.orElse {
+      case FilteredPayload =>
+        throw new IllegalStateException("Unexpected FilteredPayload")
+    }
+  }
+
+  class Behavior4PersistentActorWithInmemRuntimePluginConfig(name: String, val providedConfig: Config)
+      extends Behavior4PersistentActor(name)
+      with InmemRuntimePluginConfig
+
   class ChangeBehaviorInLastEventHandlerPersistentActor(name: String) extends ExamplePersistentActor(name) {
     val newBehavior: Receive = {
       case Cmd(data) =>
@@ -217,7 +234,7 @@ object PersistentActorSpec {
 
   class SnapshottingPersistentActor(name: String, probe: ActorRef) extends ExamplePersistentActor(name) {
     override def receiveRecover = super.receiveRecover.orElse {
-      case SnapshotOffer(_, events: List[_]) =>
+      case SnapshotOffer(_, events: List[?]) =>
         probe ! "offered"
         this.events = events
     }
@@ -975,6 +992,8 @@ abstract class PersistentActorSpec(config: Config) extends PersistenceSpec(confi
 
   protected def behavior3PersistentActor: ActorRef = namedPersistentActor[Behavior3PersistentActor]
 
+  protected def behavior4PersistentActor: ActorRef = namedPersistentActor[Behavior4PersistentActor]
+
   protected def changeBehaviorInFirstEventHandlerPersistentActor: ActorRef =
     namedPersistentActor[ChangeBehaviorInFirstEventHandlerPersistentActor]
 
@@ -1136,6 +1155,17 @@ abstract class PersistentActorSpec(config: Config) extends PersistenceSpec(confi
       persistentActor ! Cmd("c")
       persistentActor ! GetState
       expectMsg(List("a-1", "a-2", "b-10", "b-11", "b-12", "c-10", "c-11", "c-12"))
+    }
+    "exclude FilteredEvent in replay of persisted events" in {
+      val persistentActor = behavior4PersistentActor
+      persistentActor ! GetState
+      expectMsg(List("a-1", "a-2"))
+      persistentActor ! FilteredPayload
+      persistentActor ! Cmd("b")
+      persistentActor ! "boom"
+      persistentActor ! Cmd("c")
+      persistentActor ! GetState
+      expectMsg(List("a-1", "a-2", "b-4", "c-5")) // seqNr 3 was for FilteredPayload
     }
     "recover on command failure" in {
       val persistentActor = behavior3PersistentActor
@@ -1692,6 +1722,9 @@ class InmemPersistentActorWithRuntimePluginConfigSpec
 
   override protected def behavior3PersistentActor: ActorRef =
     namedPersistentActorWithProvidedConfig[Behavior3PersistentActorWithInmemRuntimePluginConfig](providedActorConfig)
+
+  override protected def behavior4PersistentActor: ActorRef =
+    namedPersistentActorWithProvidedConfig[Behavior4PersistentActorWithInmemRuntimePluginConfig](providedActorConfig)
 
   override protected def changeBehaviorInFirstEventHandlerPersistentActor: ActorRef =
     namedPersistentActorWithProvidedConfig[

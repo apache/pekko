@@ -25,9 +25,8 @@ import pekko.annotation.InternalApi
 final class Discovery(implicit system: ExtendedActorSystem) extends Extension {
 
   private val implementations = new ConcurrentHashMap[String, ServiceDiscovery]
-  private val factory = new JFunction[String, ServiceDiscovery] {
-    override def apply(method: String): ServiceDiscovery = createServiceDiscovery(method)
-  }
+  private val factory: JFunction[String, ServiceDiscovery] =
+    (method: String) => createServiceDiscovery(method)
 
   private lazy val _defaultImplMethod =
     system.settings.config.getString("pekko.discovery.method") match {

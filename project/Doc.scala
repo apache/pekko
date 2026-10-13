@@ -152,8 +152,7 @@ object UnidocRoot extends AutoPlugin {
         ScalaUnidoc / unidocProjectFilter := unidocRootProjectFilter(unidocRootIgnoreProjects.value),
         JavaUnidoc / unidocProjectFilter := unidocRootProjectFilter(unidocRootIgnoreProjects.value),
         Compile / doc / apiMappings ++= {
-          val entries: Seq[Attributed[File]] =
-            (LocalProject("slf4j") / Compile / fullClasspath).value ++
+          val entries: Seq[Attributed[File]] = (LocalProject("slf4j") / Compile / fullClasspath).value ++
             (LocalProject("persistence") / Compile / fullClasspath).value ++
             (LocalProject("remote") / Compile / fullClasspath).value ++
             (LocalProject("stream") / Compile / fullClasspath).value

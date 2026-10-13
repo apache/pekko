@@ -31,12 +31,19 @@ object StartupWithOneThreadSpec {
     pekko.remote.artery.canonical.port = 0
 
     pekko.actor.default-dispatcher {
+      type = Dispatcher
       executor = thread-pool-executor
       thread-pool-executor {
         fixed-pool-size = 1
       }
     }
-    pekko.actor.internal-dispatcher = pekko.actor.default-dispatcher 
+    pekko.actor.internal-dispatcher {
+      type = Dispatcher
+      executor = thread-pool-executor
+      thread-pool-executor {
+        fixed-pool-size = 1
+      }
+    }
     """
 
   final case class GossipTo(address: Address)
@@ -66,14 +73,16 @@ class StartupWithOneThreadSpec(startTime: Long) extends PekkoSpec(StartupWithOne
       // dispatcher threads.
       // Note that the Cluster extension is started via ClusterActorRefProvider
       // before ActorSystem.apply returns, i.e. in the constructor of PekkoSpec.
-      (System.nanoTime - startTime).nanos.toMillis should be <
+      (System.nanoTime - startTime).nanos.toMillis should
+      be <
       (system.settings.CreationTimeout.duration - 2.second).toMillis
       system.actorOf(testProps) ! "hello"
       system.actorOf(testProps) ! "hello"
       system.actorOf(testProps) ! "hello"
 
       Cluster(system)
-      (System.nanoTime - startTime).nanos.toMillis should be <
+      (System.nanoTime - startTime).nanos.toMillis should
+      be <
       (system.settings.CreationTimeout.duration - 2.second).toMillis
 
       expectMsg("hello")

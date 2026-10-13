@@ -22,12 +22,12 @@ The `async-dns` API is marked as `ApiMayChange` as more information is expected 
 
 @@@ warning
 
-The ability to plugin in a custom DNS implementation is expected to be removed in future versions of Pekko.
+The ability to plug in a custom DNS implementation is expected to be removed in future versions of Pekko.
 Users should pick one of the built in extensions.
 
 @@@
 
-Pekko DNS is a pluggable way to interact with DNS. Implementations much implement `org.apache.pekko.io.DnsProvider` and provide a configuration
+Pekko DNS is a pluggable way to interact with DNS. Implementations must implement `org.apache.pekko.io.DnsProvider` and provide a configuration
 block that specifies the implementation via `provider-object`.
 
 @@@ note { title="DNS via Pekko Discovery" }
@@ -41,9 +41,9 @@ To select which `DnsProvider` to use set `pekko.io.dns.resolver` to the location
 There are currently two implementations:
 
 * `inet-address` - Based on the JDK's `InetAddress`. Using this will be subject to both the JVM's DNS cache and its built in one.
-* `async-dns` - A native implemention of the DNS protocol that does not use any JDK classes or caches.
+* `async-dns` - A native implementation of the DNS protocol that does not use any JDK classes or caches.
 
-`inet-address` is the default implementation as it pre-dates `async-dns`, `async-dns` will likely become the default in the next major release.
+`inet-address` is the default implementation as it pre-dates `async-dns`, `async-dns` may become the default in a future release.
 
 DNS lookups can be done via the `DNS` extension:
 

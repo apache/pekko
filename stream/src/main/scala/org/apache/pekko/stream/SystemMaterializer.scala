@@ -75,8 +75,8 @@ final class SystemMaterializer(system: ExtendedActorSystem) extends Extension {
    */
   @InternalApi
   private[pekko] def createAdditionalSystemMaterializer(): Materializer = {
-    val started =
-      (materializerGuardian ? MaterializerGuardian.StartMaterializer).mapTo[MaterializerGuardian.MaterializerStarted]
+    val started = (materializerGuardian ? MaterializerGuardian.StartMaterializer).mapTo[
+      MaterializerGuardian.MaterializerStarted]
     Await.result(started, materializerTimeout.duration).materializer
   }
 
@@ -88,9 +88,8 @@ final class SystemMaterializer(system: ExtendedActorSystem) extends Extension {
   private[pekko] def createAdditionalLegacySystemMaterializer(
       namePrefix: String,
       settings: ActorMaterializerSettings): Materializer = {
-    val started =
-      (materializerGuardian ? MaterializerGuardian.LegacyStartMaterializer(namePrefix, settings))
-        .mapTo[MaterializerGuardian.MaterializerStarted]
+    val started = (materializerGuardian ? MaterializerGuardian.LegacyStartMaterializer(namePrefix, settings))
+      .mapTo[MaterializerGuardian.MaterializerStarted]
     Await.result(started, materializerTimeout.duration).materializer
   }
 

@@ -15,7 +15,8 @@ package org.apache.pekko.persistence.testkit
 
 import scala.util.control.NoStackTrace
 
-import org.apache.pekko.annotation.{ ApiMayChange, InternalApi }
+import org.apache.pekko
+import pekko.annotation.{ ApiMayChange, DoNotInherit, InternalApi }
 
 /**
  * Policies allow to emulate behavior of the storage (failures and rejections).
@@ -155,7 +156,8 @@ sealed trait ProcessingFailure extends ProcessingResult {
 
 }
 
-sealed abstract class ExpectedRejection extends Throwable
+/** Not for user extension */
+@DoNotInherit sealed abstract class ExpectedRejection extends Throwable
 
 object ExpectedRejection extends ExpectedRejection {
 
@@ -163,7 +165,8 @@ object ExpectedRejection extends ExpectedRejection {
 
 }
 
-sealed abstract class ExpectedFailure extends Throwable with NoStackTrace
+/** Not for user extension */
+@DoNotInherit sealed abstract class ExpectedFailure extends Throwable with NoStackTrace
 
 object ExpectedFailure extends ExpectedFailure {
 

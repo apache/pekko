@@ -19,7 +19,11 @@ package org.apache.pekko.actor.testkit.typed.annotations;
 
 import java.lang.annotation.*;
 
+/**
+ * @deprecated since 2.0.0. Use {@link JUnitJupiterTestKit} instead.
+ */
 @Documented
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
+@Deprecated(since = "2.0.0", forRemoval = true)
 public @interface JUnit5TestKit {}

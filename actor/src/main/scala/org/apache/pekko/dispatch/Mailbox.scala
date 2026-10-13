@@ -63,11 +63,18 @@ private[pekko] object Mailbox {
  * Mailbox and InternalMailbox is separated in two classes because ActorCell is needed for implementation,
  * but can't be exposed to user defined mailbox subclasses.
  *
+ * A Mailbox must not be a `java.util.concurrent.ForkJoinTask`. It is one object resubmitted for the
+ * whole lifetime of its actor, and `ForkJoinPool.execute` pushes a `ForkJoinTask` as-is instead of
+ * wrapping it, so the same reference returns to the same work-queue slot again and again. That lets a
+ * worker stalled mid-steal move the queue's `base` backwards and permanently damage the queue, and it
+ * lets one exceptional completion disable the mailbox for good.
+ * See https://github.com/ben-manes/caffeine/issues/2021 and
+ * https://github.com/apache/pekko/issues/3620. Pinned by MailboxTaskSubmissionSpec.
+ *
  * INTERNAL API
  */
 private[pekko] abstract class Mailbox(val messageQueue: MessageQueue)
-    extends ForkJoinTask[Unit]
-    with SystemMessageQueue
+    extends SystemMessageQueue
     with Runnable {
 
   import Mailbox._
@@ -88,7 +95,7 @@ private[pekko] abstract class Mailbox(val messageQueue: MessageQueue)
    * stay as it is.
    */
   @volatile
-  var actor: ActorCell = _
+  var actor: ActorCell = null
   def setActor(cell: ActorCell): Unit = actor = cell
 
   def dispatcher: MessageDispatcher = actor.dispatcher
@@ -116,12 +123,15 @@ private[pekko] abstract class Mailbox(val messageQueue: MessageQueue)
   def numberOfMessages: Int = messageQueue.numberOfMessages
 
   @volatile
-  protected var _statusDoNotCallMeDirectly: Status = _ // 0 by default
+  protected var _statusDoNotCallMeDirectly: Status = 0 // 0 by default
 
   @volatile
-  protected var _systemQueueDoNotCallMeDirectly: SystemMessage = _ // null by default
+  protected var _systemQueueDoNotCallMeDirectly: SystemMessage = null // null by default
 
-  final def currentStatus: Mailbox.Status = AbstractMailbox.mailboxStatusHandle.get(this)
+  // volatile read: the status is published across threads via compareAndSet/setVolatile
+  // below; a plain VarHandle.get could observe a stale status (e.g. miss a Scheduled or
+  // Closed transition). Restores the getIntVolatile semantics from before the VarHandle migration.
+  final def currentStatus: Mailbox.Status = AbstractMailbox.mailboxStatusHandle.getVolatile(this)
 
   final def shouldProcessMessage: Boolean = (currentStatus & shouldNotProcessMask) == 0
 
@@ -137,7 +147,9 @@ private[pekko] abstract class Mailbox(val messageQueue: MessageQueue)
     AbstractMailbox.mailboxStatusHandle.compareAndSet(this, oldStatus, newStatus)
 
   protected final def setStatus(newStatus: Status): Unit =
-    AbstractMailbox.mailboxStatusHandle.set(this, newStatus)
+    // volatile write: ordered against the concurrent reads in currentStatus; restores the
+    // putIntVolatile semantics from before the VarHandle migration
+    AbstractMailbox.mailboxStatusHandle.setVolatile(this, newStatus)
 
   /**
    * Reduce the suspend count by one. Caller does not need to worry about whether
@@ -145,14 +157,19 @@ private[pekko] abstract class Mailbox(val messageQueue: MessageQueue)
    *
    * @return true if the suspend count reached zero
    */
-  @tailrec
-  final def resume(): Boolean = currentStatus match {
-    case Closed =>
-      setStatus(Closed); false
-    case s =>
+  final def resume(): Boolean = {
+    var s = currentStatus
+    while (true) {
+      if (s == Closed) {
+        setStatus(Closed)
+        return false
+      }
       val next = if (s < suspendUnit) s else s - suspendUnit
-      if (updateStatus(s, next)) next < suspendUnit
-      else resume()
+      if (updateStatus(s, next)) return next < suspendUnit
+      Thread.onSpinWait()
+      s = currentStatus
+    }
+    throw new IllegalStateException("unreachable")
   }
 
   /**
@@ -161,47 +178,62 @@ private[pekko] abstract class Mailbox(val messageQueue: MessageQueue)
    *
    * @return true if the previous suspend count was zero
    */
-  @tailrec
-  final def suspend(): Boolean = currentStatus match {
-    case Closed =>
-      setStatus(Closed); false
-    case s =>
-      if (updateStatus(s, s + suspendUnit)) s < suspendUnit
-      else suspend()
+  final def suspend(): Boolean = {
+    var s = currentStatus
+    while (true) {
+      if (s == Closed) {
+        setStatus(Closed)
+        return false
+      }
+      if (updateStatus(s, s + suspendUnit)) return s < suspendUnit
+      Thread.onSpinWait()
+      s = currentStatus
+    }
+    throw new IllegalStateException("unreachable")
   }
 
   /**
    * set new primary status Closed. Caller does not need to worry about whether
    * status was Scheduled or not.
    */
-  @tailrec
-  final def becomeClosed(): Boolean = currentStatus match {
-    case Closed =>
-      setStatus(Closed); false
-    case s => updateStatus(s, Closed) || becomeClosed()
+  final def becomeClosed(): Boolean = {
+    var s = currentStatus
+    while (true) {
+      if (s == Closed) {
+        setStatus(Closed)
+        return false
+      }
+      if (updateStatus(s, Closed)) return true
+      Thread.onSpinWait()
+      s = currentStatus
+    }
+    throw new IllegalStateException("unreachable")
   }
 
   /**
    * Set Scheduled status, keeping primary status as is.
    */
-  @tailrec
   final def setAsScheduled(): Boolean = {
-    val s = currentStatus
-    /*
-     * Only try to add Scheduled bit if pure Open/Suspended, not Closed or with
-     * Scheduled bit already set.
-     */
-    if ((s & shouldScheduleMask) != Open) false
-    else updateStatus(s, s | Scheduled) || setAsScheduled()
+    var s = currentStatus
+    while (true) {
+      if ((s & shouldScheduleMask) != Open) return false
+      if (updateStatus(s, s | Scheduled)) return true
+      Thread.onSpinWait()
+      s = currentStatus
+    }
+    throw new IllegalStateException("unreachable")
   }
 
   /**
    * Reset Scheduled status, keeping primary status as is.
    */
-  @tailrec
   final def setAsIdle(): Boolean = {
-    val s = currentStatus
-    updateStatus(s, s & ~Scheduled) || setAsIdle()
+    var s = currentStatus
+    while (!updateStatus(s, s & ~Scheduled)) {
+      Thread.onSpinWait()
+      s = currentStatus
+    }
+    true
   }
   /*
    * AtomicReferenceFieldUpdater for system queue.
@@ -209,7 +241,9 @@ private[pekko] abstract class Mailbox(val messageQueue: MessageQueue)
   protected final def systemQueueGet: LatestFirstSystemMessageList =
     // Note: contrary how it looks, there is no allocation here, as SystemMessageList is a value class and as such
     // it just exists as a typed view during compile-time. The actual return type is still SystemMessage.
-    new LatestFirstSystemMessageList(AbstractMailbox.systemMessageHandle.get(this))
+    // volatile read: the system message queue head is published across threads via compareAndSet
+    // in systemQueuePut; restores the getObjectVolatile semantics from before the VarHandle migration.
+    new LatestFirstSystemMessageList(AbstractMailbox.systemMessageHandle.getVolatile(this))
 
   protected final def systemQueuePut(_old: LatestFirstSystemMessageList, _new: LatestFirstSystemMessageList): Boolean =
     (_old.head eq _new.head) ||
@@ -236,24 +270,6 @@ private[pekko] abstract class Mailbox(val messageQueue: MessageQueue)
       dispatcher.registerForExecution(this, hasMessageHint = false, hasSystemMessageHint = false)
     }
   }
-
-  override final def getRawResult(): Unit = ()
-  override final def setRawResult(unit: Unit): Unit = ()
-  final override def exec(): Boolean =
-    try {
-      run(); false
-    } catch {
-      case _: InterruptedException =>
-        Thread.currentThread().interrupt()
-        false
-      case anything: Throwable =>
-        val t = Thread.currentThread()
-        t.getUncaughtExceptionHandler match {
-          case null =>
-          case some => some.uncaughtException(t, anything)
-        }
-        throw anything
-    }
 
   /**
    * Process the messages in the mailbox
@@ -470,7 +486,17 @@ private[pekko] trait SystemMessageQueue {
  */
 private[pekko] trait DefaultSystemMessageQueue { self: Mailbox =>
 
+  /**
+   * <p>
+   *   Opentelemetry Java Instrumentation relies on this method so avoid changing it. The agent attaches the
+   *   context that is current at enqueue time to the system message here, and
+   *   `ActorCell.systemInvoke` makes it current again while the message is handled.
+   *   See https://github.com/apache/pekko/issues/3472
+   * </p>
+   */
+  // see https://github.com/open-telemetry/opentelemetry-java-instrumentation/blob/6f9ca5672ce84edbbe36ce0e14386c31d68f479f/instrumentation/pekko/pekko-actor-1.0/javaagent/src/main/java/io/opentelemetry/javaagent/instrumentation/pekkoactor/v1_0/PekkoDefaultSystemMessageQueueInstrumentation.java
   @tailrec
+  @noinline // Not inlined so that the agent can match the method in the bytecode
   final def systemEnqueue(receiver: ActorRef, message: SystemMessage): Unit = {
     assert(message.unlinked)
     if (Mailbox.debug) println("" + receiver + " having enqueued " + message)

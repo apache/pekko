@@ -47,7 +47,7 @@ public class TransformationBackend extends AbstractActor {
         .match(
             TransformationJob.class,
             job -> {
-              getSender().tell(new TransformationResult(job.getText().toUpperCase()), getSelf());
+              getSender().tell(new TransformationResult(job.text().toUpperCase()), getSelf());
             })
         .match(
             CurrentClusterState.class,

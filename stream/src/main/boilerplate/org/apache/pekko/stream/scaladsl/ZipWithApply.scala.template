@@ -13,7 +13,10 @@
 
 package org.apache.pekko.stream.scaladsl
 
+import scala.util.control.NonFatal
+
 import org.apache.pekko.stream._
+import org.apache.pekko.stream.ActorAttributes.SupervisionStrategy
 import org.apache.pekko.stream.impl.ContextPropagation
 import org.apache.pekko.stream.stage._
 
@@ -41,6 +44,7 @@ class ZipWith1[[#A1#], O] (val zipper: ([#A1#]) => O) extends GraphStage[FanInSh
   ]
 
   override def createLogic(inheritedAttributes: Attributes): GraphStageLogic = new GraphStageLogic(shape) {
+    private lazy val decider = inheritedAttributes.mandatoryAttribute[SupervisionStrategy].decider
     var pending = ##0
     // Without this field the completion signalling would take one extra pull
     var willShutDown = false
@@ -48,7 +52,22 @@ class ZipWith1[[#A1#], O] (val zipper: ([#A1#]) => O) extends GraphStage[FanInSh
 
     private def pushAll(): Unit = {
       contextPropagation.resumeContext()
-      push(out, zipper([#grab(in0)#]))
+      try push(out, zipper([#grab(in0)#]))
+      catch {
+        case NonFatal(ex) =>
+          decider(ex) match {
+            case Supervision.Stop =>
+              failStage(ex)
+            case Supervision.Resume | Supervision.Restart =>
+              if (willShutDown) completeStage()
+              else {
+                pending += shape.inlets.size
+                [#pull(in0)#
+                ]
+              }
+          }
+          return
+      }
       if (willShutDown) completeStage()
       else {
         [#pull(in0)#

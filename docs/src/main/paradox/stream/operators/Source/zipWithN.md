@@ -6,7 +6,7 @@ Combine the elements of multiple streams into a stream of sequences using a comb
 
 ## Signature
 
-@apidoc[Source.zipWithN](Source$) { scala="#zipWithN[T,O](zipper:scala.collection.immutable.Seq[T]=&gt;O)(sources:scala.collection.immutable.Seq[org.apache.pekko.stream.scaladsl.Source[T,_]]):org.apache.pekko.stream.scaladsl.Source[O,org.apache.pekko.NotUsed]" java="#zipWithN(org.apache.pekko.japi.function.Function,java.util.List)" }
+@apidoc[Source.zipWithN](Source$) { scala="#zipWithN[T,O](zipper:Seq[T]=&gt;O)(sources:Seq[org.apache.pekko.stream.scaladsl.Source[T,_]]):org.apache.pekko.stream.scaladsl.Source[O,org.apache.pekko.NotUsed]" java="#zipWithN(org.apache.pekko.japi.function.Function,java.util.List)" }
 
 ## Description
 
@@ -14,6 +14,10 @@ Combine the elements of multiple streams into a stream of sequences using a comb
 
 This operator is essentially the same as using @ref:[zipN](zipN.md) followed by @ref[map](../Source-or-Flow/map.md)
 to turn the zipped sequence into an arbitrary object to emit downstream.
+
+This operator adheres to the `ActorAttributes.SupervisionStrategy` attribute for exceptions thrown by the `zipper`
+function. On `Supervision.Stop` the stream fails; on `Supervision.Resume` and `Supervision.Restart` the failing zipped
+element is dropped and the stream continues.
 
 See also:
 
@@ -47,5 +51,4 @@ Note how it stops as soon as any of the original sources reaches its end.
 **backpressures** all upstreams when downstream backpressures but also on an upstream that has emitted an element until all other upstreams has emitted elements
 
 @@@
-
 

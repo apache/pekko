@@ -19,7 +19,7 @@ import scala.reflect.ClassTag
 import scala.util.{ Failure, Success }
 
 import org.apache.pekko
-import org.apache.pekko.actor.testkit.typed.TestException
+import pekko.actor.testkit.typed.TestException
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
 import pekko.actor.testkit.typed.scaladsl.LoggingTestKit
 import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit

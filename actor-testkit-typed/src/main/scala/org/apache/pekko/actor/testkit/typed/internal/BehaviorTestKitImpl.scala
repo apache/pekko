@@ -16,7 +16,6 @@ package org.apache.pekko.actor.testkit.typed.internal
 import java.util
 
 import scala.annotation.tailrec
-import scala.collection.immutable
 import scala.jdk.CollectionConverters._
 import scala.reflect.ClassTag
 import scala.util.control.Exception.Catcher
@@ -104,7 +103,7 @@ private[pekko] final class BehaviorTestKitImpl[T](
 
   override def selfInbox(): TestInboxImpl[T] = context.selfInbox
 
-  override def retrieveAllEffects(): immutable.Seq[Effect] = {
+  override def retrieveAllEffects(): Seq[Effect] = {
     @tailrec def rec(acc: List[Effect]): List[Effect] = context.effectQueue.poll() match {
       case null => acc.reverse
       case x    => rec(x :: acc)
@@ -173,7 +172,7 @@ private[pekko] final class BehaviorTestKitImpl[T](
       context.setCurrentActorThread()
       try {
         // we need this to handle message adapters related messages
-        val intercepted = BehaviorTestKitImpl.Interceptor.inteceptBehaviour(current, context)
+        val intercepted = BehaviorTestKitImpl.Interceptor.interceptBehavior(current, context)
         currentUncanonical = Behavior.interpretMessage(intercepted, context, message)
         // notice we pass current and not intercepted, this way Behaviors.same will be resolved to current which will be intercepted again on the next message
         // otherwise we would have risked intercepting an already intercepted behavior (or would have had to explicitly check if the current behavior is already intercepted by us)
@@ -202,7 +201,7 @@ private[pekko] final class BehaviorTestKitImpl[T](
 
   override def getAllLogEntries(): util.List[CapturedLogEvent] = logEntries().asJava
 
-  override def logEntries(): immutable.Seq[CapturedLogEvent] = context.logEntries
+  override def logEntries(): Seq[CapturedLogEvent] = context.logEntries
 
   override def clearLog(): Unit = context.clearLog()
 
@@ -238,7 +237,7 @@ private[pekko] object BehaviorTestKitImpl {
       }
     }
 
-    def inteceptBehaviour[T](behavior: Behavior[T], ctx: TypedActorContext[T]): Behavior[T] =
+    def interceptBehavior[T](behavior: Behavior[T], ctx: TypedActorContext[T]): Behavior[T] =
       Behavior
         .start(Behaviors.intercept { () =>
             this.asInstanceOf[BehaviorInterceptor[Any, T]]

@@ -27,7 +27,7 @@ import java.time.Duration;
 
 import jdocs.AbstractJavaTest;
 import org.apache.pekko.actor.AbstractActor;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class SettingsExtensionDocTest extends AbstractJavaTest {
 
@@ -85,6 +85,7 @@ public class SettingsExtensionDocTest extends AbstractJavaTest {
     }
     // #extension-usage-actor
   }
+
   // #extension-usage-actor
 
   public static class Connection {}

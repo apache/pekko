@@ -29,6 +29,7 @@ import pekko.japi.Util.immutableSeq
 import pekko.remote.RemoteScope
 import pekko.routing.ActorRefRoutee
 import pekko.routing.ActorSelectionRoutee
+import pekko.routing.AdjustPoolSize
 import pekko.routing.Group
 import pekko.routing.Pool
 import pekko.routing.Resizer
@@ -48,7 +49,7 @@ object ClusterRouterGroupSettings {
   @varargs
   def apply(
       totalInstances: Int,
-      routeesPaths: immutable.Seq[String],
+      routeesPaths: Seq[String],
       allowLocalRoutees: Boolean,
       useRoles: String*): ClusterRouterGroupSettings =
     new ClusterRouterGroupSettings(totalInstances, routeesPaths, allowLocalRoutees, useRoles.toSet)
@@ -64,12 +65,12 @@ object ClusterRouterGroupSettings {
 
   def apply(
       totalInstances: Int,
-      routeesPaths: immutable.Seq[String],
+      routeesPaths: Seq[String],
       allowLocalRoutees: Boolean,
       useRoles: Set[String]): ClusterRouterGroupSettings =
     new ClusterRouterGroupSettings(totalInstances, routeesPaths, allowLocalRoutees, useRoles)
 
-  def unapply(settings: ClusterRouterGroupSettings): Option[(Int, immutable.Seq[String], Boolean, Set[String])] =
+  def unapply(settings: ClusterRouterGroupSettings): Option[(Int, Seq[String], Boolean, Set[String])] =
     Some((settings.totalInstances, settings.routeesPaths, settings.allowLocalRoutees, settings.useRoles))
 }
 
@@ -79,7 +80,7 @@ object ClusterRouterGroupSettings {
 @SerialVersionUID(1L)
 final class ClusterRouterGroupSettings(
     val totalInstances: Int,
-    val routeesPaths: immutable.Seq[String],
+    val routeesPaths: Seq[String],
     val allowLocalRoutees: Boolean,
     val useRoles: Set[String])
     extends Product
@@ -406,28 +407,37 @@ private[pekko] class ClusterRouterPoolActor(
     extends RouterPoolActor(supervisorStrategy)
     with ClusterRouterActor {
 
-  override def receive = clusterReceive.orElse(super.receive)
+  override def receive =
+    clusterReceive
+      .orElse({
+        case AdjustPoolSize(change) if change > 0 => addRoutees(change)
+      }: Actor.Receive)
+      .orElse(super.receive)
 
   /**
    * Adds routees based on totalInstances and maxInstancesPerNode settings
    */
-  override def addRoutees(): Unit = {
+  override def addRoutees(): Unit = addRoutees(settings.totalInstances)
+
+  private def addRoutees(numberOfRoutees: Int): Unit = {
     @tailrec
-    def doAddRoutees(): Unit = selectDeploymentTarget match {
-      case None         => // done
-      case Some(target) =>
-        val routeeProps = cell.routeeProps
-        val deploy =
-          Deploy(config = ConfigFactory.empty(), routerConfig = routeeProps.routerConfig, scope = RemoteScope(target))
-        val routee = pool.newRoutee(routeeProps.withDeploy(deploy), context)
-        // must register each one, since registered routees are used in selectDeploymentTarget
-        cell.addRoutee(routee)
+    def doAddRoutees(remaining: Int): Unit =
+      if (remaining > 0)
+        selectDeploymentTarget match {
+          case None         => // done
+          case Some(target) =>
+            val routeeProps = cell.routeeProps
+            val deploy =
+              Deploy(config = ConfigFactory.empty(), routerConfig = routeeProps.routerConfig,
+                scope = RemoteScope(target))
+            val routee = pool.newRoutee(routeeProps.withDeploy(deploy), context)
+            // must register each one, since registered routees are used in selectDeploymentTarget
+            cell.addRoutee(routee)
 
-        // recursion until all created
-        doAddRoutees()
-    }
+            doAddRoutees(remaining - 1)
+        }
 
-    doAddRoutees()
+    doAddRoutees(numberOfRoutees)
   }
 
   def selectDeploymentTarget: Option[Address] = {
@@ -547,8 +557,7 @@ private[pekko] trait ClusterRouterActor { this: RouterActor =>
     }
   }
 
-  def isAvailable(m: Member): Boolean =
-    (m.status == MemberStatus.Up || m.status == MemberStatus.WeaklyUp) &&
+  def isAvailable(m: Member): Boolean = (m.status == MemberStatus.Up || m.status == MemberStatus.WeaklyUp) &&
     satisfiesRoles(m.roles) &&
     (settings.allowLocalRoutees || m.address != cluster.selfAddress)
 

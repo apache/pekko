@@ -66,9 +66,9 @@ public class PingSerializerExampleTest {
 
     @Override
     public byte[] toBinary(Object obj) {
-      if (obj instanceof Ping)
+      if (obj instanceof Ping ping)
         return actorRefResolver
-            .toSerializationFormat(((Ping) obj).replyTo)
+            .toSerializationFormat(ping.replyTo)
             .getBytes(StandardCharsets.UTF_8);
       else if (obj instanceof Pong) return new byte[0];
       else

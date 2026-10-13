@@ -13,8 +13,9 @@
 
 package docs.stream.operators
 
-import org.apache.pekko.actor.ActorSystem
-import org.apache.pekko.testkit.TestProbe
+import org.apache.pekko
+import pekko.actor.ActorSystem
+import pekko.testkit.TestProbe
 
 object SourceOperators {
 

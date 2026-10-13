@@ -15,7 +15,6 @@ package org.apache.pekko.persistence.typed.state.internal
 
 import scala.annotation.nowarn
 import scala.annotation.tailrec
-import scala.collection.immutable
 
 import org.apache.pekko
 import pekko.actor.UnhandledMessage
@@ -28,7 +27,12 @@ import pekko.actor.typed.scaladsl.Behaviors
 import pekko.actor.typed.scaladsl.LoggerOps
 import pekko.annotation.InternalApi
 import pekko.annotation.InternalStableApi
-import pekko.persistence.typed.state.internal.DurableStateBehaviorImpl.GetState
+import pekko.persistence.typed.state.internal.DurableStateBehaviorImpl.{
+  GetPersistenceIdForTestKit,
+  GetState,
+  GetStateReply,
+  GetStateWithReply
+}
 import pekko.persistence.typed.state.scaladsl.Effect
 
 /**
@@ -109,8 +113,10 @@ private[pekko] object Running {
         } else {
           onCommand(state, c)
         }
-      case get: GetState[S @unchecked] => onGetState(get)
-      case _                           => Behaviors.unhandled
+      case get: GetPersistenceIdForTestKit      => onGetPersistenceId(get)
+      case get: GetState[S @unchecked]          => onGetState(get)
+      case get: GetStateWithReply[S @unchecked] => onGetStateWithReply(get)
+      case _                                    => Behaviors.unhandled
     }
 
     override def onSignal: PartialFunction[Signal, Behavior[InternalProtocol]] = {
@@ -174,16 +180,27 @@ private[pekko] object Running {
       }
     }
 
-    // Used by DurableStateBehaviorTestKit to retrieve the state.
+    // Used by DurableStateBehaviorTestKit to retrieve the persistence id.
+    def onGetPersistenceId(get: GetPersistenceIdForTestKit): Behavior[InternalProtocol] = {
+      get.replyTo ! setup.persistenceId
+      this
+    }
+
     def onGetState(get: GetState[S]): Behavior[InternalProtocol] = {
       get.replyTo ! state.state
+      this
+    }
+
+    // Used by DurableStateBehaviorTestKit to retrieve the state.
+    def onGetStateWithReply(get: GetStateWithReply[S]): Behavior[InternalProtocol] = {
+      get.replyTo ! GetStateReply(state.state)
       this
     }
 
     private def handlePersist(
         newState: S,
         cmd: Any,
-        sideEffects: immutable.Seq[SideEffect[S]]): (Behavior[InternalProtocol], Boolean) = {
+        sideEffects: Seq[SideEffect[S]]): (Behavior[InternalProtocol], Boolean) = {
       _currentRevision = state.revision + 1
 
       val stateAfterApply = state.applyState(setup, newState)
@@ -195,14 +212,24 @@ private[pekko] object Running {
       (persistingState(newState2, state, sideEffects), false)
     }
 
+    private def handleDelete(
+        cmd: Any,
+        sideEffects: Seq[SideEffect[S]]): (Behavior[InternalProtocol], Boolean) = {
+      _currentRevision = state.revision + 1
+
+      val nextState = internalDelete(setup.context, cmd, state)
+
+      (persistingState(nextState, state, sideEffects), false)
+    }
+
     @tailrec def applyEffects(
         msg: Any,
         state: RunningState[S, C],
         effect: Effect[S],
-        sideEffects: immutable.Seq[SideEffect[S]] = Nil): (Behavior[InternalProtocol], Boolean) = {
-      if (setup.internalLogger.isDebugEnabled && !effect.isInstanceOf[CompositeEffect[_]])
+        sideEffects: Seq[SideEffect[S]] = Nil): (Behavior[InternalProtocol], Boolean) = {
+      if (setup.internalLogger.isDebugEnabled && !effect.isInstanceOf[CompositeEffect[?]])
         setup.internalLogger.debugN(
-          s"Handled command [{}], resulting effect: [{}], side effects: [{}]",
+          "Handled command [{}], resulting effect: [{}], side effects: [{}]",
           msg.getClass.getName,
           effect,
           sideEffects.size)
@@ -218,9 +245,8 @@ private[pekko] object Running {
         case _: PersistNothing.type =>
           (applySideEffects(sideEffects, state), true)
 
-        case _: Delete[_] =>
-          val nextState = internalDelete(setup.context, msg, state)
-          (applySideEffects(sideEffects, nextState), true)
+        case _: Delete[?] =>
+          handleDelete(msg, sideEffects)
 
         case _: Unhandled.type =>
           import pekko.actor.typed.scaladsl.adapter._
@@ -251,7 +277,7 @@ private[pekko] object Running {
   def persistingState(
       state: RunningState[S, C],
       visibleState: RunningState[S, C], // previous state until write success
-      sideEffects: immutable.Seq[SideEffect[S]]): Behavior[InternalProtocol] = {
+      sideEffects: Seq[SideEffect[S]]): Behavior[InternalProtocol] = {
     setup.setMdcPhase(PersistenceMdc.PersistingState)
     new PersistingState(state, visibleState, sideEffects)
   }
@@ -260,23 +286,25 @@ private[pekko] object Running {
   @InternalApi private[pekko] class PersistingState(
       var state: RunningState[S, C],
       var visibleState: RunningState[S, C], // previous state until write success
-      var sideEffects: immutable.Seq[SideEffect[S]],
+      var sideEffects: Seq[SideEffect[S]],
       persistStartTime: Long = System.nanoTime())
       extends AbstractBehavior[InternalProtocol](setup.context)
       with WithRevisionAccessible {
 
     override def onMessage(msg: InternalProtocol): Behavior[InternalProtocol] = {
       msg match {
-        case UpsertSuccess                     => onUpsertSuccess()
-        case UpsertFailure(exc)                => onUpsertFailed(exc)
-        case in: IncomingCommand[C @unchecked] => onCommand(in)
-        case get: GetState[S @unchecked]       => stashInternal(get)
-        case RecoveryTimeout                   => Behaviors.unhandled
-        case RecoveryPermitGranted             => Behaviors.unhandled
-        case _: GetSuccess[_]                  => Behaviors.unhandled
-        case _: GetFailure                     => Behaviors.unhandled
-        case DeleteSuccess                     => Behaviors.unhandled
-        case DeleteFailure(_)                  => Behaviors.unhandled
+        case UpsertSuccess                        => onUpsertSuccess()
+        case UpsertFailure(exc)                   => onUpsertFailed(exc)
+        case in: IncomingCommand[C @unchecked]    => onCommand(in)
+        case get: GetPersistenceIdForTestKit      => stashInternal(get)
+        case get: GetState[S @unchecked]          => stashInternal(get)
+        case get: GetStateWithReply[S @unchecked] => stashInternal(get)
+        case DeleteSuccess                        => onDeleteSuccess()
+        case DeleteFailure(exc)                   => onDeleteFailed(exc)
+        case RecoveryTimeout                      => Behaviors.unhandled
+        case RecoveryPermitGranted                => Behaviors.unhandled
+        case _: GetSuccess[?]                     => Behaviors.unhandled
+        case _: GetFailure                        => Behaviors.unhandled
       }
     }
 
@@ -308,6 +336,24 @@ private[pekko] object Running {
       throw new DurableStateStoreException(setup.persistenceId, currentRevision, cause)
     }
 
+    final def onDeleteSuccess(): Behavior[InternalProtocol] = {
+      if (setup.internalLogger.isDebugEnabled) {
+        setup.internalLogger
+          .debug("Received DeleteSuccess response after: {} nanos", System.nanoTime() - persistStartTime)
+      }
+
+      // TODO Might need to call hook method for Telemetry
+
+      visibleState = state
+      val newState = applySideEffects(sideEffects, state)
+      tryUnstashOne(newState)
+    }
+
+    final def onDeleteFailed(cause: Throwable): Behavior[InternalProtocol] = {
+      // TODO Might need to call hook method for Telemetry
+      throw new DurableStateStoreException(setup.persistenceId, currentRevision, cause)
+    }
+
     override def onSignal: PartialFunction[Signal, Behavior[InternalProtocol]] = {
       case PoisonPill =>
         // wait for store responses before stopping
@@ -325,7 +371,7 @@ private[pekko] object Running {
 
   // ===============================================
 
-  def applySideEffects(effects: immutable.Seq[SideEffect[S]], state: RunningState[S, C]): Behavior[InternalProtocol] = {
+  def applySideEffects(effects: Seq[SideEffect[S]], state: RunningState[S, C]): Behavior[InternalProtocol] = {
     var behavior: Behavior[InternalProtocol] = new HandlingCommands(state)
     val it = effects.iterator
 
@@ -354,16 +400,16 @@ private[pekko] object Running {
         unstashAll()
         behavior
 
-      case callback: Callback[_] =>
+      case callback: Callback[?] =>
         callback.sideEffect(state.state)
         behavior
     }
   }
 
   @InternalStableApi
-  private[pekko] def onWriteFailed(@nowarn("msg=never used") ctx: ActorContext[_],
+  private[pekko] def onWriteFailed(@nowarn("msg=never used") ctx: ActorContext[?],
       @nowarn("msg=never used") reason: Throwable): Unit = ()
   @InternalStableApi
-  private[pekko] def onWriteSuccess(@nowarn("msg=never used") ctx: ActorContext[_]): Unit = ()
+  private[pekko] def onWriteSuccess(@nowarn("msg=never used") ctx: ActorContext[?]): Unit = ()
 
 }

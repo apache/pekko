@@ -30,7 +30,7 @@ private[pekko] trait AbstractProps {
   /**
    * INTERNAL API
    */
-  private[pekko] def validate(clazz: Class[_]): Unit = {
+  private[pekko] def validate(clazz: Class[?]): Unit = {
     if (Modifier.isAbstract(clazz.getModifiers)) {
       throw new IllegalArgumentException(s"Actor class [${clazz.getName}] must not be abstract")
     } else if (!classOf[Actor].isAssignableFrom(clazz) &&
@@ -44,21 +44,21 @@ private[pekko] trait AbstractProps {
    * Java API: create a Props given a class and its constructor arguments.
    */
   @varargs
-  def create(clazz: Class[_], args: AnyRef*): Props =
+  def create(clazz: Class[?], args: AnyRef*): Props =
     new Props(deploy = Props.defaultDeploy, clazz = clazz, args = args.toList)
 
   /**
-   * Create new Props from the given [[pekko.japi.Creator]] with the type set to the given actorClass.
+   * Create new Props from the given [[pekko.japi.function.Creator]] with the type set to the given actorClass.
    */
   def create[T <: Actor](actorClass: Class[T], creator: Creator[T]): Props = {
     checkCreatorClosingOver(creator.getClass)
     create(classOf[CreatorConsumer], actorClass, creator)
   }
 
-  private def checkCreatorClosingOver(clazz: Class[_]): Unit = {
+  private def checkCreatorClosingOver(clazz: Class[?]): Unit = {
     val enclosingClass = clazz.getEnclosingClass
 
-    def hasDeclaredConstructorWithEmptyParams(declaredConstructors: Array[Constructor[_]]): Boolean = {
+    def hasDeclaredConstructorWithEmptyParams(declaredConstructors: Array[Constructor[?]]): Boolean = {
       @tailrec def loop(i: Int): Boolean = {
         if (i == declaredConstructors.length) false
         else {
@@ -71,7 +71,7 @@ private[pekko] trait AbstractProps {
       loop(0)
     }
 
-    def hasDeclaredConstructorWithEnclosingClassParam(declaredConstructors: Array[Constructor[_]]): Boolean = {
+    def hasDeclaredConstructorWithEnclosingClassParam(declaredConstructors: Array[Constructor[?]]): Boolean = {
       @tailrec def loop(i: Int): Boolean = {
         if (i == declaredConstructors.length) false
         else {

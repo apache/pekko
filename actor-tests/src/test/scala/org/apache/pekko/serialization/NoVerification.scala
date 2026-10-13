@@ -13,7 +13,8 @@
 
 package test.org.apache.pekko.serialization
 
-import org.apache.pekko.actor.NoSerializationVerificationNeeded
+import org.apache.pekko
+import pekko.actor.NoSerializationVerificationNeeded
 
 /**
  *  This is currently used in NoSerializationVerificationNeeded test cases in SerializeSpec,

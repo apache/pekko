@@ -40,7 +40,7 @@ Java
 :   @@snip [SourceOrFlow.java](/docs/src/test/java/jdocs/stream/operators/SourceOrFlow.java) { #collect }
 
 @@@div { .group-java }
-An alternative is to use `collectType`. The same conversion be written as follows, and it is as efficient.
+An alternative is to use `collectType`. The same conversion can be written as follows, and it is as efficient.
 
 Java
 :   @@snip [SourceOrFlow.java](/docs/src/test/java/jdocs/stream/operators/SourceOrFlow.java) { #collectType }
@@ -53,7 +53,7 @@ Java
 
 **emits** when the provided partial function is defined for the element
 
-**backpressures** the partial function is defined for the element and downstream backpressures
+**backpressures** when the partial function is defined for the element and downstream backpressures
 
 **completes** when upstream completes
 

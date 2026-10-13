@@ -22,7 +22,7 @@ Throwing an exception inside `recoverWith` _will_ be logged on ERROR level autom
 
 **emits** the element is available from the upstream or upstream is failed and pf returns alternative Source
 
-**backpressures** downstream backpressures, after failure happened it backprssures to alternative Source
+**backpressures** downstream backpressures, after failure happened it backpressures to alternative Source
 
 **completes** upstream completes or upstream failed with exception pf can handle
 

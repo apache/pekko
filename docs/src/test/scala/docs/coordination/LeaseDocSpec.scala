@@ -17,11 +17,12 @@ import scala.concurrent.Future
 
 import com.typesafe.config.ConfigFactory
 
-import org.apache.pekko.cluster.Cluster
-import org.apache.pekko.coordination.lease.LeaseSettings
-import org.apache.pekko.coordination.lease.scaladsl.Lease
-import org.apache.pekko.coordination.lease.scaladsl.LeaseProvider
-import org.apache.pekko.testkit.PekkoSpec
+import org.apache.pekko
+import pekko.cluster.Cluster
+import pekko.coordination.lease.LeaseSettings
+import pekko.coordination.lease.scaladsl.Lease
+import pekko.coordination.lease.scaladsl.LeaseProvider
+import pekko.testkit.PekkoSpec
 
 //#lease-example
 class SampleLease(settings: LeaseSettings) extends Lease(settings) {

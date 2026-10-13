@@ -19,7 +19,8 @@ import scala.concurrent.{ Awaitable, CanAwait }
 import scala.concurrent.duration.Duration
 import scala.concurrent.duration.FiniteDuration
 
-import org.apache.pekko.actor.ActorSystem
+import org.apache.pekko
+import pekko.actor.ActorSystem
 
 /**
  * A count down latch wrapper for use in testing.

@@ -13,13 +13,14 @@
 
 package org.apache.pekko.persistence.serialization
 
-import java.io._
+import java.io.NotSerializableException
+import java.nio.ByteOrder
 
 import org.apache.pekko
 import pekko.actor._
-import pekko.io.UnsynchronizedByteArrayInputStream
 import pekko.serialization._
 import pekko.util.ByteString.UTF_8
+import pekko.util.SWARUtil
 
 /**
  * Wrapper for snapshot `data`. Snapshot `data` are the actual snapshot objects captured by
@@ -76,32 +77,36 @@ class SnapshotSerializer(val system: ExtendedActorSystem) extends BaseSerializer
    * Deserializes a [[Snapshot]]. Delegates deserialization of snapshot `data` to a matching
    * `org.apache.pekko.serialization.Serializer`.
    */
-  def fromBinary(bytes: Array[Byte], manifest: Option[Class[_]]): AnyRef =
+  def fromBinary(bytes: Array[Byte], manifest: Option[Class[?]]): AnyRef =
     Snapshot(snapshotFromBinary(bytes))
 
   private def headerToBinary(snapshot: AnyRef, snapshotSerializer: Serializer): Array[Byte] = {
-    val out = new ByteArrayOutputStream
-    writeInt(out, snapshotSerializer.identifier)
-
     val ms = migrateManifestIfNecessary(Serializers.manifestFor(snapshotSerializer, snapshot))
-    if (ms.nonEmpty) out.write(ms.getBytes(UTF_8))
-
-    out.toByteArray
+    if (ms.isEmpty) {
+      val result = new Array[Byte](4)
+      SWARUtil.putInt(result, 0, snapshotSerializer.identifier, ByteOrder.LITTLE_ENDIAN)
+      result
+    } else {
+      val manifestBytes = ms.getBytes(UTF_8)
+      val result = new Array[Byte](4 + manifestBytes.length)
+      SWARUtil.putInt(result, 0, snapshotSerializer.identifier, ByteOrder.LITTLE_ENDIAN)
+      System.arraycopy(manifestBytes, 0, result, 4, manifestBytes.length)
+      result
+    }
   }
 
   private def headerFromBinary(bytes: Array[Byte]): (Int, String) = {
-    val in = new UnsynchronizedByteArrayInputStream(bytes)
-    val serializerId = readInt(in)
+    if (bytes.length < 4) throw new IllegalArgumentException("Invalid snapshot header, too short")
+    val serializerId = SWARUtil.getInt(bytes, 0, ByteOrder.LITTLE_ENDIAN)
 
     if ((serializerId & 0xEDAC) == 0xEDAC) // Java Serialization magic value
       throw new NotSerializableException(s"Replaying snapshot from akka 2.3.x version is not supported any more")
 
-    val remaining = in.available
+    val remaining = bytes.length - 4
     val manifest =
       if (remaining == 0) ""
       else {
-        val manifestBytes = new Array[Byte](remaining)
-        in.read(manifestBytes)
+        val manifestBytes = java.util.Arrays.copyOfRange(bytes, 4, 4 + remaining)
         migrateManifestToPekkoIfNecessary(new String(manifestBytes, UTF_8))
       }
     (serializerId, manifest)
@@ -145,14 +150,13 @@ class SnapshotSerializer(val system: ExtendedActorSystem) extends BaseSerializer
       val snapshotSerializer = serialization.findSerializerFor(snapshot)
 
       val headerBytes = headerToBinary(snapshot, snapshotSerializer)
+      val snapshotBytes = snapshotSerializer.toBinary(snapshot)
 
-      val out = new ByteArrayOutputStream
-
-      writeInt(out, headerBytes.length)
-
-      out.write(headerBytes)
-      out.write(snapshotSerializer.toBinary(snapshot))
-      out.toByteArray
+      val result = new Array[Byte](4 + headerBytes.length + snapshotBytes.length)
+      SWARUtil.putInt(result, 0, headerBytes.length, ByteOrder.LITTLE_ENDIAN)
+      System.arraycopy(headerBytes, 0, result, 4, headerBytes.length)
+      System.arraycopy(snapshotBytes, 0, result, 4 + headerBytes.length, snapshotBytes.length)
+      result
     }
 
     val oldInfo = Serialization.currentTransportInformation.value
@@ -164,7 +168,7 @@ class SnapshotSerializer(val system: ExtendedActorSystem) extends BaseSerializer
   }
 
   private def snapshotFromBinary(bytes: Array[Byte]): AnyRef = {
-    val headerLength = readInt(new UnsynchronizedByteArrayInputStream(bytes))
+    val headerLength = SWARUtil.getInt(bytes, 0, ByteOrder.LITTLE_ENDIAN)
     val headerBytes = bytes.slice(4, headerLength + 4)
     val snapshotBytes = bytes.drop(headerLength + 4)
 
@@ -173,24 +177,6 @@ class SnapshotSerializer(val system: ExtendedActorSystem) extends BaseSerializer
     serialization
       .deserialize(snapshotBytes, serializerId, manifest)
       .get
-  }
-
-  private def writeInt(out: OutputStream, i: Int): Unit = {
-    out.write(i >>> 0)
-    out.write(i >>> 8)
-    out.write(i >>> 16)
-    out.write(i >>> 24)
-  }
-
-  private def readInt(in: InputStream): Int = {
-    val b1 = in.read
-    val b2 = in.read
-    val b3 = in.read
-    val b4 = in.read
-
-    if ((b1 | b2 | b3 | b3) == -1) throw new EOFException
-
-    (b4 << 24) | (b3 << 16) | (b2 << 8) | b1
   }
 
 }

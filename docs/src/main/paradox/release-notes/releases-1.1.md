@@ -19,11 +19,11 @@ Pekko 1.1.4 is a bug fix and dependency upgrade release. See [GitHub Milestone f
 * Fix occasional ordering issue in FlowWithContext#unsafeOptionalDataVia ([PR1681](https://github.com/apache/pekko/pull/1681))
 * Issue forming mixed Akka/Pekko cluster when classic remoting with SSL/TLS is used ([PR1857](https://github.com/apache/pekko/pull/1857))
 * Join cluster check adjusted to support Akka nodes ([PR1866](https://github.com/apache/pekko/pull/1866), [PR1877](https://github.com/apache/pekko/pull/1877))
-    * If you are attempting to mix Akka and Pekko nodes in a cluster, it is still recommended to disable the join cluster check but these changes may be enough to get it work ([docs](https://cwiki.apache.org/confluence/display/PEKKO/Pekko+Akka+Compatibility)). 
+    * If you are attempting to mix Akka and Pekko nodes in a cluster, it is still recommended to disable the join cluster check but these changes may be enough to get it to work ([docs](https://cwiki.apache.org/confluence/display/PEKKO/Pekko+Akka+Compatibility)). 
 
 ### Changes
 
-* Add the missing EmptySource case to TraversalBuilder ([PR1743](https://github.com/apache/pekko/issues/1743))
+* Add the missing EmptySource case to TraversalBuilder ([PR1743](https://github.com/apache/pekko/pull/1743))
 
 ### Dependency Changes
 
@@ -40,7 +40,7 @@ Pekko 1.1.3 is a bug fix and dependency upgrade release. See [GitHub Milestone f
 
 ### Changes
 
-* Extra changes needed for our [experimental support](https://cwiki.apache.org/confluence/display/PEKKO/Pekko+Akka+Compatibility) for mixed clusters with Pekko and Akka nodes ([PR1462](https://github.com/apache/pekko/issues/1462), [PR1594](https://github.com/apache/pekko/issues/1594))
+* Extra changes needed for our [experimental support](https://cwiki.apache.org/confluence/display/PEKKO/Pekko+Akka+Compatibility) for mixed clusters with Pekko and Akka nodes ([PR1562](https://github.com/apache/pekko/pull/1562), [PR1594](https://github.com/apache/pekko/pull/1594))
 * Configuring persistence plugins at runtime for EventSourcedBehavior ([PR1518](https://github.com/apache/pekko/pull/1518))
 * Implement EventsByTagQuery in PersistenceTestKitReadJournal ([PR1533](https://github.com/apache/pekko/pull/1533))
 * Implement EventsBySliceQuery in PersistenceTestKitReadJournal ([PR1533](https://github.com/apache/pekko/pull/1533))
@@ -58,7 +58,7 @@ Pekko 1.1.2 is a bug fix and dependency upgrade release. See [GitHub Milestone f
 
 ### Bug Fixes
 
-* Fix version issue in OSGi metadata ([PR1464](https://github.com/apache/pekko/pull/1464))
+* Fix version issue in OSGi metadata ([PR1480](https://github.com/apache/pekko/pull/1480))
 * Support primitives in Flow#collectType ([PR1490](https://github.com/apache/pekko/pull/1490))
 
 ### Changes
@@ -72,7 +72,7 @@ Pekko 1.1.2 is a bug fix and dependency upgrade release. See [GitHub Milestone f
 
 ## 1.1.1
 
-Pekko 1.1.1 is a bug fix release.
+Pekko 1.1.1 is a bug fix release. See [GitHub Milestone for 1.1.1](https://github.com/apache/pekko/milestone/10?closed=1) for a fuller list of changes.
 
 ### Bug Fixes
 
@@ -159,7 +159,7 @@ The Stream Testkit Java DSL has some extra functions.
 * Remove the deprecation of statefulMapConcat operator ([PR1147](https://github.com/apache/pekko/pull/1147))
 * Add AbruptStreamTerminationException as super class of some related exceptions ([PR1201](https://github.com/apache/pekko/pull/1201))
 * For Pekko Persistence DurableState API, a new DeleteRevisionException has been added and the aim is to have implementations fail with that exception if a deleteObject does not delete exactly one record for that revision ([PR1271](https://github.com/apache/pekko/pull/1271))
-* Support for a dispatcher that uses Virtual Threads ([PR1299](https://github.com/apache/pekko/pull/1299)) (not in v1.1.0-M1)
+* Support for a dispatcher that uses Virtual Threads ([PR1436](https://github.com/apache/pekko/pull/1436)) (not in v1.1.0-M1)
 * Avoid unnecessary shard updates while shutting down ([PR1342](https://github.com/apache/pekko/pull/1342)) (not in v1.1.0-M1)
 * Support just warning instead of error when pekko.scheduler.tick-duration < 10ms on Windows ([#1364](https://github.com/apache/pekko/issues/1364)) (not in v1.1.0-M1)
 * Support the flattening syntax for supervising ([PR1386](https://github.com/apache/pekko/pull/1386)) (not in v1.1.0-M1)
@@ -179,7 +179,7 @@ Most of the dependency changes are small patch level upgrades. Some exceptions i
 
 ### Known Issues
 
-* A race condition has been introduced into pekko-cluster-sharding which needs to be fixed in a Pekko 1.1.1 release. Users who use Cluster Sharding should skip this release. The problem does not appear in v1.1.0-M1. ([#1463](https://github.com/apache/pekko/pull/1463))
+* A race condition has been introduced into pekko-cluster-sharding which needs to be fixed in a Pekko 1.1.1 release. Users who use Cluster Sharding should skip this release. The problem does not appear in v1.1.0-M1. ([#1463](https://github.com/apache/pekko/issues/1463))
 * For Scala 2.12 users, we have run into an issue with stream-testkit function `expectNextWithTimeoutPF` ([#1393](https://github.com/apache/pekko/issues/1393)).
     * For now, the consensus is not to change this as it appears to be more of a Scala 2.12 compiler issue.
     * Affected Scala 2.12 users can stick with Pekko 1.0 or change their code to get it to compile. The most reliable code change is to move the PartialFunction code and declare it as a `val`.

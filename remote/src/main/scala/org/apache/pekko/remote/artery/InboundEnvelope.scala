@@ -121,6 +121,15 @@ private[remote] final class ReusableInboundEnvelope extends InboundEnvelope {
     this
   }
 
+  /**
+   * <p>
+   *   Opentelemetry Java Instrumentation relies on this method so avoid changing it. Envelopes are pooled,
+   *   so the agent clears the previous context here to stop it leaking into the next use.
+   *   See https://github.com/apache/pekko/issues/3472
+   * </p>
+   */
+  // see https://github.com/open-telemetry/opentelemetry-java-instrumentation/pull/19823
+  @noinline // Not inlined so that the agent can match the method in the bytecode
   def clear(): Unit = {
     _recipient = OptionVal.None
     _message = null
@@ -130,6 +139,15 @@ private[remote] final class ReusableInboundEnvelope extends InboundEnvelope {
     _lane = 0
   }
 
+  /**
+   * <p>
+   *   Opentelemetry Java Instrumentation relies on this method so avoid changing it. The agent clears any
+   *   context left over from the pooled envelope's previous use, and the arity is part of the match.
+   *   See https://github.com/apache/pekko/issues/3472
+   * </p>
+   */
+  // see https://github.com/open-telemetry/opentelemetry-java-instrumentation/pull/19823
+  @noinline // Not inlined so that the agent can match the method in the bytecode
   def init(
       recipient: OptionVal[InternalActorRef],
       sender: OptionVal[ActorRef],

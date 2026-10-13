@@ -29,7 +29,7 @@ import scala.util.Success
 import org.apache.pekko
 import pekko.pattern.ask
 import pekko.routing.MurmurHash
-import pekko.util.{ Helpers, Timeout }
+import pekko.util.{ Glob, Helpers, Timeout }
 
 /**
  * An ActorSelection is a logical view of a section of an ActorSystem's tree of Actors,
@@ -95,7 +95,7 @@ abstract class ActorSelection extends Serializable {
   def resolveOne(timeout: FiniteDuration): Future[ActorRef] = resolveOne()(timeout)
 
   /**
-   * Java API for [[#resolveOne]]
+   * Java API for `resolveOne`
    *
    * Resolve the [[ActorRef]] matching this selection.
    * The result is returned as a CompletionStage that is completed with the [[ActorRef]]
@@ -242,13 +242,13 @@ object ActorSelection {
                 val chldr = refWithCell.children
                 if (iter.isEmpty) {
                   // leaf
-                  val matchingChildren = chldr.filter(c => p.pattern.matcher(c.path.name).matches)
+                  val matchingChildren = chldr.filter(c => p.matches(c.path.name))
                   if (matchingChildren.isEmpty && !sel.wildcardFanOut)
                     emptyRef.tell(sel, sender)
                   else
                     matchingChildren.foreach(_.tell(sel.msg, sender))
                 } else {
-                  val matchingChildren = chldr.filter(c => p.pattern.matcher(c.path.name).matches)
+                  val matchingChildren = chldr.filter(c => p.matches(c.path.name))
                   // don't send to emptyRef after wildcard fan-out
                   if (matchingChildren.isEmpty && !sel.wildcardFanOut)
                     emptyRef.tell(sel, sender)
@@ -307,7 +307,7 @@ private[pekko] final case class ActorSelectionMessage(
 /**
  * INTERNAL API
  */
-@nowarn("msg=@SerialVersionUID has no effect on traits")
+@nowarn("msg=@SerialVersionUID (has no effect|does nothing)")
 @SerialVersionUID(1L)
 private[pekko] sealed trait SelectionPathElement
 
@@ -324,7 +324,19 @@ private[pekko] final case class SelectChildName(name: String) extends SelectionP
  */
 @SerialVersionUID(2L)
 private[pekko] final case class SelectChildPattern(patternStr: String) extends SelectionPathElement {
-  val pattern: Pattern = Helpers.makePattern(patternStr)
+
+  /**
+   * The equivalent regular expression. Kept for compatibility and no longer used for matching:
+   * it backtracks badly on patterns with several `*`, and the pattern arrives in the message.
+   * Lazy so that deserializing a selection does not compile it.
+   */
+  lazy val pattern: Pattern = Helpers.makePattern(patternStr)
+
+  /**
+   * True if `name` matches this pattern. Runs without backtracking, see [[Glob]].
+   */
+  def matches(name: String): Boolean = Glob.matches(patternStr, name)
+
   override def toString: String = patternStr
 }
 
@@ -337,7 +349,7 @@ private[pekko] case object SelectParent extends SelectionPathElement {
 }
 
 /**
- * When [[ActorSelection#resolveOne]] can't identify the actor the
+ * When `ActorSelection.resolveOne` can't identify the actor the
  * `Future` is completed with this failure.
  */
 @SerialVersionUID(1L)

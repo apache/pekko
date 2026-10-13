@@ -14,9 +14,11 @@
 package org.apache.pekko.stream
 
 import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 import java.time.Duration
 import java.util.Optional
 
+import scala.annotation.nowarn
 import scala.annotation.tailrec
 import scala.concurrent.duration.FiniteDuration
 import scala.jdk.DurationConverters._
@@ -25,13 +27,14 @@ import scala.reflect.{ classTag, ClassTag }
 import scala.util.control.NonFatal
 
 import org.apache.pekko
-import pekko.annotation.ApiMayChange
+import pekko.actor.ActorSystem
 import pekko.annotation.DoNotInherit
 import pekko.annotation.InternalApi
+import pekko.annotation.InternalStableApi
 import pekko.event.Logging
 import pekko.japi.function
 import pekko.stream.impl.TraversalBuilder
-import pekko.util.{ ByteString, OptionVal }
+import pekko.util.Helpers
 import pekko.util.LineNumbers
 
 /**
@@ -45,10 +48,35 @@ import pekko.util.LineNumbers
  *
  * Operators should in general not access the `attributeList` but instead use `get` to get the expected
  * value of an attribute.
+ *
+ * Constructor is internal API, use factories in companion to create instances.
  */
-final case class Attributes(attributeList: List[Attributes.Attribute] = Nil) {
+final class Attributes private[pekko] (
+    val attributeList: List[Attributes.Attribute],
+    private val mandatoryAttributes: Map[Class[AnyRef], Attributes.MandatoryAttribute])
+    extends scala.Product
+    with scala.Serializable
+    with scala.Equals {
 
   import Attributes._
+
+  // for binary compatibility (used to be a case class)
+  @deprecated("Use factories on companion object instead", since = "2.0.0")
+  @nowarn("msg=deprecated")
+  def this(attributeList: List[Attributes.Attribute] = Nil) =
+    this(
+      attributeList,
+      attributeList.reverseIterator
+        .foldLeft(Map.newBuilder[Class[AnyRef], Attributes.MandatoryAttribute]) {
+          case (builder, attribute) =>
+            attribute match {
+              case m: Attributes.MandatoryAttribute =>
+                builder += (m.getClass.asInstanceOf[Class[AnyRef]] -> m)
+                builder
+              case _ => builder
+            }
+        }
+        .result())
 
   /**
    * Note that this must only be used during traversal building and not during materialization
@@ -119,6 +147,8 @@ final case class Attributes(attributeList: List[Attributes.Attribute] = Nil) {
   /**
    * Scala API: Get the most specific of one of the mandatory attributes. Mandatory attributes are guaranteed
    * to always be among the attributes when the attributes are coming from a materialization.
+   *
+   * Note: looks for the exact mandatory attribute class, hierarchies of the same mandatory attribute not supported
    */
   def mandatoryAttribute[T <: MandatoryAttribute: ClassTag]: T = {
     val c = classTag[T].runtimeClass.asInstanceOf[Class[T]]
@@ -129,20 +159,16 @@ final case class Attributes(attributeList: List[Attributes.Attribute] = Nil) {
    * Java API: Get the most specific of one of the mandatory attributes. Mandatory attributes are guaranteed
    * to always be among the attributes when the attributes are coming from a materialization.
    *
+   * Note: looks for the exact mandatory attribute class, hierarchies of the same mandatory attribute not supported
+   *
    * @param c A class that is a subtype of [[MandatoryAttribute]]
    */
   def getMandatoryAttribute[T <: MandatoryAttribute](c: Class[T]): T = {
-    @tailrec
-    def find(list: List[Attribute]): OptionVal[Attribute] = list match {
-      case Nil          => OptionVal.None
-      case head :: tail =>
-        if (c.isInstance(head)) OptionVal.Some(head)
-        else find(tail)
-    }
-
-    find(attributeList) match {
-      case OptionVal.Some(t) => t.asInstanceOf[T]
-      case _                 => throw new IllegalStateException(s"Mandatory attribute [$c] not found")
+    try {
+      mandatoryAttributes(c.asInstanceOf[Class[AnyRef]]).asInstanceOf[T]
+    } catch {
+      case _: NoSuchElementException =>
+        throw new IllegalStateException(s"Mandatory attribute [$c] not found")
     }
   }
 
@@ -153,16 +179,30 @@ final case class Attributes(attributeList: List[Attributes.Attribute] = Nil) {
   def and(other: Attributes): Attributes = {
     if (attributeList.isEmpty) other
     else if (other.attributeList.isEmpty) this
-    else if (other.attributeList.tail.isEmpty) Attributes(other.attributeList.head :: attributeList)
-    else Attributes(other.attributeList ::: attributeList)
+    else if (other.attributeList.tail.isEmpty) {
+      // note the inverted order for attributes vs mandatory values here
+      val newAttributes = other.attributeList.head :: attributeList
+      val newMandatory = this.mandatoryAttributes ++ other.mandatoryAttributes
+      new Attributes(newAttributes, newMandatory)
+    } else {
+      val newAttributes = other.attributeList ::: attributeList
+      val newMandatory = this.mandatoryAttributes ++ other.mandatoryAttributes
+      new Attributes(newAttributes, newMandatory)
+    }
   }
 
   /**
    * Adds given attribute. Added attribute is considered more specific than
    * already existing attributes of the same type.
    */
-  def and(other: Attribute): Attributes =
-    Attributes(other :: attributeList)
+  def and(other: Attribute): Attributes = {
+    other match {
+      case m: MandatoryAttribute =>
+        new Attributes(other :: attributeList, mandatoryAttributes + (m.getClass.asInstanceOf[Class[AnyRef]] -> m))
+      case regular =>
+        new Attributes(regular :: attributeList, mandatoryAttributes)
+    }
+  }
 
   /**
    * Extracts Name attributes and concatenates them.
@@ -202,7 +242,7 @@ final case class Attributes(attributeList: List[Attributes.Attribute] = Nil) {
   }
 
   @InternalApi private[pekko] def nameForActorRef(default: String = "unnamed"): String = {
-    getName().map(name => URLEncoder.encode(name, ByteString.UTF_8)).getOrElse(default)
+    getName().map(name => URLEncoder.encode(name, StandardCharsets.UTF_8)).getOrElse(default)
   }
 
   /**
@@ -263,25 +303,31 @@ final case class Attributes(attributeList: List[Attributes.Attribute] = Nil) {
   }
 
   /**
+   *  INTERNAL API
+   *
    * Java API: Get the least specific attribute (added first) of a given `Class` or subclass thereof.
    * If no such attribute exists the `default` value is returned.
    */
-  @deprecated("Attributes should always be most specific, use getAttribute[T]", "Akka 2.5.7")
+  @InternalStableApi
   def getFirstAttribute[T <: Attribute](c: Class[T], default: T): T =
     getFirstAttribute(c).orElse(default)
 
   /**
+   *  INTERNAL API
+   *
    * Java API: Get the least specific attribute (added first) of a given `Class` or subclass thereof.
    */
-  @deprecated("Attributes should always be most specific, use get[T]", "Akka 2.5.7")
+  @InternalStableApi
   def getFirstAttribute[T <: Attribute](c: Class[T]): Optional[T] =
     attributeList.reverseIterator.collectFirst { case attr if c.isInstance(attr) => c.cast(attr) }.toJava
 
   /**
+   *  INTERNAL API
+   *
    * Scala API: Get the least specific attribute (added first) of a given type parameter T `Class` or subclass thereof.
    * If no such attribute exists the `default` value is returned.
    */
-  @deprecated("Attributes should always be most specific, use get[T]", "Akka 2.5.7")
+  @InternalStableApi
   def getFirst[T <: Attribute: ClassTag](default: T): T = {
     getFirst[T] match {
       case Some(a) => a
@@ -290,12 +336,44 @@ final case class Attributes(attributeList: List[Attributes.Attribute] = Nil) {
   }
 
   /**
+   * INTERNAL API
+   *
    * Scala API: Get the least specific attribute (added first) of a given type parameter T `Class` or subclass thereof.
    */
-  @deprecated("Attributes should always be most specific, use get[T]", "Akka 2.5.7")
+  @InternalStableApi
   def getFirst[T <: Attribute: ClassTag]: Option[T] = {
     val c = classTag[T].runtimeClass.asInstanceOf[Class[T]]
     attributeList.reverseIterator.collectFirst { case attr if c.isInstance(attr) => c.cast(attr) }
+  }
+
+  // for binary compatibility (used to be a case class)
+
+  @deprecated("Use explicit methods on Attributes to interact, not the ones provided by Product", "2.0.0")
+  override def productArity: Int = 1
+
+  @deprecated("Use explicit methods on Attributes to interact, not the ones provided by Product", "2.0.0")
+  override def productElement(n: Int): Any = n match {
+    case 0 => attributeList
+    case _ => throw new IllegalArgumentException()
+  }
+
+  @deprecated("Don't use copy on Attributes", "2.0.0")
+  @nowarn("msg=deprecated")
+  def copy(attributeList: List[Attribute] = attributeList): Attributes =
+    new Attributes(attributeList)
+
+  override def canEqual(that: Any): Boolean = that.isInstanceOf[Attributes]
+
+  override def equals(other: Any): Boolean = other match {
+    case that: Attributes =>
+      attributeList == that.attributeList &&
+      mandatoryAttributes == that.mandatoryAttributes
+    case _ => false
+  }
+
+  override def hashCode(): Int = {
+    val state = Seq(attributeList, mandatoryAttributes)
+    state.map(_.hashCode()).foldLeft(0)((a, b) => 31 * a + b)
   }
 
 }
@@ -314,6 +392,17 @@ object Attributes {
    */
   @DoNotInherit
   sealed trait MandatoryAttribute extends Attribute
+
+  def apply(): Attributes = new Attributes(Nil, Map.empty)
+
+  @nowarn("msg=deprecated")
+  def apply(attributeList: List[Attribute] = Nil): Attributes = new Attributes(attributeList)
+
+  // for binary compatibility
+
+  @deprecated("Use explicit methods on Attributes to interact, not the synthetic case class ones", "2.0.0")
+  def unapply(attrs: Attributes): Option[List[Attribute]] =
+    Some(attrs.attributeList)
 
   final case class Name(n: String) extends Attribute
 
@@ -367,13 +456,12 @@ object Attributes {
    * is to call `cancelStage` which shuts down the stage completely. The given strategy will allow customization of how
    * the shutdown procedure should be done precisely.
    */
-  @ApiMayChange
   final case class CancellationStrategy(strategy: CancellationStrategy.Strategy) extends MandatoryAttribute
-  @ApiMayChange
   object CancellationStrategy {
     private[stream] val Default: CancellationStrategy = CancellationStrategy(PropagateFailure)
 
-    sealed trait Strategy
+    /** Not for user extension */
+    @DoNotInherit sealed trait Strategy
 
     /**
      * Strategy that treats `cancelStage` the same as `completeStage`, i.e. all inlets are cancelled (propagating the
@@ -390,7 +478,6 @@ object Attributes {
      * which arrive late at the other hand will just be ignored (that connection will have been cancelled already and also
      * the paths through which the error could propagates are already shut down).
      */
-    @ApiMayChange
     case object CompleteStage extends Strategy
 
     /**
@@ -410,14 +497,12 @@ object Attributes {
      * which arrive late at the other hand will just be ignored (that connection will have been cancelled already and also
      * the paths through which the error could propagates are already shut down).
      */
-    @ApiMayChange
     def completeStage: Strategy = CompleteStage
 
     /**
      * Strategy that treats `cancelStage` the same as `failStage`, i.e. all inlets are cancelled (propagating the
      * cancellation cause) and all outlets are failed propagating the cause from cancellation.
      */
-    @ApiMayChange
     case object FailStage extends Strategy
 
     /**
@@ -426,7 +511,6 @@ object Attributes {
      * Strategy that treats `cancelStage` the same as `failStage`, i.e. all inlets are cancelled (propagating the
      * cancellation cause) and all outlets are failed propagating the cause from cancellation.
      */
-    @ApiMayChange
     def failStage: Strategy = FailStage
 
     /**
@@ -439,7 +523,6 @@ object Attributes {
      *
      * This is a good default strategy.
      */
-    @ApiMayChange
     case object PropagateFailure extends Strategy
 
     /**
@@ -454,7 +537,6 @@ object Attributes {
      *
      * This is a good default strategy.
      */
-    @ApiMayChange
     def propagateFailure: Strategy = PropagateFailure
 
     /**
@@ -467,7 +549,6 @@ object Attributes {
      * such a delay. During this time, the stream will be mostly "silent", i.e. it cannot make progress because of backpressure,
      * but you might still be able observe a long delay at the ultimate source.
      */
-    @ApiMayChange
     final case class AfterDelay(delay: FiniteDuration, strategy: Strategy) extends Strategy
 
     /**
@@ -482,7 +563,6 @@ object Attributes {
      * such a delay. During this time, the stream will be mostly "silent", i.e. it cannot make progress because of backpressure,
      * but you might still be able observe a long delay at the ultimate source.
      */
-    @ApiMayChange
     def afterDelay(delay: java.time.Duration, strategy: Strategy): Strategy = AfterDelay(delay.toScala, strategy)
   }
 
@@ -503,7 +583,6 @@ object Attributes {
    * which arrive late at the other hand will just be ignored (that connection will have been cancelled already and also
    * the paths through which the error could propagates are already shut down).
    */
-  @ApiMayChange
   def cancellationStrategyCompleteState: CancellationStrategy.Strategy = CancellationStrategy.CompleteStage
 
   /**
@@ -512,7 +591,6 @@ object Attributes {
    * Strategy that treats `cancelStage` the same as `failStage`, i.e. all inlets are cancelled (propagating the
    * cancellation cause) and all outlets are failed propagating the cause from cancellation.
    */
-  @ApiMayChange
   def cancellationStrategyFailStage: CancellationStrategy.Strategy = CancellationStrategy.FailStage
 
   /**
@@ -527,7 +605,6 @@ object Attributes {
    *
    * This is a good default strategy.
    */
-  @ApiMayChange
   def cancellationStrategyPropagateFailure: CancellationStrategy.Strategy = CancellationStrategy.PropagateFailure
 
   /**
@@ -542,7 +619,6 @@ object Attributes {
    * such a delay. During this time, the stream will be mostly "silent", i.e. it cannot make progress because of backpressure,
    * but you might still be able observe a long delay at the ultimate source.
    */
-  @ApiMayChange
   def cancellationStrategyAfterDelay(
       delay: FiniteDuration,
       strategy: CancellationStrategy.Strategy): CancellationStrategy.Strategy =
@@ -560,12 +636,13 @@ object Attributes {
    * this [[Attribute]]: when set to true they will 'stash' the signal and later deliver it to the materialized nested flow
    * , otherwise these stages will immediately cancel without materializing the nested flow.
    */
-  @ApiMayChange
-  class NestedMaterializationCancellationPolicy private[NestedMaterializationCancellationPolicy] (
-      val propagateToNestedMaterialization: Boolean)
-      extends MandatoryAttribute
+  final class NestedMaterializationCancellationPolicy private[NestedMaterializationCancellationPolicy] (
+      val propagateToNestedMaterialization: Boolean,
+      name: String)
+      extends MandatoryAttribute {
+    override def toString: String = name
+  }
 
-  @ApiMayChange
   object NestedMaterializationCancellationPolicy {
 
     /**
@@ -575,9 +652,7 @@ object Attributes {
      * This applies to [[pekko.stream.scaladsl.FlowOps.flatMapPrefix]], [[pekko.stream.scaladsl.Flow.futureFlow]] and derived operators.
      */
     val EagerCancellation: NestedMaterializationCancellationPolicy =
-      new NestedMaterializationCancellationPolicy(false) {
-        override def toString: String = "EagerCancellation"
-      }
+      new NestedMaterializationCancellationPolicy(false, "EagerCancellation")
 
     /**
      * A [[NestedMaterializationCancellationPolicy]] that configures graph stages
@@ -585,9 +660,8 @@ object Attributes {
      * nested flow materialization. Once the nested flow is materialized it will be cancelled immediately.
      * This applies to [[pekko.stream.scaladsl.FlowOps.flatMapPrefix]], [[pekko.stream.scaladsl.Flow.futureFlow]] and derived operators.
      */
-    val PropagateToNested: NestedMaterializationCancellationPolicy = new NestedMaterializationCancellationPolicy(true) {
-      override def toString: String = "PropagateToNested"
-    }
+    val PropagateToNested: NestedMaterializationCancellationPolicy =
+      new NestedMaterializationCancellationPolicy(true, "PropagateToNested")
 
     /**
      * Default [[NestedMaterializationCancellationPolicy]],
@@ -603,7 +677,6 @@ object Attributes {
    * nested flow materialization.
    * This applies to [[pekko.stream.scaladsl.FlowOps.flatMapPrefix]], [[pekko.stream.scaladsl.Flow.futureFlow]] and derived operators.
    */
-  @ApiMayChange
   def nestedMaterializationCancellationPolicyEagerCancellation(): NestedMaterializationCancellationPolicy =
     NestedMaterializationCancellationPolicy.EagerCancellation
 
@@ -614,7 +687,6 @@ object Attributes {
    * nested flow materialization. Once the nested flow is materialized it will be cancelled immediately.
    * This applies to [[pekko.stream.scaladsl.FlowOps.flatMapPrefix]], [[pekko.stream.scaladsl.Flow.futureFlow]] and derived operators.
    */
-  @ApiMayChange
   def nestedMaterializationCancellationPolicyPropagateToNested(): NestedMaterializationCancellationPolicy =
     NestedMaterializationCancellationPolicy.PropagateToNested
 
@@ -641,6 +713,23 @@ object Attributes {
 
     /** Use to enable logging at DEBUG level for certain operations when configuring [[Attributes#logLevels]] */
     final val Debug: Logging.LogLevel = Logging.DebugLevel
+
+    /** INTERNAL API */
+    @InternalApi
+    private[pekko] def defaultErrorLevel(system: ActorSystem): Logging.LogLevel =
+      fromString(system.settings.config.getString("pekko.stream.materializer.stage-errors-default-log-level"))
+
+    /** INTERNAL API */
+    @InternalApi
+    private[pekko] def fromString(str: String): Logging.LogLevel = {
+      Helpers.toRootLowerCase(str) match {
+        case "off"     => Off
+        case "error"   => Error
+        case "warning" => Warning
+        case "info"    => Info
+        case "debug"   => Debug
+      }
+    }
   }
 
   /** Java API: Use to disable logging on certain operations when configuring [[Attributes#createLogLevels]] */

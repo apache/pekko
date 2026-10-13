@@ -14,6 +14,7 @@
 package org.apache.pekko.actor.testkit.typed.internal
 
 import java.util.concurrent.ThreadLocalRandom.{ current => rnd }
+import java.util.concurrent.atomic.AtomicBoolean
 
 import scala.collection.immutable.TreeMap
 import scala.concurrent.ExecutionContextExecutor
@@ -90,7 +91,7 @@ private[pekko] final class FunctionRef[-T](override val path: ActorPath, send: (
   @InternalApi private[pekko] val selfInbox = new TestInboxImpl[T](path)
 
   override val self = selfInbox.ref
-  private var _children = TreeMap.empty[String, BehaviorTestKitImpl[_]]
+  private var _children = TreeMap.empty[String, BehaviorTestKitImpl[?]]
   private val childName = Iterator.from(0).map(Helpers.base64(_))
   private val substituteLoggerFactory = new SubstituteLoggerFactory
   private val logger: Logger = substituteLoggerFactory.getLogger("StubbedLogger")
@@ -160,9 +161,9 @@ private[pekko] final class FunctionRef[-T](override val path: ActorPath, send: (
   }
 
   override def scheduleOnce[U](delay: FiniteDuration, target: ActorRef[U], message: U): classic.Cancellable =
-    new classic.Cancellable {
-      override def cancel() = false
-      override def isCancelled = true
+    new AtomicBoolean(false) with classic.Cancellable {
+      override def cancel(): Boolean = compareAndSet(false, true)
+      override def isCancelled: Boolean = get()
     }
 
   // TODO allow overriding of this
@@ -230,7 +231,7 @@ private[pekko] final class FunctionRef[-T](override val path: ActorPath, send: (
     checkCurrentActorThread()
   }
 
-  override def setLoggerName(clazz: Class[_]): Unit = {
+  override def setLoggerName(clazz: Class[?]): Unit = {
     // nop as we don't track logger
     checkCurrentActorThread()
   }

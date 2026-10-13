@@ -64,6 +64,12 @@ object ExternalShardAllocationStrategy {
   /**
    * Java API: Create an [[ExternalShardAllocationStrategy]]
    */
+  def create(systemProvider: ClassicActorSystemProvider, typeName: String): ExternalShardAllocationStrategy =
+    this.apply(systemProvider, typeName)
+
+  /**
+   * Java API: Create an [[ExternalShardAllocationStrategy]]
+   */
   def create(systemProvider: ClassicActorSystemProvider, typeName: String, timeout: java.time.Duration)
       : ExternalShardAllocationStrategy =
     this.apply(systemProvider, typeName, timeout.toScala)
@@ -132,6 +138,11 @@ class ExternalShardAllocationStrategy(systemProvider: ClassicActorSystemProvider
   private val log = Logging(system, classOf[ExternalShardAllocationStrategy])
 
   private var shardState: ActorRef = _
+
+  // Eagerly initialize the DistributedData extension on all nodes. Otherwise, if not used for other things,
+  // the DistributedData Replicator is started via the DDataStateActor by the shard coordinator on one node,
+  // but not on other nodes.
+  DistributedData(systemProvider)
 
   private[pekko] def createShardStateActor(): ActorRef = {
     system

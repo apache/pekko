@@ -13,11 +13,9 @@
 
 package org.apache.pekko.actor.testkit.typed.javadsl;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.Duration;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.IntStream;
 import org.apache.pekko.Done;
@@ -27,134 +25,55 @@ import org.apache.pekko.actor.typed.ActorRef;
 import org.apache.pekko.actor.typed.Behavior;
 import org.apache.pekko.actor.typed.Props;
 import org.apache.pekko.actor.typed.javadsl.Behaviors;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.scalatestplus.junit.JUnitSuite;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.slf4j.event.Level;
 
-public class BehaviorTestKitTest extends JUnitSuite {
+public class BehaviorTestKitTest {
 
   public interface Command {}
 
-  public static class SpawnWatchAndUnWatch implements Command {
-    private final String name;
+  public record SpawnWatchAndUnWatch(String name) implements Command {}
 
-    public SpawnWatchAndUnWatch(String name) {
-      this.name = name;
-    }
-  }
+  public record SpawnAndWatchWith(String name) implements Command {}
 
-  public static class SpawnAndWatchWith implements Command {
-    private final String name;
+  public record SpawnSession(ActorRef<ActorRef<String>> replyTo, ActorRef<String> sessionHandler)
+      implements Command {}
 
-    public SpawnAndWatchWith(String name) {
-      this.name = name;
-    }
-  }
+  public record KillSession(ActorRef<String> session, ActorRef<Done> replyTo) implements Command {}
 
-  public static class SpawnSession implements Command {
-    private final ActorRef<ActorRef<String>> replyTo;
-    private final ActorRef<String> sessionHandler;
+  @SuppressWarnings("unchecked")
+  public record CreateMessageAdapter(
+      Class<Object> clazz, org.apache.pekko.japi.function.Function<Object, Command> f)
+      implements Command {}
 
-    public SpawnSession(ActorRef<ActorRef<String>> replyTo, ActorRef<String> sessionHandler) {
-      this.replyTo = replyTo;
-      this.sessionHandler = sessionHandler;
-    }
-  }
+  public record SpawnChildren(int numberOfChildren) implements Command {}
 
-  public static class KillSession implements Command {
-    private final ActorRef<String> session;
-    private final ActorRef<Done> replyTo;
+  public record SpawnChildrenAnonymous(int numberOfChildren) implements Command {}
 
-    public KillSession(ActorRef<String> session, ActorRef<Done> replyTo) {
-      this.session = session;
-      this.replyTo = replyTo;
-    }
-  }
+  public record SpawnChildrenWithProps(int numberOfChildren, Props props) implements Command {}
 
-  public static class CreateMessageAdapter implements Command {
-    private final Class<Object> clazz;
-    private final org.apache.pekko.japi.function.Function<Object, Command> f;
+  public record SpawnChildrenAnonymousWithProps(int numberOfChildren, Props props)
+      implements Command {}
 
-    @SuppressWarnings("unchecked")
-    public CreateMessageAdapter(
-        Class clazz, org.apache.pekko.japi.function.Function<Object, Command> f) {
-      this.clazz = clazz;
-      this.f = f;
-    }
-  }
+  public record Log(String what) implements Command {}
 
-  public static class SpawnChildren implements Command {
-    private final int numberOfChildren;
+  public record AskForCookiesFrom(ActorRef<CookieDistributorCommand> distributor)
+      implements Command {}
 
-    public SpawnChildren(int numberOfChildren) {
-      this.numberOfChildren = numberOfChildren;
-    }
-  }
-
-  public static class SpawnChildrenAnonymous implements Command {
-    private final int numberOfChildren;
-
-    public SpawnChildrenAnonymous(int numberOfChildren) {
-      this.numberOfChildren = numberOfChildren;
-    }
-  }
-
-  public static class SpawnChildrenWithProps implements Command {
-    private final int numberOfChildren;
-    private final Props props;
-
-    public SpawnChildrenWithProps(int numberOfChildren, Props props) {
-      this.numberOfChildren = numberOfChildren;
-      this.props = props;
-    }
-  }
-
-  public static class SpawnChildrenAnonymousWithProps implements Command {
-    private final int numberOfChildren;
-    private final Props props;
-
-    public SpawnChildrenAnonymousWithProps(int numberOfChildren, Props props) {
-      this.numberOfChildren = numberOfChildren;
-      this.props = props;
-    }
-  }
-
-  public static class Log implements Command {
-    private final String what;
-
-    public Log(String what) {
-      this.what = what;
-    }
-  }
-
-  public static class AskForCookiesFrom implements Command {
-    private final ActorRef<CookieDistributorCommand> distributor;
-
-    public AskForCookiesFrom(ActorRef<CookieDistributorCommand> distributor) {
-      this.distributor = distributor;
-    }
-  }
+  public record ScheduleOnceCommand(
+      Duration delay,
+      ActorRef<String> target,
+      String message,
+      ActorRef<org.apache.pekko.actor.Cancellable> replyTo)
+      implements Command {}
 
   public interface CookieDistributorCommand {}
 
-  public static class GiveMeCookies implements CookieDistributorCommand {
-    public final int nrCookies;
-    public final ActorRef<CookiesForYou> replyTo;
+  public record GiveMeCookies(int nrCookies, ActorRef<CookiesForYou> replyTo)
+      implements CookieDistributorCommand {}
 
-    public GiveMeCookies(int nrCookies, ActorRef<CookiesForYou> replyTo) {
-      this.nrCookies = nrCookies;
-      this.replyTo = replyTo;
-    }
-  }
-
-  public static class CookiesForYou {
-    public final int nrCookies;
-
-    public CookiesForYou(int nrCookies) {
-      this.nrCookies = nrCookies;
-    }
-  }
+  public record CookiesForYou(int nrCookies) {}
 
   public interface Action {}
 
@@ -169,7 +88,7 @@ public class BehaviorTestKitTest extends JUnitSuite {
                 .onMessage(
                     SpawnChildren.class,
                     message -> {
-                      IntStream.range(0, message.numberOfChildren)
+                      IntStream.range(0, message.numberOfChildren())
                           .forEach(
                               i -> {
                                 context.spawn(childInitial, "child" + i);
@@ -179,7 +98,7 @@ public class BehaviorTestKitTest extends JUnitSuite {
                 .onMessage(
                     SpawnChildrenAnonymous.class,
                     message -> {
-                      IntStream.range(0, message.numberOfChildren)
+                      IntStream.range(0, message.numberOfChildren())
                           .forEach(
                               i -> {
                                 context.spawnAnonymous(childInitial);
@@ -189,33 +108,33 @@ public class BehaviorTestKitTest extends JUnitSuite {
                 .onMessage(
                     SpawnChildrenWithProps.class,
                     message -> {
-                      IntStream.range(0, message.numberOfChildren)
+                      IntStream.range(0, message.numberOfChildren())
                           .forEach(
                               i -> {
-                                context.spawn(childInitial, "child" + i, message.props);
+                                context.spawn(childInitial, "child" + i, message.props());
                               });
                       return Behaviors.same();
                     })
                 .onMessage(
                     SpawnChildrenAnonymousWithProps.class,
                     message -> {
-                      IntStream.range(0, message.numberOfChildren)
+                      IntStream.range(0, message.numberOfChildren())
                           .forEach(
                               i -> {
-                                context.spawnAnonymous(childInitial, message.props);
+                                context.spawnAnonymous(childInitial, message.props());
                               });
                       return Behaviors.same();
                     })
                 .onMessage(
                     CreateMessageAdapter.class,
                     message -> {
-                      context.messageAdapter(message.clazz, message.f);
+                      context.messageAdapter(message.clazz(), message.f());
                       return Behaviors.same();
                     })
                 .onMessage(
                     SpawnWatchAndUnWatch.class,
                     message -> {
-                      ActorRef<Action> c = context.spawn(childInitial, message.name);
+                      ActorRef<Action> c = context.spawn(childInitial, message.name());
                       context.watch(c);
                       context.unwatch(c);
                       return Behaviors.same();
@@ -223,7 +142,7 @@ public class BehaviorTestKitTest extends JUnitSuite {
                 .onMessage(
                     SpawnAndWatchWith.class,
                     message -> {
-                      ActorRef<Action> c = context.spawn(childInitial, message.name);
+                      ActorRef<Action> c = context.spawn(childInitial, message.name());
                       context.watchWith(c, message);
                       return Behaviors.same();
                     })
@@ -234,23 +153,23 @@ public class BehaviorTestKitTest extends JUnitSuite {
                           context.spawnAnonymous(
                               Behaviors.receiveMessage(
                                   m -> {
-                                    message.sessionHandler.tell(m);
+                                    message.sessionHandler().tell(m);
                                     return Behaviors.same();
                                   }));
-                      message.replyTo.tell(session);
+                      message.replyTo().tell(session);
                       return Behaviors.same();
                     })
                 .onMessage(
                     KillSession.class,
                     message -> {
-                      context.stop(message.session);
-                      message.replyTo.tell(Done.getInstance());
+                      context.stop(message.session());
+                      message.replyTo().tell(Done.getInstance());
                       return Behaviors.same();
                     })
                 .onMessage(
                     Log.class,
                     message -> {
-                      context.getLog().info(message.what);
+                      context.getLog().info(message.what());
                       return Behaviors.same();
                     })
                 .onMessage(
@@ -258,17 +177,26 @@ public class BehaviorTestKitTest extends JUnitSuite {
                     message -> {
                       context.ask(
                           CookiesForYou.class,
-                          message.distributor,
+                          message.distributor(),
                           Duration.ofSeconds(10),
                           (ActorRef<CookiesForYou> ref) -> new GiveMeCookies(6, ref),
                           (response, throwable) -> {
                             if (response != null) {
                               return new Log(
-                                  "Got " + response.nrCookies + " cookies from distributor");
+                                  "Got " + response.nrCookies() + " cookies from distributor");
                             } else {
                               return new Log("Failed to get cookies: " + throwable.getMessage());
                             }
                           });
+                      return Behaviors.same();
+                    })
+                .onMessage(
+                    ScheduleOnceCommand.class,
+                    message -> {
+                      org.apache.pekko.actor.Cancellable cancellable =
+                          context.scheduleOnce(
+                              message.delay(), message.target(), message.message());
+                      message.replyTo().tell(cancellable);
                       return Behaviors.same();
                     })
                 .build();
@@ -279,7 +207,7 @@ public class BehaviorTestKitTest extends JUnitSuite {
     BehaviorTestKit<Command> test = BehaviorTestKit.create(behavior);
     test.run(new SpawnChildren(1));
     Effect.Spawned spawned = test.expectEffectClass(Effect.Spawned.class);
-    assertEquals(spawned.childName(), "child0");
+    assertEquals("child0", spawned.childName());
   }
 
   @Test
@@ -323,7 +251,7 @@ public class BehaviorTestKitTest extends JUnitSuite {
   }
 
   @Test
-  @Ignore("Not supported for Java API")
+  @Disabled("Not supported for Java API")
   public void allowAssertionsUsingPartialFunctions() {}
 
   @Test
@@ -332,7 +260,7 @@ public class BehaviorTestKitTest extends JUnitSuite {
     test.run(new SpawnChildren(2));
     List<Effect> allEffects = test.getAllEffects();
     assertEquals(
-        Arrays.asList(
+        List.of(
             Effects.spawned(childInitial, "child0"),
             Effects.spawned(childInitial, "child1", Props.empty())),
         allEffects);
@@ -351,7 +279,7 @@ public class BehaviorTestKitTest extends JUnitSuite {
     test.run(new SpawnChildrenAnonymous(2));
     List<Effect> allEffects = test.getAllEffects();
     assertEquals(
-        Arrays.asList(
+        List.of(
             Effects.spawnedAnonymous(childInitial),
             Effects.spawnedAnonymous(childInitial, Props.empty())),
         allEffects);
@@ -368,7 +296,9 @@ public class BehaviorTestKitTest extends JUnitSuite {
   public void createMessageAdapters() {
     BehaviorTestKit<Command> test = BehaviorTestKit.create(behavior);
     SpawnChildren adaptedMessage = new SpawnChildren(1);
-    test.run(new CreateMessageAdapter(String.class, o -> adaptedMessage));
+    @SuppressWarnings("unchecked")
+    Class<Object> stringClass = (Class) String.class;
+    test.run(new CreateMessageAdapter(stringClass, o -> adaptedMessage));
     @SuppressWarnings("unchecked")
     Effect.MessageAdapter<String, SpawnChildren> mAdapter =
         test.<Effect.MessageAdapter>expectEffectClass(Effect.MessageAdapter.class);
@@ -414,7 +344,7 @@ public class BehaviorTestKitTest extends JUnitSuite {
 
     BehaviorTestKit<String> session = test.childTestKit(sessionRef);
     session.run("hello");
-    assertEquals(Collections.singletonList("hello"), h.getAllReceived());
+    assertEquals(List.of("hello"), h.getAllReceived());
 
     ReplyInbox<Done> doneReply = test.runAsk(replyTo -> new KillSession(sessionRef, replyTo));
     doneReply.expectReply(Done.getInstance());
@@ -451,5 +381,27 @@ public class BehaviorTestKitTest extends JUnitSuite {
     assertEquals(actualEffect, expectedEffect);
 
     // Other functionality is tested in the scaladsl
+  }
+
+  @Test
+  public void scheduleOnceReturnsNonCancelledCancellable() {
+    BehaviorTestKit<Command> test = BehaviorTestKit.create(behavior);
+    TestInbox<String> target = TestInbox.create("target");
+    TestInbox<org.apache.pekko.actor.Cancellable> replyTo = TestInbox.create("cancellable");
+
+    test.run(
+        new ScheduleOnceCommand(
+            Duration.ofSeconds(42), target.getRef(), "hello", replyTo.getRef()));
+
+    test.expectEffectClass(Effect.Scheduled.class);
+
+    org.apache.pekko.actor.Cancellable cancellable = replyTo.receiveMessage();
+    assertFalse(cancellable.isCancelled(), "Freshly scheduled Cancellable should not be cancelled");
+
+    assertTrue(cancellable.cancel(), "First cancel() should return true");
+    assertTrue(cancellable.isCancelled(), "isCancelled should be true after cancel()");
+
+    assertFalse(cancellable.cancel(), "Second cancel() should return false");
+    assertTrue(cancellable.isCancelled(), "isCancelled should remain true");
   }
 }

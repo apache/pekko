@@ -24,6 +24,7 @@ import org.apache.pekko
 import pekko.actor.{ Actor, ActorLogging, ActorRef, NoSerializationVerificationNeeded, Props, Stash }
 import pekko.actor.Status.Failure
 import pekko.annotation.InternalApi
+import pekko.event.{ LogMarker, Logging }
 import pekko.io.{ IO, Tcp, Udp }
 import pekko.io.dns.{ RecordClass, RecordType, ResourceRecord }
 import pekko.pattern.{ BackoffOpts, BackoffSupervisor }
@@ -51,6 +52,7 @@ import pekko.pattern.{ BackoffOpts, BackoffSupervisor }
 
   final case class DuplicateId(id: Short) extends NoSerializationVerificationNeeded
   final case class DropRequest(question: DnsQuestion)
+  final case class Dropped(id: Short) extends NoSerializationVerificationNeeded
 }
 
 /**
@@ -63,6 +65,8 @@ import pekko.pattern.{ BackoffOpts, BackoffSupervisor }
 
   val udp = IO(Udp)
   val tcp = IO(Tcp)
+
+  private val securityLog = Logging.withMarker(this)
 
   private[internal] var inflightRequests: Map[Short, (ActorRef, Message)] = Map.empty
 
@@ -95,14 +99,17 @@ import pekko.pattern.{ BackoffOpts, BackoffSupervisor }
   @nowarn()
   def ready(socket: ActorRef): Receive = {
     case DropRequest(msg) =>
-      inflightRequests.get(msg.id).foreach {
-        case (_, orig) if Seq(msg.name) == orig.questions.map(_.name) =>
+      inflightRequests.get(msg.id) match {
+        case Some((_, orig)) if isSameQuestion(Seq(question(msg)), orig.questions) =>
           log.debug("Dropping request [{}]", msg.id)
           inflightRequests -= msg.id
-        case (_, orig) =>
+          sender() ! Dropped(msg.id)
+        case Some((_, orig)) =>
           log.warning("Cannot drop inflight DNS request the question [{}] does not match [{}]",
-            msg.name,
-            orig.questions.map(_.name).mkString(","))
+            question(msg),
+            orig.questions.mkString(","))
+        case None =>
+          sender() ! Dropped(msg.id)
       }
 
     case Question4(id, name) =>
@@ -149,6 +156,13 @@ import pekko.pattern.{ BackoffOpts, BackoffSupervisor }
         case _ =>
           log.warning("Dns client failed to send {}", cmd)
       }
+    case Udp.Received(_, remote) if !isExpectedRemote(remote) =>
+      securityLog.warning(
+        LogMarker.Security,
+        "Ignoring DNS response from [{}], expected [{}]",
+        remote,
+        ns)
+
     case Udp.Received(data, remote) =>
       log.debug("Received message from [{}]: [{}]", remote, data)
       val msg = Message.parse(data)
@@ -218,6 +232,21 @@ import pekko.pattern.{ BackoffOpts, BackoffSupervisor }
 
     impl(q1s.sortBy(_.name).toList, q2s.sortBy(_.name).toList)
   }
+
+  private def question(msg: DnsQuestion): Question =
+    msg match {
+      case Question4(_, name)   => Question(name, RecordType.A, RecordClass.IN)
+      case Question6(_, name)   => Question(name, RecordType.AAAA, RecordClass.IN)
+      case SrvQuestion(_, name) => Question(name, RecordType.SRV, RecordClass.IN)
+    }
+
+  private def isExpectedRemote(remote: InetSocketAddress): Boolean =
+    remote == ns || {
+      remote.getPort == ns.getPort &&
+      remote.getAddress != null &&
+      ns.getAddress != null &&
+      remote.getAddress == ns.getAddress
+    }
 
   def createTcpClient() = {
     context.actorOf(

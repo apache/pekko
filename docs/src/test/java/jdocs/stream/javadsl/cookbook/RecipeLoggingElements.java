@@ -14,7 +14,7 @@
 package jdocs.stream.javadsl.cookbook;
 
 import com.typesafe.config.ConfigFactory;
-import java.util.Arrays;
+import java.util.List;
 import jdocs.stream.SilenceSystemOut;
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.actor.ActorSystem;
@@ -25,15 +25,15 @@ import org.apache.pekko.stream.javadsl.Sink;
 import org.apache.pekko.stream.javadsl.Source;
 import org.apache.pekko.testkit.DebugFilter;
 import org.apache.pekko.testkit.javadsl.TestKit;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import scala.runtime.AbstractFunction0;
 
 public class RecipeLoggingElements extends RecipeTest {
   static ActorSystem system;
 
-  @BeforeClass
+  @BeforeAll
   public static void setup() {
     system =
         ActorSystem.create(
@@ -43,7 +43,7 @@ public class RecipeLoggingElements extends RecipeTest {
                     + "pekko.loggers = [org.apache.pekko.testkit.TestEventListener]"));
   }
 
-  @AfterClass
+  @AfterAll
   public static void tearDown() {
     TestKit.shutdownActorSystem(system);
     system = null;
@@ -55,7 +55,7 @@ public class RecipeLoggingElements extends RecipeTest {
       final SilenceSystemOut.System System = SilenceSystemOut.get(getTestActor());
 
       {
-        final Source<String, NotUsed> mySource = Source.from(Arrays.asList("1", "2", "3"));
+        final Source<String, NotUsed> mySource = Source.from(List.of("1", "2", "3"));
 
         // #println-debug
         mySource.map(
@@ -76,7 +76,7 @@ public class RecipeLoggingElements extends RecipeTest {
       }
 
       {
-        final Source<String, NotUsed> mySource = Source.from(Arrays.asList("1", "2", "3"));
+        final Source<String, NotUsed> mySource = Source.from(List.of("1", "2", "3"));
 
         // #log-custom
         // customise log levels
@@ -113,7 +113,7 @@ public class RecipeLoggingElements extends RecipeTest {
     new TestKit(system) {
       {
         // #log-error
-        Source.from(Arrays.asList(-1, 0, 1))
+        Source.from(List.of(-1, 0, 1))
             .map(x -> 1 / x) // throwing ArithmeticException: / by zero
             .log("error logging")
             .runWith(Sink.ignore(), system);

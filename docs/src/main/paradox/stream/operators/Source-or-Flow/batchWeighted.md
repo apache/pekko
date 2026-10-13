@@ -21,15 +21,20 @@ backpressure.
 Will eagerly pull elements, this behavior may result in a single pending (i.e. buffered) element which cannot be
 aggregated to the batched value.
 
+This operator adheres to the `ActorAttributes.SupervisionStrategy` attribute for exceptions thrown by the `costFn`,
+`seed`, or `aggregate` functions. On `Supervision.Stop` (the default) the stream fails. On `Supervision.Resume` the
+offending element is dropped and the accumulated batch (if any) is preserved. On `Supervision.Restart` the offending
+element is dropped, the accumulated batch is discarded, and the operator starts fresh.
+
 ## Reactive Streams semantics
 
 @@@div { .callout }
 
-**emits** downstream stops backpressuring and there is a batched element available
+**emits** when downstream stops backpressuring and there is a batched element available
 
-**backpressures** batched elements reached the max weight limit of allowed batched elements & downstream backpressures
+**backpressures** when batched elements reached the max weight limit of allowed batched elements & downstream backpressures
 
-**completes** upstream completes and a "possibly pending" element was drained
+**completes** when upstream completes and a "possibly pending" element was drained
 
 @@@
 

@@ -26,7 +26,7 @@ import pekko.util
 import pekko.util.BoxedType
 
 private[testkit] trait RejectSupport[U] {
-  this: PolicyOpsTestKit[U] with HasStorage[U, _] =>
+  this: PolicyOpsTestKit[U] with HasStorage[U, ?] =>
 
   /**
    * Reject `n` following journal operations depending on the condition `cond`.
@@ -67,7 +67,7 @@ private[testkit] trait RejectSupport[U] {
 }
 
 private[testkit] trait PolicyOpsTestKit[P] {
-  this: HasStorage[P, _] =>
+  this: HasStorage[P, ?] =>
 
   private[testkit] val Policies: DefaultPolicies[P]
 
@@ -117,14 +117,14 @@ private[testkit] trait PolicyOpsTestKit[P] {
   }
 
   /**
-   * Returns default policy if it was changed by [[PolicyOpsTestKit.this.withPolicy()]].
+   * Returns default policy if it was changed by `withPolicy`.
    */
   def resetPolicy(): Unit = storage.resetPolicy()
 
 }
 
 private[testkit] trait ExpectOps[U] {
-  this: HasStorage[_, U] =>
+  this: HasStorage[?, U] =>
 
   private[testkit] val probe: TestKitBase
 
@@ -220,25 +220,25 @@ private[testkit] trait ExpectOps[U] {
    * Receive for `max` time next `n` events/snapshots that have been persisted in the storage.
    */
   def receivePersisted[A](persistenceId: String, n: Int, max: FiniteDuration)(
-      implicit t: ClassTag[A]): immutable.Seq[A] =
+      implicit t: ClassTag[A]): Seq[A] =
     receivePersisted(persistenceId, n, t.runtimeClass.asInstanceOf[Class[A]], max)
 
   /**
    * Receive next `n` events/snapshots that have been persisted in the storage.
    */
-  def receivePersisted[A](persistenceId: String, n: Int)(implicit t: ClassTag[A]): immutable.Seq[A] =
+  def receivePersisted[A](persistenceId: String, n: Int)(implicit t: ClassTag[A]): Seq[A] =
     receivePersisted(persistenceId, n, t.runtimeClass.asInstanceOf[Class[A]], maxTimeout)
 
   /**
    * Receive next `n` events/snapshots that have been persisted in the storage.
    */
-  def receivePersisted[A](persistenceId: String, n: Int, cla: Class[A]): immutable.Seq[A] =
+  def receivePersisted[A](persistenceId: String, n: Int, cla: Class[A]): Seq[A] =
     receivePersisted(persistenceId, n, cla, maxTimeout)
 
   /**
    * Receive for `max` time next `n` events/snapshots that have been persisted in the storage.
    */
-  def receivePersisted[A](persistenceId: String, n: Int, cla: Class[A], max: FiniteDuration): immutable.Seq[A] = {
+  def receivePersisted[A](persistenceId: String, n: Int, cla: Class[A], max: FiniteDuration): Seq[A] = {
     val nextInd = nextIndex(persistenceId)
     val bt = BoxedType(cla)
     val res =
@@ -259,20 +259,20 @@ private[testkit] trait ExpectOps[U] {
         interval = pollInterval)
 
     setIndex(persistenceId, nextInd + n)
-    res.asInstanceOf[immutable.Seq[A]]
+    res.asInstanceOf[Seq[A]]
   }
 
 }
 
 private[testkit] trait ClearOps {
-  this: HasStorage[_, _] =>
+  this: HasStorage[?, ?] =>
 
   /**
    * Clear all data from the storage.
    *
    * NOTE! Also clears sequence numbers in storage!
    *
-   * @see [[ClearPreservingSeqNums.clearAllPreservingSeqNumbers()]]
+   * @see `ClearPreservingSeqNums.clearAllPreservingSeqNumbers`
    */
   def clearAll(): Unit = {
     storage.clearAll()
@@ -284,7 +284,7 @@ private[testkit] trait ClearOps {
    *
    * NOTE! Also clears sequence number in the storage!
    *
-   * @see [[ClearPreservingSeqNums.clearByIdPreservingSeqNumbers()]]
+   * @see `ClearPreservingSeqNums.clearByIdPreservingSeqNumbers`
    */
   def clearByPersistenceId(persistenceId: String): Unit = {
     storage.removeKey(persistenceId)
@@ -294,12 +294,12 @@ private[testkit] trait ClearOps {
 }
 
 private[testkit] trait ClearPreservingSeqNums {
-  this: HasStorage[_, _] =>
+  this: HasStorage[?, ?] =>
 
   /**
    * Clear all data in the storage preserving sequence numbers.
    *
-   * @see [[ClearOps.clearAll()]]
+   * @see `ClearOps.clearAll`
    */
   def clearAllPreservingSeqNumbers(): Unit = {
     storage.clearAllPreservingSeqNumbers()
@@ -309,7 +309,7 @@ private[testkit] trait ClearPreservingSeqNums {
   /**
    * Clear all data in the storage for particular persistence id preserving sequence numbers.
    *
-   * @see [[ClearOps.clearByPersistenceId()]]
+   * @see `ClearOps.clearByPersistenceId`
    */
   def clearByIdPreservingSeqNumbers(persistenceId: String): Unit = {
     storage.removePreservingSeqNumber(persistenceId)

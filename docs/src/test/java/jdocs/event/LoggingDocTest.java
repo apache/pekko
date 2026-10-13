@@ -31,7 +31,7 @@ import org.apache.pekko.event.Logging.Debug;
 
 import jdocs.AbstractJavaTest;
 import org.apache.pekko.testkit.javadsl.TestKit;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import java.util.Optional;
 
 // #imports-mdc
@@ -43,6 +43,7 @@ import java.util.Map;
 // #imports-deadletter
 import org.apache.pekko.actor.ActorRef;
 import org.apache.pekko.actor.ActorSystem;
+
 // #imports-deadletter
 
 public class LoggingDocTest extends AbstractJavaTest {
@@ -105,6 +106,7 @@ public class LoggingDocTest extends AbstractJavaTest {
           .build();
     }
   }
+
   // #superclass-subscription-eventstream
 
   @Test
@@ -251,6 +253,7 @@ public class LoggingDocTest extends AbstractJavaTest {
           .build();
     }
   }
+
   // #my-event-listener
 
   public

@@ -24,7 +24,6 @@ import java.nio.file.Files
 import java.util.Random
 
 import scala.annotation.tailrec
-import scala.collection.immutable
 import scala.concurrent.duration._
 import scala.util.Try
 import scala.util.control.NonFatal
@@ -395,15 +394,18 @@ class TcpConnectionSpec extends PekkoSpec("""
           val maxBufferSize = 1 * 1024
           val ts = "t" * maxBufferSize
           val us = "u" * (maxBufferSize / 2)
+          val tsAndUs = ts ++ us
 
           // send a batch that is bigger than the default buffer to make sure we don't recurse and
           // send more than one Received messages
-          serverSideChannel.write(ByteBuffer.wrap((ts ++ us).getBytes("ASCII")))
+          serverSideChannel.write(ByteBuffer.wrap(tsAndUs.getBytes("ASCII"))) should ===(tsAndUs.length)
+          clientSelectionKey should be(selectedAs(OP_READ, remainingOrDefault))
           connectionHandler.expectNoMessage(100.millis)
 
           connectionActor ! ResumeReading
           connectionHandler.expectMsgType[Received].data.decodeString("ASCII") should ===(ts)
 
+          clientSelectionKey should be(selectedAs(OP_READ, remainingOrDefault))
           connectionHandler.expectNoMessage(100.millis)
 
           connectionActor ! ResumeReading
@@ -412,7 +414,8 @@ class TcpConnectionSpec extends PekkoSpec("""
           connectionHandler.expectNoMessage(100.millis)
 
           val vs = "v" * (maxBufferSize / 2)
-          serverSideChannel.write(ByteBuffer.wrap(vs.getBytes("ASCII")))
+          serverSideChannel.write(ByteBuffer.wrap(vs.getBytes("ASCII"))) should ===(vs.length)
+          clientSelectionKey should be(selectedAs(OP_READ, remainingOrDefault))
 
           connectionActor ! ResumeReading
 
@@ -697,6 +700,48 @@ class TcpConnectionSpec extends PekkoSpec("""
       }
     }
 
+    "report failed connection when finishConnect retries are exhausted" in
+    new UnacceptedConnectionTest() {
+      override lazy val connectionActor = createConnectionActor(serverAddress = UnboundAddress)
+      run {
+        val sel = SelectorProvider.provider().openSelector()
+        try {
+          val key = clientSideChannel.register(sel, SelectionKey.OP_CONNECT | SelectionKey.OP_READ)
+          sel.select(3000)
+          key.isConnectable should ===(true)
+          connectionActor.toString // force the lazy val
+          Thread.sleep(300)
+
+          // First ChannelConnectable: finishConnect() either throws (connection refused)
+          // or returns false (connection still pending, schedules timer-based retry).
+          selector.send(connectionActor, ChannelConnectable)
+
+          // If finishConnect returned false, wait for the timer-based retry to re-register.
+          // Each retry fires after 1ms via timers.startSingleTimer (self-message).
+          var retriesObserved = 0
+          var outcome: Option[AnyRef] = None
+          val deadline = System.nanoTime() + 5.seconds.toNanos
+          while (outcome.isEmpty && System.nanoTime() < deadline) {
+            registerCallReceiver.expectNoMessage(50.millis)
+            if (registerCallReceiver.msgAvailable) {
+              registerCallReceiver.receiveWhile(100.millis) {
+                case Registration(_, ops) if ops == OP_CONNECT =>
+                  retriesObserved += 1
+                  selector.send(connectionActor, ChannelConnectable)
+              }
+            }
+            if (userHandler.msgAvailable) {
+              outcome = Some(userHandler.expectMsgType[CommandFailed])
+            }
+          }
+
+          outcome shouldBe defined
+          watch(connectionActor)
+          expectTerminated(connectionActor)
+        } finally sel.close()
+      }
+    }
+
     "close the connection when connection handler dies while connected" in new EstablishedConnectionTest() {
       run {
         watch(connectionHandler.ref)
@@ -916,7 +961,7 @@ class TcpConnectionSpec extends PekkoSpec("""
 
     def createConnectionActor(
         serverAddress: InetSocketAddress = serverAddress,
-        options: immutable.Seq[SocketOption] = Nil,
+        options: Seq[SocketOption] = Nil,
         timeout: Option[FiniteDuration] = None,
         pullMode: Boolean = false): TestActorRef[TcpOutgoingConnection] = {
       val ref = createConnectionActorWithoutRegistration(serverAddress, options, timeout, pullMode)
@@ -935,7 +980,7 @@ class TcpConnectionSpec extends PekkoSpec("""
 
     def createConnectionActorWithoutRegistration(
         serverAddress: InetSocketAddress = serverAddress,
-        options: immutable.Seq[SocketOption] = Nil,
+        options: Seq[SocketOption] = Nil,
         timeout: Option[FiniteDuration] = None,
         pullMode: Boolean = false): TestActorRef[TcpOutgoingConnection] =
       TestActorRef(

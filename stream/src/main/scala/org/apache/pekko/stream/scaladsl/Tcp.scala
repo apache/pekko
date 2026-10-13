@@ -140,8 +140,7 @@ final class Tcp(system: ExtendedActorSystem) extends pekko.actor.Extension {
       interface: String,
       port: Int,
       backlog: Int = defaultBacklog,
-      @nowarn // Traversable deprecated in 2.13
-      options: immutable.Traversable[SocketOption] = Nil,
+      options: immutable.Iterable[SocketOption] = Nil,
       halfClose: Boolean = false,
       idleTimeout: Duration = Duration.Inf): Source[IncomingConnection, Future[ServerBinding]] =
     Source.fromGraph(
@@ -178,12 +177,11 @@ final class Tcp(system: ExtendedActorSystem) extends pekko.actor.Extension {
    *                  for servers, and therefore it is the default setting.
    */
   def bindAndHandle(
-      handler: Flow[ByteString, ByteString, _],
+      handler: Flow[ByteString, ByteString, ?],
       interface: String,
       port: Int,
       backlog: Int = defaultBacklog,
-      @nowarn // Traversable deprecated in 2.13
-      options: immutable.Traversable[SocketOption] = Nil,
+      options: immutable.Iterable[SocketOption] = Nil,
       halfClose: Boolean = false,
       idleTimeout: Duration = Duration.Inf)(implicit m: Materializer): Future[ServerBinding] = {
     bind(interface, port, backlog, options, halfClose, idleTimeout)
@@ -194,7 +192,7 @@ final class Tcp(system: ExtendedActorSystem) extends pekko.actor.Extension {
   }
 
   /**
-   * Creates an [[Tcp.OutgoingConnection]] instance representing a prospective TCP client connection to the given endpoint.
+   * Creates a [[Tcp.OutgoingConnection]] instance representing a prospective TCP client connection to the given endpoint.
    *
    * Note that the ByteString chunk boundaries are not retained across the network,
    * to achieve application level chunks you have to introduce explicit framing in your streams,
@@ -216,8 +214,7 @@ final class Tcp(system: ExtendedActorSystem) extends pekko.actor.Extension {
   def outgoingConnection(
       remoteAddress: InetSocketAddress,
       localAddress: Option[InetSocketAddress] = None,
-      @nowarn // Traversable deprecated in 2.13
-      options: immutable.Traversable[SocketOption] = Nil,
+      options: immutable.Iterable[SocketOption] = Nil,
       halfClose: Boolean = true,
       connectTimeout: Duration = Duration.Inf,
       idleTimeout: Duration = Duration.Inf): Flow[ByteString, ByteString, Future[OutgoingConnection]] = {
@@ -241,7 +238,7 @@ final class Tcp(system: ExtendedActorSystem) extends pekko.actor.Extension {
   }
 
   /**
-   * Creates an [[Tcp.OutgoingConnection]] without specifying options.
+   * Creates a [[Tcp.OutgoingConnection]] without specifying options.
    * It represents a prospective TCP client connection to the given endpoint.
    *
    * Note that the ByteString chunk boundaries are not retained across the network,
@@ -252,7 +249,7 @@ final class Tcp(system: ExtendedActorSystem) extends pekko.actor.Extension {
     outgoingConnection(InetSocketAddress.createUnresolved(host, port))
 
   /**
-   * Creates an [[Tcp.OutgoingConnection]] with TLS.
+   * Creates a [[Tcp.OutgoingConnection]] with TLS.
    * The returned flow represents a TCP client connection to the given endpoint where all bytes in and
    * out go through TLS.
    *
@@ -275,7 +272,7 @@ final class Tcp(system: ExtendedActorSystem) extends pekko.actor.Extension {
       closing = IgnoreComplete)
 
   /**
-   * Creates an [[Tcp.OutgoingConnection]] with TLS.
+   * Creates a [[Tcp.OutgoingConnection]] with TLS.
    * The returned flow represents a TCP client connection to the given endpoint where all bytes in and
    * out go through TLS.
    *
@@ -288,7 +285,7 @@ final class Tcp(system: ExtendedActorSystem) extends pekko.actor.Extension {
       remoteAddress: InetSocketAddress,
       createSSLEngine: () => SSLEngine,
       localAddress: Option[InetSocketAddress],
-      options: immutable.Seq[SocketOption],
+      options: Seq[SocketOption],
       connectTimeout: Duration,
       idleTimeout: Duration,
       verifySession: SSLSession => Try[Unit],
@@ -336,7 +333,7 @@ final class Tcp(system: ExtendedActorSystem) extends pekko.actor.Extension {
       port: Int,
       createSSLEngine: () => SSLEngine,
       backlog: Int,
-      options: immutable.Seq[SocketOption],
+      options: Seq[SocketOption],
       idleTimeout: Duration,
       verifySession: SSLSession => Try[Unit],
       closing: TLSClosing): Source[IncomingConnection, Future[ServerBinding]] = {
@@ -359,7 +356,7 @@ final class Tcp(system: ExtendedActorSystem) extends pekko.actor.Extension {
    * @see [[Tcp.bindAndHandle]]
    */
   def bindAndHandleWithTls(
-      handler: Flow[ByteString, ByteString, _],
+      handler: Flow[ByteString, ByteString, ?],
       interface: String,
       port: Int,
       createSSLEngine: () => SSLEngine)(implicit m: Materializer): Future[ServerBinding] =
@@ -385,12 +382,12 @@ final class Tcp(system: ExtendedActorSystem) extends pekko.actor.Extension {
    * @see [[Tcp.bindAndHandle]]
    */
   def bindAndHandleWithTls(
-      handler: Flow[ByteString, ByteString, _],
+      handler: Flow[ByteString, ByteString, ?],
       interface: String,
       port: Int,
       createSSLEngine: () => SSLEngine,
       backlog: Int,
-      options: immutable.Seq[SocketOption],
+      options: Seq[SocketOption],
       idleTimeout: Duration,
       verifySession: SSLSession => Try[Unit],
       closing: TLSClosing)(implicit m: Materializer): Future[ServerBinding] = {

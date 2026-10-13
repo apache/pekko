@@ -13,7 +13,7 @@
 
 package jdocs.stream.operators.sourceorflow;
 
-import java.util.Arrays;
+import java.util.List;
 import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.stream.javadsl.Source;
 
@@ -21,7 +21,7 @@ public class Intersperse {
   public static void main(String[] args) {
     ActorSystem system = ActorSystem.create();
     // #intersperse
-    Source.from(Arrays.asList(1, 2, 3))
+    Source.from(List.of(1, 2, 3))
         .map(String::valueOf)
         .intersperse("[", ", ", "]")
         .runForeach(System.out::print, system);

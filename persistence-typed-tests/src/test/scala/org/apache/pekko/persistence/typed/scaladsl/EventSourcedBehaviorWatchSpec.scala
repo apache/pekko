@@ -46,7 +46,7 @@ object EventSourcedBehaviorWatchSpec {
   case object Fail extends Command
   case object Stop extends Command
   final case class ChildHasFailed(t: pekko.actor.typed.ChildFailed)
-  final case class HasTerminated(ref: ActorRef[_])
+  final case class HasTerminated(ref: ActorRef[?])
 }
 
 class EventSourcedBehaviorWatchSpec
@@ -67,7 +67,7 @@ class EventSourcedBehaviorWatchSpec
   private def setup(
       pf: PartialFunction[(String, Signal), Unit],
       settings: EventSourcedSettings,
-      context: ActorContext[_]): BehaviorSetup[Command, String, String] =
+      context: ActorContext[?]): BehaviorSetup[Command, String, String] =
     new BehaviorSetup[Command, String, String](
       context.asInstanceOf[ActorContext[InternalProtocol]],
       nextPid,
@@ -76,7 +76,7 @@ class EventSourcedBehaviorWatchSpec
       eventHandler = (state, evt) => state + evt,
       WriterIdentity.newIdentity(),
       pf,
-      _ => Set.empty[String],
+      (_, _) => Set.empty[String],
       NoOpEventAdapter.instance[String],
       NoOpSnapshotAdapter.instance[String],
       snapshotWhen = ConstantFun.scalaAnyThreeToFalse,
@@ -87,7 +87,8 @@ class EventSourcedBehaviorWatchSpec
       stashState = new StashState(context.asInstanceOf[ActorContext[InternalProtocol]], settings),
       replication = None,
       publishEvents = false,
-      internalLoggerFactory = () => logger)
+      internalLoggerFactory = () => logger,
+      retentionInProgress = false)
 
   "A typed persistent parent actor watching a child" must {
 

@@ -408,7 +408,7 @@ private class ShardingProducerControllerImpl[A: ClassTag](
         context.log.error(errorMessage)
         throw new TimeoutException(errorMessage)
       } else {
-        context.log.info(s"StoreMessageSent seqNr [{}] failed, attempt [{}], retrying.", f.messageSent.seqNr, f.attempt)
+        context.log.info("StoreMessageSent seqNr [{}] failed, attempt [{}], retrying.", f.messageSent.seqNr, f.attempt)
         // retry
         storeMessageSent(f.messageSent, attempt = f.attempt + 1)
         Behaviors.same
@@ -488,7 +488,8 @@ private class ShardingProducerControllerImpl[A: ClassTag](
       s.out.foreach {
         case (outKey: OutKey, outState) =>
           val idleDurationMillis = (now - outState.usedNanoTime) / 1000 / 1000
-          if (outState.unconfirmed.nonEmpty && idleDurationMillis >= settings.resendFirstUnconfirmedIdleTimeout.toMillis) {
+          if (outState.unconfirmed.nonEmpty &&
+            idleDurationMillis >= settings.resendFirstUnconfirmedIdleTimeout.toMillis) {
             context.log.debug(
               "Resend first unconfirmed for [{}], because it was idle for [{} ms]",
               outKey,
@@ -506,8 +507,10 @@ private class ShardingProducerControllerImpl[A: ClassTag](
         s.out.flatMap {
           case (outKey: OutKey, outState) =>
             val idleDurationMillis = (now - outState.usedNanoTime) / 1000 / 1000
-            if (outState.unconfirmed.isEmpty && outState.buffered.isEmpty && idleDurationMillis >= settings
-                .cleanupUnusedAfter.toMillis) {
+            if (outState.unconfirmed.isEmpty && outState.buffered.isEmpty &&
+              idleDurationMillis >=
+                settings
+                  .cleanupUnusedAfter.toMillis) {
               context.log.debug("Cleanup unused [{}], because it was idle for [{} ms]", outKey, idleDurationMillis)
               context.stop(outState.producerController)
               Some(outKey)
@@ -570,7 +573,7 @@ private class ShardingProducerControllerImpl[A: ClassTag](
 
       case AskTimeout(outKey, outSeqNr) =>
         context.log.debug(
-          "Message seqNr [{}] sent to entity [{}] timed out. It will be be redelivered.",
+          "Message seqNr [{}] sent to entity [{}] timed out. It will be redelivered.",
           outSeqNr,
           outKey)
         Behaviors.same

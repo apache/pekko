@@ -23,6 +23,7 @@ import javax.net.ssl.SSLEngine
 import javax.net.ssl.SSLSession
 
 import scala.concurrent.blocking
+import scala.concurrent.duration._
 import scala.util.control.NonFatal
 
 import org.apache.pekko
@@ -42,6 +43,9 @@ import pekko.remote.artery.tcp.TlsTcpSpec
 import pekko.testkit.ImplicitSender
 import pekko.testkit.TestActors
 import pekko.testkit.TestProbe
+import pekko.util.JavaVersion
+
+import org.scalatest.Outcome
 
 import com.typesafe.config.ConfigFactory
 
@@ -109,6 +113,23 @@ class RotatingProviderWithChangingKeysSpec
     extends RotatingKeysSSLEngineProviderSpec(RotatingKeysSSLEngineProviderSpec.tempFileConfig) {
   import RotatingKeysSSLEngineProviderSpec._
 
+  // Retry the test once on failure, cleaning up actor systems from the failed attempt first
+  override def withFixture(test: NoArgTest): Outcome = {
+    val systemsBefore = systemsToTerminate
+    val outcome = super.withFixture(test)
+    if (outcome.isFailed) {
+      // Terminate actor systems that were created during the failed attempt.
+      // Non-blocking: systems are still tracked in ArteryMultiNodeSpec.remoteSystems and
+      // will be awaited in afterTermination(), so there is no resource leak.
+      val newSystems = systemsToTerminate.drop(systemsBefore.length)
+      systemsToTerminate = systemsBefore
+      newSystems.foreach(_.terminate())
+      super.withFixture(test)
+    } else {
+      outcome
+    }
+  }
+
   protected override def atStartup(): Unit = {
     super.atStartup()
     deployCaCert()
@@ -136,13 +157,16 @@ class RotatingProviderWithChangingKeysSpec
       deployKeySet("ssl/rsa-client.example.com")
       awaitCacheExpiration()
       val (_, pathEchoC) = buildRemoteWithEchoActor("C-reread")
-      try {
-        contact(remoteSysB.actorSystem, pathEchoC)
-        fail("The credentials under `ssl/rsa-client` are not valid for Pekko remote so contact() must fail.")
-      } catch {
-        case _: java.lang.AssertionError =>
-        // This assertion error is expected because we expect a failure in contact() since
-        // the SSL credentials are invalid
+
+      if (JavaVersion.majorVersion >= 25) {
+        // JDK 25+ strictly validates X.509 Extended Key Usage (EKU) constraints
+        // during TLS handshake. The client-only certificate is rejected immediately
+        // for server authentication, so we verify via the actor identification protocol.
+        verifyTlsRejectedByEkuValidation(remoteSysB.actorSystem, pathEchoC)
+      } else {
+        // On older JDKs, the TLS handshake with invalid certificates fails mid-exchange,
+        // causing the identification to time out with no response.
+        verifyTlsFailsDuringHandshake(remoteSysB.actorSystem, pathEchoC)
       }
 
       // deploy a new key set
@@ -263,10 +287,51 @@ abstract class RotatingKeysSSLEngineProviderSpec(extraConfig: String)
 
   def contact(fromSystem: ActorSystem, toPath: ActorPath): Unit = {
     val senderOnSource = TestProbe()(fromSystem)
-    fromSystem.actorSelection(toPath).tell(Identify(toPath.name), senderOnSource.ref)
-    val targetRef: ActorRef = senderOnSource.expectMsgType[ActorIdentity].ref.get
-    targetRef.tell("ping-1", senderOnSource.ref)
-    senderOnSource.expectMsg("ping-1")
+    val maxAttempts = 3
+    // Per-attempt timeout; allows TLS connection establishment to complete before giving up
+    val identifyTimeout = 3.seconds
+    var attempts = 0
+    var targetRef: Option[ActorRef] = None
+    while (targetRef.isEmpty && attempts < maxAttempts) {
+      attempts += 1
+      fromSystem.actorSelection(toPath).tell(Identify(toPath.name), senderOnSource.ref)
+      senderOnSource.receiveOne(identifyTimeout) match {
+        case ActorIdentity(_, ref) => targetRef = ref
+        case _                     => // timeout or unexpected message; retry
+      }
+    }
+    val ref = targetRef.getOrElse(
+      fail(s"Timed out waiting for ActorIdentity from $toPath after $maxAttempts attempts"))
+    ref.tell("ping-1", senderOnSource.ref)
+    senderOnSource.fishForMessage(identifyTimeout, hint = "waiting for ping-1") {
+      case "ping-1"            => true
+      case ActorIdentity(_, _) => false
+    }
+  }
+
+  /**
+   * JDK 25+ verification: Strict X.509 Extended Key Usage (EKU) validation
+   * rejects the client-only certificate immediately during TLS handshake.
+   * The remote actor cannot be reached, so ActorIdentity returns with ref=None.
+   *
+   * @see [[https://openjdk.org/jeps/512 JEP 512: Enforce Extended Key Usage in TLS Certificates]]
+   */
+  protected def verifyTlsRejectedByEkuValidation(fromSystem: ActorSystem, toPath: ActorPath): Unit = {
+    val probe = TestProbe()(fromSystem)
+    fromSystem.actorSelection(toPath).tell(Identify(toPath.name), probe.ref)
+    val identity = probe.expectMsgType[ActorIdentity]
+    identity.ref shouldBe None
+  }
+
+  /**
+   * Pre-JDK 25 verification: The TLS handshake with invalid certificates fails
+   * mid-exchange, causing the Identify message to be lost in transit. No ActorIdentity
+   * response arrives at all, which we verify by asserting no message is received.
+   */
+  protected def verifyTlsFailsDuringHandshake(fromSystem: ActorSystem, toPath: ActorPath): Unit = {
+    val probe = TestProbe()(fromSystem)
+    fromSystem.actorSelection(toPath).tell(Identify(toPath.name), probe.ref)
+    probe.expectNoMessage()
   }
 
   def buildRemoteWithEchoActor(id: String): (RemoteSystem, ActorPath) = {

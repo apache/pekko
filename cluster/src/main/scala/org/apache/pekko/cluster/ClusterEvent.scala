@@ -38,7 +38,10 @@ import pekko.event.EventStream
  */
 object ClusterEvent {
 
-  sealed abstract class SubscriptionInitialStateMode
+  /**
+   * Not for user extension
+   */
+  @DoNotInherit sealed abstract class SubscriptionInitialStateMode
 
   /**
    * When using this subscription mode a snapshot of
@@ -227,7 +230,8 @@ object ClusterEvent {
 
     override def equals(other: Any): Boolean = other match {
       case that: CurrentClusterState =>
-        (this eq that) || (members == that.members &&
+        (this eq that) ||
+        (members == that.members &&
         unreachable == that.unreachable &&
         seenBy == that.seenBy &&
         leader == that.leader &&
@@ -258,8 +262,10 @@ object ClusterEvent {
    * The state change was performed by the leader when there was
    * convergence on the leader node, i.e. all members had seen previous
    * state.
+   *
+   * Not for user extension
    */
-  sealed trait MemberEvent extends ClusterDomainEvent {
+  @DoNotInherit sealed trait MemberEvent extends ClusterDomainEvent {
     def member: Member
   }
 
@@ -372,8 +378,10 @@ object ClusterEvent {
   /**
    * Marker interface to facilitate subscription of
    * both [[UnreachableMember]] and [[ReachableMember]].
+   *
+   * Not for user extension
    */
-  sealed trait ReachabilityEvent extends ClusterDomainEvent {
+  @DoNotInherit sealed trait ReachabilityEvent extends ClusterDomainEvent {
     def member: Member
   }
 
@@ -392,8 +400,10 @@ object ClusterEvent {
   /**
    * Marker interface to facilitate subscription of
    * both [[UnreachableDataCenter]] and [[ReachableDataCenter]].
+   *
+   * Not for user extension
    */
-  sealed trait DataCenterReachabilityEvent extends ClusterDomainEvent
+  @DoNotInherit sealed trait DataCenterReachabilityEvent extends ClusterDomainEvent
 
   /**
    * A data center is considered as unreachable when any members from the data center are unreachable
@@ -437,7 +447,7 @@ object ClusterEvent {
   @InternalApi
   private[cluster] def diffUnreachable(
       oldState: MembershipState,
-      newState: MembershipState): immutable.Seq[UnreachableMember] =
+      newState: MembershipState): Seq[UnreachableMember] =
     if (newState eq oldState) Nil
     else {
       val newGossip = newState.latestGossip
@@ -456,7 +466,7 @@ object ClusterEvent {
   @InternalApi
   private[cluster] def diffReachable(
       oldState: MembershipState,
-      newState: MembershipState): immutable.Seq[ReachableMember] =
+      newState: MembershipState): Seq[ReachableMember] =
     if (newState eq oldState) Nil
     else {
       val newGossip = newState.latestGossip
@@ -489,7 +499,7 @@ object ClusterEvent {
   @InternalApi
   private[cluster] def diffUnreachableDataCenter(
       oldState: MembershipState,
-      newState: MembershipState): immutable.Seq[UnreachableDataCenter] = {
+      newState: MembershipState): Seq[UnreachableDataCenter] = {
     if (newState eq oldState) Nil
     else {
       val otherDcs = (oldState.latestGossip.allDataCenters
@@ -508,7 +518,7 @@ object ClusterEvent {
   @InternalApi
   private[cluster] def diffReachableDataCenter(
       oldState: MembershipState,
-      newState: MembershipState): immutable.Seq[ReachableDataCenter] = {
+      newState: MembershipState): Seq[ReachableDataCenter] = {
     if (newState eq oldState) Nil
     else {
       val otherDcs = (oldState.latestGossip.allDataCenters
@@ -527,7 +537,7 @@ object ClusterEvent {
   @InternalApi
   private[cluster] def diffMemberEvents(
       oldState: MembershipState,
-      newState: MembershipState): immutable.Seq[MemberEvent] =
+      newState: MembershipState): Seq[MemberEvent] =
     if (newState eq oldState) Nil
     else {
       val oldGossip = oldState.latestGossip
@@ -563,7 +573,7 @@ object ClusterEvent {
   @InternalApi
   private[cluster] def diffLeader(
       oldState: MembershipState,
-      newState: MembershipState): immutable.Seq[LeaderChanged] = {
+      newState: MembershipState): Seq[LeaderChanged] = {
     val newLeader = newState.leader
     if (newLeader != oldState.leader) List(LeaderChanged(newLeader.map(_.address)))
     else Nil
@@ -585,7 +595,7 @@ object ClusterEvent {
    * INTERNAL API
    */
   @InternalApi
-  private[cluster] def diffSeen(oldState: MembershipState, newState: MembershipState): immutable.Seq[SeenChanged] =
+  private[cluster] def diffSeen(oldState: MembershipState, newState: MembershipState): Seq[SeenChanged] =
     if (oldState eq newState) Nil
     else {
       val newConvergence = newState.convergence(Set.empty)
@@ -601,7 +611,7 @@ object ClusterEvent {
   @InternalApi
   private[cluster] def diffReachability(
       oldState: MembershipState,
-      newState: MembershipState): immutable.Seq[ReachabilityChanged] =
+      newState: MembershipState): Seq[ReachabilityChanged] =
     if (newState.overview.reachability eq oldState.overview.reachability) Nil
     else List(ReachabilityChanged(newState.overview.reachability))
 
@@ -611,7 +621,7 @@ object ClusterEvent {
   @InternalApi
   private[cluster] def diffTombstones(
       oldState: MembershipState,
-      newState: MembershipState): immutable.Seq[MemberTombstonesChanged] =
+      newState: MembershipState): Seq[MemberTombstonesChanged] =
     if (newState.latestGossip.tombstones == oldState.latestGossip.tombstones) Nil
     else MemberTombstonesChanged(newState.latestGossip.tombstones.keySet) :: Nil
 
@@ -704,7 +714,7 @@ private[cluster] final class ClusterDomainEventPublisher
     receiver ! state
   }
 
-  def subscribe(subscriber: ActorRef, initMode: SubscriptionInitialStateMode, to: Set[Class[_]]): Unit = {
+  def subscribe(subscriber: ActorRef, initMode: SubscriptionInitialStateMode, to: Set[Class[?]]): Unit = {
     initMode match {
       case InitialStateAsEvents =>
         def pub(event: AnyRef): Unit = {
@@ -719,7 +729,7 @@ private[cluster] final class ClusterDomainEventPublisher
     to.foreach { eventStream.subscribe(subscriber, _) }
   }
 
-  def unsubscribe(subscriber: ActorRef, to: Option[Class[_]]): Unit = to match {
+  def unsubscribe(subscriber: ActorRef, to: Option[Class[?]]): Unit = to match {
     case None    => eventStream.unsubscribe(subscriber)
     case Some(c) => eventStream.unsubscribe(subscriber, c)
   }

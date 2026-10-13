@@ -26,7 +26,7 @@ import pekko.stream.javadsl._
 object ActorSource {
 
   /**
-   * Creates a `Source` that is materialized as an [[pekko.actor.typed.ActorRef]].
+   * Creates a `Source` that is materialized as a [[pekko.actor.typed.ActorRef]].
    * Messages sent to this actor will be emitted to the stream if there is demand from downstream,
    * otherwise they will be buffered until request for demand is received.
    *
@@ -51,7 +51,7 @@ object ActorSource {
    * The actor will be stopped when the stream is completed, failed or canceled from downstream,
    * i.e. you can watch it to get notified when that happens.
    *
-   * See also [[pekko.stream.javadsl.Source.queue]].
+   * See also `org.apache.pekko.stream.javadsl.Source.queue`.
    *
    * @param bufferSize The size of the buffer in element count
    * @param overflowStrategy Strategy that is used when incoming elements cannot fit inside the buffer
@@ -77,7 +77,7 @@ object ActorSource {
   }
 
   /**
-   * Creates a `Source` that is materialized as an [[pekko.actor.ActorRef]].
+   * Creates a `Source` that is materialized as a [[pekko.actor.ActorRef]].
    * Messages sent to this actor will be emitted to the stream if there is demand from downstream,
    * and a new message will only be accepted after the previous messages has been consumed and acknowledged back.
    * The stream will complete with failure if a message is sent before the acknowledgement has been replied back.

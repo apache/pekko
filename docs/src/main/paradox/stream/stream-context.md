@@ -14,7 +14,7 @@ Essentially, a @apidoc[FlowWithContext] is just a @apidoc[Flow] that
 contains @scala[tuples]@java[pairs] of element and context, but the
 advantage is in the operators: most operators on @apidoc[FlowWithContext]
 will work on the element rather than on the @scala[tuple]@java[pair],
-allowing you to focus on your application logic rather without worrying
+allowing you to focus on your application logic without worrying
 about the context.
 
 ## Restrictions
@@ -37,11 +37,22 @@ while grouping operations will keep all contexts from the elements in
 the group. Streaming one-to-many operations such as `mapConcat`
 associate the original context with each of the produced elements.
 
+The context-preserving filtering and truncating operators include
+`filter`, `filterNot`, `collect`, `collectFirst`, `collectWhile`, `collectType`,
+`mapOption`, `drop`, `dropWhile`, `dropWithin`, `dropRepeated`, `take`, `takeWhile`,
+`takeUntil`, `takeWithin`, `limit`, and `limitWeighted`.
+
+Scala
+:  @@snip [snip](/docs/src/test/scala/docs/stream/operators/WithContextSpec.scala) { #withContextOperators }
+
+Java
+:  @@snip [snip](/docs/src/test/java/jdocs/stream/operators/WithContextTest.java) { #withContextOperators }
+
 As an escape hatch, there is a `via` operator that allows you to
 insert an arbitrary @apidoc[Flow] that can process the
 @scala[tuples]@java[pairs] of elements and context in any way
 desired. When using this operator, it is the responsibility of the
-implementor to make sure this @apidoc[Flow] does not perform
+implementer to make sure this @apidoc[Flow] does not perform
 any operations (such as reordering) that might break assumptions
 made by the @apidoc[Sink] consuming the context elements.
 
@@ -62,7 +73,7 @@ produces elements of type `Bar` with contexts of type `Ctx`. The
 reason for this is that `flow` might reorder the elements flowing
 through it, making `via` challenging to implement.
 
-Due to this there is a `unsafeDataVia` that can be used instead however no
+Due to this there is an `unsafeDataVia` that can be used instead however no
 protection is offered to prevent reordering or dropping/duplicating elements
 from stream so use this operation with great care.
 

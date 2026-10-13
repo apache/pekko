@@ -32,6 +32,10 @@ object PersistencePluginProxySpec {
           journal {
             plugin = "pekko.persistence.journal.proxy"
             proxy.target-journal-plugin = "pekko.persistence.journal.inmem"
+            inmem {
+              replay-batch-size = 2
+              replay-filter.mode = off
+            }
           }
           snapshot-store {
             plugin = "pekko.persistence.snapshot-store.proxy"
@@ -131,20 +135,20 @@ class PersistencePluginProxySpec
       val appA = systemA.actorOf(Props(classOf[ExampleApp], probeA.ref))
       val appB = systemB.actorOf(Props(classOf[ExampleApp], probeB.ref))
 
-      appA ! "a1"
+      val eventsA = Vector("a1", "a2", "a3", "a4", "a5")
+      eventsA.foreach(appA ! _)
       appB ! "b1"
 
-      probeA.expectMsg("a1")
+      eventsA.foreach(event => probeA.expectMsg(event))
       probeB.expectMsg("b1")
 
       val recoveredAppA = systemA.actorOf(Props(classOf[ExampleApp], probeA.ref))
       val recoveredAppB = systemB.actorOf(Props(classOf[ExampleApp], probeB.ref))
 
-      recoveredAppA ! "a2"
+      recoveredAppA ! "a6"
       recoveredAppB ! "b2"
 
-      probeA.expectMsg("a1")
-      probeA.expectMsg("a2")
+      (eventsA :+ "a6").foreach(event => probeA.expectMsg(event))
 
       probeB.expectMsg("b1")
       probeB.expectMsg("b2")

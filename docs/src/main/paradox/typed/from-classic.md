@@ -110,7 +110,7 @@ A classic actor is started with the `actorOf` method of the `ActorContext` or `A
 
 Corresponding method in Typed is called `spawn` in the @scala[`org.apache.pekko.actor.typed.scaladsl.ActorContext`]@java[`org.apache.pekko.actor.typed.javadsl.ActorContext`].
 
-There is no `spawn` method in the @scala[`org.apache.pekko.actor.typed.scaladsl.ActorSystem`]@java[`org.apache.pekko.actor.typed.javadsl.ActorSystem`]
+There is no `spawn` method in the `org.apache.pekko.actor.typed.ActorSystem`
 for creating top level actors. Instead, there is a single top level actor defined by a user guardian `Behavior` that is given
 when starting the `ActorSystem`. Other actors are started as children of that user guardian actor or
 children of other actors in the actor hierarchy. This is explained more in @ref:[ActorSystem](#actorsystem).

@@ -20,9 +20,9 @@ class WildcardIndexSpec extends AnyWordSpec with Matchers {
 
   "wildcard index" must {
     "allow to insert elements using Arrays of strings" in {
-      emptyIndex.insert(Array("a", "b"), 1) shouldBe a[WildcardIndex[_]]
-      emptyIndex.insert(Array("a"), 1) shouldBe a[WildcardIndex[_]]
-      emptyIndex.insert(Array.empty[String], 1) shouldBe a[WildcardIndex[_]]
+      emptyIndex.insert(Array("a", "b"), 1) shouldBe a[WildcardIndex[?]]
+      emptyIndex.insert(Array("a"), 1) shouldBe a[WildcardIndex[?]]
+      emptyIndex.insert(Array.empty[String], 1) shouldBe a[WildcardIndex[?]]
     }
 
     "allow to find inserted elements" in {

@@ -43,7 +43,7 @@ object ShardedDaemonProcessSpec extends MultiNodeConfig {
   case class ProcessActorEvent(id: Int, event: Any) extends CborSerializable
 
   object ProcessActor {
-    trait Command
+    sealed trait Command
     case object Stop extends Command
 
     def apply(id: Int): Behavior[Command] = Behaviors.setup { ctx =>

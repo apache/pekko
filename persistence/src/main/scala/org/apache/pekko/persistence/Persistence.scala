@@ -14,7 +14,6 @@
 package org.apache.pekko.persistence
 
 import java.util.concurrent.atomic.AtomicReference
-import java.util.function.Consumer
 
 import scala.annotation.tailrec
 import scala.collection.immutable
@@ -25,6 +24,7 @@ import org.apache.pekko
 import pekko.actor._
 import pekko.annotation.InternalApi
 import pekko.annotation.InternalStableApi
+import pekko.dispatch.{ DequeBasedMessageQueueSemantics, RequiresMessageQueue }
 import pekko.event.{ Logging, LoggingAdapter }
 import pekko.japi.Pair
 import pekko.persistence.journal.{ EventAdapters, IdentityEventAdapters }
@@ -114,7 +114,8 @@ trait PersistenceRecovery {
   // #persistence-recovery
 }
 
-trait PersistenceStash extends Stash with StashFactory {
+trait PersistenceStash extends Actor with StashSupport with RequiresMessageQueue[DequeBasedMessageQueueSemantics]
+    with StashFactory {
 
   /**
    * The returned [[pekko.persistence.StashOverflowStrategy]] object determines how to handle the message failed to stash
@@ -266,19 +267,15 @@ class Persistence(val system: ExtendedActorSystem) extends Extension {
 
   config
     .getStringList("journal.auto-start-journals")
-    .forEach(new Consumer[String] {
-      override def accept(id: String): Unit = {
-        log.info(s"Auto-starting journal plugin `$id`")
-        journalFor(id)
-      }
+    .forEach((id: String) => {
+      log.info("Auto-starting journal plugin `{}`", id)
+      journalFor(id)
     })
   config
     .getStringList("snapshot-store.auto-start-snapshot-stores")
-    .forEach(new Consumer[String] {
-      override def accept(id: String): Unit = {
-        log.info(s"Auto-starting snapshot store `$id`")
-        snapshotStoreFor(id)
-      }
+    .forEach((id: String) => {
+      log.info("Auto-starting snapshot store `{}`", id)
+      snapshotStoreFor(id)
     })
 
   /**
@@ -294,7 +291,7 @@ class Persistence(val system: ExtendedActorSystem) extends Extension {
     verifyPluginConfigExists(pluginConfig.withFallback(system.settings.config), configPath, "Snapshot store")
 
   /**
-   * Returns an [[pekko.persistence.journal.EventAdapters]] object which serves as a per-journal collection of bound event adapters.
+   * Returns a [[pekko.persistence.journal.EventAdapters]] object which serves as a per-journal collection of bound event adapters.
    * If no adapters are registered for a given journal the EventAdapters object will simply return the identity
    * adapter for each class, otherwise the most specific adapter matching a given class will be returned.
    */
@@ -303,7 +300,7 @@ class Persistence(val system: ExtendedActorSystem) extends Extension {
   }
 
   /**
-   * Returns an [[pekko.persistence.journal.EventAdapters]] object which serves as a per-journal collection of bound event adapters.
+   * Returns a [[pekko.persistence.journal.EventAdapters]] object which serves as a per-journal collection of bound event adapters.
    * If no adapters are registered for a given journal the EventAdapters object will simply return the identity
    * adapter for each class, otherwise the most specific adapter matching a given class will be returned.
    *
@@ -407,7 +404,7 @@ class Persistence(val system: ExtendedActorSystem) extends Extension {
     val pluginClassName = pluginConfig.getString("class")
     if (isEmpty(pluginClassName))
       throw new IllegalArgumentException(s"Plugin class name must be defined in config property [$configPath.class]")
-    log.debug(s"Create plugin: $pluginActorName $pluginClassName")
+    log.debug("Create plugin: {} {}", pluginActorName, pluginClassName)
     val pluginClass = system.dynamicAccess.getClassFor[Any](pluginClassName).get
     val pluginDispatcherId = pluginConfig.getString("plugin-dispatcher")
     val pluginActorArgs: List[AnyRef] =

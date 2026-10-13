@@ -27,11 +27,11 @@ import pekko.annotation.InternalApi
  *
  * It is used as an extension to ensure a single instance per actor system.
  */
-@InternalApi private[pekko] final class EventStreamExtension(actorSystem: ActorSystem[_]) extends Extension {
+@InternalApi private[pekko] final class EventStreamExtension(actorSystem: ActorSystem[?]) extends Extension {
   val ref: ActorRef[EventStream.Command] =
     actorSystem.internalSystemActorOf(EventStreamAdapter.behavior, "eventstream", Props.empty)
 }
 
 private[pekko] object EventStreamExtension extends ExtensionId[EventStreamExtension] {
-  override def createExtension(system: ActorSystem[_]): EventStreamExtension = new EventStreamExtension(system)
+  override def createExtension(system: ActorSystem[?]): EventStreamExtension = new EventStreamExtension(system)
 }
