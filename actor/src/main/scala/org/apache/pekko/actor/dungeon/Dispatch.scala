@@ -22,7 +22,7 @@ import org.apache.pekko
 import pekko.PekkoException
 import pekko.actor._
 import pekko.annotation.InternalApi
-import pekko.dispatch.{ Envelope, Mailbox }
+import pekko.dispatch.{ DispatchFailureReporting, Envelope, Mailbox }
 import pekko.dispatch.MailboxType
 import pekko.dispatch.ProducesMessageQueue
 import pekko.dispatch.UnboundedMailbox
@@ -135,14 +135,16 @@ private[pekko] trait Dispatch { this: ActorCell =>
 
   private def handleException: Catcher[Unit] = {
     case e: InterruptedException =>
-      system.eventStream.publish(Error(e, self.path.toString, clazz(actor), "interrupted during message send"))
+      DispatchFailureReporting.report(
+        system.eventStream,
+        Error(e, self.path.toString, clazz(actor), "interrupted during message send"))
       Thread.currentThread().interrupt()
     case NonFatal(e) =>
       val message = e match {
         case n: NoStackTrace => "swallowing exception during message send: " + n.getMessage
         case _               => "swallowing exception during message send" // stack trace includes message
       }
-      system.eventStream.publish(Error(e, self.path.toString, clazz(actor), message))
+      DispatchFailureReporting.report(system.eventStream, Error(e, self.path.toString, clazz(actor), message))
   }
 
   // ➡➡➡ NEVER SEND THE SAME SYSTEM MESSAGE OBJECT TO TWO ACTORS ⬅⬅⬅
