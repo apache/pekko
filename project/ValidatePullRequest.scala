@@ -122,7 +122,13 @@ object UnidocWithPrValidation extends AutoPlugin {
   import PekkoValidatePullRequest._
 
   override lazy val trigger = noTrigger
-  override lazy val projectSettings = Seq(additionalTasks += Compile / unidoc)
+  // Scaladoc in Scala 3.10 fails to resolve types from self types (e.g. in EventBus.scala)
+  override lazy val projectSettings = Seq(additionalTasks ++= {
+    CrossVersion.partialVersion(scalaVersion.value) match {
+      case Some((3, minor)) if minor >= 10 => Nil
+      case _                               => Seq(Compile / unidoc)
+    }
+  })
 }
 
 object MetaInfLicenseFilesWithPrValidation extends AutoPlugin {
