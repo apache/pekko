@@ -292,8 +292,9 @@ pekko {
 }
 ```
 
-The `stdout-loglevel` is only in effect during system startup and shutdown, and setting
-it to `OFF` as well, ensures that nothing gets logged during system startup or shutdown.
+The `stdout-loglevel` is only in effect during system startup and shutdown.
+Setting it to `OFF` disables normal logging during these phases. Recursive
+dispatcher failures can still use the emergency stdout fallback described below.
 
 See @ref:[Logger names](#logger-names) for configuration of log level in SLF4J backend for certain
 modules of Pekko.
@@ -302,8 +303,13 @@ modules of Pekko.
 
 When the actor system is starting up and shutting down the configured `loggers` are not used.
 Instead log messages are printed to stdout (System.out). The default log level for this
-stdout logger is `WARNING` and it can be silenced completely by setting
+stdout logger is `WARNING` and its normal output can be silenced by setting
 `pekko.stdout-loglevel=OFF`.
+
+If reporting a dispatcher failure triggers another failure on the same thread, for example because
+an executor also rejects the logging actor's task, Pekko prints the nested failure directly to stdout.
+This prevents recursive logging from overflowing the stack. The outermost failure still goes to the
+EventStream. This emergency fallback bypasses configured loggers and `pekko.stdout-loglevel`.
 
 ### Logging of Dead Letters
 
