@@ -21,8 +21,6 @@ name: Publish nightly 1.7 snapshots
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: "0 0 * * *"
 
 permissions:
   contents: read

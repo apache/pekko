@@ -9,8 +9,6 @@
 name: Nightly Builds (1.7)
 
 on:
-  schedule:
-    - cron: "0 0 * * *"
   workflow_dispatch:
 
 permissions: {}
