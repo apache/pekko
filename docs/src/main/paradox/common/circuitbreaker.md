@@ -61,6 +61,10 @@ The Apache Pekko library provides an implementation of a circuit breaker called
 
 ![circuit-breaker-states.png](../images/circuit-breaker-states.png)
 
+## Challenges
+
+Circuit breakers can misinterpret a partial failure as total system failure and inadvertently bring down the entire system. In particular, sharded systems and cell-based architectures are vulnerable to this issue. A workaround is that the server indicates to the client which specific part is overloaded and the client uses a corresponding mini circuit breaker. However, this workaround can be complex and expensive.
+
 ## Examples
 
 ### Initialization
