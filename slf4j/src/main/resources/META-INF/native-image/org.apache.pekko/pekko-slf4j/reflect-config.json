@@ -1,0 +1,22 @@
+[
+  {
+    "name": "org.apache.pekko.event.slf4j.Slf4jLogger",
+    "methods": [
+      {
+        "name": "<init>"
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.event.slf4j.Slf4jLoggingFilter",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "org.apache.pekko.actor.ActorSystem$Settings",
+          "org.apache.pekko.event.EventStream"
+        ]
+      }
+    ]
+  }
+]
