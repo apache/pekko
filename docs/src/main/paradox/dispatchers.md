@@ -44,6 +44,12 @@ You can read more about parallelism in the JDK's [ForkJoinPool documentation](ht
 
 When Running on Java 9+, you can use `maximum-pool-size` to set the upper bound on the total number of threads allocated by the ForkJoinPool.
 
+Starting with Pekko 1.8.0, mailboxes no longer extend `ForkJoinTask`, so each mailbox submission to a fork-join executor uses a fresh task wrapper.
+This prevents reusing a mailbox task from corrupting the work queue or leaving the mailbox unable to run after an exception.
+The fix applies to both the Java 8 and Java 9+ executors and requires no configuration changes.
+Existing `ForkJoinTask`s submitted as `Runnable`s are still executed directly, preserving their own completion and cancellation state.
+Callers supplying their own fork-join tasks remain responsible for safe reuse and reinitialization.
+
 In Pekko 1.7.0, we introduced a setting for the `fork-join-executor` called `minimum-runnable`. In Pekko 1.x, this defaults to `1` for backsward compatibility reasons.
 If you override the default and set it to `-1`, this will raise the number of compensation threads the
 pool will create when workers block, mitigating the asyncMode (FIFO) compensation regression tracked in

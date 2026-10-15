@@ -60,11 +60,18 @@ private[pekko] object Mailbox {
  * Mailbox and InternalMailbox is separated in two classes because ActorCell is needed for implementation,
  * but can't be exposed to user defined mailbox subclasses.
  *
+ * A Mailbox must not be a `java.util.concurrent.ForkJoinTask`. It is one object resubmitted for the
+ * whole lifetime of its actor, and `ForkJoinPool.execute` pushes a `ForkJoinTask` as-is instead of
+ * wrapping it, so the same reference returns to the same work-queue slot again and again. That lets a
+ * worker stalled mid-steal move the queue's `base` backwards and permanently damage the queue, and it
+ * lets one exceptional completion disable the mailbox for good.
+ * See https://github.com/ben-manes/caffeine/issues/2021 and
+ * https://github.com/apache/pekko/issues/3620. Pinned by MailboxTaskSubmissionSpec.
+ *
  * INTERNAL API
  */
 private[pekko] abstract class Mailbox(val messageQueue: MessageQueue)
-    extends ForkJoinTask[Unit]
-    with SystemMessageQueue
+    extends SystemMessageQueue
     with Runnable {
 
   import Mailbox._
@@ -238,24 +245,6 @@ private[pekko] abstract class Mailbox(val messageQueue: MessageQueue)
       dispatcher.registerForExecution(this, false, false)
     }
   }
-
-  override final def getRawResult(): Unit = ()
-  override final def setRawResult(unit: Unit): Unit = ()
-  final override def exec(): Boolean =
-    try {
-      run(); false
-    } catch {
-      case _: InterruptedException =>
-        Thread.currentThread().interrupt()
-        false
-      case anything: Throwable =>
-        val t = Thread.currentThread()
-        t.getUncaughtExceptionHandler match {
-          case null =>
-          case some => some.uncaughtException(t, anything)
-        }
-        throw anything
-    }
 
   /**
    * Process the messages in the mailbox

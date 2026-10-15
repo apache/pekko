@@ -1,0 +1,32 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+# Mailbox is no longer a ForkJoinTask. A mailbox is one object that its dispatcher resubmits for the
+# whole lifetime of the actor, and ForkJoinPool.execute pushes a ForkJoinTask as-is instead of
+# wrapping it, so the same reference kept returning to the same work-queue slot. A steal that stalls
+# between its base recheck and its slot CAS can then move the queue's base backwards and permanently
+# damage the queue (https://github.com/ben-manes/caffeine/issues/2021), and a single exceptional
+# completion made ForkJoinTask.doExec short-circuit forever, silently disabling the mailbox
+# (https://github.com/apache/pekko/issues/3620). Mailbox is private[pekko] and escapes only through
+# MessageDispatcher.createMailbox.
+ProblemFilters.exclude[MissingTypesProblem]("org.apache.pekko.dispatch.Mailbox")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.dispatch.Mailbox.getRawResult()Unit")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.dispatch.Mailbox.setRawResult(scala.runtime.BoxedUnit)Unit")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.dispatch.Mailbox.exec()Boolean")
+
+# The private SharingMailbox subclass is still present in 1.x and inherits the same internal change.
+ProblemFilters.exclude[MissingTypesProblem]("org.apache.pekko.dispatch.BalancingDispatcher$SharingMailbox")
