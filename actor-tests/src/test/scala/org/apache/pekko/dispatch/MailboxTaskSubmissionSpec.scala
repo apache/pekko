@@ -33,8 +33,8 @@ import pekko.testkit.PekkoSpec
  * runs again. See https://github.com/ben-manes/caffeine/issues/2021 and
  * https://github.com/apache/pekko/issues/3620.
  *
- * Neither race can be forced from a test, so this pins the two properties that make them
- * unreachable: the mailbox is not a `ForkJoinTask`, and the pool never receives one.
+ * This pins the mailbox's plain Runnable shape and resubmission after a failing run. Existing
+ * ForkJoinTasks submitted as Runnables must retain their completion and cancellation semantics.
  */
 class MailboxTaskSubmissionSpec extends PekkoSpec {
 
@@ -51,18 +51,17 @@ class MailboxTaskSubmissionSpec extends PekkoSpec {
     }
   }
 
-  /** The shape the pre-fix `Mailbox` had: resubmitted, `exec()` never completes it, and rethrows. */
-  private final class ReusedTask(body: Runnable) extends ForkJoinTask[Unit] with Runnable {
+  /** Exposes a Runnable entry point so execute(Runnable) can receive an existing ForkJoinTask. */
+  private final class RunnableForkJoinTask extends ForkJoinTask[Unit] with Runnable {
     val runs = new AtomicInteger(0)
     override def getRawResult(): Unit = ()
     override def setRawResult(unit: Unit): Unit = ()
     override def exec(): Boolean = {
       run()
-      false
+      true
     }
     override def run(): Unit = {
       runs.incrementAndGet()
-      body.run()
     }
   }
 
@@ -78,37 +77,49 @@ class MailboxTaskSubmissionSpec extends PekkoSpec {
 
   "PekkoForkJoinPool" must {
 
-    // The mailbox is submitted through ExecutorService.execute(Runnable), so cast to keep the
-    // overload resolution identical to the dispatcher's call site.
-    "run a reused ForkJoinTask again after one of its runs threw" in {
+    "not run a cancelled ForkJoinTask submitted as a Runnable" in {
       val pool = newPool()
+      val task = new RunnableForkJoinTask
       try {
-        val firstRunFailed = new AtomicBoolean(false)
-        val task = new ReusedTask(new Runnable {
-          override def run(): Unit =
-            if (firstRunFailed.compareAndSet(false, true)) throw new RuntimeException("expected test failure")
-        })
-
+        task.cancel(false) shouldBe true
+        // Select execute(Runnable), which must preserve the existing task's cancellation state.
         pool.execute(task: Runnable)
-        awaitAssert(task.runs.get() shouldBe 1)
+      } finally pool.shutdown()
+      pool.awaitTermination(remainingOrDefault.toMillis, java.util.concurrent.TimeUnit.MILLISECONDS) shouldBe true
+      task.isCancelled shouldBe true
+      task.runs.get() shouldBe 0
+    }
 
+    "complete a ForkJoinTask submitted as a Runnable" in {
+      val pool = newPool()
+      val task = new RunnableForkJoinTask
+      try {
         pool.execute(task: Runnable)
-        // Before the fix the task object itself was pushed, the throw completed it exceptionally,
-        // and ForkJoinTask.doExec short-circuits on a negative status, so this stayed at 1.
-        awaitAssert(task.runs.get() shouldBe 2)
+        // Bound the wait so a regression fails instead of hanging in join().
+        awaitAssert(task.isDone shouldBe true)
+        task.isCompletedNormally shouldBe true
+        task.join()
+        task.runs.get() shouldBe 1
       } finally pool.shutdown()
     }
 
-    "still run a plain reused Runnable" in {
+    // Control: plain Runnables receive a fresh wrapper on every submission, including before #3621.
+    "run a plain reused Runnable again after one of its runs threw" in {
       val pool = newPool()
       try {
         val runs = new AtomicInteger(0)
+        val firstRunFailed = new AtomicBoolean(false)
         val task = new Runnable {
-          override def run(): Unit = runs.incrementAndGet()
+          override def run(): Unit = {
+            runs.incrementAndGet()
+            if (firstRunFailed.compareAndSet(false, true)) throw new RuntimeException("expected test failure")
+          }
         }
 
         pool.execute(task)
         awaitAssert(runs.get() shouldBe 1)
+        // Let the first wrapper finish failing before checking a subsequent submission.
+        awaitAssert(pool.isQuiescent shouldBe true)
         pool.execute(task)
         awaitAssert(runs.get() shouldBe 2)
       } finally pool.shutdown()
