@@ -27,3 +27,6 @@ ProblemFilters.exclude[MissingTypesProblem]("org.apache.pekko.dispatch.Mailbox")
 ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.dispatch.Mailbox.getRawResult()Unit")
 ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.dispatch.Mailbox.setRawResult(scala.runtime.BoxedUnit)Unit")
 ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.dispatch.Mailbox.exec()Boolean")
+
+# The private SharingMailbox subclass is still present in 1.x and inherits the same internal change.
+ProblemFilters.exclude[MissingTypesProblem]("org.apache.pekko.dispatch.BalancingDispatcher$SharingMailbox")
