@@ -60,6 +60,10 @@ object ForkJoinExecutorConfigurator {
 
     override def execute(r: Runnable): Unit =
       if (r ne null)
+        // An existing ForkJoinTask is pushed as-is (matching ForkJoinPool.execute) so that its own
+        // completion and cancellation state is honoured. Callers must not resubmit the same task
+        // instance (see https://github.com/ben-manes/caffeine/issues/2021); this is why Mailbox
+        // is deliberately not a ForkJoinTask.
         super.execute(
           (if (r.isInstanceOf[ForkJoinTask[?]]) r else new PekkoForkJoinTask(r)).asInstanceOf[ForkJoinTask[Any]])
       else
