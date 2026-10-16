@@ -30,17 +30,17 @@ object Dependencies {
 
   val junitVersion = "4.13.2"
   val junit5Version = "5.13.4"
-  val slf4jVersion = "2.0.17"
+  val slf4jVersion = "2.0.20"
   // check agrona version when updating this
   val aeronVersion = "1.45.2"
   // needs to be inline with the aeron version, check
   // https://github.com/real-logic/aeron/blob/1.x.y/build.gradle
   val agronaVersion = "1.22.0"
-  val nettyVersion = "4.2.17.Final"
-  val logbackVersion = "1.3.15"
+  val nettyVersion = "4.2.19.Final"
+  val logbackVersion = "1.3.16"
 
   val jacksonAnnotationsVersion = "2.21"
-  val jacksonCoreVersion = "2.21.6"
+  val jacksonCoreVersion = "2.21.7"
   val jacksonDatabindVersion = jacksonCoreVersion
 
   val scala212Version = "2.12.21"
@@ -113,7 +113,7 @@ object Dependencies {
     val jacksonParameterNames = "com.fasterxml.jackson.module" % "jackson-module-parameter-names" % jacksonCoreVersion
     val jacksonCbor = "com.fasterxml.jackson.dataformat" % "jackson-dataformat-cbor" % jacksonCoreVersion
 
-    val lz4Java = "at.yawk.lz4" % "lz4-java" % "1.11.2"
+    val lz4Java = "at.yawk.lz4" % "lz4-java" % "1.12.0"
 
     val logback = "ch.qos.logback" % "logback-classic" % logbackVersion
 
