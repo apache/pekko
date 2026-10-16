@@ -29,6 +29,7 @@ import org.apache.pekko.japi.pf.PFBuilder;
 import org.apache.pekko.testkit.CustomEventFilter;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import scala.PartialFunction;
 import scala.concurrent.duration.FiniteDuration;
 
 @ExtendWith(TestKitJUnitJupiterExtension.class)
@@ -43,6 +44,14 @@ public class ActorLoggingTest {
                   "pekko.loglevel = INFO\n"
                       + "pekko.loggers = [\"org.apache.pekko.testkit.TestEventListener\"]"))
           .build();
+
+  // CustomEventFilter takes PartialFunction[LogEvent, Boolean]. Java sees the result type
+  // as Object before Scala 3.10 and as Boolean from Scala 3.10, so erase it here.
+  @SuppressWarnings({"unchecked", "rawtypes"})
+  private static CustomEventFilter customEventFilter(
+      PartialFunction<Logging.LogEvent, ?> test, int occurrences) {
+    return new CustomEventFilter((PartialFunction) test, occurrences);
+  }
 
   interface Protocol {
     String getTransactionId();
@@ -63,7 +72,7 @@ public class ActorLoggingTest {
   @Test
   public void loggingProvidesClassWhereLogWasCalled() {
     CustomEventFilter eventFilter =
-        new CustomEventFilter(
+        customEventFilter(
             PFBuilder.<Logging.LogEvent, Object>create()
                 .match(
                     Logging.LogEvent.class, (event) -> event.logClass() == ActorLoggingTest.class)
@@ -104,7 +113,7 @@ public class ActorLoggingTest {
                         .build()));
 
     CustomEventFilter eventFilter =
-        new CustomEventFilter(
+        customEventFilter(
             PFBuilder.<Logging.LogEvent, Object>create()
                 .match(Logging.LogEvent.class, (event) -> event.getMDC().containsKey("txId"))
                 .build(),
@@ -119,7 +128,7 @@ public class ActorLoggingTest {
     Behavior<String> behavior = Behaviors.logMessages(Behaviors.empty());
 
     CustomEventFilter eventFilter =
-        new CustomEventFilter(
+        customEventFilter(
             PFBuilder.<Logging.LogEvent, Object>create()
                 .match(
                     Logging.LogEvent.class,
