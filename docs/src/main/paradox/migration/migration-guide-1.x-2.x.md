@@ -60,13 +60,20 @@ rolling updates. ([PR3425](https://github.com/apache/pekko/pull/3425))
 * `RemoveInternalClusterShardingData` no longer supports removing Cluster Sharding coordinator data stored
 by Akka 2.3.x. The `-2.3` program argument and the `remove2dot3Data` parameter of
 `RemoveInternalClusterShardingData.remove` have been removed. ([PR3608](https://github.com/apache/pekko/pull/3608))
+* In pekko-persistence-testkit, the `PersistenceTestKitReadJournal` tag queries (`eventsByTag`,
+`currentEventsByTag`) and the live `eventsBySlices` query now put a `TimestampOffset` in their envelopes instead of
+`Sequence`. Code that cast these offsets to `Sequence` needs updating; the per-persistence-id sequence number is
+still available as `envelope.sequenceNr`. These queries also now accept a `TimestampOffset` to resume from.
+([PR3615](https://github.com/apache/pekko/pull/3615))
 
 ## Dependency Changes in Pekko 2.x
 * Java 17 is the minimum supported Java version and Scala 2.12 is no longer supported. Pekko 2.x is published for
-Scala 2.13 and Scala 3.
+Scala 2.13 and Scala 3.3 (LTS), so Scala 3 users need Scala 3.3.x or later. Pekko 2.x is also tested with
+Scala 3.9.
 * Agrona was updated from 1.x to 2.x, which
-[means](https://github.com/aeron-io/agrona/wiki/Change-Log#200-2024-12-17) you may have to add
-`--add-opens java.base/jdk.internal.misc=ALL-UNNAMED` if you use the Java Module System and Pekko Remote.
+[means](https://github.com/aeron-io/agrona/wiki/Change-Log#200-2024-12-17) you may have to add the JVM option
+`--add-opens java.base/jdk.internal.misc=ALL-UNNAMED` if you use Pekko Remote with Artery. This applies to
+applications on the classpath as well as those that use the Java Module System (`ALL-UNNAMED` covers classpath code).
 * pekko-serialization-jackson depends on `at.yawk.lz4:lz4-java` instead of the unmaintained `org.lz4:lz4-java`.
 This change was made in Pekko 1.4.0, so you will only notice it if you are upgrading from an earlier Pekko 1.x
 release. The fork is a drop-in replacement with important bug fixes. If your build also depends on

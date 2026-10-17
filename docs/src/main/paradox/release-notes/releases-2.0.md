@@ -94,6 +94,11 @@ defaults that have changed in Pekko 2.0.0.
 * Make AbstractPersistentActorWithTimers and AbstractFSMWithStash subclassable from Java when using Scala 3 ([PR3475](https://github.com/apache/pekko/pull/3475))
 * Use a Seq rather than a Set to hold TCP magic ByteStrings ([PR3484](https://github.com/apache/pekko/pull/3484))
 * Stop cluster sharding entities stuck in passivation after a timeout ([PR3573](https://github.com/apache/pekko/pull/3573))
+* Stop handing a reused `Mailbox` object to the fork-join dispatcher, which could permanently damage a ForkJoinPool work queue or stop a mailbox from running again. `Mailbox` no longer extends `ForkJoinTask` ([#3613](https://github.com/apache/pekko/issues/3613), [#3620](https://github.com/apache/pekko/issues/3620), [PR3621](https://github.com/apache/pekko/pull/3621), [PR3628](https://github.com/apache/pekko/pull/3628))
+* Keep colliding virtual nodes in ConsistentHash, so the ring no longer depends on the order in which nodes were added or removed. Routing only changes for keys that land on a colliding ring position, but during a rolling update nodes on 1.x and 2.x could route those few keys differently ([PR3611](https://github.com/apache/pekko/pull/3611))
+* Resolve a `LogSource` for `getClass` results on Scala 3, so `Logging(system, getClass)` compiles ([#1538](https://github.com/apache/pekko/issues/1538), [PR3609](https://github.com/apache/pekko/pull/3609))
+* Allow overriding `testKit` with a `val` in `ScalaTestWithActorTestKit` ([#1140](https://github.com/apache/pekko/issues/1140), [PR3610](https://github.com/apache/pekko/pull/3610))
+* Keep the `StashBufferImpl` instrumentation hooks from being inlined by the Scala 2.13 optimizer ([PR3616](https://github.com/apache/pekko/pull/3616))
 
 ### Security Hardening
 
@@ -163,6 +168,7 @@ These changes were copied from Akka releases (up to and including Akka 2.8.5) th
 * Add `JournalPersistFailed` and `JournalPersistRejected` signals ([PR1961](https://github.com/apache/pekko/pull/1961))
 * Add an AsyncWriteJournal option for disabling the Resequencer ([PR2027](https://github.com/apache/pekko/pull/2027))
 * Add `DurableStateBehaviorTestKit` ([PR3360](https://github.com/apache/pekko/pull/3360))
+* `PersistenceTestKitReadJournal` tag and slice queries support resuming from a `TimestampOffset` ([#1765](https://github.com/apache/pekko/issues/1765), [PR3615](https://github.com/apache/pekko/pull/3615))
 * The Java test kits now support JUnit Jupiter (JUnit 5 and 6). Pekko's own Java tests have been migrated from JUnit 4 ([#967](https://github.com/apache/pekko/issues/967), [PR2289](https://github.com/apache/pekko/pull/2289), [PR2724](https://github.com/apache/pekko/pull/2724), [PR2865](https://github.com/apache/pekko/pull/2865))
 * Java DSL TestKit `shutdownActorSystem` that takes Java Duration params ([#2226](https://github.com/apache/pekko/issues/2226), [PR2277](https://github.com/apache/pekko/pull/2277))
 * Add virtualize support for thread-pool-executor (including the blocking IO dispatcher) and support setting the starting number of virtual threads ([#2163](https://github.com/apache/pekko/issues/2163), [PR2169](https://github.com/apache/pekko/pull/2169), [PR2242](https://github.com/apache/pekko/pull/2242))
@@ -202,6 +208,7 @@ The Stream API has been updated to add some extra operators.
 * Replace the actor based fanout publisher runtime (`Sink.asPublisher(fanout = true)`) with a GraphStage bridge ([PR2874](https://github.com/apache/pekko/pull/2874))
 * Remove the deprecated annotation from `recoverWith` and undeprecate the `getFirst`/`getFirstAttribute` methods ([PR2119](https://github.com/apache/pekko/pull/2119), [PR3404](https://github.com/apache/pekko/pull/3404))
 * Mark public sealed traits and abstract classes with `@DoNotInherit` ([#1270](https://github.com/apache/pekko/issues/1270), [PR3386](https://github.com/apache/pekko/pull/3386))
+* Remove `@ApiMayChange` from APIs that have proven stable, including the log markers, `RotatingKeysSSLEngineProvider`, `ExternalShardAllocation`, `RetryFlow` and the `MaterializerState` API ([PR3607](https://github.com/apache/pekko/pull/3607))
 * Remove the Akka 2.6.4 rolling-migration manifests from ClusterMessageSerializer ([PR3516](https://github.com/apache/pekko/pull/3516))
 * ClusterShardingSettings: remove backward-compat passivation code ([PR3026](https://github.com/apache/pekko/pull/3026))
 * Remove the `ssl-config` dependency ([#2125](https://github.com/apache/pekko/issues/2125), [PR2127](https://github.com/apache/pekko/pull/2127), [PR2359](https://github.com/apache/pekko/pull/2359))
@@ -213,7 +220,7 @@ The Stream API has been updated to add some extra operators.
 * Fix many compiler, Scaladoc and Javadoc warnings ([PR3283](https://github.com/apache/pekko/pull/3283), [PR3284](https://github.com/apache/pekko/pull/3284), [PR3285](https://github.com/apache/pekko/pull/3285), [PR3297](https://github.com/apache/pekko/pull/3297), [PR3330](https://github.com/apache/pekko/pull/3330))
 * Regenerated the protobuf source code using protoc 4.36 ([PR2036](https://github.com/apache/pekko/pull/2036), [PR2335](https://github.com/apache/pekko/pull/2335), [PR3514](https://github.com/apache/pekko/pull/3514))
 * Validate legal files in packaged jars ([PR3328](https://github.com/apache/pekko/pull/3328))
-* Many documentation improvements, including a list of configuration changes in the migration guide, docs for the jackson3 module, the JUnit Jupiter test kit, custom Durable State store plugins and stream operator reference pages for previously undocumented operators ([PR2391](https://github.com/apache/pekko/pull/2391), [PR2468](https://github.com/apache/pekko/pull/2468), [PR3274](https://github.com/apache/pekko/pull/3274), [PR3513](https://github.com/apache/pekko/pull/3513), [PR3583](https://github.com/apache/pekko/pull/3583), [PR3585](https://github.com/apache/pekko/pull/3585), [#3589](https://github.com/apache/pekko/issues/3589), [PR3590](https://github.com/apache/pekko/pull/3590))
+* Many documentation improvements, including a list of configuration changes in the migration guide, docs for the jackson3 module, the JUnit Jupiter test kit, custom Durable State store plugins, migrating off the deprecated `Source.queue` overloads and stream operator reference pages for previously undocumented operators ([PR2391](https://github.com/apache/pekko/pull/2391), [PR2468](https://github.com/apache/pekko/pull/2468), [PR3274](https://github.com/apache/pekko/pull/3274), [PR3513](https://github.com/apache/pekko/pull/3513), [PR3583](https://github.com/apache/pekko/pull/3583), [PR3585](https://github.com/apache/pekko/pull/3585), [#3589](https://github.com/apache/pekko/issues/3589), [PR3590](https://github.com/apache/pekko/pull/3590), [PR3605](https://github.com/apache/pekko/pull/3605))
 
 ### Performance
 
@@ -243,6 +250,7 @@ Much of the code that was deprecated in Pekko 1.x (and in Akka before that) has 
 * Scala version compatibility classes in `pekko.util` (such as `ccompat`, `FutureConverters`, `OptionConverters`, `ExecutionContexts.parasitic`) as Pekko now uses the Scala 2.13 standard library equivalents ([PR2207](https://github.com/apache/pekko/pull/2207), [PR2208](https://github.com/apache/pekko/pull/2208), [PR2212](https://github.com/apache/pekko/pull/2212), [PR2234](https://github.com/apache/pekko/pull/2234), [PR2582](https://github.com/apache/pekko/pull/2582))
 * Internal and unused code such as `ReentrantGuard`, `AbruptIOTerminationException`, `ActorProcessor` and the classic remoting `disassociate` methods ([#2160](https://github.com/apache/pekko/issues/2160), [PR2065](https://github.com/apache/pekko/pull/2065), [PR2072](https://github.com/apache/pekko/pull/2072), [PR2074](https://github.com/apache/pekko/pull/2074), [PR2161](https://github.com/apache/pekko/pull/2161), [PR3027](https://github.com/apache/pekko/pull/3027))
 * The `ssl-config` configuration sections ([PR2359](https://github.com/apache/pekko/pull/2359))
+* Support for removing Cluster Sharding coordinator data stored by Akka 2.3.x from `RemoveInternalClusterShardingData` ([PR3608](https://github.com/apache/pekko/pull/3608))
 
 ### Deprecations
 
