@@ -846,6 +846,11 @@ final class ClusterShardingSettings(
   def withShardRegionQueryTimeout(duration: java.time.Duration): ClusterShardingSettings =
     copy(shardRegionQueryTimeout = duration.toScala)
 
+  /**
+   * Note that if you define a custom lease name and have several sharding entity types each one must have a unique
+   * lease name. If the lease name is undefined it will be derived from ActorSystem name and shard name,
+   * but that may result in too long lease names.
+   */
   def withLeaseSettings(leaseSettings: LeaseUsageSettings) = copy(leaseSettings = Option(leaseSettings))
 
   /**

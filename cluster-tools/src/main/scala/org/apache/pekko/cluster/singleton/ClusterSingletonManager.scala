@@ -153,6 +153,11 @@ final class ClusterSingletonManagerSettings(
   def withHandOverRetryInterval(retryInterval: FiniteDuration): ClusterSingletonManagerSettings =
     copy(handOverRetryInterval = retryInterval)
 
+  /**
+   * Note that if you define a custom lease name and have several singletons each one must have a unique
+   * lease name. If the lease name is undefined it will be derived from ActorSystem name and singleton
+   * actor path, but that may result in too long lease names.
+   */
   def withLeaseSettings(leaseSettings: LeaseUsageSettings): ClusterSingletonManagerSettings =
     copy(leaseSettings = Some(leaseSettings))
 
@@ -511,13 +516,14 @@ class ClusterSingletonManager(singletonProps: Props, terminationMessage: Any, se
     role.forall(cluster.selfRoles.contains),
     s"This cluster member [${cluster.selfAddress}] doesn't have the role [$role]")
 
-  private val singletonLeaseName = s"${context.system.name}-singleton-${self.path}"
-
   override val log: MarkerLoggingAdapter = Logging.withMarker(context.system, this)
 
-  val lease: Option[Lease] = settings.leaseSettings.map(settings =>
-    LeaseProvider(context.system)
-      .getLease(singletonLeaseName, settings.leaseImplementation, cluster.selfAddress.hostPort))
+  val lease: Option[Lease] = settings.leaseSettings.map { settings =>
+    val leaseName =
+      if (settings.leaseName.isEmpty) s"${context.system.name}-singleton-${self.path}"
+      else settings.leaseName
+    LeaseProvider(context.system).getLease(leaseName, settings.leaseImplementation, cluster.selfAddress.hostPort)
+  }
   val leaseRetryInterval: FiniteDuration = settings.leaseSettings match {
     case Some(s) => s.leaseRetryInterval
     case None    => 5.seconds // won't be used

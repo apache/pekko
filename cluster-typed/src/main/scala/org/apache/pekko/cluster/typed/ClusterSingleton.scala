@@ -84,6 +84,11 @@ final class ClusterSingletonSettings(
 
   def withBufferSize(bufferSize: Int): ClusterSingletonSettings = copy(bufferSize = bufferSize)
 
+  /**
+   * Note that if you define a custom lease name and have several singletons each one must have a unique
+   * lease name. If the lease name is undefined it will be derived from ActorSystem name and singleton
+   * actor path, but that may result in too long lease names.
+   */
   def withLeaseSettings(leaseSettings: LeaseUsageSettings) = copy(leaseSettings = Option(leaseSettings))
 
   private def copy(
@@ -312,6 +317,11 @@ final class ClusterSingletonManagerSettings(
   def withHandOverRetryInterval(retryInterval: java.time.Duration): ClusterSingletonManagerSettings =
     withHandOverRetryInterval(retryInterval.toScala)
 
+  /**
+   * Note that if you define a custom lease name and have several singletons each one must have a unique
+   * lease name. If the lease name is undefined it will be derived from ActorSystem name and singleton
+   * actor path, but that may result in too long lease names.
+   */
   def withLeaseSettings(leaseSettings: LeaseUsageSettings) = copy(leaseSettings = Option(leaseSettings))
 
   private def copy(

@@ -196,6 +196,27 @@ class ClusterSingletonLeaseSpec extends PekkoSpec(ConfigFactory.parseString("""
       lifecycleProbe.expectMsg("preStart")
     }
 
+    "use custom lease name" in {
+      val probe = TestProbe()
+      val defaultSettings = nextSettings()
+      val customLeaseName = s"custom-lease-${defaultSettings.singletonName}"
+      val settings =
+        defaultSettings.withLeaseSettings(defaultSettings.leaseSettings.get.withLeaseName(customLeaseName))
+      settings.leaseSettings.get.leaseName shouldBe customLeaseName
+      system.actorOf(
+        ClusterSingletonManager.props(Props(new ImportantSingleton(probe.ref)), PoisonPill, settings),
+        settings.singletonName)
+      val testLease = awaitAssert {
+        testLeaseExt.getTestLease(customLeaseName)
+      } // allow singleton manager to create the lease
+      probe.expectNoMessage(shortDuration)
+      testLease.initialPromise.complete(Success(true))
+      probe.expectMsg("preStart")
+      intercept[IllegalStateException] {
+        testLeaseExt.getTestLease(leaseNameFor(settings))
+      }
+    }
+
     "release lease when leaving oldest" in {
       val singletonProbe = TestProbe()
       val settings = nextSettings()
