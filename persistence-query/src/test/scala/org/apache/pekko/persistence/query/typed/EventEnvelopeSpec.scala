@@ -49,5 +49,40 @@ class EventEnvelopeSpec extends PekkoSpec {
       intercept[IllegalStateException](env.event).getMessage should include("not loaded")
       intercept[IllegalStateException](env.getEvent()).getMessage should include("not loaded")
     }
+
+    "create modified copies with the with-methods" in {
+      val env = envelope(filtered = false)
+
+      val withPid = env.withPersistenceId("pid-2", "entity2", 17)
+      withPid.persistenceId should ===("pid-2")
+      withPid.entityType should ===("entity2")
+      withPid.slice should ===(17)
+      withPid.sequenceNr should ===(env.sequenceNr)
+
+      val withEvent = env.withEvent("evt")
+      withEvent.eventOption should ===(Some("evt"))
+      withEvent.event should ===("evt")
+      withEvent.persistenceId should ===(env.persistenceId)
+      env.eventOption should ===(None)
+
+      env.withEvent("evt").withEventOption(None).eventOption should ===(None)
+      env.withEventOption(Some("evt2")).eventOption should ===(Some("evt2"))
+      env.withEventOption(java.util.Optional.of("evt3")).eventOption should ===(Some("evt3"))
+      env.withEvent("evt").withEventOption(java.util.Optional.empty[String]()).eventOption should ===(None)
+
+      val withTags = env.withTags(Set("a", "b"))
+      withTags.tags should ===(Set("a", "b"))
+      env.tags should ===(Set.empty[String])
+
+      val javaTags = new java.util.HashSet[String]()
+      javaTags.add("c")
+      val withJavaTags = env.withTags(javaTags)
+      withJavaTags.tags should ===(Set("c"))
+      withJavaTags.getTags() should ===(javaTags)
+
+      val withMeta = env.withMetadata("meta")
+      withMeta.eventMetadata should ===(Some("meta"))
+      withMeta.getEventMetaData().get should ===("meta")
+    }
   }
 }
