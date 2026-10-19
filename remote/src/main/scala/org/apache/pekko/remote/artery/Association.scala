@@ -50,6 +50,7 @@ import pekko.remote.RemoteLogMarker
 import pekko.remote.UniqueAddress
 import pekko.remote.artery.ArteryTransport.AeronTerminated
 import pekko.remote.artery.ArteryTransport.ShuttingDown
+import pekko.remote.artery.Association.UidCollisionException
 import pekko.remote.artery.Encoder.OutboundCompressionAccess
 import pekko.remote.artery.InboundControlJunction.ControlMessageSubject
 import pekko.remote.artery.OutboundControlJunction.OutboundControlIngress
@@ -130,6 +131,8 @@ private[remote] object Association {
       streamKillSwitch: OptionVal[SharedKillSwitch],
       completed: Future[Done],
       stopping: OptionVal[StopSignal])
+
+  final class UidCollisionException(message: String) extends IllegalArgumentException(message) with NoStackTrace
 }
 
 /**
@@ -1190,7 +1193,7 @@ private[remote] class AssociationRegistry(createAssociation: Address => Associat
           a
         else
           // make sure we don't overwrite same UID with different association
-          throw new IllegalArgumentException(s"UID collision old [$previous] new [$a]")
+          throw new UidCollisionException(s"UID collision old [$previous] new [$a]")
       case _ =>
         // update associationsByUid Map with the uid -> association
         val newMap = currentMap.updated(peer.uid, a)

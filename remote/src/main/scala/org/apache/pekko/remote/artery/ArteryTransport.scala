@@ -45,6 +45,7 @@ import pekko.remote.RemoteActorRef
 import pekko.remote.RemoteActorRefProvider
 import pekko.remote.RemoteTransport
 import pekko.remote.UniqueAddress
+import pekko.remote.artery.Association.UidCollisionException
 import pekko.remote.artery.Decoder.InboundCompressionAccess
 import pekko.remote.artery.Encoder.OutboundCompressionAccess
 import pekko.remote.artery.InboundControlJunction.ControlMessageObserver
@@ -774,7 +775,12 @@ private[remote] abstract class ArteryTransport(_system: ExtendedActorSystem, _pr
     try {
       associationRegistry.setUID(peer).completeHandshake(peer)
     } catch {
-      case ShuttingDown => Future.successful(Done) // silence it
+      case ShuttingDown               => Future.successful(Done) // silence it
+      case exc: UidCollisionException =>
+        log.warning(exc.getMessage)
+        // quarantine will not do much since handshake not completed, but for good measures
+        quarantine(peer.address, Some(peer.uid), exc.getMessage, harmless = false)
+        Future.failed(exc)
     }
   }
 
