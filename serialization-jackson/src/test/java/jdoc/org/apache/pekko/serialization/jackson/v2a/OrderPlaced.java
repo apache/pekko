@@ -14,10 +14,10 @@
 package jdoc.org.apache.pekko.serialization.jackson.v2a;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import jdoc.org.apache.pekko.serialization.jackson.MySerializable;
+import org.apache.pekko.serialization.jackson.JsonSerializable;
 
 // #rename-class
-public class OrderPlaced implements MySerializable {
+public class OrderPlaced implements JsonSerializable {
   public final String shoppingCartId;
 
   @JsonCreator

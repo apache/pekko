@@ -11,9 +11,13 @@
  * Copyright (C) 2019-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-package org.apache.pekko.serialization.jackson3
+package org.apache.pekko.serialization.jackson
 
 /**
- * Marker trait for serialization with Jackson JSON in tests
+ * Predefined marker trait for serialization with Jackson JSON.
+ *
+ * Messages, events and snapshots that extend/implement this marker are serialized with the
+ * `jackson-json` serializer, since it is bound in `pekko.actor.serialization-bindings`
+ * in the `reference.conf` of this module.
  */
 trait JsonSerializable

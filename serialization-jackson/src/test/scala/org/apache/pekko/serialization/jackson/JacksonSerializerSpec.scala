@@ -172,6 +172,11 @@ object ScalaTestMessages {
       extends TestMessage
 }
 
+object PredefinedMarkerMessages {
+  final case class JsonMarked(name: String) extends JsonSerializable
+  final case class CborMarked(name: String) extends CborSerializable
+}
+
 class JacksonCborSerializerSpec extends JacksonSerializerSpec("jackson-cbor") {
   "have compression disabled by default" in {
     val conf = JacksonObjectMapperProvider.configForBinding("jackson-cbor", system.settings.config)
@@ -198,6 +203,31 @@ class JacksonJsonSerializerSpec extends JacksonSerializerSpec("jackson-json") {
   }
 
   "JacksonJsonSerializer" must {
+
+    "bind the predefined JsonSerializable and CborSerializable markers in reference.conf" in {
+      import PredefinedMarkerMessages._
+      // only the reference.conf files, no test specific serialization-bindings
+      val sys = ActorSystem("PredefinedMarkers", ConfigFactory.defaultReference())
+      try {
+        val ser = SerializationExtension(sys)
+        ser.serializerFor(classOf[JsonMarked]).getClass should ===(classOf[JacksonJsonSerializer])
+        ser.serializerFor(classOf[CborMarked]).getClass should ===(classOf[JacksonCborSerializer])
+
+        val jsonMsg = JsonMarked("json")
+        val jsonSerializer = ser.findSerializerFor(jsonMsg).asInstanceOf[SerializerWithStringManifest]
+        ser.deserialize(
+          jsonSerializer.toBinary(jsonMsg),
+          jsonSerializer.identifier,
+          jsonSerializer.manifest(jsonMsg)).get should ===(jsonMsg)
+
+        val cborMsg = CborMarked("cbor")
+        val cborSerializer = ser.findSerializerFor(cborMsg).asInstanceOf[SerializerWithStringManifest]
+        ser.deserialize(
+          cborSerializer.toBinary(cborMsg),
+          cborSerializer.identifier,
+          cborSerializer.manifest(cborMsg)).get should ===(cborMsg)
+      } finally shutdown(sys)
+    }
 
     "support lookup of same ObjectMapper via JacksonObjectMapperProvider" in {
       val mapper = serialization()

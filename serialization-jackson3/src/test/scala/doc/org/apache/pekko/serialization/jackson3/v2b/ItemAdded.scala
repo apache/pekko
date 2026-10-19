@@ -13,8 +13,9 @@
 
 package doc.org.apache.pekko.serialization.jackson3.v2b
 
-import jdoc.org.apache.pekko.serialization.jackson3.MySerializable
+import org.apache.pekko.serialization.jackson3.JsonSerializable
 
 // #add-mandatory
-case class ItemAdded(shoppingCartId: String, productId: String, quantity: Int, discount: Double) extends MySerializable
+case class ItemAdded(shoppingCartId: String, productId: String, quantity: Int, discount: Double)
+    extends JsonSerializable
 // #add-mandatory

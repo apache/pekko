@@ -14,10 +14,10 @@
 package jdoc.org.apache.pekko.serialization.jackson3.v2a;
 
 import java.util.Optional;
-import jdoc.org.apache.pekko.serialization.jackson3.MySerializable;
+import org.apache.pekko.serialization.jackson3.JsonSerializable;
 
 // #structural
-public class Customer implements MySerializable {
+public class Customer implements JsonSerializable {
   public final String name;
   public final Address shippingAddress;
   public final Optional<Address> billingAddress;

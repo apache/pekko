@@ -13,10 +13,10 @@
 
 package jdoc.org.apache.pekko.serialization.jackson.v2c;
 
-import jdoc.org.apache.pekko.serialization.jackson.MySerializable;
+import org.apache.pekko.serialization.jackson.JsonSerializable;
 
 // #rename
-public class ItemAdded implements MySerializable {
+public class ItemAdded implements JsonSerializable {
   public final String shoppingCartId;
 
   public final String itemId;

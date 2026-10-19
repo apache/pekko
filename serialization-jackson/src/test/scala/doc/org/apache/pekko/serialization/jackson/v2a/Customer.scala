@@ -13,8 +13,8 @@
 
 package doc.org.apache.pekko.serialization.jackson.v2a
 
-import doc.org.apache.pekko.serialization.jackson.MySerializable
+import org.apache.pekko.serialization.jackson.JsonSerializable
 
 // #structural
-case class Customer(name: String, shippingAddress: Address, billingAddress: Option[Address]) extends MySerializable
+case class Customer(name: String, shippingAddress: Address, billingAddress: Option[Address]) extends JsonSerializable
 // #structural

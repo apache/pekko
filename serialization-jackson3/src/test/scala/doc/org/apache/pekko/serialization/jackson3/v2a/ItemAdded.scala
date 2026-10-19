@@ -14,11 +14,11 @@
 package doc.org.apache.pekko.serialization.jackson3.v2a
 
 import com.fasterxml.jackson.annotation.JsonCreator
-import jdoc.org.apache.pekko.serialization.jackson3.MySerializable
+import org.apache.pekko.serialization.jackson3.JsonSerializable
 
 // #add-optional
 case class ItemAdded(shoppingCartId: String, productId: String, quantity: Int, discount: Option[Double], note: String)
-    extends MySerializable {
+    extends JsonSerializable {
 
   // alternative constructor because `note` should have default value "" when not defined in json
   @JsonCreator

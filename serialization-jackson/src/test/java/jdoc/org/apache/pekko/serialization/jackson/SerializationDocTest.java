@@ -13,6 +13,8 @@
 
 package jdoc.org.apache.pekko.serialization.jackson;
 
+import org.apache.pekko.serialization.jackson.JsonSerializable;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
@@ -23,7 +25,7 @@ public class SerializationDocTest {
   interface OneConstructorParamExample1 {
 
     // #one-constructor-param-1
-    public class SimpleCommand implements MySerializable {
+    public class SimpleCommand implements JsonSerializable {
       private final String name;
 
       public SimpleCommand(String name) {
@@ -35,7 +37,7 @@ public class SerializationDocTest {
 
   interface OneConstructorParamExample2 {
     // #one-constructor-param-2
-    public class SimpleCommand implements MySerializable {
+    public class SimpleCommand implements JsonSerializable {
       private final String name;
 
       @JsonCreator
@@ -48,7 +50,7 @@ public class SerializationDocTest {
 
   interface OneConstructorParamExample3 {
     // #one-constructor-param-3
-    public class SimpleCommand implements MySerializable {
+    public class SimpleCommand implements JsonSerializable {
       private final String name;
 
       public SimpleCommand(@JsonProperty("name") String name) {
@@ -60,7 +62,7 @@ public class SerializationDocTest {
 
   interface Polymorphism {
     // #polymorphism
-    public class Zoo implements MySerializable {
+    public class Zoo implements JsonSerializable {
       public final Animal primaryAttraction;
 
       @JsonCreator

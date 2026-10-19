@@ -13,10 +13,10 @@
 
 package jdoc.org.apache.pekko.serialization.jackson.v1;
 
-import jdoc.org.apache.pekko.serialization.jackson.MySerializable;
+import org.apache.pekko.serialization.jackson.JsonSerializable;
 
 // #structural
-public class Customer implements MySerializable {
+public class Customer implements JsonSerializable {
   public final String name;
   public final String street;
   public final String city;

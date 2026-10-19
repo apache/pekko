@@ -60,9 +60,15 @@ annotations are needed to specify how to convert the objects to JSON/bytes.
 
 ## Usage
 
-To enable Jackson serialization for a class you need to configure it or one of its super classes
-in serialization-bindings configuration. Typically you will create a marker @scala[trait]@java[interface]
-for that purpose and let the messages @scala[extend]@java[implement] that.
+To enable Jackson serialization for a class there needs to be a serialization binding for it or one of its
+super classes in serialization-bindings configuration.
+
+The simplest way is to let the messages @scala[extend]@java[implement] one of the two predefined marker
+@scala[traits]@java[interfaces] `org.apache.pekko.serialization.jackson.JsonSerializable` or
+`org.apache.pekko.serialization.jackson.CborSerializable`. They are bound to `jackson-json` and `jackson-cbor`
+respectively in the `reference.conf` of `pekko-serialization-jackson`, so no additional configuration is needed.
+When using `pekko-serialization-jackson3` the corresponding markers are
+`org.apache.pekko.serialization.jackson3.JsonSerializable` and `org.apache.pekko.serialization.jackson3.CborSerializable`.
 
 Scala
 :  @@snip [SerializationDocSpec.scala](/serialization-jackson/src/test/scala/doc/org/apache/pekko/serialization/jackson/SerializationDocSpec.scala) { #marker-interface }
@@ -70,14 +76,12 @@ Scala
 Java
 :  @@snip [MySerializable.java](/serialization-jackson/src/test/java/jdoc/org/apache/pekko/serialization/jackson/MySerializable.java) { #marker-interface }
 
-Then you configure the class name of the marker @scala[trait]@java[interface] in `serialization-bindings` to
+If the predefined markers are not suitable for your project it is also possible to define your own marker
+@scala[trait]@java[interface] and let the messages @scala[extend]@java[implement] that. You then have to
+configure the class name of your marker @scala[trait]@java[interface] in `serialization-bindings` to
 one of the supported Jackson formats: `jackson-json` or `jackson-cbor`
 
 @@snip [config](/serialization-jackson/src/test/scala/doc/org/apache/pekko/serialization/jackson/SerializationDocSpec.scala) { #serialization-bindings }
-
-A good convention would be to name the marker interface `CborSerializable` or `JsonSerializable`.
-In this documentation we have used `MySerializable` to make it clear that the marker interface itself is not
-provided by Pekko.
 
 That is all that is needed for basic classes where Jackson understands the structure. A few cases that requires
 annotations are described below.

@@ -14,10 +14,9 @@
 package jdoc.org.apache.pekko.serialization.jackson;
 
 // #marker-interface
-/** Marker interface for messages, events and snapshots that are serialized with Jackson. */
-public interface MySerializable {}
+import org.apache.pekko.serialization.jackson.JsonSerializable;
 
-class MyMessage implements MySerializable {
+class MyMessage implements JsonSerializable {
   public final String name;
   public final int nr;
 

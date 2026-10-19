@@ -13,10 +13,10 @@
 
 package doc.org.apache.pekko.serialization.jackson3.v1
 
-import doc.org.apache.pekko.serialization.jackson3.MySerializable
+import org.apache.pekko.serialization.jackson3.JsonSerializable
 
 // #add-optional
 // #forward-one-rename
-case class ItemAdded(shoppingCartId: String, productId: String, quantity: Int) extends MySerializable
+case class ItemAdded(shoppingCartId: String, productId: String, quantity: Int) extends JsonSerializable
 // #forward-one-rename
 // #add-optional
