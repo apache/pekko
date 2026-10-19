@@ -37,7 +37,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Install sbt
-        uses: sbt/setup-sbt@6158cb0903b8ceeae04f830055f3155e1b6a5ad7 # v1.5.11
+        uses: sbt/setup-sbt@ecad189dd245444b9ae0a0cd5922fd938b88906f # v1.5.12
       - uses: scalacenter/sbt-dependency-submission@d84eef4c09e633bcf5f113bcad7fd5e9af1baee9 # v3.1.1
         with:
           configs-ignore: provided optional test TestJdk21 compile-internal runtime-internal pr-validation multi-jvm scala-tool scala-doc-tool
