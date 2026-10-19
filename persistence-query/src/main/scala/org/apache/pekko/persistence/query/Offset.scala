@@ -17,7 +17,6 @@ import java.time.Instant
 import java.util.UUID
 
 import org.apache.pekko
-import pekko.annotation.ApiMayChange
 import pekko.util.UUIDComparator
 
 object Offset {
@@ -101,7 +100,6 @@ object TimestampOffset {
  * @param seen
  *   List of sequence nrs for every persistence id seen at this timestamp
  */
-@ApiMayChange
 final case class TimestampOffset(timestamp: Instant, readTimestamp: Instant, seen: Map[String, Long]) extends Offset {
 
   /** Java API */

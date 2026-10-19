@@ -15,7 +15,6 @@ package org.apache.pekko.persistence.query.typed.javadsl
 
 import org.apache.pekko
 import pekko.NotUsed
-import pekko.annotation.ApiMayChange
 import pekko.japi.Pair
 import pekko.persistence.query.DurableStateChange
 import pekko.persistence.query.Offset
@@ -29,7 +28,6 @@ import pekko.stream.javadsl.Source
  *
  * API May Change
  */
-@ApiMayChange
 trait DurableStateStoreBySliceQuery[A] extends DurableStateStore[A] {
 
   /**

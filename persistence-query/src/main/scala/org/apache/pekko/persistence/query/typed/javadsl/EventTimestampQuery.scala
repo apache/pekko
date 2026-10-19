@@ -18,7 +18,6 @@ import java.util.Optional
 import java.util.concurrent.CompletionStage
 
 import org.apache.pekko
-import pekko.annotation.ApiMayChange
 import pekko.persistence.query.javadsl.ReadJournal
 
 /**
@@ -26,7 +25,6 @@ import pekko.persistence.query.javadsl.ReadJournal
  *
  * API May Change
  */
-@ApiMayChange
 trait EventTimestampQuery extends ReadJournal {
 
   def timestampOf(persistenceId: String, sequenceNr: Long): CompletionStage[Optional[Instant]]

@@ -15,7 +15,6 @@ package org.apache.pekko.persistence.query.typed.javadsl
 
 import org.apache.pekko
 import pekko.NotUsed
-import pekko.annotation.ApiMayChange
 import pekko.japi.Pair
 import pekko.persistence.query.Offset
 import pekko.persistence.query.javadsl.ReadJournal
@@ -27,7 +26,6 @@ import pekko.stream.javadsl.Source
  *
  * API May Change
  */
-@ApiMayChange
 trait CurrentEventsBySliceQuery extends ReadJournal {
 
   /**

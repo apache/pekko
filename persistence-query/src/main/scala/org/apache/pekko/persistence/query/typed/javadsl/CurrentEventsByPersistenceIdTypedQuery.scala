@@ -15,7 +15,6 @@ package org.apache.pekko.persistence.query.typed.javadsl
 
 import org.apache.pekko
 import pekko.NotUsed
-import pekko.annotation.ApiMayChange
 import pekko.persistence.query.javadsl.ReadJournal
 import pekko.persistence.query.typed.EventEnvelope
 import pekko.stream.javadsl.Source
@@ -25,7 +24,6 @@ import pekko.stream.javadsl.Source
  *
  * API May Change
  */
-@ApiMayChange
 trait CurrentEventsByPersistenceIdTypedQuery extends ReadJournal {
 
   /**
