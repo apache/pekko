@@ -31,7 +31,13 @@ import org.scalatest.concurrent.Eventually
 import org.scalatest.time.Span
 
 // pekko.remote.artery.propagate-harmless-quarantine-events defaults to off since Pekko 2.0.0
-class HarmlessQuarantineSpec extends ArteryMultiNodeSpec("""
+class HarmlessQuarantineSpec extends AbstractHarmlessQuarantineSpec("")
+
+// legacy Pekko 1.x behavior: harmless quarantine events are propagated to the remote system
+class HarmlessQuarantinePropagationSpec
+    extends AbstractHarmlessQuarantineSpec("pekko.remote.artery.propagate-harmless-quarantine-events = on")
+
+abstract class AbstractHarmlessQuarantineSpec(extraConfig: String) extends ArteryMultiNodeSpec(s"""
   pekko.loglevel=INFO
   pekko.remote.artery.advanced {
     stop-idle-outbound-after = 1 s
@@ -41,7 +47,11 @@ class HarmlessQuarantineSpec extends ArteryMultiNodeSpec("""
       actor-refs.advertisement-interval = 5 seconds
     }
   }
+  $extraConfig
   """) with ImplicitSender with Eventually {
+
+  private val propagateHarmlessQuarantineEvents =
+    system.settings.config.getBoolean("pekko.remote.artery.propagate-harmless-quarantine-events")
 
   override implicit val patience: PatienceConfig = {
     import pekko.testkit.TestDuration
@@ -104,9 +114,16 @@ class HarmlessQuarantineSpec extends ArteryMultiNodeSpec("""
         association.associationState.isQuarantined(remoteUid) shouldBe true
         association.associationState.quarantinedButHarmless(remoteUid) shouldBe true
 
-        remoteEcho.tell("ping", localEchoRef) // trigger sending message from remote to local, which will trigger local to wrongfully notify remote that it is quarantined
-        eventually {
-          expectNoMessage()
+        remoteEcho.tell("ping", localEchoRef) // trigger sending message from remote to local
+        if (propagateHarmlessQuarantineEvents) {
+          // legacy behavior: local notifies remote that it is quarantined, even though the quarantine is harmless
+          eventually {
+            expectMsgType[ThisActorSystemQuarantinedEvent]
+          }
+        } else {
+          eventually {
+            expectNoMessage()
+          }
         }
     }
 
