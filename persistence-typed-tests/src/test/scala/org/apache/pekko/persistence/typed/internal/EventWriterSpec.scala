@@ -128,6 +128,30 @@ class EventWriterSpec
       response.getError.getMessage should ===("Journal write failed")
     }
 
+    "bypass circuit breaker unless highest seqNr lookup failed" in new TestSetup {
+      sendWrite(1L)
+      val write1 = fakeJournal.expectMessageType[JournalProtocol.WriteMessages]
+      write1.bypassCircuitBreaker should ===(true)
+      val repr1 = write1.messages.head.asInstanceOf[AtomicWrite].payload.head
+      write1.persistentActor !
+      JournalProtocol.WriteMessageFailure(repr1, TestException("the error"), write1.actorInstanceId)
+      journalFailHighestSeqNr("highest error")
+      clientProbe.receiveMessage().isError should ===(true)
+
+      // journal seems to have real problems, use the circuit breaker
+      sendWrite(1L)
+      val write2 = fakeJournal.expectMessageType[JournalProtocol.WriteMessages]
+      write2.bypassCircuitBreaker should ===(false)
+      val repr2 = write2.messages.head.asInstanceOf[AtomicWrite].payload.head
+      write2.persistentActor ! JournalProtocol.WriteMessageSuccess(repr2, write2.actorInstanceId)
+      clientExpectSuccess(1)
+
+      // successful write, bypass again
+      sendWrite(2L)
+      val write3 = fakeJournal.expectMessageType[JournalProtocol.WriteMessages]
+      write3.bypassCircuitBreaker should ===(true)
+    }
+
     "ignores old failures when replay triggered" in new TestSetup {
       sendWrite(1L) // triggers write
 

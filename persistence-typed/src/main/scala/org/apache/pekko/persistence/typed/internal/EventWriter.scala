@@ -221,6 +221,8 @@ private[pekko] object EventWriter {
         val writerUuid = UUID.randomUUID().toString
 
         var perPidWriteState = Map.empty[Pid, StateForPid]
+        // duplicate key violations are expected, and would otherwise trip the journal circuit breaker
+        var bypassCircuitBreaker = true
         implicit val askTimeout: Timeout = settings.askTimeout
         import settings.fillSequenceNumberGaps
 
@@ -235,7 +237,8 @@ private[pekko] object EventWriter {
             AtomicWrite(reprs) :: Nil,
             context.self.toClassic,
             // Note: we use actorInstanceId to correlate replies from one write request
-            actorInstanceId = transactionId)
+            actorInstanceId = transactionId,
+            bypassCircuitBreaker)
         }
 
         def handleUpdatedStateForPid(pid: Pid, newStateForPid: StateForPid): Unit = {
@@ -328,6 +331,7 @@ private[pekko] object EventWriter {
         def handleJournalResponse(response: JournalProtocol.Response): Behavior[AnyRef] =
           response match {
             case JournalProtocol.WriteMessageSuccess(message, transactionId) =>
+              bypassCircuitBreaker = true
               val pid = message.persistenceId
               val sequenceNr = message.sequenceNr
               perPidWriteState.get(pid) match {
@@ -549,6 +553,7 @@ private[pekko] object EventWriter {
             Behaviors.same
 
           case MaxSeqNrForPid(pid, maxSeqNr, AskMaxSeqNrReason.WriteFailure(errorDesc)) =>
+            bypassCircuitBreaker = true
             // write failed, so we looked up the maxSeqNr to detect if it was duplicate events, already in journal
             perPidWriteState.get(pid) match {
               case None =>
@@ -608,6 +613,7 @@ private[pekko] object EventWriter {
             Behaviors.same
 
           case MaxSeqNrForPid(pid, maxSeqNr, reason @ (AskMaxSeqNrReason.FillGaps | AskMaxSeqNrReason.SnapshotEvent)) =>
+            bypassCircuitBreaker = true
             perPidWriteState.get(pid) match {
               case None =>
                 context.log.debug("Got max seq nr with no waiting previous state for pid, ignoring (pid [{}])", pid)
@@ -629,6 +635,8 @@ private[pekko] object EventWriter {
             Behaviors.same
 
           case MaxSeqNrForPidFailed(pid, errorDescOpt) =>
+            // journal seems to have real problems, let the circuit breaker protect it until next successful write
+            bypassCircuitBreaker = false
             def errorDescInLog = errorDescOpt match {
               case AskMaxSeqNrReason.WriteFailure(errorDesc) => s", original error desc: $errorDesc"
               case _                                         => ""

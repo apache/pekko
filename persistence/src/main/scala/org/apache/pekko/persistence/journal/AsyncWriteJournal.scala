@@ -215,7 +215,10 @@ trait AsyncWriteJournal extends Actor with WriteJournalBase with AsyncRecovery {
     }
 
     {
-      case WriteMessages(messages, persistentActor, actorInstanceId) =>
+      case w: WriteMessages =>
+        val messages = w.messages
+        val persistentActor = w.persistentActor
+        val actorInstanceId = w.actorInstanceId
         val cctr = resequencerCounter
         resequencerCounter += messages.foldLeft(1)((acc, m) => acc + m.size)
 
@@ -229,8 +232,10 @@ trait AsyncWriteJournal extends Actor with WriteJournalBase with AsyncRecovery {
             Future.successful(Nil)
           case Success(prep) =>
             // try in case the asyncWriteMessages throws
-            try breaker.withCircuitBreaker(asyncWriteMessages(prep))
-            catch { case NonFatal(e) => Future.failed(e) }
+            try {
+              if (w.bypassCircuitBreaker) asyncWriteMessages(prep)
+              else breaker.withCircuitBreaker(asyncWriteMessages(prep))
+            } catch { case NonFatal(e) => Future.failed(e) }
           case f @ Failure(_) =>
             // exception from preparePersistentBatch => rejected
             Future.successful(messages.collect { case _: AtomicWrite => f })
