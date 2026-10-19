@@ -110,4 +110,8 @@ private[pekko] abstract class RemoteTransport(val system: ExtendedActorSystem, v
   @InternalStableApi
   def quarantine(address: Address, uid: Option[Long], reason: String): Unit
 
+  /**
+   * The uid of the actor system, see `ExtendedActorSystem.uid`.
+   */
+  def systemUid: Long
 }

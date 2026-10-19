@@ -859,12 +859,17 @@ private[pekko] class ActorSystemImpl(
     new Settings(classLoader, config, name, setup)
   }
 
-  val uid: Long = {
-    // to be able to test uid collisions
-    if (settings.config.hasPath("pekko.test-only-uid"))
-      settings.config.getLong("pekko.test-only-uid")
-    else
-      ThreadLocalRandom.current.nextLong()
+  override def uid: Long = {
+    try {
+      provider.systemUid
+    } catch {
+      case NonFatal(exc) =>
+        // could be NPE in RemoteActorRefProvider if the transport is not initialized yet
+        throw new IllegalStateException(
+          "uid accessed before provider has been initialized. " +
+          "This is a bug, please report at https://github.com/apache/pekko/issues",
+          exc)
+    }
   }
 
   protected def uncaughtExceptionHandler: Thread.UncaughtExceptionHandler =

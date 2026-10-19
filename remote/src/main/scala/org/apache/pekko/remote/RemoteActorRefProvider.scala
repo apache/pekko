@@ -167,6 +167,10 @@ private[pekko] class RemoteActorRefProvider(
     extends ActorRefProvider {
   import RemoteActorRefProvider._
 
+  // One part of the system uid generation. Taking this early to allow for some execution randomness until later
+  // when actually generating the uid.
+  private[pekko] val systemUidTimestamp1: Long = System.nanoTime()
+
   val remoteSettings: RemoteSettings = new RemoteSettings(settings.config)
 
   private[pekko] final val hasClusterOrUseUnsafe =
@@ -698,6 +702,9 @@ private[pekko] class RemoteActorRefProvider(
         local.addressString
     }
   }
+
+  override private[pekko] def systemUid: Long =
+    transport.systemUid
 }
 
 private[pekko] trait RemoteRef extends ActorRefScope {

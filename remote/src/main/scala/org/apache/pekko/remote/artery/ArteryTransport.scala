@@ -39,7 +39,6 @@ import pekko.event.Logging
 import pekko.event.MarkerLoggingAdapter
 import pekko.pattern.after
 import pekko.protobufv3.internal.CodedInputStream
-import pekko.remote.AddressUidExtension
 import pekko.remote.ContainerFormats
 import pekko.remote.RemoteActorRef
 import pekko.remote.RemoteActorRefProvider
@@ -330,6 +329,11 @@ private[remote] abstract class ArteryTransport(_system: ExtendedActorSystem, _pr
   override def addresses: Set[Address] = _addresses
   override def localAddressForRemote(remote: Address): Address = defaultAddress
 
+  /**
+   * Must not be accessed before `start()`, will throw NullPointerException otherwise.
+   */
+  override def systemUid: Long = _localAddress.uid
+
   protected val killSwitch: SharedKillSwitch = KillSwitches.shared("transportKillSwitch")
 
   // keyed by the streamId
@@ -407,14 +411,20 @@ private[remote] abstract class ArteryTransport(_system: ExtendedActorSystem, _pr
 
     val (port, boundPort) = bindInboundStreams()
 
+    val uid =
+      if (provider.settings.config.hasPath("pekko.test-only-uid"))
+        provider.settings.config.getLong("pekko.test-only-uid") // to be able to test uid collisions
+      else
+        generateSystemUid(settings.Bind.Hostname, port, provider.systemUidTimestamp1)
+
     _localAddress = UniqueAddress(
       Address(provider.remoteSettings.ProtocolName, system.name, settings.Canonical.Hostname, port),
-      AddressUidExtension(system).longAddressUid)
+      uid)
     _addresses = Set(_localAddress.address)
 
     _bindAddress = UniqueAddress(
       Address(provider.remoteSettings.ProtocolName, system.name, settings.Bind.Hostname, boundPort),
-      AddressUidExtension(system).longAddressUid)
+      uid)
 
     flightRecorder.transportUniqueAddressSet(_localAddress)
 
@@ -1108,5 +1118,23 @@ private[remote] object ArteryTransport {
       case LargeStreamId   => "large message"
       case _               => "message"
     }
+
+  /**
+   * Generates the system uid from the bind hostname and port in combination with timestamps,
+   * which makes collisions between systems less likely than with a plain random number.
+   */
+  def generateSystemUid(hostname: String, port: Int, timestamp1: Long): Long = {
+    var hash1 = 23
+    hash1 = 31 * hash1 + hostname.hashCode
+    hash1 = 31 * hash1 + java.lang.Long.hashCode(timestamp1)
+    hash1 = 31 * hash1 + java.lang.Long.hashCode(System.currentTimeMillis())
+
+    var hash2 = 23
+    hash2 = 31 * hash2 + port
+    hash2 = 31 * hash2 + java.lang.Long.hashCode(System.nanoTime())
+    hash2 = 31 * hash2 + java.lang.Long.hashCode(System.currentTimeMillis())
+
+    (hash1.toLong << 32) | (hash2 & 0xFFFFFFFFL)
+  }
 
 }

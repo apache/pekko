@@ -16,6 +16,7 @@ package org.apache.pekko.remote
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.ThreadLocalRandom
 import java.util.concurrent.TimeoutException
 
 import scala.annotation.nowarn
@@ -163,6 +164,9 @@ private[remote] class Remoting(_system: ExtendedActorSystem, _provider: RemoteAc
 
   override def localAddressForRemote(remote: Address): Address =
     Remoting.localAddressForRemote(transportMapping, remote)
+
+  // classic remoting only uses the lower 32 bits of the uid, see AddressUidExtension
+  override val systemUid: Long = ThreadLocalRandom.current.nextLong()
 
   val log: LoggingAdapter = Logging(system.eventStream, classOf[Remoting])
   val eventPublisher = new EventPublisher(system, log, RemoteLifecycleEventsLogLevel)
