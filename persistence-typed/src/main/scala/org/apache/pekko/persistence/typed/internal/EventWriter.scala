@@ -125,6 +125,7 @@ private[pekko] object EventWriter {
 
   private final case class MaxSeqNrForPid(persistenceId: Pid, sequenceNumber: SeqNr, originalErrorDesc: Option[String])
       extends Command
+  private final case class MaxSeqNrForPidFailed(persistenceId: Pid, originalErrorDesc: Option[String]) extends Command
 
   private case class StateForPid(
       waitingForReply: Map[SeqNr, (PersistentRepr, ActorRef[StatusReply[WriteAck]])],
@@ -233,11 +234,14 @@ private[pekko] object EventWriter {
               JournalProtocol.ReplayMessages(0L, 0L, 1L, pid, replyTo.toClassic)) {
             case Success(JournalProtocol.RecoverySuccess(highestSequenceNr)) =>
               MaxSeqNrForPid(pid, highestSequenceNr, originalErrorDesc)
+            case Success(JournalProtocol.ReplayMessagesFailure(_)) =>
+              MaxSeqNrForPidFailed(pid, originalErrorDesc)
+            case Failure(_) =>
+              MaxSeqNrForPidFailed(pid, originalErrorDesc)
             case Success(unexpected) =>
               throw new IllegalArgumentException(
-                s"Got unexpected reply from journal ${unexpected.getClass} for pid $pid")
-            case Failure(exception) =>
-              throw new RuntimeException(s"Error finding highest sequence number in journal for pid $pid", exception)
+                s"Got unexpected reply from journal ${unexpected.getClass} for pid $pid." +
+                s"${originalErrorDesc.map(origErr => s" original error: $origErr").getOrElse("")}")
           }
         }
 
@@ -558,6 +562,34 @@ private[pekko] object EventWriter {
 
                 }
 
+            }
+            Behaviors.same
+
+          case MaxSeqNrForPidFailed(pid, errorDescOpt) =>
+            def errorDescInLog = errorDescOpt match {
+              case None            => ""
+              case Some(errorDesc) => s", original error desc: $errorDesc"
+            }
+            perPidWriteState.get(pid) match {
+              case None =>
+                context.log.debug2(
+                  "Got max seq nr (failed) with no waiting previous state for persistence id [{}]{}",
+                  pid,
+                  errorDescInLog)
+              case Some(state) =>
+                state.waitingForReply.values.foreach {
+                  case (_, replyTo) =>
+                    replyTo ! StatusReply.error("Journal write failed")
+                }
+                val sortedSeqs = state.waitingForReply.keys.toSeq.sorted
+                context.log.warnN(
+                  "Failed max seq nr, and therefore failed writing event batch persistence id [{}], sequence nr [{}-{}]{}",
+                  pid,
+                  sortedSeqs.head,
+                  sortedSeqs.last,
+                  errorDescInLog)
+                val newState = state.copy(waitingForReply = Map.empty, writeErrorHandlingInProgress = false)
+                handleUpdatedStateForPid(pid, newState)
             }
             Behaviors.same
 
