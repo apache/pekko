@@ -462,7 +462,7 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
   private[pekko] val bindings: Seq[ClassSerializer] = {
     val fromConfig = for {
       (className: String, alias: String) <- settings.SerializationBindings
-      if alias != "none" && checkGoogleProtobuf(className)
+      if alias != "none" && checkGoogleProtobuf(className) && checkScalaPb(className)
     } yield (system.dynamicAccess.getClassFor[Any](className).get, serializers(alias))
 
     val fromSettings = serializerDetails.flatMap { detail =>
@@ -499,6 +499,9 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
   // The reason for this special case is for backwards compatibility so that we still can
   // include "com.google.protobuf.GeneratedMessage" = proto in configured serialization-bindings.
   private def checkGoogleProtobuf(className: String): Boolean = checkClass("com.google.protobuf", className)
+
+  // for convenience scalapb.GeneratedMessage is defined in reference.conf, but might not be included in classpath
+  private def checkScalaPb(className: String): Boolean = checkClass("scalapb.GeneratedMessage", className)
 
   private def checkClass(prefix: String, className: String): Boolean =
     !className.startsWith(prefix) || system.dynamicAccess.getClassFor[Any](className).isSuccess
