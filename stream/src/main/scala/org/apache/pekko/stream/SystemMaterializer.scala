@@ -84,6 +84,16 @@ final class SystemMaterializer(system: ExtendedActorSystem) extends Extension {
    * INTERNAL API
    */
   @InternalApi
+  private[pekko] def createAdditionalSystemMaterializer(defaultAttributes: Attributes): Materializer = {
+    val started = (materializerGuardian ? MaterializerGuardian.StartMaterializerWithAttributes(defaultAttributes))
+      .mapTo[MaterializerGuardian.MaterializerStarted]
+    Await.result(started, materializerTimeout.duration).materializer
+  }
+
+  /**
+   * INTERNAL API
+   */
+  @InternalApi
   @nowarn("msg=deprecated")
   private[pekko] def createAdditionalLegacySystemMaterializer(
       namePrefix: String,
