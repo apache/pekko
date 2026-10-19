@@ -113,19 +113,69 @@ private[pekko] object EventWriter {
   }
 
   sealed trait Command
+
+  // extends AbstractFunction6 to keep the companion binary compatible with the previous shape
+  object Write
+      extends scala.runtime.AbstractFunction6[
+        Pid,
+        SeqNr,
+        Any,
+        Option[Any],
+        Set[String],
+        ActorRef[StatusReply[WriteAck]],
+        Write] {
+
+    /**
+     * For binary compatibility, the event is not a snapshot event.
+     */
+    def apply(
+        persistenceId: Pid,
+        sequenceNumber: SeqNr,
+        event: Any,
+        metadata: Option[Any],
+        tags: Set[String],
+        replyTo: ActorRef[StatusReply[WriteAck]]): Write =
+      new Write(persistenceId, sequenceNumber, event, isSnapshotEvent = false, metadata, tags, replyTo)
+  }
+
+  /**
+   * @param isSnapshotEvent when `true` gaps before the event will be filled with `FilteredPayload` even
+   *                        if `fill-sequence-number-gaps` is disabled
+   */
   final case class Write(
       persistenceId: Pid,
       sequenceNumber: SeqNr,
       event: Any,
+      isSnapshotEvent: Boolean,
       metadata: Option[Any],
       tags: Set[String],
       replyTo: ActorRef[StatusReply[WriteAck]])
-      extends Command
+      extends Command {
+
+    /**
+     * For binary compatibility, the event is not a snapshot event.
+     */
+    def this(
+        persistenceId: Pid,
+        sequenceNumber: SeqNr,
+        event: Any,
+        metadata: Option[Any],
+        tags: Set[String],
+        replyTo: ActorRef[StatusReply[WriteAck]]) =
+      this(persistenceId, sequenceNumber, event, isSnapshotEvent = false, metadata, tags, replyTo)
+  }
   final case class WriteAck(persistenceId: Pid, sequenceNumber: SeqNr)
 
-  private final case class MaxSeqNrForPid(persistenceId: Pid, sequenceNumber: SeqNr, originalErrorDesc: Option[String])
+  private final case class MaxSeqNrForPid(persistenceId: Pid, sequenceNumber: SeqNr, reason: AskMaxSeqNrReason)
       extends Command
-  private final case class MaxSeqNrForPidFailed(persistenceId: Pid, originalErrorDesc: Option[String]) extends Command
+  private final case class MaxSeqNrForPidFailed(persistenceId: Pid, reason: AskMaxSeqNrReason) extends Command
+
+  private sealed trait AskMaxSeqNrReason
+  private object AskMaxSeqNrReason {
+    final case class WriteFailure(originalErrorDesc: String) extends AskMaxSeqNrReason
+    case object FillGaps extends AskMaxSeqNrReason
+    case object SnapshotEvent extends AskMaxSeqNrReason
+  }
 
   private case class StateForPid(
       waitingForReply: Map[SeqNr, (PersistentRepr, ActorRef[StatusReply[WriteAck]])],
@@ -226,22 +276,22 @@ private[pekko] object EventWriter {
           }
         }
 
-        def askMaxSeqNr(pid: Pid, originalErrorDesc: Option[String]): Unit = {
+        def askMaxSeqNr(pid: Pid, reason: AskMaxSeqNrReason): Unit = {
           context.log.trace("Request highest sequence number for pid [{}]", pid)
           context.ask(
             journal,
             (replyTo: ActorRef[JournalProtocol.Response]) =>
               JournalProtocol.ReplayMessages(0L, 0L, 1L, pid, replyTo.toClassic)) {
             case Success(JournalProtocol.RecoverySuccess(highestSequenceNr)) =>
-              MaxSeqNrForPid(pid, highestSequenceNr, originalErrorDesc)
+              MaxSeqNrForPid(pid, highestSequenceNr, reason)
             case Success(JournalProtocol.ReplayMessagesFailure(_)) =>
-              MaxSeqNrForPidFailed(pid, originalErrorDesc)
+              MaxSeqNrForPidFailed(pid, reason)
             case Failure(_) =>
-              MaxSeqNrForPidFailed(pid, originalErrorDesc)
+              MaxSeqNrForPidFailed(pid, reason)
             case Success(unexpected) =>
               throw new IllegalArgumentException(
-                s"Got unexpected reply from journal ${unexpected.getClass} for pid $pid." +
-                s"${originalErrorDesc.map(origErr => s" original error: $origErr").getOrElse("")}")
+                s"Got unexpected reply from journal ${unexpected.getClass} for pid $pid. " +
+                s"original reason: $reason")
           }
         }
 
@@ -345,7 +395,7 @@ private[pekko] object EventWriter {
                       if (!state.writeErrorHandlingInProgress && state.currentTransactionId == transactionId) {
                         perPidWriteState =
                           perPidWriteState.updated(pid, state.copy(writeErrorHandlingInProgress = true))
-                        askMaxSeqNr(pid, Some(error.getMessage))
+                        askMaxSeqNr(pid, AskMaxSeqNrReason.WriteFailure(error.getMessage))
                       } else {
                         context.log.traceN(
                           "Ignoring failure for pid [{}], seq nr [{}], tx id [{}], since write error handling already in progress or old tx id (current tx id [{}])",
@@ -363,15 +413,19 @@ private[pekko] object EventWriter {
               Behaviors.same
           }
 
-        def handleWrite(repr: PersistentRepr, replyTo: ActorRef[StatusReply[WriteAck]], calledAfterMaxSeqNr: Boolean)
-            : Unit = {
+        def handleWrite(
+            repr: PersistentRepr,
+            replyTo: ActorRef[StatusReply[WriteAck]],
+            isSnapshotEvent: Boolean,
+            calledAfterMaxSeqNr: Boolean): Unit = {
           val persistenceId = repr.persistenceId
           val sequenceNumber = repr.sequenceNr
           val newStateForPid =
             perPidWriteState.get(persistenceId) match {
               case None =>
-                if (fillSequenceNumberGaps && sequenceNumber != 1L) {
-                  askMaxSeqNr(persistenceId, originalErrorDesc = None)
+                if ((fillSequenceNumberGaps || isSnapshotEvent) && sequenceNumber != 1L) {
+                  val reason = if (isSnapshotEvent) AskMaxSeqNrReason.SnapshotEvent else AskMaxSeqNrReason.FillGaps
+                  askMaxSeqNr(persistenceId, reason)
                   StateForPid(waitingForReply = Map.empty, waitingForSeqNrLookup = Vector((repr, replyTo)))
                 } else {
                   sendToJournal(1, Vector(repr))
@@ -380,7 +434,7 @@ private[pekko] object EventWriter {
 
               case Some(state) =>
                 val expectedSeqNr =
-                  if (fillSequenceNumberGaps) state.nextExpectedSeqNr
+                  if (fillSequenceNumberGaps || isSnapshotEvent) state.nextExpectedSeqNr
                   else repr.sequenceNr
 
                 if (state.seqNrlookupInProgress) {
@@ -416,7 +470,7 @@ private[pekko] object EventWriter {
                   state
                 } else { // sequenceNumber > expectedSeqNr
                   require(
-                    fillSequenceNumberGaps,
+                    fillSequenceNumberGaps || isSnapshotEvent,
                     s"Unexpected sequence number gap, expected [$expectedSeqNr], received [$sequenceNumber]. " +
                     "Enable pekko.persistence.typed.event-writer.fill-sequence-number-gaps config if gaps are " +
                     "expected and should be filled with FilteredPayload.")
@@ -433,7 +487,8 @@ private[pekko] object EventWriter {
                         sender = pekko.actor.ActorRef.noSender)
                     }.toVector
                     context.log.debugN(
-                      "Detected sequence nr gap [{}-{}] for persistence id [{}]. Filling with FilteredPayload.",
+                      "Detected sequence nr gap{} [{}-{}] for persistence id [{}]. Filling with FilteredPayload.",
+                      if (isSnapshotEvent) " for snapshot event" else "",
                       fillRepr.head.sequenceNr,
                       fillRepr.last.sequenceNr,
                       persistenceId)
@@ -460,7 +515,8 @@ private[pekko] object EventWriter {
                     // No pending writes or we haven't just looked up latest sequence nr.
                     // The reason we don't trust a previous state.latestSeqNr is because another EventWriter
                     // on another node might have been taking writes since we retrieved it.
-                    askMaxSeqNr(persistenceId, originalErrorDesc = None)
+                    val reason = if (isSnapshotEvent) AskMaxSeqNrReason.SnapshotEvent else AskMaxSeqNrReason.FillGaps
+                    askMaxSeqNr(persistenceId, reason)
                     context.log.trace2(
                       "Seq nr lookup needed for persistence id [{}], adding sequence nr [{}] to pending",
                       persistenceId,
@@ -474,7 +530,7 @@ private[pekko] object EventWriter {
         }
 
         Behaviors.receiveMessage {
-          case Write(persistenceId, sequenceNumber, event, metadata, tags, replyTo) =>
+          case Write(persistenceId, sequenceNumber, event, isSnapshotEvent, metadata, tags, replyTo) =>
             val payload = if (tags.isEmpty) event else Tagged(event, tags)
             val repr = PersistentRepr(
               payload,
@@ -489,24 +545,10 @@ private[pekko] object EventWriter {
               case _          => repr
             }
 
-            handleWrite(reprWithMeta, replyTo, calledAfterMaxSeqNr = false)
+            handleWrite(reprWithMeta, replyTo, isSnapshotEvent, calledAfterMaxSeqNr = false)
             Behaviors.same
 
-          case MaxSeqNrForPid(pid, maxSeqNr, None) =>
-            perPidWriteState.get(pid) match {
-              case None =>
-                context.log.debug("Got max seq nr with no waiting previous state for pid, ignoring (pid [{}])", pid)
-              case Some(state) =>
-                context.log.debug("Retrieved max seq nr [{}] for pid [{}]", maxSeqNr, pid)
-                val waiting = state.waitingForSeqNrLookup
-                perPidWriteState = perPidWriteState.updated(
-                  pid,
-                  state.copy(latestSeqNr = maxSeqNr, waitingForSeqNrLookup = Vector.empty))
-                waiting.foreach { case (repr, replyTo) => handleWrite(repr, replyTo, calledAfterMaxSeqNr = true) }
-            }
-            Behaviors.same
-
-          case MaxSeqNrForPid(pid, maxSeqNr, Some(errorDesc)) =>
+          case MaxSeqNrForPid(pid, maxSeqNr, AskMaxSeqNrReason.WriteFailure(errorDesc)) =>
             // write failed, so we looked up the maxSeqNr to detect if it was duplicate events, already in journal
             perPidWriteState.get(pid) match {
               case None =>
@@ -565,10 +607,31 @@ private[pekko] object EventWriter {
             }
             Behaviors.same
 
+          case MaxSeqNrForPid(pid, maxSeqNr, reason @ (AskMaxSeqNrReason.FillGaps | AskMaxSeqNrReason.SnapshotEvent)) =>
+            perPidWriteState.get(pid) match {
+              case None =>
+                context.log.debug("Got max seq nr with no waiting previous state for pid, ignoring (pid [{}])", pid)
+              case Some(state) =>
+                context.log.debug("Retrieved max seq nr [{}] for pid [{}]", maxSeqNr, pid)
+                val waiting = state.waitingForSeqNrLookup
+                perPidWriteState = perPidWriteState.updated(
+                  pid,
+                  state.copy(latestSeqNr = maxSeqNr, waitingForSeqNrLookup = Vector.empty))
+                waiting.foreach {
+                  case (repr, replyTo) =>
+                    handleWrite(
+                      repr,
+                      replyTo,
+                      isSnapshotEvent = reason == AskMaxSeqNrReason.SnapshotEvent,
+                      calledAfterMaxSeqNr = true)
+                }
+            }
+            Behaviors.same
+
           case MaxSeqNrForPidFailed(pid, errorDescOpt) =>
             def errorDescInLog = errorDescOpt match {
-              case None            => ""
-              case Some(errorDesc) => s", original error desc: $errorDesc"
+              case AskMaxSeqNrReason.WriteFailure(errorDesc) => s", original error desc: $errorDesc"
+              case _                                         => ""
             }
             perPidWriteState.get(pid) match {
               case None =>

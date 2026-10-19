@@ -30,7 +30,7 @@ import org.scalatest.wordspec.AnyWordSpecLike
 
 object EventWriterFillGapsSpec {
   def config =
-    ConfigFactory.parseString(s"""
+    ConfigFactory.parseString("""
       pekko.persistence.journal.inmem.delay-writes=10ms
     """).withFallback(ConfigFactory.load()).resolve()
 }
@@ -354,7 +354,7 @@ class EventWriterFillGapsSpec
       (1 to 1000).map { pidN =>
         Future {
           for (n <- 1 to 20) {
-            writer ! EventWriter.Write(s"A|pid$pidN", n.toLong, n.toString, None, Set.empty, probe.ref)
+            writer ! EventWriter.Write(s"A|pid$pidN", n.toLong, n.toString, false, None, Set.empty, probe.ref)
           }
         }
       }
@@ -375,7 +375,7 @@ class EventWriterFillGapsSpec
               else false
 
             if (!gap)
-              writer ! EventWriter.Write(s"B|pid$pidN", n.toLong, n.toString, None, Set.empty, probe.ref)
+              writer ! EventWriter.Write(s"B|pid$pidN", n.toLong, n.toString, false, None, Set.empty, probe.ref)
           }
         }
       }
@@ -391,7 +391,7 @@ class EventWriterFillGapsSpec
     val writer = spawn(EventWriter(fakeJournal.ref, settings))
     val clientProbe = createTestProbe[StatusReply[EventWriter.WriteAck]]()
     def sendWrite(seqNr: Long, pid: String = pid1): Unit = {
-      writer ! EventWriter.Write(pid, seqNr, seqNr.toString, None, Set.empty, clientProbe.ref)
+      writer ! EventWriter.Write(pid, seqNr, seqNr.toString, false, None, Set.empty, clientProbe.ref)
     }
     def journalAckWrite(pid: String = pid1, expectedSequenceNumbers: Vector[Long] = Vector.empty): Int = {
       val write = fakeJournal.expectMessageType[JournalProtocol.WriteMessages]
