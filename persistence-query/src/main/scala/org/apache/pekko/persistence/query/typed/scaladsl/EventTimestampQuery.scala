@@ -18,7 +18,6 @@ import java.time.Instant
 import scala.concurrent.Future
 
 import org.apache.pekko
-import pekko.annotation.ApiMayChange
 import pekko.persistence.query.scaladsl.ReadJournal
 
 /**
@@ -26,7 +25,6 @@ import pekko.persistence.query.scaladsl.ReadJournal
  *
  * API May Change
  */
-@ApiMayChange
 trait EventTimestampQuery extends ReadJournal {
 
   def timestampOf(persistenceId: String, sequenceNr: Long): Future[Option[Instant]]

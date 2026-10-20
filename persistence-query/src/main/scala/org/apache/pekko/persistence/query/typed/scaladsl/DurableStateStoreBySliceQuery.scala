@@ -15,7 +15,6 @@ package org.apache.pekko.persistence.query.typed.scaladsl
 
 import org.apache.pekko
 import pekko.NotUsed
-import pekko.annotation.ApiMayChange
 import pekko.persistence.query.DurableStateChange
 import pekko.persistence.query.Offset
 import pekko.persistence.state.scaladsl.DurableStateStore
@@ -28,7 +27,6 @@ import pekko.stream.scaladsl.Source
  *
  * API May Change
  */
-@ApiMayChange
 trait DurableStateStoreBySliceQuery[A] extends DurableStateStore[A] {
 
   /**

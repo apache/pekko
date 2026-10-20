@@ -44,7 +44,7 @@ Changes to durable state can be queried in two ways, depending on which queries 
   purpose is to evenly distribute all persistence ids over the slices. `sliceForPersistenceId` returns the slice of a
   persistence id and `sliceRanges` splits all slices into a given number of ranges, for example to run one query per range.
   This is similar to @ref:[EventsBySlice](../persistence-query.md#eventsbyslice-and-currenteventsbyslice) for event
-  sourced entities. This API may change.
+  sourced entities.
 
 Refer to the documentation of the state store plugin you are using for which of these queries it supports.
 

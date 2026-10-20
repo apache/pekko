@@ -17,7 +17,6 @@ import java.util.{ Set => JSet }
 import java.util.Optional
 
 import org.apache.pekko
-import pekko.annotation.ApiMayChange
 import pekko.persistence.query.Offset
 import pekko.util.HashCode
 
@@ -134,7 +133,6 @@ object EventEnvelope {
  *
  * API May Change
  */
-@ApiMayChange
 final class EventEnvelope[Event](
     val offset: Offset,
     val persistenceId: String,
