@@ -27,7 +27,7 @@ import pekko.annotation.{ InternalApi, InternalStableApi }
 import pekko.dispatch.affinity.AffinityPoolConfigurator
 import pekko.dispatch.sysmsg._
 import pekko.event.EventStream
-import pekko.event.Logging.{ emptyMDC, Debug, Error, LogEventException, Warning }
+import pekko.event.Logging.{ emptyMDC, Debug, Error, LogEvent, LogEventException, StandardOutLogger, Warning }
 import pekko.util.Index
 
 import com.typesafe.config.Config
@@ -58,7 +58,8 @@ final case class TaskInvocation(eventStream: EventStream, runnable: Runnable, cl
   def run(): Unit =
     try runnable.run()
     catch {
-      case NonFatal(e) => eventStream.publish(Error(e, "TaskInvocation", this.getClass, e.getMessage))
+      case NonFatal(e) =>
+        DispatchFailureReporting.report(eventStream, Error(e, "TaskInvocation", this.getClass, e.getMessage))
     } finally cleanup()
 }
 
@@ -67,6 +68,37 @@ final case class TaskInvocation(eventStream: EventStream, runnable: Runnable, cl
  */
 private[pekko] trait LoadMetrics { self: Executor =>
   def atFullThrottle(): Boolean
+}
+
+/**
+ * INTERNAL API
+ *
+ * Reporting a dispatch failure means publishing to the EventStream, which delivers to a logging
+ * actor with `!` and therefore goes back through dispatch. When the executor is rejecting - during
+ * shutdown, or behind a saturated queue - that re-enters the failure path and recurses until the
+ * stack overflows, which `pekko.jvm-exit-on-fatal-error` turns into a JVM kill.
+ *
+ * Reporting is guarded per thread: the outermost failure publishes to the EventStream as before,
+ * and a failure reached while that publish is still in flight goes to the stdout logger, which has
+ * no mailbox and so cannot re-enter dispatch. See https://github.com/apache/pekko/issues/3613.
+ *
+ * The guard is a concurrent set of threads rather than a ThreadLocal. A virtualized dispatcher runs
+ * every task on a new virtual thread, and `ThreadLocal.get` allocates a `ThreadLocalMap` on a thread
+ * that does not have one yet - which is why `Dispatcher.batchable` turns batching off when
+ * virtualized. Entries live only for the duration of one publish and are removed in `finally`.
+ */
+@InternalApi
+private[pekko] object DispatchFailureReporting {
+  private val reporting = ConcurrentHashMap.newKeySet[Thread]()
+
+  def report(eventStream: EventStream, event: LogEvent): Unit = {
+    val thread = Thread.currentThread()
+    if (!reporting.add(thread)) StandardOutLogger ! event
+    else {
+      try eventStream.publish(event)
+      finally reporting.remove(thread)
+    }
+  }
 }
 
 /**
@@ -186,8 +218,9 @@ abstract class MessageDispatcher(val configurator: MessageDispatcherConfigurator
   }
 
   override def reportFailure(t: Throwable): Unit = t match {
-    case e: LogEventException => eventStream.publish(e.event)
-    case _                    => eventStream.publish(Error(t, getClass.getName, getClass, t.getMessage))
+    case e: LogEventException => DispatchFailureReporting.report(eventStream, e.event)
+    case _                    =>
+      DispatchFailureReporting.report(eventStream, Error(t, getClass.getName, getClass, t.getMessage))
   }
 
   private final def ifSensibleToDoSoThenScheduleShutdown(): Unit = {
