@@ -381,7 +381,7 @@ object Dependencies {
     Docs.gson,
     Provided.levelDB)
 
-  lazy val benchJmh = l ++= Seq(logback, Provided.levelDB, Provided.levelDBNative, Compile.jctools)
+  lazy val benchJmh = l ++= Seq(logback, Provided.levelDB, Provided.levelDBNative, Compile.jctools, zstdJni)
 
   // pekko stream
 
