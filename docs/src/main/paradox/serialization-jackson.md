@@ -478,9 +478,23 @@ the `jackson-json` binding the default configuration is:
 
 @@snip [reference.conf](/serialization-jackson/src/main/resources/reference.conf) { #compression }
 
-Supported compression algorithms are: gzip, lz4. Use 'off' to disable compression.
-Gzip is generally slower than lz4.
+Supported compression algorithms are: gzip, lz4, zstd. Use 'off' to disable compression.
+Gzip is generally slower than lz4 and zstd. zstd usually compresses better than lz4 and nearly as well as gzip,
+while being much faster than gzip. Its compression level can be set with the `zstd-level` property (default 3).
 Messages larger than the `compress-larger-than` property are compressed.
+
+zstd compression uses [zstd-jni](https://github.com/luben/zstd-jni), an optional dependency that has to be
+added to use it:
+
+@@dependency[sbt,Maven,Gradle] {
+  group=com.github.luben
+  artifact=zstd-jni
+  version="$zstd_jni_version$"
+}
+
+Every node that may receive zstd compressed messages must be able to decompress them, so when changing the
+`algorithm` to `zstd` in a running cluster, first deploy the zstd-jni dependency (and a Pekko version that
+supports zstd) to all nodes with the old `algorithm`, and then change the `algorithm` in a second rolling update.
 
 Compression can be disabled by setting the `algorithm` property to `off`. It will still be able to decompress
 payloads that were compressed when serialized, e.g. if this configuration is changed.
@@ -489,7 +503,7 @@ For the `jackson-cbor` and custom bindings other than `jackson-json` compression
 but can be enabled in the same way as the configuration shown above but replacing `jackson-json` with
 the binding name (for example `jackson-cbor`).
 
-The `compression.max-decompressed-size` property limits how large a compressed (gzip or lz4) payload may
+The `compression.max-decompressed-size` property limits how large a compressed (gzip, lz4 or zstd) payload may
 become when it is decompressed during deserialization, guarding against a small message that expands to an
 excessive size. It applies regardless of the `algorithm` setting. The default is `unlimited`, which applies
 no limit (a negative number also means unlimited). Set a size such as `256 MiB`, larger than any payload the
