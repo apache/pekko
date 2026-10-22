@@ -38,15 +38,16 @@ import pekko.util.ByteString
   def inputBuffers(input: ByteString): Iterator[ByteBuffer] = input.asByteBuffersUnsafe.iterator
 
   /**
-   * Takes the bytes written to `output` (from 0 until its position) as a ByteString. When at
-   * least half of the buffer is used its array is handed over without copying and a new buffer
-   * is returned for further output, otherwise the bytes are copied so that a mostly empty
-   * array is not retained.
+   * Takes the bytes written to `output` (from 0 until its position) as a ByteString. When the
+   * buffer is nearly full (at least 7/8 used) its array is handed over without copying and a new
+   * buffer is returned for further output. Otherwise the bytes are copied into an exact-size
+   * array, so that emitted ByteStrings do not retain much unused space, and the buffer is reused.
    */
   def takeOutput(output: ByteBuffer): (ByteString, ByteBuffer) = {
     val produced = output.position()
-    if (produced >= output.capacity() / 2)
-      (ByteString.fromArrayUnsafe(output.array(), 0, produced), ByteBuffer.allocate(output.capacity()))
+    val capacity = output.capacity()
+    if (produced >= capacity - (capacity >> 3))
+      (ByteString.fromArrayUnsafe(output.array(), 0, produced), ByteBuffer.allocate(capacity))
     else {
       output.clear()
       (ByteString.fromArray(output.array(), 0, produced), output)
