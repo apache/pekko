@@ -19,92 +19,80 @@ package org.apache.pekko.stream.impl.io.compression
 
 import java.nio.ByteBuffer
 
-import scala.util.control.NonFatal
+import scala.annotation.tailrec
 
-import com.github.luben.zstd.{ Zstd, ZstdDirectBufferDecompressingStreamNoFinalizer }
+import com.github.luben.zstd.{ Zstd, ZstdDecompressCtx, ZstdException }
 
 import org.apache.pekko
 import pekko.annotation.InternalApi
-import pekko.io.ByteBufferCleaner
 import pekko.stream.Attributes
 import pekko.stream.impl.fusing.GraphStages.SimpleLinearGraphStage
 import pekko.stream.stage.{ GraphStageLogic, InHandler, OutHandler }
 import pekko.util.ByteString
 
 /** INTERNAL API */
+@InternalApi private[pekko] object ZstdDecompressor {
+  private val EmptyInput = ByteBuffer.allocate(0)
+  private val NoInput: Iterator[ByteBuffer] = Iterator.empty
+}
+
+/** INTERNAL API */
 @InternalApi private[pekko] class ZstdDecompressor(maxBytesPerChunk: Int =
       Zstd.blockSizeMax()) extends SimpleLinearGraphStage[ByteString] {
+  import ZstdDecompressor._
+
+  require(maxBytesPerChunk > 0, "maxBytesPerChunk must be greater than 0")
 
   override def createLogic(inheritedAttributes: Attributes): GraphStageLogic = {
     new GraphStageLogic(shape) with InHandler with OutHandler {
 
-      private val sourceBuffer = ByteBuffer.allocateDirect(maxBytesPerChunk)
+      private val decompressCtx = new ZstdDecompressCtx()
 
-      // This is initialized here to avoid an allocation per onPush, remember to clear before using
-      private val outputBuffer = ByteBuffer.allocateDirect(maxBytesPerChunk)
-      private val decompressingStream = new ZstdDirectBufferDecompressingStreamNoFinalizer(sourceBuffer)
+      // zstd-jni supports heap ByteBuffers for streaming decompression, so no direct buffers are needed
+      private var outputBuffer = ByteBuffer.allocate(maxBytesPerChunk)
+      private var inputBuffer = EmptyInput
+      // the remaining fragments of the current element, see ZstdBuffers.inputBuffers
+      private var inputBuffers = NoInput
+      // set when the last call filled the output buffer, zstd may then still hold decompressed data
+      private var outputPending = false
+      // false while a frame has been started but not fully decompressed and flushed
+      private var frameComplete = true
 
       override def onPush(): Unit = {
-        sourceBuffer.clear()
-        val inputArray = grab(in).toArrayUnsafe()
-        sourceBuffer.put(inputArray)
-        sourceBuffer.flip()
-        if (sourceBuffer.hasRemaining) {
-          var result = ByteString.empty
-          while (sourceBuffer.hasRemaining) {
-            outputBuffer.clear()
-            decompressingStream.read(outputBuffer)
-            outputBuffer.flip()
-            val outputArray = new Array[Byte](outputBuffer.limit())
-            outputBuffer.get(outputArray)
-            result = result.concat(ByteString.fromArrayUnsafe(outputArray))
-          }
-
-          // Fencepost case, it's possible to still have sourceBuffer.hasRemaining and yet decompression result
-          // not output anything
-          if (result.nonEmpty)
-            push(out, result)
-          else
-            pull(in)
-        } else pull(in)
-        sourceBuffer.flip()
+        inputBuffers = ZstdBuffers.inputBuffers(grab(in))
+        decompress()
       }
 
-      override def onPull(): Unit = pull(in)
+      override def onPull(): Unit = decompress()
 
-      override def onUpstreamFinish(): Unit = {
-        sourceBuffer.flip()
-        if (sourceBuffer.hasRemaining) {
-          var result = ByteString.empty
-          while (sourceBuffer.hasRemaining) {
-            outputBuffer.clear()
-            decompressingStream.read(outputBuffer)
-            outputBuffer.flip()
-            val outputArray = new Array[Byte](outputBuffer.limit())
-            outputBuffer.get(outputArray)
-            result = result.concat(ByteString.fromArrayUnsafe(outputArray))
-          }
-          decompressingStream.close()
+      override def onUpstreamFinish(): Unit =
+        if (!hasInput && !outputPending) finish()
+        else if (isAvailable(out)) decompress()
+      // otherwise the remaining input is decompressed on the next onPull
 
-          // Fencepost case, it's possible to still have sourceBuffer.hasRemaining and yet decompression result
-          // not output anything
-          if (result.nonEmpty)
-            emit(out, result)
-        }
-        completeStage()
+      private def hasInput: Boolean = {
+        while (!inputBuffer.hasRemaining && inputBuffers.hasNext) inputBuffer = inputBuffers.next()
+        inputBuffer.hasRemaining
       }
 
-      override def postStop(): Unit = {
-        decompressingStream.close()
+      @tailrec
+      private def decompress(): Unit =
+        if (hasInput || outputPending) {
+          frameComplete = decompressCtx.decompressByteBufferStream(outputBuffer, inputBuffer)
+          outputPending = !outputBuffer.hasRemaining
+          if (outputBuffer.position() > 0) {
+            val (output, nextBuffer) = ZstdBuffers.takeOutput(outputBuffer)
+            outputBuffer = nextBuffer
+            push(out, output)
+          } else decompress()
+        } else if (isClosed(in)) finish()
+        else pull(in)
 
-        if (ByteBufferCleaner.isSupported)
-          try {
-            ByteBufferCleaner.clean(sourceBuffer)
-            ByteBufferCleaner.clean(outputBuffer)
-          } catch {
-            case NonFatal(_) => /* ok, best effort attempt to cleanup failed */
-          }
-      }
+      private def finish(): Unit =
+        if (frameComplete) completeStage()
+        else failStage(new ZstdException(Zstd.errSrcSizeWrong(), "Truncated zstd stream"))
+
+      override def postStop(): Unit = decompressCtx.close()
 
       setHandlers(in, out, this)
     }

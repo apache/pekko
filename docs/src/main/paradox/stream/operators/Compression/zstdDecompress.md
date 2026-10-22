@@ -11,7 +11,7 @@ Creates a flow that zstd-decompresses a stream of ByteStrings.
 ## Description
 
 Creates a flow that zstd-decompresses a stream of ByteStrings. If the input is truncated, uses invalid
-compression method or is invalid (failed CRC checks) this operator fails with a `com.github.luben.zstd.ZstdIOException`.
+compression method or is invalid (failed CRC checks) this operator fails with a `com.github.luben.zstd.ZstdException`.
 
 ## Reactive Streams semantics
 

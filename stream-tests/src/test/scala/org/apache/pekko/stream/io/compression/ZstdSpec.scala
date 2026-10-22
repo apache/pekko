@@ -17,16 +17,17 @@
 
 package org.apache.pekko.stream.io.compression
 
-import com.github.luben.zstd.{ ZstdIOException, ZstdInputStream, ZstdOutputStream }
+import java.io.{ InputStream, OutputStream }
+
+import com.github.luben.zstd.{ Zstd, ZstdException, ZstdInputStream, ZstdOutputStream }
 
 import org.apache.pekko
 import pekko.stream.impl.io.compression.{ Compressor, ZstdCompressor }
 import pekko.stream.scaladsl.{ Compression, Flow }
+import pekko.stream.scaladsl.compression.ZstdDictionary
 import pekko.util.ByteString
 
-import java.io.{ InputStream, OutputStream }
-
-class ZstdSpec extends CoderSpec[ZstdIOException]("zstd") {
+class ZstdSpec extends CoderSpec[ZstdException]("zstd") {
   import CompressionTestingTools._
 
   override protected def newCompressor(): Compressor = new ZstdCompressor
@@ -45,6 +46,31 @@ class ZstdSpec extends CoderSpec[ZstdIOException]("zstd") {
   override def extraTests(): Unit = {
     "decode concatenated compressions" in {
       ourDecode(Seq(encode("Hello, "), encode("dear "), encode("User!")).join) should readAs("Hello, dear User!")
+    }
+    "throw an error on truncated input" in {
+      val ex = the[RuntimeException] thrownBy ourDecode(streamEncode(smallTextBytes).dropRight(5))
+      ex.ultimateCause.getMessage should equal("Truncated zstd stream")
+    }
+    "throw an error if compressed data is just missing the end of the frame" in {
+      val ex = the[RuntimeException] thrownBy ourDecode(newCompressor().compressAndFlush(smallTextBytes))
+      ex.ultimateCause.getMessage should equal("Truncated zstd stream")
+    }
+    "compress and decompress multi-fragment ByteStrings" in {
+      // slices of a single array, so the fragments do not cover their whole backing arrays
+      def fragmented(bytes: ByteString): ByteString =
+        ByteString(0.toByte +: bytes.toArray).drop(1).grouped(100).foldLeft(ByteString.empty)(_ ++ _)
+      val input = fragmented(ByteString(largeText, "UTF8"))
+      val compressed = ourEncode(input)
+      streamDecode(compressed) should equal(input)
+      ourDecode(fragmented(compressed)) should equal(input)
+    }
+    "compress with a dictionary slice" in {
+      val dictBytes = ("padding" + smallText * 4).getBytes("UTF-8")
+      val dictionary = ZstdDictionary(dictBytes, Compression.ZstdDefaultCompressionLevel, 7, dictBytes.length - 7)
+      val compressed = new ZstdCompressor(dictionary = Some(dictionary.toImpl)).compressAndFinish(smallTextBytes)
+
+      val decompressed = Zstd.decompress(compressed.toArray, dictBytes.drop(7), smallTextBytes.length)
+      ByteString(decompressed) should readAs(smallText)
     }
   }
 }

@@ -18,86 +18,81 @@
 package org.apache.pekko.stream.impl.io.compression
 
 import java.nio.ByteBuffer
-import com.github.luben.zstd.{ ZstdDictCompress, ZstdDirectBufferCompressingStreamNoFinalizer }
+
+import com.github.luben.zstd.{ EndDirective, ZstdCompressCtx, ZstdDictCompress }
+
 import org.apache.pekko
-import org.apache.pekko.stream.scaladsl.Compression
 import pekko.annotation.InternalApi
-import pekko.util.ByteString
+import pekko.stream.scaladsl.Compression
+import pekko.util.{ ByteString, ByteStringBuilder }
+
+/** INTERNAL API */
+@InternalApi private[pekko] object ZstdCompressor {
+  private val OutputBufferSize = 65536
+  private val EmptyInput = ByteBuffer.allocate(0)
+}
 
 /** INTERNAL API */
 @InternalApi private[pekko] class ZstdCompressor(
     compressionLevel: Int =
       Compression.ZstdDefaultCompressionLevel, dictionary: Option[ZstdDictionaryImpl] = None) extends Compressor {
+  import ZstdCompressor._
 
-  private val targetBuffer = ByteBuffer.allocateDirect(65536)
-  private val compressingStream = new ZstdDirectBufferCompressingStreamNoFinalizer(targetBuffer, compressionLevel)
+  private val compressCtx = new ZstdCompressCtx()
+  compressCtx.setLevel(compressionLevel)
+
+  // zstd-jni supports heap ByteBuffers for streaming compression, so no direct buffers are needed
+  private var outputBuffer = ByteBuffer.allocate(OutputBufferSize)
 
   dictionary.foreach { dict =>
     (dict.level, dict.length, dict.offset) match {
       case (None, None, None) =>
-        compressingStream.setDict(dict.dictionary)
+        compressCtx.loadDict(dict.dictionary)
       case (Some(dictLevel), None, None) =>
-        compressingStream.setDict(new ZstdDictCompress(dict.dictionary, dictLevel))
+        compressCtx.loadDict(new ZstdDictCompress(dict.dictionary, dictLevel))
       case (Some(dictLevel), Some(dictLength), Some(dictOffset)) =>
-        compressingStream.setDict(new ZstdDictCompress(dict.dictionary, dictLevel, dictLength, dictOffset))
+        compressCtx.loadDict(new ZstdDictCompress(dict.dictionary, dictOffset, dictLength, dictLevel))
       case _ =>
         throw new IllegalArgumentException("Invalid combination of ZstdDictionary parameters")
     }
   }
 
-  override def compress(input: ByteString): ByteString = {
-    val inputBB = ByteBuffer.allocateDirect(input.size)
-    inputBB.put(input.toArrayUnsafe())
-    inputBB.flip()
-    compressingStream.compress(inputBB)
-    val result = ByteString.fromByteBuffer(targetBuffer)
-    targetBuffer.flip()
-    result
+  override def compress(input: ByteString): ByteString = compressStream(input, EndDirective.CONTINUE)
+
+  override def flush(): ByteString = compressStream(ByteString.empty, EndDirective.FLUSH)
+
+  override def finish(): ByteString = compressStream(ByteString.empty, EndDirective.END)
+
+  override def compressAndFlush(input: ByteString): ByteString = compressStream(input, EndDirective.FLUSH)
+
+  override def compressAndFinish(input: ByteString): ByteString = compressStream(input, EndDirective.END)
+
+  override def close(): Unit = compressCtx.close()
+
+  private def compressStream(input: ByteString, endOp: EndDirective): ByteString = {
+    val builder = ByteString.newBuilder
+    val inputBuffers = ZstdBuffers.inputBuffers(input)
+    // only the last fragment of the input gets endOp, the ones before it are just compressed
+    while (inputBuffers.hasNext) {
+      val inputBuffer = inputBuffers.next()
+      compressBuffer(inputBuffer, if (inputBuffers.hasNext) EndDirective.CONTINUE else endOp, builder)
+    }
+    if (input.isEmpty && endOp != EndDirective.CONTINUE)
+      compressBuffer(EmptyInput, endOp, builder)
+    builder.result()
   }
 
-  override def flush(): ByteString = {
-    targetBuffer.flip()
-    val result = ByteString.fromByteBuffer(targetBuffer)
-    targetBuffer.clear()
-    compressingStream.flush()
-    result
+  private def compressBuffer(inputBuffer: ByteBuffer, endOp: EndDirective, builder: ByteStringBuilder): Unit = {
+    var done = false
+    while (!done) {
+      val flushed = compressCtx.compressByteBufferStream(outputBuffer, inputBuffer, endOp)
+      if (outputBuffer.position() > 0) {
+        val (output, nextBuffer) = ZstdBuffers.takeOutput(outputBuffer)
+        builder ++= output
+        outputBuffer = nextBuffer
+      }
+      // with CONTINUE zstd may keep data in its internal buffers, otherwise loop until everything is flushed
+      done = if (endOp == EndDirective.CONTINUE) !inputBuffer.hasRemaining else flushed
+    }
   }
-
-  override def finish(): ByteString = {
-    compressingStream.close()
-    targetBuffer.flip()
-    val arr = Array.ofDim[Byte](targetBuffer.limit())
-    targetBuffer.get(arr)
-    val result = ByteString.fromArrayUnsafe(arr)
-    result
-  }
-
-  override def compressAndFlush(input: ByteString): ByteString = {
-    val inputBB = ByteBuffer.allocateDirect(input.size)
-    inputBB.put(input.toArrayUnsafe())
-    inputBB.flip()
-    compressingStream.compress(inputBB)
-    compressingStream.flush()
-    targetBuffer.flip()
-
-    val arr = new Array[Byte](targetBuffer.limit())
-    targetBuffer.get(arr)
-    targetBuffer.clear()
-    ByteString.fromArrayUnsafe(arr)
-  }
-
-  override def compressAndFinish(input: ByteString): ByteString = {
-    val inputBB = ByteBuffer.allocateDirect(input.size)
-    inputBB.put(input.toArrayUnsafe())
-    inputBB.flip()
-    compressingStream.compress(inputBB)
-    compressingStream.close()
-    targetBuffer.flip()
-
-    val arr = new Array[Byte](targetBuffer.limit())
-    targetBuffer.get(arr)
-    ByteString.fromArrayUnsafe(arr)
-  }
-
-  override def close(): Unit = compressingStream.close()
 }
