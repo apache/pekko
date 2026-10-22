@@ -201,6 +201,9 @@ object ByteString {
 
     override def asByteBuffers: scala.collection.immutable.Iterable[ByteBuffer] = List(asByteBuffer)
 
+    private[pekko] override def asByteBuffersUnsafe: scala.collection.immutable.Iterable[ByteBuffer] =
+      if (isEmpty) Nil else List(ByteBuffer.wrap(bytes))
+
     override def decodeString(charset: String): String =
       if (isEmpty) "" else new String(bytes, charset)
 
@@ -617,6 +620,12 @@ object ByteString {
     }
 
     def asByteBuffers: scala.collection.immutable.Iterable[ByteBuffer] = List(asByteBuffer)
+
+    private[pekko] override def asByteBuffersUnsafe: scala.collection.immutable.Iterable[ByteBuffer] =
+      if (isEmpty) Nil else List(byteBufferUnsafe)
+
+    /** INTERNAL API: see [[ByteString.asByteBuffersUnsafe]] */
+    private[pekko] def byteBufferUnsafe: ByteBuffer = ByteBuffer.wrap(bytes, startIndex, length)
 
     override def decodeString(charset: String): String =
       if (isEmpty) ""
@@ -1187,6 +1196,12 @@ object ByteString {
     def asByteBuffers: scala.collection.immutable.Iterable[ByteBuffer] =
       List(first.asByteBuffer, second.asByteBuffer)
 
+    private[pekko] override def asByteBuffersUnsafe: scala.collection.immutable.Iterable[ByteBuffer] = {
+      val builder = new VectorBuilder[ByteString1]
+      addFragmentsTo(builder)
+      builder.result().collect { case fragment if fragment.nonEmpty => fragment.byteBufferUnsafe }
+    }
+
     override def asInputStream: InputStream =
       new SequenceInputStream(Iterator(first.asInputStream, second.asInputStream).asJavaEnumeration)
 
@@ -1752,6 +1767,9 @@ object ByteString {
     def asByteBuffer: ByteBuffer = compact.asByteBuffer
 
     def asByteBuffers: scala.collection.immutable.Iterable[ByteBuffer] = bytestrings.map { _.asByteBuffer }
+
+    private[pekko] override def asByteBuffersUnsafe: scala.collection.immutable.Iterable[ByteBuffer] =
+      bytestrings.collect { case fragment if fragment.nonEmpty => fragment.byteBufferUnsafe }
 
     override def asInputStream: InputStream =
       new SequenceInputStream(bytestrings.iterator.map(_.asInputStream).asJavaEnumeration)
@@ -2825,6 +2843,18 @@ object ByteString {
    * all fragments. Will always have at least one entry.
    */
   def asByteBuffers: immutable.Iterable[ByteBuffer]
+
+  /**
+   * INTERNAL API
+   *
+   * Returns array-backed ByteBuffers that wrap the non-empty fragments of this ByteString without
+   * copying, for APIs that need heap buffers with an accessible array (read-only buffers have no
+   * accessible array). Unlike [[asByteBuffers]] the buffers are writable and expose the backing
+   * arrays, so callers must never write to them nor leak them. The bytes of each fragment are
+   * between the position and the limit of its buffer. Empty for an empty ByteString.
+   */
+  private[pekko] def asByteBuffersUnsafe: immutable.Iterable[ByteBuffer] =
+    if (isEmpty) Nil else List(ByteBuffer.wrap(toArrayUnsafe()))
 
   /**
    * Java API: Returns an Iterable of read-only ByteBuffers that directly wraps this ByteStrings

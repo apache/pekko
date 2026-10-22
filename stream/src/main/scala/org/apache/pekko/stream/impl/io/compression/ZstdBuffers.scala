@@ -19,12 +19,9 @@ package org.apache.pekko.stream.impl.io.compression
 
 import java.nio.ByteBuffer
 
-import scala.collection.immutable.VectorBuilder
-
 import org.apache.pekko
 import pekko.annotation.InternalApi
 import pekko.util.ByteString
-import pekko.util.ByteString.{ ByteString1, ByteString2, ByteStrings }
 
 /**
  * INTERNAL API
@@ -35,20 +32,10 @@ import pekko.util.ByteString.{ ByteString1, ByteString2, ByteStrings }
 @InternalApi private[compression] object ZstdBuffers {
 
   /**
-   * The fragments of `input` as heap buffers, so that a multi-fragment ByteString does not need
-   * to be compacted. A fragment that covers its whole backing array is wrapped without copying.
+   * The fragments of `input` as heap buffers that wrap the backing arrays without copying, so
+   * that a multi-fragment ByteString does not need to be compacted. zstd only reads from them.
    */
-  def inputBuffers(input: ByteString): Iterator[ByteBuffer] = {
-    val fragments: Iterator[ByteString] = input match {
-      case bs: ByteStrings => bs.bytestrings.iterator
-      case bs: ByteString2 =>
-        val builder = new VectorBuilder[ByteString1]
-        bs.addFragmentsTo(builder)
-        builder.result().iterator
-      case bs => Iterator.single(bs)
-    }
-    fragments.filter(_.nonEmpty).map(fragment => ByteBuffer.wrap(fragment.toArrayUnsafe()))
-  }
+  def inputBuffers(input: ByteString): Iterator[ByteBuffer] = input.asByteBuffersUnsafe.iterator
 
   /**
    * Takes the bytes written to `output` (from 0 until its position) as a ByteString. When at
