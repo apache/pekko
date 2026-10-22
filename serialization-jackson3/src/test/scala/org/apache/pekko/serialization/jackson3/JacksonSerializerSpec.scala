@@ -27,6 +27,7 @@ import scala.concurrent.duration._
 import scala.concurrent.duration.FiniteDuration
 
 import com.github.luben.zstd.{ Zstd, ZstdOutputStream }
+import net.jpountz.lz4.LZ4Factory
 import com.fasterxml.jackson.annotation.{ JsonIgnore, JsonSubTypes, JsonTypeInfo }
 import tools.jackson.core.{ JsonGenerator, StreamReadFeature, StreamWriteFeature }
 import tools.jackson.core.`type`.TypeReference
@@ -581,6 +582,24 @@ class JacksonJsonSerializerSpec extends JacksonSerializerSpec("jackson-json") {
         checkSerialization(msg, sys)
       }
       check(SimpleCommand("0" * (compressLargerThan + 1).toInt), true)
+    }
+
+    "write lz4 payloads in the LZ4Meta header + lz4 block format" in withSystem("""
+        pekko.serialization.jackson3.jackson-json.compression {
+          algorithm = lz4
+          compress-larger-than = 0 KiB
+        }
+      """) { sys =>
+      val msg = SimpleCommand("0" * (8 * 1024))
+      val blob = serializeToBinary(msg, sys)
+      val json = withSystem("""
+          pekko.serialization.jackson3.jackson-json.compression.algorithm = off
+        """) { plainSys =>
+        serializeToBinary(msg, plainSys)
+      }
+      val expected =
+        JacksonSerializer.LZ4Meta(json).prependTo(LZ4Factory.fastestInstance().fastCompressor().compress(json))
+      blob.toSeq should ===(expected.toSeq)
     }
 
     "not compress small payload with lz4" in withSystem("""

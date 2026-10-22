@@ -589,15 +589,20 @@ import pekko.util.OptionVal
       case Compression.GZip(largerThan) if bytes.length <= largerThan => bytes
       case Compression.GZip(_)                                        =>
         val bos = new ByteArrayOutputStream(initialCompressBufferSize(bytes.length))
-        val zip = new GZIPOutputStream(bos)
+        val zip = new GZIPOutputStream(bos, BufferSize)
         try zip.write(bytes)
         finally zip.close()
         bos.toByteArray
       case Compression.LZ4(largerThan) if bytes.length <= largerThan => bytes
       case Compression.LZ4(_)                                        => {
+        // compress directly after the header, so the output is only copied once, to trim it
         val meta = LZ4Meta(bytes)
-        val compressed = lz4Compressor.compress(bytes)
-        meta.prependTo(compressed)
+        val maxCompressedLength = lz4Compressor.maxCompressedLength(bytes.length)
+        val out = new Array[Byte](meta.offset + maxCompressedLength)
+        meta.putInto(ByteBuffer.wrap(out))
+        val compressedLength =
+          lz4Compressor.compress(bytes, 0, bytes.length, out, meta.offset, maxCompressedLength)
+        java.util.Arrays.copyOf(out, meta.offset + compressedLength)
       }
       case Compression.Zstd(largerThan, _) if bytes.length <= largerThan => bytes
       case Compression.Zstd(_, level)                                    => ZstdCompression.compress(bytes, level)
@@ -606,7 +611,7 @@ import pekko.util.OptionVal
 
   def decompress(bytes: Array[Byte]): Array[Byte] = {
     if (isGZipped(bytes)) {
-      val in = new GZIPInputStream(new UnsynchronizedByteArrayInputStream(bytes))
+      val in = new GZIPInputStream(new UnsynchronizedByteArrayInputStream(bytes), BufferSize)
       try gunzip(in, initialDecompressBufferSize(bytes.length, maxDecompressedSize))
       finally in.close()
     } else if (isZstd(bytes)) {
