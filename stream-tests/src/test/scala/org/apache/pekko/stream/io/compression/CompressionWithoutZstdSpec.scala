@@ -48,19 +48,18 @@ class CompressionWithoutZstdSpec extends AnyWordSpec with Matchers {
         .split(File.pathSeparator)
         .filterNot(new File(_).getName.startsWith("zstd-jni"))
         .map(new File(_).toURI.toURL)
+      // not closed: dispatcher shutdown tasks of the terminated ActorSystem may still load classes from it
       val loader = new URLClassLoader(urls, ClassLoader.getPlatformClassLoader)
-      try {
-        an[ClassNotFoundException] should be thrownBy loader.loadClass("com.github.luben.zstd.Zstd")
+      an[ClassNotFoundException] should be thrownBy loader.loadClass("com.github.luben.zstd.Zstd")
 
-        val roundTrip = loader.loadClass(classOf[CompressionWithoutZstdRoundTrip].getName)
-        val thread = Thread.currentThread()
-        val contextClassLoader = thread.getContextClassLoader
-        thread.setContextClassLoader(loader)
-        val result =
-          try roundTrip.getMethod("run").invoke(roundTrip.getDeclaredConstructor().newInstance())
-          finally thread.setContextClassLoader(contextClassLoader)
-        result should ===("gzip:hello deflate:hello javadsl:hello zstd-level:3")
-      } finally loader.close()
+      val roundTrip = loader.loadClass(classOf[CompressionWithoutZstdRoundTrip].getName)
+      val thread = Thread.currentThread()
+      val contextClassLoader = thread.getContextClassLoader
+      thread.setContextClassLoader(loader)
+      val result =
+        try roundTrip.getMethod("run").invoke(roundTrip.getDeclaredConstructor().newInstance())
+        finally thread.setContextClassLoader(contextClassLoader)
+      result should ===("gzip:hello deflate:hello javadsl:hello zstd-level:3")
     }
   }
 }
@@ -70,8 +69,11 @@ class CompressionWithoutZstdRoundTrip {
   def run(): String = {
     // use this class loader (without zstd-jni) rather than one found from the context or call stack
     val classLoader = getClass.getClassLoader
-    val system =
-      ActorSystem("CompressionWithoutZstd", Some(ConfigFactory.load(classLoader)), Some(classLoader), None)
+    // a fatal error in this nested ActorSystem must fail the test, not exit the forked test JVM
+    val config = ConfigFactory
+      .parseString("pekko.jvm-exit-on-fatal-error = off")
+      .withFallback(ConfigFactory.load(classLoader))
+    val system = ActorSystem("CompressionWithoutZstd", Some(config), Some(classLoader), None)
     try {
       def roundTrip(source: Source[ByteString, Any]): String =
         Await.result(source.runWith(Sink.fold(ByteString.empty)(_ ++ _))(pekko.stream.Materializer(system)), 10.seconds)
