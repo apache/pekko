@@ -37,8 +37,7 @@ import pekko.util.ByteString
 }
 
 /** INTERNAL API */
-@InternalApi private[pekko] class ZstdDecompressor(maxBytesPerChunk: Int =
-      Zstd.blockSizeMax()) extends SimpleLinearGraphStage[ByteString] {
+@InternalApi private[pekko] class ZstdDecompressor(maxBytesPerChunk: Int) extends SimpleLinearGraphStage[ByteString] {
   import ZstdDecompressor._
 
   require(maxBytesPerChunk > 0, "maxBytesPerChunk must be greater than 0")
