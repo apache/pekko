@@ -15,8 +15,6 @@ package org.apache.pekko.stream.scaladsl
 
 import java.util.zip.Deflater
 
-import com.github.luben.zstd._
-
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.stream.impl.io.compression._
@@ -108,23 +106,33 @@ object Compression {
   def inflate(maxBytesPerChunk: Int, nowrap: Boolean): Flow[ByteString, ByteString, NotUsed] =
     Flow[ByteString].via(new DeflateDecompressor(maxBytesPerChunk, nowrap)).named("inflate")
 
+  // The zstd constants below are copies of libzstd's values instead of calls to zstd-jni (e.g.
+  // Zstd.minCompressionLevel()). zstd-jni is an optional dependency: calling it here would make
+  // initializing this object, and so using gzip or deflate, fail with NoClassDefFoundError when
+  // zstd-jni is not on the classpath, and would load the native library even for those users.
+  // ZstdSpec checks that they still match zstd-jni, so a zstd-jni upgrade that changes one of
+  // them fails the tests.
+
   /**
    * The minimum compression level supported by zstd
    * @since 2.0.0
    */
-  final val ZstdMinCompressionLevel: Int = Zstd.minCompressionLevel()
+  // ZSTD_minCLevel() is -ZSTD_TARGETLENGTH_MAX, which is ZSTD_BLOCKSIZE_MAX (1 << 17) in libzstd
+  final val ZstdMinCompressionLevel: Int = -(1 << 17)
 
   /**
    * The maximum compression level supported by zstd
    * @since 2.0.0
    */
-  final val ZstdMaxCompressionLevel: Int = Zstd.maxCompressionLevel()
+  // ZSTD_maxCLevel() is ZSTD_MAX_CLEVEL in libzstd
+  final val ZstdMaxCompressionLevel: Int = 22
 
   /**
    * The zstd default compression level
    * @since 2.0.0
    */
-  final val ZstdDefaultCompressionLevel: Int = Zstd.defaultCompressionLevel()
+  // ZSTD_defaultCLevel() is ZSTD_CLEVEL_DEFAULT in libzstd
+  final val ZstdDefaultCompressionLevel: Int = 3
 
   /**
    * @since 2.0.0
@@ -163,7 +171,8 @@ object Compression {
    * The maximum block size used by zstd decompression
    * @since 2.0.0
    */
-  final val ZstdDecompressMaxBlockSize: Int = Zstd.blockSizeMax()
+  // ZSTD_BLOCKSIZE_MAX in libzstd is 1 << ZSTD_BLOCKSIZELOG_MAX (17), i.e. 128 KiB
+  final val ZstdDecompressMaxBlockSize: Int = 1 << 17
 
   /**
    * @since 2.0.0

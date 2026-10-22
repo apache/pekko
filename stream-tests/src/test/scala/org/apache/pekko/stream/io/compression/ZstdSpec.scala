@@ -64,6 +64,12 @@ class ZstdSpec extends CoderSpec[ZstdException]("zstd") {
       streamDecode(compressed) should equal(input)
       ourDecode(fragmented(compressed)) should equal(input)
     }
+    "define the same constants as zstd-jni" in {
+      Compression.ZstdMinCompressionLevel should ===(Zstd.minCompressionLevel())
+      Compression.ZstdMaxCompressionLevel should ===(Zstd.maxCompressionLevel())
+      Compression.ZstdDefaultCompressionLevel should ===(Zstd.defaultCompressionLevel())
+      Compression.ZstdDecompressMaxBlockSize should ===(Zstd.blockSizeMax())
+    }
     "compress with a dictionary slice" in {
       val dictBytes = ("padding" + smallText * 4).getBytes("UTF-8")
       val dictionary = ZstdDictionary(dictBytes, Compression.ZstdDefaultCompressionLevel, 7, dictBytes.length - 7)

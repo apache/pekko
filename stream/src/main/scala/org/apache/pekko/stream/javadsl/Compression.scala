@@ -17,8 +17,6 @@ import java.util.Optional
 
 import scala.jdk.OptionConverters.RichOptional
 
-import com.github.luben.zstd._
-
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.stream.impl.io.compression.{ CompressionUtils, ZstdCompressor }
@@ -112,23 +110,26 @@ object Compression {
   def deflate(level: Int, nowrap: Boolean, autoFlush: Boolean): Flow[ByteString, ByteString, NotUsed] =
     scaladsl.Compression.deflate(level, nowrap, autoFlush).asJava
 
+  // The zstd constants delegate to scaladsl.Compression, which explains why they are copies of
+  // libzstd's values rather than calls to the optional zstd-jni dependency.
+
   /**
    * The minimum compression level supported by zstd
    * @since 2.0.0
    */
-  final val ZstdMinCompressionLevel: Int = Zstd.minCompressionLevel()
+  final val ZstdMinCompressionLevel: Int = scaladsl.Compression.ZstdMinCompressionLevel
 
   /**
    * The maximum compression level supported by zstd
    * @since 2.0.0
    */
-  final val ZstdMaxCompressionLevel: Int = Zstd.maxCompressionLevel()
+  final val ZstdMaxCompressionLevel: Int = scaladsl.Compression.ZstdMaxCompressionLevel
 
   /**
    * The zstd default compression level
    * @since 2.0.0
    */
-  final val ZstdDefaultCompressionLevel: Int = Zstd.defaultCompressionLevel()
+  final val ZstdDefaultCompressionLevel: Int = scaladsl.Compression.ZstdDefaultCompressionLevel
 
   /**
    * @since 2.0.0
@@ -168,7 +169,7 @@ object Compression {
    * The maximum block size used by zstd decompression
    * @since 2.0.0
    */
-  final val ZstdDecompressMaxBlockSize: Int = Zstd.blockSizeMax()
+  final val ZstdDecompressMaxBlockSize: Int = scaladsl.Compression.ZstdDecompressMaxBlockSize
 
   /**
    * @since 2.0.0
