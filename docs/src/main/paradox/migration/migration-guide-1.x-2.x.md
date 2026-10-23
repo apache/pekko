@@ -38,28 +38,80 @@ stalls. Use `Source.queue(bufferSize)` (which materializes a `BoundedSourceQueue
 for a replacement per `OverflowStrategy`, with code examples.
 
 ## Additional Breaking Changes in Pekko 2.x
-* In the Scala DSL for Flow and Source, the `watchTermination` function call no longer needs an empty param
-list before a second param list. Instead of `watchTermination(){ ... }`, you now must use `watchTermination{ ... }`.
-([PR2378](https://github.com/apache/pekko/pull/2378))
-* In the Java API, `FSMTransitionHandlerBuilder.build` and `FSMTransitionHandlerBuilder.state` now use
+
+### Java API
+
+* `pekko.japi.Function` and the related classes (including `pekko.japi.function.FI`, `JAPI` and
+`pekko.japi.Option`) have been removed in favour of `pekko.japi.function.Function` and the other
+`pekko.japi.function` types, which the Java DSLs now use throughout. Lambdas should recompile unchanged, but
+if you declared variables, fields or methods with the removed types, change your imports.
+([PR2007](https://github.com/apache/pekko/pull/2007), [PR2143](https://github.com/apache/pekko/pull/2143))
+* A number of Java DSL methods that exposed Scala types now use Java types instead: `CompletionStage` instead
+of Scala `Future`, `Optional` instead of `Option`, `pekko.japi.Pair` instead of `Tuple2` and Java collections
+instead of Scala collections. See the @ref:[release notes](../release-notes/releases-2.0.md) for the list of
+changes.
+* `FSMTransitionHandlerBuilder.build` and `FSMTransitionHandlerBuilder.state` now use
 `pekko.japi.Pair` instead of `scala.Tuple2`. Java users need to update their code to use `Pair` instead of `Tuple2`.
 ([PR3378](https://github.com/apache/pekko/pull/3378))
 * The Java DSL `SourceWithContext` graph shape now uses `pekko.japi.Pair` instead of `scala.Tuple2`.
 Java code that passes a `SourceWithContext` directly to `GraphDSL` must use `Pair`-typed stages.
 Code that converts it with `asSource()` already uses `Pair` and requires no changes.
 ([PR3388](https://github.com/apache/pekko/pull/3388))
+
+### Actors
+
 * `ReceiveTimeout` changed from a `case object` singleton to a `final case class` that carries the configured
 timeout duration. Scala pattern matches must use a type pattern (`case timeout: ReceiveTimeout =>`) instead of a
 stable identifier pattern, and the `ReceiveTimeout.getInstance()` method has been removed from the Java API;
 Java users should match on `ReceiveTimeout.class` instead.
 ([PR3399](https://github.com/apache/pekko/pull/3399))
+
+### Streams
+
+* In the Scala DSL for Flow and Source, the `watchTermination` function call no longer needs an empty param
+list before a second param list. Instead of `watchTermination(){ ... }`, you now must use `watchTermination{ ... }`.
+([PR2378](https://github.com/apache/pekko/pull/2378))
+
+### TLS
+
+The deprecated `PekkoSSLConfig` convenience API and the stream methods accepting it were removed, along with the
+`ssl-config` dependency. ([PR2127](https://github.com/apache/pekko/pull/2127))
+
+To migrate, initialize an `SSLContext` with the required key and trust managers, and supply a factory that creates
+a new `javax.net.ssl.SSLEngine` for each connection:
+
+* Set the engine's client or server mode, and apply the cipher suites, protocols and client-authentication
+settings previously passed in `NegotiateNewSession` directly to the engine or its `SSLParameters`.
+* Client factories must preserve peer identity checks: use `sslContext.createSSLEngine(host, port)`, call
+`setUseClientMode(true)`, and enable hostname verification with `setEndpointIdentificationAlgorithm("HTTPS")`
+on the engine's `SSLParameters`.
+* For DNS names, also configure SNI with `SSLParameters.setServerNames` containing an `SNIHostName` for that
+hostname.
+* Apply those parameters with `SSLEngine.setSSLParameters` before returning the engine.
+
+The factory is accepted by
+@scala[@scaladoc[TLS.apply](org.apache.pekko.stream.scaladsl.TLS$)]@java[@javadoc[TLS.create](org.apache.pekko.stream.javadsl.TLS)]
+and the current @apidoc[Tcp](stream.*.Tcp) TLS methods.
+Replace `outgoingTlsConnection` with `outgoingConnectionWithTls` and `bindTls` with `bindWithTls`.
+@scala[Also replace `bindAndHandleTls` with `bindAndHandleWithTls`.]
+See the Scala and Java @ref:[TLS examples](../stream/stream-io.md#tls) for general engine setup,
+adding the client hostname-verification and SNI settings described above.
+
+### Remoting
+
 * In pekko-remote Artery comms, `"PEKK"` is now the default magic header
 (`pekko.remote.artery.advanced.tcp-magic`). See
 @ref:[Changing TCP magic header](../additional/rolling-updates.md#changing-tcp-magic-header) for what this means for
 rolling updates. ([PR3425](https://github.com/apache/pekko/pull/3425))
+
+### Cluster Sharding
+
 * `RemoveInternalClusterShardingData` no longer supports removing Cluster Sharding coordinator data stored
 by Akka 2.3.x. The `-2.3` program argument and the `remove2dot3Data` parameter of
 `RemoveInternalClusterShardingData.remove` have been removed. ([PR3608](https://github.com/apache/pekko/pull/3608))
+
+### Persistence
+
 * In pekko-persistence-testkit, the `PersistenceTestKitReadJournal` tag queries (`eventsByTag`,
 `currentEventsByTag`) and the live `eventsBySlices` query now put a `TimestampOffset` in their envelopes instead of
 `Sequence`. Code that cast these offsets to `Sequence` needs updating; the per-persistence-id sequence number is
@@ -67,6 +119,7 @@ still available as `envelope.sequenceNr`. These queries also now accept a `Times
 ([PR3615](https://github.com/apache/pekko/pull/3615))
 
 ## Dependency Changes in Pekko 2.x
+
 * Java 17 is the minimum supported Java version and Scala 2.12 is no longer supported. Pekko 2.x is published for
 Scala 2.13 and Scala 3.3 (LTS), so Scala 3 users need Scala 3.3.x or later. Pekko 2.x is also tested with
 Scala 3.9.
@@ -81,23 +134,8 @@ release. The fork is a drop-in replacement with important bug fixes. If your bui
 ([PR2537](https://github.com/apache/pekko/pull/2537))
 * The `ssl-config` library is no longer a dependency of Pekko and the `ssl-config` configuration sections have
 been removed (see Removed configuration below). ([PR2127](https://github.com/apache/pekko/pull/2127))
-
-* The deprecated `PekkoSSLConfig` convenience API and the stream methods accepting it were removed.
-Initialize an `SSLContext` with the required key and trust managers, and supply a factory that creates a new
-`javax.net.ssl.SSLEngine` for each connection. Set its client or server mode and apply the cipher suites,
-protocols and client-authentication settings previously passed in `NegotiateNewSession` directly to the engine
-or its `SSLParameters`.
-Client factories must preserve peer identity checks: use `sslContext.createSSLEngine(host, port)`, call
-`setUseClientMode(true)`, and enable hostname verification with `setEndpointIdentificationAlgorithm("HTTPS")`
-on the engine's `SSLParameters`. For DNS names, also configure SNI with `SSLParameters.setServerNames`
-containing an `SNIHostName` for that hostname. Apply those parameters with `SSLEngine.setSSLParameters` before returning the engine.
-The factory is accepted by
-@scala[@scaladoc[TLS.apply](org.apache.pekko.stream.scaladsl.TLS$)]@java[@javadoc[TLS.create](org.apache.pekko.stream.javadsl.TLS)]
-and the current @apidoc[Tcp](stream.*.Tcp) TLS methods.
-Replace `outgoingTlsConnection` with `outgoingConnectionWithTls` and `bindTls` with `bindWithTls`.
-@scala[Also replace `bindAndHandleTls` with `bindAndHandleWithTls`.]
-See the Scala and Java @ref:[TLS examples](../stream/stream-io.md#tls) for general engine setup,
-adding the client hostname-verification and SNI settings described above. ([PR2127](https://github.com/apache/pekko/pull/2127))
+* Only one of `pekko-serialization-jackson` (Jackson 2) and `pekko-serialization-jackson3` (Jackson 3) can be
+on the classpath. See [Serialization bindings](#serialization-bindings) below.
 
 ## Configuration Changes in Pekko 2.x
 
@@ -269,13 +307,13 @@ number of processes) that Pekko 1.x nodes cannot deserialize. ([PR2755](https://
 messages were serialized with another serializer in Pekko 1.x, mixed-version nodes would disagree
 during a rolling update. To keep the Pekko 1.x behavior, disable the new binding:
 `pekko.actor.serialization-bindings { "scalapb.GeneratedMessage" = none }`.
-([PR3651](https://github.com/apache/pekko/pull/3651))
+([PR3651](https://github.com/apache/pekko/pull/3651), [PR3665](https://github.com/apache/pekko/pull/3665))
 * The new `FilteredPayload` placeholder, which is stored in the journal in place of a filtered event
 (for example with events-by-slice queries and projections), has a new serializer with identifier `34`.
 Pekko 1.x cannot deserialize it, so do not run Pekko 1.x against a journal once such events have been
 written. ([PR3275](https://github.com/apache/pekko/pull/3275))
-The same serializer also handles the new `SerializedEvent`, used to write events that are already
-serialized; Pekko 1.x cannot deserialize that either, so do not send `SerializedEvent` messages to
+* The same serializer also handles the new `SerializedEvent`, used to write events that are already
+serialized. Pekko 1.x cannot deserialize that either, so do not send `SerializedEvent` messages to
 Pekko 1.x nodes during a rolling update. ([PR3650](https://github.com/apache/pekko/pull/3650))
 * `pekko-serialization-jackson` (and `pekko-serialization-jackson3`) now provide predefined
 `JsonSerializable` and `CborSerializable` marker traits, bound by default to `jackson-json` and

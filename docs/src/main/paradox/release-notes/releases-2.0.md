@@ -39,6 +39,7 @@ Some of the bug fixes listed below have also been backported to Pekko 1.x releas
 * Switch to `PEKK` as the default magic header in pekko-remote Artery comms. See @ref:[Changing TCP magic header](../additional/rolling-updates.md#changing-tcp-magic-header) for what this means for rolling updates ([PR3425](https://github.com/apache/pekko/pull/3425))
 * Java 21 and 25 support improvements, including virtual thread support for more dispatcher types and JDK-aware ForkJoinPool tuning ([#2232](https://github.com/apache/pekko/issues/2232), [PR2169](https://github.com/apache/pekko/pull/2169), [PR2242](https://github.com/apache/pekko/pull/2242), [PR2871](https://github.com/apache/pekko/pull/2871), [PR2890](https://github.com/apache/pekko/pull/2890))
 * Added [JSpecify](https://jspecify.dev/) nullness annotations to the Java DSL APIs of streams, persistence, actor-typed, cluster-sharding-typed and testkit ([#2563](https://github.com/apache/pekko/issues/2563), [PR2617](https://github.com/apache/pekko/pull/2617), [PR2850](https://github.com/apache/pekko/pull/2850), [PR3380](https://github.com/apache/pekko/pull/3380))
+* Serialization improvements: predefined `JsonSerializable` and `CborSerializable` marker traits, zstd compression for the Jackson serializers and automatic binding of ScalaPB messages to the protobuf serializer - see the Additions and Ported from Akka sections below
 * A number of security hardening changes - see the Security Hardening section below
 * A number of configuration defaults have changed. See the Configuration Changes section of the @ref:[Migration Guide](../migration/migration-guide-1.x-2.x.md)
 
@@ -47,59 +48,6 @@ Some of the bug fixes listed below have also been backported to Pekko 1.x releas
 Please read the @ref:[Migration Guide](../migration/migration-guide-1.x-2.x.md) before upgrading. It covers the
 breaking API changes, dependency changes (such as the Agrona 2.x `--add-opens` requirement) and the configuration
 defaults that have changed in Pekko 2.0.0.
-
-### Bug Fixes
-
-* Replaying a replicated event sourced actor from a snapshot caused a bug ([PR2372](https://github.com/apache/pekko/pull/2372))
-* Emit `DeletedDurableState` for deleted durable state objects ([PR2397](https://github.com/apache/pekko/pull/2397))
-* Fix close being called in cancel for statefulMap ([PR2365](https://github.com/apache/pekko/pull/2365), [PR2385](https://github.com/apache/pekko/pull/2385))
-* Fix recoverWith on a failed stage ([PR2631](https://github.com/apache/pekko/pull/2631), [PR2674](https://github.com/apache/pekko/pull/2674), [PR2712](https://github.com/apache/pekko/pull/2712))
-* Fix Source.combine with a single source and type-transforming fan-in strategies ([PR2726](https://github.com/apache/pekko/pull/2726))
-* Release lease on shard stop ([PR2738](https://github.com/apache/pekko/pull/2738))
-* Fix ProducerController crash on restart with an empty unconfirmed buffer (durable queue) ([#2760](https://github.com/apache/pekko/issues/2760), [PR2762](https://github.com/apache/pekko/pull/2762))
-* Handle unexpected stop of the TLS actor gracefully ([PR2801](https://github.com/apache/pekko/pull/2801))
-* Fix ByteString1C serialization to use a SerializationProxy ([PR2929](https://github.com/apache/pekko/pull/2929))
-* Harden async DNS request id handling ([PR2960](https://github.com/apache/pekko/pull/2960))
-* High concurrency issues introduced when switching from `sun.misc.Unsafe` to VarHandles ([PR3007](https://github.com/apache/pekko/pull/3007), [PR3008](https://github.com/apache/pekko/pull/3008))
-* MapAsyncPartitioned fixes: ordered stage completion after trailing resumed failures, parallel processing preserving order within a partition and a demand-resume deadlock ([PR3009](https://github.com/apache/pekko/pull/3009), [#2886](https://github.com/apache/pekko/issues/2886), [PR3365](https://github.com/apache/pekko/pull/3365))
-* Await in-flight completion on partner termination in SinkRef ([PR3016](https://github.com/apache/pekko/pull/3016))
-* Prevent double materialization of SourceRef and SinkRef ([PR3114](https://github.com/apache/pekko/pull/3114))
-* Release references to completed stage logics and to the initial interpreter shell in GraphInterpreter to avoid memory retention ([PR3030](https://github.com/apache/pekko/pull/3030), [PR3031](https://github.com/apache/pekko/pull/3031), [#3243](https://github.com/apache/pekko/issues/3243))
-* Discard stale ReceiveTimeout after cancelReceiveTimeout to avoid NPE in actor-typed ([PR3086](https://github.com/apache/pekko/pull/3086))
-* Clean up stopped FSM transition listeners ([PR3096](https://github.com/apache/pekko/pull/3096))
-* Preserve throttler tokens on failed writes ([PR3097](https://github.com/apache/pekko/pull/3097))
-* Initialize timer stage deadlines in preStart instead of at construction ([PR3111](https://github.com/apache/pekko/pull/3111))
-* Fix the current message reported to supervision in timer stages ([PR3294](https://github.com/apache/pekko/pull/3294))
-* Fix close handling in unfoldResource and unfoldResourceAsync (avoid double close and delay close until a pending read completes) ([PR3157](https://github.com/apache/pekko/pull/3157), [PR3172](https://github.com/apache/pekko/pull/3172))
-* Classic remoting robustness fixes: ignore stale ACKs, harden EndpointReader against dispatch errors, resume the reader after a failed handoff and buffer messages during passive handoff ([PR3158](https://github.com/apache/pekko/pull/3158), [PR3166](https://github.com/apache/pekko/pull/3166), [PR3173](https://github.com/apache/pekko/pull/3173), [PR3205](https://github.com/apache/pekko/pull/3205), [PR3361](https://github.com/apache/pekko/pull/3361))
-* Validate the full UniqueAddress in Artery system message ACK/NACK handling ([PR3175](https://github.com/apache/pekko/pull/3175))
-* Bound Artery stream shutdown ([PR3317](https://github.com/apache/pekko/pull/3317))
-* Use `Locale.ROOT` for `toLowerCase`/`toUpperCase` calls ([PR3159](https://github.com/apache/pekko/pull/3159))
-* Avoid NPE in the outbound TCP stage when upstream finishes before connect ([PR3259](https://github.com/apache/pekko/pull/3259))
-* Close unregistered TCP channels on setup failure ([PR3273](https://github.com/apache/pekko/pull/3273))
-* Suppress dead-letter logging during a terminating shutdown when disabled ([PR3262](https://github.com/apache/pekko/pull/3262))
-* Expand Array arguments in MarkerLoggingAdapter log templates ([PR3263](https://github.com/apache/pekko/pull/3263))
-* Deliver stashed timer messages for UnboundedStash and UnrestrictedStash ([PR3264](https://github.com/apache/pekko/pull/3264), [#3265](https://github.com/apache/pekko/issues/3265))
-* Return a proper non-cancelled Cancellable from StubbedActorContext.scheduleOnce ([PR3268](https://github.com/apache/pekko/pull/3268))
-* Fix deferred TLS output handling on inbound close and abort the TLS transport on session verification failure ([PR3323](https://github.com/apache/pekko/pull/3323), [PR3324](https://github.com/apache/pekko/pull/3324))
-* Fix reentrant BatchingExecutor execution ([PR3331](https://github.com/apache/pekko/pull/3331))
-* Notify BroadcastHub and PartitionHub consumers on materializer shutdown ([#3345](https://github.com/apache/pekko/issues/3345), [PR3346](https://github.com/apache/pekko/pull/3346), [PR3347](https://github.com/apache/pekko/pull/3347))
-* Enforce resizer bounds and minimum pool size for AdjustPoolSize, including in ClusterRouterPool ([#3253](https://github.com/apache/pekko/issues/3253), [PR3364](https://github.com/apache/pekko/pull/3364), [PR3393](https://github.com/apache/pekko/pull/3393))
-* Support `java.math.BigInteger`/`BigDecimal` in cluster-metrics ([#3385](https://github.com/apache/pekko/issues/3385), [PR3382](https://github.com/apache/pekko/pull/3382))
-* Invoke lifecycle signal handlers during snapshot recovery ([PR3358](https://github.com/apache/pekko/pull/3358))
-* Stop PersistentActor by default when the RecoveryCompleted handler fails ([PR3359](https://github.com/apache/pekko/pull/3359))
-* Filter messages from the remember-entities store ([PR3411](https://github.com/apache/pekko/pull/3411))
-* Preserve StageActor demand across fused streams ([#3459](https://github.com/apache/pekko/issues/3459), [PR3461](https://github.com/apache/pekko/pull/3461))
-* Handle post-Java 8 constant pool entries in LineNumbers ([PR3465](https://github.com/apache/pekko/pull/3465))
-* Make AbstractPersistentActorWithTimers and AbstractFSMWithStash subclassable from Java when using Scala 3 ([PR3475](https://github.com/apache/pekko/pull/3475))
-* Use a Seq rather than a Set to hold TCP magic ByteStrings ([PR3484](https://github.com/apache/pekko/pull/3484))
-* Stop cluster sharding entities stuck in passivation after a timeout ([PR3573](https://github.com/apache/pekko/pull/3573))
-* Stop handing a reused `Mailbox` object to the fork-join dispatcher, which could permanently damage a ForkJoinPool work queue or stop a mailbox from running again. `Mailbox` no longer extends `ForkJoinTask` ([#3613](https://github.com/apache/pekko/issues/3613), [#3620](https://github.com/apache/pekko/issues/3620), [PR3621](https://github.com/apache/pekko/pull/3621), [PR3628](https://github.com/apache/pekko/pull/3628), [PR3668](https://github.com/apache/pekko/pull/3668))
-* Keep colliding virtual nodes in ConsistentHash, so the ring no longer depends on the order in which nodes were added or removed. Routing only changes for keys that land on a colliding ring position, but during a rolling update nodes on 1.x and 2.x could route those few keys differently ([PR3611](https://github.com/apache/pekko/pull/3611))
-* Resolve a `LogSource` for `getClass` results on Scala 3, so `Logging(system, getClass)` compiles ([#1538](https://github.com/apache/pekko/issues/1538), [PR3609](https://github.com/apache/pekko/pull/3609))
-* Allow overriding `testKit` with a `val` in `ScalaTestWithActorTestKit` ([#1140](https://github.com/apache/pekko/issues/1140), [PR3610](https://github.com/apache/pekko/pull/3610))
-* Keep the `StashBufferImpl` instrumentation hooks from being inlined by the Scala 2.13 optimizer ([PR3616](https://github.com/apache/pekko/pull/3616))
-* Stop dispatcher failure reporting from recursing into a `StackOverflowError` ([#3613](https://github.com/apache/pekko/issues/3613), [PR3622](https://github.com/apache/pekko/pull/3622))
 
 ### Security Hardening
 
@@ -120,73 +68,158 @@ defaults that have changed in Pekko 2.0.0.
 * Bound persistence event replay batches ([PR3325](https://github.com/apache/pekko/pull/3325))
 * Add `maxTotalBufferSize` to MergeHub for an aggregate queue bound ([PR3392](https://github.com/apache/pekko/pull/3392))
 
+### Bug Fixes
+
+**Actors, dispatchers and logging**
+
+* High concurrency issues introduced when switching from `sun.misc.Unsafe` to VarHandles ([PR3007](https://github.com/apache/pekko/pull/3007), [PR3008](https://github.com/apache/pekko/pull/3008))
+* Stop handing a reused `Mailbox` object to the fork-join dispatcher, which could permanently damage a ForkJoinPool work queue or stop a mailbox from running again. `Mailbox` no longer extends `ForkJoinTask` ([#3613](https://github.com/apache/pekko/issues/3613), [#3620](https://github.com/apache/pekko/issues/3620), [PR3621](https://github.com/apache/pekko/pull/3621), [PR3628](https://github.com/apache/pekko/pull/3628), [PR3668](https://github.com/apache/pekko/pull/3668))
+* Stop dispatcher failure reporting from recursing into a `StackOverflowError` ([#3613](https://github.com/apache/pekko/issues/3613), [PR3622](https://github.com/apache/pekko/pull/3622))
+* Keep colliding virtual nodes in ConsistentHash, so the ring no longer depends on the order in which nodes were added or removed. Routing only changes for keys that land on a colliding ring position, but during a rolling update nodes on 1.x and 2.x could route those few keys differently ([PR3611](https://github.com/apache/pekko/pull/3611))
+* Fix reentrant BatchingExecutor execution ([PR3331](https://github.com/apache/pekko/pull/3331))
+* Deliver stashed timer messages for UnboundedStash and UnrestrictedStash ([PR3264](https://github.com/apache/pekko/pull/3264), [#3265](https://github.com/apache/pekko/issues/3265))
+* Clean up stopped FSM transition listeners ([PR3096](https://github.com/apache/pekko/pull/3096))
+* Discard stale ReceiveTimeout after cancelReceiveTimeout to avoid NPE in actor-typed ([PR3086](https://github.com/apache/pekko/pull/3086))
+* Suppress dead-letter logging during a terminating shutdown when disabled ([PR3262](https://github.com/apache/pekko/pull/3262))
+* Expand Array arguments in MarkerLoggingAdapter log templates ([PR3263](https://github.com/apache/pekko/pull/3263))
+* Resolve a `LogSource` for `getClass` results on Scala 3, so `Logging(system, getClass)` compiles ([#1538](https://github.com/apache/pekko/issues/1538), [PR3609](https://github.com/apache/pekko/pull/3609))
+* Keep the `StashBufferImpl` instrumentation hooks from being inlined by the Scala 2.13 optimizer ([PR3616](https://github.com/apache/pekko/pull/3616))
+* Enforce resizer bounds and minimum pool size for AdjustPoolSize, including in ClusterRouterPool ([#3253](https://github.com/apache/pekko/issues/3253), [PR3364](https://github.com/apache/pekko/pull/3364), [PR3393](https://github.com/apache/pekko/pull/3393))
+* Handle post-Java 8 constant pool entries in LineNumbers ([PR3465](https://github.com/apache/pekko/pull/3465))
+* Make AbstractPersistentActorWithTimers and AbstractFSMWithStash subclassable from Java when using Scala 3 ([PR3475](https://github.com/apache/pekko/pull/3475))
+* Use `Locale.ROOT` for `toLowerCase`/`toUpperCase` calls ([PR3159](https://github.com/apache/pekko/pull/3159))
+* Fix ByteString1C serialization to use a SerializationProxy ([PR2929](https://github.com/apache/pekko/pull/2929))
+* Fix ProducerController crash on restart with an empty unconfirmed buffer (durable queue) ([#2760](https://github.com/apache/pekko/issues/2760), [PR2762](https://github.com/apache/pekko/pull/2762))
+
+**Streams**
+
+* Fix close being called in cancel for statefulMap ([PR2365](https://github.com/apache/pekko/pull/2365), [PR2385](https://github.com/apache/pekko/pull/2385))
+* Fix recoverWith on a failed stage ([PR2631](https://github.com/apache/pekko/pull/2631), [PR2674](https://github.com/apache/pekko/pull/2674), [PR2712](https://github.com/apache/pekko/pull/2712))
+* Fix Source.combine with a single source and type-transforming fan-in strategies ([PR2726](https://github.com/apache/pekko/pull/2726))
+* Fix close handling in unfoldResource and unfoldResourceAsync (avoid double close and delay close until a pending read completes) ([PR3157](https://github.com/apache/pekko/pull/3157), [PR3172](https://github.com/apache/pekko/pull/3172))
+* MapAsyncPartitioned fixes: ordered stage completion after trailing resumed failures, parallel processing preserving order within a partition and a demand-resume deadlock ([PR3009](https://github.com/apache/pekko/pull/3009), [#2886](https://github.com/apache/pekko/issues/2886), [PR3365](https://github.com/apache/pekko/pull/3365))
+* Await in-flight completion on partner termination in SinkRef ([PR3016](https://github.com/apache/pekko/pull/3016))
+* Prevent double materialization of SourceRef and SinkRef ([PR3114](https://github.com/apache/pekko/pull/3114))
+* Release references to completed stage logics and to the initial interpreter shell in GraphInterpreter to avoid memory retention ([PR3030](https://github.com/apache/pekko/pull/3030), [PR3031](https://github.com/apache/pekko/pull/3031), [#3243](https://github.com/apache/pekko/issues/3243))
+* Fix the current message reported to supervision in timer stages ([PR3294](https://github.com/apache/pekko/pull/3294))
+* Initialize timer stage deadlines in preStart instead of at construction ([PR3111](https://github.com/apache/pekko/pull/3111))
+* Preserve throttler tokens on failed writes ([PR3097](https://github.com/apache/pekko/pull/3097))
+* Notify BroadcastHub and PartitionHub consumers on materializer shutdown ([#3345](https://github.com/apache/pekko/issues/3345), [PR3346](https://github.com/apache/pekko/pull/3346), [PR3347](https://github.com/apache/pekko/pull/3347))
+* Preserve StageActor demand across fused streams ([#3459](https://github.com/apache/pekko/issues/3459), [PR3461](https://github.com/apache/pekko/pull/3461))
+* Handle unexpected stop of the TLS actor gracefully ([PR2801](https://github.com/apache/pekko/pull/2801))
+* Fix deferred TLS output handling on inbound close and abort the TLS transport on session verification failure ([PR3323](https://github.com/apache/pekko/pull/3323), [PR3324](https://github.com/apache/pekko/pull/3324))
+
+**IO, TCP and DNS**
+
+* Harden async DNS request id handling ([PR2960](https://github.com/apache/pekko/pull/2960))
+* Avoid NPE in the outbound TCP stage when upstream finishes before connect ([PR3259](https://github.com/apache/pekko/pull/3259))
+* Close unregistered TCP channels on setup failure ([PR3273](https://github.com/apache/pekko/pull/3273))
+
+**Remoting**
+
+* Classic remoting robustness fixes: ignore stale ACKs, harden EndpointReader against dispatch errors, resume the reader after a failed handoff and buffer messages during passive handoff ([PR3158](https://github.com/apache/pekko/pull/3158), [PR3166](https://github.com/apache/pekko/pull/3166), [PR3173](https://github.com/apache/pekko/pull/3173), [PR3205](https://github.com/apache/pekko/pull/3205), [PR3361](https://github.com/apache/pekko/pull/3361))
+* Validate the full UniqueAddress in Artery system message ACK/NACK handling ([PR3175](https://github.com/apache/pekko/pull/3175))
+* Bound Artery stream shutdown ([PR3317](https://github.com/apache/pekko/pull/3317))
+* Use a Seq rather than a Set to hold TCP magic ByteStrings ([PR3484](https://github.com/apache/pekko/pull/3484))
+
+**Cluster and Cluster Sharding**
+
+* Release lease on shard stop ([PR2738](https://github.com/apache/pekko/pull/2738))
+* Stop cluster sharding entities stuck in passivation after a timeout ([PR3573](https://github.com/apache/pekko/pull/3573))
+* Filter messages from the remember-entities store ([PR3411](https://github.com/apache/pekko/pull/3411))
+* Support `java.math.BigInteger`/`BigDecimal` in cluster-metrics ([#3385](https://github.com/apache/pekko/issues/3385), [PR3382](https://github.com/apache/pekko/pull/3382))
+
+**Persistence**
+
+* Replaying a replicated event sourced actor from a snapshot caused a bug ([PR2372](https://github.com/apache/pekko/pull/2372))
+* Emit `DeletedDurableState` for deleted durable state objects ([PR2397](https://github.com/apache/pekko/pull/2397))
+* Invoke lifecycle signal handlers during snapshot recovery ([PR3358](https://github.com/apache/pekko/pull/3358))
+* Stop PersistentActor by default when the RecoveryCompleted handler fails ([PR3359](https://github.com/apache/pekko/pull/3359))
+
+**Testkit**
+
+* Return a proper non-cancelled Cancellable from StubbedActorContext.scheduleOnce ([PR3268](https://github.com/apache/pekko/pull/3268))
+* Allow overriding `testKit` with a `val` in `ScalaTestWithActorTestKit` ([#1140](https://github.com/apache/pekko/issues/1140), [PR3610](https://github.com/apache/pekko/pull/3610))
+
 ### Ported from Akka
 
 These changes were copied from Akka releases (up to and including Akka 2.9.0) that are now available under the Apache License, version 2.0.
 
-* Unpersistent versions of persistent behaviors for testing, renamed to `PersistenceProbeBehavior` ([PR2456](https://github.com/apache/pekko/pull/2456), [PR2494](https://github.com/apache/pekko/pull/2494))
-* Custom stash support in persistence-typed ([PR2433](https://github.com/apache/pekko/pull/2433))
-* Asking support in the typed BehaviorTestKit ([PR2450](https://github.com/apache/pekko/pull/2450), [PR2453](https://github.com/apache/pekko/pull/2453))
-* ShardedDaemonProcess: throttle keep-alive messages and limit them to a subset of nodes ([PR2734](https://github.com/apache/pekko/pull/2734))
-* Distributed Data: wildcard prefix subscriptions in the Replicator ([PR2735](https://github.com/apache/pekko/pull/2735))
-* Include roundtrip latency and sequence number in the heartbeat debug log ([PR2736](https://github.com/apache/pekko/pull/2736))
+**Actors and Actor Typed**
+
 * Optimize PropsAdapter, typed actor context and system adapter ([PR2743](https://github.com/apache/pekko/pull/2743), [PR2750](https://github.com/apache/pekko/pull/2750))
+* Improve error message for actorOf on a typed ActorSystem ([PR2798](https://github.com/apache/pekko/pull/2798))
+* Include sourceThread in the typed actor MDC ([PR3357](https://github.com/apache/pekko/pull/3357))
+* Include the exception type in StatusReply toString when not text ([PR3271](https://github.com/apache/pekko/pull/3271))
+* Support ActorSystem/ClassicActorSystemProvider serializer constructors and improve the error message ([PR2948](https://github.com/apache/pekko/pull/2948))
+
+**Streams**
+
+* Fine-grained stream error logging control ([PR2805](https://github.com/apache/pekko/pull/2805))
+* Support default attributes on materializers ([PR3647](https://github.com/apache/pekko/pull/3647))
+
+**Remoting and DNS**
+
+* Handle Artery uid collisions gracefully: the colliding peer is quarantined and the handshake fails instead of leaving the association in a broken state. Artery system uids are also generated in a way that makes collisions much less likely ([PR3652](https://github.com/apache/pekko/pull/3652))
+* Include roundtrip latency and sequence number in the heartbeat debug log ([PR2736](https://github.com/apache/pekko/pull/2736))
 * Auto-select SRV lookup for the name lookup if the entry looks like an SRV name ([PR2745](https://github.com/apache/pekko/pull/2745))
-* Run the DurableStateBehavior delete effect asynchronously like persist ([PR2752](https://github.com/apache/pekko/pull/2752))
-* Use ClusterShuttingDown in the Distributed Data Replicator ([PR2765](https://github.com/apache/pekko/pull/2765))
-* Add ScheduledClock to reduce nanoTime overhead in recency-based passivation ([PR2766](https://github.com/apache/pekko/pull/2766))
-* Snapshot retention: only-one-snapshot optimization and only one retention cycle in progress at a time ([PR2767](https://github.com/apache/pekko/pull/2767), [PR2797](https://github.com/apache/pekko/pull/2797))
+* DnsResolutionActor and in-flight request deduplication ([PR2919](https://github.com/apache/pekko/pull/2919))
+
+**Cluster, Cluster Sharding and Distributed Data**
+
+* ShardedDaemonProcess: throttle keep-alive messages and limit them to a subset of nodes ([PR2734](https://github.com/apache/pekko/pull/2734))
 * Improve the cluster sharding StopShards coordinator command and fix the coordinator role ([PR2783](https://github.com/apache/pekko/pull/2783), [PR2918](https://github.com/apache/pekko/pull/2918))
 * Disable ClusterShardingHealthCheck after a configured duration post member-up ([PR2785](https://github.com/apache/pekko/pull/2785))
 * Remember entities throttling per region instead of per shard and improved DData remember entities logging and consistency ([PR2786](https://github.com/apache/pekko/pull/2786), [PR2799](https://github.com/apache/pekko/pull/2799))
-* Improve error message for actorOf on a typed ActorSystem ([PR2798](https://github.com/apache/pekko/pull/2798))
-* Fine-grained stream error logging control ([PR2805](https://github.com/apache/pekko/pull/2805))
-* Add filtered, source and tags fields to typed EventEnvelope, EventsByPersistenceIdTyped queries and `withTaggerForState` ([PR2807](https://github.com/apache/pekko/pull/2807), [PR2920](https://github.com/apache/pekko/pull/2920))
-* Support for external transport of replicated events in Replicated Event Sourcing ([PR2808](https://github.com/apache/pekko/pull/2808))
-* DnsResolutionActor and in-flight request deduplication ([PR2919](https://github.com/apache/pekko/pull/2919))
+* Add ScheduledClock to reduce nanoTime overhead in recency-based passivation ([PR2766](https://github.com/apache/pekko/pull/2766))
+* Consistent-hashing shard allocation strategy ([PR3270](https://github.com/apache/pekko/pull/3270))
 * Initialize the DistributedData extension from ExternalShardAllocationStrategy ([PR2923](https://github.com/apache/pekko/pull/2923))
 * Make it possible to define the cluster `appVersion` later ([PR2947](https://github.com/apache/pekko/pull/2947))
-* Support ActorSystem/ClassicActorSystemProvider serializer constructors and improve the error message ([PR2948](https://github.com/apache/pekko/pull/2948))
+* Define a custom lease name for Cluster Sharding and Cluster Singleton ([PR3648](https://github.com/apache/pekko/pull/3648))
+* Distributed Data: wildcard prefix subscriptions in the Replicator ([PR2735](https://github.com/apache/pekko/pull/2735))
+* Use ClusterShuttingDown in the Distributed Data Replicator ([PR2765](https://github.com/apache/pekko/pull/2765))
+* Report the effective timeout in the shard hand off stop warnings ([PR3644](https://github.com/apache/pekko/pull/3644))
+
+**Persistence**
+
+* Custom stash support in persistence-typed ([PR2433](https://github.com/apache/pekko/pull/2433))
+* Run the DurableStateBehavior delete effect asynchronously like persist ([PR2752](https://github.com/apache/pekko/pull/2752))
+* Snapshot retention: only-one-snapshot optimization and only one retention cycle in progress at a time ([PR2767](https://github.com/apache/pekko/pull/2767), [PR2797](https://github.com/apache/pekko/pull/2797))
+* Add filtered, source and tags fields to typed EventEnvelope, EventsByPersistenceIdTyped queries and `withTaggerForState` ([PR2807](https://github.com/apache/pekko/pull/2807), [PR2920](https://github.com/apache/pekko/pull/2920))
+* Add `with` methods to the typed query `EventEnvelope` ([PR3646](https://github.com/apache/pekko/pull/3646))
+* Support for external transport of replicated events in Replicated Event Sourcing ([PR2808](https://github.com/apache/pekko/pull/2808))
 * Runtime plugin configuration for DurableState ([PR3058](https://github.com/apache/pekko/pull/3058))
-* Consistent-hashing shard allocation strategy ([PR3270](https://github.com/apache/pekko/pull/3270))
-* Include the exception type in StatusReply toString when not text ([PR3271](https://github.com/apache/pekko/pull/3271))
 * FilteredPayload placeholder for filtered journal events ([PR3275](https://github.com/apache/pekko/pull/3275))
 * Scalable fan-out persistence query abstraction (`EventsBySliceFirehoseQuery`) and `EventsBySliceStartingFromSnapshotsQuery` ([PR3277](https://github.com/apache/pekko/pull/3277))
-* Include sourceThread in the typed actor MDC ([PR3357](https://github.com/apache/pekko/pull/3357))
-* Other Akka 2.8.4 changes ([PR3432](https://github.com/apache/pekko/pull/3432))
-* Support default attributes on materializers ([PR3647](https://github.com/apache/pekko/pull/3647))
-* Define a custom lease name for Cluster Sharding and Cluster Singleton ([PR3648](https://github.com/apache/pekko/pull/3648))
-* Add `with` methods to the typed query `EventEnvelope` ([PR3646](https://github.com/apache/pekko/pull/3646))
-* Predefined `JsonSerializable` and `CborSerializable` marker traits in pekko-serialization-jackson and pekko-serialization-jackson3, bound to `jackson-json` and `jackson-cbor` ([PR3649](https://github.com/apache/pekko/pull/3649), [PR3666](https://github.com/apache/pekko/pull/3666))
-* Bind ScalaPB messages to the protobuf serializer when ScalaPB is on the classpath ([PR3651](https://github.com/apache/pekko/pull/3651))
 * Add `SerializedEvent` for writing events that are already serialized ([PR3650](https://github.com/apache/pekko/pull/3650))
+* `EventWriter` improvements: optionally fill sequence number gaps with `FilteredPayload`, fail waiting writes instead of restarting when the sequence number lookup fails, handle snapshot events and bypass the journal circuit breaker for the duplicate writes it relies on ([PR3653](https://github.com/apache/pekko/pull/3653))
+
+**Serialization**
+
+* Predefined `JsonSerializable` and `CborSerializable` marker traits in pekko-serialization-jackson and pekko-serialization-jackson3, bound to `jackson-json` and `jackson-cbor` ([PR3649](https://github.com/apache/pekko/pull/3649), [PR3666](https://github.com/apache/pekko/pull/3666))
+* Bind ScalaPB messages to the protobuf serializer when ScalaPB is on the classpath ([PR3651](https://github.com/apache/pekko/pull/3651), [PR3665](https://github.com/apache/pekko/pull/3665))
+
+**Testkit**
+
+* Unpersistent versions of persistent behaviors for testing, renamed to `PersistenceProbeBehavior` ([PR2456](https://github.com/apache/pekko/pull/2456), [PR2494](https://github.com/apache/pekko/pull/2494))
+* Asking support in the typed BehaviorTestKit ([PR2450](https://github.com/apache/pekko/pull/2450), [PR2453](https://github.com/apache/pekko/pull/2453))
+
+**Other**
+
+* Other Akka 2.8.4 changes ([PR3432](https://github.com/apache/pekko/pull/3432))
 
 ### Additions
+
+**Actors**
 
 * Add `ActorSystem.terminateAndAwait` and `ActorSystem.close` ([PR2096](https://github.com/apache/pekko/pull/2096), [PR2486](https://github.com/apache/pekko/pull/2486))
 * Add `UntypedAbstractActorWithStash`, `UntypedAbstractActorWithUnboundedStash` and `UntypedAbstractActorWithUnrestrictedStash` ([PR2097](https://github.com/apache/pekko/pull/2097))
 * Add actor-typed Java DSL `AbstractMatchingBehavior` ([#2108](https://github.com/apache/pekko/issues/2108), [PR2379](https://github.com/apache/pekko/pull/2379))
 * Add logging variants for the Java DSL stash and timer actor base classes ([#2520](https://github.com/apache/pekko/issues/2520), [PR3387](https://github.com/apache/pekko/pull/3387))
 * Add the timeout duration to the `ReceiveTimeout` message ([PR3399](https://github.com/apache/pekko/pull/3399))
-* Add `andThen` and `compose` to `pekko.japi.function.Function` ([#2144](https://github.com/apache/pekko/issues/2144), [PR2147](https://github.com/apache/pekko/pull/2147))
-* Add a throwing boolean supplier, `sneakyThrow` and `OptionalUtil` Java utilities ([PR2199](https://github.com/apache/pekko/pull/2199), [PR2218](https://github.com/apache/pekko/pull/2218), [PR2464](https://github.com/apache/pekko/pull/2464))
-* Add `CompletionStages` utility and make `timeoutCompletionStage`/`afterCompletionStage` accept Java Duration ([PR2060](https://github.com/apache/pekko/pull/2060), [PR2063](https://github.com/apache/pekko/pull/2063), [PR2067](https://github.com/apache/pekko/pull/2067))
 * Add `StatusReply.fromTry` and `StatusReply.fromCallable` ([PR2810](https://github.com/apache/pekko/pull/2810), [PR2812](https://github.com/apache/pekko/pull/2812))
-* Add `JournalPersistFailed` and `JournalPersistRejected` signals ([PR1961](https://github.com/apache/pekko/pull/1961))
-* Add an AsyncWriteJournal option for disabling the Resequencer ([PR2027](https://github.com/apache/pekko/pull/2027))
-* Add `DurableStateBehaviorTestKit` ([PR3360](https://github.com/apache/pekko/pull/3360))
-* `PersistenceTestKitReadJournal` tag and slice queries support resuming from a `TimestampOffset` ([#1765](https://github.com/apache/pekko/issues/1765), [PR3615](https://github.com/apache/pekko/pull/3615))
-* The Java test kits now support JUnit Jupiter (JUnit 5 and 6). Pekko's own Java tests have been migrated from JUnit 4 ([#967](https://github.com/apache/pekko/issues/967), [PR2289](https://github.com/apache/pekko/pull/2289), [PR2724](https://github.com/apache/pekko/pull/2724), [PR2865](https://github.com/apache/pekko/pull/2865))
-* Java DSL TestKit `shutdownActorSystem` that takes Java Duration params ([#2226](https://github.com/apache/pekko/issues/2226), [PR2277](https://github.com/apache/pekko/pull/2277))
-* Add virtualize support for thread-pool-executor (including the blocking IO dispatcher) and support setting the starting number of virtual threads ([#2163](https://github.com/apache/pekko/issues/2163), [PR2169](https://github.com/apache/pekko/pull/2169), [PR2242](https://github.com/apache/pekko/pull/2242))
-* Make ForkJoinPool `minimum-runnable` configurable and auto-tune it on JDK 25+ ([PR2871](https://github.com/apache/pekko/pull/2871), [PR2890](https://github.com/apache/pekko/pull/2890))
-* Support the `SO_REUSEPORT` socket option ([PR2915](https://github.com/apache/pekko/pull/2915))
-* Add `ByteString.endsWith`, `indexOf` with from and to, and make `ByteString.copyToBuffer(buffer, offset)` public ([PR2271](https://github.com/apache/pekko/pull/2271), [PR2862](https://github.com/apache/pekko/pull/2862), [PR2946](https://github.com/apache/pekko/pull/2946))
-* Add OSGi headers to pekko-pki and pekko-cluster-typed and compute OSGi imports for Pekko packages dynamically ([PR2107](https://github.com/apache/pekko/pull/2107), [PR2112](https://github.com/apache/pekko/pull/2112), [PR2313](https://github.com/apache/pekko/pull/2313))
-* Add zstd compression to the Jackson serializers (`compression.algorithm = zstd`). zstd-jni is an optional dependency that you need to add yourself ([PR3641](https://github.com/apache/pekko/pull/3641))
-* Add Scala 3.8 and 3.9 compatibility (Pekko is still published using Scala 3.3 LTS) ([PR3072](https://github.com/apache/pekko/pull/3072), [PR3073](https://github.com/apache/pekko/pull/3073), [PR3074](https://github.com/apache/pekko/pull/3074), [PR3295](https://github.com/apache/pekko/pull/3295), [PR3303](https://github.com/apache/pekko/pull/3303))
 
-The Stream API has been updated to add some extra operators.
+**Streams**
 
 * Add `Sink.source` and `materializeIntoSource` operators ([#2222](https://github.com/apache/pekko/issues/2222), [PR2250](https://github.com/apache/pekko/pull/2250), [PR1831](https://github.com/apache/pekko/pull/1831))
 * Add `Sink#count` operator ([#2182](https://github.com/apache/pekko/issues/2182), [PR2244](https://github.com/apache/pekko/pull/2244))
@@ -202,7 +235,43 @@ The Stream API has been updated to add some extra operators.
 * Add supervision strategy support to more operators that accept user functions (`groupedWeightedWithin`, `batch`, `expand` and `extrapolate`) and log supervision Resume/Restart in mapAsync operators ([#3110](https://github.com/apache/pekko/issues/3110), [PR3124](https://github.com/apache/pekko/pull/3124), [PR3180](https://github.com/apache/pekko/pull/3180), [PR3184](https://github.com/apache/pekko/pull/3184), [PR3185](https://github.com/apache/pekko/pull/3185))
 * Add an opt-in GraphStage based TLS engine (the actor based implementation remains the default) ([PR2878](https://github.com/apache/pekko/pull/2878))
 
+**Dispatchers and IO**
+
+* Add virtualize support for thread-pool-executor (including the blocking IO dispatcher) and support setting the starting number of virtual threads ([#2163](https://github.com/apache/pekko/issues/2163), [PR2169](https://github.com/apache/pekko/pull/2169), [PR2242](https://github.com/apache/pekko/pull/2242))
+* Make ForkJoinPool `minimum-runnable` configurable and auto-tune it on JDK 25+ ([PR2871](https://github.com/apache/pekko/pull/2871), [PR2890](https://github.com/apache/pekko/pull/2890))
+* Support the `SO_REUSEPORT` socket option ([PR2915](https://github.com/apache/pekko/pull/2915))
+
+**Java API utilities**
+
+* Add `andThen` and `compose` to `pekko.japi.function.Function` ([#2144](https://github.com/apache/pekko/issues/2144), [PR2147](https://github.com/apache/pekko/pull/2147))
+* Add a throwing boolean supplier, `sneakyThrow` and `OptionalUtil` Java utilities ([PR2199](https://github.com/apache/pekko/pull/2199), [PR2218](https://github.com/apache/pekko/pull/2218), [PR2464](https://github.com/apache/pekko/pull/2464))
+* Add `CompletionStages` utility and make `timeoutCompletionStage`/`afterCompletionStage` accept Java Duration ([PR2060](https://github.com/apache/pekko/pull/2060), [PR2063](https://github.com/apache/pekko/pull/2063), [PR2067](https://github.com/apache/pekko/pull/2067))
+
+**Persistence**
+
+* Add `JournalPersistFailed` and `JournalPersistRejected` signals ([PR1961](https://github.com/apache/pekko/pull/1961))
+* Add an AsyncWriteJournal option for disabling the Resequencer ([PR2027](https://github.com/apache/pekko/pull/2027))
+
+**Testkit**
+
+* `PersistenceTestKitReadJournal` tag and slice queries support resuming from a `TimestampOffset` ([#1765](https://github.com/apache/pekko/issues/1765), [PR3615](https://github.com/apache/pekko/pull/3615))
+* Add `DurableStateBehaviorTestKit` ([PR3360](https://github.com/apache/pekko/pull/3360))
+* The Java test kits now support JUnit Jupiter (JUnit 5 and 6). Pekko's own Java tests have been migrated from JUnit 4 ([#967](https://github.com/apache/pekko/issues/967), [PR2289](https://github.com/apache/pekko/pull/2289), [PR2724](https://github.com/apache/pekko/pull/2724), [PR2865](https://github.com/apache/pekko/pull/2865))
+* Java DSL TestKit `shutdownActorSystem` that takes Java Duration params ([#2226](https://github.com/apache/pekko/issues/2226), [PR2277](https://github.com/apache/pekko/pull/2277))
+
+**Serialization**
+
+* Add zstd compression to the Jackson serializers (`compression.algorithm = zstd`). zstd-jni is an optional dependency that you need to add yourself ([PR3641](https://github.com/apache/pekko/pull/3641))
+
+**Other**
+
+* Add `ByteString.endsWith`, `indexOf` with from and to, and make `ByteString.copyToBuffer(buffer, offset)` public ([PR2271](https://github.com/apache/pekko/pull/2271), [PR2862](https://github.com/apache/pekko/pull/2862), [PR2946](https://github.com/apache/pekko/pull/2946))
+* Add OSGi headers to pekko-pki and pekko-cluster-typed and compute OSGi imports for Pekko packages dynamically ([PR2107](https://github.com/apache/pekko/pull/2107), [PR2112](https://github.com/apache/pekko/pull/2112), [PR2313](https://github.com/apache/pekko/pull/2313))
+* Add Scala 3.8 and 3.9 compatibility (Pekko is still published using Scala 3.3 LTS) ([PR3072](https://github.com/apache/pekko/pull/3072), [PR3073](https://github.com/apache/pekko/pull/3073), [PR3074](https://github.com/apache/pekko/pull/3074), [PR3295](https://github.com/apache/pekko/pull/3295), [PR3303](https://github.com/apache/pekko/pull/3303))
+
 ### Changes
+
+**API changes**
 
 * Make `SubFlow` and `SubSource` final classes and switch the type parameter order of `UnfoldResourceSource` and `UnfoldResourceSourceAsync` ([PR615](https://github.com/apache/pekko/pull/615), [PR616](https://github.com/apache/pekko/pull/616), [PR619](https://github.com/apache/pekko/pull/619))
 * Remove the unnecessary empty parameter list from `watchTermination` ([#2376](https://github.com/apache/pekko/issues/2376), [PR2378](https://github.com/apache/pekko/pull/2378))
@@ -212,15 +281,25 @@ The Stream API has been updated to add some extra operators.
 * Replace `scala.Tuple2` with `pekko.japi.Pair` in `FSMTransitionHandlerBuilder` ([PR3378](https://github.com/apache/pekko/pull/3378))
 * Replace `immutable.Traversable` in the public io and stream APIs ([PR3467](https://github.com/apache/pekko/pull/3467), [PR3468](https://github.com/apache/pekko/pull/3468))
 * Remove `ExecutorServiceFactoryProvider` from `ThreadPoolConfig` ([#2171](https://github.com/apache/pekko/issues/2171), [PR2175](https://github.com/apache/pekko/pull/2175))
-* Replace CountMinSketch with FastFrequencySketch in Artery compression ([PR3023](https://github.com/apache/pekko/pull/3023))
 * Replace the actor based fanout publisher runtime (`Sink.asPublisher(fanout = true)`) with a GraphStage bridge ([PR2874](https://github.com/apache/pekko/pull/2874))
 * Remove the deprecated annotation from `recoverWith` and undeprecate the `getFirst`/`getFirstAttribute` methods ([PR2119](https://github.com/apache/pekko/pull/2119), [PR3404](https://github.com/apache/pekko/pull/3404))
 * Mark public sealed traits and abstract classes with `@DoNotInherit` ([#1270](https://github.com/apache/pekko/issues/1270), [PR3386](https://github.com/apache/pekko/pull/3386))
 * Remove `@ApiMayChange` from APIs that have proven stable, including the log markers, `RotatingKeysSSLEngineProvider`, `ExternalShardAllocation`, `RetryFlow`, the `MaterializerState` API and the typed persistence query APIs ([PR3607](https://github.com/apache/pekko/pull/3607), [PR3636](https://github.com/apache/pekko/pull/3636), [PR3656](https://github.com/apache/pekko/pull/3656))
+
+**Removed legacy support**
+
 * Remove the Akka 2.6.4 rolling-migration manifests from ClusterMessageSerializer ([PR3516](https://github.com/apache/pekko/pull/3516))
 * ClusterShardingSettings: remove backward-compat passivation code ([PR3026](https://github.com/apache/pekko/pull/3026))
 * Remove the `ssl-config` dependency ([#2125](https://github.com/apache/pekko/issues/2125), [PR2127](https://github.com/apache/pekko/pull/2127), [PR2359](https://github.com/apache/pekko/pull/2359))
 * Remove usage of `SecurityManager` ([#1970](https://github.com/apache/pekko/issues/1970), [PR2106](https://github.com/apache/pekko/pull/2106))
+
+**Remoting and serialization**
+
+* Replace CountMinSketch with FastFrequencySketch in Artery compression ([PR3023](https://github.com/apache/pekko/pull/3023))
+* Fail ActorSystem startup when both pekko-serialization-jackson and pekko-serialization-jackson3 are on the classpath. They register serializers with the same names and identifiers, so one would silently take over the other's bindings ([#3671](https://github.com/apache/pekko/issues/3671), [PR3673](https://github.com/apache/pekko/pull/3673))
+
+**Build and code modernisation**
+
 * Use the better ByteBuffer cleaner available in Java 9+ ([PR2020](https://github.com/apache/pekko/pull/2020), [PR2031](https://github.com/apache/pekko/pull/2031))
 * Code modernisation to use Java 17 language features and APIs (pattern matching instanceof, switch expressions, records, sealed types, collection factories, lambdas instead of anonymous inner classes) ([#2083](https://github.com/apache/pekko/issues/2083), [#2201](https://github.com/apache/pekko/issues/2201), [PR2088](https://github.com/apache/pekko/pull/2088), [PR3188](https://github.com/apache/pekko/pull/3188), [PR3190](https://github.com/apache/pekko/pull/3190), [PR3191](https://github.com/apache/pekko/pull/3191), [PR3192](https://github.com/apache/pekko/pull/3192), [PR3193](https://github.com/apache/pekko/pull/3193), [PR3194](https://github.com/apache/pekko/pull/3194), [PR3379](https://github.com/apache/pekko/pull/3379))
 * Code modernisation for Scala 2.13 and Scala 3, using the standard `scala.jdk` converters instead of compat libraries ([#2126](https://github.com/apache/pekko/issues/2126), [PR2205](https://github.com/apache/pekko/pull/2205), [PR2206](https://github.com/apache/pekko/pull/2206), [PR2236](https://github.com/apache/pekko/pull/2236), [PR3539](https://github.com/apache/pekko/pull/3539))
@@ -228,7 +307,10 @@ The Stream API has been updated to add some extra operators.
 * Fix many compiler, Scaladoc and Javadoc warnings ([PR3283](https://github.com/apache/pekko/pull/3283), [PR3284](https://github.com/apache/pekko/pull/3284), [PR3285](https://github.com/apache/pekko/pull/3285), [PR3297](https://github.com/apache/pekko/pull/3297), [PR3330](https://github.com/apache/pekko/pull/3330))
 * Regenerated the protobuf source code using protoc 4.36 ([PR2036](https://github.com/apache/pekko/pull/2036), [PR2335](https://github.com/apache/pekko/pull/2335), [PR3514](https://github.com/apache/pekko/pull/3514))
 * Validate legal files in packaged jars ([PR3328](https://github.com/apache/pekko/pull/3328))
-* Many documentation improvements, including a list of configuration changes in the migration guide, docs for the jackson3 module, the JUnit Jupiter test kit, custom Durable State store plugins, migrating off the deprecated `Source.queue` overloads and stream operator reference pages for previously undocumented operators ([PR2391](https://github.com/apache/pekko/pull/2391), [PR2468](https://github.com/apache/pekko/pull/2468), [PR3274](https://github.com/apache/pekko/pull/3274), [PR3513](https://github.com/apache/pekko/pull/3513), [PR3583](https://github.com/apache/pekko/pull/3583), [PR3585](https://github.com/apache/pekko/pull/3585), [#3589](https://github.com/apache/pekko/issues/3589), [PR3590](https://github.com/apache/pekko/pull/3590), [PR3605](https://github.com/apache/pekko/pull/3605), [PR3654](https://github.com/apache/pekko/pull/3654), [PR3661](https://github.com/apache/pekko/pull/3661))
+
+**Documentation**
+
+* Many documentation improvements, including a list of configuration changes in the migration guide, docs for the jackson3 module, the JUnit Jupiter test kit, custom Durable State store plugins, migrating off the deprecated `Source.queue` overloads and the removed `PekkoSSLConfig` APIs, clearer typed actor and persistence lifecycle guidance, separate build tool (sbt, Maven, Gradle) and language selectors, and stream operator reference pages for previously undocumented operators ([PR2391](https://github.com/apache/pekko/pull/2391), [PR2468](https://github.com/apache/pekko/pull/2468), [PR3274](https://github.com/apache/pekko/pull/3274), [PR3513](https://github.com/apache/pekko/pull/3513), [PR3583](https://github.com/apache/pekko/pull/3583), [PR3585](https://github.com/apache/pekko/pull/3585), [#3589](https://github.com/apache/pekko/issues/3589), [PR3590](https://github.com/apache/pekko/pull/3590), [PR3605](https://github.com/apache/pekko/pull/3605), [PR3654](https://github.com/apache/pekko/pull/3654), [PR3655](https://github.com/apache/pekko/pull/3655), [PR3658](https://github.com/apache/pekko/pull/3658), [PR3660](https://github.com/apache/pekko/pull/3660), [PR3661](https://github.com/apache/pekko/pull/3661), [PR3663](https://github.com/apache/pekko/pull/3663), [PR3664](https://github.com/apache/pekko/pull/3664))
 
 ### Performance
 
