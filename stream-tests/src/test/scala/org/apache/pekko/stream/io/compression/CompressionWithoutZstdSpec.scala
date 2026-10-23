@@ -50,7 +50,7 @@ class CompressionWithoutZstdSpec extends AnyWordSpec with Matchers {
         .map(new File(_).toURI.toURL)
       // not closed: dispatcher shutdown tasks of the terminated ActorSystem may still load classes from it
       val loader = new URLClassLoader(urls, ClassLoader.getPlatformClassLoader)
-      an[ClassNotFoundException] should be thrownBy loader.loadClass("com.github.luben.zstd.Zstd")
+      a[ClassNotFoundException] should be thrownBy loader.loadClass("com.github.luben.zstd.Zstd")
 
       val roundTrip = loader.loadClass(classOf[CompressionWithoutZstdRoundTrip].getName)
       val thread = Thread.currentThread()

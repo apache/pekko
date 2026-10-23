@@ -18,6 +18,7 @@
 package org.apache.pekko.stream.io.compression
 
 import java.io.{ InputStream, OutputStream }
+import java.nio.charset.StandardCharsets
 
 import com.github.luben.zstd.{ Zstd, ZstdException, ZstdInputStream, ZstdOutputStream }
 
@@ -71,7 +72,7 @@ class ZstdSpec extends CoderSpec[ZstdException]("zstd") {
       Compression.ZstdDecompressMaxBlockSize should ===(Zstd.blockSizeMax())
     }
     "compress with a dictionary slice" in {
-      val dictBytes = ("padding" + smallText * 4).getBytes("UTF-8")
+      val dictBytes = ("padding" + smallText * 4).getBytes(StandardCharsets.UTF_8)
       val dictionary = ZstdDictionary(dictBytes, Compression.ZstdDefaultCompressionLevel, 7, dictBytes.length - 7)
       val compressed = new ZstdCompressor(dictionary = Some(dictionary.toImpl)).compressAndFinish(smallTextBytes)
 
