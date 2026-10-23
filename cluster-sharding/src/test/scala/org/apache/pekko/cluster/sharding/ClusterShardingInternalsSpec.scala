@@ -8,7 +8,7 @@
  */
 
 /*
- * Copyright (C) 2009-2022 Lightbend Inc. <https://www.lightbend.com>
+ * Copyright (C) 2009-2023 Lightbend Inc. <https://www.lightbend.com>
  */
 
 package org.apache.pekko.cluster.sharding
@@ -98,10 +98,11 @@ class ClusterShardingInternalsSpec extends PekkoSpec("""
       val handOffStopper = system.actorOf(
         Props(new HandOffStopper(typeName, shard, probe.ref, Set(emptyHandlerActor), HandOffStopMessage, 10.millis)))
 
+      // the entity stop timeout is at least 1 second
       watch(emptyHandlerActor)
-      expectTerminated(emptyHandlerActor, 1.seconds)
+      expectTerminated(emptyHandlerActor, 3.seconds)
 
-      probe.expectMsg(1.seconds, ShardStopped(shard))
+      probe.expectMsg(3.seconds, ShardStopped(shard))
       probe.lastSender shouldEqual handOffStopper
 
       watch(handOffStopper)
