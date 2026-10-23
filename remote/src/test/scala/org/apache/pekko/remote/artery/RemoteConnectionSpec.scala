@@ -8,7 +8,7 @@
  */
 
 /*
- * Copyright (C) 2009-2022 Lightbend Inc. <https://www.lightbend.com>
+ * Copyright (C) 2009-2023 Lightbend Inc. <https://www.lightbend.com>
  */
 
 package org.apache.pekko.remote.artery
@@ -18,8 +18,8 @@ import scala.concurrent.duration._
 import org.apache.pekko
 import pekko.actor.ActorSystem
 import pekko.actor.ExtendedActorSystem
+import pekko.event.Logging
 import pekko.remote.RARP
-import pekko.remote.artery.Association.UidCollisionException
 import pekko.remote.artery.AssociationState.UidKnown
 import pekko.remote.artery.AssociationState.UidUnknown
 import pekko.testkit.{ EventFilter, ImplicitSender, TestActors, TestEvent, TestProbe }
@@ -33,6 +33,18 @@ class RemoteConnectionSpec extends ArteryMultiNodeSpec("pekko.remote.retry-gate-
         EventFilter.warning(start = "AssociationError"),
         EventFilter.warning(pattern = "received dead letter.*")))
   }
+
+  private def warningsProbe(system: ActorSystem): TestProbe = {
+    val probe = new TestProbe(system)
+    system.eventStream.subscribe(probe.ref, classOf[Logging.Warning])
+    probe
+  }
+
+  // handshake retries can log the collision more than once, so expect at least one warning
+  private def expectCollisionWarning(warnings: TestProbe): Unit =
+    warnings.fishForMessage(hint = "UID collision warning") {
+      case w: Logging.Warning => w.message.toString.startsWith("UID collision old [")
+    }
 
   "Remoting between systems" should {
 
@@ -75,27 +87,27 @@ class RemoteConnectionSpec extends ArteryMultiNodeSpec("pekko.remote.retry-gate-
         remoteSystem2.actorSelection(s"pekko://${localSystem.name}@localhost:$localPort/user/$echoName")
 
       selectionFromLocalToRemote1.tell("ping1a", localProbe.ref)
-      localProbe.expectMsg(500.millis, "ping1a")
+      localProbe.expectMsg("ping1a")
 
       selectionFromRemote1ToLocal.tell("ping1b", remote1Probe.ref)
-      remote1Probe.expectMsg(500.millis, "ping1b")
+      remote1Probe.expectMsg("ping1b")
 
-      EventFilter[UidCollisionException]().intercept {
-        selectionFromLocalToRemote2.tell("ping2a", localProbe.ref)
-        // doesn't get through
-        localProbe.expectNoMessage()
-      }(localSystem)
+      val collisionWarnings1 = warningsProbe(localSystem)
+      selectionFromLocalToRemote2.tell("ping2a", localProbe.ref)
+      // doesn't get through
+      localProbe.expectNoMessage()
+      expectCollisionWarning(collisionWarnings1)
       RARP(localSystem).provider.transport
         .asInstanceOf[ArteryTransport]
         .association(RARP(remoteSystem2).provider.getDefaultAddress)
         .associationState
         .uniqueRemoteAddressState() shouldBe UidUnknown // handshake not completed
 
-      EventFilter[UidCollisionException]().intercept {
-        selectionFromRemote2ToLocal.tell("ping2b", remote2Probe.ref)
-        // doesn't get through in other direction
-        remote2Probe.expectNoMessage()
-      }(localSystem)
+      val collisionWarnings2 = warningsProbe(localSystem)
+      selectionFromRemote2ToLocal.tell("ping2b", remote2Probe.ref)
+      // doesn't get through in other direction
+      remote2Probe.expectNoMessage()
+      expectCollisionWarning(collisionWarnings2)
 
       RARP(remoteSystem2).provider.transport
         .asInstanceOf[ArteryTransport]
@@ -111,11 +123,11 @@ class RemoteConnectionSpec extends ArteryMultiNodeSpec("pekko.remote.retry-gate-
 
       // still works
       selectionFromLocalToRemote1.tell("ping1a again", localProbe.ref)
-      localProbe.expectMsg(500.millis, "ping1a again")
+      localProbe.expectMsg("ping1a again")
 
       // still works in other direction
       selectionFromRemote1ToLocal.tell("ping1b again", remote1Probe.ref)
-      remote1Probe.expectMsg(500.millis, "ping1b again")
+      remote1Probe.expectMsg("ping1b again")
     }
 
     "handle uid collision when connection FROM two systems with same uid" in {
@@ -158,27 +170,27 @@ class RemoteConnectionSpec extends ArteryMultiNodeSpec("pekko.remote.retry-gate-
         remoteSystem2.actorSelection(s"pekko://${localSystem.name}@localhost:$localPort/user/$echoName")
 
       selectionFromRemote1ToLocal.tell("ping1b", remote1Probe.ref)
-      remote1Probe.expectMsg(500.millis, "ping1b")
+      remote1Probe.expectMsg("ping1b")
 
       selectionFromLocalToRemote1.tell("ping1a", localProbe.ref)
-      localProbe.expectMsg(500.millis, "ping1a")
+      localProbe.expectMsg("ping1a")
 
-      EventFilter[UidCollisionException]().intercept {
-        selectionFromRemote2ToLocal.tell("ping2b", remote2Probe.ref)
-        // doesn't get through
-        localProbe.expectNoMessage()
-      }(localSystem)
+      val collisionWarnings3 = warningsProbe(localSystem)
+      selectionFromRemote2ToLocal.tell("ping2b", remote2Probe.ref)
+      // doesn't get through
+      localProbe.expectNoMessage()
+      expectCollisionWarning(collisionWarnings3)
       RARP(localSystem).provider.transport
         .asInstanceOf[ArteryTransport]
         .association(RARP(remoteSystem2).provider.getDefaultAddress)
         .associationState
         .uniqueRemoteAddressState() shouldBe UidUnknown // handshake not completed
 
-      EventFilter[UidCollisionException]().intercept {
-        selectionFromLocalToRemote2.tell("ping2a", localProbe.ref)
-        // doesn't get through in other direction
-        remote2Probe.expectNoMessage()
-      }(localSystem)
+      val collisionWarnings4 = warningsProbe(localSystem)
+      selectionFromLocalToRemote2.tell("ping2a", localProbe.ref)
+      // doesn't get through in other direction
+      remote2Probe.expectNoMessage()
+      expectCollisionWarning(collisionWarnings4)
 
       RARP(remoteSystem2).provider.transport
         .asInstanceOf[ArteryTransport]
@@ -194,11 +206,11 @@ class RemoteConnectionSpec extends ArteryMultiNodeSpec("pekko.remote.retry-gate-
 
       // still works
       selectionFromRemote1ToLocal.tell("ping1b again", remote1Probe.ref)
-      remote1Probe.expectMsg(500.millis, "ping1b again")
+      remote1Probe.expectMsg("ping1b again")
 
       // still works in other direction
       selectionFromLocalToRemote1.tell("ping1a again", localProbe.ref)
-      localProbe.expectMsg(500.millis, "ping1a again")
+      localProbe.expectMsg("ping1a again")
     }
 
     "be able to connect to system even if it's not there at first" in {
