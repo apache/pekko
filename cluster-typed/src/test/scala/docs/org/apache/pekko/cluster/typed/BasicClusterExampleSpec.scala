@@ -8,7 +8,7 @@
  */
 
 /*
- * Copyright (C) 2018-2022 Lightbend Inc. <https://www.lightbend.com>
+ * Copyright (C) 2018-2023 Lightbend Inc. <https://www.lightbend.com>
  */
 
 package docs.org.apache.pekko.cluster.typed
@@ -128,8 +128,10 @@ class BasicClusterConfigSpec extends AnyWordSpec with ScalaFutures with Eventual
   "Cluster API" must {
     "init cluster" in {
       // config is pulled into docs, but we don't want to hardcode ports because that makes for brittle tests
-      val sys1Port = SocketUtil.temporaryLocalPort()
-      val sys2Port = SocketUtil.temporaryLocalPort()
+      val addresses = SocketUtil.temporaryServerAddresses(2, hostname = "127.0.0.1")
+      val sys1Port = addresses.head.getPort
+      val sys2Port = addresses.last.getPort
+      sys1Port should not be sys2Port
       def config(port: Int) = ConfigFactory.parseString(s"""
           pekko.remote.classic.netty.tcp.port = $port
           pekko.remote.artery.canonical.port = $port
@@ -142,8 +144,14 @@ class BasicClusterConfigSpec extends AnyWordSpec with ScalaFutures with Eventual
       val system2 =
         ActorSystem[Nothing](Behaviors.empty[Nothing], "ClusterSystem", config(sys2Port).withFallback(configSystem2))
       try {
-        Cluster(system1)
-        Cluster(system2)
+        val clusters = Seq(Cluster(system1), Cluster(system2))
+        eventually {
+          clusters.foreach { cluster =>
+            cluster.state.members.size shouldBe 2
+            cluster.state.members.unsorted.map(_.status) shouldBe Set(MemberStatus.Up)
+            cluster.state.members.unsorted.map(_.address.port.get) shouldBe Set(sys1Port, sys2Port)
+          }
+        }
       } finally {
         ActorTestKit.shutdown(system1)
         ActorTestKit.shutdown(system2)
