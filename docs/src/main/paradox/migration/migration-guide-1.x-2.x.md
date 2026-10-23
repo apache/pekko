@@ -239,3 +239,10 @@ Pekko 1.x nodes during a rolling update. ([PR3650](https://github.com/apache/pek
 `jackson-cbor`. Your own marker traits and bindings keep working. If you switch messages to the
 predefined traits, Pekko 1.x nodes cannot load those classes, so only do that once no Pekko 1.x nodes
 remain in the cluster. ([PR3649](https://github.com/apache/pekko/pull/3649))
+* Only one of `pekko-serialization-jackson` and `pekko-serialization-jackson3` can be on the
+classpath. Both register serializers with the same names and identifiers, and the serializers now fail
+at ActorSystem startup if both modules are present. The two modules have different default setups
+(Jackson 2 and Jackson 3 differ in their default features and registered modules), so the same message
+can be serialized differently, and data written by one may not be read correctly by the other. In a
+Cluster or Remoting setup, make sure all Pekko nodes use the same Jackson serializer module.
+([PR3673](https://github.com/apache/pekko/pull/3673))
