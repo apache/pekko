@@ -234,6 +234,76 @@ final class EventEnvelope[Event](
     tags.asJava
   }
 
+  /**
+   * `entityType` and `slice` should be derived from the `persistenceId`, but must be explicitly defined
+   * when changing the `persistenceId` of the envelope.
+   * The `slice` should be calculated with [[pekko.persistence.Persistence.sliceForPersistenceId]] for
+   * the given `persistenceId`.
+   * The `entityType` should be extracted from the `persistenceId` with
+   * `org.apache.pekko.persistence.typed.PersistenceId.extractEntityType`.
+   */
+  def withPersistenceId(persistenceId: String, entityType: String, slice: Int): EventEnvelope[Event] =
+    copy(persistenceId = persistenceId, entityType = entityType, slice = slice)
+
+  def withEvent(event: Event): EventEnvelope[Event] =
+    copy(eventOption = Option(event))
+
+  /**
+   * Scala API
+   */
+  def withEventOption(eventOption: Option[Event]): EventEnvelope[Event] =
+    copy(eventOption = eventOption)
+
+  /**
+   * Java API
+   */
+  def withEventOption(eventOption: Optional[Event]): EventEnvelope[Event] = {
+    import scala.jdk.OptionConverters._
+    copy(eventOption = eventOption.toScala)
+  }
+
+  /**
+   * Scala API
+   */
+  def withTags(tags: Set[String]): EventEnvelope[Event] =
+    copy(tags = tags)
+
+  /**
+   * Java API
+   */
+  def withTags(tags: JSet[String]): EventEnvelope[Event] = {
+    import scala.jdk.CollectionConverters._
+    copy(tags = tags.asScala.toSet)
+  }
+
+  def withMetadata(metadata: Any): EventEnvelope[Event] =
+    copy(eventMetadata = Option(metadata))
+
+  private def copy(
+      offset: Offset = offset,
+      persistenceId: String = persistenceId,
+      sequenceNr: Long = sequenceNr,
+      eventOption: Option[Event] = eventOption,
+      timestamp: Long = timestamp,
+      eventMetadata: Option[Any] = eventMetadata,
+      entityType: String = entityType,
+      slice: Int = slice,
+      filtered: Boolean = filtered,
+      source: String = source,
+      tags: Set[String] = tags): EventEnvelope[Event] =
+    new EventEnvelope(
+      offset,
+      persistenceId,
+      sequenceNr,
+      eventOption,
+      timestamp,
+      eventMetadata,
+      entityType,
+      slice,
+      filtered,
+      source,
+      tags)
+
   override def hashCode(): Int = {
     var result = HashCode.SEED
     result = HashCode.hash(result, offset)
