@@ -29,3 +29,14 @@ These are the current complete modules marked as **may change**:
 * @ref:[Multi Node Testing](../multi-node-testing.md)
 * @ref:[Reliable Delivery](../typed/reliable-delivery.md)
 
+The following APIs are stable and follow the normal binary compatibility guarantees:
+
+* The external shard allocation extension and its Scala and Java clients.
+* Persistence Query's `TimestampOffset` and typed `EventEnvelope`.
+* The Scala and Java typed query interfaces `EventsBySliceQuery`, `CurrentEventsBySliceQuery`,
+  `EventsByPersistenceIdTypedQuery`, `CurrentEventsByPersistenceIdTypedQuery`,
+  `DurableStateStoreBySliceQuery`, `EventTimestampQuery`, and `LoadEventQuery`.
+
+This does not change the status of query interfaces marked `ApiMayChange`, including the queries
+that start from snapshots. See @ref:[Persistence Query](../persistence-query.md) for the supported query interfaces.
+

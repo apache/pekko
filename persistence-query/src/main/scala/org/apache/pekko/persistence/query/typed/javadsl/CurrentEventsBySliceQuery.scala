@@ -8,7 +8,7 @@
  */
 
 /*
- * Copyright (C) 2021-2022 Lightbend Inc. <https://www.lightbend.com>
+ * Copyright (C) 2021-2023 Lightbend Inc. <https://www.lightbend.com>
  */
 
 package org.apache.pekko.persistence.query.typed.javadsl
@@ -23,8 +23,6 @@ import pekko.stream.javadsl.Source
 
 /**
  * A plugin may optionally support this query by implementing this trait.
- *
- * API May Change
  */
 trait CurrentEventsBySliceQuery extends ReadJournal {
 

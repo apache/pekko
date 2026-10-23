@@ -8,7 +8,7 @@
  */
 
 /*
- * Copyright (C) 2021-2022 Lightbend Inc. <https://www.lightbend.com>
+ * Copyright (C) 2021-2023 Lightbend Inc. <https://www.lightbend.com>
  */
 
 package org.apache.pekko.persistence.query.typed.javadsl
@@ -25,8 +25,6 @@ import pekko.stream.javadsl.Source
  * Query API for reading durable state objects.
  *
  * For Scala API see [[DurableStateStoreBySliceQuery]].
- *
- * API May Change
  */
 trait DurableStateStoreBySliceQuery[A] extends DurableStateStore[A] {
 

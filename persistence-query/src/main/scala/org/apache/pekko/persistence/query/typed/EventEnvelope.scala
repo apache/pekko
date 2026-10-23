@@ -130,8 +130,6 @@ object EventEnvelope {
  * `System.currentTimeMillis`).
  *
  * It is an improved `EventEnvelope` compared to [[pekko.persistence.query.EventEnvelope]].
- *
- * API May Change
  */
 final class EventEnvelope[Event](
     val offset: Offset,

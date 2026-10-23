@@ -21,8 +21,6 @@ import pekko.stream.scaladsl.Source
 
 /**
  * A plugin may optionally support this query by implementing this trait.
- *
- * API May Change
  */
 trait CurrentEventsByPersistenceIdTypedQuery extends ReadJournal {
 

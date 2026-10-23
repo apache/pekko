@@ -8,7 +8,7 @@
  */
 
 /*
- * Copyright (C) 2015-2022 Lightbend Inc. <https://www.lightbend.com>
+ * Copyright (C) 2015-2023 Lightbend Inc. <https://www.lightbend.com>
  */
 
 package org.apache.pekko.persistence.query
@@ -90,8 +90,6 @@ object TimestampOffset {
  * The `offset` is exclusive, i.e. the event with the exact same sequence number will not be included
  * in the returned stream. This means that you can use the offset that is returned in `EventEnvelope`
  * as the `offset` parameter in a subsequent query.
- *
- * API May Change
  *
  * @param timestamp
  *   time when the event was stored, microsecond granularity database timestamp
