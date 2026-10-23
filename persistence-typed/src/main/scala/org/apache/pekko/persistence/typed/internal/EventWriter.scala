@@ -262,6 +262,11 @@ private[pekko] object EventWriter {
         def journalWriteRejected(cause: Throwable): Throwable =
           new IllegalStateException("Journal rejected write", cause)
 
+        def replyMaxBatchReached(persistenceId: Pid, replyTo: ActorRef[StatusReply[WriteAck]]): Unit =
+          replyTo ! StatusReply.error(
+            s"Max batch reached for pid $persistenceId, at most ${settings.maxBatchSize} writes for " +
+            "the same pid may be in flight at the same time")
+
         def sendToJournal(transactionId: Int, reprs: Vector[PersistentRepr]): Unit = {
           if (context.log.isTraceEnabled)
             context.log.traceN(
@@ -520,9 +525,7 @@ private[pekko] object EventWriter {
                   } else {
                     // write in progress for pid, add write to batch and perform once current write completes
                     if (state.waitingForWriteExceedingMaxBatchSize(settings.maxBatchSize)) {
-                      replyTo ! StatusReply.error(
-                        s"Max batch reached for pid $persistenceId, at most ${settings.maxBatchSize} writes for " +
-                        "the same pid may be in flight at the same time")
+                      replyMaxBatchReached(persistenceId, replyTo)
                       state
                     } else {
                       context.log.trace2(
@@ -554,7 +557,11 @@ private[pekko] object EventWriter {
                     "Enable pekko.persistence.typed.event-writer.fill-sequence-number-gaps config if gaps are " +
                     "expected and should be filled with FilteredPayload.")
 
-                  if (calledAfterMaxSeqNr || !state.idle) {
+                  if (!state.idle && state.waitingForWriteExceedingMaxBatchSize(settings.maxBatchSize)) {
+                    // check before filling, the filled gaps don't count towards the max batch size
+                    replyMaxBatchReached(persistenceId, replyTo)
+                    state
+                  } else if (calledAfterMaxSeqNr || !state.idle) {
                     // here we can trust that the expectedSeqNr is correct and don't have to lookup max
                     val fillRepr = (expectedSeqNr until sequenceNumber).map { n =>
                       PersistentRepr(
@@ -697,11 +704,20 @@ private[pekko] object EventWriter {
                 val waiting = state.waitingForSeqNrLookup
                 perPidWriteState = perPidWriteState.updated(
                   pid,
-                  state.copy(latestSeqNr = maxSeqNr, waitingForSeqNrLookup = Vector.empty))
+                  state.copy(
+                    latestSeqNr = maxSeqNr,
+                    usedTimestamp = System.currentTimeMillis(),
+                    waitingForSeqNrLookup = Vector.empty))
                 // each queued write keeps its own snapshot event flag, the lookup reason only
                 // belongs to the write that triggered it
                 waiting.foreach { pending =>
                   handleWrite(pending.repr, pending.replyTo, pending.isSnapshotEvent, calledAfterMaxSeqNr = true)
+                }
+                // all queued writes may have been duplicates, then nothing is in flight and the
+                // idle state must go through the cache eviction like after a completed write
+                perPidWriteState.get(pid).foreach { stateAfterWrites =>
+                  if (stateAfterWrites.idle && !stateAfterWrites.seqNrlookupInProgress)
+                    handleUpdatedStateForPid(pid, stateAfterWrites)
                 }
             }
             Behaviors.same

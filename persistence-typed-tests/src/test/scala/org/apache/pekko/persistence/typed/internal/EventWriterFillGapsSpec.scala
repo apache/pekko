@@ -348,6 +348,38 @@ class EventWriterFillGapsSpec
       journalAckWrite("pid2")
     }
 
+    "evict entries where the lookup only found duplicates" in new TestSetup {
+      override def writerSettings = settings.copy(latestSequenceNumberCacheCapacity = 2)
+      val pids = (1 to 6).map(n => s"pid$n")
+      pids.foreach { pid =>
+        sendWrite(5, pid)
+        journalHighestSeqNr(5)
+        clientExpectSuccess(1) // duplicate
+      }
+
+      // only the entries still in the cache are written directly, the evicted need a lookup
+      pids.foreach(pid => sendWrite(6, pid))
+      val journalMessages = fakeJournal.receiveMessages(6)
+      journalMessages.count(_.isInstanceOf[JournalProtocol.WriteMessages]) should ===(2)
+      journalMessages.count(_.isInstanceOf[JournalProtocol.ReplayMessages]) should ===(4)
+    }
+
+    "apply the max batch size to writes with gaps" in new TestSetup {
+      override def writerSettings = settings.copy(maxBatchSize = 2)
+      sendWrite(1)
+      // 1 in flight, 3 and 5 are batched with the filled gaps 2 and 4
+      sendWrite(3)
+      sendWrite(5)
+      sendWrite(7)
+      clientExpectError(
+        1,
+        "Max batch reached for pid pid1, at most 2 writes for the same pid may be in flight at the same time")
+
+      journalAckWrite(expectedSequenceNumbers = Vector(1L))
+      journalAckWrite(expectedSequenceNumbers = Vector(2L, 3L, 4L, 5L))
+      clientExpectSuccess(3)
+    }
+
     "handle writes to many pids" in {
       // no flow control in this test so just no limit on batch size
       val writer = spawn(EventWriter("pekko.persistence.journal.inmem", settings.copy(maxBatchSize = Int.MaxValue)))
