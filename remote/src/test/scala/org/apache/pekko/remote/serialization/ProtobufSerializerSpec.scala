@@ -91,6 +91,14 @@ class ProtobufSerializerSpec extends PekkoSpec(s"""
       ser.serializerFor(classOf[MyMessageV3]).getClass should ===(classOf[ProtobufSerializer])
     }
 
+    "skip the optional ScalaPB binding when ScalaPB is not on the classpath" in {
+      val scalaPbClassName = "scalapb.GeneratedMessage"
+      ser.settings.SerializationBindings.get(scalaPbClassName) should ===(Some("proto"))
+      val dynamicAccess = system.asInstanceOf[ExtendedActorSystem].dynamicAccess
+      dynamicAccess.getClassFor[Any](scalaPbClassName).isFailure should ===(true)
+      ser.bindings.exists { case (clazz, _) => clazz.getName == scalaPbClassName } should ===(false)
+    }
+
     "work for SerializedMessage (just an org.apache.pekko.protobuf message)" in {
       // create a protobuf message
       val protobufMessage: SerializedMessage =

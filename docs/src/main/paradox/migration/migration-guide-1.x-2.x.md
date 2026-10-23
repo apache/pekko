@@ -221,6 +221,12 @@ these messages as an ordinary `ByteString`. ([PR2924](https://github.com/apache/
 instead of `ShardingEnvelope`. `ShardingEnvelope` is serialized as before, but the serializer also
 handles new Sharded Daemon Process messages (its state, and the commands for getting and changing the
 number of processes) that Pekko 1.x nodes cannot deserialize. ([PR2755](https://github.com/apache/pekko/pull/2755))
+* When remoting is enabled and ScalaPB is on the classpath, ScalaPB generated messages
+(`scalapb.GeneratedMessage`) are now bound to the `proto` serializer by default. If your ScalaPB
+messages were serialized with another serializer in Pekko 1.x, mixed-version nodes would disagree
+during a rolling update. To keep the Pekko 1.x behavior, disable the new binding:
+`pekko.actor.serialization-bindings { "scalapb.GeneratedMessage" = none }`.
+([PR3651](https://github.com/apache/pekko/pull/3651))
 * The new `FilteredPayload` placeholder, which is stored in the journal in place of a filtered event
 (for example with events-by-slice queries and projections), has a new serializer with identifier `34`.
 Pekko 1.x cannot deserialize it, so do not run Pekko 1.x against a journal once such events have been
