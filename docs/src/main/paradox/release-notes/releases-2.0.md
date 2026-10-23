@@ -228,6 +228,7 @@ These changes were copied from Akka releases (up to and including Akka 2.9.0) th
 * Add `doOnFirst` operator ([#2183](https://github.com/apache/pekko/issues/2183), [PR2363](https://github.com/apache/pekko/pull/2363))
 * Add `doOnCancel` operator ([#2374](https://github.com/apache/pekko/issues/2374), [PR2375](https://github.com/apache/pekko/pull/2375))
 * Add `gzipDecompress` operator, replacing the deprecated `gunzip` (which has been removed) ([PR2406](https://github.com/apache/pekko/pull/2406))
+* Add `Compression.zstd` and `Compression.zstdDecompress` operators, with optional compression dictionaries. zstd-jni is an optional dependency that you need to add yourself ([#2404](https://github.com/apache/pekko/issues/2404), [PR3639](https://github.com/apache/pekko/pull/3639))
 * Add `Source.fromOption` and `mapOption` operators ([#2408](https://github.com/apache/pekko/issues/2408), [#2403](https://github.com/apache/pekko/issues/2403), [PR2413](https://github.com/apache/pekko/pull/2413), [PR2414](https://github.com/apache/pekko/pull/2414))
 * Add `Source.items` and an array based `Source.apply` ([#2416](https://github.com/apache/pekko/issues/2416), [PR2424](https://github.com/apache/pekko/pull/2424), [PR2428](https://github.com/apache/pekko/pull/2428), [PR2429](https://github.com/apache/pekko/pull/2429))
 * Add `withContext` operators ([PR3199](https://github.com/apache/pekko/pull/3199))
@@ -363,7 +364,7 @@ Some additional APIs have been deprecated and will be removed in a future releas
 * lightbend/config 1.4.9
 * slf4j 2.0.20
 * lz4-java 1.12.1 (`at.yawk.lz4:lz4-java`)
-* zstd-jni 1.5.7-24 (optional, only needed for zstd compression in the Jackson serializers)
+* zstd-jni 1.5.7-24 (optional, only needed for the zstd stream operators and zstd compression in the Jackson serializers)
 * junit-jupiter 6.1.3
 * The `ssl-config` dependency has been removed
 
