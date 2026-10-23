@@ -104,7 +104,7 @@ class MaterializerWithAttributesSpec extends PekkoSpec with ImplicitSender {
 
   "An actor context materializer with default attributes" should {
     "apply its attributes to streams it materializes" in {
-      val streamActor = system.actorOf(Props(new StreamActor))
+      val streamActor = system.actorOf(Props(new StreamActor).withDispatcher("pekko.test.stream-dispatcher"))
 
       streamActor ! "do it!"
 
