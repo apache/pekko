@@ -96,6 +96,12 @@ The two most commonly used effects are:
 * `persist` will persist the latest value of the state. No history of state changes will be stored
 * `none` no state to be persisted, for example a read-only command
 
+The state is typically an immutable class, with a new instance passed to the `persist` effect.
+When using mutable state, the command handler may update the existing state instance, but it must still
+pass that updated instance to `persist` to store the change. The mutation is only durable after persistence
+completes successfully; use `thenRun` for side effects that depend on that success. Do not mutate the state
+from asynchronous callbacks or other threads, which may race with serialization or subsequent commands.
+
 More effects are explained in @ref:[Effects and Side Effects](#effects-and-side-effects).
 
 In addition to returning the primary `Effect` for the command, `DurableStateBehavior`s can also 
