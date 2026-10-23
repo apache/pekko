@@ -8,11 +8,12 @@
  */
 
 /*
- * Copyright (C) 2009-2022 Lightbend Inc. <https://www.lightbend.com>
+ * Copyright (C) 2009-2023 Lightbend Inc. <https://www.lightbend.com>
  */
 
 package org.apache.pekko.actor
 
+import java.util.concurrent.ThreadLocalRandom
 import java.util.concurrent.atomic.AtomicLong
 
 import scala.annotation.implicitNotFound
@@ -177,6 +178,12 @@ import pekko.util.OptionVal
    */
   @InternalApi
   private[pekko] def addressString: String
+
+  /**
+   * INTERNAL API: the uid of the actor system, see `ExtendedActorSystem.uid`
+   */
+  @InternalApi
+  private[pekko] def systemUid: Long
 
 }
 
@@ -789,4 +796,7 @@ private[pekko] class LocalActorRefProvider private[pekko] (
         addr
     }
   }
+
+  override private[pekko] val systemUid: Long =
+    ThreadLocalRandom.current.nextLong()
 }

@@ -8,7 +8,7 @@
  */
 
 /*
- * Copyright (C) 2009-2022 Lightbend Inc. <https://www.lightbend.com>
+ * Copyright (C) 2009-2023 Lightbend Inc. <https://www.lightbend.com>
  */
 
 package org.apache.pekko.remote
@@ -166,6 +166,10 @@ private[pekko] class RemoteActorRefProvider(
     val dynamicAccess: DynamicAccess)
     extends ActorRefProvider {
   import RemoteActorRefProvider._
+
+  // One part of the system uid generation. Taking this early to allow for some execution randomness until later
+  // when actually generating the uid.
+  private[pekko] val systemUidTimestamp1: Long = System.nanoTime()
 
   val remoteSettings: RemoteSettings = new RemoteSettings(settings.config)
 
@@ -698,6 +702,9 @@ private[pekko] class RemoteActorRefProvider(
         local.addressString
     }
   }
+
+  override private[pekko] def systemUid: Long =
+    transport.systemUid
 }
 
 private[pekko] trait RemoteRef extends ActorRefScope {

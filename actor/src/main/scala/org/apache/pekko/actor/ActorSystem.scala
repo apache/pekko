@@ -8,7 +8,7 @@
  */
 
 /*
- * Copyright (C) 2009-2022 Lightbend Inc. <https://www.lightbend.com>
+ * Copyright (C) 2009-2023 Lightbend Inc. <https://www.lightbend.com>
  */
 
 package org.apache.pekko.actor
@@ -834,8 +834,6 @@ private[pekko] class ActorSystemImpl(
     setup: ActorSystemSetup)
     extends ExtendedActorSystem {
 
-  val uid: Long = ThreadLocalRandom.current.nextLong()
-
   if (!name.matches("""^[a-zA-Z0-9][a-zA-Z0-9-_]*$"""))
     throw new IllegalArgumentException(
       "invalid ActorSystem name [" + name +
@@ -859,6 +857,19 @@ private[pekko] class ActorSystemImpl(
       applicationConfig.withFallback(ConfigFactory.defaultReference(classLoader)),
       _dynamicAccess)
     new Settings(classLoader, config, name, setup)
+  }
+
+  override def uid: Long = {
+    try {
+      provider.systemUid
+    } catch {
+      case NonFatal(exc) =>
+        // could be NPE in RemoteActorRefProvider if the transport is not initialized yet
+        throw new IllegalStateException(
+          "uid accessed before provider has been initialized. " +
+          "This is a bug, please report at https://github.com/apache/pekko/issues",
+          exc)
+    }
   }
 
   protected def uncaughtExceptionHandler: Thread.UncaughtExceptionHandler =

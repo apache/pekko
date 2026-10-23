@@ -8,7 +8,7 @@
  */
 
 /*
- * Copyright (C) 2009-2022 Lightbend Inc. <https://www.lightbend.com>
+ * Copyright (C) 2009-2023 Lightbend Inc. <https://www.lightbend.com>
  */
 
 package org.apache.pekko.event.slf4j
@@ -75,7 +75,19 @@ class Slf4jLogger extends Actor with SLF4JLogging with RequiresMessageQueue[Logg
   val mdcPekkoUidAttributeName = "pekkoUid"
 
   private def pekkoAddress = context.system.asInstanceOf[ExtendedActorSystem].provider.addressString
-  private val pekkoUid: String = context.system.asInstanceOf[ExtendedActorSystem].uid.toString
+  // the uid is not available until the remote transport has been started, so it is resolved lazily
+  private var _pekkoUid: String = ""
+  private def pekkoUid: String = {
+    if (_pekkoUid.isEmpty) {
+      try {
+        _pekkoUid = context.system.asInstanceOf[ExtendedActorSystem].uid.toString
+      } catch {
+        case _: IllegalStateException =>
+        // when logging before the uid is generated (transport binding when remoting is enabled)
+      }
+    }
+    _pekkoUid
+  }
 
   def receive = {
 
@@ -135,7 +147,9 @@ class Slf4jLogger extends Actor with SLF4JLogging with RequiresMessageQueue[Logg
     MDC.put(mdcPekkoTimestamp, formatTimestamp(logEvent.timestamp))
     MDC.put(mdcActorSystemAttributeName, context.system.name)
     MDC.put(mdcPekkoAddressAttributeName, pekkoAddress)
-    MDC.put(mdcPekkoUidAttributeName, pekkoUid)
+    val uid = pekkoUid
+    if (uid.nonEmpty)
+      MDC.put(mdcPekkoUidAttributeName, uid)
     logEvent.mdc.foreach { case (k, v) => MDC.put(k, String.valueOf(v)) }
 
     try logStatement
