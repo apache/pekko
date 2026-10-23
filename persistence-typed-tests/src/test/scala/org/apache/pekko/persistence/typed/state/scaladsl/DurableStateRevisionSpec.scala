@@ -8,8 +8,7 @@
  */
 
 /*
- * Copyright (C) 2009-2022 Lightbend Inc. <https://www.lightbend.com>
- * Copyright (C) 2020-2023 Lightbend Inc. <https://www.lightbend.com>
+ * Copyright (C) 2009-2023 Lightbend Inc. <https://www.lightbend.com>
  */
 
 package org.apache.pekko.persistence.typed.state.scaladsl
@@ -192,7 +191,7 @@ class DurableStateRevisionSpec
   }
 
   "The durable state user stash" must {
-    "unstash a large read-only batch in order without overflowing the stack" in {
+    "unstash a large read-only batch in order and process subsequent commands" in {
       import DurableStateRevisionSpec._
 
       val size = 5000
