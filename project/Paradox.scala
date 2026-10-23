@@ -8,7 +8,7 @@
  */
 
 /*
- * Copyright (C) 2019-2022 Lightbend Inc. <https://www.lightbend.com>
+ * Copyright (C) 2019-2023 Lightbend Inc. <https://www.lightbend.com>
  */
 
 import com.lightbend.paradox.sbt.ParadoxPlugin
@@ -95,7 +95,9 @@ object Paradox {
     (Compile / paradoxMarkdownToHtml / excludeFilter) := (Compile / paradoxMarkdownToHtml / excludeFilter).value ||
     ParadoxPlugin.InDirectoryFilter((Compile / paradox / sourceDirectory).value / "includes.html"))
 
-  lazy val groupsSettings = Seq(Compile / paradoxGroups := Map("Language" -> Seq("Scala", "Java")))
+  lazy val groupsSettings = Seq(Compile / paradoxGroups := Map(
+    "Language" -> Seq("Scala", "Java"),
+    "BuildTool" -> Seq("sbt", "Maven", "Gradle")))
 
   lazy val parsingSettings = Seq(Compile / paradoxParsingTimeout := 5.seconds)
 
