@@ -32,14 +32,20 @@ import pekko.util.{ ByteString, ByteStringBuilder }
   private val EmptyInput = ByteBuffer.allocate(0)
 }
 
-/** INTERNAL API */
+/**
+ * INTERNAL API
+ *
+ * @param windowLog the log2 of the maximum window size, 0 uses the default of the compression level
+ */
 @InternalApi private[pekko] class ZstdCompressor(
-    compressionLevel: Int =
-      Compression.ZstdDefaultCompressionLevel, dictionary: Option[ZstdDictionaryImpl] = None) extends Compressor {
+    compressionLevel: Int = Compression.ZstdDefaultCompressionLevel,
+    dictionary: Option[ZstdDictionaryImpl] = None,
+    windowLog: Int = 0) extends Compressor {
   import ZstdCompressor._
 
   private val compressCtx = new ZstdCompressCtx()
   compressCtx.setLevel(compressionLevel)
+  if (windowLog != 0) compressCtx.setWindowLog(windowLog)
 
   // zstd-jni supports heap ByteBuffers for streaming compression, so no direct buffers are needed
   private var outputBuffer = ByteBuffer.allocate(OutputBufferSize)

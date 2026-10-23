@@ -18,12 +18,13 @@
 package org.apache.pekko.stream.io.compression
 
 import org.apache.pekko
+import pekko.stream.ZstdCompressionSettings
 import pekko.stream.scaladsl.{ Compression, Flow }
 import pekko.util.ByteString
 
 class ZstdAutoFlushSpec extends ZstdSpec {
   override protected val encoderFlow: Flow[ByteString, ByteString, Any] =
-    Compression.zstd(Compression.ZstdDefaultCompressionLevel, dictionary = None, autoFlush = false)
+    Compression.zstd(ZstdCompressionSettings().withAutoFlush(false))
 
   override protected val autoFlush: Boolean = false
 

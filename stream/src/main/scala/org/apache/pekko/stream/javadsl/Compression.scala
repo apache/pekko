@@ -20,7 +20,7 @@ import scala.jdk.OptionConverters.RichOptional
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.annotation.ApiMayChange
-import pekko.stream.impl.io.compression.{ CompressionUtils, ZstdCompressor, ZstdDecompressor }
+import pekko.stream.{ ZstdCompressionSettings, ZstdDecompressionSettings }
 import pekko.stream.javadsl.compression.ZstdDictionary
 import pekko.stream.scaladsl
 import pekko.util.ByteString
@@ -136,6 +136,22 @@ object Compression {
   final val ZstdDefaultCompressionLevel: Int = scaladsl.Compression.ZstdDefaultCompressionLevel
 
   /**
+   * The minimum window log supported by zstd compression
+   * @since 2.0.0
+   */
+  @ApiMayChange
+  final val ZstdMinWindowLog: Int = scaladsl.Compression.ZstdMinWindowLog
+
+  /**
+   * The maximum window log supported by zstd compression on 64-bit platforms
+   * @since 2.0.0
+   */
+  @ApiMayChange
+  final val ZstdMaxWindowLog: Int = scaladsl.Compression.ZstdMaxWindowLog
+
+  /**
+   * Creates a flow that zstd-compresses a stream of ByteStrings, with the default compression level.
+   *
    * @since 2.0.0
    */
   @ApiMayChange
@@ -152,25 +168,19 @@ object Compression {
    */
   @ApiMayChange
   def zstd(level: Int, dictionary: Optional[ZstdDictionary]): Flow[ByteString, ByteString, NotUsed] = {
-    require(level <= ZstdMaxCompressionLevel && level >= ZstdMinCompressionLevel)
-    CompressionUtils.compressorFlow(() => new ZstdCompressor(level, dictionary.toScala.map(_.toImpl))).asJava
+    val settings = ZstdCompressionSettings.create().withLevel(level)
+    zstd(dictionary.toScala.fold(settings)(settings.withDictionary))
   }
 
   /**
-   * Same as [[zstd]] with a custom level, optional dictionary and configurable flush mode.
+   * Same as [[zstd]] with the given settings, see [[pekko.stream.ZstdCompressionSettings]] for the level, flush
+   * mode, window size and dictionary.
    *
-   * @param level      The compression level, must be greater or equal to [[ZstdMinCompressionLevel]] and less than or equal
-   *                   to [[ZstdMaxCompressionLevel]]
-   * @param dictionary An optional dictionary that can be used for compression
-   * @param autoFlush  If true will automatically flush after every single element in the stream.
    * @since 2.0.0
    */
   @ApiMayChange
-  def zstd(level: Int, dictionary: Optional[ZstdDictionary], autoFlush: Boolean)
-      : Flow[ByteString, ByteString, NotUsed] = {
-    require(level <= ZstdMaxCompressionLevel && level >= ZstdMinCompressionLevel)
-    CompressionUtils.compressorFlow(() => new ZstdCompressor(level, dictionary.toScala.map(_.toImpl)), autoFlush).asJava
-  }
+  def zstd(settings: ZstdCompressionSettings): Flow[ByteString, ByteString, NotUsed] =
+    scaladsl.Compression.zstd(settings).asJava
 
   /**
    * The maximum block size used by zstd decompression
@@ -180,6 +190,9 @@ object Compression {
   final val ZstdDecompressMaxBlockSize: Int = scaladsl.Compression.ZstdDecompressMaxBlockSize
 
   /**
+   * Creates a flow that zstd-decompresses a stream of ByteStrings.
+   *
+   * @param maxBytesPerChunk The maximum length of the emitted ByteStrings
    * @since 2.0.0
    */
   @ApiMayChange
@@ -187,17 +200,12 @@ object Compression {
     scaladsl.Compression.zstdDecompress(maxBytesPerChunk).asJava
 
   /**
-   * Same as [[zstdDecompress]] with an optional dictionary.
+   * Same as [[zstdDecompress]] with the given settings, see [[pekko.stream.ZstdDecompressionSettings]] for the chunk
+   * size and dictionary.
    *
-   * @param maxBytesPerChunk The maximum length of the emitted ByteStrings
-   * @param dictionary       An optional dictionary, which must be the one used for compression. Its level is ignored.
    * @since 2.0.0
    */
   @ApiMayChange
-  def zstdDecompress(maxBytesPerChunk: Int, dictionary: Optional[ZstdDictionary])
-      : Flow[ByteString, ByteString, NotUsed] =
-    scaladsl.Flow[ByteString]
-      .via(new ZstdDecompressor(maxBytesPerChunk, dictionary.toScala.map(_.toImpl)))
-      .named("zstdDecompress")
-      .asJava
+  def zstdDecompress(settings: ZstdDecompressionSettings): Flow[ByteString, ByteString, NotUsed] =
+    scaladsl.Compression.zstdDecompress(settings).asJava
 }
