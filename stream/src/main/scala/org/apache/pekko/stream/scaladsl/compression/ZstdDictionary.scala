@@ -20,7 +20,7 @@ package org.apache.pekko.stream.scaladsl.compression
 import java.nio.charset.StandardCharsets
 
 import org.apache.pekko
-import pekko.annotation.InternalApi
+import pekko.annotation.{ ApiMayChange, InternalApi }
 import pekko.stream.impl.io.compression.ZstdDictionaryImpl
 import pekko.util.ByteString
 
@@ -32,9 +32,13 @@ import pekko.util.ByteString
  * @see https://facebook.github.io/zstd/zstd_manual.html#Chapter10
  * @since 2.0.0
  */
+@ApiMayChange
 final case class ZstdDictionary private (dictionary: Array[Byte], level: Option[Int],
     offset: Option[Int], length: Option[Int]) { clazz =>
 
+  /**
+   * INTERNAL API
+   */
   @InternalApi
   private[pekko] def toImpl: ZstdDictionaryImpl = new ZstdDictionaryImpl {
     override val dictionary: Array[Byte] = clazz.dictionary
@@ -47,6 +51,7 @@ final case class ZstdDictionary private (dictionary: Array[Byte], level: Option[
 /**
  * @since 2.0.0
  */
+@ApiMayChange
 object ZstdDictionary {
 
   def apply(dictionary: Array[Byte]): ZstdDictionary =

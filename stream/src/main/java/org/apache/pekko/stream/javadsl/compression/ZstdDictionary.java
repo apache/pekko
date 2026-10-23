@@ -17,6 +17,7 @@
 
 package org.apache.pekko.stream.javadsl.compression;
 
+import org.apache.pekko.annotation.ApiMayChange;
 import org.apache.pekko.annotation.InternalApi;
 import org.apache.pekko.stream.impl.io.compression.ZstdDictionaryImpl;
 import org.apache.pekko.util.ByteString;
@@ -36,6 +37,7 @@ import java.util.OptionalInt;
  * @see <a href="https://facebook.github.io/zstd/zstd_manual.html#Chapter10">Zstd C manual</a>
  * @since 2.0.0
  */
+@ApiMayChange
 public class ZstdDictionary {
   private byte[] dictionary;
   private OptionalInt level = OptionalInt.empty();
@@ -186,6 +188,7 @@ public class ZstdDictionary {
     this.length = length;
   }
 
+  /** INTERNAL API */
   @InternalApi
   public ZstdDictionaryImpl toImpl() {
     return new ZstdDictionaryImpl() {
