@@ -43,9 +43,23 @@ The rest of this page applies to both modules, with these differences for `pekko
   the Pekko modules, only the Jackson Scala module is registered by default. The date/time features such as
   `WRITE_DATES_AS_TIMESTAMPS` are configured in a `datetime-features` section instead of `serialization-features`.
 
-Both modules register their serializers with the same names (`jackson-json` and `jackson-cbor`) and the
-same serializer identifiers, so only add one of them to your application. The serializers fail at
-ActorSystem startup with an `IllegalStateException` if both modules are on the classpath.
+@@@ warning
+
+Do not use `pekko-serialization-jackson` and `pekko-serialization-jackson3` together. Both modules register
+their serializers with the same names (`jackson-json` and `jackson-cbor`) and the same serializer identifiers,
+so only add one of them to your application. The serializers fail at ActorSystem startup with an
+`IllegalStateException` if both modules are on the classpath.
+
+Do not mix the two modules in a Cluster or Remoting setup either. Jackson 2 and Jackson 3 have different
+default setups, so the same message can be serialized differently, and data written by one module may not be
+read correctly by the other. All Pekko nodes should use the same Jackson serializer module. This matters most
+during a @ref:[rolling update](#rolling-updates), when old and new nodes run side by side, and when reading
+data that was persisted with the other module.
+
+Moving from `pekko-serialization-jackson` to `pekko-serialization-jackson3` needs serious testing of your
+messages and persisted data before you put it into production.
+
+@@@
 
 ## Introduction
 
@@ -419,6 +433,10 @@ binary. To avoid this service degradation you can also use forward-one support i
 To complete a no-degradation rolling update, you need to make two deployments. First, deploy a new binary which can read 
 the new schema but still uses the old schema. Then, deploy a second binary which serializes data using the new schema
 and drops the downcasting code from the migration.  
+
+Switching between `pekko-serialization-jackson` and `pekko-serialization-jackson3` is also a serialization
+change: during a rolling update, nodes using different modules may not be able to read each other's messages.
+See the warning in [Jackson 3](#jackson-3).
 
 Let's take, for example, the case above where we [renamed a field](#rename-field).
 
