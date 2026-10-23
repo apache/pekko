@@ -253,7 +253,10 @@ import pekko.util.OptionVal
     None
   } else {
     configuredDeserializationType.orElse {
-      val bindings = serialization.bindings.filter(_._2.identifier == identifier)
+      // Predefined markers are fallback bindings, not concrete deserialization types.
+      val bindings = serialization.bindings.filter { case (clazz, serializer) =>
+        serializer.identifier == identifier && clazz != classOf[JsonSerializable] && clazz != classOf[CborSerializable]
+      }
       bindings match {
         case Nil =>
           throw new IllegalArgumentException(
