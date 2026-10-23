@@ -8,7 +8,6 @@
  */
 
 /*
- * Copyright (C) 2018-2022 Lightbend Inc. <https://www.lightbend.com>
  * Copyright (C) 2018-2023 Lightbend Inc. <https://www.lightbend.com>
  */
 
