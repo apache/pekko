@@ -17,6 +17,15 @@ version=PekkoVersion
 
 ## How to use
 
+Each actor system has a local event stream for publishing system events and application events to subscribed actors.
+Events are delivered to subscribers of their class or a superclass. They are not propagated to other actor systems.
+Subscriptions are removed automatically when the subscriber terminates.
+
+The same actor can subscribe to several event types. Sending `EventStream.Unsubscribe` for that actor removes all of its
+subscriptions. These rules apply to both the Scala and Java APIs.
+
+Classic logging events use the event stream. Typed actors log through SLF4J, as described in @ref:[Logging](logging.md).
+
 The following example demonstrates how a subscription works. Given an actor:
 
 Scala
@@ -37,7 +46,11 @@ It can be used as follows:
 
 @@@
 
-It is possible to subscribe to common superclass:
+A subscription to `DeadLetter` receives ordinary dead letters. Messages marked with
+`DeadLetterSuppression` are published as `SuppressedDeadLetter` instead. Subscribe to their common superclass
+`AllDeadLetters` to receive both, as well as `Dropped` and `UnhandledMessage`, which also extend it.
+
+It is possible to subscribe to a common superclass:
 
 Scala
 : @@snip [EventStreamDocSpec.scala](/actor-typed-tests/src/test/scala/org/apache/pekko/actor/typed/eventstream/EventStreamDocSpec.scala) { #listen-to-super-class }

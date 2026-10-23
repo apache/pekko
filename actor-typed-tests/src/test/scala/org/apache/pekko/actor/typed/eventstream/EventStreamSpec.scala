@@ -8,7 +8,7 @@
  */
 
 /*
- * Copyright (C) 2019-2022 Lightbend Inc. <https://www.lightbend.com>
+ * Copyright (C) 2019-2023 Lightbend Inc. <https://www.lightbend.com>
  */
 
 package org.apache.pekko.actor.typed.eventstream
@@ -32,6 +32,29 @@ class EventStreamSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike wit
   import EventStreamSpec._
 
   private final val ShortWait = 100.millis
+
+  "a subscriber to unrelated event types" must {
+    "receive both types and remove every subscription with Unsubscribe" in {
+      val listener = createTestProbe[AnyRef]()
+      val barrier = createTestProbe[String]()
+      val stream = system.eventStream
+      stream ! Subscribe[EventClass](listener.ref)
+      stream ! Subscribe[String](listener.ref)
+      stream ! Publish(EventClass())
+      stream ! Publish("before unsubscribe")
+      listener.expectMessage(EventClass())
+      listener.expectMessage("before unsubscribe")
+
+      stream ! Subscribe(barrier.ref)
+      stream ! Unsubscribe(listener.ref)
+      stream ! Publish(EventClass())
+      stream ! Publish("after unsubscribe")
+      // This publication is processed after both Unsubscribe and the preceding Publish.
+      barrier.expectMessage("after unsubscribe")
+      listener.expectNoMessage(ShortWait)
+      stream ! Unsubscribe(barrier.ref)
+    }
+  }
 
   "system event stream".can {
     val eventObjListener: TestProbe[EventObj.type] = testKit.createTestProbe()

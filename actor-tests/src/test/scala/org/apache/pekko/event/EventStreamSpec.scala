@@ -83,6 +83,28 @@ class EventStreamSpec extends PekkoSpec(EventStreamSpec.config) {
 
   "An EventStream" must {
 
+    "remove one unrelated subscription or all subscriptions for the same actor" in {
+      val bus = new EventStream(system, false)
+      val listener = TestProbe()
+      bus.subscribe(listener.ref, classOf[M]) shouldBe true
+      bus.subscribe(listener.ref, classOf[String]) shouldBe true
+      bus.publish(M(1))
+      bus.publish("both subscriptions")
+      listener.expectMsg(M(1))
+      listener.expectMsg("both subscriptions")
+
+      bus.unsubscribe(listener.ref, classOf[M]) shouldBe true
+      bus.publish(M(2))
+      bus.publish("remaining subscription")
+      listener.expectMsg("remaining subscription")
+      listener.expectNoMessage(100.millis)
+
+      bus.unsubscribe(listener.ref)
+      bus.publish(M(3))
+      bus.publish("no subscriptions")
+      listener.expectNoMessage(100.millis)
+    }
+
     "manage subscriptions" in {
       // #event-bus-start-unsubscriber-scala
       val bus = new EventStream(system, true)

@@ -8,7 +8,7 @@
  */
 
 /*
- * Copyright (C) 2019-2022 Lightbend Inc. <https://www.lightbend.com>
+ * Copyright (C) 2019-2023 Lightbend Inc. <https://www.lightbend.com>
  */
 
 package org.apache.pekko.actor.typed.eventstream
@@ -39,8 +39,9 @@ object EventStream {
   }
 
   /**
-   * Subscribe a typed actor to listen for types or subtypes of E
+   * Subscribe a typed actor to listen for events of type E and its subtypes
    * by sending this command to the [[pekko.actor.typed.ActorSystem.eventStream]].
+   * The same actor can subscribe to multiple different types.
    *
    * ==Simple example==
    * {{{
@@ -69,7 +70,7 @@ object EventStream {
   }
 
   /**
-   * Unsubscribe an actor ref from the event stream
+   * Remove all subscriptions for the given actor ref from the event stream
    * by sending this command to the [[pekko.actor.typed.ActorSystem.eventStream]].
    */
   final case class Unsubscribe[E](subscriber: ActorRef[E]) extends Command
