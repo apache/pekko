@@ -98,6 +98,20 @@ class ShardWithLeaseSpec extends PekkoSpec(ShardWithLeaseSpec.config) with WithL
       probe.expectMsg("ack hello")
     }
 
+    "use custom lease name with shard id appended" in new Setup {
+      override def customLeaseName: String = "custom-shard-lease"
+      settings.leaseSettings.get.leaseName shouldBe customLeaseName
+      val probe = TestProbe()
+      sharding.tell(EntityEnvelope(1, "hello"), probe.ref)
+      probe.expectNoMessage(shortDuration)
+      leaseFor("1").initialPromise.complete(Success(true))
+      testLeaseExt.getTestLease("custom-shard-lease-1") // lease name with shard id appended
+      probe.expectMsg("ack hello")
+      intercept[IllegalStateException] {
+        testLeaseExt.getTestLease(s"${system.name}-shard-$typeName-1")
+      }
+    }
+
     "retry if lease acquire returns false" in new Setup {
       val probe = TestProbe()
       val lease =
@@ -153,7 +167,10 @@ class ShardWithLeaseSpec extends PekkoSpec(ShardWithLeaseSpec.config) with WithL
   var typeIdx = 0
 
   trait Setup {
-    val settings = ClusterShardingSettings(system).withLeaseSettings(new LeaseUsageSettings("test-lease", 2.seconds))
+    def customLeaseName: String = ""
+
+    val settings = ClusterShardingSettings(system).withLeaseSettings(
+      new LeaseUsageSettings("test-lease", 2.seconds).withLeaseName(customLeaseName))
 
     // unique type name for each test
     val typeName = {
@@ -165,7 +182,9 @@ class ShardWithLeaseSpec extends PekkoSpec(ShardWithLeaseSpec.config) with WithL
       ClusterSharding(system).start(typeName, Props(new EntityActor()), settings, extractEntityId, extractShardId)
 
     def leaseFor(shardId: ShardId) = awaitAssert {
-      val leaseName = s"${system.name}-shard-$typeName-$shardId"
+      val leaseName =
+        if (customLeaseName.isEmpty) s"${system.name}-shard-$typeName-$shardId"
+        else s"$customLeaseName-$shardId"
       testLeaseExt.getTestLease(leaseName)
     }
   }
