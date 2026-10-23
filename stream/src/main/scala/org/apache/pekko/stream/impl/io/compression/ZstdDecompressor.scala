@@ -52,7 +52,9 @@ import pekko.util.ByteString
       private var inputBuffer = EmptyInput
       // the remaining fragments of the current element, see ZstdBuffers.inputBuffers
       private var inputBuffers = NoInput
-      // set when the last call filled the output buffer, zstd may then still hold decompressed data
+      // set when the last call filled the output buffer before the frame completed, zstd may then
+      // still hold decompressed data. A completed frame is fully flushed, and another call would make
+      // zstd wait for a new frame and report the stream as incomplete.
       private var outputPending = false
       // false while a frame has been started but not fully decompressed and flushed
       private var frameComplete = true
@@ -78,7 +80,7 @@ import pekko.util.ByteString
       private def decompress(): Unit =
         if (hasInput || outputPending) {
           frameComplete = decompressCtx.decompressByteBufferStream(outputBuffer, inputBuffer)
-          outputPending = !outputBuffer.hasRemaining
+          outputPending = !frameComplete && !outputBuffer.hasRemaining
           if (outputBuffer.position() > 0) {
             val (output, nextBuffer) = ZstdBuffers.takeOutput(outputBuffer)
             outputBuffer = nextBuffer

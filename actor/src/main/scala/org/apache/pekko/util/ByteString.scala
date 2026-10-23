@@ -201,7 +201,7 @@ object ByteString {
 
     override def asByteBuffers: scala.collection.immutable.Iterable[ByteBuffer] = List(asByteBuffer)
 
-    private[pekko] override def asByteBuffersUnsafe: scala.collection.immutable.Iterable[ByteBuffer] =
+    private[pekko] override def asByteBuffersUnsafe: immutable.Iterable[ByteBuffer] =
       if (isEmpty) Nil else List(ByteBuffer.wrap(bytes))
 
     override def decodeString(charset: String): String =
@@ -621,7 +621,7 @@ object ByteString {
 
     def asByteBuffers: scala.collection.immutable.Iterable[ByteBuffer] = List(asByteBuffer)
 
-    private[pekko] override def asByteBuffersUnsafe: scala.collection.immutable.Iterable[ByteBuffer] =
+    private[pekko] override def asByteBuffersUnsafe: immutable.Iterable[ByteBuffer] =
       if (isEmpty) Nil else List(byteBufferUnsafe)
 
     /** INTERNAL API: see [[ByteString.asByteBuffersUnsafe]] */
@@ -1196,7 +1196,7 @@ object ByteString {
     def asByteBuffers: scala.collection.immutable.Iterable[ByteBuffer] =
       List(first.asByteBuffer, second.asByteBuffer)
 
-    private[pekko] override def asByteBuffersUnsafe: scala.collection.immutable.Iterable[ByteBuffer] = {
+    private[pekko] override def asByteBuffersUnsafe: immutable.Iterable[ByteBuffer] = {
       val builder = new VectorBuilder[ByteString1]
       addFragmentsTo(builder)
       builder.result().collect { case fragment if fragment.nonEmpty => fragment.byteBufferUnsafe }
@@ -1768,7 +1768,7 @@ object ByteString {
 
     def asByteBuffers: scala.collection.immutable.Iterable[ByteBuffer] = bytestrings.map { _.asByteBuffer }
 
-    private[pekko] override def asByteBuffersUnsafe: scala.collection.immutable.Iterable[ByteBuffer] =
+    private[pekko] override def asByteBuffersUnsafe: immutable.Iterable[ByteBuffer] =
       bytestrings.collect { case fragment if fragment.nonEmpty => fragment.byteBufferUnsafe }
 
     override def asInputStream: InputStream =

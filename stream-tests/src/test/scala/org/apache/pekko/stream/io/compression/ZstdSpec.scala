@@ -20,11 +20,14 @@ package org.apache.pekko.stream.io.compression
 import java.io.{ InputStream, OutputStream }
 import java.nio.charset.StandardCharsets
 
+import scala.concurrent.duration._
+
 import com.github.luben.zstd.{ Zstd, ZstdException, ZstdInputStream, ZstdOutputStream }
 
 import org.apache.pekko
 import pekko.stream.impl.io.compression.{ Compressor, ZstdCompressor }
-import pekko.stream.scaladsl.{ Compression, Flow }
+import pekko.stream.javadsl.compression.{ ZstdDictionary => JavaZstdDictionary }
+import pekko.stream.scaladsl.{ Compression, Flow, Source }
 import pekko.stream.scaladsl.compression.ZstdDictionary
 import pekko.util.ByteString
 
@@ -56,6 +59,19 @@ class ZstdSpec extends CoderSpec[ZstdException]("zstd") {
       val ex = the[RuntimeException] thrownBy ourDecode(newCompressor().compressAndFlush(smallTextBytes))
       ex.ultimateCause.getMessage should equal("Truncated zstd stream")
     }
+    "decompress input whose size is an exact multiple of maxBytesPerChunk" in {
+      val input = ByteString(Array.fill(4096)(1.toByte))
+      val compressed = ourEncode(input)
+      for (chunkSize <- Seq(4096, 2048, 1024, 4095, 4097)) {
+        withClue(s"maxBytesPerChunk = $chunkSize: ") {
+          Source.single(compressed).via(decoderFlow(chunkSize)).join.awaitResult(3.seconds) should ===(input)
+          Source(List(compressed, compressed))
+            .via(decoderFlow(chunkSize))
+            .join
+            .awaitResult(3.seconds) should ===(input ++ input)
+        }
+      }
+    }
     "compress and decompress multi-fragment ByteStrings" in {
       // slices of a single array, so the fragments do not cover their whole backing arrays
       def fragmented(bytes: ByteString): ByteString =
@@ -70,6 +86,12 @@ class ZstdSpec extends CoderSpec[ZstdException]("zstd") {
       Compression.ZstdMaxCompressionLevel should ===(Zstd.maxCompressionLevel())
       Compression.ZstdDefaultCompressionLevel should ===(Zstd.defaultCompressionLevel())
       Compression.ZstdDecompressMaxBlockSize should ===(Zstd.blockSizeMax())
+    }
+    "encode String dictionaries as UTF-8" in {
+      val text = "dictionary é中"
+      val utf8 = text.getBytes(StandardCharsets.UTF_8)
+      ZstdDictionary(text).dictionary should ===(utf8)
+      new JavaZstdDictionary(text).getDictionary should ===(utf8)
     }
     "compress with a dictionary slice" in {
       val dictBytes = ("padding" + smallText * 4).getBytes(StandardCharsets.UTF_8)

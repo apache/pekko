@@ -17,6 +17,8 @@
 
 package org.apache.pekko.stream.scaladsl.compression
 
+import java.nio.charset.StandardCharsets
+
 import org.apache.pekko
 import pekko.annotation.InternalApi
 import pekko.stream.impl.io.compression.ZstdDictionaryImpl
@@ -68,11 +70,11 @@ object ZstdDictionary {
     ZstdDictionary(dictionary.toArray, level, offset, length)
 
   def apply(dictionary: String): ZstdDictionary =
-    ZstdDictionary(dictionary.getBytes)
+    ZstdDictionary(dictionary.getBytes(StandardCharsets.UTF_8))
 
   def apply(dictionary: String, level: Int): ZstdDictionary =
-    ZstdDictionary(dictionary.getBytes, level)
+    ZstdDictionary(dictionary.getBytes(StandardCharsets.UTF_8), level)
 
   def apply(dictionary: String, level: Int, offset: Int, length: Int): ZstdDictionary =
-    ZstdDictionary(dictionary.getBytes, level, offset, length)
+    ZstdDictionary(dictionary.getBytes(StandardCharsets.UTF_8), level, offset, length)
 }
