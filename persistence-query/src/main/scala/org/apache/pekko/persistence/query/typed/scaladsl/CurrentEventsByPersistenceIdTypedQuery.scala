@@ -9,6 +9,7 @@
 
 /*
  * Copyright (C) 2021-2023 Lightbend Inc. <https://www.lightbend.com>
+ * Copyright (C) 2015-2023 Lightbend Inc. <https://www.lightbend.com>
  */
 
 package org.apache.pekko.persistence.query.typed.scaladsl
@@ -21,8 +22,6 @@ import pekko.stream.scaladsl.Source
 
 /**
  * A plugin may optionally support this query by implementing this trait.
- *
- * API May Change
  */
 trait CurrentEventsByPersistenceIdTypedQuery extends ReadJournal {
 

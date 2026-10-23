@@ -9,6 +9,7 @@
 
 /*
  * Copyright (C) 2021-2022 Lightbend Inc. <https://www.lightbend.com>
+ * Copyright (C) 2021-2023 Lightbend Inc. <https://www.lightbend.com>
  */
 
 package org.apache.pekko.persistence.query.typed
@@ -130,8 +131,6 @@ object EventEnvelope {
  * `System.currentTimeMillis`).
  *
  * It is an improved `EventEnvelope` compared to [[pekko.persistence.query.EventEnvelope]].
- *
- * API May Change
  */
 final class EventEnvelope[Event](
     val offset: Offset,

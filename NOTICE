@@ -10,6 +10,11 @@ Copyright (C) 2009-2022 Lightbend Inc. <https://www.lightbend.com>
 Apache Pekko is derived from Akka 2.6.x, the last version that was distributed under the
 Apache License, Version 2.0 License.
 
+This product also contains portions adapted from Akka 2.9.0, whose Business Source
+License specifies a Change Date of 2026-10-23 and the Apache License, Version 2.0
+as its Change License.
+Copyright (C) 2023 Lightbend Inc. <https://www.lightbend.com>
+
 ---------------
 
 pekko-actor contains MurmurHash.scala which has changes made by the Scala-Lang team under an Apache 2.0 license.

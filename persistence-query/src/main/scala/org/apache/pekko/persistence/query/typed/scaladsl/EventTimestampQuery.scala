@@ -9,6 +9,7 @@
 
 /*
  * Copyright (C) 2021-2022 Lightbend Inc. <https://www.lightbend.com>
+ * Copyright (C) 2021-2023 Lightbend Inc. <https://www.lightbend.com>
  */
 
 package org.apache.pekko.persistence.query.typed.scaladsl
@@ -22,8 +23,6 @@ import pekko.persistence.query.scaladsl.ReadJournal
 
 /**
  * [[EventsBySliceQuery]] that is using a timestamp based offset should also implement this query.
- *
- * API May Change
  */
 trait EventTimestampQuery extends ReadJournal {
 

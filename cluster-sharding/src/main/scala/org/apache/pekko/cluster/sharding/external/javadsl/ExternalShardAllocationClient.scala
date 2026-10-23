@@ -9,6 +9,7 @@
 
 /*
  * Copyright (C) 2019-2022 Lightbend Inc. <https://www.lightbend.com>
+ * Copyright (C) 2019-2023 Lightbend Inc. <https://www.lightbend.com>
  */
 
 package org.apache.pekko.cluster.sharding.external.javadsl
@@ -22,8 +23,6 @@ import pekko.cluster.sharding.ShardRegion.ShardId
 import pekko.cluster.sharding.external.ShardLocations
 
 /**
- * API May Change
- *
  * Not for user extension
  */
 trait ExternalShardAllocationClient {

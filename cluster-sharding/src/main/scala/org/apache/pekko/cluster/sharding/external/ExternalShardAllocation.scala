@@ -9,6 +9,7 @@
 
 /*
  * Copyright (C) 2019-2022 Lightbend Inc. <https://www.lightbend.com>
+ * Copyright (C) 2019-2023 Lightbend Inc. <https://www.lightbend.com>
  */
 
 package org.apache.pekko.cluster.sharding.external
@@ -24,9 +25,6 @@ import pekko.actor.ExtensionId
 import pekko.actor.ExtensionIdProvider
 import pekko.cluster.sharding.external.internal.ExternalShardAllocationClientImpl
 
-/**
- * API May Change
- */
 final class ExternalShardAllocation(system: ExtendedActorSystem) extends Extension {
 
   private val clients = new ConcurrentHashMap[String, ExternalShardAllocationClientImpl]
