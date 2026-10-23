@@ -139,6 +139,39 @@ import pekko.util.OptionVal
     LZ4Meta.get(bytes).isDefined
   }
 
+  private final val MinBufferSize = 4 * 1024
+  private final val MaxInitialDecompressBufferSize = 16 * 1024 * 1024
+
+  /**
+   * Initial size of the buffer that a compressed payload is decompressed into when its
+   * decompressed size is not known up front. JSON and CBOR typically compress 3-10x, so 4x the
+   * compressed size avoids most resizing without allocating much more than needed. It is never
+   * larger than the configured maximum decompressed size allows, and capped so that a large
+   * payload grows the buffer rather than allocating a huge one up front.
+   */
+  def initialDecompressBufferSize(compressedSize: Int, maxDecompressedSize: Long): Int = {
+    val estimate = compressedSize.toLong * 4
+    val bounded = if (maxDecompressedSize >= 0) math.min(estimate, maxDecompressedSize + 1) else estimate
+    math.max(MinBufferSize, math.min(bounded, MaxInitialDecompressBufferSize.toLong)).toInt
+  }
+
+  /**
+   * Initial size of the buffer that a payload is compressed into: a quarter of its size (JSON and
+   * CBOR typically compress at least that well), but at least 4 KiB.
+   */
+  def initialCompressBufferSize(uncompressedSize: Int): Int =
+    math.max(MinBufferSize, uncompressedSize / 4)
+
+  // a zstd frame starts with the magic number 0xFD2FB528, stored little-endian
+  def isZstd(bytes: Array[Byte]): Boolean = {
+    (bytes ne null) &&
+    (bytes.length >= 4) &&
+    (bytes(0) == 0x28.toByte) &&
+    (bytes(1) == 0xB5.toByte) &&
+    (bytes(2) == 0x2F.toByte) &&
+    (bytes(3) == 0xFD.toByte)
+  }
+
 }
 
 /**
@@ -168,6 +201,7 @@ import pekko.util.OptionVal
   object Off extends Algorithm
   final case class GZip(largerThan: Long) extends Algorithm
   final case class LZ4(largerThan: Long) extends Algorithm
+  final case class Zstd(largerThan: Long, level: Int) extends Algorithm
 }
 
 /**
@@ -202,10 +236,15 @@ import pekko.util.OptionVal
       case "lz4" =>
         val compressLargerThan = conf.getBytes("compression.compress-larger-than")
         Compression.LZ4(compressLargerThan)
+      case "zstd" =>
+        val compressLargerThan = conf.getBytes("compression.compress-larger-than")
+        val level = conf.getInt("compression.zstd-level")
+        ZstdCompression.checkLevel(level)
+        Compression.Zstd(compressLargerThan, level)
       case other =>
         throw new IllegalArgumentException(
           s"Unknown compression algorithm [$other], possible values are " +
-          """"off" or "gzip"""")
+          """"off", "gzip", "lz4" or "zstd"""")
     }
   }
   // "unlimited" or a negative number means no limit; getBytes refuses both, so read them first
@@ -548,25 +587,35 @@ import pekko.util.OptionVal
       case Compression.Off                                            => bytes
       case Compression.GZip(largerThan) if bytes.length <= largerThan => bytes
       case Compression.GZip(_)                                        =>
-        val bos = new ByteArrayOutputStream(BufferSize)
-        val zip = new GZIPOutputStream(bos)
+        val bos = new ByteArrayOutputStream(initialCompressBufferSize(bytes.length))
+        val zip = new GZIPOutputStream(bos, BufferSize)
         try zip.write(bytes)
         finally zip.close()
         bos.toByteArray
       case Compression.LZ4(largerThan) if bytes.length <= largerThan => bytes
       case Compression.LZ4(_)                                        => {
+        // compress directly after the header, so the output is only copied once, to trim it
         val meta = LZ4Meta(bytes)
-        val compressed = lz4Compressor.compress(bytes)
-        meta.prependTo(compressed)
+        val maxCompressedLength = lz4Compressor.maxCompressedLength(bytes.length)
+        val out = new Array[Byte](meta.offset + maxCompressedLength)
+        meta.putInto(ByteBuffer.wrap(out))
+        val compressedLength =
+          lz4Compressor.compress(bytes, 0, bytes.length, out, meta.offset, maxCompressedLength)
+        java.util.Arrays.copyOf(out, meta.offset + compressedLength)
       }
+      case Compression.Zstd(largerThan, _) if bytes.length <= largerThan => bytes
+      case Compression.Zstd(_, level)                                    => ZstdCompression.compress(bytes, level)
     }
   }
 
   def decompress(bytes: Array[Byte]): Array[Byte] = {
     if (isGZipped(bytes)) {
-      val in = new GZIPInputStream(new UnsynchronizedByteArrayInputStream(bytes))
-      try gunzip(in)
+      val in = new GZIPInputStream(new UnsynchronizedByteArrayInputStream(bytes), BufferSize)
+      try gunzip(in, initialDecompressBufferSize(bytes.length, maxDecompressedSize))
       finally in.close()
+    } else if (isZstd(bytes)) {
+      ZstdCompression.decompress(bytes, maxDecompressedSize,
+        "pekko.serialization.jackson.compression.max-decompressed-size")
     } else {
       LZ4Meta.get(bytes) match {
         case OptionVal.Some(meta) =>
@@ -589,8 +638,8 @@ import pekko.util.OptionVal
 
   // gunzip with a bound on the decompressed size, so a small gzip payload cannot
   // inflate without limit (a "zip bomb"). A negative maximum applies no bound.
-  private def gunzip(in: GZIPInputStream): Array[Byte] = {
-    val out = new ByteArrayOutputStream()
+  private def gunzip(in: GZIPInputStream, initialBufferSize: Int): Array[Byte] = {
+    val out = new ByteArrayOutputStream(initialBufferSize)
     val buffer = new Array[Byte](BufferSize)
     var total = 0L
     var n = in.read(buffer)

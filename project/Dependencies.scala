@@ -49,6 +49,8 @@ object Dependencies {
 
   val reactiveStreamsVersion = "1.0.4"
 
+  val zstdJniVersion = "1.5.7-24"
+
   val scalaTestVersion = "3.2.20"
   val scalaTestScalaCheckVersion = "1-19"
   val scalaCheckVersion = "1.19.0"
@@ -107,6 +109,8 @@ object Dependencies {
     val jacksonCbor3 = "tools.jackson.dataformat" % "jackson-dataformat-cbor" % jacksonVersion3
 
     val lz4Java = "at.yawk.lz4" % "lz4-java" % "1.12.1"
+
+    val zstdJni = "com.github.luben" % "zstd-jni" % zstdJniVersion
 
     val logback = "ch.qos.logback" % "logback-classic" % logbackVersion
 
@@ -339,6 +343,8 @@ object Dependencies {
     jacksonCbor,
     jacksonScala,
     lz4Java,
+    // optional, only needed for zstd compression
+    zstdJni % Optional,
     TestDependencies.junit,
     TestDependencies.scalatest)
 
@@ -349,6 +355,8 @@ object Dependencies {
     jacksonCbor3,
     jacksonScala3,
     lz4Java,
+    // optional, only needed for zstd compression
+    zstdJni % Optional,
     TestDependencies.junit,
     TestDependencies.scalatest)
 

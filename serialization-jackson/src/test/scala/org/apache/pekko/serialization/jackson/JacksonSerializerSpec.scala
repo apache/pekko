@@ -14,6 +14,7 @@
 package org.apache.pekko.serialization.jackson
 
 import java.lang
+import java.io.ByteArrayOutputStream
 import java.io.NotSerializableException
 import java.nio.charset.StandardCharsets
 import java.time.Duration
@@ -30,6 +31,8 @@ import scala.annotation.nowarn
 import scala.concurrent.duration._
 import scala.concurrent.duration.FiniteDuration
 
+import com.github.luben.zstd.{ Zstd, ZstdOutputStream }
+import net.jpountz.lz4.LZ4Factory
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
@@ -666,6 +669,24 @@ class JacksonJsonSerializerSpec extends JacksonSerializerSpec("jackson-json") {
       check(SimpleCommand("0" * (compressLargerThan + 1).toInt), true)
     }
 
+    "write lz4 payloads in the LZ4Meta header + lz4 block format" in withSystem("""
+        pekko.serialization.jackson.jackson-json.compression {
+          algorithm = lz4
+          compress-larger-than = 0 KiB
+        }
+      """) { sys =>
+      val msg = SimpleCommand("0" * (8 * 1024))
+      val blob = serializeToBinary(msg, sys)
+      val json = withSystem("""
+          pekko.serialization.jackson.jackson-json.compression.algorithm = off
+        """) { plainSys =>
+        serializeToBinary(msg, plainSys)
+      }
+      val expected =
+        JacksonSerializer.LZ4Meta(json).prependTo(LZ4Factory.fastestInstance().fastCompressor().compress(json))
+      blob.toSeq should ===(expected.toSeq)
+    }
+
     "not compress small payload with lz4" in withSystem("""
         pekko.serialization.jackson.jackson-json.compression {
           algorithm = lz4
@@ -751,6 +772,146 @@ class JacksonJsonSerializerSpec extends JacksonSerializerSpec("jackson-json") {
       """) { sys =>
       val msg = SimpleCommand("0" * (8 * 1024))
       JacksonSerializer.isGZipped(serializeToBinary(msg, sys)) should ===(true)
+      checkSerialization(msg, sys)
+    }
+
+    "compress large payload with zstd" in withSystem("""
+        pekko.serialization.jackson.jackson-json.compression {
+          algorithm = zstd
+          compress-larger-than = 32 KiB
+        }
+      """) { sys =>
+      val msg = SimpleCommand("0" * (33 * 1024))
+      val bytes = serializeToBinary(msg, sys)
+      JacksonSerializer.isZstd(bytes) should ===(true)
+      bytes.length should be < 32 * 1024
+      checkSerialization(msg, sys)
+    }
+
+    "not compress small payload with zstd" in withSystem("""
+        pekko.serialization.jackson.jackson-json.compression {
+          algorithm = zstd
+          compress-larger-than = 32 KiB
+        }
+      """) { sys =>
+      val msg = SimpleCommand("Bob")
+      JacksonSerializer.isZstd(serializeToBinary(msg, sys)) should ===(false)
+      checkSerialization(msg, sys)
+    }
+
+    "use the configured zstd-level" in {
+      def compressedSize(level: Int): Int =
+        withSystem(s"""
+          pekko.serialization.jackson.jackson-json.compression {
+            algorithm = zstd
+            compress-larger-than = 0 KiB
+            zstd-level = $level
+          }
+        """) { sys =>
+          serializeToBinary(SimpleCommand((1 to 5000).map(i => s"item-$i").mkString(",")), sys).length
+        }
+      compressedSize(19) should be < compressedSize(-5)
+    }
+
+    "reject an invalid zstd-level" in {
+      val ex = intercept[IllegalArgumentException] {
+        withSystem("""
+          pekko.serialization.jackson.jackson-json.compression {
+            algorithm = zstd
+            zstd-level = 100
+          }
+        """) { sys =>
+          serializeToBinary(SimpleCommand("Bob"), sys)
+        }
+      }
+      ex.getMessage should include("Invalid zstd compression level [100]")
+    }
+
+    "deserialize a zstd payload when zstd is not the configured algorithm" in {
+      val msg = SimpleCommand("0" * (8 * 1024))
+      val serializer = serializerFor(msg)
+      val blob = withSystem("""
+          pekko.serialization.jackson.jackson-json.compression {
+            algorithm = zstd
+            compress-larger-than = 0 KiB
+          }
+        """) { sys =>
+        serializeToBinary(msg, sys)
+      }
+      JacksonSerializer.isZstd(blob) should ===(true)
+      deserializeFromBinary(blob, serializer.identifier, serializer.manifest(msg)) should ===(msg)
+    }
+
+    "reject a zstd payload that declares a size beyond max-decompressed-size" in withSystem("""
+        pekko.serialization.jackson.jackson-json.compression {
+          algorithm = zstd
+          compress-larger-than = 0 KiB
+          max-decompressed-size = 1 KiB
+        }
+      """) { sys =>
+      val msg = SimpleCommand("0" * (8 * 1024))
+      val serializer = serializerFor(msg, sys)
+      val blob = serializeToBinary(msg, sys)
+      JacksonSerializer.isZstd(blob) should ===(true)
+      Zstd.getFrameContentSize(blob) should be > 1024L
+      val ex = intercept[IllegalArgumentException] {
+        deserializeFromBinary(blob, serializer.identifier, serializer.manifest(msg), sys)
+      }
+      ex.getMessage should include("max-decompressed-size")
+    }
+
+    "reject a zstd payload without declared size that decompresses beyond max-decompressed-size" in withSystem("""
+        pekko.serialization.jackson.jackson-json.compression {
+          max-decompressed-size = 1 KiB
+        }
+      """) { sys =>
+      val msg = SimpleCommand("0" * (8 * 1024))
+      val serializer = serializerFor(msg, sys)
+      val blob = zstdStream(serializeToBinary(msg, sys))
+      JacksonSerializer.isZstd(blob) should ===(true)
+      Zstd.getFrameContentSize(blob) should be <= 0L
+      val ex = intercept[IllegalArgumentException] {
+        deserializeFromBinary(blob, serializer.identifier, serializer.manifest(msg), sys)
+      }
+      ex.getMessage should include("max-decompressed-size")
+    }
+
+    "deserialize a zstd payload without declared size within max-decompressed-size" in withSystem("""
+        pekko.serialization.jackson.jackson-json.compression {
+          max-decompressed-size = 1 MiB
+        }
+      """) { sys =>
+      val msg = SimpleCommand("0" * (8 * 1024))
+      val serializer = serializerFor(msg, sys)
+      val blob = zstdStream(serializeToBinary(msg, sys))
+      deserializeFromBinary(blob, serializer.identifier, serializer.manifest(msg), sys) should ===(msg)
+    }
+
+    "reject a zstd payload that produces more than its declared size" in withSystem("""
+        pekko.serialization.jackson.jackson-json.compression {
+          max-decompressed-size = 1 MiB
+        }
+      """) { sys =>
+      val msg = SimpleCommand("0" * (8 * 1024))
+      val serializer = serializerFor(msg, sys)
+      val json = serializeToBinary(msg, sys)
+      // the first frame declares a small size, the frame appended to it decompresses to much more
+      val blob = Zstd.compress(json.take(10)) ++ Zstd.compress(json.drop(10))
+      Zstd.getFrameContentSize(blob) should ===(10L)
+      an[Exception] should be thrownBy {
+        deserializeFromBinary(blob, serializer.identifier, serializer.manifest(msg), sys)
+      }
+    }
+
+    "apply no zstd decompression limit when max-decompressed-size is -1" in withSystem("""
+        pekko.serialization.jackson.jackson-json.compression {
+          algorithm = zstd
+          compress-larger-than = 0 KiB
+          max-decompressed-size = -1
+        }
+      """) { sys =>
+      val msg = SimpleCommand("0" * (8 * 1024))
+      JacksonSerializer.isZstd(serializeToBinary(msg, sys)) should ===(true)
       checkSerialization(msg, sys)
     }
   }
@@ -897,7 +1058,7 @@ abstract class JacksonSerializerSpec(serializerName: String)
     if (blob.length > 0) {
       serializer match {
         case _: JacksonJsonSerializer =>
-          if (!JacksonSerializer.isGZipped(blob) && !JacksonSerializer.isLZ4(blob))
+          if (!JacksonSerializer.isGZipped(blob) && !JacksonSerializer.isLZ4(blob) && !JacksonSerializer.isZstd(blob))
             new String(blob.take(1), StandardCharsets.UTF_8) should ===("{")
         case _: JacksonCborSerializer =>
           new String(blob.take(1), StandardCharsets.UTF_8) should !==("{")
@@ -908,6 +1069,15 @@ abstract class JacksonSerializerSpec(serializerName: String)
 
     val deserialized = deserializeFromBinary(blob, serializerId, manifest, sys)
     deserialized should ===(obj)
+  }
+
+  // zstd compress with the streaming API, so the frame does not declare its decompressed size
+  def zstdStream(bytes: Array[Byte]): Array[Byte] = {
+    val bos = new ByteArrayOutputStream()
+    val out = new ZstdOutputStream(bos)
+    try out.write(bytes)
+    finally out.close()
+    bos.toByteArray
   }
 
   def serializeToBinary(obj: AnyRef, sys: ActorSystem = system): Array[Byte] =

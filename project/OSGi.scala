@@ -88,8 +88,12 @@ object OSGi {
     // (including typical ones such as scala runtime)
     OsgiKeys.explodedJars := Seq(assembly.value))
 
-  lazy val jackson = exports(Seq("org.apache.pekko.serialization.jackson.*"))
-  lazy val jackson3 = exports(Seq("org.apache.pekko.serialization.jackson3.*"))
+  lazy val jackson = exports(
+    Seq("org.apache.pekko.serialization.jackson.*"),
+    imports = Seq(optionalResolution("com.github.luben.zstd.*")))
+  lazy val jackson3 = exports(
+    Seq("org.apache.pekko.serialization.jackson3.*"),
+    imports = Seq(optionalResolution("com.github.luben.zstd.*")))
 
   lazy val remote = exports(Seq("org.apache.pekko.remote.*"))
 

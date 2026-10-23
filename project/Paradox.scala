@@ -73,6 +73,7 @@ object Paradox {
       "sigar_loader.version" -> "1.6.6-rev002",
       "aeron_version" -> Dependencies.aeronVersion,
       "netty_version" -> Dependencies.nettyVersion,
+      "zstd_jni_version" -> Dependencies.zstdJniVersion,
       "logback_version" -> Dependencies.logbackVersion))
 
   lazy val rootsSettings = Seq(
