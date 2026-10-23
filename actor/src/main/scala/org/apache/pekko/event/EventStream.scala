@@ -8,7 +8,7 @@
  */
 
 /*
- * Copyright (C) 2009-2022 Lightbend Inc. <https://www.lightbend.com>
+ * Copyright (C) 2009-2023 Lightbend Inc. <https://www.lightbend.com>
  */
 
 package org.apache.pekko.event
@@ -53,6 +53,10 @@ class EventStream(sys: ActorSystem, private val debug: Boolean) extends LoggingB
     else subscriber ! event
   }
 
+  /**
+   * Subscribe an actor to events of the given class and its subtypes.
+   * The same actor can subscribe to multiple different classes.
+   */
   override def subscribe(subscriber: ActorRef, channel: Class[?]): Boolean = {
     if (subscriber eq null) throw new IllegalArgumentException("subscriber is null")
     if (debug)
@@ -61,6 +65,9 @@ class EventStream(sys: ActorSystem, private val debug: Boolean) extends LoggingB
     super.subscribe(subscriber, channel)
   }
 
+  /**
+   * Unsubscribe an actor from the given class and its subtypes, leaving unrelated subscriptions intact.
+   */
   override def unsubscribe(subscriber: ActorRef, channel: Class[?]): Boolean = {
     if (subscriber eq null) throw new IllegalArgumentException("subscriber is null")
     val ret = super.unsubscribe(subscriber, channel)
@@ -71,6 +78,9 @@ class EventStream(sys: ActorSystem, private val debug: Boolean) extends LoggingB
     ret
   }
 
+  /**
+   * Remove all subscriptions for the given actor.
+   */
   override def unsubscribe(subscriber: ActorRef): Unit = {
     if (subscriber eq null) throw new IllegalArgumentException("subscriber is null")
     super.unsubscribe(subscriber)

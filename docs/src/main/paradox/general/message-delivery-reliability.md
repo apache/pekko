@@ -339,8 +339,8 @@ guaranteed delivery.
 ### How do I Receive Dead Letters?
 
 An actor can subscribe to class @apidoc[actor.DeadLetter](actor.DeadLetter) on the event
-stream, see @ref:[Event Stream](../event-bus.md#event-stream)
-for how to do that. The subscribed actor will then receive all dead
+stream; see @ref:[Typed Event Stream](../typed/event-stream.md) or
+@ref:[Classic Event Stream](../event-bus.md#event-stream) for how to do that. The subscribed actor will then receive all dead
 letters published in the (local) system from that point onwards. Dead letters
 are not propagated over the network, if you want to collect them in one place
 you will have to subscribe one actor per network node and forward them
