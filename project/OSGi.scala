@@ -100,7 +100,7 @@ object OSGi {
   lazy val stream =
     exports(
       packages = Seq("org.apache.pekko.stream.*"),
-      imports = Seq(scalaParsingCombinatorImport()))
+      imports = Seq(scalaParsingCombinatorImport(), optionalResolution("com.github.luben.zstd.*")))
 
   lazy val streamTestkit = exports(Seq("org.apache.pekko.stream.testkit.*"))
 

@@ -383,11 +383,13 @@ object Dependencies {
     Docs.gson,
     Provided.levelDB)
 
-  lazy val benchJmh = l ++= Seq(logback, Provided.levelDB, Provided.levelDBNative, Compile.jctools)
+  lazy val benchJmh = l ++= Seq(logback, Provided.levelDB, Provided.levelDBNative, Compile.jctools, zstdJni)
 
   // pekko stream
 
-  lazy val stream = l ++= Seq[sbt.ModuleID](reactiveStreams, jspecify, TestDependencies.scalatest)
+  // zstd-jni is optional, users of the zstd compression operators need to add it themselves
+  lazy val stream =
+    l ++= Seq[sbt.ModuleID](reactiveStreams, jspecify, zstdJni % Optional, TestDependencies.scalatest)
 
   lazy val streamTyped = l ++= Seq[sbt.ModuleID](jspecify)
 
@@ -398,6 +400,7 @@ object Dependencies {
     TestDependencies.junit)
 
   lazy val streamTests = l ++= Seq(
+    zstdJni % Test,
     TestDependencies.scalatest,
     TestDependencies.scalatestScalaCheck,
     TestDependencies.junit,

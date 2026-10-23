@@ -2277,6 +2277,36 @@ class ByteStringSpec extends AnyWordSpec with Matchers with Checkers {
         }
       }
 
+      "asByteBuffersUnsafe" in {
+        check { (a: ByteString) =>
+          a.asByteBuffersUnsafe.foldLeft(ByteString.empty) { (bs, bb) =>
+            bs ++ ByteString(bb)
+          } == a
+        }
+        check { (a: ByteString) =>
+          a.asByteBuffersUnsafe.forall(bb => bb.hasArray && !bb.isReadOnly && bb.hasRemaining)
+        }
+        check { (a: ByteString) =>
+          a.asByteBuffersUnsafe.size == a.asByteBuffers.count(_.hasRemaining)
+        }
+      }
+
+      "asByteBuffersUnsafe wraps the backing arrays without copying" in {
+        val array = Array[Byte](0, 1, 2, 3, 4, 5)
+        val compact = ByteString1C(array)
+        compact.asByteBuffersUnsafe.map(_.array()).toSeq should ===(Seq(array))
+
+        val sliced = ByteString1(array, 1, 3)
+        val slicedBuffer = sliced.asByteBuffersUnsafe.head
+        (slicedBuffer.array() should be).theSameInstanceAs(array)
+        (slicedBuffer.position(), slicedBuffer.limit()) should ===((1, 4))
+
+        val other = Array[Byte](6, 7)
+        val fragmented = sliced ++ ByteString1C(other) ++ ByteString1(array, 4, 2)
+        fragmented.asByteBuffersUnsafe.map(_.array()).toSeq should ===(Seq(array, other, array))
+        ByteString.empty.asByteBuffersUnsafe shouldBe empty
+      }
+
       "toString should start with ByteString(" in {
         check { (bs: ByteString) =>
           bs.toString.startsWith("ByteString(")

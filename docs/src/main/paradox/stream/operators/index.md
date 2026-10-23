@@ -370,6 +370,8 @@ Flow operators to (de)compress.
 |Compression|<a name="gzip"></a>@ref[gzip](Compression/gzip.md)|Creates a flow that gzip-compresses a stream of ByteStrings.  |
 |Compression|<a name="gzipdecompress"></a>@ref[gzipDecompress](Compression/gzipDecompress.md)|Creates a flow that gzip-decompresses a stream of ByteStrings.  |
 |Compression|<a name="inflate"></a>@ref[inflate](Compression/inflate.md)|Creates a flow that deflate-decompresses a stream of ByteStrings. |
+|Compression|<a name="zstd"></a>@ref[zstd](Compression/zstd.md)|Creates a flow that zstd-compresses a stream of ByteStrings.|
+|Compression|<a name="zstddecompress"></a>@ref[zstdDecompress](Compression/zstdDecompress.md)|Creates a flow that zstd-decompresses a stream of ByteStrings.|
 
 ## Error handling
 
@@ -629,5 +631,7 @@ For more background see the @ref[Error Handling in Streams](../stream-error.md) 
 * [zipWith](Source-or-Flow/zipWith.md)
 * [zipWithIndex](Source-or-Flow/zipWithIndex.md)
 * [zipWithN](Source/zipWithN.md)
+* [zstd](Compression/zstd.md)
+* [zstdDecompress](Compression/zstdDecompress.md)
 
 @@@
