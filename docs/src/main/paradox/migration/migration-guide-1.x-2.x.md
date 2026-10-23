@@ -61,6 +61,23 @@ rolling updates. ([PR3425](https://github.com/apache/pekko/pull/3425))
 by Akka 2.3.x. The `-2.3` program argument and the `remove2dot3Data` parameter of
 `RemoveInternalClusterShardingData.remove` have been removed. ([PR3608](https://github.com/apache/pekko/pull/3608))
 
+* The deprecated `PekkoSSLConfig` convenience API and the stream methods accepting it were removed.
+Initialize an `SSLContext` with the required key and trust managers, and supply a factory that creates a new
+`javax.net.ssl.SSLEngine` for each connection. Set its client or server mode and apply the cipher suites,
+protocols and client-authentication settings previously passed in `NegotiateNewSession` directly to the engine
+or its `SSLParameters`.
+Client factories must preserve peer identity checks: use `sslContext.createSSLEngine(host, port)`, call
+`setUseClientMode(true)`, and enable hostname verification with `setEndpointIdentificationAlgorithm("HTTPS")`
+on the engine's `SSLParameters`. For DNS names, also configure SNI with `SSLParameters.setServerNames`
+containing an `SNIHostName` for that hostname. Apply those parameters with `SSLEngine.setSSLParameters` before returning the engine.
+The factory is accepted by
+@scala[@scaladoc[TLS.apply](org.apache.pekko.stream.scaladsl.TLS$)]@java[@javadoc[TLS.create](org.apache.pekko.stream.javadsl.TLS)]
+and the current @apidoc[Tcp](stream.*.Tcp) TLS methods.
+Replace `outgoingTlsConnection` with `outgoingConnectionWithTls` and `bindTls` with `bindWithTls`.
+@scala[Also replace `bindAndHandleTls` with `bindAndHandleWithTls`.]
+See the Scala and Java @ref:[TLS examples](../stream/stream-io.md#tls) for general engine setup,
+adding the client hostname-verification and SNI settings described above. ([PR2127](https://github.com/apache/pekko/pull/2127))
+
 ## Configuration Changes in Pekko 2.x
 
 The `reference.conf` defaults have changed in a number of places. If you override any of the settings
@@ -117,15 +134,6 @@ trust, remove them before upgrading. ([PR3528](https://github.com/apache/pekko/p
 ([PR3026](https://github.com/apache/pekko/pull/3026))
 * The `pekko.ssl-config` and top-level `ssl-config` sections were removed along with the
 `ssl-config` library dependency. ([PR2127](https://github.com/apache/pekko/pull/2127))
-
-The deprecated `PekkoSSLConfig` convenience API and the stream methods accepting it were also removed.
-Create and configure a `javax.net.ssl.SSLEngine` with the JDK APIs instead, and supply a factory that creates
-a new engine for each connection. The factory is accepted by
-@scala[@scaladoc[TLS.apply](org.apache.pekko.stream.scaladsl.TLS$)]@java[@javadoc[TLS.create](org.apache.pekko.stream.javadsl.TLS)]
-and the current @apidoc[Tcp](stream.*.Tcp) TLS methods.
-Replace `outgoingTlsConnection` with `outgoingConnectionWithTls`, `bindTls` with `bindWithTls`, and
-@scala[`bindAndHandleTls` with `bindAndHandleWithTls`]@java[use `bindWithTls` to obtain the incoming connections].
-The factory must configure the engine's client or server mode and the required trust and authentication settings.
 
 ### New configuration
 
