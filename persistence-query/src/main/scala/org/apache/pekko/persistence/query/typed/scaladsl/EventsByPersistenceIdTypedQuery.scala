@@ -9,7 +9,6 @@
 
 /*
  * Copyright (C) 2021-2023 Lightbend Inc. <https://www.lightbend.com>
- * Copyright (C) 2015-2023 Lightbend Inc. <https://www.lightbend.com>
  */
 
 package org.apache.pekko.persistence.query.typed.scaladsl
