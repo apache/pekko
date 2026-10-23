@@ -165,8 +165,21 @@ class ZstdSpec extends CoderSpec[ZstdException]("zstd") {
     "encode String dictionaries as UTF-8" in {
       val text = "dictionary é中"
       val utf8 = text.getBytes(StandardCharsets.UTF_8)
-      ZstdDictionary(text).dictionary should ===(utf8)
+      ZstdDictionary(text).dictionary should ===(ByteString(utf8))
       new JavaZstdDictionary(text).getDictionary should ===(utf8)
+    }
+    "give the Scala dictionary value semantics" in {
+      val dictBytes = smallTextBytes.toArray
+      val dictionary = ZstdDictionary(dictBytes, Compression.ZstdDefaultCompressionLevel)
+      dictionary should ===(ZstdDictionary(dictBytes.clone(), Compression.ZstdDefaultCompressionLevel))
+      dictionary.hashCode should ===(ZstdDictionary(smallTextBytes, Compression.ZstdDefaultCompressionLevel).hashCode)
+      dictionary should not be ZstdDictionary(dictBytes)
+      // the array is copied, so changing it does not affect the dictionary
+      java.util.Arrays.fill(dictBytes, 0.toByte)
+      dictionary.dictionary should ===(smallTextBytes)
+      // and so is the array handed to the operators
+      java.util.Arrays.fill(dictionary.toImpl.dictionary, 0.toByte)
+      dictionary.dictionary should ===(smallTextBytes)
     }
     "decompress with a dictionary" in {
       // incompressible input that is only found in the dictionary, so the frame must reference the dictionary

@@ -33,7 +33,7 @@ import pekko.util.ByteString
  * @since 2.0.0
  */
 @ApiMayChange
-final case class ZstdDictionary private (dictionary: Array[Byte], level: Option[Int],
+final case class ZstdDictionary private (dictionary: ByteString, level: Option[Int],
     offset: Option[Int], length: Option[Int]) { clazz =>
 
   /**
@@ -41,7 +41,8 @@ final case class ZstdDictionary private (dictionary: Array[Byte], level: Option[
    */
   @InternalApi
   private[pekko] def toImpl: ZstdDictionaryImpl = new ZstdDictionaryImpl {
-    override val dictionary: Array[Byte] = clazz.dictionary
+    // a copy, so that whoever holds the impl cannot modify the dictionary
+    override val dictionary: Array[Byte] = clazz.dictionary.toArray
     override val level: Option[Int] = clazz.level
     override val offset: Option[Int] = clazz.offset
     override val length: Option[Int] = clazz.length
@@ -54,32 +55,32 @@ final case class ZstdDictionary private (dictionary: Array[Byte], level: Option[
 @ApiMayChange
 object ZstdDictionary {
 
+  // the array overloads copy the array, so later changes to it do not affect the dictionary
+
   def apply(dictionary: Array[Byte]): ZstdDictionary =
-    ZstdDictionary(dictionary, None, None, None)
+    ZstdDictionary(ByteString(dictionary))
 
   def apply(dictionary: Array[Byte], level: Int): ZstdDictionary =
-    ZstdDictionary(dictionary, Some(level), None, None)
+    ZstdDictionary(ByteString(dictionary), level)
 
   def apply(dictionary: Array[Byte], level: Int, offset: Int, length: Int): ZstdDictionary =
-    ZstdDictionary(dictionary, Some(level), Some(offset), Some(length))
+    ZstdDictionary(ByteString(dictionary), level, offset, length)
 
   def apply(dictionary: ByteString): ZstdDictionary =
-    ZstdDictionary(dictionary.toArray, None, None, None)
+    ZstdDictionary(dictionary, None, None, None)
 
-  def apply(dictionary: ByteString, level: Int)
-      : ZstdDictionary =
-    ZstdDictionary(dictionary.toArray, level)
+  def apply(dictionary: ByteString, level: Int): ZstdDictionary =
+    ZstdDictionary(dictionary, Some(level), None, None)
 
-  def apply(dictionary: ByteString, level: Int, offset: Int, length: Int)
-      : ZstdDictionary =
-    ZstdDictionary(dictionary.toArray, level, offset, length)
+  def apply(dictionary: ByteString, level: Int, offset: Int, length: Int): ZstdDictionary =
+    ZstdDictionary(dictionary, Some(level), Some(offset), Some(length))
 
   def apply(dictionary: String): ZstdDictionary =
-    ZstdDictionary(dictionary.getBytes(StandardCharsets.UTF_8))
+    ZstdDictionary(ByteString(dictionary, StandardCharsets.UTF_8))
 
   def apply(dictionary: String, level: Int): ZstdDictionary =
-    ZstdDictionary(dictionary.getBytes(StandardCharsets.UTF_8), level)
+    ZstdDictionary(ByteString(dictionary, StandardCharsets.UTF_8), level)
 
   def apply(dictionary: String, level: Int, offset: Int, length: Int): ZstdDictionary =
-    ZstdDictionary(dictionary.getBytes(StandardCharsets.UTF_8), level, offset, length)
+    ZstdDictionary(ByteString(dictionary, StandardCharsets.UTF_8), level, offset, length)
 }
