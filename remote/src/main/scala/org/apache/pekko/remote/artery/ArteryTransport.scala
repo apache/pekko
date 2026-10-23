@@ -793,6 +793,7 @@ private[remote] abstract class ArteryTransport(_system: ExtendedActorSystem, _pr
         // messages from the colliding peer cannot be told apart from the existing association.
         // Tell the colliding peer that it has been quarantined instead. Control messages are not held
         // back by the outbound handshake.
+        log.info("Sending Quarantined to colliding peer [{}]", peer)
         sendControl(peer.address, Quarantined(localAddress, peer))
         Future.failed(exc)
     }

@@ -63,6 +63,12 @@ class RemoteConnectionSpec extends ArteryMultiNodeSpec("pekko.remote.retry-gate-
     quarantined.system.eventStream.unsubscribe(quarantined.ref)
   }
 
+  // the healthy system shares the colliding uid, so make sure the Quarantined did not reach it
+  private def expectNotQuarantined(quarantined: TestProbe): Unit = {
+    quarantined.expectNoMessage(500.millis)
+    quarantined.system.eventStream.unsubscribe(quarantined.ref)
+  }
+
   "Remoting between systems" should {
 
     "handle uid collision when connection TO two systems with same uid" in {
@@ -79,6 +85,7 @@ class RemoteConnectionSpec extends ArteryMultiNodeSpec("pekko.remote.retry-gate-
           pekko.remote.artery.canonical.port=$remotePort1
           """))
       val remote1Probe = new TestProbe(remoteSystem1)
+      val remote1Quarantined = quarantinedProbe(remoteSystem1)
 
       val remotePort2 = freePort()
       val remoteSystem2 =
@@ -147,6 +154,8 @@ class RemoteConnectionSpec extends ArteryMultiNodeSpec("pekko.remote.retry-gate-
       // still works in other direction
       selectionFromRemote1ToLocal.tell("ping1b again", remote1Probe.ref)
       remote1Probe.expectMsg("ping1b again")
+
+      expectNotQuarantined(remote1Quarantined)
     }
 
     "handle uid collision when connection FROM two systems with same uid" in {
@@ -164,6 +173,7 @@ class RemoteConnectionSpec extends ArteryMultiNodeSpec("pekko.remote.retry-gate-
           pekko.remote.artery.canonical.port=$remotePort1
           """))
       val remote1Probe = new TestProbe(remoteSystem1)
+      val remote1Quarantined = quarantinedProbe(remoteSystem1)
 
       val remotePort2 = freePort()
       val remoteSystem2 =
@@ -232,6 +242,8 @@ class RemoteConnectionSpec extends ArteryMultiNodeSpec("pekko.remote.retry-gate-
       // still works in other direction
       selectionFromLocalToRemote1.tell("ping1a again", localProbe.ref)
       localProbe.expectMsg("ping1a again")
+
+      expectNotQuarantined(remote1Quarantined)
     }
 
     "be able to connect to system even if it's not there at first" in {
