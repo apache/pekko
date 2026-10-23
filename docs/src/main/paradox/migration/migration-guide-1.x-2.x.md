@@ -234,3 +234,8 @@ written. ([PR3275](https://github.com/apache/pekko/pull/3275))
 The same serializer also handles the new `SerializedEvent`, used to write events that are already
 serialized; Pekko 1.x cannot deserialize that either, so do not send `SerializedEvent` messages to
 Pekko 1.x nodes during a rolling update. ([PR3650](https://github.com/apache/pekko/pull/3650))
+* `pekko-serialization-jackson` (and `pekko-serialization-jackson3`) now provide predefined
+`JsonSerializable` and `CborSerializable` marker traits, bound by default to `jackson-json` and
+`jackson-cbor`. Your own marker traits and bindings keep working. If you switch messages to the
+predefined traits, Pekko 1.x nodes cannot load those classes, so only do that once no Pekko 1.x nodes
+remain in the cluster. ([PR3649](https://github.com/apache/pekko/pull/3649))

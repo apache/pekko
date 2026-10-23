@@ -13,6 +13,8 @@
 
 package doc.org.apache.pekko.serialization.jackson
 
+import org.apache.pekko.serialization.jackson.JsonSerializable
+
 object CustomAdtSerializer {
 
   // #adt-trait-object
@@ -63,6 +65,6 @@ object CustomAdtSerializer {
     }
   }
 
-  final case class Compass(currentDirection: Direction) extends MySerializable
+  final case class Compass(currentDirection: Direction) extends JsonSerializable
   // #adt-trait-object
 }

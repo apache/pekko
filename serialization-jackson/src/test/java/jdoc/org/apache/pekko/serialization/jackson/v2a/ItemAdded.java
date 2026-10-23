@@ -15,10 +15,10 @@ package jdoc.org.apache.pekko.serialization.jackson.v2a;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import java.util.Optional;
-import jdoc.org.apache.pekko.serialization.jackson.MySerializable;
+import org.apache.pekko.serialization.jackson.JsonSerializable;
 
 // #add-optional
-public class ItemAdded implements MySerializable {
+public class ItemAdded implements JsonSerializable {
   public final String shoppingCartId;
   public final String productId;
   public final int quantity;

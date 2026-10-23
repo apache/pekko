@@ -33,12 +33,9 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 
 //#marker-interface
-/**
- * Marker interface for messages, events and snapshots that are serialized with Jackson.
- */
-trait MySerializable
+import org.apache.pekko.serialization.jackson.JsonSerializable
 
-final case class Message(name: String, nr: Int) extends MySerializable
+final case class Message(name: String, nr: Int) extends JsonSerializable
 //#marker-interface
 
 object SerializationDocSpec {
@@ -142,7 +139,7 @@ object SerializationDocSpec {
   object Polymorphism {
 
     // #polymorphism
-    final case class Zoo(primaryAttraction: Animal) extends MySerializable
+    final case class Zoo(primaryAttraction: Animal) extends JsonSerializable
 
     @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
     @JsonSubTypes(
@@ -160,7 +157,7 @@ object SerializationDocSpec {
   object PolymorphismMixedClassObject {
 
     // #polymorphism-case-object
-    final case class Zoo(primaryAttraction: Animal) extends MySerializable
+    final case class Zoo(primaryAttraction: Animal) extends JsonSerializable
 
     @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
     @JsonSubTypes(
@@ -223,10 +220,6 @@ class SerializationDocSpec
     }
     pekko.actor {
       allow-java-serialization = off
-      serialization-bindings {
-        "${classOf[jdoc.org.apache.pekko.serialization.jackson.MySerializable].getName}" = jackson-json
-        "${classOf[doc.org.apache.pekko.serialization.jackson.MySerializable].getName}" = jackson-json
-      }
     }
     """)))
     with AnyWordSpecLike

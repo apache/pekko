@@ -13,8 +13,9 @@
 
 package doc.org.apache.pekko.serialization.jackson3.v1
 
-import doc.org.apache.pekko.serialization.jackson3.MySerializable
+import org.apache.pekko.serialization.jackson3.JsonSerializable
 
 // #structural
-case class Customer(name: String, street: String, city: String, zipCode: String, country: String) extends MySerializable
+case class Customer(name: String, street: String, city: String, zipCode: String, country: String)
+    extends JsonSerializable
 // #structural
