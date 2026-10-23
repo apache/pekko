@@ -32,7 +32,7 @@ Some of the bug fixes listed below have also been backported to Pekko 1.x releas
 * A lot of code that was deprecated in Pekko 1.x (and in Akka before that) has been removed - see the Removed section below
 * Big change for Java DSL users due to the removal of `pekko.japi.Function` (and related classes, such as `pekko.japi.function.FI` and `JAPI`) in favour of `pekko.japi.function.Function` and the other `pekko.japi.function` types. Lambdas should recompile ok but if you declared variables or functions explicitly, then you may need to change your imports ([PR2001](https://github.com/apache/pekko/pull/2001), [PR2064](https://github.com/apache/pekko/pull/2064), [PR2078](https://github.com/apache/pekko/pull/2078), [PR2079](https://github.com/apache/pekko/pull/2079), [PR2143](https://github.com/apache/pekko/pull/2143), [PR2198](https://github.com/apache/pekko/pull/2198))
 * Java APIs no longer leak Scala types: Scala `Future`, `Option`, `Tuple2` and Scala collections have been replaced with `CompletionStage`, `Optional`, `pekko.japi.Pair` and Java collections in a number of Java DSL methods, including the pekko-persistence Java APIs ([PR1419](https://github.com/apache/pekko/pull/1419), [PR2007](https://github.com/apache/pekko/pull/2007), [PR2009](https://github.com/apache/pekko/pull/2009), [PR2092](https://github.com/apache/pekko/pull/2092), [#2086](https://github.com/apache/pekko/issues/2086), [PR3378](https://github.com/apache/pekko/pull/3378), [PR3388](https://github.com/apache/pekko/pull/3388))
-* Added many Akka changes that have recently become Apache Licensed (up to and including Akka 2.8.5) - see the Ported from Akka section below
+* Added many Akka changes that have recently become Apache Licensed (up to and including Akka 2.8.5, plus some changes from Akka 2.9.0) - see the Ported from Akka section below
 * `sun.misc.Unsafe` is no longer used. The code has been migrated to use VarHandles ([PR1892](https://github.com/apache/pekko/pull/1892), [PR1894](https://github.com/apache/pekko/pull/1894), [PR1990](https://github.com/apache/pekko/pull/1990), [PR1995](https://github.com/apache/pekko/pull/1995), [PR3007](https://github.com/apache/pekko/pull/3007), [PR3008](https://github.com/apache/pekko/pull/3008))
 * Reflection usage in core modules has been replaced with MethodHandles/VarHandles where possible ([PR3300](https://github.com/apache/pekko/pull/3300), [PR3312](https://github.com/apache/pekko/pull/3312))
 * New pekko-serialization-jackson3 module. Users who are happy with pekko-serialization-jackson, which uses Jackson 2, can stick with that ([PR2348](https://github.com/apache/pekko/pull/2348))
@@ -94,11 +94,12 @@ defaults that have changed in Pekko 2.0.0.
 * Make AbstractPersistentActorWithTimers and AbstractFSMWithStash subclassable from Java when using Scala 3 ([PR3475](https://github.com/apache/pekko/pull/3475))
 * Use a Seq rather than a Set to hold TCP magic ByteStrings ([PR3484](https://github.com/apache/pekko/pull/3484))
 * Stop cluster sharding entities stuck in passivation after a timeout ([PR3573](https://github.com/apache/pekko/pull/3573))
-* Stop handing a reused `Mailbox` object to the fork-join dispatcher, which could permanently damage a ForkJoinPool work queue or stop a mailbox from running again. `Mailbox` no longer extends `ForkJoinTask` ([#3613](https://github.com/apache/pekko/issues/3613), [#3620](https://github.com/apache/pekko/issues/3620), [PR3621](https://github.com/apache/pekko/pull/3621), [PR3628](https://github.com/apache/pekko/pull/3628))
+* Stop handing a reused `Mailbox` object to the fork-join dispatcher, which could permanently damage a ForkJoinPool work queue or stop a mailbox from running again. `Mailbox` no longer extends `ForkJoinTask` ([#3613](https://github.com/apache/pekko/issues/3613), [#3620](https://github.com/apache/pekko/issues/3620), [PR3621](https://github.com/apache/pekko/pull/3621), [PR3628](https://github.com/apache/pekko/pull/3628), [PR3668](https://github.com/apache/pekko/pull/3668))
 * Keep colliding virtual nodes in ConsistentHash, so the ring no longer depends on the order in which nodes were added or removed. Routing only changes for keys that land on a colliding ring position, but during a rolling update nodes on 1.x and 2.x could route those few keys differently ([PR3611](https://github.com/apache/pekko/pull/3611))
 * Resolve a `LogSource` for `getClass` results on Scala 3, so `Logging(system, getClass)` compiles ([#1538](https://github.com/apache/pekko/issues/1538), [PR3609](https://github.com/apache/pekko/pull/3609))
 * Allow overriding `testKit` with a `val` in `ScalaTestWithActorTestKit` ([#1140](https://github.com/apache/pekko/issues/1140), [PR3610](https://github.com/apache/pekko/pull/3610))
 * Keep the `StashBufferImpl` instrumentation hooks from being inlined by the Scala 2.13 optimizer ([PR3616](https://github.com/apache/pekko/pull/3616))
+* Stop dispatcher failure reporting from recursing into a `StackOverflowError` ([#3613](https://github.com/apache/pekko/issues/3613), [PR3622](https://github.com/apache/pekko/pull/3622))
 
 ### Security Hardening
 
@@ -121,7 +122,7 @@ defaults that have changed in Pekko 2.0.0.
 
 ### Ported from Akka
 
-These changes were copied from Akka releases (up to and including Akka 2.8.5) that are now available under the Apache License, version 2.0.
+These changes were copied from Akka releases (up to and including Akka 2.8.5, plus some changes from Akka 2.9.0) that are now available under the Apache License, version 2.0.
 
 * Unpersistent versions of persistent behaviors for testing, renamed to `PersistenceProbeBehavior` ([PR2456](https://github.com/apache/pekko/pull/2456), [PR2494](https://github.com/apache/pekko/pull/2494))
 * Custom stash support in persistence-typed ([PR2433](https://github.com/apache/pekko/pull/2433))
@@ -153,6 +154,12 @@ These changes were copied from Akka releases (up to and including Akka 2.8.5) th
 * Scalable fan-out persistence query abstraction (`EventsBySliceFirehoseQuery`) and `EventsBySliceStartingFromSnapshotsQuery` ([PR3277](https://github.com/apache/pekko/pull/3277))
 * Include sourceThread in the typed actor MDC ([PR3357](https://github.com/apache/pekko/pull/3357))
 * Other Akka 2.8.4 changes ([PR3432](https://github.com/apache/pekko/pull/3432))
+* Support default attributes on materializers ([PR3647](https://github.com/apache/pekko/pull/3647))
+* Define a custom lease name for Cluster Sharding and Cluster Singleton ([PR3648](https://github.com/apache/pekko/pull/3648))
+* Add `with` methods to the typed query `EventEnvelope` ([PR3646](https://github.com/apache/pekko/pull/3646))
+* Predefined `JsonSerializable` and `CborSerializable` marker traits in pekko-serialization-jackson and pekko-serialization-jackson3, bound to `jackson-json` and `jackson-cbor` ([PR3649](https://github.com/apache/pekko/pull/3649), [PR3666](https://github.com/apache/pekko/pull/3666))
+* Bind ScalaPB messages to the protobuf serializer when ScalaPB is on the classpath ([PR3651](https://github.com/apache/pekko/pull/3651))
+* Add `SerializedEvent` for writing events that are already serialized ([PR3650](https://github.com/apache/pekko/pull/3650))
 
 ### Additions
 
@@ -176,6 +183,7 @@ These changes were copied from Akka releases (up to and including Akka 2.8.5) th
 * Support the `SO_REUSEPORT` socket option ([PR2915](https://github.com/apache/pekko/pull/2915))
 * Add `ByteString.endsWith`, `indexOf` with from and to, and make `ByteString.copyToBuffer(buffer, offset)` public ([PR2271](https://github.com/apache/pekko/pull/2271), [PR2862](https://github.com/apache/pekko/pull/2862), [PR2946](https://github.com/apache/pekko/pull/2946))
 * Add OSGi headers to pekko-pki and pekko-cluster-typed and compute OSGi imports for Pekko packages dynamically ([PR2107](https://github.com/apache/pekko/pull/2107), [PR2112](https://github.com/apache/pekko/pull/2112), [PR2313](https://github.com/apache/pekko/pull/2313))
+* Add zstd compression to the Jackson serializers (`compression.algorithm = zstd`). zstd-jni is an optional dependency that you need to add yourself ([PR3641](https://github.com/apache/pekko/pull/3641))
 * Add Scala 3.8 and 3.9 compatibility (Pekko is still published using Scala 3.3 LTS) ([PR3072](https://github.com/apache/pekko/pull/3072), [PR3073](https://github.com/apache/pekko/pull/3073), [PR3074](https://github.com/apache/pekko/pull/3074), [PR3295](https://github.com/apache/pekko/pull/3295), [PR3303](https://github.com/apache/pekko/pull/3303))
 
 The Stream API has been updated to add some extra operators.
@@ -208,7 +216,7 @@ The Stream API has been updated to add some extra operators.
 * Replace the actor based fanout publisher runtime (`Sink.asPublisher(fanout = true)`) with a GraphStage bridge ([PR2874](https://github.com/apache/pekko/pull/2874))
 * Remove the deprecated annotation from `recoverWith` and undeprecate the `getFirst`/`getFirstAttribute` methods ([PR2119](https://github.com/apache/pekko/pull/2119), [PR3404](https://github.com/apache/pekko/pull/3404))
 * Mark public sealed traits and abstract classes with `@DoNotInherit` ([#1270](https://github.com/apache/pekko/issues/1270), [PR3386](https://github.com/apache/pekko/pull/3386))
-* Remove `@ApiMayChange` from APIs that have proven stable, including the log markers, `RotatingKeysSSLEngineProvider`, `ExternalShardAllocation`, `RetryFlow` and the `MaterializerState` API ([PR3607](https://github.com/apache/pekko/pull/3607))
+* Remove `@ApiMayChange` from APIs that have proven stable, including the log markers, `RotatingKeysSSLEngineProvider`, `ExternalShardAllocation`, `RetryFlow`, the `MaterializerState` API and the typed persistence query APIs ([PR3607](https://github.com/apache/pekko/pull/3607), [PR3636](https://github.com/apache/pekko/pull/3636), [PR3656](https://github.com/apache/pekko/pull/3656))
 * Remove the Akka 2.6.4 rolling-migration manifests from ClusterMessageSerializer ([PR3516](https://github.com/apache/pekko/pull/3516))
 * ClusterShardingSettings: remove backward-compat passivation code ([PR3026](https://github.com/apache/pekko/pull/3026))
 * Remove the `ssl-config` dependency ([#2125](https://github.com/apache/pekko/issues/2125), [PR2127](https://github.com/apache/pekko/pull/2127), [PR2359](https://github.com/apache/pekko/pull/2359))
@@ -220,7 +228,7 @@ The Stream API has been updated to add some extra operators.
 * Fix many compiler, Scaladoc and Javadoc warnings ([PR3283](https://github.com/apache/pekko/pull/3283), [PR3284](https://github.com/apache/pekko/pull/3284), [PR3285](https://github.com/apache/pekko/pull/3285), [PR3297](https://github.com/apache/pekko/pull/3297), [PR3330](https://github.com/apache/pekko/pull/3330))
 * Regenerated the protobuf source code using protoc 4.36 ([PR2036](https://github.com/apache/pekko/pull/2036), [PR2335](https://github.com/apache/pekko/pull/2335), [PR3514](https://github.com/apache/pekko/pull/3514))
 * Validate legal files in packaged jars ([PR3328](https://github.com/apache/pekko/pull/3328))
-* Many documentation improvements, including a list of configuration changes in the migration guide, docs for the jackson3 module, the JUnit Jupiter test kit, custom Durable State store plugins, migrating off the deprecated `Source.queue` overloads and stream operator reference pages for previously undocumented operators ([PR2391](https://github.com/apache/pekko/pull/2391), [PR2468](https://github.com/apache/pekko/pull/2468), [PR3274](https://github.com/apache/pekko/pull/3274), [PR3513](https://github.com/apache/pekko/pull/3513), [PR3583](https://github.com/apache/pekko/pull/3583), [PR3585](https://github.com/apache/pekko/pull/3585), [#3589](https://github.com/apache/pekko/issues/3589), [PR3590](https://github.com/apache/pekko/pull/3590), [PR3605](https://github.com/apache/pekko/pull/3605))
+* Many documentation improvements, including a list of configuration changes in the migration guide, docs for the jackson3 module, the JUnit Jupiter test kit, custom Durable State store plugins, migrating off the deprecated `Source.queue` overloads and stream operator reference pages for previously undocumented operators ([PR2391](https://github.com/apache/pekko/pull/2391), [PR2468](https://github.com/apache/pekko/pull/2468), [PR3274](https://github.com/apache/pekko/pull/3274), [PR3513](https://github.com/apache/pekko/pull/3513), [PR3583](https://github.com/apache/pekko/pull/3583), [PR3585](https://github.com/apache/pekko/pull/3585), [#3589](https://github.com/apache/pekko/issues/3589), [PR3590](https://github.com/apache/pekko/pull/3590), [PR3605](https://github.com/apache/pekko/pull/3605), [PR3654](https://github.com/apache/pekko/pull/3654), [PR3661](https://github.com/apache/pekko/pull/3661))
 
 ### Performance
 
@@ -267,12 +275,13 @@ Some additional APIs have been deprecated and will be removed in a future releas
 * Java 17 is the minimum supported version
 * Scala 2.13.18 and 3.3.8
 * netty 4.2.19.Final
-* jackson 2.22.3 (pekko-serialization-jackson) and jackson 3.2.3 (pekko-serialization-jackson3)
+* jackson 2.22.4 (pekko-serialization-jackson) and jackson 3.2.4 (pekko-serialization-jackson3)
 * aeron 1.53.3 and agrona 2.6.1
 * protobuf-java 4.36.2
 * lightbend/config 1.4.9
 * slf4j 2.0.20
-* lz4-java 1.12.0 (`at.yawk.lz4:lz4-java`)
+* lz4-java 1.12.1 (`at.yawk.lz4:lz4-java`)
+* zstd-jni 1.5.7-24 (optional, only needed for zstd compression in the Jackson serializers)
 * junit-jupiter 6.1.3
 * The `ssl-config` dependency has been removed
 
