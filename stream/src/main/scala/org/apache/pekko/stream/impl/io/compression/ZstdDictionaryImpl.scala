@@ -17,7 +17,7 @@
 
 package org.apache.pekko.stream.impl.io.compression
 
-import org.apache.pekko.annotation.InternalStableApi
+import org.apache.pekko.annotation.{ InternalApi, InternalStableApi }
 
 @InternalStableApi
 private[pekko] abstract class ZstdDictionaryImpl {
@@ -25,4 +25,13 @@ private[pekko] abstract class ZstdDictionaryImpl {
   def level: Option[Int]
   def offset: Option[Int]
   def length: Option[Int]
+}
+
+/** INTERNAL API */
+@InternalApi private[pekko] object ZstdDictionaryImpl {
+  def requireSlice(bytes: Array[Byte], offset: Int, length: Int): Unit =
+    require(
+      offset >= 0 && length >= 0 && offset <= bytes.length - length,
+      s"ZstdDictionary offset [$offset] and length [$length] must be within the dictionary of " +
+      s"[${bytes.length}] bytes")
 }

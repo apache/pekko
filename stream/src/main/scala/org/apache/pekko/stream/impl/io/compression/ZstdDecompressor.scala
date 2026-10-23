@@ -45,10 +45,7 @@ import pekko.util.ByteString
     (dictionary.offset, dictionary.length) match {
       case (None, None)                 => bytes.clone()
       case (Some(offset), Some(length)) =>
-        require(
-          offset >= 0 && length >= 0 && offset <= bytes.length - length,
-          s"ZstdDictionary offset [$offset] and length [$length] must be within the dictionary of " +
-          s"[${bytes.length}] bytes")
+        ZstdDictionaryImpl.requireSlice(bytes, offset, length)
         java.util.Arrays.copyOfRange(bytes, offset, offset + length)
       case _ =>
         throw new IllegalArgumentException("ZstdDictionary offset and length must be set together")

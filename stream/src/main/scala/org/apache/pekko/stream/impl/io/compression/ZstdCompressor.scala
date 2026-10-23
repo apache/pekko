@@ -78,9 +78,15 @@ import pekko.util.{ ByteString, ByteStringBuilder }
       case (Some(dictLevel), None, None) =>
         Some(loadDictCompress(new ZstdDictCompress(dict.dictionary, dictLevel)))
       case (Some(dictLevel), Some(dictLength), Some(dictOffset)) =>
+        ZstdDictionaryImpl.requireSlice(dict.dictionary, dictOffset, dictLength)
         Some(loadDictCompress(new ZstdDictCompress(dict.dictionary, dictOffset, dictLength, dictLevel)))
+      case (None, Some(dictLength), Some(dictOffset)) =>
+        // the context can only load a whole array, so load a copy of the slice
+        ZstdDictionaryImpl.requireSlice(dict.dictionary, dictOffset, dictLength)
+        compressCtx.loadDict(java.util.Arrays.copyOfRange(dict.dictionary, dictOffset, dictOffset + dictLength))
+        None
       case _ =>
-        throw new IllegalArgumentException("Invalid combination of ZstdDictionary parameters")
+        throw new IllegalArgumentException("ZstdDictionary offset and length must be set together")
     }
 
   private def loadDictCompress(dictCompress: ZstdDictCompress): ZstdDictCompress =

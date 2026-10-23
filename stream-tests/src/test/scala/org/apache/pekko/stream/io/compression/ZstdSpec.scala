@@ -289,5 +289,30 @@ class ZstdSpec extends CoderSpec[ZstdException]("zstd") {
       val decompressed = Zstd.decompress(compressed.toArray, dictBytes.drop(7), smallTextBytes.length)
       ByteString(decompressed) should readAs(smallText)
     }
+    "compress with a dictionary slice without a level" in {
+      val dictBytes = ("padding" + smallText * 4).getBytes(StandardCharsets.UTF_8)
+      val dictionary =
+        new JavaZstdDictionary(dictBytes, null: Integer, Integer.valueOf(7), Integer.valueOf(dictBytes.length - 7))
+      val compressed = new ZstdCompressor(dictionary = Some(dictionary.toImpl)).compressAndFinish(smallTextBytes)
+
+      val decompressed = Zstd.decompress(compressed.toArray, dictBytes.drop(7), smallTextBytes.length)
+      ByteString(decompressed) should readAs(smallText)
+    }
+    "reject a compression dictionary slice outside the dictionary" in {
+      val dictBytes = smallTextBytes.toArray
+      for {
+        level <- Seq[Integer](null, Integer.valueOf(Compression.ZstdDefaultCompressionLevel))
+        (offset, length) <- Seq((-1, 4), (0, -1), (1, dictBytes.length))
+      } withClue(s"level $level, offset $offset, length $length: ") {
+        val dictionary = new JavaZstdDictionary(dictBytes, level, Integer.valueOf(offset), Integer.valueOf(length))
+        val ex = the[IllegalArgumentException] thrownBy new ZstdCompressor(dictionary = Some(dictionary.toImpl))
+        ex.getMessage should include("must be within the dictionary")
+      }
+    }
+    "reject a compression dictionary with only one of offset and length" in {
+      val dictionary = new JavaZstdDictionary(smallTextBytes.toArray)
+      dictionary.setOffset(1)
+      an[IllegalArgumentException] should be thrownBy new ZstdCompressor(dictionary = Some(dictionary.toImpl))
+    }
   }
 }
