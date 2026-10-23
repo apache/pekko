@@ -27,7 +27,7 @@ import com.fasterxml.jackson.dataformat.cbor.CBORFactory
 import net.jpountz.lz4.LZ4Factory
 
 import org.apache.pekko
-import pekko.actor.ExtendedActorSystem
+import pekko.actor.{ DynamicAccess, ExtendedActorSystem }
 import pekko.annotation.InternalApi
 import pekko.event.{ LogMarker, Logging }
 import pekko.io.UnsynchronizedByteArrayInputStream
@@ -39,6 +39,20 @@ import pekko.util.OptionVal
  * INTERNAL API
  */
 @InternalApi private[pekko] object JacksonSerializer {
+
+  private val OtherJacksonModuleSerializerClassName = "org.apache.pekko.serialization.jackson3.JacksonSerializer"
+
+  /**
+   * pekko-serialization-jackson and pekko-serialization-jackson3 register serializers with the same
+   * names and identifiers, so whichever `reference.conf` is merged last silently takes over all bindings
+   * of both modules. Fail fast instead.
+   */
+  def checkOtherJacksonModuleNotOnClasspath(dynamicAccess: DynamicAccess): Unit =
+    if (dynamicAccess.classIsOnClasspath(OtherJacksonModuleSerializerClassName))
+      throw new IllegalStateException(
+        "pekko-serialization-jackson and pekko-serialization-jackson3 must not both be on the classpath. " +
+        "They register serializers with the same names and identifiers, so only one of them can be used. " +
+        s"Found [$OtherJacksonModuleSerializerClassName]. Remove one of them from your dependencies.")
 
   /**
    * Using the deny list from Jackson databind of class names that shouldn't be allowed.
@@ -219,6 +233,8 @@ import pekko.util.OptionVal
     val objectMapper: ObjectMapper)
     extends SerializerWithStringManifest {
   import JacksonSerializer._
+
+  checkOtherJacksonModuleNotOnClasspath(system.dynamicAccess)
 
   // TODO issue #27107: it should be possible to implement ByteBufferSerializer as well, using Jackson's
   //      ByteBufferBackedOutputStream/ByteBufferBackedInputStream
