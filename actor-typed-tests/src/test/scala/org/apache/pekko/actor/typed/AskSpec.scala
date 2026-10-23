@@ -8,7 +8,7 @@
  */
 
 /*
- * Copyright (C) 2017-2022 Lightbend Inc. <https://www.lightbend.com>
+ * Copyright (C) 2017-2023 Lightbend Inc. <https://www.lightbend.com>
  */
 
 package org.apache.pekko.actor.typed
@@ -21,10 +21,12 @@ import scala.util.Failure
 import scala.util.Success
 
 import org.apache.pekko
+import pekko.actor.DeadLetter
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
 import pekko.actor.testkit.typed.scaladsl.LoggingTestKit
 import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
 import pekko.actor.testkit.typed.scaladsl.TestProbe
+import pekko.actor.typed.internal.adapter.ActorRefAdapter
 import pekko.actor.typed.internal.adapter.ActorSystemAdapter
 import pekko.actor.typed.scaladsl.AskPattern._
 import pekko.actor.typed.scaladsl.Behaviors
@@ -69,7 +71,8 @@ class AskSpec extends ScalaTestWithActorTestKit("""
   }
 
   "Ask pattern" must {
-    "fail the future if the actor is already terminated" in {
+    "fail the future if the actor is already terminated and publish the ask to its dead letters" in {
+      val deadLetterProbe = createDeadLetterProbe()
       val ref = spawn(behavior)
       val stopResult: Future[Unit] = ref.ask(Stop.apply)
       stopResult.futureValue
@@ -80,6 +83,15 @@ class AskSpec extends ScalaTestWithActorTestKit("""
       val result = answer.failed.futureValue
       result shouldBe a[TimeoutException]
       result.getMessage should include("had already been terminated.")
+
+      deadLetterProbe.receiveMessage() match {
+        case DeadLetter(Foo(message, _), _, recipient) =>
+          message shouldBe "bar"
+          val classicRef = ActorRefAdapter.toClassic(ref)
+          classicRef should not be system.classicSystem.deadLetters
+          recipient shouldBe classicRef
+        case unexpected => fail(s"Unexpected dead letter: $unexpected")
+      }
     }
 
     "succeed when the actor is alive" in {
