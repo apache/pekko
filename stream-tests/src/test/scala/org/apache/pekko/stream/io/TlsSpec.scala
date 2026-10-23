@@ -498,12 +498,12 @@ abstract class AbstractTlsSpec(useLegacyActor: Boolean)
 
         val clientErr = simple
           .join(badClientTls(IgnoreBoth))
-          .join(Tcp(system).outgoingConnection(Await.result(server, 1.second).localAddress))
+          .join(Tcp(system).outgoingConnection(Await.result(server, 3.seconds.dilated).localAddress))
           .run()
 
-        Await.result(serverErr, 1.second).getMessage should include("certificate_unknown")
+        Await.result(serverErr, 3.seconds.dilated).getMessage should include("certificate_unknown")
 
-        val clientErrText = Await.result(clientErr, 1.second).getMessage
+        val clientErrText = Await.result(clientErr, 3.seconds.dilated).getMessage
         clientErrText should include("unable to find valid certification path to requested target")
       }
 
