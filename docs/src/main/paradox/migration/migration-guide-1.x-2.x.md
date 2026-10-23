@@ -225,3 +225,6 @@ number of processes) that Pekko 1.x nodes cannot deserialize. ([PR2755](https://
 (for example with events-by-slice queries and projections), has a new serializer with identifier `34`.
 Pekko 1.x cannot deserialize it, so do not run Pekko 1.x against a journal once such events have been
 written. ([PR3275](https://github.com/apache/pekko/pull/3275))
+The same serializer also handles the new `SerializedEvent`, used to write events that are already
+serialized; Pekko 1.x cannot deserialize that either, so do not send `SerializedEvent` messages to
+Pekko 1.x nodes during a rolling update. ([PR3650](https://github.com/apache/pekko/pull/3650))
