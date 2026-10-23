@@ -8,7 +8,7 @@
  */
 
 /*
- * Copyright (C) 2009-2022 Lightbend Inc. <https://www.lightbend.com>
+ * Copyright (C) 2009-2023 Lightbend Inc. <https://www.lightbend.com>
  */
 
 package org.apache.pekko.persistence
@@ -39,18 +39,99 @@ private[persistence] object JournalProtocol {
   final case class DeleteMessagesTo(persistenceId: String, toSequenceNr: Long, persistentActor: ActorRef)
       extends Request
 
+  object WriteMessages extends WriteMessagesCompanion {
+    def apply(messages: Seq[PersistentEnvelope], persistentActor: ActorRef, actorInstanceId: Int): WriteMessages =
+      new WriteMessages(messages, persistentActor, actorInstanceId, bypassCircuitBreaker = false)
+
+    def apply(
+        messages: Seq[PersistentEnvelope],
+        persistentActor: ActorRef,
+        actorInstanceId: Int,
+        bypassCircuitBreaker: Boolean): WriteMessages =
+      new WriteMessages(messages, persistentActor, actorInstanceId, bypassCircuitBreaker)
+  }
+
   /**
    * Request to write messages.
    *
+   * This used to be a case class with the first 3 fields. It is a regular class (with the same
+   * `apply`, `unapply`, `copy` and product methods for the first 3 fields) to stay binary compatible
+   * with journal plugins compiled against earlier versions. Pattern matching extracts the first 3
+   * fields.
+   *
    * @param messages messages to be written.
    * @param persistentActor write requester.
+   * @param bypassCircuitBreaker when `true` the write is not protected by the journal circuit breaker,
+   *                             used when write failures are expected, e.g. writing duplicates.
    */
-  final case class WriteMessages(
-      messages: Seq[PersistentEnvelope],
-      persistentActor: ActorRef,
-      actorInstanceId: Int)
+  final class WriteMessages(
+      val messages: Seq[PersistentEnvelope],
+      val persistentActor: ActorRef,
+      val actorInstanceId: Int,
+      val bypassCircuitBreaker: Boolean)
       extends Request
       with NoSerializationVerificationNeeded
+      with Product
+      with Serializable {
+
+    def this(messages: Seq[PersistentEnvelope], persistentActor: ActorRef, actorInstanceId: Int) =
+      this(messages, persistentActor, actorInstanceId, bypassCircuitBreaker = false)
+
+    /** Keeps the value of `bypassCircuitBreaker` */
+    def copy(
+        messages: Seq[PersistentEnvelope] = messages,
+        persistentActor: ActorRef = persistentActor,
+        actorInstanceId: Int = actorInstanceId): WriteMessages =
+      new WriteMessages(messages, persistentActor, actorInstanceId, bypassCircuitBreaker)
+
+    def withBypassCircuitBreaker(value: Boolean): WriteMessages =
+      new WriteMessages(messages, persistentActor, actorInstanceId, value)
+
+    def _1: Seq[PersistentEnvelope] = messages
+    def _2: ActorRef = persistentActor
+    def _3: Int = actorInstanceId
+
+    override def productArity: Int = 3
+
+    override def productElement(n: Int): Any = n match {
+      case 0 => messages
+      case 1 => persistentActor
+      case 2 => actorInstanceId
+      case _ => throw new IndexOutOfBoundsException(n.toString)
+    }
+
+    override def productElementName(n: Int): String = n match {
+      case 0 => "messages"
+      case 1 => "persistentActor"
+      case 2 => "actorInstanceId"
+      case _ => throw new IndexOutOfBoundsException(n.toString)
+    }
+
+    override def productIterator: Iterator[Any] = Iterator(messages, persistentActor, actorInstanceId)
+
+    override def productPrefix: String = "WriteMessages"
+
+    override def canEqual(that: Any): Boolean = that.isInstanceOf[WriteMessages]
+
+    override def equals(other: Any): Boolean = other match {
+      case that: WriteMessages =>
+        messages == that.messages && persistentActor == that.persistentActor &&
+        actorInstanceId == that.actorInstanceId && bypassCircuitBreaker == that.bypassCircuitBreaker
+      case _ => false
+    }
+
+    override def hashCode(): Int = {
+      // persistentActor may be null (ActorRef.noSender)
+      var result = java.util.Objects.hashCode(messages)
+      result = 31 * result + java.util.Objects.hashCode(persistentActor)
+      result = 31 * result + actorInstanceId
+      result = 31 * result + java.lang.Boolean.hashCode(bypassCircuitBreaker)
+      result
+    }
+
+    override def toString: String =
+      s"WriteMessages($messages,$persistentActor,$actorInstanceId,$bypassCircuitBreaker)"
+  }
 
   /**
    * Reply message to a successful [[WriteMessages]] request. This reply is sent to the requester

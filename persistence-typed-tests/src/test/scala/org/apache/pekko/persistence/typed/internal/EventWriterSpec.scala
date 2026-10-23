@@ -18,6 +18,7 @@ import scala.concurrent.Future
 import scala.concurrent.duration.DurationInt
 
 import org.apache.pekko
+import pekko.actor.testkit.typed.TestException
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
 import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
 import pekko.pattern.StatusReply
@@ -42,7 +43,11 @@ class EventWriterSpec
     with AnyWordSpecLike
     with LogCapturing {
 
-  private val settings = EventWriter.EventWriterSettings(10, 5.seconds)
+  private val settings = EventWriter.EventWriterSettings(
+    10,
+    5.seconds,
+    fillSequenceNumberGaps = false,
+    latestSequenceNumberCacheCapacity = 1000)
   implicit val ec: ExecutionContext = testKit.system.executionContext
 
   "The event writer" should {
@@ -65,11 +70,11 @@ class EventWriterSpec
       for (n <- 2L to 10L) {
         sendWrite(n)
       }
-      // 0 will be written directly
+      // 1 will be written directly
       journalAckWrite() should ===(1)
       clientExpectSuccess(1)
 
-      // completing 1 triggers write of batch with 0-9
+      // completing 1 triggers write of batch with 2-10
       // second
       for (n <- 1L to 10L) {
         sendWrite(n)
@@ -113,6 +118,40 @@ class EventWriterSpec
       response.getError.getMessage should ===("Journal write failed")
     }
 
+    "pass real errors from journal back when highestSeqNr fails" in new TestSetup {
+      sendWrite(1L)
+      journalFailWrite("the error")
+      // duplicate handling will ask for highest seq nr, can't know it is an actual error
+      journalFailHighestSeqNr("highest error")
+      val response = clientProbe.receiveMessage()
+      response.isError should ===(true)
+      response.getError.getMessage should ===("Journal write failed")
+    }
+
+    "bypass circuit breaker unless highest seqNr lookup failed" in new TestSetup {
+      sendWrite(1L)
+      val write1 = fakeJournal.expectMessageType[JournalProtocol.WriteMessages]
+      write1.bypassCircuitBreaker should ===(true)
+      val repr1 = write1.messages.head.asInstanceOf[AtomicWrite].payload.head
+      write1.persistentActor !
+      JournalProtocol.WriteMessageFailure(repr1, TestException("the error"), write1.actorInstanceId)
+      journalFailHighestSeqNr("highest error")
+      clientProbe.receiveMessage().isError should ===(true)
+
+      // journal seems to have real problems, use the circuit breaker
+      sendWrite(1L)
+      val write2 = fakeJournal.expectMessageType[JournalProtocol.WriteMessages]
+      write2.bypassCircuitBreaker should ===(false)
+      val repr2 = write2.messages.head.asInstanceOf[AtomicWrite].payload.head
+      write2.persistentActor ! JournalProtocol.WriteMessageSuccess(repr2, write2.actorInstanceId)
+      clientExpectSuccess(1)
+
+      // successful write, bypass again
+      sendWrite(2L)
+      val write3 = fakeJournal.expectMessageType[JournalProtocol.WriteMessages]
+      write3.bypassCircuitBreaker should ===(true)
+    }
+
     "ignores old failures when replay triggered" in new TestSetup {
       sendWrite(1L) // triggers write
 
@@ -148,17 +187,207 @@ class EventWriterSpec
     }
 
     "handle writes to many pids" in {
-      val writer = spawn(EventWriter("pekko.persistence.journal.inmem", settings))
+      // no flow control in this test so just no limit on batch size
+      val writer = spawn(EventWriter("pekko.persistence.journal.inmem", settings.copy(maxBatchSize = Int.MaxValue)))
       val probe = createTestProbe[StatusReply[EventWriter.WriteAck]]()
-      (0 to 1000).map { pidN =>
+      (1 to 1000).map { pidN =>
         Future {
-          for (n <- 0 until 20) {
-            writer ! EventWriter.Write(s"pid$pidN", n.toLong, n.toString, None, Set.empty, probe.ref)
+          for (n <- 1 to 20) {
+            writer ! EventWriter.Write(s"A|pid$pidN", n.toLong, n.toString, false, None, Set.empty, probe.ref)
           }
         }
       }
-      probe.receiveMessages(20 * 1000, 20.seconds)
+      val replies = probe.receiveMessages(20 * 1000, 20.seconds)
+      replies.exists(_.isError) should ===(false)
     }
+
+  }
+
+  // These tests are for Write with isSnapshot = true
+  // They are similar to EventWriterFillGapsSpec
+  "Write of snapshot event" should {
+
+    "fill gaps before snapshot when next expected is known" in new TestSetup {
+      sendWrite(1)
+      sendSnapshotWrite(5)
+      journalAckWrite()
+      clientExpectSuccess(1)
+      journalAckWrite(expectedSequenceNumbers = Vector(2, 3, 4, 5))
+      clientExpectSuccess(1)
+
+      sendWrite(6)
+      journalAckWrite()
+      clientExpectSuccess(1)
+    }
+
+    "fill gaps before snapshot when next expected is unknown" in new TestSetup {
+      sendSnapshotWrite(5)
+      journalHighestSeqNr(2)
+      journalAckWrite(expectedSequenceNumbers = Vector(3, 4, 5))
+      clientExpectSuccess(1)
+
+      sendWrite(6)
+      journalAckWrite()
+      clientExpectSuccess(1)
+    }
+
+    "fill gaps before snapshot when next expected is not trusted" in new TestSetup {
+      sendWrite(1)
+      journalAckWrite()
+      clientExpectSuccess(1)
+
+      // event though we know about 1 some other node might have written 2, 3, ...
+      sendSnapshotWrite(5)
+      journalHighestSeqNr(2)
+      journalAckWrite(expectedSequenceNumbers = Vector(3, 4, 5))
+      clientExpectSuccess(1)
+
+      sendWrite(6)
+      journalAckWrite()
+      clientExpectSuccess(1)
+    }
+
+    "fill gaps before snapshot when next expected is unknown and no highest" in new TestSetup {
+      sendSnapshotWrite(5)
+      journalHighestSeqNr(0) // no events stored
+      journalAckWrite(expectedSequenceNumbers = Vector(1, 2, 3, 4, 5))
+      clientExpectSuccess(1)
+
+      sendWrite(6)
+      journalAckWrite()
+      clientExpectSuccess(1)
+    }
+
+    "fill gaps before snapshot when next expected is unknown and more writes afterwards" in new TestSetup {
+      sendSnapshotWrite(4)
+      sendWrite(5)
+      journalHighestSeqNr(2)
+      journalAckWrite(expectedSequenceNumbers = Vector(3, 4))
+      journalAckWrite(expectedSequenceNumbers = Vector(5))
+      clientExpectSuccess(2)
+
+      sendWrite(6)
+      journalAckWrite()
+      clientExpectSuccess(1)
+    }
+
+    "fill gaps before snapshot when pending write" in new TestSetup {
+      sendWrite(1)
+
+      // no ack of 1 yet, but since it's pending we don't have to lookup max
+      sendSnapshotWrite(5)
+      journalAckWrite() shouldBe 1
+      journalAckWrite() shouldBe 4
+      clientExpectSuccess(2)
+
+      sendWrite(6)
+      journalAckWrite()
+      clientExpectSuccess(1)
+    }
+
+    "fill gaps before snapshot when pending batch" in new TestSetup {
+      sendWrite(1)
+      // 2 and 3 in next batch
+      sendWrite(2)
+      sendWrite(3)
+
+      sendSnapshotWrite(5)
+      journalAckWrite() shouldBe 1
+      journalAckWrite() shouldBe 4 // all go into next batch, including the filled 4
+      clientExpectSuccess(4)
+
+      sendWrite(6)
+      journalAckWrite()
+      clientExpectSuccess(1)
+    }
+
+    "fill gaps before snapshot when more writes after max lookup" in new TestSetup {
+      sendSnapshotWrite(5)
+      sendWrite(6)
+      sendWrite(7)
+      sendSnapshotWrite(9) // 8 is another gap
+      journalHighestSeqNr(3) // 4 is a gap
+      journalAckWrite(expectedSequenceNumbers = Vector(4L, 5L))
+      // remaining into next batch
+      journalAckWrite() shouldBe 4
+      clientExpectSuccess(4)
+
+      sendWrite(10)
+      journalAckWrite()
+      clientExpectSuccess(1)
+    }
+
+    "fill gaps before snapshot when duplicate detected by journal" in new TestSetup {
+      sendWrite(1)
+      // 2 and 3 in next batch
+      sendWrite(2)
+      sendWrite(3)
+
+      sendSnapshotWrite(5)
+      journalAckWrite(expectedSequenceNumbers = Vector(1))
+      // let's say 2 is a duplicate, detected by journal
+      journalFailWrite("duplicate") shouldBe 4
+      journalHighestSeqNr(2)
+      journalAckWrite(expectedSequenceNumbers = Vector(3, 4, 5))
+      clientExpectSuccess(4)
+
+      sendWrite(6)
+      journalAckWrite()
+      clientExpectSuccess(1)
+    }
+
+    "only fill gaps before the snapshot event, not before ordinary events queued during its lookup" in new TestSetup {
+      sendSnapshotWrite(5)
+      // queued while the lookup for the snapshot event is in progress
+      sendWrite(7)
+      journalHighestSeqNr(3)
+      journalAckWrite(expectedSequenceNumbers = Vector(4L, 5L))
+      // gap filling is disabled, so 6 is not filled for the ordinary event
+      journalAckWrite(expectedSequenceNumbers = Vector(7L))
+      clientExpectSuccess(2)
+    }
+
+    "not count filled gaps before snapshot in max batch check" in new TestSetup {
+      settings.maxBatchSize should ===(10)
+      sendWrite(1)
+
+      sendSnapshotWrite(15)
+      sendWrite(16)
+      journalAckWrite(expectedSequenceNumbers = Vector(1))
+      journalAckWrite(expectedSequenceNumbers = (2L to 16L).toVector)
+      clientExpectSuccess(2)
+
+      sendWrite(17)
+      journalAckWrite()
+      clientExpectSuccess(1)
+    }
+
+    "handle writes to many pids and fill gaps before snapshot" in {
+      // no flow control in this test so just no limit on batch size
+      val writer = spawn(EventWriter("pekko.persistence.journal.inmem", settings.copy(maxBatchSize = Int.MaxValue)))
+      val probe = createTestProbe[StatusReply[EventWriter.WriteAck]]()
+      (1 to 1000).map { pidN =>
+        Future {
+          for (n <- 1 to 20) {
+            val gap =
+              if (pidN <= 500 && n <= 3) true
+              else if (pidN > 500 && 9 <= n && n <= 11) true
+              else false
+            val snapshot =
+              if (pidN <= 500 && n == 4) true
+              else if (pidN > 500 && n == 12) true
+              else false
+
+            if (!gap)
+              writer ! EventWriter.Write(s"B|pid$pidN", n.toLong, n.toString, snapshot, None, Set.empty, probe.ref)
+          }
+        }
+      }
+      // 20 - 3 because 3 gaps for each pid
+      val replies = probe.receiveMessages((20 - 3) * 1000, 20.seconds)
+      replies.exists(_.isError) should ===(false)
+    }
+
   }
 
   trait TestSetup {
@@ -168,17 +397,26 @@ class EventWriterSpec
     val clientProbe = createTestProbe[StatusReply[EventWriter.WriteAck]]()
 
     def sendWrite(seqNr: Long, pid: String = pid1): Unit = {
-      writer ! EventWriter.Write(pid, seqNr, seqNr.toString, None, Set.empty, clientProbe.ref)
+      writer ! EventWriter.Write(pid, seqNr, seqNr.toString, false, None, Set.empty, clientProbe.ref)
     }
 
-    def journalAckWrite(pid: String = pid1): Int = {
+    def sendSnapshotWrite(seqNr: Long, pid: String = pid1): Unit = {
+      writer ! EventWriter.Write(pid, seqNr, seqNr.toString, isSnapshotEvent = true, None, Set.empty, clientProbe.ref)
+    }
+
+    def journalAckWrite(pid: String = pid1, expectedSequenceNumbers: Vector[Long] = Vector.empty): Int = {
       val write = fakeJournal.expectMessageType[JournalProtocol.WriteMessages]
       write.messages should have size 1
       val atomicWrite = write.messages.head.asInstanceOf[AtomicWrite]
-      atomicWrite.payload.foreach { repr =>
-        repr.persistenceId should ===(pid)
-        write.persistentActor ! JournalProtocol.WriteMessageSuccess(repr, write.actorInstanceId)
-      }
+
+      val seqNrs =
+        atomicWrite.payload.map { repr =>
+          repr.persistenceId should ===(pid)
+          write.persistentActor ! JournalProtocol.WriteMessageSuccess(repr, write.actorInstanceId)
+          repr.sequenceNr
+        }
+      if (expectedSequenceNumbers.nonEmpty)
+        seqNrs should ===(expectedSequenceNumbers)
       write.persistentActor ! JournalProtocol.WriteMessagesSuccessful
       atomicWrite.payload.size
     }
@@ -189,13 +427,10 @@ class EventWriterSpec
       val atomicWrite = write.messages.head.asInstanceOf[AtomicWrite]
       atomicWrite.payload.foreach { repr =>
         repr.persistenceId should ===(pid)
-        write.persistentActor ! JournalProtocol.WriteMessageFailure(
-          repr,
-          new RuntimeException(reason),
-          write.actorInstanceId)
+        write.persistentActor ! JournalProtocol.WriteMessageFailure(repr, TestException(reason), write.actorInstanceId)
       }
       write.persistentActor ! JournalProtocol.WriteMessagesFailed(
-        new RuntimeException(reason),
+        TestException(reason),
         atomicWrite.payload.size)
       atomicWrite.payload.size
     }
@@ -203,6 +438,11 @@ class EventWriterSpec
     def journalHighestSeqNr(highestSeqNr: Long): Unit = {
       val replay = fakeJournal.expectMessageType[JournalProtocol.ReplayMessages]
       replay.persistentActor ! JournalProtocol.RecoverySuccess(highestSeqNr)
+    }
+
+    def journalFailHighestSeqNr(reason: String): Unit = {
+      val replay = fakeJournal.expectMessageType[JournalProtocol.ReplayMessages]
+      replay.persistentActor ! JournalProtocol.ReplayMessagesFailure(TestException(reason))
     }
 
     def clientExpectSuccess(n: Int): Unit = {

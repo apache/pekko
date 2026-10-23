@@ -208,6 +208,11 @@ events-by-slice firehose query that fans out one shared journal query to many co
 * `pekko.persistence.typed.event-writer.max-batch-size` and
 `pekko.persistence.typed.event-writer.ask-timeout` configure the event writer.
 ([PR3432](https://github.com/apache/pekko/pull/3432))
+* `pekko.persistence.typed.event-writer.fill-sequence-number-gaps` (default `off`) makes the event
+writer fill gaps in sequence numbers with `FilteredPayload` events, and
+`pekko.persistence.typed.event-writer.latest-sequence-number-cache-capacity` (default `1000`) sets how
+many persistence ids it keeps the latest sequence number in memory for when gap filling is enabled.
+([PR3653](https://github.com/apache/pekko/pull/3653))
 * `replay-batch-size` in the journal plugin fallback bounds the number of replayed events queued in
 a recovering persistent actor's mailbox. ([PR3325](https://github.com/apache/pekko/pull/3325))
 * `only-one-snapshot` in the snapshot-store plugin fallback enables retention optimizations for

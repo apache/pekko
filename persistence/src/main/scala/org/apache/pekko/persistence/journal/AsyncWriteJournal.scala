@@ -8,7 +8,7 @@
  */
 
 /*
- * Copyright (C) 2009-2022 Lightbend Inc. <https://www.lightbend.com>
+ * Copyright (C) 2009-2023 Lightbend Inc. <https://www.lightbend.com>
  */
 
 package org.apache.pekko.persistence.journal
@@ -18,6 +18,8 @@ import java.util.concurrent.atomic.AtomicLong
 import scala.collection.mutable
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
+import scala.concurrent.Promise
+import scala.concurrent.TimeoutException
 import scala.concurrent.duration._
 import scala.util.{ Failure, Success, Try }
 import scala.util.control.NonFatal
@@ -76,6 +78,25 @@ trait AsyncWriteJournal extends Actor with WriteJournalBase with AsyncRecovery {
 
     val eventStream = context.system.eventStream // used from Future callbacks
     implicit val ec: ExecutionContext = context.dispatcher
+
+    // writes that bypass the circuit breaker still get its call timeout, so that a write that never completes
+    // can't hold back the (resequenced) responses of later writes
+    val writeCallTimeout: FiniteDuration = config.getDuration("circuit-breaker.call-timeout", MILLISECONDS).millis
+
+    def withWriteCallTimeout[T](write: Future[T]): Future[T] =
+      if (write.isCompleted) write
+      else {
+        val promise = Promise[T]()
+        val timeout = context.system.scheduler.scheduleOnce(writeCallTimeout) {
+          promise.tryFailure(
+            new TimeoutException(s"Journal write bypassing the circuit breaker timed out after [$writeCallTimeout]"))
+        }
+        write.onComplete { result =>
+          timeout.cancel()
+          promise.tryComplete(result)
+        }
+        promise.future
+      }
 
     val batchingReplayRequesters = mutable.Map.empty[ActorRef, Int]
     val replaySessions = mutable.Map.empty[Long, ReplaySession]
@@ -215,7 +236,10 @@ trait AsyncWriteJournal extends Actor with WriteJournalBase with AsyncRecovery {
     }
 
     {
-      case WriteMessages(messages, persistentActor, actorInstanceId) =>
+      case w: WriteMessages =>
+        val messages = w.messages
+        val persistentActor = w.persistentActor
+        val actorInstanceId = w.actorInstanceId
         val cctr = resequencerCounter
         resequencerCounter += messages.foldLeft(1)((acc, m) => acc + m.size)
 
@@ -229,8 +253,10 @@ trait AsyncWriteJournal extends Actor with WriteJournalBase with AsyncRecovery {
             Future.successful(Nil)
           case Success(prep) =>
             // try in case the asyncWriteMessages throws
-            try breaker.withCircuitBreaker(asyncWriteMessages(prep))
-            catch { case NonFatal(e) => Future.failed(e) }
+            try {
+              if (w.bypassCircuitBreaker) withWriteCallTimeout(asyncWriteMessages(prep))
+              else breaker.withCircuitBreaker(asyncWriteMessages(prep))
+            } catch { case NonFatal(e) => Future.failed(e) }
           case f @ Failure(_) =>
             // exception from preparePersistentBatch => rejected
             Future.successful(messages.collect { case _: AtomicWrite => f })

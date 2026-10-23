@@ -18,7 +18,7 @@
 package org.apache.pekko.persistence.journal
 
 import scala.collection.mutable
-import scala.concurrent.{ ExecutionContext, Future, Promise }
+import scala.concurrent.{ ExecutionContext, Future, Promise, TimeoutException }
 import scala.util.Try
 
 import org.apache.pekko
@@ -50,6 +50,12 @@ class AsyncWriteJournalResponseOrderSpec
           |    class = "${classOf[ControlledWriteCompletionPlugin].getName}"
           |    plugin-dispatcher = "pekko.actor.default-dispatcher"
           |    write-response-global-order = off
+          |  }
+          |  bypass-call-timeout {
+          |    class = "${classOf[ControlledWriteCompletionPlugin].getName}"
+          |    plugin-dispatcher = "pekko.actor.default-dispatcher"
+          |    write-response-global-order = on
+          |    circuit-breaker.call-timeout = 500ms
           |  }
           |}
           |""".stripMargin
@@ -93,14 +99,37 @@ class AsyncWriteJournalResponseOrderSpec
     }
   }
 
-  private def mkWriteMessages(persistenceId: Int): JournalProtocol.WriteMessages = JournalProtocol.WriteMessages(
+  "AsyncWriteJournal with writes bypassing the circuit breaker" must {
+    "time out a bypassed write that never completes and release the responses of later writes" in {
+      val pluginRef =
+        extension.journalFor(journalPluginId = s"${ControlledWriteCompletionPlugin.BaseId}.bypass-call-timeout")
+
+      // never completed
+      pluginRef ! mkWriteMessages(persistenceId = 1, bypassCircuitBreaker = true)
+      pluginRef ! mkWriteMessages(persistenceId = 2)
+      pluginRef ! CompleteWriteOps(persistenceIdsInOrder = Vector(2))
+
+      // the bypassed write fails with the call timeout, then the held back response of the later write follows
+      expectMsgType[JournalProtocol.WriteMessagesFailed]
+      val failure = expectMsgType[JournalProtocol.WriteMessageFailure]
+      failure.message.persistenceId shouldEqual "1"
+      failure.cause shouldBe a[TimeoutException]
+      expectMsg(JournalProtocol.WriteMessagesSuccessful)
+      getPersistenceIdsFromResponses(receiveN(1)) shouldEqual Vector(2)
+    }
+  }
+
+  private def mkWriteMessages(
+      persistenceId: Int,
+      bypassCircuitBreaker: Boolean = false): JournalProtocol.WriteMessages = JournalProtocol.WriteMessages(
     messages = Vector(AtomicWrite(PersistentRepr(
       payload = "",
       sequenceNr = 0L,
       persistenceId = persistenceId.toString
     ))),
     persistentActor = self,
-    actorInstanceId = 1
+    actorInstanceId = 1,
+    bypassCircuitBreaker = bypassCircuitBreaker
   )
 
   private def getPersistenceIdsFromResponses(responses: Seq[AnyRef]): Vector[Int] = responses.collect {
