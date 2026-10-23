@@ -8,7 +8,7 @@
  */
 
 /*
- * Copyright (C) 2019-2022 Lightbend Inc. <https://www.lightbend.com>
+ * Copyright (C) 2019-2023 Lightbend Inc. <https://www.lightbend.com>
  */
 
 package jdoc.org.apache.pekko.serialization.jackson.v2c;
