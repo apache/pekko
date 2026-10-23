@@ -306,6 +306,25 @@ removes the need for `pipeTo`. However, for interactions with other APIs that re
 @scala[`Future`]@java[`CompletionStage`] it is still useful to send the result as a message to the actor.
 For this purpose there is a `pipeToSelf` method in the `ActorContext` in Typed.
 
+## ActorContext
+
+The @apidoc[ActorContext](typed.*.ActorContext) belongs to the running actor. A behavior can access it through
+@apidoc[Behaviors.setup](typed.*.Behaviors$), and nested setup blocks for the same actor receive the same context.
+Returning a different behavior does not create a different actor or context.
+
+An `ActorRef` provides access to the actor from the outside, while its `ActorContext` provides operations for
+the actor's current behavior, such as spawning children, logging and accessing its own reference.
+Follow the @ref:[ActorContext thread safety rules](actor-lifecycle.md#actorcontext-thread-safety) when using these operations.
+
+The context and the current behavior have different responsibilities. In Classic, an actor class contains
+state and defines a `Receive` behavior, while the context provides actor operations. In Typed, a
+@apidoc[AbstractBehavior](typed.*.AbstractBehavior) can hold mutable state, or a function-based behavior can
+return a new behavior carrying updated state for the next message. In either style, changing the behavior
+does not change the identity of the running actor.
+
+On a supervised restart, setup and behavior construction may run again; do not assume that an
+`AbstractBehavior` instance survives a restart. See @ref:[fault tolerance](fault-tolerance.md) for the restart lifecycle.
+
 ## ActorContext.children
 
 The `ActorContext` has methods @scala[`children` and `child`]@java[`getChildren` and `getChild`]
