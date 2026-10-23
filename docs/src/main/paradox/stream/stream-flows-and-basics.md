@@ -387,7 +387,7 @@ and emitting the "materialized value". An @apidoc[actor.ActorSystem] wide `Mater
 @apidoc[SystemMaterializer] by @scala[having an implicit `ActorSystem` in scope]@java[passing the `ActorSystem` to the 
 various `run` methods] this way there is no need to worry about the `Materializer` unless there are special requirements.
 
-One use case that may require a custom instance of `Materializer` is when all streams materialized in an actor should be tied to the Actor lifecycle and stop if the Actor stops or crashes. 
+One use case that may require a custom instance of `Materializer` is when all streams materialized in an actor should be tied to the Actor lifecycle and stop if the Actor stops or crashes.
 
 An important aspect of working with streams and actors is understanding a `Materializer`'s life-cycle.
 The materializer is bound to the lifecycle of the @apidoc[actor.ActorRefFactory] it is created from, which in practice will
