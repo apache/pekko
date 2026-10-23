@@ -555,8 +555,10 @@ events are small. To address this, a `type-in-manifest` flag can be turned off, 
 in the class name not appearing in the manifest.
 
 When deserializing, the Jackson serializer will use the type defined in `deserialization-type`, if
-present, otherwise it will look for exactly one serialization binding class, and use that. For
-this to be useful, generally that single type must be a 
+present, otherwise it will look for exactly one application serialization binding class, and use that.
+The predefined `JsonSerializable` and `CborSerializable` marker bindings are excluded from this inference
+in both Jackson modules; they do not specify a concrete deserialization type. For
+this to be useful, generally that single type must be a
 @ref:[Polymorphic type](#polymorphic-types), with all type information necessary to deserialize to
 the various sub types contained in the JSON message.
 

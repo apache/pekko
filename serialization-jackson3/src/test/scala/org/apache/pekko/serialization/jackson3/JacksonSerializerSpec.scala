@@ -1047,6 +1047,63 @@ abstract class JacksonSerializerSpec(serializerName: String)
         throw new IllegalStateException(s"Wrong serializer ${s.getClass} for ${obj.getClass}")
     }
 
+  "Manifest-less serialization with predefined markers" must {
+    import ScalaTestMessages._
+
+    def withBindings(bindings: String, deserializationType: String = "")(test: ActorSystem => Unit): Unit = {
+      val config = ConfigFactory.parseString(s"""
+        pekko.actor.serialization-bindings { $bindings }
+        pekko.serialization.jackson3.$serializerName {
+          type-in-manifest = off
+          deserialization-type = "$deserializationType"
+        }
+        """).withFallback(ConfigFactory.defaultReference())
+      val sys = ActorSystem("ManifestlessPredefinedMarkers", config)
+      try test(sys)
+      finally shutdown(sys)
+    }
+
+    val firstType = classOf[SimpleCommand].getName
+    val secondType = classOf[SimpleCommand2].getName
+    val oneBinding = s"\"$firstType\" = $serializerName"
+    val twoBindings = s"$oneBinding, \"$secondType\" = $serializerName"
+
+    "infer the single application binding with the default marker enabled" in {
+      withBindings(oneBinding) { sys =>
+        val message = SimpleCommand("one binding")
+        serializerFor(message, sys).manifest(message) should ===("")
+        checkSerialization(message, sys)
+      }
+    }
+
+    "honor an explicit deserialization type with multiple application bindings" in {
+      withBindings(twoBindings, firstType) { sys =>
+        val message = SimpleCommand("explicit type")
+        serializerFor(message, sys).manifest(message) should ===("")
+        checkSerialization(message, sys)
+      }
+    }
+
+    "reject multiple application bindings without an explicit deserialization type" in {
+      withBindings(twoBindings) { sys =>
+        val message = SimpleCommand("ambiguous")
+        intercept[IllegalArgumentException] {
+          serializerFor(message, sys).manifest(message)
+        }.getMessage should include("multiple bindings")
+      }
+    }
+
+    "reject a predefined marker as the only inferred deserialization type" in {
+      withBindings("") { sys =>
+        val serializer = serialization(sys).serializerByIdentity(if (serializerName == "jackson-json") 31 else 33)
+          .asInstanceOf[SerializerWithStringManifest]
+        intercept[IllegalArgumentException] {
+          serializer.manifest(SimpleCommand("no application binding"))
+        }.getMessage should include("none were configured")
+      }
+    }
+  }
+
   "JacksonSerializer with Java message classes" must {
     import JavaTestMessages._
 
