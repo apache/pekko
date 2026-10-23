@@ -202,13 +202,6 @@
 
 ---------------
 
-This product includes portions adapted from Akka 2.9.0, available under the
-Apache License, Version 2.0 above pursuant to the Change Date (2026-10-23) and
-Change License specified in its Business Source License 1.1:
-https://github.com/akka/akka-core/blob/v2.9.0/LICENSE
-
----------------
-
 pekko-actor contains MurmurHash.scala which is derived from MurmurHash3,
 written by Austin Appleby. He has placed his code in the public domain.
 The author has disclaimed copyright to that source code.
