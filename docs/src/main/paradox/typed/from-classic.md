@@ -309,7 +309,7 @@ For this purpose there is a `pipeToSelf` method in the `ActorContext` in Typed.
 ## ActorContext
 
 The @apidoc[ActorContext](typed.*.ActorContext) belongs to the running actor. A behavior can access it through
-@apidoc[Behaviors.setup](typed.*.Behaviors$), and nested setup blocks for the same actor receive the same context.
+@apidoc[Behaviors.setup](typed.*.Behaviors$) {scala="#setup[T](factory:org.apache.pekko.actor.typed.scaladsl.ActorContext[T]=%3Eorg.apache.pekko.actor.typed.Behavior[T]):org.apache.pekko.actor.typed.Behavior[T]" java="#setup(org.apache.pekko.japi.function.Function)"}, and nested setup blocks for the same actor receive the same context.
 Returning a different behavior does not create a different actor or context.
 
 An `ActorRef` provides access to the actor from the outside, while its `ActorContext` provides operations for
@@ -322,8 +322,10 @@ state and defines a `Receive` behavior, while the context provides actor operati
 return a new behavior carrying updated state for the next message. In either style, changing the behavior
 does not change the identity of the running actor.
 
-On a supervised restart, setup and behavior construction may run again; do not assume that an
-`AbstractBehavior` instance survives a restart. See @ref:[fault tolerance](fault-tolerance.md) for the restart lifecycle.
+On a supervised restart, the original behavior passed to `Behaviors.supervise` is reinstalled,
+including rerunning any `Behaviors.setup` inside it. A `setup` outside the `supervise` does not run again,
+and the `ActorContext` stays the same. Do not assume that an `AbstractBehavior` instance survives a restart.
+See @ref:[fault tolerance](fault-tolerance.md) for the restart lifecycle.
 
 ## ActorContext.children
 
