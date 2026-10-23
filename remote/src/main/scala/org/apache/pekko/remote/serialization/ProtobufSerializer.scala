@@ -39,13 +39,24 @@ object ProtobufSerializer {
       MethodType.methodType(Void.TYPE, classOf[Throwable]))
 
   private def parsingHandle(clazz: Class[?]): MethodHandle = {
-    val methodType = MethodType.methodType(clazz, classOf[Array[Byte]])
+    // ScalaPB's static forwarder can return GeneratedMessage rather than the concrete message class.
+    val method =
+      try clazz.getDeclaredMethod("parseFrom", classOf[Array[Byte]])
+      catch {
+        case _: NoSuchMethodException => clazz.getMethod("parseFrom", classOf[Array[Byte]])
+      }
+    val returnType = method.getReturnType
+    require(
+      returnType.isAssignableFrom(clazz),
+      s"parseFrom of [${clazz.getName}] returns unrelated type [${returnType.getName}]")
+    val methodType = MethodType.methodType(returnType, classOf[Array[Byte]])
     val handle =
       try lookup.findStatic(clazz, "parseFrom", methodType)
       catch {
         case _: IllegalAccessException => publicLookup.findStatic(clazz, "parseFrom", methodType)
       }
-    val invoker = wrapTargetException(handle).asType(parsingInvokerType)
+    val typedHandle = handle.asType(MethodType.methodType(clazz, classOf[Array[Byte]]))
+    val invoker = wrapTargetException(typedHandle).asType(parsingInvokerType)
     ensureInitialized(clazz)
     invoker
   }

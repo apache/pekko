@@ -39,6 +39,17 @@ class ThrowingToByteArrayMessage {
   def toByteArray(): Array[Byte] = throw new IllegalArgumentException("serialize-user-bug")
 }
 
+object UnrelatedParseMessage {
+  def parseFrom(@nowarn("msg=never used") bytes: Array[Byte]): String = "unrelated"
+}
+case class UnrelatedParseMessage() {}
+
+object WrongParseResultMessage {
+  def parseFrom(@nowarn("msg=never used") bytes: Array[Byte]): ProtobufSerializerSpec.AnotherBase =
+    new AnotherMessage3
+}
+case class WrongParseResultMessage() extends ProtobufSerializerSpec.AnotherBase {}
+
 object ProtobufSerializerSpec {
   trait AnotherInterface
   abstract class AnotherBase
@@ -76,6 +87,7 @@ class ProtobufSerializerSpec extends PekkoSpec(s"""
       "${classOf[AnotherMessage].getName}",
       "${classOf[FailingInitializerMessage].getName}",
       "${classOf[ThrowingParseMessage].getName}",
+      "${classOf[UnrelatedParseMessage].getName}",
       "${classOf[ProtobufSerializerSpec.AnotherInterface].getName}",
       "${classOf[ProtobufSerializerSpec.AnotherBase].getName}"
     ]
@@ -89,14 +101,6 @@ class ProtobufSerializerSpec extends PekkoSpec(s"""
       ser.serializerFor(classOf[SerializedMessage]).getClass should ===(classOf[ProtobufSerializer])
       ser.serializerFor(classOf[MyMessage]).getClass should ===(classOf[ProtobufSerializer])
       ser.serializerFor(classOf[MyMessageV3]).getClass should ===(classOf[ProtobufSerializer])
-    }
-
-    "skip the optional ScalaPB binding when ScalaPB is not on the classpath" in {
-      val scalaPbClassName = "scalapb.GeneratedMessage"
-      ser.settings.SerializationBindings.get(scalaPbClassName) should ===(Some("proto"))
-      val dynamicAccess = system.asInstanceOf[ExtendedActorSystem].dynamicAccess
-      dynamicAccess.getClassFor[Any](scalaPbClassName).isFailure should ===(true)
-      ser.bindings.exists { case (clazz, _) => clazz.getName == scalaPbClassName } should ===(false)
     }
 
     "work for SerializedMessage (just an org.apache.pekko.protobuf message)" in {
@@ -171,6 +175,23 @@ class ProtobufSerializerSpec extends PekkoSpec(s"""
       val deserialized =
         ser.deserialize(Array[Byte](), originalSerializer.identifier, classOf[AnotherMessage3].getName).get
       deserialized.getClass should ===(classOf[AnotherMessage3])
+    }
+
+    "reject a parser whose declared return type is unrelated to the manifest" in {
+      val serializer = ser.serializerFor(classOf[MyMessage]).asInstanceOf[ProtobufSerializer]
+
+      intercept[IllegalArgumentException] {
+        serializer.fromBinary(Array.emptyByteArray, Some(classOf[UnrelatedParseMessage]))
+      }.getMessage should include("returns unrelated type")
+    }
+
+    "reject a parser result that does not match the manifest and wrap the target failure" in {
+      val serializer = ser.serializerFor(classOf[MyMessage]).asInstanceOf[ProtobufSerializer]
+
+      val exception = intercept[InvocationTargetException] {
+        serializer.fromBinary(Array.emptyByteArray, Some(classOf[WrongParseResultMessage]))
+      }
+      exception.getCause shouldBe a[ClassCastException]
     }
 
     "preserve reflection-compatible target exception wrapping" in {

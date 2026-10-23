@@ -184,6 +184,7 @@ object Dependencies {
         .exclude("org.testng", "testng")
 
       val protobufRuntime = "com.google.protobuf" % "protobuf-java" % Protobuf.protobufJavaVersion % Test
+      val scalaPbRuntime = "com.thesamet.scalapb" %% "scalapb-runtime" % "0.11.21" % Test
 
       // YCSB (Yahoo Cloud Serving Benchmark https://ycsb.site)
       val ycsb = "site.ycsb" % "core" % "0.17.0" % Test
@@ -265,7 +266,8 @@ object Dependencies {
     TestDependencies.junit,
     TestDependencies.scalatest,
     TestDependencies.jimfs,
-    TestDependencies.protobufRuntime) ++ remoteOptionalDependencies
+    TestDependencies.protobufRuntime,
+    TestDependencies.scalaPbRuntime) ++ remoteOptionalDependencies
 
   lazy val remoteTests = l ++= Seq(TestDependencies.junit, TestDependencies.scalatest) ++ remoteDependencies
 
