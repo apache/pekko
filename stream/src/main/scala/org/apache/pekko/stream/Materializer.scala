@@ -8,7 +8,7 @@
  */
 
 /*
- * Copyright (C) 2015-2022 Lightbend Inc. <https://www.lightbend.com>
+ * Copyright (C) 2015-2023 Lightbend Inc. <https://www.lightbend.com>
  */
 
 package org.apache.pekko.stream
@@ -27,6 +27,7 @@ import pekko.actor.Props
 import pekko.annotation.DoNotInherit
 import pekko.annotation.InternalApi
 import pekko.event.LoggingAdapter
+import pekko.stream.impl.PhasedFusingActorMaterializer
 
 /**
  * The Materializer is the component responsible for turning a stream blueprint into a running stream.
@@ -213,6 +214,37 @@ object Materializer {
   def createMaterializer(contextProvider: ClassicActorContextProvider): Materializer = apply(contextProvider)
 
   /**
+   * Scala API: Create a materializer whose lifecycle will be tied to the one of the passed actor context.
+   * When the actor stops the materializer will stop and all streams created with it will be failed with an [[AbruptTerminationExeption]]
+   *
+   * The given `defaultAttributes` are applied to all streams materialized with this materializer, and can be
+   * overridden by attributes set on the streams themselves.
+   *
+   * You can pass either a classic actor context or a typed actor context.
+   *
+   * @since 2.0.0
+   */
+  def apply(contextProvider: ClassicActorContextProvider, defaultAttributes: Attributes): Materializer = {
+    val context = contextProvider.classicActorContext
+    val settings = SystemMaterializer(context.system).materializerSettings
+    PhasedFusingActorMaterializer(context, "flow", settings, settings.toAttributes.and(defaultAttributes))
+  }
+
+  /**
+   * Java API: Create a materializer whose lifecycle will be tied to the one of the passed actor context.
+   * When the actor stops the materializer will stop and all streams created with it will be failed with an [[AbruptTerminationExeption]]
+   *
+   * The given `defaultAttributes` are applied to all streams materialized with this materializer, and can be
+   * overridden by attributes set on the streams themselves.
+   *
+   * You can pass either a classic actor context or a typed actor context.
+   *
+   * @since 2.0.0
+   */
+  def createMaterializer(contextProvider: ClassicActorContextProvider, defaultAttributes: Attributes): Materializer =
+    apply(contextProvider, defaultAttributes)
+
+  /**
    * Scala API: Create a new materializer that will stay alive as long as the system does or until it is explicitly stopped.
    *
    * *Note* prefer using the default [[SystemMaterializer]] that is implicitly available if you have an implicit
@@ -224,7 +256,7 @@ object Materializer {
     SystemMaterializer(systemProvider.classicSystem).createAdditionalSystemMaterializer()
 
   /**
-   * Scala API: Create a new materializer that will stay alive as long as the system does or until it is explicitly stopped.
+   * Java API: Create a new materializer that will stay alive as long as the system does or until it is explicitly stopped.
    *
    * *Note* prefer using the default [[SystemMaterializer]] by passing the `ActorSystem` to the various `run`
    * methods on the streams. Only create new system level materializers if you have specific
@@ -233,6 +265,32 @@ object Materializer {
    */
   def createMaterializer(systemProvider: ClassicActorSystemProvider): Materializer =
     apply(systemProvider)
+
+  /**
+   * Scala API: Create a new materializer that will stay alive as long as the system does or until it is explicitly stopped.
+   *
+   * The given `defaultAttributes` are applied to all streams materialized with this materializer, and can be
+   * overridden by attributes set on the streams themselves.
+   *
+   * It is generally advised to limit the number of system level materializers created.
+   *
+   * @since 2.0.0
+   */
+  def apply(systemProvider: ClassicActorSystemProvider, defaultAttributes: Attributes): Materializer =
+    SystemMaterializer(systemProvider.classicSystem).createAdditionalSystemMaterializer(defaultAttributes)
+
+  /**
+   * Java API: Create a new materializer that will stay alive as long as the system does or until it is explicitly stopped.
+   *
+   * The given `defaultAttributes` are applied to all streams materialized with this materializer, and can be
+   * overridden by attributes set on the streams themselves.
+   *
+   * It is generally advised to limit the number of system level materializers created.
+   *
+   * @since 2.0.0
+   */
+  def createMaterializer(systemProvider: ClassicActorSystemProvider, defaultAttributes: Attributes): Materializer =
+    apply(systemProvider, defaultAttributes)
 
 }
 

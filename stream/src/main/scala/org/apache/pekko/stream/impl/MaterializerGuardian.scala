@@ -21,6 +21,7 @@ import pekko.actor.Actor
 import pekko.actor.Props
 import pekko.annotation.InternalApi
 import pekko.stream.ActorMaterializerSettings
+import pekko.stream.Attributes
 import pekko.stream.Materializer
 
 /**
@@ -33,6 +34,7 @@ import pekko.stream.Materializer
 private[pekko] object MaterializerGuardian {
 
   case object StartMaterializer
+  final case class StartMaterializerWithAttributes(attributes: Attributes)
   final case class MaterializerStarted(materializer: Materializer)
 
   // this is available to keep backwards compatibility with ActorMaterializer and should
@@ -63,6 +65,11 @@ private[pekko] final class MaterializerGuardian(
   override def receive: Receive = {
     case StartMaterializer =>
       sender() ! MaterializerStarted(startMaterializer(defaultNamePrefix, None))
+    case StartMaterializerWithAttributes(attributes) =>
+      val materializer =
+        PhasedFusingActorMaterializer(context, defaultNamePrefix, materializerSettings,
+          defaultAttributes.and(attributes))
+      sender() ! MaterializerStarted(materializer)
     case LegacyStartMaterializer(namePrefix, settings) =>
       sender() ! MaterializerStarted(startMaterializer(namePrefix, Some(settings)))
   }
