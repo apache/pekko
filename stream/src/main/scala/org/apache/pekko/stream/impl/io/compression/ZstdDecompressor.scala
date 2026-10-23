@@ -20,8 +20,9 @@ package org.apache.pekko.stream.impl.io.compression
 import java.nio.ByteBuffer
 
 import scala.annotation.tailrec
+import scala.util.control.NonFatal
 
-import com.github.luben.zstd.{ Zstd, ZstdDecompressCtx, ZstdDictDecompress, ZstdException }
+import com.github.luben.zstd.{ Zstd, ZstdDecompressCtx, ZstdException }
 
 import org.apache.pekko
 import pekko.annotation.InternalApi
@@ -35,15 +36,24 @@ import pekko.util.ByteString
   private val EmptyInput = ByteBuffer.allocate(0)
   private val NoInput: Iterator[ByteBuffer] = Iterator.empty
 
-  // The level only applies to compression. The dictionary is digested once and shared by the
-  // decompression contexts of every materialization, ZstdDictDecompress frees it when collected.
-  private def decompressDictionary(dictionary: ZstdDictionaryImpl): ZstdDictDecompress =
+  // The level only applies to compression. Each materialization loads the dictionary into its own
+  // context, which owns the digested dictionary and frees it on close. A shared ZstdDictDecompress
+  // could not be closed when one materialization stops, and has no Cleaner, so it would only be freed
+  // by finalization. The bytes are copied so that later changes to the caller's array have no effect.
+  private def dictionaryBytes(dictionary: ZstdDictionaryImpl): Array[Byte] = {
+    val bytes = dictionary.dictionary
     (dictionary.offset, dictionary.length) match {
-      case (None, None)                 => new ZstdDictDecompress(dictionary.dictionary)
-      case (Some(offset), Some(length)) => new ZstdDictDecompress(dictionary.dictionary, offset, length)
-      case _                            =>
+      case (None, None)                 => bytes.clone()
+      case (Some(offset), Some(length)) =>
+        require(
+          offset >= 0 && length >= 0 && offset <= bytes.length - length,
+          s"ZstdDictionary offset [$offset] and length [$length] must be within the dictionary of " +
+          s"[${bytes.length}] bytes")
+        java.util.Arrays.copyOfRange(bytes, offset, offset + length)
+      case _ =>
         throw new IllegalArgumentException("ZstdDictionary offset and length must be set together")
     }
+  }
 }
 
 /** INTERNAL API */
@@ -53,13 +63,19 @@ import pekko.util.ByteString
 
   require(maxBytesPerChunk > 0, "maxBytesPerChunk must be greater than 0")
 
-  private val decompressDict = dictionary.map(decompressDictionary)
+  private val decompressDict = dictionary.map(dictionaryBytes)
 
   override def createLogic(inheritedAttributes: Attributes): GraphStageLogic = {
     new GraphStageLogic(shape) with InHandler with OutHandler {
 
       private val decompressCtx = new ZstdDecompressCtx()
-      decompressDict.foreach(decompressCtx.loadDict)
+      // postStop is not called if creating the logic fails, so close the context here
+      try decompressDict.foreach(decompressCtx.loadDict)
+      catch {
+        case NonFatal(e) =>
+          decompressCtx.close()
+          throw e
+      }
 
       // zstd-jni supports heap ByteBuffers for streaming decompression, so no direct buffers are needed
       private var outputBuffer = ByteBuffer.allocate(maxBytesPerChunk)

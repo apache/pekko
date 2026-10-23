@@ -213,6 +213,25 @@ class ZstdSpec extends CoderSpec[ZstdException]("zstd") {
         .join
         .awaitResult(3.seconds) should ===(input)
     }
+    "reject a decompression dictionary slice outside the dictionary" in {
+      for ((offset, length) <- Seq((-1, 4), (0, -1), (1, smallTextBytes.length)))
+        withClue(s"offset $offset, length $length: ") {
+          an[IllegalArgumentException] should be thrownBy Compression.zstdDecompress(
+            ZstdDecompressionSettings().withDictionary(
+              ZstdDictionary(smallTextBytes.toArray, Compression.ZstdDefaultCompressionLevel, offset, length)))
+        }
+    }
+    "decompress with a copy of the dictionary" in {
+      val dictBytes = new Array[Byte](4096)
+      new Random(42).nextBytes(dictBytes)
+      val input = ByteString(dictBytes)
+      val compressed = new ZstdCompressor(dictionary = Some(ZstdDictionary(dictBytes).toImpl)).compressAndFinish(input)
+      val decompress = Compression.zstdDecompress(ZstdDecompressionSettings().withDictionary(ZstdDictionary(dictBytes)))
+      // changing the array after the operator is created does not affect it
+      java.util.Arrays.fill(dictBytes, 0.toByte)
+      for (_ <- 1 to 2) // every materialization loads the dictionary into its own context
+        Source.single(compressed).via(decompress).join.awaitResult(3.seconds) should ===(input)
+    }
     "reject a decompression dictionary with only one of offset and length" in {
       val dictionary = new JavaZstdDictionary(smallTextBytes.toArray)
       dictionary.setOffset(1)
