@@ -18,11 +18,16 @@ that has to be added explicitly:
 ## Signature
 
 @apidoc[Compression.zstdDecompress](stream.*.Compression$) { scala="#zstdDecompress(maxBytesPerChunk:Int):org.apache.pekko.stream.scaladsl.Flow[org.apache.pekko.util.ByteString,org.apache.pekko.util.ByteString,org.apache.pekko.NotUsed]" java="#zstdDecompress(int)" }
+@apidoc[Compression.zstdDecompress](stream.*.Compression$) { scala="#zstdDecompress(maxBytesPerChunk:Int,dictionary:Option[org.apache.pekko.stream.scaladsl.compression.ZstdDictionary]):org.apache.pekko.stream.scaladsl.Flow[org.apache.pekko.util.ByteString,org.apache.pekko.util.ByteString,org.apache.pekko.NotUsed]" java="#zstdDecompress(int,java.util.Optional)" }
 
 ## Description
 
 Creates a flow that zstd-decompresses a stream of ByteStrings. If the input is truncated or corrupt this operator
 fails with a `com.github.luben.zstd.ZstdException`.
+
+Use the `zstdDecompress(maxBytesPerChunk, dictionary)` overload to decompress data that was compressed with a
+dictionary. It must be the same dictionary (including any offset and length) that was used for compression; the
+dictionary level only applies to compression and is ignored.
 
 ## Reactive Streams semantics
 

@@ -29,8 +29,8 @@ coming out of the flow can be fully decompressed without waiting for additional 
 come at a compression performance cost for very small chunks.
 
 Use the `zstd(level, dictionary)` overload to control the compression level and, optionally, to compress with a
-dictionary. Output compressed with a dictionary can only be decompressed with the same dictionary, which
-`zstdDecompress` does not support.
+dictionary. Output compressed with a dictionary can only be decompressed with the same dictionary, see
+@ref[zstdDecompress](zstdDecompress.md).
 
 The `zstd(level, dictionary, autoFlush)` overload adds an `autoFlush` parameter. If `autoFlush` is `true` (the default
 for the other overloads), the compressor flushes after every single element in the stream. If it is `false`, the

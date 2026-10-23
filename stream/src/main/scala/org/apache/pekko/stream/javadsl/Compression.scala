@@ -19,7 +19,7 @@ import scala.jdk.OptionConverters.RichOptional
 
 import org.apache.pekko
 import pekko.NotUsed
-import pekko.stream.impl.io.compression.{ CompressionUtils, ZstdCompressor }
+import pekko.stream.impl.io.compression.{ CompressionUtils, ZstdCompressor, ZstdDecompressor }
 import pekko.stream.javadsl.compression.ZstdDictionary
 import pekko.stream.scaladsl
 import pekko.util.ByteString
@@ -176,4 +176,18 @@ object Compression {
    */
   def zstdDecompress(maxBytesPerChunk: Int): Flow[ByteString, ByteString, NotUsed] =
     scaladsl.Compression.zstdDecompress(maxBytesPerChunk).asJava
+
+  /**
+   * Same as [[zstdDecompress]] with an optional dictionary.
+   *
+   * @param maxBytesPerChunk The maximum length of the emitted ByteStrings
+   * @param dictionary       An optional dictionary, which must be the one used for compression. Its level is ignored.
+   * @since 2.0.0
+   */
+  def zstdDecompress(maxBytesPerChunk: Int, dictionary: Optional[ZstdDictionary])
+      : Flow[ByteString, ByteString, NotUsed] =
+    scaladsl.Flow[ByteString]
+      .via(new ZstdDecompressor(maxBytesPerChunk, dictionary.toScala.map(_.toImpl)))
+      .named("zstdDecompress")
+      .asJava
 }

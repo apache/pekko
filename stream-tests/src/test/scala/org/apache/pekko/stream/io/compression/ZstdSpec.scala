@@ -19,13 +19,16 @@ package org.apache.pekko.stream.io.compression
 
 import java.io.{ InputStream, OutputStream }
 import java.nio.charset.StandardCharsets
+import java.util.Optional
 
 import scala.concurrent.duration._
+import scala.util.Random
 
 import com.github.luben.zstd.{ Zstd, ZstdException, ZstdInputStream, ZstdOutputStream }
 
 import org.apache.pekko
 import pekko.stream.impl.io.compression.{ Compressor, ZstdCompressor }
+import pekko.stream.javadsl.{ Compression => JavaCompression }
 import pekko.stream.javadsl.compression.{ ZstdDictionary => JavaZstdDictionary }
 import pekko.stream.scaladsl.{ Compression, Flow, Source }
 import pekko.stream.scaladsl.compression.ZstdDictionary
@@ -92,6 +95,57 @@ class ZstdSpec extends CoderSpec[ZstdException]("zstd") {
       val utf8 = text.getBytes(StandardCharsets.UTF_8)
       ZstdDictionary(text).dictionary should ===(utf8)
       new JavaZstdDictionary(text).getDictionary should ===(utf8)
+    }
+    "decompress with a dictionary" in {
+      // incompressible input that is only found in the dictionary, so the frame must reference the dictionary
+      val dictBytes = new Array[Byte](4096)
+      new Random(42).nextBytes(dictBytes)
+      val input = ByteString(dictBytes)
+      val compressed = Source
+        .single(input)
+        .via(Compression.zstd(Compression.ZstdDefaultCompressionLevel, Some(ZstdDictionary(dictBytes))))
+        .join
+        .awaitResult(3.seconds)
+      compressed.size should be < input.size / 10
+      // the dictionary level only applies to compression
+      for (dictionary <-
+          Seq(ZstdDictionary(dictBytes), ZstdDictionary(dictBytes, Compression.ZstdMaxCompressionLevel))) {
+        Source
+          .single(compressed)
+          .via(Compression.zstdDecompress(Compression.ZstdDecompressMaxBlockSize, Some(dictionary)))
+          .join
+          .awaitResult(3.seconds) should ===(input)
+      }
+      Source
+        .single(compressed)
+        .via(JavaCompression.zstdDecompress(Compression.ZstdDecompressMaxBlockSize,
+          Optional.of(new JavaZstdDictionary(dictBytes))))
+        .join
+        .awaitResult(3.seconds) should ===(input)
+
+      val ex = the[RuntimeException] thrownBy ourDecode(compressed)
+      ex.ultimateCause shouldBe a[ZstdException]
+    }
+    "decompress with a dictionary slice" in {
+      val content = new Array[Byte](4096)
+      new Random(42).nextBytes(content)
+      val dictBytes = "padding".getBytes(StandardCharsets.UTF_8) ++ content
+      val dictionary = ZstdDictionary(dictBytes, Compression.ZstdDefaultCompressionLevel, 7, content.length)
+      val input = ByteString(content)
+      val compressed = new ZstdCompressor(dictionary = Some(dictionary.toImpl)).compressAndFinish(input)
+      compressed.size should be < input.size / 10
+
+      Source
+        .single(compressed)
+        .via(Compression.zstdDecompress(Compression.ZstdDecompressMaxBlockSize, Some(dictionary)))
+        .join
+        .awaitResult(3.seconds) should ===(input)
+    }
+    "reject a decompression dictionary with only one of offset and length" in {
+      val dictionary = new JavaZstdDictionary(smallTextBytes.toArray)
+      dictionary.setOffset(1)
+      an[IllegalArgumentException] should be thrownBy
+      JavaCompression.zstdDecompress(Compression.ZstdDecompressMaxBlockSize, Optional.of(dictionary))
     }
     "compress with a dictionary slice" in {
       val dictBytes = ("padding" + smallText * 4).getBytes(StandardCharsets.UTF_8)

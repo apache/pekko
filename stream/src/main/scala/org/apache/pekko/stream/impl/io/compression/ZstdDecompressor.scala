@@ -21,7 +21,7 @@ import java.nio.ByteBuffer
 
 import scala.annotation.tailrec
 
-import com.github.luben.zstd.{ Zstd, ZstdDecompressCtx, ZstdException }
+import com.github.luben.zstd.{ Zstd, ZstdDecompressCtx, ZstdDictDecompress, ZstdException }
 
 import org.apache.pekko
 import pekko.annotation.InternalApi
@@ -34,18 +34,32 @@ import pekko.util.ByteString
 @InternalApi private[pekko] object ZstdDecompressor {
   private val EmptyInput = ByteBuffer.allocate(0)
   private val NoInput: Iterator[ByteBuffer] = Iterator.empty
+
+  // The level only applies to compression. The dictionary is digested once and shared by the
+  // decompression contexts of every materialization, ZstdDictDecompress frees it when collected.
+  private def decompressDictionary(dictionary: ZstdDictionaryImpl): ZstdDictDecompress =
+    (dictionary.offset, dictionary.length) match {
+      case (None, None)                 => new ZstdDictDecompress(dictionary.dictionary)
+      case (Some(offset), Some(length)) => new ZstdDictDecompress(dictionary.dictionary, offset, length)
+      case _                            =>
+        throw new IllegalArgumentException("ZstdDictionary offset and length must be set together")
+    }
 }
 
 /** INTERNAL API */
-@InternalApi private[pekko] class ZstdDecompressor(maxBytesPerChunk: Int) extends SimpleLinearGraphStage[ByteString] {
+@InternalApi private[pekko] class ZstdDecompressor(maxBytesPerChunk: Int, dictionary: Option[ZstdDictionaryImpl])
+    extends SimpleLinearGraphStage[ByteString] {
   import ZstdDecompressor._
 
   require(maxBytesPerChunk > 0, "maxBytesPerChunk must be greater than 0")
+
+  private val decompressDict = dictionary.map(decompressDictionary)
 
   override def createLogic(inheritedAttributes: Attributes): GraphStageLogic = {
     new GraphStageLogic(shape) with InHandler with OutHandler {
 
       private val decompressCtx = new ZstdDecompressCtx()
+      decompressDict.foreach(decompressCtx.loadDict)
 
       // zstd-jni supports heap ByteBuffers for streaming decompression, so no direct buffers are needed
       private var outputBuffer = ByteBuffer.allocate(maxBytesPerChunk)

@@ -178,6 +178,16 @@ object Compression {
    * @since 2.0.0
    */
   def zstdDecompress(maxBytesPerChunk: Int = ZstdDecompressMaxBlockSize): Flow[ByteString, ByteString, NotUsed] =
-    Flow[ByteString].via(new ZstdDecompressor(maxBytesPerChunk)).named("zstdDecompress")
+    zstdDecompress(maxBytesPerChunk, None)
+
+  /**
+   * Same as [[zstdDecompress]] with an optional dictionary.
+   *
+   * @param maxBytesPerChunk The maximum length of the emitted ByteStrings
+   * @param dictionary       An optional dictionary, which must be the one used for compression. Its level is ignored.
+   * @since 2.0.0
+   */
+  def zstdDecompress(maxBytesPerChunk: Int, dictionary: Option[ZstdDictionary]): Flow[ByteString, ByteString, NotUsed] =
+    Flow[ByteString].via(new ZstdDecompressor(maxBytesPerChunk, dictionary.map(_.toImpl))).named("zstdDecompress")
 
 }
