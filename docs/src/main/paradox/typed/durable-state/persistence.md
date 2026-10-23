@@ -97,7 +97,7 @@ The two most commonly used effects are:
 * `none` no state to be persisted, for example a read-only command
 
 The state is typically an immutable class, with a new instance passed to the `persist` effect.
-If using a mutable state class, create a fresh updated instance and pass it to `persist`.
+If using a mutable state class, do not mutate the current state instance in place; pass a new instance to `persist`.
 Keep the initial `emptyState` instance unchanged, since it is reused after deletion and when recovery
 finds no stored state. The change is only durable after persistence completes successfully; use
 `thenRun` for side effects that depend on that success. Do not mutate the state from asynchronous
