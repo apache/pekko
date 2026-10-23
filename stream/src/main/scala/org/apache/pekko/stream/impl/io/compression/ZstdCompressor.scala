@@ -19,6 +19,8 @@ package org.apache.pekko.stream.impl.io.compression
 
 import java.nio.ByteBuffer
 
+import scala.util.control.NonFatal
+
 import com.github.luben.zstd.{ EndDirective, ZstdCompressCtx, ZstdDictCompress }
 
 import org.apache.pekko
@@ -43,25 +45,53 @@ import pekko.util.{ ByteString, ByteStringBuilder }
     windowLog: Int = 0) extends Compressor {
   import ZstdCompressor._
 
-  private val compressCtx = new ZstdCompressCtx()
-  compressCtx.setLevel(compressionLevel)
-  if (windowLog != 0) compressCtx.setWindowLog(windowLog)
+  private val compressCtx = newCompressCtx()
+
+  // A dictionary with a level is digested into a ZstdDictCompress, which has to be closed after the
+  // context. Neither has a Cleaner, and the stage cannot close them in postStop if the compressor is
+  // not created, so close them here if the setup fails.
+  private val compressDict: Option[ZstdDictCompress] =
+    try {
+      compressCtx.setLevel(compressionLevel)
+      if (windowLog != 0) compressCtx.setWindowLog(windowLog)
+      dictionary.flatMap(loadDictionary)
+    } catch {
+      case NonFatal(e) =>
+        compressCtx.close()
+        throw e
+    }
 
   // zstd-jni supports heap ByteBuffers for streaming compression, so no direct buffers are needed
   private var outputBuffer = ByteBuffer.allocate(OutputBufferSize)
 
-  dictionary.foreach { dict =>
+  /** For tests, to observe that the context is closed. */
+  private[pekko] def newCompressCtx(): ZstdCompressCtx = new ZstdCompressCtx()
+
+  /** For tests, to observe that the dictionary is closed. */
+  private[pekko] def compressDictionary: Option[ZstdDictCompress] = compressDict
+
+  private def loadDictionary(dict: ZstdDictionaryImpl): Option[ZstdDictCompress] =
     (dict.level, dict.length, dict.offset) match {
       case (None, None, None) =>
         compressCtx.loadDict(dict.dictionary)
+        None
       case (Some(dictLevel), None, None) =>
-        compressCtx.loadDict(new ZstdDictCompress(dict.dictionary, dictLevel))
+        Some(loadDictCompress(new ZstdDictCompress(dict.dictionary, dictLevel)))
       case (Some(dictLevel), Some(dictLength), Some(dictOffset)) =>
-        compressCtx.loadDict(new ZstdDictCompress(dict.dictionary, dictOffset, dictLength, dictLevel))
+        Some(loadDictCompress(new ZstdDictCompress(dict.dictionary, dictOffset, dictLength, dictLevel)))
       case _ =>
         throw new IllegalArgumentException("Invalid combination of ZstdDictionary parameters")
     }
-  }
+
+  private def loadDictCompress(dictCompress: ZstdDictCompress): ZstdDictCompress =
+    try {
+      compressCtx.loadDict(dictCompress)
+      dictCompress
+    } catch {
+      case NonFatal(e) =>
+        dictCompress.close()
+        throw e
+    }
 
   override def compress(input: ByteString): ByteString = compressStream(input, EndDirective.CONTINUE)
 
@@ -73,7 +103,9 @@ import pekko.util.{ ByteString, ByteStringBuilder }
 
   override def compressAndFinish(input: ByteString): ByteString = compressStream(input, EndDirective.END)
 
-  override def close(): Unit = compressCtx.close()
+  override def close(): Unit =
+    try compressCtx.close()
+    finally compressDict.foreach(_.close())
 
   private def compressStream(input: ByteString, endOp: EndDirective): ByteString = {
     val builder = ByteString.newBuilder

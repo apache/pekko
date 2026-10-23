@@ -20,10 +20,18 @@ package org.apache.pekko.stream.io.compression
 import java.io.{ ByteArrayInputStream, IOException, InputStream, OutputStream }
 import java.nio.charset.StandardCharsets
 
+import scala.collection.mutable
 import scala.concurrent.duration._
 import scala.util.Random
 
-import com.github.luben.zstd.{ Zstd, ZstdException, ZstdInputStream, ZstdInputStreamNoFinalizer, ZstdOutputStream }
+import com.github.luben.zstd.{
+  Zstd,
+  ZstdCompressCtx,
+  ZstdException,
+  ZstdInputStream,
+  ZstdInputStreamNoFinalizer,
+  ZstdOutputStream
+}
 
 import org.apache.pekko
 import pekko.stream.{ ZstdCompressionSettings, ZstdDecompressionSettings }
@@ -210,6 +218,49 @@ class ZstdSpec extends CoderSpec[ZstdException]("zstd") {
       dictionary.setOffset(1)
       an[IllegalArgumentException] should be thrownBy
       JavaCompression.zstdDecompress(ZstdDecompressionSettings.create().withDictionary(dictionary))
+    }
+    "close the compression context when the compressor setup fails" in {
+      // the context is recorded outside of the subclass, whose fields are only set after the constructor
+      val contexts = mutable.Buffer.empty[ZstdCompressCtx]
+      def compressor(dictionary: ZstdDictionary): ZstdCompressor =
+        new ZstdCompressor(dictionary = Some(dictionary.toImpl)) {
+          override private[pekko] def newCompressCtx(): ZstdCompressCtx = {
+            val ctx = super.newCompressCtx()
+            contexts += ctx
+            ctx
+          }
+        }
+
+      val valid = compressor(ZstdDictionary(smallTextBytes, Compression.ZstdDefaultCompressionLevel))
+      contexts.head.setLevel(Compression.ZstdDefaultCompressionLevel) // still open
+      valid.close()
+      an[IllegalStateException] should be thrownBy contexts.head.setLevel(Compression.ZstdDefaultCompressionLevel)
+
+      contexts.clear()
+      an[Exception] should be thrownBy compressor(
+        ZstdDictionary(smallTextBytes, Compression.ZstdDefaultCompressionLevel, -1, smallTextBytes.length))
+      contexts should have size 1
+      an[IllegalStateException] should be thrownBy contexts.head.setLevel(Compression.ZstdDefaultCompressionLevel)
+    }
+    "close the compression dictionary with the compressor" in {
+      val dictBytes = ("padding" + smallText * 4).getBytes(StandardCharsets.UTF_8)
+      def loadInto(compressor: ZstdCompressor): Unit = {
+        val ctx = new ZstdCompressCtx()
+        try ctx.loadDict(compressor.compressDictionary.get)
+        finally ctx.close()
+      }
+      for (dictionary <- Seq(
+          ZstdDictionary(dictBytes, Compression.ZstdDefaultCompressionLevel),
+          ZstdDictionary(dictBytes, Compression.ZstdDefaultCompressionLevel, 7, dictBytes.length - 7))) {
+        val compressor = new ZstdCompressor(dictionary = Some(dictionary.toImpl))
+        compressor.compressAndFinish(smallTextBytes)
+        loadInto(compressor) // still open
+        compressor.close()
+        // a closed dictionary can no longer be used
+        an[IllegalStateException] should be thrownBy loadInto(compressor)
+      }
+      // a dictionary without a level is loaded into the context and needs no separate close
+      new ZstdCompressor(dictionary = Some(ZstdDictionary(dictBytes).toImpl)).compressDictionary should ===(None)
     }
     "compress with a dictionary slice" in {
       val dictBytes = ("padding" + smallText * 4).getBytes(StandardCharsets.UTF_8)

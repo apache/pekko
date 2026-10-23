@@ -38,7 +38,7 @@ import java.util.OptionalInt;
  * @since 2.0.0
  */
 @ApiMayChange
-public class ZstdDictionary {
+public final class ZstdDictionary {
   private byte[] dictionary;
   private OptionalInt level = OptionalInt.empty();
   private OptionalInt offset = OptionalInt.empty();
