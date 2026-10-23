@@ -19,6 +19,7 @@ package org.apache.pekko.serialization.jackson3
 
 import java.io.File
 import java.net.URLClassLoader
+import java.nio.charset.StandardCharsets
 
 import scala.concurrent.Await
 import scala.concurrent.duration._
@@ -48,24 +49,23 @@ class JacksonWithoutZstdSpec extends AnyWordSpec with Matchers {
         .split(File.pathSeparator)
         .filterNot(new File(_).getName.startsWith("zstd-jni"))
         .map(new File(_).toURI.toURL)
+      // not closed: dispatcher shutdown tasks of the terminated ActorSystem may still load classes from it
       val loader = new URLClassLoader(urls, ClassLoader.getPlatformClassLoader)
-      try {
-        an[ClassNotFoundException] should be thrownBy loader.loadClass("com.github.luben.zstd.Zstd")
+      a[ClassNotFoundException] should be thrownBy loader.loadClass("com.github.luben.zstd.Zstd")
 
-        val zstdPayload = Zstd.compress("{\"name\":\"Bob\"}".getBytes("UTF-8"))
-        val check = loader.loadClass(classOf[JacksonWithoutZstdCheck].getName)
-        val thread = Thread.currentThread()
-        val contextClassLoader = thread.getContextClassLoader
-        thread.setContextClassLoader(loader)
-        val result =
-          try
-            check
-              .getMethod("run", classOf[Array[Byte]])
-              .invoke(check.getDeclaredConstructor().newInstance(), zstdPayload)
-          finally thread.setContextClassLoader(contextClassLoader)
-        result should ===(
-          "gzip:Bob zstd-algorithm:IllegalArgumentException(zstd-jni) zstd-payload:IllegalArgumentException(zstd-jni)")
-      } finally loader.close()
+      val zstdPayload = Zstd.compress("{\"name\":\"Bob\"}".getBytes(StandardCharsets.UTF_8))
+      val check = loader.loadClass(classOf[JacksonWithoutZstdCheck].getName)
+      val thread = Thread.currentThread()
+      val contextClassLoader = thread.getContextClassLoader
+      thread.setContextClassLoader(loader)
+      val result =
+        try
+          check
+            .getMethod("run", classOf[Array[Byte]])
+            .invoke(check.getDeclaredConstructor().newInstance(), zstdPayload)
+        finally thread.setContextClassLoader(contextClassLoader)
+      result should ===(
+        "gzip:Bob zstd-algorithm:IllegalArgumentException(zstd-jni) zstd-payload:IllegalArgumentException(zstd-jni)")
     }
   }
 }
@@ -75,8 +75,10 @@ class JacksonWithoutZstdCheck {
   def run(zstdPayload: Array[Byte]): String = {
     // use this class loader (without zstd-jni) rather than one found from the context or call stack
     val classLoader = getClass.getClassLoader
+    // a fatal error in this nested ActorSystem must fail the test, not exit the forked test JVM
     val config = ConfigFactory
       .parseString("""
+        pekko.jvm-exit-on-fatal-error = off
         pekko.serialization.jackson3.jackson-json.compression.compress-larger-than = 0 KiB
         pekko.serialization.jackson3.allowed-class-prefix = ["org.apache.pekko.serialization.jackson3."]
         pekko.serialization.jackson3.jackson-zstd.compression {
