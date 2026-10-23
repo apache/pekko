@@ -168,7 +168,8 @@ private[pekko] object EventWriter {
 
   private final case class MaxSeqNrForPid(persistenceId: Pid, sequenceNumber: SeqNr, reason: AskMaxSeqNrReason)
       extends Command
-  private final case class MaxSeqNrForPidFailed(persistenceId: Pid, reason: AskMaxSeqNrReason) extends Command
+  private final case class MaxSeqNrForPidFailed(persistenceId: Pid, reason: AskMaxSeqNrReason, cause: Throwable)
+      extends Command
 
   private sealed trait AskMaxSeqNrReason
   private object AskMaxSeqNrReason {
@@ -177,6 +178,18 @@ private[pekko] object EventWriter {
     case object SnapshotEvent extends AskMaxSeqNrReason
   }
 
+  /**
+   * A write waiting for the highest sequence number lookup, with whether it is a snapshot event.
+   */
+  private final case class PendingLookup(
+      repr: PersistentRepr,
+      replyTo: ActorRef[StatusReply[WriteAck]],
+      isSnapshotEvent: Boolean)
+
+  /**
+   * @param duplicateWaiters callers that sent a sequence number that is already pending in
+   *                         `waitingForReply` or `waitingForWrite`, they get the same outcome as that write
+   */
   private case class StateForPid(
       waitingForReply: Map[SeqNr, (PersistentRepr, ActorRef[StatusReply[WriteAck]])],
       waitingForWrite: Vector[(PersistentRepr, ActorRef[StatusReply[WriteAck]])] = Vector.empty,
@@ -184,7 +197,8 @@ private[pekko] object EventWriter {
       currentTransactionId: Int = 0,
       latestSeqNr: SeqNr = -1L,
       usedTimestamp: Long = 0L,
-      waitingForSeqNrLookup: Vector[(PersistentRepr, ActorRef[StatusReply[WriteAck]])] = Vector.empty) {
+      waitingForSeqNrLookup: Vector[PendingLookup] = Vector.empty,
+      duplicateWaiters: Map[SeqNr, Vector[ActorRef[StatusReply[WriteAck]]]] = Map.empty) {
     def idle: Boolean =
       waitingForReply.isEmpty && waitingForWrite.isEmpty
 
@@ -200,6 +214,22 @@ private[pekko] object EventWriter {
         1L
       else
         latestSeqNr + 1
+
+    def isPending(seqNr: SeqNr): Boolean =
+      waitingForReply.contains(seqNr) || waitingForWrite.exists { case (repr, _) => repr.sequenceNr == seqNr }
+
+    /**
+     * Replies to the waiting caller of `seqNr` and to its duplicate callers, and forgets the duplicate callers.
+     */
+    def replyTo(seqNr: SeqNr, reply: StatusReply[WriteAck]): StateForPid = {
+      waitingForReply.get(seqNr).foreach { case (_, replyTo) => replyTo ! reply }
+      duplicateWaiters.get(seqNr) match {
+        case Some(duplicates) =>
+          duplicates.foreach(_ ! reply)
+          copy(duplicateWaiters = duplicateWaiters - seqNr)
+        case None => this
+      }
+    }
 
     def waitingForWriteExceedingMaxBatchSize(batchSize: Int): Boolean =
       waitingForWrite.size >= batchSize &&
@@ -225,6 +255,12 @@ private[pekko] object EventWriter {
         var bypassCircuitBreaker = true
         implicit val askTimeout: Timeout = settings.askTimeout
         import settings.fillSequenceNumberGaps
+
+        def journalWriteFailed(cause: Throwable): Throwable =
+          new IllegalStateException("Journal write failed", cause)
+
+        def journalWriteRejected(cause: Throwable): Throwable =
+          new IllegalStateException("Journal rejected write", cause)
 
         def sendToJournal(transactionId: Int, reprs: Vector[PersistentRepr]): Unit = {
           if (context.log.isTraceEnabled)
@@ -287,10 +323,10 @@ private[pekko] object EventWriter {
               JournalProtocol.ReplayMessages(0L, 0L, 1L, pid, replyTo.toClassic)) {
             case Success(JournalProtocol.RecoverySuccess(highestSequenceNr)) =>
               MaxSeqNrForPid(pid, highestSequenceNr, reason)
-            case Success(JournalProtocol.ReplayMessagesFailure(_)) =>
-              MaxSeqNrForPidFailed(pid, reason)
-            case Failure(_) =>
-              MaxSeqNrForPidFailed(pid, reason)
+            case Success(JournalProtocol.ReplayMessagesFailure(cause)) =>
+              MaxSeqNrForPidFailed(pid, reason, cause)
+            case Failure(cause) =>
+              MaxSeqNrForPidFailed(pid, reason, cause)
             case Success(unexpected) =>
               throw new IllegalArgumentException(
                 s"Got unexpected reply from journal ${unexpected.getClass} for pid $pid. " +
@@ -350,16 +386,17 @@ private[pekko] object EventWriter {
                           pid,
                           sequenceNr,
                           transactionId)
-                      case Some((_, waiting)) =>
+                      case Some(_) =>
                         context.log.trace2(
                           "Successfully wrote event persistence id [{}], sequence nr [{}]",
                           pid,
                           sequenceNr)
-                        waiting ! StatusReply.success(WriteAck(pid, sequenceNr))
-                        val newState = stateForPid.copy(
-                          waitingForReply = stateForPid.waitingForReply - sequenceNr,
-                          latestSeqNr = sequenceNr,
-                          usedTimestamp = System.currentTimeMillis())
+                        val newState = stateForPid
+                          .replyTo(sequenceNr, StatusReply.success(WriteAck(pid, sequenceNr)))
+                          .copy(
+                            waitingForReply = stateForPid.waitingForReply - sequenceNr,
+                            latestSeqNr = sequenceNr,
+                            usedTimestamp = System.currentTimeMillis())
                         handleUpdatedStateForPid(pid, newState)
                     }
                   } else {
@@ -412,6 +449,30 @@ private[pekko] object EventWriter {
               }
               Behaviors.same
 
+            case JournalProtocol.WriteMessageRejected(message, cause, transactionId) =>
+              val pid = message.persistenceId
+              val sequenceNr = message.sequenceNr
+              perPidWriteState.get(pid) match {
+                case Some(state)
+                    if transactionId == state.currentTransactionId && state.waitingForReply.contains(sequenceNr) =>
+                  // the journal rejected the write before storing it, e.g. it could not serialize the event
+                  // or a FilteredPayload gap filler, so all events of the atomic write are rejected
+                  context.log.warnN(
+                    "Journal rejected write of event persistence id [{}], sequence nr [{}]: {}",
+                    pid,
+                    sequenceNr,
+                    cause.getMessage)
+                  val newState = state.replyTo(sequenceNr, StatusReply.error(journalWriteRejected(cause)))
+                  handleUpdatedStateForPid(pid, newState.copy(waitingForReply = newState.waitingForReply - sequenceNr))
+                case _ =>
+                  context.log.debugN(
+                    "Got write rejection for event with no waiting request, ignoring (pid [{}], seq nr [{}], tx id [{}])",
+                    pid,
+                    sequenceNr,
+                    transactionId)
+              }
+              Behaviors.same
+
             case _ =>
               // ignore all other journal protocol messages
               Behaviors.same
@@ -430,7 +491,9 @@ private[pekko] object EventWriter {
                 if ((fillSequenceNumberGaps || isSnapshotEvent) && sequenceNumber != 1L) {
                   val reason = if (isSnapshotEvent) AskMaxSeqNrReason.SnapshotEvent else AskMaxSeqNrReason.FillGaps
                   askMaxSeqNr(persistenceId, reason)
-                  StateForPid(waitingForReply = Map.empty, waitingForSeqNrLookup = Vector((repr, replyTo)))
+                  StateForPid(
+                    waitingForReply = Map.empty,
+                    waitingForSeqNrLookup = Vector(PendingLookup(repr, replyTo, isSnapshotEvent)))
                 } else {
                   sendToJournal(1, Vector(repr))
                   StateForPid(Map((repr.sequenceNr, (repr, replyTo))), currentTransactionId = 1)
@@ -446,7 +509,8 @@ private[pekko] object EventWriter {
                     "Seq nr lookup in progress for persistence id [{}], adding sequence nr [{}] to pending",
                     persistenceId,
                     sequenceNumber)
-                  state.copy(waitingForSeqNrLookup = state.waitingForSeqNrLookup :+ ((repr, replyTo)))
+                  state.copy(waitingForSeqNrLookup =
+                    state.waitingForSeqNrLookup :+ PendingLookup(repr, replyTo, isSnapshotEvent))
                 } else if (sequenceNumber == expectedSeqNr) {
                   if (state.idle) {
                     sendToJournal(state.currentTransactionId + 1, Vector(repr))
@@ -469,9 +533,20 @@ private[pekko] object EventWriter {
                     }
                   }
                 } else if (sequenceNumber < expectedSeqNr) {
-                  context.log.trace2("Duplicate seq nr [{}] for persistence id [{}]", sequenceNumber, persistenceId)
-                  replyTo ! StatusReply.success(WriteAck(persistenceId, sequenceNumber)) // duplicate
-                  state
+                  if (state.isPending(sequenceNumber)) {
+                    // not durable yet, reply when the outcome of the pending write is known
+                    context.log.trace2(
+                      "Duplicate of pending seq nr [{}] for persistence id [{}]",
+                      sequenceNumber,
+                      persistenceId)
+                    state.copy(duplicateWaiters = state.duplicateWaiters.updated(
+                      sequenceNumber,
+                      state.duplicateWaiters.getOrElse(sequenceNumber, Vector.empty) :+ replyTo))
+                  } else {
+                    context.log.trace2("Duplicate seq nr [{}] for persistence id [{}]", sequenceNumber, persistenceId)
+                    replyTo ! StatusReply.success(WriteAck(persistenceId, sequenceNumber)) // duplicate
+                    state
+                  }
                 } else { // sequenceNumber > expectedSeqNr
                   require(
                     fillSequenceNumberGaps || isSnapshotEvent,
@@ -525,7 +600,8 @@ private[pekko] object EventWriter {
                       "Seq nr lookup needed for persistence id [{}], adding sequence nr [{}] to pending",
                       persistenceId,
                       sequenceNumber)
-                    state.copy(waitingForSeqNrLookup = state.waitingForSeqNrLookup :+ ((repr, replyTo)))
+                    state.copy(waitingForSeqNrLookup =
+                      state.waitingForSeqNrLookup :+ PendingLookup(repr, replyTo, isSnapshotEvent))
                   }
 
                 }
@@ -566,9 +642,8 @@ private[pekko] object EventWriter {
                 val (alreadyInJournal, needsWrite) = sortedSeqs.partition(seqNr => seqNr <= maxSeqNr)
                 if (alreadyInJournal.isEmpty) {
                   // error was not about duplicates
-                  state.waitingForReply.values.foreach {
-                    case (_, replyTo) =>
-                      replyTo ! StatusReply.error("Journal write failed")
+                  val stateAfterReplies = sortedSeqs.foldLeft(state) { (state, seqNr) =>
+                    state.replyTo(seqNr, StatusReply.error("Journal write failed"))
                   }
                   context.log.warnN(
                     "Failed writing event batch persistence id [{}], sequence nr [{}-{}]: {}",
@@ -576,15 +651,15 @@ private[pekko] object EventWriter {
                     sortedSeqs.head,
                     sortedSeqs.last,
                     errorDesc)
-                  val newState = state.copy(waitingForReply = Map.empty, writeErrorHandlingInProgress = false)
+                  val newState =
+                    stateAfterReplies.copy(waitingForReply = Map.empty, writeErrorHandlingInProgress = false)
                   handleUpdatedStateForPid(pid, newState)
                 } else {
                   // ack all already written
                   val stateAfterWritten = alreadyInJournal
                     .foldLeft(state) { (state, seqNr) =>
-                      val (_, replyTo) = state.waitingForReply(seqNr)
-                      replyTo ! StatusReply.success(WriteAck(pid, seqNr))
-                      state.copy(waitingForReply = state.waitingForReply - seqNr)
+                      val newState = state.replyTo(seqNr, StatusReply.success(WriteAck(pid, seqNr)))
+                      newState.copy(waitingForReply = newState.waitingForReply - seqNr)
                     }
                     .copy(writeErrorHandlingInProgress = false)
                   if (needsWrite.isEmpty) {
@@ -612,7 +687,7 @@ private[pekko] object EventWriter {
             }
             Behaviors.same
 
-          case MaxSeqNrForPid(pid, maxSeqNr, reason @ (AskMaxSeqNrReason.FillGaps | AskMaxSeqNrReason.SnapshotEvent)) =>
+          case MaxSeqNrForPid(pid, maxSeqNr, AskMaxSeqNrReason.FillGaps | AskMaxSeqNrReason.SnapshotEvent) =>
             bypassCircuitBreaker = true
             perPidWriteState.get(pid) match {
               case None =>
@@ -623,43 +698,47 @@ private[pekko] object EventWriter {
                 perPidWriteState = perPidWriteState.updated(
                   pid,
                   state.copy(latestSeqNr = maxSeqNr, waitingForSeqNrLookup = Vector.empty))
-                waiting.foreach {
-                  case (repr, replyTo) =>
-                    handleWrite(
-                      repr,
-                      replyTo,
-                      isSnapshotEvent = reason == AskMaxSeqNrReason.SnapshotEvent,
-                      calledAfterMaxSeqNr = true)
+                // each queued write keeps its own snapshot event flag, the lookup reason only
+                // belongs to the write that triggered it
+                waiting.foreach { pending =>
+                  handleWrite(pending.repr, pending.replyTo, pending.isSnapshotEvent, calledAfterMaxSeqNr = true)
                 }
             }
             Behaviors.same
 
-          case MaxSeqNrForPidFailed(pid, errorDescOpt) =>
+          case MaxSeqNrForPidFailed(pid, reason, cause) =>
             // journal seems to have real problems, let the circuit breaker protect it until next successful write
             bypassCircuitBreaker = false
-            def errorDescInLog = errorDescOpt match {
+            def errorDescInLog = reason match {
               case AskMaxSeqNrReason.WriteFailure(errorDesc) => s", original error desc: $errorDesc"
               case _                                         => ""
             }
             perPidWriteState.get(pid) match {
               case None =>
-                context.log.debug2(
-                  "Got max seq nr (failed) with no waiting previous state for persistence id [{}]{}",
+                context.log.debugN(
+                  "Got max seq nr (failed) with no waiting previous state for persistence id [{}]{}: {}",
                   pid,
-                  errorDescInLog)
+                  errorDescInLog,
+                  cause.getMessage)
               case Some(state) =>
-                state.waitingForReply.values.foreach {
-                  case (_, replyTo) =>
-                    replyTo ! StatusReply.error("Journal write failed")
-                }
-                val sortedSeqs = state.waitingForReply.keys.toSeq.sorted
-                context.log.warnN(
-                  "Failed max seq nr, and therefore failed writing event batch persistence id [{}], sequence nr [{}-{}]{}",
-                  pid,
-                  sortedSeqs.head,
-                  sortedSeqs.last,
-                  errorDescInLog)
-                val newState = state.copy(waitingForReply = Map.empty, writeErrorHandlingInProgress = false)
+                // fail the writes waiting for a journal reply and those waiting for this lookup
+                val failedSeqNrs =
+                  (state.waitingForReply.keys ++ state.waitingForSeqNrLookup.map(_.repr.sequenceNr)).toVector.sorted
+                val failure = StatusReply.error[WriteAck](journalWriteFailed(cause))
+                val stateAfterReplies =
+                  state.waitingForReply.keys.foldLeft(state)((state, seqNr) => state.replyTo(seqNr, failure))
+                state.waitingForSeqNrLookup.foreach(_.replyTo ! failure)
+                if (failedSeqNrs.nonEmpty)
+                  context.log.warnN(
+                    "Failed max seq nr, and therefore failed writing events persistence id [{}], sequence nrs [{}]{}: {}",
+                    pid,
+                    failedSeqNrs.mkString(", "),
+                    errorDescInLog,
+                    cause.getMessage)
+                val newState = stateAfterReplies.copy(
+                  waitingForReply = Map.empty,
+                  waitingForSeqNrLookup = Vector.empty,
+                  writeErrorHandlingInProgress = false)
                 handleUpdatedStateForPid(pid, newState)
             }
             Behaviors.same

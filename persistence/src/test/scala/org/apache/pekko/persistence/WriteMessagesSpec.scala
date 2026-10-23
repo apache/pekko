@@ -28,6 +28,14 @@ class WriteMessagesSpec extends AnyWordSpec with Matchers {
 
   private val writes = AtomicWrite(PersistentRepr("a", 1, "p1")) :: Nil
 
+  "PersistentRepr" must {
+    "have a hashCode without a sender" in {
+      val repr = PersistentRepr("a", 1, "p1")
+      repr.sender should ===(ActorRef.noSender)
+      repr.hashCode should ===(PersistentRepr("a", 1, "p1").hashCode)
+    }
+  }
+
   "JournalProtocol.WriteMessages" must {
     "not bypass the circuit breaker by default" in {
       WriteMessages(writes, ActorRef.noSender, 1).bypassCircuitBreaker should ===(false)

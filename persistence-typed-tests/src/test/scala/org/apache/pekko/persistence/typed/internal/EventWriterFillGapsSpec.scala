@@ -15,6 +15,7 @@ package org.apache.pekko.persistence.typed.internal
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
+import scala.concurrent.TimeoutException
 import scala.concurrent.duration.DurationInt
 
 import org.apache.pekko
@@ -385,10 +386,81 @@ class EventWriterFillGapsSpec
     }
   }
 
+  "The event writer with a failing highest sequence number lookup" should {
+
+    "fail all writes waiting for the initial lookup and accept a later write" in new TestSetup {
+      sendWrite(3)
+      sendWrite(4)
+      journalFailHighestSeqNr("lookup failed")
+      clientExpectError(2, "Journal write failed").foreach(_.getCause.getMessage should ===("lookup failed"))
+
+      sendWrite(5)
+      journalHighestSeqNr(2)
+      journalAckWrite(expectedSequenceNumbers = Vector(3L, 4L, 5L))
+      clientExpectSuccess(1)
+    }
+
+    "fail the waiting write when the initial lookup times out and accept a later write" in new TestSetup {
+      override def writerSettings = settings.copy(askTimeout = 300.millis)
+      sendWrite(3)
+      fakeJournal.expectMessageType[JournalProtocol.ReplayMessages] // no reply
+      clientExpectError(1, "Journal write failed").foreach(_.getCause shouldBe a[TimeoutException])
+
+      sendWrite(4)
+      journalHighestSeqNr(2)
+      journalAckWrite(expectedSequenceNumbers = Vector(3L, 4L))
+      clientExpectSuccess(1)
+    }
+  }
+
+  "The event writer with duplicates of pending writes" should {
+
+    "not acknowledge a duplicate before the pending write succeeds" in new TestSetup {
+      val duplicateProbe = createTestProbe[StatusReply[EventWriter.WriteAck]]()
+      sendWrite(1)
+      writer ! EventWriter.Write(pid1, 1L, "1", false, None, Set.empty, duplicateProbe.ref)
+      duplicateProbe.expectNoMessage(100.millis)
+
+      journalAckWrite(expectedSequenceNumbers = Vector(1L))
+      clientExpectSuccess(1)
+      duplicateProbe.receiveMessage().isSuccess should ===(true)
+    }
+
+    "fail a duplicate when the pending write fails" in new TestSetup {
+      val duplicateProbe = createTestProbe[StatusReply[EventWriter.WriteAck]]()
+      sendWrite(1)
+      writer ! EventWriter.Write(pid1, 1L, "1", false, None, Set.empty, duplicateProbe.ref)
+      duplicateProbe.expectNoMessage(100.millis)
+
+      journalFailWrite("write failed")
+      // the write was not stored
+      journalHighestSeqNr(0)
+      clientExpectError(1, "Journal write failed")
+      duplicateProbe.receiveMessage().isError should ===(true)
+    }
+  }
+
+  "The event writer with rejected writes" should {
+
+    "fail the writes of a rejected gap fill batch and accept a later write" in new TestSetup {
+      sendWrite(3)
+      journalHighestSeqNr(0)
+      journalRejectWrite("FilteredPayload not supported") should ===(3) // 1-2 gap fillers and 3
+      clientExpectError(1, "Journal rejected write").foreach(
+        _.getCause.getMessage should ===("FilteredPayload not supported"))
+
+      sendWrite(4)
+      journalHighestSeqNr(0)
+      journalAckWrite(expectedSequenceNumbers = Vector(1L, 2L, 3L, 4L))
+      clientExpectSuccess(1)
+    }
+  }
+
   trait TestSetup {
     def pid1 = "pid1"
+    def writerSettings: EventWriter.EventWriterSettings = settings
     val fakeJournal = createTestProbe[JournalProtocol.Message]()
-    val writer = spawn(EventWriter(fakeJournal.ref, settings))
+    val writer = spawn(EventWriter(fakeJournal.ref, writerSettings))
     val clientProbe = createTestProbe[StatusReply[EventWriter.WriteAck]]()
     def sendWrite(seqNr: Long, pid: String = pid1): Unit = {
       writer ! EventWriter.Write(pid, seqNr, seqNr.toString, false, None, Set.empty, clientProbe.ref)
@@ -423,6 +495,25 @@ class EventWriterFillGapsSpec
         atomicWrite.payload.size)
       atomicWrite.payload.size
     }
+
+    def journalRejectWrite(reason: String, pid: String = pid1): Int = {
+      val write = fakeJournal.expectMessageType[JournalProtocol.WriteMessages]
+      write.messages should have size 1
+      val atomicWrite = write.messages.head.asInstanceOf[AtomicWrite]
+      write.persistentActor ! JournalProtocol.WriteMessagesSuccessful
+      atomicWrite.payload.foreach { repr =>
+        repr.persistenceId should ===(pid)
+        write.persistentActor ! JournalProtocol.WriteMessageRejected(repr, TestException(reason), write.actorInstanceId)
+      }
+      atomicWrite.payload.size
+    }
+
+    def clientExpectError(n: Int, message: String): Seq[Throwable] =
+      clientProbe.receiveMessages(n).map { reply =>
+        reply.isError should ===(true)
+        reply.getError.getMessage should ===(message)
+        reply.getError
+      }
 
     def journalHighestSeqNr(highestSeqNr: Long): Unit = {
       val replay = fakeJournal.expectMessageType[JournalProtocol.ReplayMessages]

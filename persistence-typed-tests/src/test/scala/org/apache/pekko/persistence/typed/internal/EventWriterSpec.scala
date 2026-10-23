@@ -336,6 +336,17 @@ class EventWriterSpec
       clientExpectSuccess(1)
     }
 
+    "only fill gaps before the snapshot event, not before ordinary events queued during its lookup" in new TestSetup {
+      sendSnapshotWrite(5)
+      // queued while the lookup for the snapshot event is in progress
+      sendWrite(7)
+      journalHighestSeqNr(3)
+      journalAckWrite(expectedSequenceNumbers = Vector(4L, 5L))
+      // gap filling is disabled, so 6 is not filled for the ordinary event
+      journalAckWrite(expectedSequenceNumbers = Vector(7L))
+      clientExpectSuccess(2)
+    }
+
     "not count filled gaps before snapshot in max batch check" in new TestSetup {
       settings.maxBatchSize should ===(10)
       sendWrite(1)

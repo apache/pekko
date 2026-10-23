@@ -231,7 +231,8 @@ private[persistence] final case class PersistentImpl(
     result = HashCode.hash(result, persistenceId)
     result = HashCode.hash(result, manifest)
     result = HashCode.hash(result, deleted)
-    result = HashCode.hash(result, sender)
+    // sender is null for ActorRef.noSender, which HashCode.hash rejects; same hash as before for other senders
+    result = HashCode.hash(result, if (sender eq null) 0 else sender.hashCode)
     result = HashCode.hash(result, writerUuid)
     // timestamp not included in equals for backwards compatibility
     // meta not included in equals for backwards compatibility
