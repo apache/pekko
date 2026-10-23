@@ -25,6 +25,7 @@ import org.apache.pekko.util.OptionalUtil;
 import scala.Option;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 import java.util.OptionalInt;
 
 /**
@@ -39,88 +40,86 @@ import java.util.OptionalInt;
  */
 @ApiMayChange
 public final class ZstdDictionary {
-  private byte[] dictionary;
-  private OptionalInt level = OptionalInt.empty();
-  private OptionalInt offset = OptionalInt.empty();
-  private OptionalInt length = OptionalInt.empty();
+  private final ByteString dictionary;
+  private final OptionalInt level;
+  private final OptionalInt offset;
+  private final OptionalInt length;
+
+  private ZstdDictionary(
+      ByteString dictionary, OptionalInt level, OptionalInt offset, OptionalInt length) {
+    this.dictionary = Objects.requireNonNull(dictionary, "dictionary");
+    this.level = level;
+    this.offset = offset;
+    this.length = length;
+  }
+
+  private static OptionalInt optionalInt(Integer value) {
+    return value == null ? OptionalInt.empty() : OptionalInt.of(value);
+  }
+
+  // the byte[] constructors copy the array, so later changes to it do not affect the dictionary
 
   public ZstdDictionary(byte[] dictionary) {
-    this.dictionary = dictionary;
+    this(ByteString.fromArray(dictionary));
   }
 
   public ZstdDictionary(byte[] dictionary, int level) {
-    this.dictionary = dictionary;
-    this.level = OptionalInt.of(level);
+    this(ByteString.fromArray(dictionary), level);
   }
 
   public ZstdDictionary(byte[] dictionary, Integer level) {
-    this.dictionary = dictionary;
-    if (level != null) {
-      this.level = OptionalInt.of(level);
-    }
+    this(ByteString.fromArray(dictionary), level);
   }
 
   public ZstdDictionary(byte[] dictionary, int level, int offset, int length) {
-    this.dictionary = dictionary;
-    this.level = OptionalInt.of(level);
-    this.offset = OptionalInt.of(offset);
-    this.length = OptionalInt.of(length);
+    this(ByteString.fromArray(dictionary), level, offset, length);
   }
 
   public ZstdDictionary(byte[] dictionary, Integer level, Integer offset, Integer length) {
-    this.dictionary = dictionary;
-    if (level != null) {
-      this.level = OptionalInt.of(level);
-    }
-    if (offset != null) {
-      this.offset = OptionalInt.of(offset);
-    }
-    if (length != null) {
-      this.length = OptionalInt.of(length);
-    }
+    this(ByteString.fromArray(dictionary), level, offset, length);
   }
 
   public ZstdDictionary(ByteString dictionary) {
-    this(dictionary.toArray());
+    this(dictionary, OptionalInt.empty(), OptionalInt.empty(), OptionalInt.empty());
   }
 
   public ZstdDictionary(ByteString dictionary, int level) {
-    this(dictionary.toArray(), level);
+    this(dictionary, OptionalInt.of(level), OptionalInt.empty(), OptionalInt.empty());
   }
 
   public ZstdDictionary(ByteString dictionary, Integer level) {
-    this(dictionary.toArray(), level);
+    this(dictionary, optionalInt(level), OptionalInt.empty(), OptionalInt.empty());
   }
 
   public ZstdDictionary(ByteString dictionary, int level, int offset, int length) {
-    this(dictionary.toArray(), level, offset, length);
+    this(dictionary, OptionalInt.of(level), OptionalInt.of(offset), OptionalInt.of(length));
   }
 
   public ZstdDictionary(ByteString dictionary, Integer level, Integer offset, Integer length) {
-    this(dictionary.toArray(), level, offset, length);
+    this(dictionary, optionalInt(level), optionalInt(offset), optionalInt(length));
   }
 
   public ZstdDictionary(String dictionary) {
-    this(dictionary.getBytes(StandardCharsets.UTF_8));
+    this(ByteString.fromString(dictionary, StandardCharsets.UTF_8));
   }
 
   public ZstdDictionary(String dictionary, int level) {
-    this(dictionary.getBytes(StandardCharsets.UTF_8), level);
+    this(ByteString.fromString(dictionary, StandardCharsets.UTF_8), level);
   }
 
   public ZstdDictionary(String dictionary, Integer level) {
-    this(dictionary.getBytes(StandardCharsets.UTF_8), level);
+    this(ByteString.fromString(dictionary, StandardCharsets.UTF_8), level);
   }
 
   public ZstdDictionary(String dictionary, int level, int offset, int length) {
-    this(dictionary.getBytes(StandardCharsets.UTF_8), level, offset, length);
+    this(ByteString.fromString(dictionary, StandardCharsets.UTF_8), level, offset, length);
   }
 
   public ZstdDictionary(String dictionary, Integer level, Integer offset, Integer length) {
-    this(dictionary.getBytes(StandardCharsets.UTF_8), level, offset, length);
+    this(ByteString.fromString(dictionary, StandardCharsets.UTF_8), level, offset, length);
   }
 
-  public byte[] getDictionary() {
+  public ByteString getDictionary() {
     return dictionary;
   }
 
@@ -136,65 +135,44 @@ public final class ZstdDictionary {
     return length;
   }
 
-  public void setDictionary(byte[] dictionary) {
-    this.dictionary = dictionary;
+  @Override
+  public boolean equals(Object other) {
+    if (this == other) return true;
+    if (!(other instanceof ZstdDictionary)) return false;
+    ZstdDictionary that = (ZstdDictionary) other;
+    return dictionary.equals(that.dictionary)
+        && level.equals(that.level)
+        && offset.equals(that.offset)
+        && length.equals(that.length);
   }
 
-  public void setLevel(int level) {
-    this.level = OptionalInt.of(level);
+  @Override
+  public int hashCode() {
+    return Objects.hash(dictionary, level, offset, length);
   }
 
-  public void setLevel(OptionalInt level) {
-    this.level = level;
-  }
-
-  public void setLevel(Integer level) {
-    if (level == null) {
-      this.level = OptionalInt.empty();
-    } else {
-      this.level = OptionalInt.of(level);
-    }
-  }
-
-  public void setOffset(int offset) {
-    this.offset = OptionalInt.of(offset);
-  }
-
-  public void setOffset(Integer offset) {
-    if (offset == null) {
-      this.offset = OptionalInt.empty();
-    } else {
-      this.offset = OptionalInt.of(offset);
-    }
-  }
-
-  public void setOffset(OptionalInt offset) {
-    this.offset = offset;
-  }
-
-  public void setLength(int length) {
-    this.length = OptionalInt.of(length);
-  }
-
-  public void setLength(Integer length) {
-    if (length == null) {
-      this.length = OptionalInt.empty();
-    } else {
-      this.length = OptionalInt.of(length);
-    }
-  }
-
-  public void setLength(OptionalInt length) {
-    this.length = length;
+  @Override
+  public String toString() {
+    return "ZstdDictionary("
+        + dictionary.size()
+        + " bytes, level="
+        + level
+        + ", offset="
+        + offset
+        + ", length="
+        + length
+        + ")";
   }
 
   /** INTERNAL API */
   @InternalApi
   public ZstdDictionaryImpl toImpl() {
+    // a copy, so that whoever holds the impl cannot modify the dictionary
+    final byte[] bytes = dictionary.toArray();
     return new ZstdDictionaryImpl() {
       @Override
       public byte[] dictionary() {
-        return dictionary;
+        return bytes;
       }
 
       @Override

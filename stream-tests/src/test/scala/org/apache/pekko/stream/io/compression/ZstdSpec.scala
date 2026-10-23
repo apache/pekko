@@ -166,7 +166,21 @@ class ZstdSpec extends CoderSpec[ZstdException]("zstd") {
       val text = "dictionary é中"
       val utf8 = text.getBytes(StandardCharsets.UTF_8)
       ZstdDictionary(text).dictionary should ===(ByteString(utf8))
-      new JavaZstdDictionary(text).getDictionary should ===(utf8)
+      new JavaZstdDictionary(text).getDictionary should ===(ByteString(utf8))
+    }
+    "give the Java dictionary value semantics" in {
+      val dictBytes = smallTextBytes.toArray
+      val dictionary = new JavaZstdDictionary(dictBytes, Compression.ZstdDefaultCompressionLevel)
+      dictionary should ===(new JavaZstdDictionary(dictBytes.clone(), Compression.ZstdDefaultCompressionLevel))
+      dictionary.hashCode should ===(
+        new JavaZstdDictionary(smallTextBytes, Compression.ZstdDefaultCompressionLevel).hashCode)
+      dictionary should not be new JavaZstdDictionary(dictBytes)
+      // the array is copied, so changing it does not affect the dictionary
+      java.util.Arrays.fill(dictBytes, 0.toByte)
+      dictionary.getDictionary should ===(smallTextBytes)
+      // and so is the array handed to the operators
+      java.util.Arrays.fill(dictionary.toImpl.dictionary, 0.toByte)
+      dictionary.getDictionary should ===(smallTextBytes)
     }
     "give the Scala dictionary value semantics" in {
       val dictBytes = smallTextBytes.toArray
@@ -246,8 +260,7 @@ class ZstdSpec extends CoderSpec[ZstdException]("zstd") {
         Source.single(compressed).via(decompress).join.awaitResult(3.seconds) should ===(input)
     }
     "reject a decompression dictionary with only one of offset and length" in {
-      val dictionary = new JavaZstdDictionary(smallTextBytes.toArray)
-      dictionary.setOffset(1)
+      val dictionary = new JavaZstdDictionary(smallTextBytes.toArray, null: Integer, Integer.valueOf(1), null: Integer)
       an[IllegalArgumentException] should be thrownBy
       JavaCompression.zstdDecompress(ZstdDecompressionSettings.create().withDictionary(dictionary))
     }
@@ -323,8 +336,7 @@ class ZstdSpec extends CoderSpec[ZstdException]("zstd") {
       }
     }
     "reject a compression dictionary with only one of offset and length" in {
-      val dictionary = new JavaZstdDictionary(smallTextBytes.toArray)
-      dictionary.setOffset(1)
+      val dictionary = new JavaZstdDictionary(smallTextBytes.toArray, null: Integer, Integer.valueOf(1), null: Integer)
       an[IllegalArgumentException] should be thrownBy new ZstdCompressor(dictionary = Some(dictionary.toImpl))
     }
   }
