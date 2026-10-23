@@ -41,10 +41,12 @@ class RemoteConnectionSpec extends ArteryMultiNodeSpec("pekko.remote.retry-gate-
   }
 
   // handshake retries can log the collision more than once, so expect at least one warning
-  private def expectCollisionWarning(warnings: TestProbe): Unit =
+  private def expectCollisionWarning(warnings: TestProbe): Unit = {
     warnings.fishForMessage(hint = "UID collision warning") {
       case w: Logging.Warning => w.message.toString.startsWith("UID collision old [")
     }
+    warnings.system.eventStream.unsubscribe(warnings.ref)
+  }
 
   private def quarantinedProbe(system: ActorSystem): TestProbe = {
     val probe = new TestProbe(system)
@@ -58,6 +60,7 @@ class RemoteConnectionSpec extends ArteryMultiNodeSpec("pekko.remote.retry-gate-
     quarantined.fishForMessage(hint = "ThisActorSystemQuarantinedEvent") {
       case e: ThisActorSystemQuarantinedEvent => e.remoteAddress == quarantinedBy
     }
+    quarantined.system.eventStream.unsubscribe(quarantined.ref)
   }
 
   "Remoting between systems" should {
