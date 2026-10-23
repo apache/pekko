@@ -46,6 +46,20 @@ class RemoteConnectionSpec extends ArteryMultiNodeSpec("pekko.remote.retry-gate-
       case w: Logging.Warning => w.message.toString.startsWith("UID collision old [")
     }
 
+  private def quarantinedProbe(system: ActorSystem): TestProbe = {
+    val probe = new TestProbe(system)
+    system.eventStream.subscribe(probe.ref, classOf[ThisActorSystemQuarantinedEvent])
+    probe
+  }
+
+  // the system that detects the collision tells the colliding system that it has been quarantined
+  private def expectQuarantinedBy(quarantined: TestProbe, system: ActorSystem): Unit = {
+    val quarantinedBy = RARP(system).provider.transport.asInstanceOf[ArteryTransport].localAddress
+    quarantined.fishForMessage(hint = "ThisActorSystemQuarantinedEvent") {
+      case e: ThisActorSystemQuarantinedEvent => e.remoteAddress == quarantinedBy
+    }
+  }
+
   "Remoting between systems" should {
 
     "handle uid collision when connection TO two systems with same uid" in {
@@ -71,6 +85,7 @@ class RemoteConnectionSpec extends ArteryMultiNodeSpec("pekko.remote.retry-gate-
           pekko.remote.artery.canonical.port=$remotePort2
           """))
       val remote2Probe = new TestProbe(remoteSystem2)
+      val remote2Quarantined = quarantinedProbe(remoteSystem2)
 
       localProbe.expectNoMessage(2.seconds)
       localSystem.actorOf(TestActors.echoActorProps, echoName)
@@ -97,6 +112,7 @@ class RemoteConnectionSpec extends ArteryMultiNodeSpec("pekko.remote.retry-gate-
       // doesn't get through
       localProbe.expectNoMessage()
       expectCollisionWarning(collisionWarnings1)
+      expectQuarantinedBy(remote2Quarantined, localSystem)
       RARP(localSystem).provider.transport
         .asInstanceOf[ArteryTransport]
         .association(RARP(remoteSystem2).provider.getDefaultAddress)
@@ -154,6 +170,7 @@ class RemoteConnectionSpec extends ArteryMultiNodeSpec("pekko.remote.retry-gate-
           pekko.remote.artery.canonical.port=$remotePort2
           """))
       val remote2Probe = new TestProbe(remoteSystem2)
+      val remote2Quarantined = quarantinedProbe(remoteSystem2)
 
       localProbe.expectNoMessage(2.seconds)
       localSystem.actorOf(TestActors.echoActorProps, echoName)
@@ -180,6 +197,7 @@ class RemoteConnectionSpec extends ArteryMultiNodeSpec("pekko.remote.retry-gate-
       // doesn't get through
       localProbe.expectNoMessage()
       expectCollisionWarning(collisionWarnings3)
+      expectQuarantinedBy(remote2Quarantined, localSystem)
       RARP(localSystem).provider.transport
         .asInstanceOf[ArteryTransport]
         .association(RARP(remoteSystem2).provider.getDefaultAddress)
