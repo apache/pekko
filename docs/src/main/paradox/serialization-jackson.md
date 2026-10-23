@@ -44,7 +44,8 @@ The rest of this page applies to both modules, with these differences for `pekko
   `WRITE_DATES_AS_TIMESTAMPS` are configured in a `datetime-features` section instead of `serialization-features`.
 
 Both modules register their serializers with the same names (`jackson-json` and `jackson-cbor`) and the
-same serializer identifiers, so only add one of them to your application.
+same serializer identifiers, so only add one of them to your application. The serializers fail at
+ActorSystem startup with an `IllegalStateException` if both modules are on the classpath.
 
 ## Introduction
 
