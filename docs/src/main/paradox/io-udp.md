@@ -53,7 +53,7 @@ destinations; in this example it will send any UTF-8 encoded
 @@@ note
 
 The simple sender will not shut itself down because it cannot know when you
-are done with it. You will need to send it a `PoisonPill` when you
+are done with it. You will need to send it a @apidoc[org.apache.pekko.actor.PoisonPill] when you
 want to close the ephemeral port the sender is bound to.
 
 @@@
@@ -67,20 +67,20 @@ Java
 :  @@snip [UdpDocTest.java](/docs/src/test/java/jdocs/io/UdpDocTest.java) { #listener }
 
 If you want to implement a UDP server which listens on a socket for incoming
-datagrams then you need to use the @scala[`Bind`]@java[`UdpMessage.bind`] message as shown above. The
+datagrams then you need to use the @scala[@scaladoc[Bind](org.apache.pekko.io.Udp.Bind)]@java[@javadoc[UdpMessage.bind](org.apache.pekko.io.UdpMessage#bind(org.apache.pekko.actor.ActorRef,java.net.InetSocketAddress,java.lang.Iterable))] message as shown above. The
 local address specified may have a zero port in which case the operating system
 will automatically choose a free port and assign it to the new socket. Which
 port was actually bound can be found out by inspecting the `Bound`
 message.
 
-The sender of the `Bound` message is the actor which manages the new
-socket. Sending datagrams is achieved by using the @scala[`Send`]@java[`UdpMessage.send`] message
-and the socket can be closed by sending a @scala[`Unbind`]@java[`UdpMessage.unbind`] message, in which
-case the socket actor will reply with a `Unbound` notification.
+The sender of the @apidoc[org.apache.pekko.io.Udp.Bound] message is the actor which manages the new
+socket. Sending datagrams is achieved by using the @scala[@scaladoc[Send](org.apache.pekko.io.Udp.Send)]@java[@javadoc[UdpMessage.send](org.apache.pekko.io.UdpMessage#send(org.apache.pekko.util.ByteString,java.net.InetSocketAddress))] message
+and the socket can be closed by sending a @scala[@scaladoc[Unbind](org.apache.pekko.io.Udp.Unbind$)]@java[@javadoc[UdpMessage.unbind](org.apache.pekko.io.UdpMessage#unbind())] message, in which
+case the socket actor will reply with a @apidoc[org.apache.pekko.io.Udp.Unbound] notification.
 
 Received datagrams are sent to the actor designated in the `Bind`
 message, whereas the `Bound` message will be sent to the sender of the
-@scala[`Bind`]@java[`UdpMessage.bind`].
+@scala[@scaladoc[Bind](org.apache.pekko.io.Udp.Bind)]@java[@javadoc[UdpMessage.bind](org.apache.pekko.io.UdpMessage#bind(org.apache.pekko.actor.ActorRef,java.net.InetSocketAddress,java.lang.Iterable))].
 
 ## Connected UDP
 
@@ -101,12 +101,12 @@ the biggest difference is the absence of remote address information in
 
 ## UDP Multicast
 
-Pekko provides a way to control various options of `DatagramChannel` through the
-`org.apache.pekko.io.Inet.SocketOption` interface. The example below shows
+Pekko provides a way to control various options of @javadoc[DatagramChannel](java.nio.channels.DatagramChannel) through the
+@apidoc[org.apache.pekko.io.Inet.SocketOption] interface. The example below shows
 how to setup a receiver of multicast messages using IPv6 protocol.
 
-To select a Protocol Family you must extend `org.apache.pekko.io.Inet.DatagramChannelCreator`
-class which @scala[extends]@java[implements] `org.apache.pekko.io.Inet.SocketOption`. Provide custom logic
+To select a Protocol Family you must extend @apidoc[org.apache.pekko.io.Inet.DatagramChannelCreator]
+class which @scala[extends]@java[implements] @apidoc[org.apache.pekko.io.Inet.SocketOption]. Provide custom logic
 for opening a datagram channel by overriding `create` method.
 
 Scala
@@ -123,7 +123,7 @@ Scala
 Java
 :  @@snip [JavaUdpMulticast.java](/docs/src/test/java/jdocs/io/JavaUdpMulticast.java) { #multicast-group }
 
-Socket options must be provided to @scala[`Udp.Bind`]@java[`UdpMessage.bind`] message.
+Socket options must be provided to @scala[@scaladoc[Bind](org.apache.pekko.io.Udp.Bind)]@java[@javadoc[UdpMessage.bind](org.apache.pekko.io.UdpMessage#bind(org.apache.pekko.actor.ActorRef,java.net.InetSocketAddress,java.lang.Iterable))] message.
 
 Scala
 :  @@snip [ScalaUdpMulticast.scala](/docs/src/test/scala/docs/io/ScalaUdpMulticast.scala) { #bind }
