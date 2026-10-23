@@ -57,7 +57,7 @@ The SO_NODELAY (TCP_NODELAY on Windows) socket option defaults to true in
 Pekko, independently of the OS default settings. This setting disables Nagle's
 algorithm, considerably improving latency for most applications. This setting
 could be overridden by passing `SO.TcpNoDelay(false)` in the list of socket
-options of the @scala[`Connect` message]@java[message by the `TcpMessage.connect` method].
+options of the @scala[@scaladoc[Connect](org.apache.pekko.io.Tcp.Connect) message]@java[message by the @javadoc[TcpMessage.connect](org.apache.pekko.io.TcpMessage#connect(java.net.InetSocketAddress)) method].
 
 @@@
 
@@ -70,7 +70,7 @@ In order to activate the new connection a @scala[@scaladoc[Register](org.apache.
 sent to the connection actor, informing that one about who shall receive data
 from the socket. Before this step is done the connection cannot be used, and
 there is an internal timeout after which the connection actor will shut itself
-down if no @scala[`Register` message]@java[message by the `TcpMessage.register` method] is received.
+down if no @scala[@scaladoc[Register](org.apache.pekko.io.Tcp.Register) message]@java[message by the @javadoc[TcpMessage.register](org.apache.pekko.io.TcpMessage#register(org.apache.pekko.actor.ActorRef)) method] is received.
 
 The connection actor watches the registered handler and closes the connection
 when that one terminates, thereby cleaning up all internal resources associated
@@ -97,7 +97,7 @@ has to be sent to the TCP manager.  This will instruct the TCP manager
 to listen for TCP connections on a particular @javadoc[InetSocketAddress](java.net.InetSocketAddress); the
 port may be specified as `0` in order to bind to a random port.
 
-The actor sending the @scala[`Bind` message]@java[message by the `TcpMessage.bind` method] will receive a @apidoc[org.apache.pekko.io.Tcp.Bound]
+The actor sending the @scala[@scaladoc[Bind](org.apache.pekko.io.Tcp.Bind) message]@java[message by the @javadoc[TcpMessage.bind](org.apache.pekko.io.TcpMessage#bind(org.apache.pekko.actor.ActorRef,java.net.InetSocketAddress,int)) method] will receive a @apidoc[org.apache.pekko.io.Tcp.Bound]
 message signaling that the server is ready to accept incoming connections;
 this message also contains the `InetSocketAddress` to which the socket
 was actually bound (i.e. resolved IP address and correct port number). 
@@ -121,14 +121,14 @@ failures when sending please see @ref:[Throttling Reads and Writes](#throttling-
 The only difference to outgoing connections is that the internal actor managing
 the listen port—the sender of the @apidoc[org.apache.pekko.io.Tcp.Bound] message—watches the actor
 which was named as the recipient for @apidoc[org.apache.pekko.io.Tcp.Connected] messages in the
-@scala[`Bind` message]@java[`TcpMessage.bind` method]. When that actor terminates the listen port will be
+@scala[@scaladoc[Bind](org.apache.pekko.io.Tcp.Bind) message]@java[@javadoc[TcpMessage.bind](org.apache.pekko.io.TcpMessage#bind(org.apache.pekko.actor.ActorRef,java.net.InetSocketAddress,int)) method]. When that actor terminates the listen port will be
 closed and all resources associated with it will be released; existing
 connections will not be terminated at this point.
 
 ## Closing connections
 
-A connection can be closed by sending @scala[one of the commands `Close`, `ConfirmedClose` or `Abort`]
-@java[a message by one of the methods `TcpMessage.close`, `TcpMessage.confirmedClose` or `TcpMessage.abort`]
+A connection can be closed by sending @scala[one of the commands @scaladoc[Close](org.apache.pekko.io.Tcp.Close$), @scaladoc[ConfirmedClose](org.apache.pekko.io.Tcp.ConfirmedClose$) or @scaladoc[Abort](org.apache.pekko.io.Tcp.Abort$)]
+@java[a message by one of the methods @javadoc[TcpMessage.close](org.apache.pekko.io.TcpMessage#close()), @javadoc[TcpMessage.confirmedClose](org.apache.pekko.io.TcpMessage#confirmedClose()) or @javadoc[TcpMessage.abort](org.apache.pekko.io.TcpMessage#abort())]
 to the connection actor.
 
 @scala[@scaladoc[Close](org.apache.pekko.io.Tcp.Close$)]@java[@javadoc[TcpMessage.close](org.apache.pekko.io.TcpMessage#close())] will close the connection by sending a `FIN` message, but without waiting for confirmation from
@@ -174,16 +174,16 @@ Sometimes, you might want to group (or interleave) several @apidoc[Tcp.Write](or
 one atomic write command which gets written to the connection in one go. The @apidoc[Tcp.CompoundWrite](org.apache.pekko.io.Tcp.CompoundWrite) allows you
 to do just that and offers three benefits:
  1. As explained in the following section the TCP connection actor can only handle one single write command at a time.
-By combining several writes into one `CompoundWrite` you can have them be sent across the connection with
+By combining several writes into one @apidoc[CompoundWrite](org.apache.pekko.io.Tcp.CompoundWrite) you can have them be sent across the connection with
 minimum overhead and without the need to spoon feed them to the connection actor via an *ACK-based* message
 protocol.
  2. Because a @apidoc[org.apache.pekko.io.Tcp.WriteCommand] is atomic you can be sure that no other actor can "inject" other writes into your
-series of writes if you combine them into one single `CompoundWrite`. In scenarios where several actors write
+series of writes if you combine them into one single @apidoc[CompoundWrite](org.apache.pekko.io.Tcp.CompoundWrite). In scenarios where several actors write
 to the same connection this can be an important feature which can be somewhat hard to achieve otherwise.
- 3. The "sub writes" of a `CompoundWrite` are regular @scala[@scaladoc[Write](org.apache.pekko.io.Tcp.Write) or @scaladoc[WritePath](org.apache.pekko.io.Tcp.WritePath) commands]@java[messages by @javadoc[TcpMessage.write](org.apache.pekko.io.TcpMessage#write(org.apache.pekko.util.ByteString,org.apache.pekko.io.Tcp.Event)) or @javadoc[TcpMessage.writePath](org.apache.pekko.io.TcpMessage#writePath(java.nio.file.Path,long,long,org.apache.pekko.io.Tcp.Event)) methods] that themselves can request
+ 3. The "sub writes" of a @apidoc[CompoundWrite](org.apache.pekko.io.Tcp.CompoundWrite) are regular @scala[@scaladoc[Write](org.apache.pekko.io.Tcp.Write) or @scaladoc[WritePath](org.apache.pekko.io.Tcp.WritePath) commands]@java[messages by @javadoc[TcpMessage.write](org.apache.pekko.io.TcpMessage#write(org.apache.pekko.util.ByteString,org.apache.pekko.io.Tcp.Event)) or @javadoc[TcpMessage.writePath](org.apache.pekko.io.TcpMessage#writePath(java.nio.file.Path,long,long,org.apache.pekko.io.Tcp.Event)) methods] that themselves can request
 "ack" events. These ACKs are sent out as soon as the respective "sub write" has been completed. This allows you to
-attach more than one ACK to a @scala[`Write` or `WritePath`]@java[message by `TcpMessage.write` or `TcpMessage.writePath`] (by combining it with an empty write that itself requests
-an ACK) or to have the connection actor acknowledge the progress of transmitting the `CompoundWrite` by sending
+attach more than one ACK to a @scala[@scaladoc[Write](org.apache.pekko.io.Tcp.Write) or @scaladoc[WritePath](org.apache.pekko.io.Tcp.WritePath)]@java[message by @javadoc[TcpMessage.write](org.apache.pekko.io.TcpMessage#write(org.apache.pekko.util.ByteString,org.apache.pekko.io.Tcp.Event)) or @javadoc[TcpMessage.writePath](org.apache.pekko.io.TcpMessage#writePath(java.nio.file.Path,long,long,org.apache.pekko.io.Tcp.Event))] (by combining it with an empty write that itself requests
+an ACK) or to have the connection actor acknowledge the progress of transmitting the @apidoc[CompoundWrite](org.apache.pekko.io.Tcp.CompoundWrite) by sending
 out intermediate ACKs at arbitrary points.
 
 
@@ -392,7 +392,7 @@ actor will use pull mode reading.
 Another effect of this setting is that in addition of setting all inbound connections to
 pull mode, accepting connections becomes pull based, too. This means that after handling
 one (or more) `Connected` events the listener actor has to be resumed by sending
-it a @scala[`ResumeAccepting` message]@java[message by the `TcpMessage.resumeAccepting` method].
+it a @scala[@scaladoc[ResumeAccepting](org.apache.pekko.io.Tcp.ResumeAccepting) message]@java[message by the @javadoc[TcpMessage.resumeAccepting](org.apache.pekko.io.TcpMessage#resumeAccepting(int)) method].
 
 Listener actors with pull mode start suspended so to start accepting connections
 a @scala[@scaladoc[ResumeAccepting](org.apache.pekko.io.Tcp.ResumeAccepting) command]@java[message by the @javadoc[TcpMessage.resumeAccepting](org.apache.pekko.io.TcpMessage#resumeAccepting(int)) method] has to be sent to the listener actor after binding was successful:
@@ -405,6 +405,6 @@ Java
 
 As shown in the example, after handling an incoming connection we need to resume accepting again.
 
-The @scala[`ResumeAccepting`]@java[`TcpMessage.resumeAccepting` method] accepts a `batchSize` parameter that specifies how
+The @scala[@scaladoc[ResumeAccepting](org.apache.pekko.io.Tcp.ResumeAccepting)]@java[@javadoc[TcpMessage.resumeAccepting](org.apache.pekko.io.TcpMessage#resumeAccepting(int)) method] accepts a `batchSize` parameter that specifies how
 many new connections are accepted before a next `ResumeAccepting` message
 is needed to resume handling of new connections.
