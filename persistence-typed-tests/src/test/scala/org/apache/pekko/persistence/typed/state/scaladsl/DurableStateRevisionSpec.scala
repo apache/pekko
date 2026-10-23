@@ -8,12 +8,15 @@
  */
 
 /*
- * Copyright (C) 2009-2022 Lightbend Inc. <https://www.lightbend.com>
+ * Copyright (C) 2009-2023 Lightbend Inc. <https://www.lightbend.com>
  */
 
 package org.apache.pekko.persistence.typed.state.scaladsl
 
+import scala.concurrent.duration._
+
 import org.apache.pekko
+import pekko.Done
 import pekko.actor.Dropped
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
 import pekko.actor.testkit.typed.scaladsl.LoggingTestKit
@@ -33,6 +36,12 @@ import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
 
 object DurableStateRevisionSpec {
+
+  sealed trait UserStashCommand
+  case object Ready extends UserStashCommand
+  final case class Read(index: Int) extends UserStashCommand
+  case object CountStashed extends UserStashCommand
+  case object Unstash extends UserStashCommand
 
   def conf: Config = PersistenceTestKitDurableStateStorePlugin.config.withFallback(ConfigFactory.parseString(s"""
     pekko.loglevel = INFO
@@ -178,6 +187,49 @@ class DurableStateRevisionSpec
       probe.expectMessage(s"${102} onCommand")
       probe.expectMessage(s"${103} thenRun")
 
+    }
+  }
+
+  "The durable state user stash" must {
+    "unstash a large read-only batch in order and process subsequent commands" in {
+      import DurableStateRevisionSpec._
+
+      val size = 5000
+      val ready = TestProbe[Done]()
+      val counted = TestProbe[Int]()
+      val replies = TestProbe[Int]()
+      system.settings.config.getBoolean("pekko.persistence.typed.recurse-when-unstashing-read-only-commands") shouldBe
+      false
+
+      val ref = spawn(Behaviors.setup[UserStashCommand] { _ =>
+        var stashed = 0
+        DurableStateBehavior[UserStashCommand, Boolean](
+          PersistenceId.ofUniqueId("read-only-user-stash"),
+          false,
+          (readEnabled, command) =>
+            command match {
+              case Ready                   => Effect.reply(ready.ref)(Done)
+              case Read(_) if !readEnabled =>
+                stashed += 1
+                Effect.stash()
+              case Read(index)  => Effect.reply(replies.ref)(index)
+              case CountStashed => Effect.reply(counted.ref)(stashed)
+              case Unstash      => Effect.persist(true).thenUnstashAll()
+            }).withStashCapacity(size)
+      })
+
+      // This reply proves recovery has completed before commands enter the user stash.
+      ref ! Ready
+      ready.expectMessage(Done)
+      (1 to size).foreach(index => ref ! Read(index))
+      ref ! CountStashed
+      counted.expectMessage(size)
+
+      ref ! Unstash
+      replies.receiveMessages(size) shouldBe (1 to size)
+      ref ! Read(size + 1)
+      replies.expectMessage(size + 1)
+      replies.expectNoMessage(100.millis)
     }
   }
 }
