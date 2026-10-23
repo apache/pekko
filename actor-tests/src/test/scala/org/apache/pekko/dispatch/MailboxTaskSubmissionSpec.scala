@@ -77,71 +77,47 @@ class MailboxTaskSubmissionSpec extends PekkoSpec {
 
   "PekkoForkJoinTask" must {
 
-    "preserve Runnable equality and hash codes across fresh wrappers" in {
-      for (hash <- Seq(Int.MinValue, -1, 0, 1, Int.MaxValue)) {
-        val runnable = new Runnable {
-          final override def run(): Unit = ()
-          final override def hashCode(): Int = hash
-        }
-        val first = new PekkoForkJoinTask(runnable)
-        val second = new PekkoForkJoinTask(runnable)
-
-        withClue(s"Runnable hash code $hash: ") {
-          first.hashCode() shouldBe hash
-          second.hashCode() shouldBe hash
-          (first eq second) shouldBe false
-          first shouldEqual second
-          second shouldEqual first
-        }
-      }
-    }
-
-    "compare wrapped Runnables without equating hash collisions or unrelated objects" in {
+    "use task identity for wrappers of the same or equal Runnables" in {
       final case class ValueRunnable(value: Int) extends Runnable {
         override def run(): Unit = ()
-        override def hashCode(): Int = 42
       }
       val runnable = ValueRunnable(1)
-      val equalRunnable = ValueRunnable(1)
-      (runnable eq equalRunnable) shouldBe false
       val first = new PekkoForkJoinTask(runnable)
-      val second = new PekkoForkJoinTask(equalRunnable)
+      val second = new PekkoForkJoinTask(runnable)
       val third = new PekkoForkJoinTask(ValueRunnable(1))
-      val different = new PekkoForkJoinTask(ValueRunnable(2))
 
-      first.equals(first) shouldBe true
-      first shouldEqual second
-      second shouldEqual first
-      second shouldEqual third
-      first shouldEqual third
-      first.hashCode() shouldBe second.hashCode()
-      first.hashCode() shouldBe different.hashCode()
-      first.equals(different) shouldBe false
-      different.equals(first) shouldBe false
-      first.equals(null) shouldBe false
-      first.equals(new Object) shouldBe false
-      first.equals(runnable) shouldBe false
-      runnable.equals(first) shouldBe false
-      first.equals(ForkJoinTask.adapt(runnable)) shouldBe false
+      (first should not).equal(second)
+      (second should not).equal(third)
+      (first should not).equal(third)
+      Seq(first, second, third).foreach(task => task.hashCode() shouldBe System.identityHashCode(task))
 
-      // Exercise hash buckets: Scala's small Set implementations do not use hashing.
-      val tasks = new java.util.HashSet[PekkoForkJoinTask]()
-      tasks.add(first) shouldBe true
-      tasks.add(second) shouldBe false
-      tasks.add(different) shouldBe true
-      tasks.size() shouldBe 2
-      tasks.contains(third) shouldBe true
-      tasks.remove(third) shouldBe true
-      tasks.contains(first) shouldBe false
-      tasks.contains(different) shouldBe true
-      tasks.size() shouldBe 1
+      val submissions = new java.util.HashSet[PekkoForkJoinTask]()
+      submissions.add(first) shouldBe true
+      submissions.add(second) shouldBe true
+      submissions.add(third) shouldBe true
+      submissions.size() shouldBe 3
+      submissions.remove(second) shouldBe true
+      submissions.contains(first) shouldBe true
+      submissions.contains(third) shouldBe true
     }
 
-    "retain independent completion and cancellation for equal wrappers" in {
+    "keep its hash code stable when the wrapped Runnable changes" in {
+      var hash = -1
+      val runnable = new Runnable {
+        override def run(): Unit = ()
+        override def hashCode(): Int = hash
+      }
+      val task = new PekkoForkJoinTask(runnable)
+      val identityHash = System.identityHashCode(task)
+      task.hashCode() shouldBe identityHash
+      hash = 1
+      task.hashCode() shouldBe identityHash
+    }
+
+    "retain independent completion and cancellation for wrappers of the same Runnable" in {
       val runs = new AtomicInteger(0)
       val runnable = new Runnable {
         final override def run(): Unit = { runs.incrementAndGet() }
-        final override def hashCode(): Int = 42
       }
       val cancelled = new PekkoForkJoinTask(runnable)
       val completed = new PekkoForkJoinTask(runnable)
@@ -150,8 +126,7 @@ class MailboxTaskSubmissionSpec extends PekkoSpec {
       (cancelled eq completed) shouldBe false
       (completed eq pending) shouldBe false
       (cancelled eq pending) shouldBe false
-      val submissions = java.util.Collections.newSetFromMap(
-        new java.util.IdentityHashMap[PekkoForkJoinTask, java.lang.Boolean]())
+      val submissions = new java.util.HashSet[PekkoForkJoinTask]()
       submissions.add(cancelled) shouldBe true
       submissions.add(completed) shouldBe true
       submissions.add(pending) shouldBe true
@@ -162,11 +137,7 @@ class MailboxTaskSubmissionSpec extends PekkoSpec {
       completed.isCompletedNormally shouldBe true
       pending.isDone shouldBe false
       runs.get() shouldBe 1
-      cancelled shouldEqual completed
-      completed shouldEqual pending
-      cancelled shouldEqual pending
       submissions.size() shouldBe 3
-      Seq(cancelled, completed, pending).foreach(_.hashCode() shouldBe 42)
 
       pending.invoke()
       pending.isCompletedNormally shouldBe true
@@ -178,7 +149,7 @@ class MailboxTaskSubmissionSpec extends PekkoSpec {
 
   "PekkoForkJoinPool" must {
 
-    "execute equal task wrappers independently while preserving cancellation" in {
+    "execute wrappers of the same Runnable independently while preserving cancellation" in {
       val pool = newPool()
       val runs = new AtomicInteger(0)
       val runnable = new Runnable {
@@ -196,8 +167,6 @@ class MailboxTaskSubmissionSpec extends PekkoSpec {
       first.isCompletedNormally shouldBe true
       second.isCompletedNormally shouldBe true
       runs.get() shouldBe 2
-      cancelled shouldEqual first
-      first shouldEqual second
     }
 
     "not run a cancelled ForkJoinTask submitted as a Runnable" in {

@@ -75,24 +75,11 @@ object ForkJoinExecutorConfigurator {
   /**
    * INTERNAL PEKKO USAGE ONLY
    *
-   * Wrappers of equal Runnables compare equal, but retain independent completion and cancellation
-   * state. Hash-based collections therefore treat them as the same key; use reference identity
-   * when tracking individual submissions. The Runnable's equality and hash code must remain stable
-   * while a wrapper is used as a hash key.
+   * Each wrapper represents a separate submission with independent completion and cancellation
+   * state, so equality and hash codes use task identity even when the Runnable is reused.
    */
   @SerialVersionUID(1L)
-  final class PekkoForkJoinTask(private val runnable: Runnable) extends ForkJoinTask[Unit] {
-
-    final override def equals(other: Any): Boolean = other match {
-      case that: PekkoForkJoinTask => (this eq that) || runnable == that.runnable
-      case _                       => false
-    }
-
-    /**
-     * Preserve the wrapped Runnable's hash code across fresh task wrappers, provided that the
-     * Runnable's hash code is stable.
-     */
-    final override def hashCode(): Int = runnable.hashCode()
+  final class PekkoForkJoinTask(runnable: Runnable) extends ForkJoinTask[Unit] {
 
     override def getRawResult(): Unit = ()
     override def setRawResult(unit: Unit): Unit = ()
