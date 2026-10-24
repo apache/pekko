@@ -30,6 +30,7 @@ import pekko.ConfigurationException
 import pekko.PekkoException
 import pekko.actor.{
   Actor,
+  ActorLogging,
   ActorRef,
   Address,
   DeadLetterSuppression,
@@ -47,7 +48,7 @@ import pekko.pattern.ask
 import pekko.remote.transport.ThrottlerTransportAdapter.Direction
 import pekko.util.Timeout
 
-import io.netty.channel.{ Channel, ChannelHandlerContext, ChannelInboundHandlerAdapter }
+import io.netty.channel.{ Channel, ChannelFuture, ChannelHandlerContext, ChannelInboundHandlerAdapter }
 import io.netty.channel.ChannelHandler.Sharable
 
 /**
@@ -422,6 +423,8 @@ private[pekko] object Controller {
   case object GetNodes
   case object GetSockAddr
   final case class CreateServerFSM(channel: Channel) extends NoSerializationVerificationNeeded
+  private final case class SockAddrBound(addr: InetSocketAddress)
+  private final case class SockAddrBindFailed(cause: Throwable)
 
   final case class NodeInfo(name: RoleName, addr: Address, fsm: ActorRef)
 }
@@ -433,7 +436,9 @@ private[pekko] object Controller {
  *
  * INTERNAL API.
  */
-private[pekko] class Controller(private var initialParticipants: Int, controllerPort: InetSocketAddress) extends Actor {
+private[pekko] class Controller(private var initialParticipants: Int, controllerPort: InetSocketAddress)
+    extends Actor
+    with ActorLogging {
   import BarrierCoordinator._
   import Controller._
 
@@ -443,6 +448,18 @@ private[pekko] class Controller(private var initialParticipants: Int, controller
     controllerPort,
     settings.ServerSocketWorkerPoolSize,
     new ConductorHandler(settings.QueryTimeout, self, Logging(context.system, classOf[ConductorHandler])))
+
+  private var boundSockAddr: Option[InetSocketAddress] = None
+  private var sockAddrRequesters: List[ActorRef] = Nil
+
+  // complete GetSockAddr requests asynchronously instead of blocking this actor's
+  // thread (which also hosts the barrier coordinator) on the Netty bind future
+  connection.channelFuture.addListener((future: ChannelFuture) => {
+    if (future.isSuccess)
+      self ! SockAddrBound(future.channel().localAddress().asInstanceOf[InetSocketAddress])
+    else
+      self ! SockAddrBindFailed(future.cause())
+  })
 
   /**
    * Supervision of the BarrierCoordinator means to catch all his bad emotions
@@ -529,7 +546,22 @@ private[pekko] class Controller(private var initialParticipants: Int, controller
       }
     case GetNodes    => sender() ! nodes.keys
     case GetSockAddr =>
-      sender() ! connection.channelFuture.sync().channel().localAddress()
+      boundSockAddr match {
+        case Some(addr) => sender() ! addr
+        case None       => sockAddrRequesters ::= sender()
+      }
+    case SockAddrBound(addr) =>
+      boundSockAddr = Some(addr)
+      sockAddrRequesters.reverse.foreach(_ ! addr)
+      sockAddrRequesters = Nil
+    case SockAddrBindFailed(cause) =>
+      // fail the pending sockAddr queries and stop, so that a conductor port
+      // collision fails fast and legibly instead of letting the other nodes
+      // time out on their queries or barriers later
+      log.error(cause, "Conductor controller could not bind to [{}]", controllerPort)
+      sockAddrRequesters.reverse.foreach(_ ! Status.Failure(cause))
+      sockAddrRequesters = Nil
+      context.stop(self)
   }
 
   override def postStop(): Unit = {
