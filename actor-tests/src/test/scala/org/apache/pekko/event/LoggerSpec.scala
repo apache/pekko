@@ -23,6 +23,7 @@ import scala.concurrent.duration._
 import scala.util.control.NoStackTrace
 
 import org.apache.pekko
+import pekko.ConfigurationException
 import pekko.actor._
 import pekko.event.Logging._
 import pekko.event.Logging.InitializeLogger
@@ -70,6 +71,27 @@ object LoggerSpec {
         loggers = ["org.apache.pekko.event.LoggerSpec$TestLogger1", "org.apache.pekko.event.LoggerSpec$TestLogger2"]
       }
     """).withFallback(PekkoSpec.testConf)
+
+  val unresolvableLoggerConfig =
+    ConfigFactory.parseString("""
+      pekko {
+        stdout-loglevel = "OFF"
+        loglevel = "WARNING"
+        loggers = ["org.apache.pekko.event.LoggerSpec$LifecycleRecordingLogger", "invalid.LoggerClassName"]
+      }
+    """).withFallback(PekkoSpec.testConf)
+
+  val lifecycleLoggerStarted = new java.util.concurrent.atomic.AtomicBoolean(false)
+  val lifecycleLoggerStopped = new java.util.concurrent.atomic.AtomicBoolean(false)
+
+  class LifecycleRecordingLogger extends Actor {
+    override def preStart(): Unit = lifecycleLoggerStarted.set(true)
+    override def postStop(): Unit = lifecycleLoggerStopped.set(true)
+    override def receive: Receive = {
+      case InitializeLogger(_) => sender() ! LoggerInitialized
+      case _                   =>
+    }
+  }
 
   val ticket3165Config = ConfigFactory.parseString(s"""
       pekko {
@@ -235,6 +257,23 @@ class LoggerSpec extends AnyWordSpec with Matchers {
           TestKit.shutdownActorSystem(system)
         }
       }
+    }
+  }
+
+  "An actor system with an unresolvable logger configured after a valid one" must {
+
+    "fail to start without creating any logger actor" in {
+      lifecycleLoggerStarted.set(false)
+      lifecycleLoggerStopped.set(false)
+
+      intercept[ConfigurationException] {
+        ActorSystem("unresolvableLogger", unresolvableLoggerConfig)
+      }
+
+      // the valid logger must not have been created as a system actor that then
+      // leaks, because class resolution now happens before any logger is created
+      lifecycleLoggerStarted.get() should ===(false)
+      lifecycleLoggerStopped.get() should ===(false)
     }
   }
 
