@@ -81,7 +81,7 @@ These built-in sinks are available from @scala[`org.apache.pekko.stream.scaladsl
 |Sink|<a name="never"></a>@ref[never](Sink/never.md)|Always backpressure never cancel and never consume any elements from the stream.|
 |Sink|<a name="none"></a>@ref[none](Sink/none.md)|A `Sink` that will test the given predicate `p` for every received element and completes with the result.|
 |Sink|<a name="oncomplete"></a>@ref[onComplete](Sink/onComplete.md)|Invoke a callback when the stream has completed or failed.|
-|Sink|<a name="prematerialize"></a>@ref[preMaterialize](Sink/preMaterialize.md)|Materializes this Sink, immediately returning (1) its materialized value, and (2) a new Sink that can be consume elements 'into' the pre-materialized one.|
+|Sink|<a name="prematerialize"></a>@ref[preMaterialize](Sink/preMaterialize.md)|Materializes this Sink, immediately returning (1) its materialized value, and (2) a new Sink that can consume elements 'into' the pre-materialized one.|
 |Sink|<a name="queue"></a>@ref[queue](Sink/queue.md)|Materialize a `SinkQueue` that can be pulled to trigger demand through the sink.|
 |Sink|<a name="reduce"></a>@ref[reduce](Sink/reduce.md)|Apply a reduction function on the incoming elements and pass the result to the next invocation.|
 |Sink|<a name="seq"></a>@ref[seq](Sink/seq.md)|Collect values emitted from the stream into a collection.|
@@ -122,7 +122,7 @@ For example, following snippet will fall with timeout exception:
 |StreamConverters|<a name="fromjavastream"></a>@ref[fromJavaStream](StreamConverters/fromJavaStream.md)|Create a source that wraps a Java 8 `java.util.stream.Stream`.|
 |StreamConverters|<a name="fromoutputstream"></a>@ref[fromOutputStream](StreamConverters/fromOutputStream.md)|Create a sink that wraps an `OutputStream`.|
 |StreamConverters|<a name="javacollector"></a>@ref[javaCollector](StreamConverters/javaCollector.md)|Create a sink which materializes into a @scala[`Future`] @java[`CompletionStage`] which will be completed with a result of the Java `Collector` transformation and reduction operations.|
-|StreamConverters|<a name="javacollectorparallelunordered"></a>@ref[javaCollectorParallelUnordered](StreamConverters/javaCollectorParallelUnordered.md)|Create a sink which materializes into a @scala[`Future`] @java[`CompletionStage`] which will be completed with a result of the Java 8 `Collector` transformation and reduction operations.|
+|StreamConverters|<a name="javacollectorparallelunordered"></a>@ref[javaCollectorParallelUnordered](StreamConverters/javaCollectorParallelUnordered.md)|Create a sink which materializes into a @scala[`Future`] @java[`CompletionStage`] which will be completed with a result of the Java `Collector` transformation and reduction operations.|
 
 ## File IO Sinks and Sources
 
@@ -145,7 +145,7 @@ depending on being backpressured by downstream or not.
 |--|--|--|
 |Flow|<a name="asflowwithcontext"></a>@ref[asFlowWithContext](Flow/asFlowWithContext.md)|Extracts context data from the elements of a `Flow` so that it can be turned into a `FlowWithContext` which can propagate that context per element along a stream.|
 |Source/Flow|<a name="collect"></a>@ref[collect](Source-or-Flow/collect.md)|Apply a partial function to each incoming element, if the partial function is defined for a value the returned value is passed downstream.|
-|Source/Flow|<a name="collectfirst"></a>@ref[collectFirst](Source-or-Flow/collectFirst.md)|Transform this stream by applying the given partial function to the first element on which the function is defined as it pass through this processing step, and cancel the upstream publisher after the first element is emitted.|
+|Source/Flow|<a name="collectfirst"></a>@ref[collectFirst](Source-or-Flow/collectFirst.md)|Transform this stream by applying the given partial function to the first element on which the function is defined as it passes through this processing step, and cancel the upstream publisher after the first element is emitted.|
 |Source/Flow|<a name="collecttype"></a>@ref[collectType](Source-or-Flow/collectType.md)|Transform this stream by testing the type of each of the elements on which the element is an instance of the provided type as they pass through this processing step.|
 |Source/Flow|<a name="collectwhile"></a>@ref[collectWhile](Source-or-Flow/collectWhile.md)|Transform this stream by applying the given partial function to each of the elements on which the function is defined as they pass through this processing step, and cancel the upstream publisher after the partial function is not applied.|
 |Flow|<a name="completionstageflow"></a>@ref[completionStageFlow](Flow/completionStageFlow.md)|Streams the elements through the given future flow once it successfully completes.|
@@ -156,7 +156,7 @@ depending on being backpressured by downstream or not.
 |Source/Flow|<a name="doonfirst"></a>@ref[doOnFirst](Source-or-Flow/doOnFirst.md)|Run the given function when the first element is received.|
 |Source/Flow|<a name="drop"></a>@ref[drop](Source-or-Flow/drop.md)|Drop `n` elements and then pass any subsequent element downstream.|
 |Source/Flow|<a name="droprepeated"></a>@ref[dropRepeated](Source-or-Flow/dropRepeated.md)|Only pass on those elements that are distinct from the previous element.|
-|Source/Flow|<a name="dropwhile"></a>@ref[dropWhile](Source-or-Flow/dropWhile.md)|Drop elements as long as a predicate function return true for the element|
+|Source/Flow|<a name="dropwhile"></a>@ref[dropWhile](Source-or-Flow/dropWhile.md)|Drop elements as long as a predicate function returns true for the element|
 |Source/Flow|<a name="filter"></a>@ref[filter](Source-or-Flow/filter.md)|Filter the incoming elements using a predicate.|
 |Source/Flow|<a name="filternot"></a>@ref[filterNot](Source-or-Flow/filterNot.md)|Filter the incoming elements using a predicate.|
 |Flow|<a name="flattenoptional"></a>@ref[flattenOptional](Flow/flattenOptional.md)|Collect the value of `Optional` from all the elements passing through this flow , empty `Optional` is filtered out.|
@@ -173,7 +173,7 @@ depending on being backpressured by downstream or not.
 |Flow|<a name="lazycompletionstageflow"></a>@ref[lazyCompletionStageFlow](Flow/lazyCompletionStageFlow.md)|Defers creation and materialization of a `Flow` until there is a first element.|
 |Flow|<a name="lazyflow"></a>@ref[lazyFlow](Flow/lazyFlow.md)|Defers creation and materialization of a `Flow` until there is a first element.|
 |Flow|<a name="lazyfutureflow"></a>@ref[lazyFutureFlow](Flow/lazyFutureFlow.md)|Defers creation and materialization of a `Flow` until there is a first element.|
-|Source/Flow|<a name="limit"></a>@ref[limit](Source-or-Flow/limit.md)|Limit number of element from upstream to given `max` number.|
+|Source/Flow|<a name="limit"></a>@ref[limit](Source-or-Flow/limit.md)|Limit number of elements from upstream to given `max` number.|
 |Source/Flow|<a name="limitweighted"></a>@ref[limitWeighted](Source-or-Flow/limitWeighted.md)|Limit the total weight of incoming elements|
 |Source/Flow|<a name="log"></a>@ref[log](Source-or-Flow/log.md)|Log elements flowing through the stream as well as completion and erroring.|
 |Source/Flow|<a name="logwithmarker"></a>@ref[logWithMarker](Source-or-Flow/logWithMarker.md)|Log elements flowing through the stream as well as completion and erroring.|
@@ -262,7 +262,7 @@ See the @ref:[Substreams](../stream-substream.md) page for more detail and code 
 |Source/Flow|<a name="groupby"></a>@ref[groupBy](Source-or-Flow/groupBy.md)|Demultiplex the incoming stream into separate output streams.|
 |Source/Flow|<a name="prefixandtail"></a>@ref[prefixAndTail](Source-or-Flow/prefixAndTail.md)|Take up to *n* elements from the stream (less than *n* only if the upstream completes before emitting *n* elements) and returns a pair containing a strict sequence of the taken element and a stream representing the remaining elements.|
 |Source/Flow|<a name="splitafter"></a>@ref[splitAfter](Source-or-Flow/splitAfter.md)|End the current substream whenever a predicate returns `true`, starting a new substream for the next element.|
-|Source/Flow|<a name="splitwhen"></a>@ref[splitWhen](Source-or-Flow/splitWhen.md)|Split off elements into a new substream whenever a predicate function return `true`.|
+|Source/Flow|<a name="splitwhen"></a>@ref[splitWhen](Source-or-Flow/splitWhen.md)|Split off elements into a new substream whenever a predicate function returns `true`.|
 |Source/Flow|<a name="switchmap"></a>@ref[switchMap](Source-or-Flow/switchMap.md)|Transforms each input element into a `Source` of output elements that is then flattened into the output stream until a new input element is received (at which point the current (now previous) substream is cancelled and the new one is flattened into the output stream).|
 
 ## Time aware operators
@@ -274,7 +274,7 @@ Those operators operate taking time into consideration.
 |Source/Flow|<a name="backpressuretimeout"></a>@ref[backpressureTimeout](Source-or-Flow/backpressureTimeout.md)|If the time between the emission of an element and the following downstream demand exceeds the provided timeout, the stream is failed with a `TimeoutException`.|
 |Source/Flow|<a name="completiontimeout"></a>@ref[completionTimeout](Source-or-Flow/completionTimeout.md)|If the completion of the stream does not happen until the provided timeout, the stream is failed with a `TimeoutException`.|
 |Source/Flow|<a name="idletimeout"></a>@ref[idleTimeout](Source-or-Flow/idleTimeout.md)|If the time between two processed elements exceeds the provided timeout, the stream is failed with a `TimeoutException`.|
-|Source/Flow|<a name="initialtimeout"></a>@ref[initialTimeout](Source-or-Flow/initialTimeout.md)|If the first element has not passed through this operators before the provided timeout, the stream is failed with a `TimeoutException`.|
+|Source/Flow|<a name="initialtimeout"></a>@ref[initialTimeout](Source-or-Flow/initialTimeout.md)|If the first element has not passed through this operator before the provided timeout, the stream is failed with a `TimeoutException`.|
 |Source/Flow|<a name="keepalive"></a>@ref[keepAlive](Source-or-Flow/keepAlive.md)|Injects additional (configured) elements if upstream does not emit for a configured amount of time.|
 
 ## Fan-in operators
@@ -318,12 +318,12 @@ There is a number of fan-out operators for which currently no 'fluent' is API av
 | |Operator|Description|
 |--|--|--|
 | |<a name="balance"></a>@ref[Balance](Balance.md)|Fan-out the stream to several streams.|
-| |<a name="broadcast"></a>@ref[Broadcast](Broadcast.md)|Emit each incoming element each of `n` outputs.|
+| |<a name="broadcast"></a>@ref[Broadcast](Broadcast.md)|Emit each incoming element to each of `n` outputs.|
 | |<a name="partition"></a>@ref[Partition](Partition.md)|Fan-out the stream to several streams.|
-| |<a name="unzip"></a>@ref[Unzip](Unzip.md)|Takes a stream of two element tuples and unzips the two elements ino two different downstreams.|
+| |<a name="unzip"></a>@ref[Unzip](Unzip.md)|Takes a stream of two element tuples and unzips the two elements into two different downstreams.|
 | |<a name="unzipwith"></a>@ref[UnzipWith](UnzipWith.md)|Splits each element of input into multiple downstreams using a function|
 |Source/Flow|<a name="alsoto"></a>@ref[alsoTo](Source-or-Flow/alsoTo.md)|Attaches the given `Sink` to this `Flow`, meaning that elements that pass through this `Flow` will also be sent to the `Sink`.|
-|Source/Flow|<a name="alsotoall"></a>@ref[alsoToAll](Source-or-Flow/alsoToAll.md)|Attaches the given @apidoc[Source]s to this @apidoc[Flow], meaning that elements that pass through this @apidoc[Flow] will also be sent to all those @apidoc[Sink]s.|
+|Source/Flow|<a name="alsotoall"></a>@ref[alsoToAll](Source-or-Flow/alsoToAll.md)|Attaches the given @apidoc[Sink]s to this @apidoc[Flow], meaning that elements that pass through this @apidoc[Flow] will also be sent to all those @apidoc[Sink]s.|
 |Source/Flow|<a name="divertto"></a>@ref[divertTo](Source-or-Flow/divertTo.md)|Each upstream element will either be diverted to the given sink, or the downstream consumer according to the predicate function applied to the element.|
 |Source/Flow|<a name="wiretap"></a>@ref[wireTap](Source-or-Flow/wireTap.md)|Attaches the given `Sink` to this `Flow` as a wire tap, meaning that elements that pass through will also be sent to the wire-tap `Sink`, without the latter affecting the mainline flow.|
 
@@ -334,7 +334,7 @@ There is a number of fan-out operators for which currently no 'fluent' is API av
 | |Operator|Description|
 |--|--|--|
 |Source/Flow|<a name="monitor"></a>@ref[monitor](Source-or-Flow/monitor.md)|Materializes to a `FlowMonitor` that monitors messages flowing through or completion of the operators.|
-|Source/Flow|<a name="watchtermination"></a>@ref[watchTermination](Source-or-Flow/watchTermination.md)|Materializes to a @scala[`Future`] @java[`CompletionStage`] that will be completed with Done or failed depending whether the upstream of the operators has been completed or failed.|
+|Source/Flow|<a name="watchtermination"></a>@ref[watchTermination](Source-or-Flow/watchTermination.md)|Materializes to a @scala[`Future`] @java[`CompletionStage`] that will be completed with Done or failed depending whether the upstream of the operator has been completed or failed.|
 
 ## Actor interop operators
 
@@ -379,7 +379,7 @@ For more background see the @ref[Error Handling in Streams](../stream-error.md) 
 
 | |Operator|Description|
 |--|--|--|
-|Source/Flow|<a name="maperror"></a>@ref[mapError](Source-or-Flow/mapError.md)|While similar to `recover` this operators can be used to transform an error signal to a different one *without* logging it as an error in the process.|
+|Source/Flow|<a name="maperror"></a>@ref[mapError](Source-or-Flow/mapError.md)|While similar to `recover` this operator can be used to transform an error signal to a different one *without* logging it as an error in the process.|
 |Source/Flow|<a name="onerrorcomplete"></a>@ref[onErrorComplete](Source-or-Flow/onErrorComplete.md)|Allows completing the stream when an upstream error occurs.|
 |Source/Flow|<a name="onerrorcontinue"></a>@ref[onErrorContinue](Source-or-Flow/onErrorContinue.md)|Continues the stream when an upstream error occurs.|
 |Source/Flow|<a name="onerrorresume"></a>@ref[onErrorResume](Source-or-Flow/onErrorResume.md)|Allows transforming a failure signal into a stream of elements provided by a factory function.|
