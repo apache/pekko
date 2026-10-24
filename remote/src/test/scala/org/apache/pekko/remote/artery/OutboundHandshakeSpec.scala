@@ -17,6 +17,8 @@ import scala.concurrent.duration._
 
 import org.apache.pekko
 import pekko.actor.Address
+import pekko.actor.DeadLetter
+import pekko.dispatch.sysmsg.DeathWatchNotification
 import pekko.remote.UniqueAddress
 import pekko.remote.artery.OutboundHandshake.HandshakeReq
 import pekko.remote.artery.OutboundHandshake.HandshakeTimeoutException
@@ -44,10 +46,10 @@ class OutboundHandshakeSpec extends PekkoSpec("""
       retryInterval: FiniteDuration = 10.seconds,
       injectHandshakeInterval: FiniteDuration = 10.seconds,
       livenessProbeInterval: Duration = Duration.Undefined)
-      : (TestPublisher.Probe[String], TestSubscriber.Probe[Any]) = {
+      : (TestPublisher.Probe[Any], TestSubscriber.Probe[Any]) = {
 
-    TestSource[String]()
-      .map(msg => outboundEnvelopePool.acquire().init(OptionVal.None, msg, OptionVal.None))
+    TestSource[Any]()
+      .map(msg => outboundEnvelopePool.acquire().init(OptionVal.None, msg.asInstanceOf[AnyRef], OptionVal.None))
       .via(
         new OutboundHandshake(
           system,
@@ -162,6 +164,61 @@ class OutboundHandshakeSpec extends PekkoSpec("""
       downstream.expectNext(HandshakeReq(addressA, addressB.address))
       downstream.expectNext(HandshakeReq(addressA, addressB.address))
       downstream.cancel()
+    }
+
+    "send pending message to deadLetters when stopped while holding it" in {
+      val inboundContext = new TestInboundContext(localAddress = addressA)
+      val outboundContext = inboundContext.association(addressB.address)
+      inboundContext.completeHandshake(addressB)
+      val (upstream, downstream) = setupStream(outboundContext, injectHandshakeInterval = 300.millis)
+
+      system.eventStream.subscribe(testActor, classOf[DeadLetter])
+
+      downstream.request(1)
+      downstream.expectNext(HandshakeReq(addressA, addressB.address))
+      // wait for the InjectHandshakeTick, so that the next pushed message
+      // triggers a new HandshakeReq and is held as the pending message
+      downstream.expectNoMessage(400.millis)
+
+      downstream.request(1)
+      upstream.sendNext("msg1")
+      downstream.expectNext(HandshakeReq(addressA, addressB.address))
+
+      // the stage is now stopped while holding msg1 in pendingMessage
+      downstream.cancel()
+
+      fishForMessage(max = 3.seconds, hint = "envelope with msg1 in deadLetters") {
+        case DeadLetter(env: OutboundEnvelope, _, _) => env.message == "msg1"
+        case DeadLetter                              => false
+      }
+    }
+
+    "quarantine when stopped while holding a pending system message" in {
+      val inboundContext = new TestInboundContext(localAddress = addressA)
+      val outboundContext = inboundContext.association(addressB.address)
+      inboundContext.completeHandshake(addressB)
+      val (upstream, downstream) = setupStream(outboundContext, injectHandshakeInterval = 300.millis)
+
+      system.eventStream.subscribe(testActor, classOf[DeadLetter])
+
+      downstream.request(1)
+      downstream.expectNext(HandshakeReq(addressA, addressB.address))
+      downstream.expectNoMessage(400.millis)
+
+      val sysMsg = DeathWatchNotification(testActor, existenceConfirmed = true, addressTerminated = false)
+      downstream.request(1)
+      upstream.sendNext(sysMsg)
+      downstream.expectNext(HandshakeReq(addressA, addressB.address))
+
+      downstream.cancel()
+
+      fishForMessage(max = 3.seconds, hint = "envelope with the system message in deadLetters") {
+        case DeadLetter(env: OutboundEnvelope, _, _) => env.message eq sysMsg
+        case DeadLetter                              => false
+      }
+      awaitAssert {
+        outboundContext.associationState.isQuarantined() should ===(true)
+      }
     }
 
   }

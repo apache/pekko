@@ -13,7 +13,6 @@
 
 package org.apache.pekko.remote.artery
 
-import scala.annotation.nowarn
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 import scala.concurrent.duration._
@@ -23,6 +22,7 @@ import org.apache.pekko
 import pekko.Done
 import pekko.actor.ActorSystem
 import pekko.actor.Address
+import pekko.dispatch.sysmsg.SystemMessage
 import pekko.remote.UniqueAddress
 import pekko.stream.Attributes
 import pekko.stream.FlowShape
@@ -61,7 +61,7 @@ private[remote] object OutboundHandshake {
  * INTERNAL API
  */
 private[remote] class OutboundHandshake(
-    @nowarn("msg=never used") system: ActorSystem,
+    system: ActorSystem,
     outboundContext: OutboundContext,
     outboundEnvelopePool: ObjectPool[ReusableOutboundEnvelope],
     timeout: FiniteDuration,
@@ -104,6 +104,17 @@ private[remote] class OutboundHandshake(
       }
 
       override def postStop(): Unit = {
+        pendingMessage match {
+          case OptionVal.Some(envelope) =>
+            // the envelope has already been grabbed from the upstream SendQueue, so
+            // apply the same safeguards as SendQueue.postStop instead of dropping it silently
+            pendingMessage = OptionVal.None
+            system.deadLetters ! envelope
+            if (envelope.message.isInstanceOf[SystemMessage])
+              outboundContext.quarantine(
+                s"OutboundHandshake stopped with pending system message [${envelope.message.getClass.getName}].")
+          case _ =>
+        }
         outboundContext.associationState.removeUniqueRemoteAddressListener(uniqueRemoteAddressListener)
         super.postStop()
       }
