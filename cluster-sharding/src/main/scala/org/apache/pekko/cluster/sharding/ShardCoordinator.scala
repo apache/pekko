@@ -28,6 +28,7 @@ import pekko.annotation.DoNotInherit
 import pekko.cluster.Cluster
 import pekko.cluster.ClusterEvent
 import pekko.cluster.ClusterEvent._
+import pekko.cluster.MemberStatus
 import pekko.cluster.ddata.LWWRegister
 import pekko.cluster.ddata.LWWRegisterKey
 import pekko.cluster.ddata.Replicator._
@@ -966,8 +967,23 @@ abstract class ShardCoordinator(
     }: Receive).orElse[Any, Unit](receiveTerminated)
 
   private def terminate(): Unit = {
-    if (aliveRegions.exists(_.path.address.hasLocalScope) || gracefulShutdownInProgress.exists(
-        _.path.address.hasLocalScope)) {
+    val selfIsLeavingCluster = {
+      val selfStatus = cluster.selfMember.status
+      cluster.isTerminated ||
+      CoordinatedShutdown(context.system).shutdownReason().isDefined ||
+      selfStatus == MemberStatus.Leaving ||
+      selfStatus == MemberStatus.Exiting ||
+      selfStatus == MemberStatus.Down
+    }
+    // Draining and stopping the local region is a hand-off optimization intended for when this
+    // node is leaving the cluster or shutting down. When the singleton coordinator is stopped
+    // for a reason unrelated to membership - e.g. a transient coordinator singleton lease loss -
+    // the node is still supposed to host shards, so the local region must stay alive and
+    // re-register with the restarted coordinator.
+    if (selfIsLeavingCluster &&
+      (aliveRegions.exists(_.path.address.hasLocalScope) ||
+      gracefulShutdownInProgress
+        .exists(_.path.address.hasLocalScope))) {
       aliveRegions
         .find(_.path.address.hasLocalScope)
         .foreach(region =>
