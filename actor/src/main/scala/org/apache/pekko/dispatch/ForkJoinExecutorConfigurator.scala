@@ -77,13 +77,6 @@ object ForkJoinExecutorConfigurator {
    */
   @SerialVersionUID(1L)
   final class PekkoForkJoinTask(runnable: Runnable) extends ForkJoinTask[Unit] {
-
-    /**
-     * Preserve the wrapped Runnable's hash code across fresh task wrappers, provided that the
-     * Runnable's hash code is stable. Each wrapper retains its own identity and completion state.
-     */
-    final override def hashCode(): Int = runnable.hashCode()
-
     override def getRawResult(): Unit = ()
     override def setRawResult(unit: Unit): Unit = ()
     override def exec(): Boolean =
