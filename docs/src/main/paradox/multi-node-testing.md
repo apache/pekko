@@ -40,6 +40,9 @@ test nodes)
  * Node Barrier Coordination: Waiting for other nodes at named barriers.
  * Network Failure Injection: Throttling traffic, dropping packets, unplugging and plugging nodes back in.
 
+With classic remoting, a failure in a throttled association closes that association. Later failure-injection commands
+no longer target the closed connection.
+
 This is a schematic overview of the test conductor.
 
 ![pekko-remote-testconductor.png](./images/pekko-remote-testconductor.png)
