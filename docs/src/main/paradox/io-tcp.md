@@ -102,6 +102,12 @@ message signaling that the server is ready to accept incoming connections;
 this message also contains the `InetSocketAddress` to which the socket
 was actually bound (i.e. resolved IP address and correct port number). 
 
+If accepting a connection fails, for example because the process has exhausted its file descriptors,
+the listener waits for `pekko.io.tcp.accept-error-retry-delay` before accepting again. The default is
+`100ms`, and the configured delay must be at least `1ms`. This bounds retries and error logging while
+the failure persists. Accepting resumes automatically when resources become available; in pull mode,
+the listener retains the remaining requested connection count during the delay.
+
 From this point forward the process of handling connections is the same as for
 outgoing connections. The example demonstrates that handling the reads from a
 certain connection can be delegated to another actor by naming it as the

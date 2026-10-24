@@ -30,6 +30,8 @@ import pekko.io.Tcp._
  */
 private[io] object TcpListener {
 
+  private case object RetryAccept
+
   final case class RegisterIncoming(channel: SocketChannel)
       extends HasFailureMessage
       with NoSerializationVerificationNeeded {
@@ -51,7 +53,8 @@ private[io] class TcpListener(
     bind: Bind)
     extends Actor
     with ActorLogging
-    with RequiresMessageQueue[UnboundedMessageQueueSemantics] {
+    with RequiresMessageQueue[UnboundedMessageQueueSemantics]
+    with Timers {
 
   import TcpListener._
   import tcp.Settings._
@@ -102,13 +105,18 @@ private[io] class TcpListener(
   }
 
   def bound(registration: ChannelRegistration): Receive = {
-    case ChannelAcceptable =>
+    case ChannelAcceptable if !timers.isTimerActive(RetryAccept) =>
       acceptLimit = acceptAllPending(registration, acceptLimit)
+      if (acceptLimit > 0 && !timers.isTimerActive(RetryAccept)) registration.enableInterest(SelectionKey.OP_ACCEPT)
+
+    case ChannelAcceptable => // an accept retry is already scheduled
+
+    case RetryAccept =>
       if (acceptLimit > 0) registration.enableInterest(SelectionKey.OP_ACCEPT)
 
     case ResumeAccepting(batchSize) =>
       acceptLimit = batchSize
-      registration.enableInterest(SelectionKey.OP_ACCEPT)
+      if (!timers.isTimerActive(RetryAccept)) registration.enableInterest(SelectionKey.OP_ACCEPT)
 
     case FailedRegisterIncoming(socketChannel) =>
       log.warning("Could not register incoming connection since selector capacity limit is reached, closing connection")
@@ -119,6 +127,7 @@ private[io] class TcpListener(
 
     case Unbind =>
       log.debug("Unbinding endpoint {}", localAddress)
+      timers.cancel(RetryAccept)
       registration.cancelAndClose { () =>
         self ! Unbound
       }
@@ -137,7 +146,12 @@ private[io] class TcpListener(
       if (limit > 0) {
         try channel.accept()
         catch {
-          case NonFatal(e) => { log.error(e, "Accept error: could not accept new connection"); null }
+          case NonFatal(e) =>
+            log.error(e, "Accept error: could not accept new connection")
+            // A persistent accept error leaves the channel acceptable. Delay re-arming
+            // the selector to avoid spinning while the resource shortage persists.
+            timers.startSingleTimer(RetryAccept, RetryAccept, AcceptErrorRetryDelay)
+            null
         }
       } else null
     if (socketChannel ne null) {
