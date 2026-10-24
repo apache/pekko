@@ -548,6 +548,12 @@ private[pekko] class Shard(
       receiveLeaseLost(ll)
     case me: MemberEvent =>
       receiveMemberEvent(me)
+    case HandOff(`shardId`) =>
+      // no entities have been started while awaiting the lease, so hand off completes immediately;
+      // stashing it would prevent the rebalance from completing while the lease is unobtainable
+      handOff(sender())
+    case HandOff(shard) =>
+      log.warning("{}: Shard [{}] can not hand off for another Shard [{}]", typeName, shardId, shard)
     case msg =>
       if (verboseDebug)
         log.debug(

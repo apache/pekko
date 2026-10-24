@@ -20,7 +20,10 @@ import scala.util.control.NoStackTrace
 
 import org.apache.pekko
 import pekko.actor.Actor
+import pekko.actor.ActorIdentity
 import pekko.actor.ActorLogging
+import pekko.actor.ActorRef
+import pekko.actor.Identify
 import pekko.actor.Props
 import pekko.cluster.Cluster
 import pekko.cluster.MemberStatus
@@ -162,6 +165,28 @@ class ShardWithLeaseSpec extends PekkoSpec(ShardWithLeaseSpec.config) with WithL
       sharding.tell(EntityEnvelope(1, "hello"), probe.ref)
       probe.expectNoMessage(shortDuration)
     }
+
+    "reply with ShardStopped on HandOff while awaiting lease" in new Setup {
+      val probe = TestProbe()
+      sharding.tell(EntityEnvelope(1, "hello"), probe.ref)
+      leaseFor("1") // the shard is created and the lease acquisition is pending
+      probe.expectNoMessage(shortDuration)
+
+      val shard = identifyRef(s"/system/sharding/$typeName/1")
+      val coordinatorProbe = TestProbe()
+      watch(shard)
+      // the shard has not loaded any entities while awaiting the lease,
+      // so it must complete the hand off immediately instead of stashing it
+      shard.tell(ShardCoordinator.Internal.HandOff("1"), coordinatorProbe.ref)
+      coordinatorProbe.expectMsg(ShardCoordinator.Internal.ShardStopped("1"))
+      expectTerminated(shard)
+    }
+  }
+
+  private def identifyRef(path: String): ActorRef = {
+    val probe = TestProbe()
+    system.actorSelection(path).tell(Identify(1), probe.ref)
+    probe.expectMsgType[ActorIdentity].ref.get
   }
 
   var typeIdx = 0
