@@ -15,6 +15,7 @@ package org.apache.pekko.cluster.singleton
 
 import java.util.concurrent.atomic.AtomicInteger
 
+import scala.concurrent.Future
 import scala.concurrent.Promise
 import scala.concurrent.duration._
 import scala.util.Success
@@ -30,6 +31,7 @@ import pekko.cluster.Cluster
 import pekko.cluster.MemberStatus
 import pekko.coordination.lease.TestLease
 import pekko.coordination.lease.TestLeaseExt
+import pekko.testkit.EventFilter
 import pekko.testkit.PekkoSpec
 import pekko.testkit.TestException
 import pekko.testkit.TestProbe
@@ -214,6 +216,28 @@ class ClusterSingletonLeaseSpec extends PekkoSpec(ConfigFactory.parseString("""
       probe.expectMsg("preStart")
       intercept[IllegalStateException] {
         testLeaseExt.getTestLease(leaseNameFor(settings))
+      }
+    }
+
+    "log error when lease release fails leaving oldest" in {
+      val lifecycleProbe = TestProbe()
+      val settings = nextSettings()
+      system.actorOf(
+        ClusterSingletonManager.props(Props(new ImportantSingleton(lifecycleProbe.ref)), PoisonPill, settings),
+        settings.singletonName)
+      val testLease = awaitAssert {
+        testLeaseExt.getTestLease(leaseNameFor(settings))
+      } // allow singleton manager to create the lease
+      testLease.probe.expectMsg(AcquireReq(leaseOwner))
+      testLease.initialPromise.complete(Success(true))
+      lifecycleProbe.expectMsg("preStart")
+      testLease.setNextReleaseResult(Future.failed(TestException("no release for you")))
+      // lease loss makes the manager stop the singleton and transition out of Oldest,
+      // which releases the lease; the failed release must be logged rather than
+      // escaping as an unhandled Status.Failure
+      EventFilter[TestException](pattern = ".*Failed to release lease.*", occurrences = 1).intercept {
+        testLease.getCurrentCallback()(Some(TestException("lease lost")))
+        testLease.probe.expectMsg(ReleaseReq(leaseOwner))
       }
     }
 
