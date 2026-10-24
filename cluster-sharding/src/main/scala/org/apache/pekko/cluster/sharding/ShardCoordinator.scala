@@ -13,6 +13,8 @@
 
 package org.apache.pekko.cluster.sharding
 
+import java.util.concurrent.CompletionStage
+
 import scala.annotation.nowarn
 import scala.collection.immutable
 import scala.concurrent.ExecutionContext
@@ -206,23 +208,58 @@ object ShardCoordinator {
   /**
    * Java API: Java implementations of custom shard allocation and rebalancing logic used by the [[ShardCoordinator]]
    * should extend this abstract class and implement the two methods.
+   *
+   * Implement [[StartableAllocationStrategy]] as well to receive a `start()` callback on the coordinator node
+   * before any calls to `allocateShard` or `rebalance`. Initialization in `start()` must not block.
+   *
+   * The coordinator supplies read-only snapshots of the current allocations and shards being rebalanced.
+   * Shard ids are iterated in allocation order. Allocation values are `java.util.List`s, so an implementation
+   * can count the shards of a region in constant time without downcasting; the wildcard lets a caller pass a
+   * map whose values use a concrete list type such as `ArrayList<String>`. Java overrides must declare the
+   * parameter with the same wildcard, narrowing it to `java.util.List<String>` is a compile error.
    */
   abstract class AbstractShardAllocationStrategy extends ShardAllocationStrategy {
+    import scala.jdk.CollectionConverters._
+    import scala.jdk.FutureConverters._
+
     override final def allocateShard(
         requester: ActorRef,
         shardId: ShardId,
         currentShardAllocations: Map[ActorRef, immutable.IndexedSeq[ShardId]]): Future[ActorRef] = {
-
-      import scala.jdk.CollectionConverters._
-      allocateShard(requester, shardId, currentShardAllocations.asJava)
+      allocateShard(requester, shardId, asJavaShardAllocations(currentShardAllocations)).asScala
     }
 
     override final def rebalance(
         currentShardAllocations: Map[ActorRef, immutable.IndexedSeq[ShardId]],
         rebalanceInProgress: Set[ShardId]): Future[Set[ShardId]] = {
-      import scala.jdk.CollectionConverters._
       implicit val ec = ExecutionContext.parasitic
-      rebalance(currentShardAllocations.asJava, rebalanceInProgress.asJava).map(_.asScala.toSet)
+      rebalance(asJavaShardAllocations(currentShardAllocations), rebalanceInProgress.asJava)
+        .asScala
+        .map(_.asScala.toSet)
+    }
+
+    private def asJavaShardAllocations(currentShardAllocations: Map[ActorRef, immutable.IndexedSeq[ShardId]])
+        : java.util.Map[ActorRef, java.util.List[ShardId]] = {
+      // Wrap values on access instead of copying every region on each allocation or rebalance.
+      type Entry = java.util.Map.Entry[ActorRef, java.util.List[ShardId]]
+      new java.util.AbstractMap[ActorRef, java.util.List[ShardId]] {
+        override def get(key: AnyRef): java.util.List[ShardId] = key match {
+          case region: ActorRef => currentShardAllocations.get(region).map(_.asJava).orNull
+          case _                => null
+        }
+        override def containsKey(key: AnyRef): Boolean = key match {
+          case region: ActorRef => currentShardAllocations.contains(region)
+          case _                => false
+        }
+        override def size: Int = currentShardAllocations.size
+        override def entrySet(): java.util.Set[Entry] = new java.util.AbstractSet[Entry] {
+          override def size: Int = currentShardAllocations.size
+          override def iterator(): java.util.Iterator[Entry] =
+            currentShardAllocations.iterator.map[Entry] {
+              case (region, shards) => new java.util.AbstractMap.SimpleImmutableEntry(region, shards.asJava)
+            }.asJava
+        }
+      }
     }
 
     /**
@@ -233,13 +270,14 @@ object ShardCoordinator {
      * @param shardId                 the id of the shard to allocate
      * @param currentShardAllocations all actor refs to `ShardRegion` and their current allocated shards,
      *                                in the order they were allocated
-     * @return a `Future` of the actor ref of the `ShardRegion` that is to be responsible for the shard, must be one of
-     *         the references included in the `currentShardAllocations` parameter
+     * @return a `CompletionStage` of the actor ref of the `ShardRegion` that is to be responsible for the shard,
+     *         must be one of the references included in the `currentShardAllocations` parameter
+     *         (in Pekko 1.x, this was a Scala `Future`)
      */
     def allocateShard(
         requester: ActorRef,
         shardId: String,
-        currentShardAllocations: java.util.Map[ActorRef, immutable.IndexedSeq[String]]): Future[ActorRef]
+        currentShardAllocations: java.util.Map[ActorRef, ? <: java.util.List[String]]): CompletionStage[ActorRef]
 
     /**
      * Invoked periodically to decide which shards to rebalance to another location.
@@ -248,11 +286,12 @@ object ShardCoordinator {
      *                                in the order they were allocated
      * @param rebalanceInProgress     set of shards that are currently being rebalanced, i.e.
      *                                you should not include these in the returned set
-     * @return a `Future` of the shards to be migrated, may be empty to skip rebalance in this round
+     * @return a `CompletionStage` of the shards to be migrated, may be empty to skip rebalance in this round
+     *         (in Pekko 1.x, this was a Scala `Future`)
      */
     def rebalance(
-        currentShardAllocations: java.util.Map[ActorRef, immutable.IndexedSeq[String]],
-        rebalanceInProgress: java.util.Set[String]): Future[java.util.Set[String]]
+        currentShardAllocations: java.util.Map[ActorRef, ? <: java.util.List[String]],
+        rebalanceInProgress: java.util.Set[String]): CompletionStage[java.util.Set[String]]
   }
 
   private val emptyRebalanceResult = Future.successful(Set.empty[ShardId])
