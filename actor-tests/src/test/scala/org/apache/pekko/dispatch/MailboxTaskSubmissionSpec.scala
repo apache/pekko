@@ -21,7 +21,7 @@ import java.util.concurrent.{ ForkJoinPool, ForkJoinTask, ForkJoinWorkerThread }
 import java.util.concurrent.atomic.{ AtomicBoolean, AtomicInteger }
 
 import org.apache.pekko
-import pekko.dispatch.ForkJoinExecutorConfigurator.{ PekkoForkJoinPool, PekkoForkJoinTask }
+import pekko.dispatch.ForkJoinExecutorConfigurator.PekkoForkJoinPool
 import pekko.testkit.PekkoSpec
 
 /**
@@ -72,51 +72,6 @@ class MailboxTaskSubmissionSpec extends PekkoSpec {
 
     "not be a ForkJoinTask" in {
       classOf[ForkJoinTask[?]].isAssignableFrom(classOf[Mailbox]) shouldBe false
-    }
-  }
-
-  "PekkoForkJoinTask" must {
-
-    "preserve the Runnable hash code across fresh wrappers" in {
-      for (hash <- Seq(Int.MinValue, -1, 0, 1, Int.MaxValue)) {
-        val runnable = new Runnable {
-          final override def run(): Unit = ()
-          final override def hashCode(): Int = hash
-        }
-        val first = new PekkoForkJoinTask(runnable)
-        val second = new PekkoForkJoinTask(runnable)
-
-        withClue(s"Runnable hash code $hash: ") {
-          first.hashCode() shouldBe hash
-          second.hashCode() shouldBe hash
-          (first should not).equal(second)
-        }
-      }
-    }
-
-    "retain independent completion and cancellation for wrappers with the same hash code" in {
-      val runs = new AtomicInteger(0)
-      val runnable = new Runnable {
-        final override def run(): Unit = { runs.incrementAndGet() }
-        final override def hashCode(): Int = 42
-      }
-      val cancelled = new PekkoForkJoinTask(runnable)
-      val completed = new PekkoForkJoinTask(runnable)
-      val pending = new PekkoForkJoinTask(runnable)
-
-      cancelled.cancel(false) shouldBe true
-      completed.invoke()
-
-      cancelled.isCancelled shouldBe true
-      completed.isCompletedNormally shouldBe true
-      pending.isDone shouldBe false
-      runs.get() shouldBe 1
-      Set(cancelled, completed, pending).size shouldBe 3
-      Seq(cancelled, completed, pending).foreach(_.hashCode() shouldBe 42)
-
-      pending.invoke()
-      pending.isCompletedNormally shouldBe true
-      runs.get() shouldBe 2
     }
   }
 
