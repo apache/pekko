@@ -65,6 +65,18 @@ by Akka 2.3.x. The `-2.3` program argument and the `remove2dot3Data` parameter o
 `Sequence`. Code that cast these offsets to `Sequence` needs updating; the per-persistence-id sequence number is
 still available as `envelope.sequenceNr`. These queries also now accept a `TimestampOffset` to resume from.
 ([PR3615](https://github.com/apache/pekko/pull/3615))
+* `ShardCoordinator.AbstractShardAllocationStrategy`, the Java API for custom shard allocation strategies, no longer
+leaks Scala types. Its `allocateShard` and `rebalance` methods now return a `java.util.concurrent.CompletionStage`
+instead of a Scala `Future`, and the current shard allocations are passed as a
+`java.util.Map<ActorRef, ? extends List<String>>` instead of a `java.util.Map` of
+`scala.collection.immutable.IndexedSeq<String>`. Update both method signatures and recompile Java subclasses
+against Pekko 2.x. Subclasses compiled against Pekko 1.x must not be used unchanged: they do not implement the
+new methods and will fail at runtime with `AbstractMethodError` when the coordinator invokes the strategy,
+preventing shard allocation or rebalancing. Scala implementations of `ShardCoordinator.ShardAllocationStrategy`
+are unaffected. Java strategies that need initialization on the coordinator node can additionally implement
+`ShardCoordinator.StartableAllocationStrategy` and override `void start()`; the coordinator calls it before
+`allocateShard` or `rebalance`.
+([PR3677](https://github.com/apache/pekko/pull/3677))
 
 ## Dependency Changes in Pekko 2.x
 * Java 17 is the minimum supported Java version and Scala 2.12 is no longer supported. Pekko 2.x is published for
