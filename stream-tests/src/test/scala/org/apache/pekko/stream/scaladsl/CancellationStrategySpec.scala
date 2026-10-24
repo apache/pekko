@@ -108,6 +108,40 @@ class CancellationStrategySpec extends StreamSpec("""pekko.loglevel = DEBUG
           out2Probe.expectError(SubscriptionWithCancelException.NoMoreElementsNeeded)
         }
       }
+      "BidirectionalGracefulShutdown" should {
+        "complete outputs first then cancel inputs after delay" in new TestSetup(
+          CancellationStrategy.BidirectionalGracefulShutdown(500.millis)) {
+          out1Probe.cancel()
+          // outputs should be completed immediately
+          out2Probe.expectComplete()
+          // inputs should be cancelled after delay
+          inProbe.expectNoMessage(200.millis)
+          inProbe.expectCancellationWithCause(SubscriptionWithCancelException.NoMoreElementsNeeded)
+        }
+        "propagate failure to outputs first then cancel inputs after delay" in new TestSetup(
+          CancellationStrategy.BidirectionalGracefulShutdown(500.millis)) {
+          val theError = TE("Test error")
+          out1Probe.cancel(theError)
+          // outputs should fail immediately with the error
+          out2Probe.expectError(theError)
+          // inputs should be cancelled after delay
+          inProbe.expectNoMessage(200.millis)
+          inProbe.expectCancellationWithCause(theError)
+        }
+        "prevent further elements from coming through during grace period" in new TestSetup(
+          CancellationStrategy.BidirectionalGracefulShutdown(500.millis)) {
+          out1Probe.request(1)
+          out2Probe.request(1)
+          out1Probe.cancel()
+          // outputs should be completed immediately
+          out2Probe.expectComplete()
+          // inputs should not receive elements during grace period
+          inProbe.sendNext(B(123))
+          inProbe.expectNoMessage(200.millis)
+          // after delay inputs should be cancelled
+          inProbe.expectCancellationWithCause(SubscriptionWithCancelException.NoMoreElementsNeeded)
+        }
+      }
     }
 
     "cancellation races with BidiStacks" should {
@@ -130,6 +164,13 @@ class CancellationStrategySpec extends StreamSpec("""pekko.loglevel = DEBUG
       }
       "be prevented by AfterDelay strategy" in new RaceTestSetup(
         CancellationStrategy.AfterDelay(500.millis.dilated, CancellationStrategy.CompleteStage)) {
+        val theError = TE("Duck meowed")
+        killSwitch.abort(theError)
+        toStream.expectCancellationWithCause(theError)
+        fromStream.expectError(theError)
+      }
+      "be prevented by BidirectionalGracefulShutdown strategy" in new RaceTestSetup(
+        CancellationStrategy.BidirectionalGracefulShutdown(500.millis.dilated)) {
         val theError = TE("Duck meowed")
         killSwitch.abort(theError)
         toStream.expectCancellationWithCause(theError)
