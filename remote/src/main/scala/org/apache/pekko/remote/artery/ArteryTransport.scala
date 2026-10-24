@@ -861,7 +861,13 @@ private[remote] abstract class ArteryTransport(_system: ExtendedActorSystem, _pr
   }
 
   def outboundControl(
-      outboundContext: OutboundContext): Sink[OutboundEnvelope, (OutboundControlIngress, Future[Done])] = {
+      outboundContext: OutboundContext): Sink[OutboundEnvelope, (OutboundControlIngress, Future[Done])] =
+    outboundControl(outboundContext, (pending, _) => pending.foreach(system.deadLetters ! _))
+
+  private[artery] def outboundControl(
+      outboundContext: OutboundContext,
+      postStopAction: (Vector[OutboundEnvelope], Option[Long]) => Unit)
+      : Sink[OutboundEnvelope, (OutboundControlIngress, Future[Done])] = {
     val livenessProbeInterval = (settings.Advanced.QuarantineIdleOutboundAfter / 10).max(
       settings.Advanced.HandshakeRetryInterval)
     Flow
@@ -874,7 +880,8 @@ private[remote] abstract class ArteryTransport(_system: ExtendedActorSystem, _pr
           settings.Advanced.HandshakeTimeout,
           settings.Advanced.HandshakeRetryInterval,
           settings.Advanced.InjectHandshakeInterval,
-          livenessProbeInterval))
+          livenessProbeInterval,
+          postStopAction))
       .via(
         new SystemMessageDelivery(
           outboundContext,
