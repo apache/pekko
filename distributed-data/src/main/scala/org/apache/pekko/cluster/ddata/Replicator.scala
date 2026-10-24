@@ -1400,11 +1400,17 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
   // cluster exiting nodes, doesn't contain selfAddress
   var exitingNodes: immutable.SortedSet[UniqueAddress] = immutable.SortedSet.empty
 
+  // members that were first observed in Leaving, Down, PreparingForShutdown or ReadyForShutdown
+  // status, doesn't contain selfAddress. Such members are still full cluster members until
+  // removed, and their Read/Write/DeltaPropagation messages must not be discarded
+  var otherStatusNodes: immutable.SortedSet[UniqueAddress] = immutable.SortedSet.empty
+
   // up and weaklyUp nodes, doesn't contain joining and not selfAddress
   private def allNodes: immutable.SortedSet[UniqueAddress] = nodes.union(weaklyUpNodes)
 
   private def isKnownNode(node: UniqueAddress): Boolean =
-    nodes(node) || weaklyUpNodes(node) || joiningNodes(node) || selfUniqueAddress == node
+    nodes(node) || weaklyUpNodes(node) || joiningNodes(node) || exitingNodes(node) || otherStatusNodes(
+      node) || selfUniqueAddress == node
 
   var removedNodes: Map[UniqueAddress, Long] = Map.empty
   // all nodes sorted with the leader first
@@ -2476,6 +2482,7 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
       weaklyUpNodes -= m.uniqueAddress
       joiningNodes -= m.uniqueAddress
       exitingNodes -= m.uniqueAddress
+      otherStatusNodes -= m.uniqueAddress
       removedNodes = removedNodes.updated(m.uniqueAddress, allReachableClockTime)
       unreachable -= m.uniqueAddress
       if (settings.preferOldest)
@@ -2489,6 +2496,8 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
       // replace, it's possible that the ordering is changed since it based on MemberStatus
       leader = leader.filterNot(_.uniqueAddress == m.uniqueAddress)
       leader += m
+      if (m.address != selfAddress)
+        otherStatusNodes += m.uniqueAddress
     }
 
   def receiveUnreachable(m: Member): Unit =
