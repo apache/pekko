@@ -37,6 +37,7 @@ import pekko.actor.NoSerializationVerificationNeeded
 import pekko.actor.PoisonPill
 import pekko.actor.Props
 import pekko.actor.Status
+import pekko.actor.Terminated
 import pekko.annotation.InternalApi
 import pekko.cluster.Cluster
 import pekko.cluster.ClusterSettings
@@ -758,6 +759,7 @@ private[pekko] class ClusterShardingGuardian extends Actor {
           case None    => "replicator"
         }
         val ref = context.actorOf(Replicator.props(replicatorSettings(role, settings)), name)
+        context.watch(ref)
         replicatorByRole = replicatorByRole.updated(role, ref)
         ref
     }
@@ -916,6 +918,11 @@ private[pekko] class ClusterShardingGuardian extends Actor {
         case NonFatal(_) =>
         // don't restart
       }
+
+    case Terminated(ref) =>
+      // a cached Replicator stopped (e.g. self removed from the cluster), drop it
+      // from the cache so that a later start creates a fresh one
+      replicatorByRole = replicatorByRole.filterNot { case (_, cached) => cached == ref }
 
   }
 
