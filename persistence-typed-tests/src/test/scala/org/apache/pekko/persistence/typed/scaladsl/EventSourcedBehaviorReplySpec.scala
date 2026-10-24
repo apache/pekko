@@ -84,7 +84,71 @@ class EventSourcedBehaviorReplySpec
   val pidCounter = new AtomicInteger(0)
   private def nextPid(): PersistenceId = PersistenceId.ofUniqueId(s"c${pidCounter.incrementAndGet()}")
 
+  private def unstash[Self <: ReplyEffectOps[Int, Int, Self]](effect: ReplyEffectOps[Int, Int, Self]): Self =
+    effect.thenUnstashAll()
+
+  private def stoppingBehavior(effect: (Int, ActorRef[Int]) => ReplyEffectWithStop[Int, Int]): Behavior[ActorRef[Int]] =
+    EventSourcedBehavior.withEnforcedReplies[ActorRef[Int], Int, Int](
+      nextPid(),
+      emptyState = 0,
+      commandHandler = (state, replyTo) => effect(state, replyTo).thenStop(),
+      eventHandler = (state, event) => state + event)
+
   "A typed persistent actor with commands that are expecting replies" must {
+
+    "persist then reply with the new state and stop" in {
+      val probe = TestProbe[Int]()
+      val actor = spawn(stoppingBehavior((_, replyTo) => Effect.persist(1).thenReply(replyTo)(identity)))
+      actor ! probe.ref
+      probe.expectMessage(1)
+      probe.expectTerminated(actor)
+    }
+
+    "reply and stop without persisting" in {
+      val probe = TestProbe[Int]()
+      val actor = spawn(stoppingBehavior((_, replyTo) => Effect.reply(replyTo)(42)))
+      actor ! probe.ref
+      probe.expectMessage(42)
+      probe.expectTerminated(actor)
+    }
+
+    "retain the stop capability after unstashing" in {
+      val probe = TestProbe[Int]()
+      val actor = spawn(stoppingBehavior((_, replyTo) => Effect.reply[Int, Int, Int](replyTo)(42).thenUnstashAll()))
+      actor ! probe.ref
+      probe.expectMessage(42)
+      probe.expectTerminated(actor)
+    }
+
+    "retain the stop capability through a generic unstash helper" in {
+      val probe = TestProbe[Int]()
+      val actor = spawn(stoppingBehavior((_, replyTo) => unstash(Effect.reply[Int, Int, Int](replyTo)(42))))
+      actor ! probe.ref
+      probe.expectMessage(42)
+      probe.expectTerminated(actor)
+    }
+
+    "reject stopping a stashed command in both DSLs" in {
+      "Effect.stash[Int, Int]().thenUnstashAll()" should compile
+      "new org.apache.pekko.persistence.typed.javadsl.EffectFactories[Int, Int]().stash().thenUnstashAll()" should
+      compile
+      "Effect.stash[Int, Int]().thenStop()" shouldNot compile
+      "Effect.stash[Int, Int]().thenUnstashAll().thenStop()" shouldNot compile
+      "new org.apache.pekko.persistence.typed.javadsl.EffectFactories[Int, Int]().stash().thenStop()" shouldNot compile
+      "new org.apache.pekko.persistence.typed.javadsl.EffectFactories[Int, Int]().stash().thenUnstashAll().thenStop()" shouldNot
+      compile
+    }
+
+    "require helpers to retain the stop capability explicitly" in {
+      "{ val effect: ReplyEffect[Int, Int] = Effect.noReply[Int, Int]; effect.thenStop() }" shouldNot compile
+    }
+
+    "stop after explicitly choosing not to reply" in {
+      val probe = TestProbe[Int]()
+      val actor = spawn(stoppingBehavior((_, _) => Effect.noReply))
+      actor ! probe.ref
+      probe.expectTerminated(actor)
+    }
 
     "persist an event thenReply" in {
       val c = spawn(counter(nextPid()))

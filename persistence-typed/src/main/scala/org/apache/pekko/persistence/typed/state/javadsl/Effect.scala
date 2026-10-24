@@ -81,7 +81,7 @@ import pekko.persistence.typed.state.internal.SideEffect
    * thrown from processing a command or side effect after persisting. The stash buffer is preserved for persist
    * failures if an `onPersistFailure` backoff supervisor strategy is defined.
    *
-   * Side effects can be chained with `thenRun`.
+   * This returns a [[ReplyEffect]] without `thenStop`, so `Effect().stash().thenStop()` does not compile.
    */
   def stash(): ReplyEffect[State] =
     Stash.asInstanceOf[EffectBuilder[State]].thenNoReply()
@@ -110,7 +110,7 @@ import pekko.persistence.typed.state.internal.SideEffect
    * The reply message will be sent also if `withEnforcedReplies` isn't used, but then the compiler will not help
    * finding mistakes.
    */
-  def reply[ReplyMessage](replyTo: ActorRef[ReplyMessage], replyWithMessage: ReplyMessage): ReplyEffect[State] =
+  def reply[ReplyMessage](replyTo: ActorRef[ReplyMessage], replyWithMessage: ReplyMessage): ReplyEffectWithStop[State] =
     none().thenReply[ReplyMessage](replyTo,
       new function.Function[State, ReplyMessage] {
         override def apply(param: State): ReplyMessage = replyWithMessage
@@ -121,7 +121,7 @@ import pekko.persistence.typed.state.internal.SideEffect
    * isn't a [[ReplyEffect]]. This `noReply` can be used as a conscious decision that a reply shouldn't be
    * sent for a specific command or the reply will be sent later.
    */
-  def noReply(): ReplyEffect[State] =
+  def noReply(): ReplyEffectWithStop[State] =
     none().thenNoReply()
 }
 
@@ -132,9 +132,7 @@ import pekko.persistence.typed.state.internal.SideEffect
  *
  * Not intended for user extension.
  */
-@DoNotInherit trait Effect[State] {
-  self: EffectImpl[State] =>
-}
+@DoNotInherit trait Effect[State]
 
 /**
  * A command handler returns an `Effect` directive that defines what state to persist.
@@ -191,7 +189,7 @@ import pekko.persistence.typed.state.internal.SideEffect
    */
   def thenReply[ReplyMessage](
       replyTo: ActorRef[ReplyMessage],
-      replyWithMessage: function.Function[State, ReplyMessage]): ReplyEffect[State] =
+      replyWithMessage: function.Function[State, ReplyMessage]): ReplyEffectWithStop[State] =
     CompositeEffect(this, SideEffect[State](newState => replyTo ! replyWithMessage(newState)))
 
   /**
@@ -199,7 +197,7 @@ import pekko.persistence.typed.state.internal.SideEffect
    * isn't a [[ReplyEffect]]. This `thenNoReply` can be used as a conscious decision that a reply shouldn't be
    * sent for a specific command or the reply will be sent later.
    */
-  def thenNoReply(): ReplyEffect[State]
+  def thenNoReply(): ReplyEffectWithStop[State]
 
 }
 
@@ -209,7 +207,6 @@ import pekko.persistence.typed.state.internal.SideEffect
  * created with `Effects().reply`, `Effects().noReply`, [[EffectBuilder.thenReply]], or [[EffectBuilder.thenNoReply]].
  */
 @DoNotInherit trait ReplyEffect[State] extends Effect[State] {
-  self: EffectImpl[State] =>
 
   /**
    * Unstash the commands that were stashed with `EffectFactories.stash`.
@@ -219,4 +216,45 @@ import pekko.persistence.typed.state.internal.SideEffect
    * by another `unstashAll`.
    */
   def thenUnstashAll(): ReplyEffect[State]
+}
+
+/**
+ * Shared operations on reply effects that preserve their result type.
+ *
+ * Not intended for user extension.
+ *
+ * @tparam Self The reply-effect stage returned by chained operations.
+ * @since 2.0.0
+ */
+@DoNotInherit trait ReplyEffectOps[State, +Self <: ReplyEffectOps[State, Self]]
+    extends ReplyEffect[State] {
+
+  /**
+   * Unstash previously stashed commands, preserving this reply-effect stage.
+   *
+   * @see [[ReplyEffect.thenUnstashAll]]
+   * @since 2.0.0
+   */
+  override def thenUnstashAll(): Self
+}
+
+/**
+ * A reply decision that can be followed by stopping the actor.
+ * Returned by `reply`, `noReply`, `thenReply`, and `thenNoReply`.
+ * Stashing returns the base [[ReplyEffect]], which does not allow `thenStop`.
+ *
+ * Not intended for user extension.
+ *
+ * @since 2.0.0
+ */
+@DoNotInherit trait ReplyEffectWithStop[State]
+    extends ReplyEffectOps[State, ReplyEffectWithStop[State]] {
+
+  /**
+   * Stop the actor after executing the preceding side effects.
+   * Commands remaining in the stash from earlier commands are discarded when the actor stops.
+   *
+   * @since 2.0.0
+   */
+  def thenStop(): ReplyEffectWithStop[State]
 }

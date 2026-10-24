@@ -78,7 +78,7 @@ object Effect {
    * thrown from processing a command or side effect after persisting. The stash buffer is preserved for persist
    * failures if a backoff supervisor strategy is defined with [[EventSourcedBehavior.onPersistFailure]].
    *
-   * Side effects can be chained with `thenRun`
+   * This returns a [[ReplyEffect]] without `thenStop`, so `Effect.stash().thenStop()` does not compile.
    */
   def stash[Event, State](): ReplyEffect[Event, State] =
     Stash.asInstanceOf[EffectBuilder[Event, State]].thenNoReply()
@@ -108,7 +108,7 @@ object Effect {
    * finding mistakes.
    */
   def reply[ReplyMessage, Event, State](replyTo: ActorRef[ReplyMessage])(
-      replyWithMessage: ReplyMessage): ReplyEffect[Event, State] =
+      replyWithMessage: ReplyMessage): ReplyEffectWithStop[Event, State] =
     none[Event, State].thenReply[ReplyMessage](replyTo)(_ => replyWithMessage)
 
   /**
@@ -116,7 +116,7 @@ object Effect {
    * isn't a [[ReplyEffect]]. This `noReply` can be used as a conscious decision that a reply shouldn't be
    * sent for a specific command or the reply will be sent later.
    */
-  def noReply[Event, State]: ReplyEffect[Event, State] =
+  def noReply[Event, State]: ReplyEffectWithStop[Event, State] =
     none.thenNoReply()
 
 }
@@ -175,14 +175,14 @@ trait EffectBuilder[+Event, State] extends Effect[Event, State] {
    * finding mistakes.
    */
   def thenReply[ReplyMessage](replyTo: ActorRef[ReplyMessage])(
-      replyWithMessage: State => ReplyMessage): ReplyEffect[Event, State]
+      replyWithMessage: State => ReplyMessage): ReplyEffectWithStop[Event, State]
 
   /**
    * When [[EventSourcedBehavior.withEnforcedReplies]] is used there will be compilation errors if the returned effect
    * isn't a [[ReplyEffect]]. This `thenNoReply` can be used as a conscious decision that a reply shouldn't be
    * sent for a specific command or the reply will be sent later.
    */
-  def thenNoReply(): ReplyEffect[Event, State]
+  def thenNoReply(): ReplyEffectWithStop[Event, State]
 
 }
 
@@ -203,4 +203,45 @@ trait EffectBuilder[+Event, State] extends Effect[Event, State] {
    * by another `unstashAll`.
    */
   def thenUnstashAll(): ReplyEffect[Event, State]
+}
+
+/**
+ * Shared operations on reply effects that preserve their result type.
+ *
+ * Not intended for user extension.
+ *
+ * @tparam Self The reply-effect stage returned by chained operations.
+ * @since 2.0.0
+ */
+@DoNotInherit trait ReplyEffectOps[+Event, State, +Self <: ReplyEffectOps[Event, State, Self]]
+    extends ReplyEffect[Event, State] {
+
+  /**
+   * Unstash previously stashed commands, preserving this reply-effect stage.
+   *
+   * @see [[ReplyEffect.thenUnstashAll]]
+   * @since 2.0.0
+   */
+  override def thenUnstashAll(): Self
+}
+
+/**
+ * A reply decision that can be followed by stopping the actor.
+ * Returned by `reply`, `noReply`, `thenReply`, and `thenNoReply`.
+ * Stashing returns the base [[ReplyEffect]], which does not allow `thenStop`.
+ *
+ * Not intended for user extension.
+ *
+ * @since 2.0.0
+ */
+@DoNotInherit trait ReplyEffectWithStop[+Event, State]
+    extends ReplyEffectOps[Event, State, ReplyEffectWithStop[Event, State]] {
+
+  /**
+   * Stop the actor after executing the preceding side effects.
+   * Commands remaining in the stash from earlier commands are discarded when the actor stops.
+   *
+   * @since 2.0.0
+   */
+  def thenStop(): ReplyEffectWithStop[Event, State]
 }
