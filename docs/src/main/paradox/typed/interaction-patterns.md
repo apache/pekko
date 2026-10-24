@@ -489,6 +489,19 @@ This can be used with any type of @apidoc[actor.typed.Behavior], including @apid
 * The `TimerScheduler` is bound to the lifecycle of the actor that owns it and is cancelled automatically when the actor is stopped.
 * `Behaviors.withTimers` can also be used inside @apidoc[Behaviors.supervise](typed.*.Behaviors$) {scala="#supervise[T](wrapped:org.apache.pekko.actor.typed.Behavior[T]):org.apache.pekko.actor.typed.scaladsl.Behaviors.Supervise[T]" java="#supervise(org.apache.pekko.actor.typed.Behavior)"} and it will automatically cancel the started timers correctly when the actor is restarted, so that the new incarnation will not receive scheduled messages from a previous incarnation.
 
+### Receive timeout
+
+Use `ActorContext.setReceiveTimeout` to receive a notification when no message has been received for the
+configured duration. Each received message starts the timeout anew, unless it implements
+@apidoc[NotInfluenceReceiveTimeout](actor.NotInfluenceReceiveTimeout). Use `ActorContext.cancelReceiveTimeout`
+to disable the notification.
+
+For `messageAdapter`, `ask`, `askWithStatus`, and `pipeToSelf`, the timeout is influenced by the **adapted
+message delivered to the behavior**. To keep the current timeout, mark that adapted message with
+`NotInfluenceReceiveTimeout`; marking only the original response does not prevent the timeout from resetting.
+This applies to both the Scala and Java APIs. Explicitly setting or cancelling the receive timeout while
+handling a marked message still takes effect.
+
 ### Schedule periodically
 
 Scheduling of recurring messages can have two different characteristics:

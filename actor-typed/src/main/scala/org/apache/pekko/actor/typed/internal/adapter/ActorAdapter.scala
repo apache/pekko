@@ -110,7 +110,7 @@ import pekko.util.OptionVal
             case AdaptWithRegisteredMessageAdapter(msg) =>
               adaptAndHandle(msg)
             case msg: T @unchecked =>
-              handleMessage(msg)
+              handleAdaptedMessage(msg)
           }
         case AdaptWithRegisteredMessageAdapter(msg) =>
           adaptAndHandle(msg)
@@ -124,6 +124,14 @@ import pekko.util.OptionVal
       ctx.clearCurrentActorThread()
       ctx.clearMdc()
     }
+  }
+
+  private def handleAdaptedMessage(msg: T): Unit = {
+    // The internal envelope leaves the timeout alone until the adapted message is known.
+    // Cancelling the task changes the timeout version, so ActorCell reschedules it after processing.
+    if (!classic.dungeon.ReceiveTimeoutCompat.isNotInfluenceReceiveTimeout(msg))
+      context.asInstanceOf[classic.ActorCell].cancelReceiveTimeoutTask()
+    handleMessage(msg)
   }
 
   private def handleMessage(msg: T): Unit = {
@@ -191,7 +199,7 @@ import pekko.util.OptionVal
           unhandled(msg)
         case (clazz, f) :: tail =>
           if (clazz.isAssignableFrom(msg.getClass)) {
-            withSafelyAdapted(() => f(msg))(handleMessage)
+            withSafelyAdapted(() => f(msg))(handleAdaptedMessage)
           } else
             handle(tail) // recursive
       }

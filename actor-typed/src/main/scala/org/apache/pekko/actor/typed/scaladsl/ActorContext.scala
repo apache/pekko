@@ -207,6 +207,10 @@ trait ActorContext[T] extends TypedActorContext[T] with ClassicActorContextProvi
    * with each received message. Use `cancelReceiveTimeout` to switch off this
    * mechanism.
    *
+   * Messages marked with [[org.apache.pekko.actor.NotInfluenceReceiveTimeout]] do not reset the timeout.
+   * For message adapters, `ask`, `askWithStatus`, and `pipeToSelf`, this applies to the adapted message
+   * delivered to the behavior, not the original response.
+   *
    * *Warning*: This method is not thread-safe and must not be accessed from threads other
    * than the ordinary actor message processing thread, such as [[scala.concurrent.Future]] callbacks.
    */

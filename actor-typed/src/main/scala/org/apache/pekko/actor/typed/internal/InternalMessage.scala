@@ -14,6 +14,7 @@
 package org.apache.pekko.actor.typed.internal
 
 import org.apache.pekko
+import pekko.actor.NotInfluenceReceiveTimeout
 import pekko.actor.WrappedMessage
 import pekko.annotation.InternalApi
 
@@ -26,7 +27,9 @@ import pekko.annotation.InternalApi
  * INTERNAL API: Wrapping of messages that should be adapted by
  * adapters registered with `ActorContext.messageAdapter`.
  */
-@InternalApi private[pekko] final case class AdaptWithRegisteredMessageAdapter[U](msg: U) extends InternalMessage
+@InternalApi private[pekko] final case class AdaptWithRegisteredMessageAdapter[U](msg: U)
+    extends InternalMessage
+    with NotInfluenceReceiveTimeout
 
 /**
  * INTERNAL API: Wrapping of messages that should be adapted by the included
@@ -35,6 +38,7 @@ import pekko.annotation.InternalApi
  */
 @InternalApi private[pekko] final case class AdaptMessage[U, T](message: U, adapter: U => T)
     extends InternalMessage
-    with WrappedMessage {
+    with WrappedMessage
+    with NotInfluenceReceiveTimeout {
   def adapt(): T = adapter(message)
 }
