@@ -182,6 +182,22 @@ In addition to `thenRun` the following actions can also be performed after succe
 * `thenUnstashAll` process the commands that were stashed with @scala[`Effect.stash`]@java[`Effect().stash`]
 * `thenReply` send a reply message to the given `ActorRef`
 
+`reply`, `thenReply`, `noReply`, and `thenNoReply` return `ReplyEffectWithStop`, a subtype of `ReplyEffect`
+that supports `thenStop`. For example:
+@scala[`Effect.reply(replyTo)(response).thenStop()`]@java[`Effect().reply(replyTo, response).thenStop()`].
+The reply is sent before the actor stops, and the result can be returned from a command handler with enforced replies.
+Shared chaining operations are declared in `ReplyEffectOps`, which extends `ReplyEffect` with a recursive `Self` type parameter.
+`ReplyEffectWithStop` binds `Self` to its own type, so `thenUnstashAll` preserves this capability without
+redeclaring the method in each stage. A generic helper can accept `ReplyEffectOps` and return `Self`,
+retaining the caller's stage.
+
+`stash` returns the base `ReplyEffect`, so
+@scala[`Effect.stash().thenStop()`]@java[`Effect().stash().thenStop()`] is rejected at compile time,
+also when `thenUnstashAll` is inserted between the calls. A helper whose result will be followed by `thenStop`
+must declare `ReplyEffectWithStop` as its return type; a helper that may stash must return `ReplyEffect`.
+This restriction applies to the current command's effect chain. Stopping can still discard commands
+left in the stash by earlier commands.
+
 In the example below, we use a different constructor of `DurableStateBehavior.withEnforcedReplies`, which creates
 a `Behavior` for a persistent actor that ensures that every command sends a reply back. Hence it will be
 a compilation error if the returned effect from a `CommandHandler` isn't a `ReplyEffect`.

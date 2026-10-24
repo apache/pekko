@@ -1,0 +1,41 @@
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements. See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License. You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# The 2.0.0 staged API intentionally narrows reply/noReply/thenReply/thenNoReply results
+# to ReplyEffectWithStop. This keeps thenStop unavailable after stash, which returns ReplyEffect.
+# These approved binary changes require existing compiled clients to be recompiled.
+# Only the changed result signatures and their replacement abstract methods are excluded.
+ProblemFilters.exclude[IncompatibleResultTypeProblem]("org.apache.pekko.persistence.typed.javadsl.EffectBuilder.thenReply(org.apache.pekko.actor.typed.ActorRef,org.apache.pekko.japi.function.Function)org.apache.pekko.persistence.typed.javadsl.ReplyEffect")
+ProblemFilters.exclude[IncompatibleResultTypeProblem]("org.apache.pekko.persistence.typed.javadsl.EffectBuilder.thenNoReply()org.apache.pekko.persistence.typed.javadsl.ReplyEffect")
+ProblemFilters.exclude[ReversedMissingMethodProblem]("org.apache.pekko.persistence.typed.javadsl.EffectBuilder.thenNoReply()org.apache.pekko.persistence.typed.javadsl.ReplyEffectWithStop")
+ProblemFilters.exclude[IncompatibleResultTypeProblem]("org.apache.pekko.persistence.typed.javadsl.EffectFactories.reply(org.apache.pekko.actor.typed.ActorRef,java.lang.Object)org.apache.pekko.persistence.typed.javadsl.ReplyEffect")
+ProblemFilters.exclude[IncompatibleResultTypeProblem]("org.apache.pekko.persistence.typed.javadsl.EffectFactories.noReply()org.apache.pekko.persistence.typed.javadsl.ReplyEffect")
+ProblemFilters.exclude[IncompatibleResultTypeProblem]("org.apache.pekko.persistence.typed.scaladsl.Effect.reply(org.apache.pekko.actor.typed.ActorRef,java.lang.Object)org.apache.pekko.persistence.typed.scaladsl.ReplyEffect")
+ProblemFilters.exclude[IncompatibleResultTypeProblem]("org.apache.pekko.persistence.typed.scaladsl.Effect.noReply()org.apache.pekko.persistence.typed.scaladsl.ReplyEffect")
+ProblemFilters.exclude[IncompatibleResultTypeProblem]("org.apache.pekko.persistence.typed.scaladsl.EffectBuilder.thenReply(org.apache.pekko.actor.typed.ActorRef,scala.Function1)org.apache.pekko.persistence.typed.scaladsl.ReplyEffect")
+ProblemFilters.exclude[IncompatibleResultTypeProblem]("org.apache.pekko.persistence.typed.scaladsl.EffectBuilder.thenNoReply()org.apache.pekko.persistence.typed.scaladsl.ReplyEffect")
+ProblemFilters.exclude[ReversedMissingMethodProblem]("org.apache.pekko.persistence.typed.scaladsl.EffectBuilder.thenReply(org.apache.pekko.actor.typed.ActorRef,scala.Function1)org.apache.pekko.persistence.typed.scaladsl.ReplyEffectWithStop")
+ProblemFilters.exclude[ReversedMissingMethodProblem]("org.apache.pekko.persistence.typed.scaladsl.EffectBuilder.thenNoReply()org.apache.pekko.persistence.typed.scaladsl.ReplyEffectWithStop")
+ProblemFilters.exclude[IncompatibleResultTypeProblem]("org.apache.pekko.persistence.typed.state.javadsl.EffectBuilder.thenReply(org.apache.pekko.actor.typed.ActorRef,org.apache.pekko.japi.function.Function)org.apache.pekko.persistence.typed.state.javadsl.ReplyEffect")
+ProblemFilters.exclude[IncompatibleResultTypeProblem]("org.apache.pekko.persistence.typed.state.javadsl.EffectBuilder.thenNoReply()org.apache.pekko.persistence.typed.state.javadsl.ReplyEffect")
+ProblemFilters.exclude[ReversedMissingMethodProblem]("org.apache.pekko.persistence.typed.state.javadsl.EffectBuilder.thenNoReply()org.apache.pekko.persistence.typed.state.javadsl.ReplyEffectWithStop")
+ProblemFilters.exclude[IncompatibleResultTypeProblem]("org.apache.pekko.persistence.typed.state.javadsl.EffectFactories.reply(org.apache.pekko.actor.typed.ActorRef,java.lang.Object)org.apache.pekko.persistence.typed.state.javadsl.ReplyEffect")
+ProblemFilters.exclude[IncompatibleResultTypeProblem]("org.apache.pekko.persistence.typed.state.javadsl.EffectFactories.noReply()org.apache.pekko.persistence.typed.state.javadsl.ReplyEffect")
+ProblemFilters.exclude[IncompatibleResultTypeProblem]("org.apache.pekko.persistence.typed.state.scaladsl.Effect.reply(org.apache.pekko.actor.typed.ActorRef,java.lang.Object)org.apache.pekko.persistence.typed.state.scaladsl.ReplyEffect")
+ProblemFilters.exclude[IncompatibleResultTypeProblem]("org.apache.pekko.persistence.typed.state.scaladsl.Effect.noReply()org.apache.pekko.persistence.typed.state.scaladsl.ReplyEffect")
+ProblemFilters.exclude[IncompatibleResultTypeProblem]("org.apache.pekko.persistence.typed.state.scaladsl.EffectBuilder.thenReply(org.apache.pekko.actor.typed.ActorRef,scala.Function1)org.apache.pekko.persistence.typed.state.scaladsl.ReplyEffect")
+ProblemFilters.exclude[IncompatibleResultTypeProblem]("org.apache.pekko.persistence.typed.state.scaladsl.EffectBuilder.thenNoReply()org.apache.pekko.persistence.typed.state.scaladsl.ReplyEffect")
+ProblemFilters.exclude[ReversedMissingMethodProblem]("org.apache.pekko.persistence.typed.state.scaladsl.EffectBuilder.thenReply(org.apache.pekko.actor.typed.ActorRef,scala.Function1)org.apache.pekko.persistence.typed.state.scaladsl.ReplyEffectWithStop")
+ProblemFilters.exclude[ReversedMissingMethodProblem]("org.apache.pekko.persistence.typed.state.scaladsl.EffectBuilder.thenNoReply()org.apache.pekko.persistence.typed.state.scaladsl.ReplyEffectWithStop")

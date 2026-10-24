@@ -235,7 +235,23 @@ In addition to `thenRun` the following actions can also be performed after succe
 
 * @apidoc[thenStop](typed.(scaladsl|javadsl).EffectBuilder) {scala="#thenStop():org.apache.pekko.persistence.typed.scaladsl.EffectBuilder[Event,State]" java="#thenStop()"} the actor will be stopped
 * @apidoc[thenUnstashAll](typed.(scaladsl|javadsl).EffectBuilder) {scala="#thenUnstashAll():org.apache.pekko.persistence.typed.scaladsl.Effect[Event,State]" java="#thenUnstashAll()"} process the commands that were stashed with @scala[`Effect.stash`]@java[`Effect().stash`]
-* @apidoc[thenReply](typed.(scaladsl|javadsl).EffectBuilder) {scala="#thenReply[ReplyMessage](replyTo:org.apache.pekko.actor.typed.ActorRef[ReplyMessage])(replyWithMessage:State=%3EReplyMessage):org.apache.pekko.persistence.typed.scaladsl.ReplyEffect[Event,State]" java="#thenReply(org.apache.pekko.actor.typed.ActorRef,org.apache.pekko.japi.function.Function)"} send a reply message to the given @apidoc[typed.ActorRef]
+* @apidoc[thenReply](typed.(scaladsl|javadsl).EffectBuilder) {scala="#thenReply[ReplyMessage](replyTo:org.apache.pekko.actor.typed.ActorRef[ReplyMessage])(replyWithMessage:State=%3EReplyMessage):org.apache.pekko.persistence.typed.scaladsl.ReplyEffectWithStop[Event,State]" java="#thenReply(org.apache.pekko.actor.typed.ActorRef,org.apache.pekko.japi.function.Function)"} send a reply message to the given @apidoc[typed.ActorRef]
+
+`reply`, `thenReply`, `noReply`, and `thenNoReply` return `ReplyEffectWithStop`, a subtype of `ReplyEffect`
+that supports `thenStop`. For example:
+@scala[`Effect.reply(replyTo)(response).thenStop()`]@java[`Effect().reply(replyTo, response).thenStop()`].
+The reply is sent before the actor stops, and the result can be returned from a command handler with enforced replies.
+Shared chaining operations are declared in `ReplyEffectOps`, which extends `ReplyEffect` with a recursive `Self` type parameter.
+`ReplyEffectWithStop` binds `Self` to its own type, so `thenUnstashAll` preserves this capability without
+redeclaring the method in each stage. A generic helper can accept `ReplyEffectOps` and return `Self`,
+retaining the caller's stage.
+
+`stash` returns the base `ReplyEffect`, so
+@scala[`Effect.stash().thenStop()`]@java[`Effect().stash().thenStop()`] is rejected at compile time,
+also when `thenUnstashAll` is inserted between the calls. A helper whose result will be followed by `thenStop`
+must declare `ReplyEffectWithStop` as its return type; a helper that may stash must return `ReplyEffect`.
+This restriction applies to the current command's effect chain. Stopping can still discard commands
+left in the stash by earlier commands.
 
 Example of effects:
 

@@ -23,8 +23,8 @@ import pekko.persistence.typed.state.scaladsl
 @InternalApi
 private[pekko] abstract class EffectImpl[State]
     extends javadsl.EffectBuilder[State]
-    with javadsl.ReplyEffect[State]
-    with scaladsl.ReplyEffect[State]
+    with javadsl.ReplyEffectWithStop[State]
+    with scaladsl.ReplyEffectWithStop[State]
     with scaladsl.EffectBuilder[State] {
   /* The state that will be persisted in this effect */
   override def state: Option[State] = None

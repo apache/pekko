@@ -23,8 +23,8 @@ import pekko.persistence.typed.scaladsl
 @InternalApi
 private[pekko] abstract class EffectImpl[+Event, State]
     extends javadsl.EffectBuilder[Event, State]
-    with javadsl.ReplyEffect[Event, State]
-    with scaladsl.ReplyEffect[Event, State]
+    with javadsl.ReplyEffectWithStop[Event, State]
+    with scaladsl.ReplyEffectWithStop[Event, State]
     with scaladsl.EffectBuilder[Event, State] {
   /* All events that will be persisted in this effect */
   override def events: Seq[Event] = Nil
