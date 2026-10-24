@@ -1236,7 +1236,9 @@ class ClusterSingletonManager(singletonProps: Props, terminationMessage: Any, se
       lease.foreach { l =>
         logInfo("Releasing lease as leaving Oldest")
         import context.dispatcher
-        pipe(l.release().map(ReleaseLeaseResult(_))).to(self)
+        pipe(l.release().map[Any](ReleaseLeaseResult(_)).recover {
+          case t => ReleaseLeaseFailure(t)
+        }).to(self)
       }
   }
 
