@@ -62,6 +62,7 @@ private[io] class TcpListener(
   channel.configureBlocking(false)
 
   var acceptLimit = if (bind.pullMode) 0 else BatchAcceptLimit
+  private var acceptFailed = false
 
   val localAddress =
     try {
@@ -103,8 +104,15 @@ private[io] class TcpListener(
 
   def bound(registration: ChannelRegistration): Receive = {
     case ChannelAcceptable =>
+      acceptFailed = false
       acceptLimit = acceptAllPending(registration, acceptLimit)
-      if (acceptLimit > 0) registration.enableInterest(SelectionKey.OP_ACCEPT)
+      if (acceptFailed) {
+        // a persistent accept error (e.g. descriptor exhaustion) leaves the listening
+        // channel acceptable, so re-arming OP_ACCEPT immediately would spin the selector
+        // and log one error per iteration; retry after a delay instead
+        if (acceptLimit > 0)
+          context.system.scheduler.scheduleOnce(AcceptErrorRetryDelay, self, ChannelAcceptable)(context.dispatcher)
+      } else if (acceptLimit > 0) registration.enableInterest(SelectionKey.OP_ACCEPT)
 
     case ResumeAccepting(batchSize) =>
       acceptLimit = batchSize
@@ -137,7 +145,10 @@ private[io] class TcpListener(
       if (limit > 0) {
         try channel.accept()
         catch {
-          case NonFatal(e) => { log.error(e, "Accept error: could not accept new connection"); null }
+          case NonFatal(e) =>
+            acceptFailed = true
+            log.error(e, "Accept error: could not accept new connection")
+            null
         }
       } else null
     if (socketChannel ne null) {
