@@ -48,6 +48,10 @@ The test conductor server is responsible for coordinating barriers and sending c
 clients that act upon them, e.g. throttling network traffic to/from another client. More information on the
 possible operations is available in the @apidoc[remote.testconductor.Conductor](Conductor) API documentation.
 
+The conductor resolves its bound socket address asynchronously. If the server cannot bind, for example because
+another process is using its port, `startController` and `sockAddr` fail with the bind error. Address queries do
+not block the controller while the bind is pending.
+
 ## The Multi Node Spec
 
 The Multi Node Spec consists of two parts. The @apidoc[MultiNodeConfig] that is responsible for common
