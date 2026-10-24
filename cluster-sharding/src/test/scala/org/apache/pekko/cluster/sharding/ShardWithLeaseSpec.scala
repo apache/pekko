@@ -14,13 +14,18 @@
 package org.apache.pekko.cluster.sharding
 
 import scala.concurrent.Future
+import scala.concurrent.Promise
 import scala.concurrent.duration._
+import scala.util.Failure
 import scala.util.Success
 import scala.util.control.NoStackTrace
 
 import org.apache.pekko
 import pekko.actor.Actor
+import pekko.actor.ActorIdentity
 import pekko.actor.ActorLogging
+import pekko.actor.ActorRef
+import pekko.actor.Identify
 import pekko.actor.Props
 import pekko.cluster.Cluster
 import pekko.cluster.MemberStatus
@@ -174,6 +179,79 @@ class ShardWithLeaseSpec extends PekkoSpec(ShardWithLeaseSpec.config) with WithL
     "log an error if releasing the lease throws when the shard stops" in new Setup {
       expectReleaseFailureLoggedOnStop(throw BadLease("release threw"))
     }
+
+    "stop after logging a declined release during initialization handoff" in new Setup {
+      expectReleaseFailureDuringHandOff(Future.successful(false))
+    }
+
+    "stop after logging a failed release during initialization handoff" in new Setup {
+      expectReleaseFailureDuringHandOff(Future.failed(BadLease("release failed")))
+    }
+
+    "stop after logging a throwing release during initialization handoff" in new Setup {
+      expectReleaseFailureDuringHandOff(throw BadLease("release threw"))
+    }
+
+    List(
+      "succeeds" -> Success(true),
+      "is declined" -> Success(false),
+      "fails" -> Failure[Boolean](BadLease("acquire failed"))).foreach { case (outcome, acquireResult) =>
+      s"acknowledge HandOff and wait for the old acquire before replacement when it $outcome" in new Setup {
+        val probe = TestProbe()
+        sharding.tell(EntityEnvelope(1, "old"), probe.ref)
+        val lease = leaseFor("1")
+        val owner = Cluster(system).selfAddress.hostPort
+        lease.probe.expectMsg(TestLease.AcquireReq(owner))
+        val shard = identifyRef(s"/system/sharding/$typeName/1")
+        val terminationProbe = TestProbe()
+        terminationProbe.watch(shard)
+        val coordinatorProbe = TestProbe()
+        val queryProbe = TestProbe()
+        val released = Promise[Boolean]()
+        queryProbe.send(shard, Shard.GetCurrentShardState)
+        queryProbe.send(shard, Identify("stashed-query"))
+        queryProbe.expectMsg(ActorIdentity("stashed-query", Some(shard)))
+        try {
+          coordinatorProbe.send(sharding, ShardCoordinator.Internal.HandOff("1"))
+          coordinatorProbe.expectMsg(ShardCoordinator.Internal.ShardStopped("1"))
+          queryProbe.expectMsg(Shard.CurrentShardState("1", Set.empty))
+          queryProbe.send(shard, Shard.GetShardStats)
+          queryProbe.expectMsg(Shard.ShardStats("1", 0))
+
+          lease.setNextAcquireResult(Future.successful(true))
+          lease.setNextCheckLeaseResult(true)
+          sharding.tell(EntityEnvelope(1, "new"), probe.ref)
+          // A replacement on this node must not acquire the shared lease before the old acquire finishes.
+          terminationProbe.expectNoMessage(shortDuration)
+          lease.probe.expectNoMessage(shortDuration)
+          lease.setNextReleaseResult(released.future)
+          lease.initialPromise.complete(acquireResult)
+          lease.probe.expectMsg(TestLease.ReleaseReq(owner))
+          queryProbe.send(shard, Shard.GetShardStats)
+          queryProbe.expectMsg(Shard.ShardStats("1", 0))
+          // Invoking release is not enough: its completion must precede replacement.
+          terminationProbe.expectNoMessage(shortDuration)
+          lease.probe.expectNoMessage(shortDuration)
+          released.success(true)
+          terminationProbe.expectTerminated(shard)
+
+          // Drive the coordinator's allocation reply explicitly instead of waiting for a retry tick.
+          coordinatorProbe.send(sharding, ShardCoordinator.Internal.ShardHome("1", sharding))
+          lease.probe.expectMsg(TestLease.AcquireReq(owner))
+          probe.expectMsg("ack new")
+          lease.probe.expectNoMessage(shortDuration)
+        } finally {
+          lease.initialPromise.tryComplete(acquireResult)
+          released.trySuccess(true)
+        }
+      }
+    }
+  }
+
+  private def identifyRef(path: String): ActorRef = {
+    val probe = TestProbe()
+    system.actorSelection(path).tell(Identify(1), probe.ref)
+    probe.expectMsgType[ActorIdentity].ref.get
   }
 
   var typeIdx = 0
@@ -198,6 +276,30 @@ class ShardWithLeaseSpec extends PekkoSpec(ShardWithLeaseSpec.config) with WithL
         if (customLeaseName.isEmpty) s"${system.name}-shard-$typeName-$shardId"
         else s"$customLeaseName-$shardId"
       testLeaseExt.getTestLease(leaseName)
+    }
+
+    def expectReleaseFailureDuringHandOff(releaseResult: => Future[Boolean]): Unit = {
+      sharding.tell(EntityEnvelope(1, "hello"), testActor)
+      val lease = leaseFor("1")
+      val owner = Cluster(system).selfAddress.hostPort
+      lease.probe.expectMsg(TestLease.AcquireReq(owner))
+      val shard = identifyRef(s"/system/sharding/$typeName/1")
+      val terminationProbe = TestProbe()
+      terminationProbe.watch(shard)
+      val coordinatorProbe = TestProbe()
+      try {
+        coordinatorProbe.send(sharding, ShardCoordinator.Internal.HandOff("1"))
+        coordinatorProbe.expectMsg(ShardCoordinator.Internal.ShardStopped("1"))
+        lease.setNextReleaseResult(releaseResult)
+        EventFilter.error(start = s"$typeName: Failed to release lease for shard id [1]", occurrences = 1).intercept {
+          lease.initialPromise.success(true)
+          lease.probe.expectMsg(TestLease.ReleaseReq(owner))
+          terminationProbe.expectTerminated(shard)
+        }
+        lease.probe.expectNoMessage(shortDuration)
+      } finally {
+        lease.initialPromise.trySuccess(true)
+      }
     }
 
     def expectReleaseFailureLoggedOnStop(releaseResult: => Future[Boolean]): Unit = {
