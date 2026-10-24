@@ -658,6 +658,34 @@ final class Sink[In, Mat](delegate: scaladsl.Sink[In, Mat]) extends Graph[SinkSh
   }
 
   /**
+   * Wraps this sink so that in addition to the original materialized value a `CompletionStage<Done>` is
+   * materialized that completes when this sink has fully terminated: it completes with success after this sink's
+   * `postStop` lifecycle hook has run, or fails with the upstream failure when the stream failed. Unlike
+   * [[Flow.watchTermination]], which only observes termination before the sink, this allows waiting for any
+   * cleanup or final commits performed by the sink itself.
+   *
+   * Supports sinks built from GraphStages, including composite sinks such as `Sink.foreach`, `Sink.fold`,
+   * `Sink.combine` and GraphDSL graphs, and waits for all their stages to stop. Sinks containing other
+   * module types, such as `Sink.fromSubscriber`, throw an [[IllegalArgumentException]].
+   *
+   * The termination future fails if a stage fails, including failures in `postStop`, or if the stream
+   * is abruptly terminated. Observed failures are reported even if the wrapped graph recovers from them.
+   * Cancellation with a non-failure cause completes it successfully; cancellation with a failure cause fails it.
+   * It observes only stages already present in this sink's graph. Sinks created later by `Sink.lazySink`,
+   * `Sink.fromMaterializer`, or substream operators are not observed, even when they run in the same actor.
+   * Apply `watchTermination` inside the factory to observe a dynamically created sink. Independently
+   * materialized streams and asynchronous work that outlives a stage's lifecycle hooks are not awaited.
+   *
+   * It is recommended to use the internally optimized `Keep.left` and `Keep.right` combiners
+   * where appropriate instead of manually writing functions that pass through one of the values.
+   *
+   * @since 2.0.0
+   */
+  def watchTermination[M](
+      matF: function.Function2[Mat @uncheckedVariance, CompletionStage[Done], M]): Sink[In @uncheckedVariance, M] =
+    new Sink(delegate.watchTermination((left, right) => matF(left, right.asJava)))
+
+  /**
    * Replace the attributes of this [[Sink]] with the given ones. If this Sink is a composite
    * of multiple graphs, new attributes on the composite will be less specific than attributes
    * set directly on the individual graphs of the composite.

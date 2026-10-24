@@ -14,7 +14,10 @@
 package org.apache.pekko.stream.impl.fusing
 
 import org.apache.pekko
+import pekko.Done
+import pekko.stream.{ Attributes, Inlet, Shape, SinkShape }
 import pekko.stream.scaladsl.{ Balance, Broadcast, Merge, Zip }
+import pekko.stream.stage.{ GraphStage, GraphStageLogic, GraphStageWithMaterializedValue, InHandler }
 import pekko.stream.testkit.StreamSpec
 
 class GraphInterpreterSpec extends StreamSpec with GraphInterpreterSpecKit {
@@ -425,6 +428,68 @@ class GraphInterpreterSpec extends StreamSpec with GraphInterpreterSpecKit {
         conn.inHandler should be(null)
         conn.outHandler should be(null)
         conn.slot should be(GraphInterpreter.Empty)
+      }
+    }
+
+    for (failed <- List(false, true)) {
+      s"complete watched-stage callbacks outside the tracker monitor (failed: $failed)" in {
+        val tracker = new TerminationTracker(2)
+        val completedUnderLock = tracker.future.transform(_ => scala.util.Success(Thread.holdsLock(tracker)))(
+          scala.concurrent.ExecutionContext.parasitic)
+        tracker.stageStopped(null)
+        completedUnderLock.isCompleted shouldBe false
+        tracker.stageStopped(if (failed) new RuntimeException("stage failed") else null)
+        completedUnderLock.futureValue shouldBe false
+      }
+    }
+
+    for (eventLimited <- List(false, true)) {
+      s"release watched stage references after an async self-stop (event limited: $eventLimited)" in new TestSetup {
+        val source = new UpstreamProbe[Int]("source")
+        var inner: GraphStageLogic = null
+        val stage: GraphStage[SinkShape[Int]] = new GraphStage[SinkShape[Int]] {
+          val in = Inlet[Int]("watched.in")
+          override val shape = SinkShape(in)
+          override def createLogic(attributes: Attributes): GraphStageLogic = {
+            inner = new GraphStageLogic(shape) with InHandler {
+              override def onPush(): Unit = ()
+              setHandler(in, this)
+            }
+            inner
+          }
+        }
+        val watched = new TerminationReporterStage(stage.asInstanceOf[GraphStageWithMaterializedValue[Shape, Any]])
+        val (logics, _, _) = GraphInterpreterSpecKit.createLogics(Array(watched), Array(source), Array.empty)
+        val tracker = new TerminationTracker(1)
+        logics(1).asInstanceOf[TerminationReporterLogic].tracker = tracker
+        val connections = GraphInterpreterSpecKit.createLinearFlowConnections(logics.toIndexedSeq)
+        manualInit(logics, connections)
+
+        // A watched stage keeps the original handler on the element-processing path.
+        (connections(0).inOwner should be).theSameInstanceAs(inner)
+        (connections(0).inHandler should be).theSameInstanceAs(inner.inHandler(0))
+        if (eventLimited) {
+          val handler = new GraphInterpreter.EventLimitHandler {
+            override def apply(event: Any): Unit = inner.completeStage()
+            override def apply(event: Any, eventLimit: Int): Int = {
+              inner.completeStage()
+              eventLimit - 1
+            }
+            override def isWaitingForInterpreter: Boolean = false
+            override def onInterpreterIdle(): Unit = ()
+          }
+          interpreter.runAsyncInput(inner, (), GraphStageLogic.NoPromise, handler, 10) shouldBe 9
+        } else
+          interpreter.runAsyncInput(inner, (), GraphStageLogic.NoPromise, (_: Any) => inner.completeStage())
+
+        tracker.future.value shouldBe Some(scala.util.Success(Done))
+        connections(0).inOwner shouldBe null
+        connections(0).inHandler shouldBe null
+        interpreter.activeStage shouldBe null
+        interpreter.execute(10)
+        logics.foreach(_ shouldBe null)
+        connections(0).outOwner shouldBe null
+        connections(0).outHandler shouldBe null
       }
     }
 
