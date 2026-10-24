@@ -833,7 +833,11 @@ private[pekko] class ClusterShardingGuardian extends Actor {
 
       context.actorOf(
         ClusterSingletonManager
-          .props(singletonProps, terminationMessage = ShardCoordinator.Internal.Terminate, singletonSettings)
+          .props(
+            singletonProps,
+            // Lease loss must stop the coordinator without draining the local region.
+            ClusterSingletonManager.Internal.TerminationMessages(ShardCoordinator.Internal.Terminate, PoisonPill),
+            singletonSettings)
           .withDispatcher(context.props.dispatcher),
         name = cName)
     }
