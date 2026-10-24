@@ -750,7 +750,8 @@ private[pekko] class ClusterShardingGuardian extends Actor {
 
   private def replicator(role: Option[String], settings: ClusterShardingSettings): ActorRef = {
     // one Replicator per role
-    replicatorByRole.get(role) match {
+    // The parent's child table is authoritative once a replicator has terminated.
+    replicatorByRole.get(role).filter(ref => context.child(ref.path.name).contains(ref)) match {
       case Some(ref) => ref
       case None      =>
         val name = role match {

@@ -592,6 +592,9 @@ The state of the `ShardCoordinator` is replicated across the cluster but is not 
 When all nodes in the cluster have been stopped, the state is no longer needed and dropped.
 
 Cluster Sharding uses its own Distributed Data @apidoc[ddata.Replicator] per node. 
+If its durable store fails to load and stops the replicator, starting a new entity type creates a fresh replicator.
+This does not reconnect entity types that were already using the failed replicator.
+
 If using roles with sharding there is one `Replicator` per role, which enables a subset of
 all nodes for some entity types and another subset for other entity types. Each replicator has a name
 that contains the node role and therefore the role configuration must be the same on all nodes in the
