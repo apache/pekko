@@ -1400,11 +1400,14 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
   // cluster exiting nodes, doesn't contain selfAddress
   var exitingNodes: immutable.SortedSet[UniqueAddress] = immutable.SortedSet.empty
 
+  // Membership for incoming Read/Write/DeltaPropagation, independent of quorum and gossip targets.
+  // Down members intentionally remain known until removed, just as when first observed as Up.
+  private var knownSenderNodes = immutable.HashSet(selfUniqueAddress)
+
   // up and weaklyUp nodes, doesn't contain joining and not selfAddress
   private def allNodes: immutable.SortedSet[UniqueAddress] = nodes.union(weaklyUpNodes)
 
-  private def isKnownNode(node: UniqueAddress): Boolean =
-    nodes(node) || weaklyUpNodes(node) || joiningNodes(node) || selfUniqueAddress == node
+  private def isKnownNode(node: UniqueAddress): Boolean = knownSenderNodes(node)
 
   var removedNodes: Map[UniqueAddress, Long] = Map.empty
   // all nodes sorted with the leader first
@@ -1613,13 +1616,8 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
     case Subscribe(key, subscriber)    => receiveSubscribe(key, subscriber)
     case Unsubscribe(key, subscriber)  => receiveUnsubscribe(key, subscriber)
     case Terminated(ref)               => receiveTerminated(ref)
-    case MemberJoined(m)               => receiveMemberJoining(m)
-    case MemberWeaklyUp(m)             => receiveMemberWeaklyUp(m)
-    case MemberUp(m)                   => receiveMemberUp(m)
-    case MemberExited(m)               => receiveMemberExiting(m)
-    case MemberRemoved(m, _)           => receiveMemberRemoved(m)
+    case evt: MemberEvent              => receiveMemberEvent(evt)
     case ClusterShuttingDown           => receiveMemberRemoved(cluster.selfMember)
-    case evt: MemberEvent              => receiveOtherMemberEvent(evt.member)
     case UnreachableMember(m)          => receiveUnreachable(m)
     case ReachableMember(m)            => receiveReachable(m)
     case GetKeyIds                     => receiveGetKeyIds()
@@ -2439,6 +2437,21 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
     }
   }
 
+  private def receiveMemberEvent(event: MemberEvent): Unit = event match {
+    case MemberRemoved(m, _) => receiveMemberRemoved(m)
+    case _                   =>
+      val m = event.member
+      if (matchingRole(m) && m.address != selfAddress)
+        knownSenderNodes += m.uniqueAddress
+      event match {
+        case MemberJoined(m)   => receiveMemberJoining(m)
+        case MemberWeaklyUp(m) => receiveMemberWeaklyUp(m)
+        case MemberUp(m)       => receiveMemberUp(m)
+        case MemberExited(m)   => receiveMemberExiting(m)
+        case _                 => receiveOtherMemberEvent(m)
+      }
+  }
+
   def receiveMemberJoining(m: Member): Unit =
     if (matchingRole(m) && m.address != selfAddress)
       joiningNodes += m.uniqueAddress
@@ -2476,6 +2489,7 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
       weaklyUpNodes -= m.uniqueAddress
       joiningNodes -= m.uniqueAddress
       exitingNodes -= m.uniqueAddress
+      knownSenderNodes -= m.uniqueAddress
       removedNodes = removedNodes.updated(m.uniqueAddress, allReachableClockTime)
       unreachable -= m.uniqueAddress
       if (settings.preferOldest)
