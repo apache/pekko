@@ -134,25 +134,45 @@ trait LoggingBus extends ActorEventBus {
         case Nil     => classOf[DefaultLogger].getName :: Nil
         case loggers => loggers
       }
-      val myloggers =
-        for {
-          loggerName <- defaultLoggers
-          if loggerName != StandardOutLogger.getClass.getName
-        } yield {
-          system.dynamicAccess
-            .getClassFor[Actor](loggerName)
-            .map { actorClass =>
-              addLogger(system, actorClass, level, logName)
+      val loggerNames = defaultLoggers.filterNot(_ == StandardOutLogger.getClass.getName)
+      // resolve all logger classes before creating any logger actor, so that a class
+      // that can't be loaded doesn't leak the already started loggers of earlier entries:
+      // the `loggers` field, which stopDefaultLoggers iterates, is only assigned after
+      // all loggers have been created
+      val loggerClasses = loggerNames.map { loggerName =>
+        system.dynamicAccess
+          .getClassFor[Actor](loggerName)
+          .recover {
+            case e =>
+              throw new ConfigurationException(
+                "Logger specified in config can't be loaded [" + loggerName +
+                "] due to [" + e.toString + "]",
+                e)
+          }
+          .get
+      }
+      val myloggers = {
+        val created = List.newBuilder[ActorRef]
+        try {
+          loggerClasses.foreach { actorClass =>
+            created += addLogger(system, actorClass, level, logName)
+          }
+          created.result()
+        } catch {
+          case NonFatal(e) =>
+            // stop and unsubscribe the loggers created so far, they are not visible
+            // to stopDefaultLoggers since `loggers` has not been assigned yet
+            created.result().foreach { logger =>
+              // this is very necessary, else you get infinite loop with DeadLetter
+              unsubscribe(logger)
+              logger match {
+                case ref: InternalActorRef => ref.stop()
+                case _                     =>
+              }
             }
-            .recover {
-              case e =>
-                throw new ConfigurationException(
-                  "Logger specified in config can't be loaded [" + loggerName +
-                  "] due to [" + e.toString + "]",
-                  e)
-            }
-            .get
+            throw e
         }
+      }
       guard.lock()
       try {
         loggers = myloggers
