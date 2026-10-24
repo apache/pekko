@@ -146,13 +146,13 @@ import pekko.persistence.typed.internal.SideEffect
    *                  explicitly typing the lambda parameter like so: `thenRun((SubState state) -> { ... })`).
    *                  If the state is not of the expected type a [[java.lang.ClassCastException]] is thrown.
    */
-  final def thenRun[NewState <: State](callback: function.Procedure[NewState]): EffectBuilder[Event, State] =
+  def thenRun[NewState <: State](callback: function.Procedure[NewState]): EffectBuilder[Event, State] =
     CompositeEffect(this, SideEffect[State](s => callback.apply(s.asInstanceOf[NewState])))
 
   /**
    * Run the given callback. Callbacks are run sequentially.
    */
-  final def thenRun(callback: function.Effect): EffectBuilder[Event, State] =
+  def thenRun(callback: function.Effect): EffectBuilder[Event, State] =
     CompositeEffect(this, SideEffect[State]((_: State) => callback.apply()))
 
   /** The side effect is to stop the actor */
@@ -222,6 +222,26 @@ import pekko.persistence.typed.internal.SideEffect
     extends ReplyEffect[Event, State] {
 
   /**
+   * Run the given callback after the preceding side effects, preserving this reply-effect stage.
+   * The callback receives the updated state after successful persistence, or the current state if nothing was persisted.
+   * Sending a reply does not wait for the recipient to receive or process it.
+   *
+   * @tparam NewState The expected state type, which may be a known subtype of `State`.
+   *                  If the state is not of the expected type a [[java.lang.ClassCastException]] is thrown.
+   * @since 2.0.0
+   */
+  def thenRun[NewState <: State](callback: function.Procedure[NewState]): Self
+
+  /**
+   * Run the given callback after the preceding side effects, preserving this reply-effect stage.
+   * Callbacks run sequentially after successful persistence, or immediately if nothing was persisted.
+   * Sending a reply does not wait for the recipient to receive or process it.
+   *
+   * @since 2.0.0
+   */
+  def thenRun(callback: function.Effect): Self
+
+  /**
    * Unstash previously stashed commands, preserving this reply-effect stage.
    *
    * @see [[ReplyEffect.thenUnstashAll]]
@@ -244,9 +264,10 @@ import pekko.persistence.typed.internal.SideEffect
 
   /**
    * Stop the actor after executing the preceding side effects.
+   * This ends the callback stage: `thenRun` must be called before `thenStop`.
    * Commands remaining in the stash from earlier commands are discarded when the actor stops.
    *
    * @since 2.0.0
    */
-  def thenStop(): ReplyEffectWithStop[Event, State]
+  def thenStop(): ReplyEffect[Event, State]
 }

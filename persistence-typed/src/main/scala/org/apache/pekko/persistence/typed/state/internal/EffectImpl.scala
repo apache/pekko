@@ -16,6 +16,7 @@ package org.apache.pekko.persistence.typed.state.internal
 import org.apache.pekko
 import pekko.actor.typed.ActorRef
 import pekko.annotation.InternalApi
+import pekko.japi.function
 import pekko.persistence.typed.state.javadsl
 import pekko.persistence.typed.state.scaladsl
 
@@ -31,6 +32,12 @@ private[pekko] abstract class EffectImpl[State]
 
   override def thenRun(chainedEffect: State => Unit): EffectImpl[State] =
     CompositeEffect(this, new Callback[State](chainedEffect))
+
+  override def thenRun[NewState <: State](callback: function.Procedure[NewState]): EffectImpl[State] =
+    CompositeEffect(this, SideEffect[State](s => callback.apply(s.asInstanceOf[NewState])))
+
+  override def thenRun(callback: function.Effect): EffectImpl[State] =
+    CompositeEffect(this, SideEffect[State]((_: State) => callback.apply()))
 
   override def thenReply[ReplyMessage](replyTo: ActorRef[ReplyMessage])(
       replyWithMessage: State => ReplyMessage): EffectImpl[State] =
