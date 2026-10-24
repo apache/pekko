@@ -788,8 +788,13 @@ private[remote] abstract class ArteryTransport(_system: ExtendedActorSystem, _pr
       case ShuttingDown               => Future.successful(Done) // silence it
       case exc: UidCollisionException =>
         log.warning(exc.getMessage)
-        // quarantine will not do much since handshake not completed, but for good measures
-        quarantine(peer.address, Some(peer.uid), exc.getMessage, harmless = false)
+        // Quarantining the peer here would be ignored since the handshake is not completed, and the
+        // uid belongs to the existing association. The envelope header only carries the origin uid, so
+        // messages from the colliding peer cannot be told apart from the existing association.
+        // Tell the colliding peer that it has been quarantined instead. Control messages are not held
+        // back by the outbound handshake.
+        log.info("Sending Quarantined to colliding peer [{}]", peer)
+        sendControl(peer.address, Quarantined(localAddress, peer))
         Future.failed(exc)
     }
   }
