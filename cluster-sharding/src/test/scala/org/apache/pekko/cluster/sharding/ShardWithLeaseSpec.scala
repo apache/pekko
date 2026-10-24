@@ -15,17 +15,21 @@ package org.apache.pekko.cluster.sharding
 
 import scala.concurrent.Future
 import scala.concurrent.duration._
+import scala.util.Failure
 import scala.util.Success
 import scala.util.control.NoStackTrace
 
 import org.apache.pekko
 import pekko.actor.Actor
+import pekko.actor.ActorIdentity
 import pekko.actor.ActorLogging
+import pekko.actor.ActorRef
+import pekko.actor.Identify
 import pekko.actor.Props
 import pekko.cluster.Cluster
 import pekko.cluster.MemberStatus
 import pekko.cluster.sharding.ShardRegion.ShardId
-import pekko.coordination.lease.{ LeaseUsageSettings, TestLeaseExt }
+import pekko.coordination.lease.{ LeaseUsageSettings, TestLease, TestLeaseExt }
 import pekko.testkit.EventFilter
 import pekko.testkit.PekkoSpec
 import pekko.testkit.TestProbe
@@ -162,6 +166,51 @@ class ShardWithLeaseSpec extends PekkoSpec(ShardWithLeaseSpec.config) with WithL
       sharding.tell(EntityEnvelope(1, "hello"), probe.ref)
       probe.expectNoMessage(shortDuration)
     }
+
+    List(
+      "succeeds" -> Success(true),
+      "is declined" -> Success(false),
+      "fails" -> Failure[Boolean](BadLease("acquire failed"))).foreach { case (outcome, acquireResult) =>
+      s"acknowledge HandOff and wait for the old acquire before replacement when it $outcome" in new Setup {
+        val probe = TestProbe()
+        sharding.tell(EntityEnvelope(1, "old"), probe.ref)
+        val lease = leaseFor("1")
+        val owner = Cluster(system).selfAddress.hostPort
+        lease.probe.expectMsg(TestLease.AcquireReq(owner))
+        val shard = identifyRef(s"/system/sharding/$typeName/1")
+        val terminationProbe = TestProbe()
+        terminationProbe.watch(shard)
+        val coordinatorProbe = TestProbe()
+        try {
+          coordinatorProbe.send(sharding, ShardCoordinator.Internal.HandOff("1"))
+          coordinatorProbe.expectMsg(ShardCoordinator.Internal.ShardStopped("1"))
+
+          lease.setNextAcquireResult(Future.successful(true))
+          lease.setNextCheckLeaseResult(true)
+          sharding.tell(EntityEnvelope(1, "new"), probe.ref)
+          // A replacement on this node must not acquire the shared lease before the old acquire finishes.
+          terminationProbe.expectNoMessage(shortDuration)
+          lease.probe.expectNoMessage(shortDuration)
+          lease.initialPromise.complete(acquireResult)
+          lease.probe.expectMsg(TestLease.ReleaseReq(owner))
+          terminationProbe.expectTerminated(shard)
+
+          // Drive the coordinator's allocation reply explicitly instead of waiting for a retry tick.
+          coordinatorProbe.send(sharding, ShardCoordinator.Internal.ShardHome("1", sharding))
+          lease.probe.expectMsg(TestLease.AcquireReq(owner))
+          probe.expectMsg("ack new")
+          lease.probe.expectNoMessage(shortDuration)
+        } finally {
+          lease.initialPromise.tryComplete(acquireResult)
+        }
+      }
+    }
+  }
+
+  private def identifyRef(path: String): ActorRef = {
+    val probe = TestProbe()
+    system.actorSelection(path).tell(Identify(1), probe.ref)
+    probe.expectMsgType[ActorIdentity].ref.get
   }
 
   var typeIdx = 0
