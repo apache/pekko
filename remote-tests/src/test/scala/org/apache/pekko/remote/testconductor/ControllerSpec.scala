@@ -15,9 +15,10 @@ package org.apache.pekko.remote.testconductor
 
 import java.net.InetAddress
 import java.net.InetSocketAddress
+import java.net.ServerSocket
 
 import org.apache.pekko
-import pekko.actor.{ AddressFromURIString, PoisonPill, Props }
+import pekko.actor.{ AddressFromURIString, PoisonPill, Props, Status }
 import pekko.remote.testconductor.Controller.NodeInfo
 import pekko.testkit.ImplicitSender
 import pekko.testkit.PekkoSpec
@@ -47,6 +48,29 @@ class ControllerSpec extends PekkoSpec(ControllerSpec.config) with ImplicitSende
       c ! Controller.GetNodes
       expectMsgType[Iterable[RoleName]].toSet should ===(Set(A, B))
       c ! PoisonPill // clean up so network connections don't accumulate during test run
+    }
+
+    "reply with the actually bound socket address" in {
+      val c = system.actorOf(Props(classOf[Controller], 1, new InetSocketAddress(InetAddress.getLocalHost, 0)))
+      c ! Controller.GetSockAddr
+      val addr = expectMsgType[InetSocketAddress]
+      addr.getPort should not be 0
+      c ! PoisonPill // clean up so network connections don't accumulate during test run
+    }
+
+    "reply with failure when the conductor port cannot be bound" in {
+      // bind to the same specific address the controller will use, a wildcard
+      // bind would not conflict on all platforms
+      val serverSocket = new ServerSocket(0, 50, InetAddress.getLocalHost)
+      try {
+        val port = serverSocket.getLocalPort
+        val c =
+          system.actorOf(Props(classOf[Controller], 1, new InetSocketAddress(InetAddress.getLocalHost, port)))
+        c ! Controller.GetSockAddr
+        // the bind failure must be reported to the requester instead of being
+        // thrown out of the message handler by a blocking sync()
+        expectMsgType[Status.Failure]
+      } finally serverSocket.close()
     }
 
   }
