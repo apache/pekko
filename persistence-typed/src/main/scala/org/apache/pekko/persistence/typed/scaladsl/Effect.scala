@@ -217,6 +217,15 @@ trait EffectBuilder[+Event, State] extends Effect[Event, State] {
     extends ReplyEffect[Event, State] {
 
   /**
+   * Run the given callback after the preceding side effects, preserving this reply-effect stage.
+   * The callback receives the updated state after successful persistence, or the current state if nothing was persisted.
+   * Sending a reply does not wait for the recipient to receive or process it.
+   *
+   * @since 2.0.0
+   */
+  def thenRun(callback: State => Unit): Self
+
+  /**
    * Unstash previously stashed commands, preserving this reply-effect stage.
    *
    * @see [[ReplyEffect.thenUnstashAll]]
@@ -239,9 +248,10 @@ trait EffectBuilder[+Event, State] extends Effect[Event, State] {
 
   /**
    * Stop the actor after executing the preceding side effects.
+   * This ends the callback stage: `thenRun` must be called before `thenStop`.
    * Commands remaining in the stash from earlier commands are discarded when the actor stops.
    *
    * @since 2.0.0
    */
-  def thenStop(): ReplyEffectWithStop[Event, State]
+  def thenStop(): ReplyEffect[Event, State]
 }
