@@ -52,14 +52,12 @@ public class EventSourcedReplyEffectThenRunTest {
     return effect.thenRun(callback);
   }
 
-  private ActorRef<ActorRef<String>> spawnBehavior(
+  private <Command> ActorRef<Command> spawnBehavior(
       String id,
-      Function<
-              EffectFactories<Integer, Number>,
-              CommandHandlerWithReply<ActorRef<String>, Integer, Number>>
+      Function<EffectFactories<Integer, Number>, CommandHandlerWithReply<Command, Integer, Number>>
           createHandler) {
     return testKit.spawn(
-        new EventSourcedBehaviorWithEnforcedReplies<ActorRef<String>, Integer, Number>(
+        new EventSourcedBehaviorWithEnforcedReplies<Command, Integer, Number>(
             PersistenceId.ofUniqueId(id)) {
           @Override
           public Number emptyState() {
@@ -67,7 +65,7 @@ public class EventSourcedReplyEffectThenRunTest {
           }
 
           @Override
-          public CommandHandlerWithReply<ActorRef<String>, Integer, Number> commandHandler() {
+          public CommandHandlerWithReply<Command, Integer, Number> commandHandler() {
             return createHandler.apply(Effect());
           }
 
@@ -145,6 +143,41 @@ public class EventSourcedReplyEffectThenRunTest {
                         .thenStop());
     actor.tell(probe.ref());
     probe.expectMessage("callback:0");
+    probe.expectTerminated(actor);
+  }
+
+  @Test
+  public void finishCallbacksAroundUnstashAllBeforeProcessingStashedCommands() {
+    TestProbe<String> probe = testKit.createTestProbe();
+    ActorRef<String> actor =
+        spawnBehavior(
+            "unstash-run",
+            effect ->
+                (state, command) -> {
+                  if (command.equals("stash") && state.intValue() == 0) {
+                    probe.ref().tell("stashed");
+                    return effect.stash();
+                  } else if (command.equals("release")) {
+                    return effect
+                        .persist(1)
+                        .thenReply(probe.ref(), updatedState -> "reply:" + updatedState)
+                        .thenRun(
+                            (Integer updatedState) ->
+                                probe.ref().tell("before-unstash:" + updatedState))
+                        .thenUnstashAll()
+                        .thenRun(() -> probe.ref().tell("after-unstash"));
+                  } else {
+                    return effect.reply(probe.ref(), "unstashed:" + state).thenStop();
+                  }
+                });
+
+    actor.tell("stash");
+    probe.expectMessage("stashed");
+    actor.tell("release");
+    probe.expectMessage("reply:1");
+    probe.expectMessage("before-unstash:1");
+    probe.expectMessage("after-unstash");
+    probe.expectMessage("unstashed:1");
     probe.expectTerminated(actor);
   }
 

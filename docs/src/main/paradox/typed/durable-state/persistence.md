@@ -188,7 +188,7 @@ that supports `thenStop`. For example:
 The reply is sent before the actor stops, and the result can be returned from a command handler with enforced replies.
 Shared chaining operations are declared in `ReplyEffectOps`, which extends `ReplyEffect` with a recursive `Self` type parameter.
 `ReplyEffectWithStop` binds `Self` to its own type, so `thenRun` and `thenUnstashAll` preserve this capability without
-redeclaring the method in each stage. A generic helper can accept `ReplyEffectOps` and return `Self`,
+redeclaring these methods in each stage. A generic helper can accept `ReplyEffectOps` and return `Self`,
 retaining the caller's stage.
 
 This allows a helper to choose between persisting and replying, replying without persistence, or explicitly not
@@ -201,11 +201,13 @@ The Java API also accepts a callback without a state parameter, such as `thenRun
 On this reply-effect stage, `thenStop` returns the base `ReplyEffect`, ending callback composition.
 `thenRun(...).thenStop()` is supported; `thenStop().thenRun(...)` is rejected at compile time,
 including through `thenStop().thenUnstashAll().thenRun(...)`. The base type returned by `stash` also has no `thenRun`.
+These restrictions apply to reply-effect stages; existing `EffectBuilder` callback chaining is unchanged.
 
 Callbacks run sequentially after successful persistence and observe the updated state. If nothing is persisted,
 they observe the current state. A callback after a reply runs after the reply is sent; it does not wait for the
 recipient to receive or process the message. The existing [side-effect guarantees](#side-effects-ordering-and-guarantees)
 apply: callbacks run at most once, are skipped if persistence fails, and are not replayed during recovery.
+When `thenUnstashAll` is included, callbacks on either side of it complete before any unstashed command is processed.
 
 `stash` returns the base `ReplyEffect`, so
 @scala[`Effect.stash().thenStop()`]@java[`Effect().stash().thenStop()`] is rejected at compile time,

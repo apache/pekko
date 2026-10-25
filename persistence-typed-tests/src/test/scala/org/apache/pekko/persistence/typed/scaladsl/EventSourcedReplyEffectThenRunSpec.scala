@@ -34,8 +34,8 @@ class EventSourcedReplyEffectThenRunSpec
 
   private val ids = new AtomicInteger()
 
-  private def behavior(handler: (Int, ActorRef[String]) => ReplyEffect[Int, Int]): Behavior[ActorRef[String]] =
-    EventSourcedBehavior.withEnforcedReplies[ActorRef[String], Int, Int](
+  private def behavior[Command](handler: (Int, Command) => ReplyEffect[Int, Int]): Behavior[Command] =
+    EventSourcedBehavior.withEnforcedReplies[Command, Int, Int](
       PersistenceId.ofUniqueId(s"then-run-${ids.incrementAndGet()}"),
       emptyState = 0,
       commandHandler = handler,
@@ -48,7 +48,7 @@ class EventSourcedReplyEffectThenRunSpec
   "A reply-effect stage" must {
     "run callbacks in order after replying with the persisted state and before stopping" in {
       val probe = TestProbe[String]()
-      val actor = spawn(behavior { (_, replyTo) =>
+      val actor = spawn(behavior[ActorRef[String]] { (_, replyTo) =>
         Effect.persist[Int, Int](1)
           .thenReply(replyTo)(state => s"reply:$state")
           .thenRun(state => replyTo ! s"callback:$state")
@@ -69,7 +69,7 @@ class EventSourcedReplyEffectThenRunSpec
           Effect.persist[Int, Int](1).thenReply(replyTo)(updatedState => s"accepted:$updatedState")
         else
           Effect.reply(replyTo)("rejected")
-      val actor = spawn(behavior { (state, replyTo) =>
+      val actor = spawn(behavior[ActorRef[String]] { (state, replyTo) =>
         handler(state, replyTo).thenRun(updatedState => replyTo ! s"observed:$updatedState")
       })
 
@@ -83,7 +83,7 @@ class EventSourcedReplyEffectThenRunSpec
 
     "retain enforced replies when appending callbacks after noReply and unstashAll" in {
       val probe = TestProbe[String]()
-      val actor = spawn(behavior { (_, replyTo) =>
+      val actor = spawn(behavior[ActorRef[String]] { (_, replyTo) =>
         Effect.noReply[Int, Int].thenUnstashAll().thenRun(state => replyTo ! s"callback:$state").thenStop()
       })
       actor ! probe.ref
@@ -93,13 +93,40 @@ class EventSourcedReplyEffectThenRunSpec
 
     "preserve the stage through a generic callback helper after thenNoReply" in {
       val probe = TestProbe[String]()
-      val actor = spawn(behavior { (_, replyTo) =>
+      val actor = spawn(behavior[ActorRef[String]] { (_, replyTo) =>
         observe(Effect.persist[Int, Int](1).thenNoReply(), state => replyTo ! s"callback:$state")
           .thenUnstashAll()
           .thenStop()
       })
       actor ! probe.ref
       probe.expectMessage("callback:1")
+      probe.expectTerminated(actor)
+    }
+
+    "finish callbacks on both sides of unstashAll before processing stashed commands" in {
+      val probe = TestProbe[String]()
+      val actor = spawn(behavior[String] { (state, command) =>
+        if (command == "stash" && state == 0) {
+          probe.ref ! "stashed"
+          Effect.stash[Int, Int]()
+        } else if (command == "release") {
+          Effect.persist[Int, Int](1)
+            .thenReply(probe.ref)(updatedState => s"reply:$updatedState")
+            .thenRun(updatedState => probe.ref ! s"before-unstash:$updatedState")
+            .thenUnstashAll()
+            .thenRun(updatedState => probe.ref ! s"after-unstash:$updatedState")
+        } else {
+          Effect.reply(probe.ref)(s"unstashed:$state").thenStop()
+        }
+      })
+
+      actor ! "stash"
+      probe.expectMessage("stashed")
+      actor ! "release"
+      probe.expectMessage("reply:1")
+      probe.expectMessage("before-unstash:1")
+      probe.expectMessage("after-unstash:1")
+      probe.expectMessage("unstashed:1")
       probe.expectTerminated(actor)
     }
 
