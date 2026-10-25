@@ -187,6 +187,20 @@ class ExecutionContextSpec extends PekkoSpec(ExecutionContextSpec.config) with D
       Await.result(f, 3.seconds) should be(42)
     }
 
+    "run parasitic future callbacks on the dispatcher thread completing the promise" in {
+      val callingThread = Thread.currentThread()
+      val promise = Promise[Thread]()
+      // Register the callback before completion so it cannot run on the registering thread.
+      val futureThreads = promise.future
+        .map(completingThread => completingThread -> Thread.currentThread())(ExecutionContext.parasitic)
+
+      system.dispatcher.execute(() => promise.success(Thread.currentThread()))
+
+      val (completingThread, callbackThread) = futureThreads.futureValue
+      completingThread should not be theSameInstanceAs(callingThread)
+      (callbackThread should be).theSameInstanceAs(completingThread)
+    }
+
     "work with same-thread executor plus blocking" in {
       val ec = scala.concurrent.ExecutionContext.parasitic
       var x = 0
