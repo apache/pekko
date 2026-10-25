@@ -27,6 +27,7 @@ import scala.util.Random
 import com.github.luben.zstd.{
   Zstd,
   ZstdCompressCtx,
+  ZstdDecompressCtx,
   ZstdException,
   ZstdInputStream,
   ZstdInputStreamNoFinalizer,
@@ -130,6 +131,40 @@ class ZstdSpec extends CoderSpec[ZstdException]("zstd") {
           ZstdDictionary(smallTextBytes))))
       Zstd.decompress(withDictionary.toArray, smallTextBytes.toArray, input.size) should ===(input.toArray)
     }
+    "limit the decompression window with windowLogMax" in {
+      val input = ByteString(Array.fill(1 << 16)(1.toByte))
+      // the streamed size is unknown, so the frame declares a window of 2^24
+      val compressed = Source
+        .single(input)
+        .via(Compression.zstd(ZstdCompressionSettings().withWindowLog(24)))
+        .join
+        .awaitResult(3.seconds)
+      def decompress(windowLogMax: Int): ByteString =
+        Source
+          .single(compressed)
+          .via(Compression.zstdDecompress(ZstdDecompressionSettings().withWindowLogMax(windowLogMax)))
+          .join
+          .awaitResult(3.seconds)
+
+      // ZstdDecompressCtx.setLongMax is newer than zstd-jni 1.5.7-24 (#3674)
+      val supported = classOf[ZstdDecompressCtx].getMethods.exists(_.getName == "setLongMax")
+      if (supported) {
+        val ex = the[RuntimeException] thrownBy decompress(23)
+        ex.ultimateCause shouldBe a[ZstdException]
+        decompress(24) should ===(input)
+        Source
+          .single(compressed)
+          .via(JavaCompression.zstdDecompress(ZstdDecompressionSettings.create().withWindowLogMax(24)))
+          .join
+          .awaitResult(3.seconds) should ===(input)
+      } else {
+        // a configured limit must not be silently ignored
+        val ex = the[Exception] thrownBy decompress(24)
+        ex.ultimateCause shouldBe an[UnsupportedOperationException]
+      }
+      // without a limit, the libzstd default of 2^27 applies
+      ourDecode(compressed) should ===(input)
+    }
     "validate the compression settings" in {
       val settings = ZstdCompressionSettings()
       settings.level should ===(Compression.ZstdDefaultCompressionLevel)
@@ -161,6 +196,11 @@ class ZstdSpec extends CoderSpec[ZstdException]("zstd") {
       an[IllegalArgumentException] should be thrownBy settings.withMaxBytesPerChunk(0)
       settings.withMaxBytesPerChunk(1024).maxBytesPerChunk should ===(1024)
       settings.withDictionary(ZstdDictionary(smallTextBytes)).withoutDictionary.dictionaryImpl should ===(None)
+      settings.windowLogMax should ===(0)
+      settings.withWindowLogMax(23).windowLogMax should ===(23)
+      settings.withWindowLogMax(23).withWindowLogMax(0).windowLogMax should ===(0)
+      for (windowLogMax <- Seq(-1, Compression.ZstdMinWindowLog - 1, Compression.ZstdMaxWindowLog + 1))
+        an[IllegalArgumentException] should be thrownBy settings.withWindowLogMax(windowLogMax)
     }
     "encode String dictionaries as UTF-8" in {
       val text = "dictionary é中"
