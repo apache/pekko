@@ -22,10 +22,12 @@ import pekko.stream.stage.GraphStage
 /**
  * MergeLatest joins elements from N input streams into stream of lists of size N.
  * i-th element in list is the latest emitted element from i-th input stream.
- * MergeLatest emits list for each element emitted from some input stream,
- * but only after each stream emitted at least one element
+ * MergeLatest emits the latest values from all input streams after each stream has emitted at least one element.
+ * By default, updates are conflated while downstream is back-pressured. Set
+ * `pekko.stream.materializer.merge-latest.mode = legacy` to retain the previous behavior of buffering every update.
  *
- * '''Emits when''' element is available from some input and each input emits at least one element from stream start
+ * '''Emits when''' an input element is available and each input has emitted at least one element from stream start;
+ * in the default mode, at most the latest combination is retained while downstream is back-pressured
  *
  * '''Completes when''' all upstreams complete (eagerClose=false) or one upstream completes (eagerClose=true)
  *

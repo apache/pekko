@@ -39,6 +39,7 @@ Some of the bug fixes listed below have also been backported to Pekko 1.x releas
 * Switch to `PEKK` as the default magic header in pekko-remote Artery comms. See @ref:[Changing TCP magic header](../additional/rolling-updates.md#changing-tcp-magic-header) for what this means for rolling updates ([PR3425](https://github.com/apache/pekko/pull/3425))
 * Java 21 and 25 support improvements, including virtual thread support for more dispatcher types and JDK-aware ForkJoinPool tuning ([#2232](https://github.com/apache/pekko/issues/2232), [PR2169](https://github.com/apache/pekko/pull/2169), [PR2242](https://github.com/apache/pekko/pull/2242), [PR2871](https://github.com/apache/pekko/pull/2871), [PR2890](https://github.com/apache/pekko/pull/2890))
 * Added [JSpecify](https://jspecify.dev/) nullness annotations to the Java DSL APIs of streams, persistence, actor-typed, cluster-sharding-typed and testkit ([#2563](https://github.com/apache/pekko/issues/2563), [PR2617](https://github.com/apache/pekko/pull/2617), [PR2850](https://github.com/apache/pekko/pull/2850), [PR3380](https://github.com/apache/pekko/pull/3380))
+* MergeLatest now defaults to retaining only the latest input values while downstream is back-pressured; set `pekko.stream.materializer.merge-latest.mode = legacy` to preserve buffered updates ([#3592](https://github.com/apache/pekko/issues/3592))
 * A number of security hardening changes - see the Security Hardening section below
 * A number of configuration defaults have changed. See the Configuration Changes section of the @ref:[Migration Guide](../migration/migration-guide-1.x-2.x.md)
 
@@ -284,7 +285,3 @@ Some additional APIs have been deprecated and will be removed in a future releas
 * zstd-jni 1.5.7-24 (optional, only needed for zstd compression in the Jackson serializers)
 * junit-jupiter 6.1.3
 * The `ssl-config` dependency has been removed
-
-### Known Issues
-
-* MergeLatest does not backpressure upstreams and buffers without bound ([#3592](https://github.com/apache/pekko/issues/3592)).

@@ -3649,11 +3649,15 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
 
   /**
    * MergeLatest joins elements from N input streams into stream of lists of size N.
-   * i-th element in list is the latest emitted element from i-th input stream.
-   * MergeLatest emits list for each element emitted from some input stream,
-   * but only after each input stream emitted at least one element.
+   * The i-th element in the list is the latest emitted element from the i-th input stream.
+   * It starts emitting after every input has emitted at least once. By default, updates are conflated
+   * while downstream is back-pressured; set `pekko.stream.materializer.merge-latest.mode = legacy`
+   * to retain every update as in the previous behavior.
    *
-   * '''Emits when''' an element is available from some input and each input emits at least one element from stream start
+   * '''Emits when''' an input element is available and each input has emitted at least once; a pending
+   * latest combination is emitted before completion when demand is available
+   *
+   * '''Backpressures''' never in the default `latest` mode; it continues pulling inputs and conflates superseded combinations
    *
    * '''Completes when''' all upstreams complete (eagerClose=false) or one upstream completes (eagerClose=true)
    */
@@ -3664,9 +3668,10 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
 
   /**
    * MergeLatest joins elements from N input streams into stream of lists of size N.
-   * i-th element in list is the latest emitted element from i-th input stream.
-   * MergeLatest emits list for each element emitted from some input stream,
-   * but only after each input stream emitted at least one element.
+   * The i-th element in the list is the latest emitted element from the i-th input stream.
+   * It starts emitting after every input has emitted at least once. By default, updates are conflated
+   * while downstream is back-pressured; set `pekko.stream.materializer.merge-latest.mode = legacy`
+   * to retain every update as in the previous behavior.
    *
    * It is recommended to use the internally optimized `Keep.left` and `Keep.right` combiners
    * where appropriate instead of manually writing functions that pass through one of the values.

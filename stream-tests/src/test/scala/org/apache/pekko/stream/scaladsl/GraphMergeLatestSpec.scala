@@ -13,7 +13,6 @@
 
 package org.apache.pekko.stream.scaladsl
 
-import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import org.apache.pekko
@@ -72,6 +71,101 @@ class GraphMergeLatestSpec extends TwoStreamsSetup {
       probe.expectComplete()
     }
 
+    "conflate updates while downstream is back-pressured" in assertAllStagesStopped {
+      val up1 = TestSource[Int]()
+      val up2 = TestSource[Int]()
+      val probe = TestSubscriber.manualProbe[List[Int]]()
+
+      val (in1, in2) = RunnableGraph
+        .fromGraph(GraphDSL.createGraph(up1, up2)((_, _)) { implicit b => (s1, s2) =>
+          val m = b.add(MergeLatest[Int](2))
+
+          s1    ~> m
+          s2    ~> m
+          m.out ~> Sink.fromSubscriber(probe)
+          ClosedShape
+        })
+        .run()
+
+      val subscription = probe.expectSubscription()
+
+      in1.sendNext(1)
+      in2.sendNext(2)
+      in1.sendNext(3)
+      in2.sendNext(4)
+      probe.expectNoMessage(10.millis)
+      subscription.request(1)
+      probe.expectNext(List(3, 4))
+
+      in2.sendNext(5)
+      in2.sendNext(6)
+      subscription.request(1)
+      probe.expectNext(List(3, 6))
+
+      in1.sendComplete()
+      in2.sendComplete()
+      probe.expectComplete()
+    }
+
+    "emit a pending latest combination before completing" in assertAllStagesStopped {
+      val up1 = TestSource[Int]()
+      val up2 = TestSource[Int]()
+      val probe = TestSubscriber.manualProbe[List[Int]]()
+
+      val (in1, in2) = RunnableGraph
+        .fromGraph(GraphDSL.createGraph(up1, up2)((_, _)) { implicit b => (s1, s2) =>
+          val m = b.add(MergeLatest[Int](2))
+
+          s1    ~> m
+          s2    ~> m
+          m.out ~> Sink.fromSubscriber(probe)
+          ClosedShape
+        })
+        .run()
+
+      val subscription = probe.expectSubscription()
+
+      in1.sendNext(1)
+      in2.sendNext(2)
+      in1.sendNext(3)
+      in1.sendComplete()
+      in2.sendComplete()
+      probe.expectNoMessage(10.millis)
+
+      subscription.request(1)
+      probe.expectNext(List(3, 2))
+      probe.expectComplete()
+    }
+
+    "eagerly complete after emitting the pending latest combination" in assertAllStagesStopped {
+      val up1 = TestSource[Int]()
+      val up2 = TestSource[Int]()
+      val probe = TestSubscriber.manualProbe[List[Int]]()
+
+      val (in1, in2) = RunnableGraph
+        .fromGraph(GraphDSL.createGraph(up1, up2)((_, _)) { implicit b => (s1, s2) =>
+          val m = b.add(MergeLatest[Int](2, eagerComplete = true))
+
+          s1    ~> m
+          s2    ~> m
+          m.out ~> Sink.fromSubscriber(probe)
+          ClosedShape
+        })
+        .run()
+
+      val subscription = probe.expectSubscription()
+
+      in1.sendNext(1)
+      in2.sendNext(2)
+      in2.sendNext(3)
+      in1.sendComplete()
+      probe.expectNoMessage(10.millis)
+
+      subscription.request(1)
+      probe.expectNext(List(1, 3))
+      probe.expectComplete()
+    }
+
     "update values after message from one stream" in assertAllStagesStopped {
       val up1 = TestSource[Int]()
       val up2 = TestSource[Int]()
@@ -124,18 +218,30 @@ class GraphMergeLatestSpec extends TwoStreamsSetup {
       probe.expectComplete()
     }
 
-    "work with one-way merge" in {
-      val result = Source
-        .fromGraph(GraphDSL.create() { implicit b =>
+    "work with one-way merge" in assertAllStagesStopped {
+      val upstream = TestSource[Int]()
+      val probe = TestSubscriber.manualProbe[List[Int]]()
+
+      val input = RunnableGraph
+        .fromGraph(GraphDSL.createGraph(upstream) { implicit b => source =>
           val merge = b.add(MergeLatest[Int](1))
-          val source = b.add(Source(1 to 3))
 
-          source ~> merge
-          SourceShape(merge.out)
+          source    ~> merge
+          merge.out ~> Sink.fromSubscriber(probe)
+          ClosedShape
         })
-        .runFold(Seq[List[Int]]())(_ :+ _)
+        .run()
 
-      Await.result(result, 3.seconds) should ===(Seq(List(1), List(2), List(3)))
+      val subscription = probe.expectSubscription()
+      input.sendNext(1)
+      input.sendNext(2)
+      input.sendNext(3)
+      input.sendComplete()
+      probe.expectNoMessage(10.millis)
+
+      subscription.request(1)
+      probe.expectNext(List(3))
+      probe.expectComplete()
     }
 
     "complete stage if eagerComplete is set and one of input stream finished" in assertAllStagesStopped {

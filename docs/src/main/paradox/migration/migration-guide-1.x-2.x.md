@@ -152,6 +152,10 @@ existing overrides keep working. The same applies under `pekko.serialization.jac
 
 ### Changed behavior
 
+* `MergeLatest` now defaults to conflating updates while downstream is back-pressured, retaining only the
+latest value from each input instead of buffering every update. This bounds the state retained by
+`MergeLatest` itself; it does not bound buffers in upstream stages. To preserve the previous behavior,
+set `pekko.stream.materializer.merge-latest.mode = legacy`. ([#3592](https://github.com/apache/pekko/issues/3592))
 * `pekko.remote.artery.ssl.rotating-keys-engine.ca-cert-file` may now bundle more than one
 certificate (for example a root CA and its intermediates, or several roots while a CA is being
 rotated); all of them are trusted. Pekko 1.x only loaded the first certificate in the file. The
@@ -263,6 +267,8 @@ stream stage errors. ([PR2805](https://github.com/apache/pekko/pull/2805))
 drained per envelope for lazily materialized stage actors. ([PR3035](https://github.com/apache/pekko/pull/3035))
 * `pekko.stream.materializer.tls.engine` selects the stream TLS engine implementation
 (`"legacy-actor"` or the opt-in `"graph-stage"`). ([PR2878](https://github.com/apache/pekko/pull/2878))
+* `pekko.stream.materializer.merge-latest.mode` selects the default `latest` conflating behavior or
+`legacy` buffering behavior for MergeLatest. ([#3592](https://github.com/apache/pekko/issues/3592))
 
 ### Serialization bindings
 

@@ -11,11 +11,15 @@ Merge multiple sources.
 ## Description
 
 MergeLatest joins elements from N input streams into stream of lists of size N.
-The i-th element in list is the latest emitted element from i-th input stream.
-MergeLatest emits list for each element emitted from some input stream,
-but only after each input stream emitted at least one element
-If `eagerComplete` is set to true then it completes as soon as the first upstream
-completes otherwise when all upstreams complete.
+The i-th element in the list is the latest emitted element from the i-th input stream.
+It starts emitting after every input has emitted at least once. By default, when downstream is
+back-pressured, MergeLatest continues consuming inputs and retains only their latest values; changes
+that are superseded before demand returns are conflated. This bounds MergeLatest's own retained update
+state, but does not bound buffers in upstream stages. Configure
+`pekko.stream.materializer.merge-latest.mode = legacy` to retain every update, as in the previous behavior.
+If `eagerComplete` is set to true then it completes as soon as the first upstream completes; otherwise,
+it completes when all upstreams complete. A pending latest combination is emitted before completion
+when downstream demand becomes available.
 
 ## Example
 
@@ -33,8 +37,10 @@ Java
 
 @@@div { .callout }
 
-**emits** when element is available from some input and each input emits at least one element from stream start
+**emits** when an input element is available and each input has emitted at least once; while downstream is back-pressured, the default mode retains only the latest value from each input
 
-**completes** when all upstreams complete (`eagerComplete=false`) or one upstream completes (`eagerComplete=true`)
+**backpressures** never in the default `latest` mode; it continues pulling inputs and conflates superseded combinations. The `legacy` mode buffers every update.
+
+**completes** when all upstreams complete (`eagerComplete=false`) or one upstream completes (`eagerComplete=true`); a pending latest combination is emitted first when demand is available
 @@@
 
