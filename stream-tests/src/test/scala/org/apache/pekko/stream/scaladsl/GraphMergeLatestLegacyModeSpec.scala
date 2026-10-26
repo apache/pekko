@@ -44,9 +44,9 @@ class GraphMergeLatestLegacyModeSpec
         .fromGraph(GraphDSL.createGraph(up1, up2)((_, _)) { implicit b => (s1, s2) =>
           val merge = b.add(MergeLatest[Int](2))
 
-          s1         ~> merge
-          s2         ~> merge
-          merge.out  ~> Sink.fromSubscriber(probe)
+          s1        ~> merge
+          s2        ~> merge
+          merge.out ~> Sink.fromSubscriber(probe)
           ClosedShape
         })
         .run()
