@@ -47,7 +47,7 @@ import pekko.pattern.ask
 import pekko.remote.transport.ThrottlerTransportAdapter.Direction
 import pekko.util.Timeout
 
-import io.netty.channel.{ Channel, ChannelHandlerContext, ChannelInboundHandlerAdapter }
+import io.netty.channel.{ Channel, ChannelFuture, ChannelHandlerContext, ChannelInboundHandlerAdapter }
 import io.netty.channel.ChannelHandler.Sharable
 
 /**
@@ -529,7 +529,12 @@ private[pekko] class Controller(private var initialParticipants: Int, controller
       }
     case GetNodes    => sender() ! nodes.keys
     case GetSockAddr =>
-      sender() ! connection.channelFuture.sync().channel().localAddress()
+      val replyTo = sender()
+      // Netty also invokes listeners added after completion, so a failed bind
+      // is reported even when it finishes before the first address query.
+      connection.channelFuture.addListener((future: ChannelFuture) =>
+        if (future.isSuccess) replyTo ! future.channel().localAddress()
+        else replyTo ! Status.Failure(future.cause()))
   }
 
   override def postStop(): Unit = {

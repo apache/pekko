@@ -13,11 +13,13 @@
 
 package org.apache.pekko.remote.testconductor
 
+import java.net.BindException
 import java.net.InetAddress
 import java.net.InetSocketAddress
+import java.net.ServerSocket
 
 import org.apache.pekko
-import pekko.actor.{ AddressFromURIString, PoisonPill, Props }
+import pekko.actor.{ AddressFromURIString, PoisonPill, Props, Status }
 import pekko.remote.testconductor.Controller.NodeInfo
 import pekko.testkit.ImplicitSender
 import pekko.testkit.PekkoSpec
@@ -47,6 +49,34 @@ class ControllerSpec extends PekkoSpec(ControllerSpec.config) with ImplicitSende
       c ! Controller.GetNodes
       expectMsgType[Iterable[RoleName]].toSet should ===(Set(A, B))
       c ! PoisonPill // clean up so network connections don't accumulate during test run
+    }
+
+    "reply with the actually bound socket address" in {
+      val c = system.actorOf(Props(classOf[Controller], 1, new InetSocketAddress(InetAddress.getLocalHost, 0)))
+      c ! Controller.GetSockAddr
+      val addr = expectMsgType[InetSocketAddress]
+      addr.getPort should not be 0
+      c ! PoisonPill // clean up so network connections don't accumulate during test run
+    }
+
+    "reply with failure when the conductor port cannot be bound" in {
+      // Hold a non-reusable listener on the exact address the controller will use.
+      val serverSocket = new ServerSocket()
+      try {
+        serverSocket.setReuseAddress(false)
+        serverSocket.bind(new InetSocketAddress(InetAddress.getLoopbackAddress, 0))
+        val address = serverSocket.getLocalSocketAddress.asInstanceOf[InetSocketAddress]
+        val c = system.actorOf(Props(classOf[Controller], 1, address))
+        try {
+          c ! Controller.GetSockAddr
+          val failure = expectMsgType[Status.Failure]
+          failure.cause shouldBe a[BindException]
+
+          // Queries made after the failed bind must also receive the cause.
+          c ! Controller.GetSockAddr
+          expectMsg(failure)
+        } finally c ! PoisonPill
+      } finally serverSocket.close()
     }
 
   }
