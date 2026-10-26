@@ -436,11 +436,11 @@ object Sink {
   def combine[T, U](
       output1: Sink[U, ?],
       output2: Sink[U, ?],
-      @Nullable rest: java.util.List[Sink[U, ?]],
-      fanOutStrategy: function.Function[java.lang.Integer, Graph[UniformFanOutShape[T, U], NotUsed]])
+      @Nullable rest: java.lang.Iterable[? <: Graph[SinkShape[U], ?]],
+      fanOutStrategy: function.Function[java.lang.Integer, ? <: Graph[UniformFanOutShape[T, U], NotUsed]])
       : Sink[T, NotUsed] = {
     import scala.jdk.CollectionConverters._
-    val seq = if (rest ne null) rest.asScala.map(_.asScala).toSeq else Seq()
+    val seq = if (rest ne null) rest.asScala.map(scaladsl.Sink.fromGraph(_)).toSeq else Seq()
     new Sink(scaladsl.Sink.combine(output1.asScala, output2.asScala, seq: _*)(num => fanOutStrategy.apply(num)))
   }
 
@@ -451,7 +451,7 @@ object Sink {
   def combineMat[T, U, M1, M2, M](
       first: Sink[U, M1],
       second: Sink[U, M2],
-      fanOutStrategy: function.Function[java.lang.Integer, Graph[UniformFanOutShape[T, U], NotUsed]],
+      fanOutStrategy: function.Function[java.lang.Integer, ? <: Graph[UniformFanOutShape[T, U], NotUsed]],
       matF: function.Function2[M1, M2, M]): Sink[T, M] = {
     new Sink(
       scaladsl.Sink.combineMat(first.asScala, second.asScala)(size => fanOutStrategy(size))(combinerToScala(matF)))
@@ -463,8 +463,8 @@ object Sink {
    * @since 1.1.0
    */
   def combine[T, U, M](
-      @Nullable sinks: java.util.List[? <: Graph[SinkShape[U], M]],
-      fanOutStrategy: function.Function[java.lang.Integer, Graph[UniformFanOutShape[T, U], NotUsed]])
+      @Nullable sinks: java.lang.Iterable[? <: Graph[SinkShape[U], M]],
+      fanOutStrategy: function.Function[java.lang.Integer, ? <: Graph[UniformFanOutShape[T, U], NotUsed]])
       : Sink[T, java.util.List[M]] = {
     import pekko.util.Collections._
     val seq = if (sinks ne null) sinks.collectToImmutableSeq {

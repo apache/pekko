@@ -279,7 +279,10 @@ public class EventSourcedBehaviorJavaDslTest {
     }
 
     private Effect<Event, State> incrementTwiceAndLog(State state, IncrementTwiceAndLog command) {
-      return Effect().persist(List.of(new Incremented(1), new Incremented(1))).thenRun(s -> log());
+      // any Iterable of an Event subtype must be accepted, not only List<Event>
+      final Deque<Incremented> events =
+          new ArrayDeque<>(List.of(new Incremented(1), new Incremented(1)));
+      return Effect().persist(events).thenRun(s -> log());
     }
 
     @Override

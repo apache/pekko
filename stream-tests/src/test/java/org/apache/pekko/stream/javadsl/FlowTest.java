@@ -1966,6 +1966,137 @@ public class FlowTest extends StreamTestJupiter {
   }
 
   @Test
+  public void mustAcceptConcreteIterableFunctionsInMapConcatAndStatefulMapConcat()
+      throws Exception {
+    // functions typed with a concrete Iterable subtype must be accepted as is
+    final Function<Integer, List<Integer>> duplicate = elem -> List.of(elem, elem);
+    final Creator<Function<Integer, List<Integer>>> duplicateCreator = () -> duplicate;
+
+    final List<Integer> flowResult =
+        Source.from(List.of(1, 2))
+            .via(Flow.of(Integer.class).mapConcat(duplicate).statefulMapConcat(duplicateCreator))
+            .runWith(Sink.seq(), system)
+            .toCompletableFuture()
+            .get(3, TimeUnit.SECONDS);
+    assertEquals(List.of(1, 1, 1, 1, 2, 2, 2, 2), flowResult);
+
+    final List<Integer> subFlowResult =
+        Source.from(List.of(1, 2))
+            .via(
+                Flow.of(Integer.class)
+                    .groupBy(1, elem -> 0)
+                    .mapConcat(duplicate)
+                    .statefulMapConcat(duplicateCreator)
+                    .mergeSubstreams())
+            .runWith(Sink.seq(), system)
+            .toCompletableFuture()
+            .get(3, TimeUnit.SECONDS);
+    assertEquals(List.of(1, 1, 1, 1, 2, 2, 2, 2), subFlowResult);
+  }
+
+  // a partial function typed with a concrete Source result must be accepted as is
+  private static scala.PartialFunction<Throwable, Source<Integer, NotUsed>> recoverWithZero() {
+    return PFBuilder.<Throwable, Source<Integer, NotUsed>>create()
+        .match(RuntimeException.class, ex -> Source.single(0))
+        .build();
+  }
+
+  private static Integer failOnTwo(Integer elem) {
+    if (elem == 2) throw new RuntimeException("ex");
+    else return elem;
+  }
+
+  @Test
+  public void flowRecoverWithRetriesMustAcceptConcreteSourcePartialFunction() throws Exception {
+    final List<Integer> result =
+        Source.from(List.of(1, 2, 3))
+            .via(
+                Flow.of(Integer.class)
+                    .map(FlowTest::failOnTwo)
+                    .recoverWithRetries(1, recoverWithZero()))
+            .runWith(Sink.seq(), system)
+            .toCompletableFuture()
+            .get(3, TimeUnit.SECONDS);
+    assertEquals(List.of(1, 0), result);
+  }
+
+  @Test
+  public void subFlowRecoverWithMustAcceptConcreteSourcePartialFunction() throws Exception {
+    final List<Integer> result =
+        Source.from(List.of(1, 2, 3))
+            .via(
+                Flow.of(Integer.class)
+                    .groupBy(1, elem -> 0)
+                    .map(FlowTest::failOnTwo)
+                    .recoverWith(recoverWithZero())
+                    .mergeSubstreams())
+            .runWith(Sink.seq(), system)
+            .toCompletableFuture()
+            .get(3, TimeUnit.SECONDS);
+    assertEquals(List.of(1, 0), result);
+  }
+
+  @Test
+  public void subFlowRecoverWithRetriesMustAcceptConcreteSourcePartialFunction() throws Exception {
+    final List<Integer> result =
+        Source.from(List.of(1, 2, 3))
+            .via(
+                Flow.of(Integer.class)
+                    .groupBy(1, elem -> 0)
+                    .map(FlowTest::failOnTwo)
+                    .recoverWithRetries(1, recoverWithZero())
+                    .mergeSubstreams())
+            .runWith(Sink.seq(), system)
+            .toCompletableFuture()
+            .get(3, TimeUnit.SECONDS);
+    assertEquals(List.of(1, 0), result);
+  }
+
+  @Test
+  public void mustAcceptNonListIterablesOfSourcesInFlowAndSubFlow() throws Exception {
+    // any Iterable of Source subtypes must be accepted, not only a List
+    final Deque<Source<Integer, NotUsed>> sources =
+        new ArrayDeque<>(List.of(Source.from(List.of(0, 1)), Source.from(List.of(2, 3))));
+
+    assertEquals(
+        Set.of(0, 1, 2, 3, 4),
+        Source.single(4)
+            .via(Flow.of(Integer.class).mergeAll(sources, false))
+            .runWith(Sink.collect(Collectors.toSet()), system)
+            .toCompletableFuture()
+            .get(3, TimeUnit.SECONDS));
+    assertEquals(
+        Set.of(0, 1, 2, 3, 4),
+        Source.single(4)
+            .via(Flow.of(Integer.class).interleaveAll(sources, 1, false))
+            .runWith(Sink.collect(Collectors.toSet()), system)
+            .toCompletableFuture()
+            .get(3, TimeUnit.SECONDS));
+    assertEquals(
+        Set.of(0, 1, 2, 3, 4),
+        Source.single(4)
+            .via(
+                Flow.of(Integer.class)
+                    .groupBy(1, elem -> 0)
+                    .mergeAll(sources, false)
+                    .mergeSubstreams())
+            .runWith(Sink.collect(Collectors.toSet()), system)
+            .toCompletableFuture()
+            .get(3, TimeUnit.SECONDS));
+    assertEquals(
+        Set.of(0, 1, 2, 3, 4),
+        Source.single(4)
+            .via(
+                Flow.of(Integer.class)
+                    .groupBy(1, elem -> 0)
+                    .interleaveAll(sources, 1, false)
+                    .mergeSubstreams())
+            .runWith(Sink.collect(Collectors.toSet()), system)
+            .toCompletableFuture()
+            .get(3, TimeUnit.SECONDS));
+  }
+
+  @Test
   public void zipWithIndex() {
     final List<Integer> input = List.of(1, 2, 3);
     final List<Pair<Integer, Long>> expected =

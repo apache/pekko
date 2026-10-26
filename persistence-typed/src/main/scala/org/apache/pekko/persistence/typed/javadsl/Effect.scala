@@ -46,7 +46,8 @@ import pekko.persistence.typed.internal.SideEffect
    * all events has been persisted. If `callback` is added through `EffectBuilder.thenRun` that will invoked
    * after all the events has been persisted.
    */
-  final def persist(events: java.util.List[Event]): EffectBuilder[Event, State] = PersistAll(events.asScala.toVector)
+  final def persist(events: java.lang.Iterable[? <: Event]): EffectBuilder[Event, State] =
+    PersistAll(events.asScala.toVector)
 
   /**
    * Do not persist anything

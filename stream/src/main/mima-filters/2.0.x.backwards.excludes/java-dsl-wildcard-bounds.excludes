@@ -1,0 +1,45 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+# Widen javadsl function parameters with wildcard bounds (generic signature only, erasure unchanged)
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.stream.javadsl.Flow.mapConcat(org.apache.pekko.japi.function.Function)org.apache.pekko.stream.javadsl.Flow")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.stream.javadsl.Flow.statefulMapConcat(org.apache.pekko.japi.function.Creator)org.apache.pekko.stream.javadsl.Flow")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.stream.javadsl.Flow.recoverWithRetries(Int,scala.PartialFunction)org.apache.pekko.stream.javadsl.Flow")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.stream.javadsl.Source.statefulMapConcat(org.apache.pekko.japi.function.Creator)org.apache.pekko.stream.javadsl.Source")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.stream.javadsl.SubFlow.mapConcat(org.apache.pekko.japi.function.Function)org.apache.pekko.stream.javadsl.SubFlow")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.stream.javadsl.SubFlow.statefulMapConcat(org.apache.pekko.japi.function.Creator)org.apache.pekko.stream.javadsl.SubFlow")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.stream.javadsl.SubFlow.recoverWith(scala.PartialFunction)org.apache.pekko.stream.javadsl.SubFlow")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.stream.javadsl.SubFlow.recoverWithRetries(Int,scala.PartialFunction)org.apache.pekko.stream.javadsl.SubFlow")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.stream.javadsl.SubSource.mapConcat(org.apache.pekko.japi.function.Function)org.apache.pekko.stream.javadsl.SubSource")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.stream.javadsl.SubSource.statefulMapConcat(org.apache.pekko.japi.function.Creator)org.apache.pekko.stream.javadsl.SubSource")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.stream.javadsl.SubSource.recoverWith(scala.PartialFunction)org.apache.pekko.stream.javadsl.SubSource")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.stream.javadsl.SubSource.recoverWithRetries(Int,scala.PartialFunction)org.apache.pekko.stream.javadsl.SubSource")
+
+# Take java.lang.Iterable instead of java.util.List for javadsl collections of graphs
+ProblemFilters.exclude[IncompatibleMethTypeProblem]("org.apache.pekko.stream.javadsl.Flow.interleaveAll(java.util.List,Int,Boolean)org.apache.pekko.stream.javadsl.Flow")
+ProblemFilters.exclude[IncompatibleMethTypeProblem]("org.apache.pekko.stream.javadsl.Flow.mergeAll(java.util.List,Boolean)org.apache.pekko.stream.javadsl.Flow")
+ProblemFilters.exclude[IncompatibleMethTypeProblem]("org.apache.pekko.stream.javadsl.Sink.combine(org.apache.pekko.stream.javadsl.Sink,org.apache.pekko.stream.javadsl.Sink,java.util.List,org.apache.pekko.japi.function.Function)org.apache.pekko.stream.javadsl.Sink")
+ProblemFilters.exclude[IncompatibleMethTypeProblem]("org.apache.pekko.stream.javadsl.Source.combine(org.apache.pekko.stream.javadsl.Source,org.apache.pekko.stream.javadsl.Source,java.util.List,org.apache.pekko.japi.function.Function)org.apache.pekko.stream.javadsl.Source")
+ProblemFilters.exclude[IncompatibleMethTypeProblem]("org.apache.pekko.stream.javadsl.Source.interleaveAll(java.util.List,Int,Boolean)org.apache.pekko.stream.javadsl.Source")
+ProblemFilters.exclude[IncompatibleMethTypeProblem]("org.apache.pekko.stream.javadsl.Source.mergeAll(java.util.List,Boolean)org.apache.pekko.stream.javadsl.Source")
+ProblemFilters.exclude[IncompatibleMethTypeProblem]("org.apache.pekko.stream.javadsl.Source.mergePrioritizedN(java.util.List,Boolean)org.apache.pekko.stream.javadsl.Source")
+ProblemFilters.exclude[IncompatibleMethTypeProblem]("org.apache.pekko.stream.javadsl.Source.zipN(java.util.List)org.apache.pekko.stream.javadsl.Source")
+ProblemFilters.exclude[IncompatibleMethTypeProblem]("org.apache.pekko.stream.javadsl.Source.zipWithN(org.apache.pekko.japi.function.Function,java.util.List)org.apache.pekko.stream.javadsl.Source")
+ProblemFilters.exclude[IncompatibleMethTypeProblem]("org.apache.pekko.stream.javadsl.SubFlow.interleaveAll(java.util.List,Int,Boolean)org.apache.pekko.stream.javadsl.SubFlow")
+ProblemFilters.exclude[IncompatibleMethTypeProblem]("org.apache.pekko.stream.javadsl.SubFlow.mergeAll(java.util.List,Boolean)org.apache.pekko.stream.javadsl.SubFlow")
+ProblemFilters.exclude[IncompatibleMethTypeProblem]("org.apache.pekko.stream.javadsl.SubSource.interleaveAll(java.util.List,Int,Boolean)org.apache.pekko.stream.javadsl.SubSource")
+ProblemFilters.exclude[IncompatibleMethTypeProblem]("org.apache.pekko.stream.javadsl.SubSource.mergeAll(java.util.List,Boolean)org.apache.pekko.stream.javadsl.SubSource")

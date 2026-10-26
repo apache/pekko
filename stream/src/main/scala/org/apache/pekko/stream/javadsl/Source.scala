@@ -540,11 +540,11 @@ object Source {
   def combine[T, U](
       first: Source[T, ? <: Any],
       second: Source[T, ? <: Any],
-      @Nullable rest: java.util.List[Source[T, ? <: Any]],
+      @Nullable rest: java.lang.Iterable[? <: Graph[SourceShape[T], ?]],
       fanInStrategy: function.Function[java.lang.Integer, ? <: Graph[UniformFanInShape[T, U], NotUsed]])
       : Source[U, NotUsed] = {
     import scala.jdk.CollectionConverters._
-    val seq = if (rest ne null) rest.asScala.map(_.asScala).toSeq else Seq()
+    val seq = if (rest ne null) rest.asScala.map(scaladsl.Source.fromGraph(_)).toSeq else Seq()
     new Source(scaladsl.Source.combine(first.asScala, second.asScala, seq: _*)(num => fanInStrategy.apply(num)))
   }
 
@@ -566,8 +566,8 @@ object Source {
    * @since 1.1.0
    */
   def combine[T, U, M](
-      @Nullable sources: java.util.List[? <: Graph[SourceShape[T], M]],
-      fanInStrategy: function.Function[java.lang.Integer, Graph[UniformFanInShape[T, U], NotUsed]])
+      @Nullable sources: java.lang.Iterable[? <: Graph[SourceShape[T], M]],
+      fanInStrategy: function.Function[java.lang.Integer, ? <: Graph[UniformFanInShape[T, U], NotUsed]])
       : Source[U, java.util.List[M]] = {
     import pekko.util.Collections._
     val seq = if (sources ne null) sources.collectToImmutableSeq {
@@ -581,9 +581,10 @@ object Source {
   /**
    * Combine the elements of multiple streams into a stream of lists.
    */
-  def zipN[T](@Nullable sources: java.util.List[Source[T, ? <: Any]]): Source[java.util.List[T], NotUsed] = {
+  def zipN[T](
+      @Nullable sources: java.lang.Iterable[? <: Graph[SourceShape[T], ?]]): Source[java.util.List[T], NotUsed] = {
     import scala.jdk.CollectionConverters._
-    val seq = if (sources ne null) sources.asScala.map(_.asScala).toSeq else Seq()
+    val seq = if (sources ne null) sources.asScala.map(scaladsl.Source.fromGraph(_)).toSeq else Seq()
     new Source(scaladsl.Source.zipN(seq).map(_.asJava))
   }
 
@@ -598,9 +599,9 @@ object Source {
    */
   def zipWithN[T, O](
       zipper: function.Function[java.util.List[T], O],
-      @Nullable sources: java.util.List[Source[T, ? <: Any]]): Source[O, NotUsed] = {
+      @Nullable sources: java.lang.Iterable[? <: Graph[SourceShape[T], ?]]): Source[O, NotUsed] = {
     import scala.jdk.CollectionConverters._
-    val seq = if (sources ne null) sources.asScala.map(_.asScala).toSeq else Seq()
+    val seq = if (sources ne null) sources.asScala.map(scaladsl.Source.fromGraph(_)).toSeq else Seq()
     new Source(scaladsl.Source.zipWithN[T, O](seq => zipper.apply(seq.asJava))(seq))
   }
 
@@ -858,12 +859,12 @@ object Source {
    * '''Cancels when''' downstream cancels
    */
   def mergePrioritizedN[T](
-      @Nullable sourcesAndPriorities: java.util.List[Pair[Source[T, ? <: Any], java.lang.Integer]],
+      @Nullable sourcesAndPriorities: java.lang.Iterable[? <: Pair[? <: Graph[SourceShape[T], ?], java.lang.Integer]],
       eagerComplete: Boolean): javadsl.Source[T, NotUsed] = {
     import scala.jdk.CollectionConverters._
     val seq =
       if (sourcesAndPriorities ne null)
-        sourcesAndPriorities.asScala.map(pair => (pair.first.asScala, pair.second.intValue())).toSeq
+        sourcesAndPriorities.asScala.map(pair => (scaladsl.Source.fromGraph(pair.first), pair.second.intValue())).toSeq
       else
         Seq()
     new Source(scaladsl.Source.mergePrioritizedN(seq, eagerComplete))
@@ -1686,7 +1687,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    * '''Cancels when''' downstream cancels
    */
   def interleaveAll(
-      @Nullable those: java.util.List[? <: Graph[SourceShape[Out], ? <: Any]],
+      @Nullable those: java.lang.Iterable[? <: Graph[SourceShape[Out], ? <: Any]],
       segmentSize: Int,
       eagerClose: Boolean): javadsl.Source[Out, Mat] = {
     import pekko.util.Collections._
@@ -1768,7 +1769,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    * '''Cancels when''' downstream cancels
    */
   def mergeAll(
-      @Nullable those: java.util.List[? <: Graph[SourceShape[Out], ? <: Any]],
+      @Nullable those: java.lang.Iterable[? <: Graph[SourceShape[Out], ? <: Any]],
       eagerComplete: Boolean): javadsl.Source[Out, Mat] = {
     import pekko.util.Collections._
     val seq = if (those ne null) those.collectToImmutableSeq {
@@ -2865,7 +2866,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    * '''Cancels when''' downstream cancels
    */
   def statefulMapConcat[T](
-      f: function.Creator[function.Function[Out, java.lang.Iterable[T]]]): javadsl.Source[T, Mat] = {
+      f: function.Creator[? <: function.Function[Out, ? <: java.lang.Iterable[T]]]): javadsl.Source[T, Mat] = {
     import scaladsl.StatefulMapConcatAccumulatorFactory._
     new Source(delegate.via(new StatefulMapConcat(f.asFactory)))
   }

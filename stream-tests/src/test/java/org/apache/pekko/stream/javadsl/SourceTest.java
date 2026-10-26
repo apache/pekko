@@ -1216,6 +1216,229 @@ public class SourceTest extends StreamTestJupiter {
   }
 
   @Test
+  public void mustBeAbleToCombineRestWithConcreteSourceList() throws Exception {
+    final Source<Integer, NotUsed> source1 = Source.from(List.of(0, 1));
+    final Source<Integer, NotUsed> source2 = Source.from(List.of(2, 3));
+    // a list typed with the concrete materialized value must be accepted as is
+    final List<Source<Integer, NotUsed>> rest = List.of(Source.from(List.of(4, 5)));
+
+    final List<Integer> result =
+        Source.combine(source1, source2, rest, Concat::create)
+            .runWith(Sink.seq(), system)
+            .toCompletableFuture()
+            .get(3, TimeUnit.SECONDS);
+
+    assertEquals(List.of(0, 1, 2, 3, 4, 5), result);
+  }
+
+  @Test
+  public void mustBeAbleToZipNWithConcreteSourceList() throws Exception {
+    final List<Source<Integer, NotUsed>> sources =
+        List.of(Source.from(List.of(0, 1)), Source.from(List.of(2, 3)));
+
+    final List<List<Integer>> result =
+        Source.zipN(sources)
+            .runWith(Sink.seq(), system)
+            .toCompletableFuture()
+            .get(3, TimeUnit.SECONDS);
+
+    assertEquals(List.of(List.of(0, 2), List.of(1, 3)), result);
+  }
+
+  @Test
+  public void mustBeAbleToZipWithNWithConcreteSourceList() throws Exception {
+    final List<Source<Integer, NotUsed>> sources =
+        List.of(Source.from(List.of(0, 1)), Source.from(List.of(2, 3)));
+
+    final List<Integer> result =
+        Source.zipWithN((List<Integer> list) -> list.get(0) + list.get(1), sources)
+            .runWith(Sink.seq(), system)
+            .toCompletableFuture()
+            .get(3, TimeUnit.SECONDS);
+
+    assertEquals(List.of(2, 4), result);
+  }
+
+  @Test
+  public void mustBeAbleToMergePrioritizedNWithConcreteSourceList() throws Exception {
+    final List<Pair<Source<Integer, NotUsed>, Integer>> sourcesAndPriorities =
+        List.of(
+            Pair.create(Source.from(List.of(0, 1)), 1), Pair.create(Source.from(List.of(2, 3)), 2));
+
+    final List<Integer> result =
+        new ArrayList<>(
+            Source.mergePrioritizedN(sourcesAndPriorities, false)
+                .runWith(Sink.seq(), system)
+                .toCompletableFuture()
+                .get(3, TimeUnit.SECONDS));
+    Collections.sort(result);
+
+    assertEquals(List.of(0, 1, 2, 3), result);
+  }
+
+  // a partial function typed with a concrete Source result must be accepted as is
+  private static scala.PartialFunction<Throwable, Source<Integer, NotUsed>> recoverWithZero() {
+    return PFBuilder.<Throwable, Source<Integer, NotUsed>>create()
+        .match(RuntimeException.class, ex -> Source.single(0))
+        .build();
+  }
+
+  private static Integer failOnTwo(Integer elem) {
+    if (elem == 2) throw new RuntimeException("ex");
+    else return elem;
+  }
+
+  @Test
+  public void mustAcceptConcreteIterableFunctionsInSourceAndSubSourceMapConcat() throws Exception {
+    // functions typed with a concrete Iterable subtype must be accepted as is
+    final Function<Integer, List<Integer>> duplicate = elem -> List.of(elem, elem);
+    final Creator<Function<Integer, List<Integer>>> duplicateCreator = () -> duplicate;
+
+    assertEquals(
+        List.of(1, 1, 2, 2),
+        Source.from(List.of(1, 2))
+            .statefulMapConcat(duplicateCreator)
+            .runWith(Sink.seq(), system)
+            .toCompletableFuture()
+            .get(3, TimeUnit.SECONDS));
+
+    assertEquals(
+        List.of(1, 1, 1, 1, 2, 2, 2, 2),
+        Source.from(List.of(1, 2))
+            .groupBy(1, elem -> 0)
+            .mapConcat(duplicate)
+            .statefulMapConcat(duplicateCreator)
+            .mergeSubstreams()
+            .runWith(Sink.seq(), system)
+            .toCompletableFuture()
+            .get(3, TimeUnit.SECONDS));
+  }
+
+  @Test
+  public void subSourceRecoverWithMustAcceptConcreteSourcePartialFunction() throws Exception {
+    final List<Integer> result =
+        Source.from(List.of(1, 2, 3))
+            .groupBy(1, elem -> 0)
+            .map(SourceTest::failOnTwo)
+            .recoverWith(recoverWithZero())
+            .mergeSubstreams()
+            .runWith(Sink.seq(), system)
+            .toCompletableFuture()
+            .get(3, TimeUnit.SECONDS);
+    assertEquals(List.of(1, 0), result);
+  }
+
+  @Test
+  public void subSourceRecoverWithRetriesMustAcceptConcreteSourcePartialFunction()
+      throws Exception {
+    final List<Integer> result =
+        Source.from(List.of(1, 2, 3))
+            .groupBy(1, elem -> 0)
+            .map(SourceTest::failOnTwo)
+            .recoverWithRetries(1, recoverWithZero())
+            .mergeSubstreams()
+            .runWith(Sink.seq(), system)
+            .toCompletableFuture()
+            .get(3, TimeUnit.SECONDS);
+    assertEquals(List.of(1, 0), result);
+  }
+
+  @Test
+  public void mustAcceptConcreteFanInStrategyInCombine() throws Exception {
+    // a fan-in strategy typed with a concrete Graph subtype must be accepted as is
+    final Function<Integer, org.apache.pekko.stream.scaladsl.Concat<Integer>> concat =
+        width -> new org.apache.pekko.stream.scaladsl.Concat<>(width);
+    final List<Source<Integer, NotUsed>> sources =
+        List.of(Source.from(List.of(0, 1)), Source.from(List.of(2, 3)));
+
+    assertEquals(
+        List.of(0, 1, 2, 3),
+        Source.combine(sources, concat)
+            .runWith(Sink.seq(), system)
+            .toCompletableFuture()
+            .get(3, TimeUnit.SECONDS));
+  }
+
+  @Test
+  public void mustAcceptNonListIterablesOfSources() throws Exception {
+    // any Iterable of Source subtypes must be accepted, not only a List
+    final Deque<Source<Integer, NotUsed>> sources =
+        new ArrayDeque<>(List.of(Source.from(List.of(0, 1)), Source.from(List.of(2, 3))));
+    final Deque<Pair<Source<Integer, NotUsed>, Integer>> sourcesAndPriorities =
+        new ArrayDeque<>(
+            List.of(
+                Pair.create(Source.from(List.of(0, 1)), 1),
+                Pair.create(Source.from(List.of(2, 3)), 2)));
+
+    assertEquals(
+        List.of(0, 1, 2, 3, 4),
+        Source.combine(
+                Source.from(List.of(0, 1)),
+                Source.from(List.of(2, 3)),
+                new ArrayDeque<>(List.of(Source.single(4))),
+                Concat::create)
+            .runWith(Sink.seq(), system)
+            .toCompletableFuture()
+            .get(3, TimeUnit.SECONDS));
+    assertEquals(
+        List.of(0, 1, 2, 3),
+        Source.combine(sources, Concat::create)
+            .runWith(Sink.seq(), system)
+            .toCompletableFuture()
+            .get(3, TimeUnit.SECONDS));
+    assertEquals(
+        List.of(List.of(0, 2), List.of(1, 3)),
+        Source.zipN(sources)
+            .runWith(Sink.seq(), system)
+            .toCompletableFuture()
+            .get(3, TimeUnit.SECONDS));
+    assertEquals(
+        List.of(2, 4),
+        Source.zipWithN((List<Integer> list) -> list.get(0) + list.get(1), sources)
+            .runWith(Sink.seq(), system)
+            .toCompletableFuture()
+            .get(3, TimeUnit.SECONDS));
+    assertEquals(
+        Set.of(0, 1, 2, 3),
+        Source.mergePrioritizedN(sourcesAndPriorities, false)
+            .runWith(Sink.collect(Collectors.toSet()), system)
+            .toCompletableFuture()
+            .get(3, TimeUnit.SECONDS));
+    assertEquals(
+        Set.of(0, 1, 2, 3, 4),
+        Source.single(4)
+            .mergeAll(sources, false)
+            .runWith(Sink.collect(Collectors.toSet()), system)
+            .toCompletableFuture()
+            .get(3, TimeUnit.SECONDS));
+    assertEquals(
+        Set.of(0, 1, 2, 3, 4),
+        Source.single(4)
+            .interleaveAll(sources, 1, false)
+            .runWith(Sink.collect(Collectors.toSet()), system)
+            .toCompletableFuture()
+            .get(3, TimeUnit.SECONDS));
+    assertEquals(
+        Set.of(0, 1, 2, 3, 4),
+        Source.single(4)
+            .groupBy(1, elem -> 0)
+            .mergeAll(sources, false)
+            .mergeSubstreams()
+            .runWith(Sink.collect(Collectors.toSet()), system)
+            .toCompletableFuture()
+            .get(3, TimeUnit.SECONDS));
+    assertEquals(
+        Set.of(0, 1, 2, 3, 4),
+        Source.single(4)
+            .groupBy(1, elem -> 0)
+            .interleaveAll(sources, 1, false)
+            .mergeSubstreams()
+            .runWith(Sink.collect(Collectors.toSet()), system)
+            .toCompletableFuture()
+            .get(3, TimeUnit.SECONDS));
+  }
+
+  @Test
   public void mustBeAbleToZipAll() {
     final TestKit probe = new TestKit(system);
     final Iterable<String> input1 =
