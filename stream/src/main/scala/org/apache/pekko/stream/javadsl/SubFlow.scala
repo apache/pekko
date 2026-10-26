@@ -378,7 +378,13 @@ final class SubFlow[In, Out, Mat](
   def statefulMapConcat[T](
       f: function.Creator[? <: function.Function[Out, ? <: java.lang.Iterable[T]]]): SubFlow[In, T, Mat] = {
     import scaladsl.StatefulMapConcatAccumulatorFactory._
-    new SubFlow(delegate.via(new StatefulMapConcat(f.asFactory)))
+    // Scala 3 cannot infer the type parameters of the `asFactory` extension
+    // (StatefulMapConcatAccumulatorFactoryFromCreator) from the wildcard-bounded type of `f`,
+    // so it fails with "value asFactory is not a member". Widening `f` to the plain type first
+    // lets the extension resolve; this is safe because `Creator` is covariant and `Function` is
+    // covariant in its result type. Scala 2.13 does not need this.
+    val creator: function.Creator[function.Function[Out, java.lang.Iterable[T]]] = f
+    new SubFlow(delegate.via(new StatefulMapConcat(creator.asFactory)))
   }
 
   /**
