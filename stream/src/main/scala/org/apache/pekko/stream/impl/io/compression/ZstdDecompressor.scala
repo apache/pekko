@@ -17,7 +17,7 @@
 
 package org.apache.pekko.stream.impl.io.compression
 
-import java.lang.reflect.{ InvocationTargetException, Method }
+import java.lang.invoke.{ MethodHandle, MethodHandles, MethodType }
 import java.nio.ByteBuffer
 
 import scala.annotation.tailrec
@@ -41,16 +41,23 @@ import pekko.util.ByteString
   // dependency that users add themselves, so the method is looked up rather than linked against, and is used when a
   // newer zstd-jni is on the classpath.
   // TODO call setLongMax directly once Pekko depends on a zstd-jni release that has it (#3674)
-  private lazy val setLongMax: Option[Method] =
-    try Some(classOf[ZstdDecompressCtx].getMethod("setLongMax", Integer.TYPE))
+  private lazy val setLongMax: Option[MethodHandle] =
+    try
+      Some(
+        MethodHandles
+          .publicLookup()
+          .findVirtual(
+            classOf[ZstdDecompressCtx],
+            "setLongMax",
+            MethodType.methodType(classOf[ZstdDecompressCtx], Integer.TYPE))
+          .asType(MethodType.methodType(classOf[AnyRef], classOf[AnyRef], Integer.TYPE)))
     catch { case _: NoSuchMethodException => None }
 
   private def setWindowLogMax(ctx: ZstdDecompressCtx, windowLogMax: Int): Unit = {
-    val method = setLongMax.getOrElse(throw new UnsupportedOperationException(
+    val handle = setLongMax.getOrElse(throw new UnsupportedOperationException(
       "ZstdDecompressionSettings.withWindowLogMax requires a zstd-jni version that provides " +
       "ZstdDecompressCtx.setLongMax, which is newer than 1.5.7-24"))
-    try method.invoke(ctx, Int.box(windowLogMax))
-    catch { case e: InvocationTargetException => throw e.getCause }
+    val _: AnyRef = handle.invokeExact(ctx.asInstanceOf[AnyRef], windowLogMax)
   }
 
   // The level only applies to compression. Each materialization loads the dictionary into its own
