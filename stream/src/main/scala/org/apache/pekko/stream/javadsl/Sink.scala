@@ -385,7 +385,7 @@ object Sink {
       onInitMessage: Any,
       ackMessage: Any,
       onCompleteMessage: Any,
-      onFailureMessage: function.Function[Throwable, Any]): Sink[In, NotUsed] =
+      onFailureMessage: function.Function[? >: Throwable, ?]): Sink[In, NotUsed] =
     new Sink(
       scaladsl.Sink
         .actorRefWithBackpressure[In](ref, onInitMessage, ackMessage, onCompleteMessage, t => onFailureMessage(t)))
@@ -407,7 +407,7 @@ object Sink {
       ref: ActorRef,
       onInitMessage: Any,
       onCompleteMessage: Any,
-      onFailureMessage: function.Function[Throwable, Any]): Sink[In, NotUsed] =
+      onFailureMessage: function.Function[? >: Throwable, ?]): Sink[In, NotUsed] =
     new Sink(
       scaladsl.Sink.actorRefWithBackpressure[In](ref, onInitMessage, onCompleteMessage, t => onFailureMessage(t)))
 
@@ -427,8 +427,12 @@ object Sink {
    * [[Attributes]] of the [[Sink]] returned by this method.
    */
   def fromMaterializer[T, M](
-      factory: function.Function2[Materializer, Attributes, Sink[T, M]]): Sink[T, CompletionStage[M]] =
-    scaladsl.Sink.fromMaterializer((mat, attr) => factory(mat, attr).asScala).mapMaterializedValue(_.asJava).asJava
+      factory: function.Function2[Materializer, Attributes, ? <: Graph[SinkShape[T], M]])
+      : Sink[T, CompletionStage[M]] =
+    scaladsl.Sink
+      .fromMaterializer((mat, attr) => scaladsl.Sink.fromGraph(factory(mat, attr)))
+      .mapMaterializedValue(_.asJava)
+      .asJava
 
   /**
    * Combine several sinks with fan-out strategy like `Broadcast` or `Balance` and returns `Sink`.
@@ -523,8 +527,8 @@ object Sink {
    * The materialized future value is completed with the materialized value of the future sink or failed with a
    * [[NeverMaterializedException]] if upstream fails or downstream cancels before the future has completed.
    */
-  def completionStageSink[T, M](future: CompletionStage[Sink[T, M]]): Sink[T, CompletionStage[M]] =
-    lazyCompletionStageSink[T, M](() => future)
+  def completionStageSink[T, M](future: CompletionStage[? <: Graph[SinkShape[T], M]]): Sink[T, CompletionStage[M]] =
+    lazyCompletionStageSink[T, M](() => future.thenApply[Sink[T, M]](g => Sink.fromGraph(g)))
 
   /**
    * Turn a `CompletionStage[Sink]` into a Sink that will consume the values of the source when the future completes
@@ -542,8 +546,9 @@ object Sink {
    *
    * @since 1.5.0
    */
-  def eagerCompletionStageSink[T, M](future: CompletionStage[Sink[T, M]]): Sink[T, CompletionStage[M]] =
-    new Sink(scaladsl.Sink.eagerFutureSink(future.asScala.map(_.asScala)(ExecutionContext.parasitic)))
+  def eagerCompletionStageSink[T, M](
+      future: CompletionStage[? <: Graph[SinkShape[T], M]]): Sink[T, CompletionStage[M]] =
+    new Sink(scaladsl.Sink.eagerFutureSink(future.asScala.map(scaladsl.Sink.fromGraph(_))(ExecutionContext.parasitic)))
       .mapMaterializedValue(_.asJava)
 
   /**

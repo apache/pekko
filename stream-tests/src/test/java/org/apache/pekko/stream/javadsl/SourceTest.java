@@ -1439,6 +1439,55 @@ public class SourceTest extends StreamTestJupiter {
   }
 
   @Test
+  public void mustAcceptWiderAndNarrowerTypesInSourceFactories() throws Exception {
+    // element types can be widened from the argument to the target type
+    final Source<Number, NotUsed> fromIterable = Source.from(List.of(1, 2));
+    final Source<Number, NotUsed> fromOption = Source.fromOption(Optional.of(3));
+    final Source<Number, NotUsed> fromCompletionStage =
+        Source.completionStage(CompletableFuture.completedFuture(4));
+    // any Graph can be supplied, not only a javadsl.Source
+    final CompletionStage<Graph<SourceShape<Number>, NotUsed>> futureGraph =
+        CompletableFuture.completedFuture(Source.single(5));
+    final Function2<Materializer, Attributes, Graph<SourceShape<Number>, NotUsed>> factory =
+        (mat, attr) -> Source.single(6);
+
+    final List<Number> result =
+        fromIterable
+            .concat(fromOption)
+            .concat(fromCompletionStage)
+            .concat(Source.completionStageSource(futureGraph))
+            .concat(Source.fromMaterializer(factory))
+            .runWith(Sink.seq(), system)
+            .toCompletableFuture()
+            .get(3, TimeUnit.SECONDS);
+
+    assertEquals(List.of(1, 2, 3, 4, 5, 6), result);
+  }
+
+  @Test
+  public void mustAcceptConcreteSourceCreatorsInRecoverWith() throws Exception {
+    // a creator typed with a concrete Source result must be accepted as is
+    final Creator<Source<Integer, NotUsed>> recover = () -> Source.single(0);
+
+    assertEquals(
+        List.of(1, 0),
+        Source.from(List.of(1, 2, 3))
+            .map(SourceTest::failOnTwo)
+            .recoverWith(RuntimeException.class, recover)
+            .runWith(Sink.seq(), system)
+            .toCompletableFuture()
+            .get(3, TimeUnit.SECONDS));
+    assertEquals(
+        List.of(1, 0),
+        Source.from(List.of(1, 2, 3))
+            .map(SourceTest::failOnTwo)
+            .recoverWithRetries(1, RuntimeException.class, recover)
+            .runWith(Sink.seq(), system)
+            .toCompletableFuture()
+            .get(3, TimeUnit.SECONDS));
+  }
+
+  @Test
   public void mustBeAbleToZipAll() {
     final TestKit probe = new TestKit(system);
     final Iterable<String> input1 =
