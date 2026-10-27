@@ -248,8 +248,8 @@ import org.slf4j.LoggerFactory
       resClass: Class[Res],
       target: RecipientRef[Req],
       responseTimeout: Duration,
-      createRequest: pekko.japi.function.Function[ActorRef[Res], Req],
-      applyToResponse: pekko.japi.function.Function2[Res, Throwable, T]): Unit = {
+      createRequest: pekko.japi.function.Function[? >: ActorRef[Res], ? <: Req],
+      applyToResponse: pekko.japi.function.Function2[? >: Res, ? >: Throwable, ? <: T]): Unit = {
     import pekko.actor.typed.javadsl.AskPattern
     pipeToSelf[Res](
       AskPattern.ask(target, ref => createRequest(ref), responseTimeout, system.scheduler),
@@ -260,21 +260,21 @@ import org.slf4j.LoggerFactory
       resClass: Class[Res],
       target: RecipientRef[Req],
       responseTimeout: Duration,
-      createRequest: pekko.japi.function.Function[ActorRef[StatusReply[Res]], Req],
-      applyToResponse: pekko.japi.function.Function2[Res, Throwable, T]): Unit = {
+      createRequest: pekko.japi.function.Function[? >: ActorRef[StatusReply[Res]], ? <: Req],
+      applyToResponse: pekko.japi.function.Function2[? >: Res, ? >: Throwable, ? <: T]): Unit = {
     implicit val classTag: ClassTag[Res] = ClassTag(resClass)
     ask[Req, StatusReply[Res]](
       classOf[StatusReply[Res]],
       target,
       responseTimeout,
       createRequest,
-      (ok: StatusReply[Res], failure: Throwable) =>
-        ok match {
-          case StatusReply.Success(value: Res) => applyToResponse(value, null)
-          case StatusReply.Error(why)          => applyToResponse(null.asInstanceOf[Res], why)
-          case null                            => applyToResponse(null.asInstanceOf[Res], failure)
-          case _                               => throw new RuntimeException() // won't happen, compiler exhaustiveness check pleaser
-        })
+      ((ok: StatusReply[Res], failure: Throwable) =>
+            ok match {
+              case StatusReply.Success(value: Res) => applyToResponse(value, null)
+              case StatusReply.Error(why)          => applyToResponse(null.asInstanceOf[Res], why)
+              case null                            => applyToResponse(null.asInstanceOf[Res], failure)
+              case _                               => throw new RuntimeException() // won't happen, compiler exhaustiveness check pleaser
+            }): pekko.japi.function.Function2[StatusReply[Res], Throwable, T])
   }
 
   // Scala API impl
@@ -285,7 +285,7 @@ import org.slf4j.LoggerFactory
   // Java API impl
   def pipeToSelf[Value](
       future: CompletionStage[Value],
-      applyToResult: pekko.japi.function.Function2[Value, Throwable, T]): Unit = {
+      applyToResult: pekko.japi.function.Function2[? >: Value, ? >: Throwable, ? <: T]): Unit = {
     future.handle[Unit] { (value, ex) =>
       if (ex ne null)
         self.unsafeUpcast ! AdaptMessage(ex, applyToResult.apply(null.asInstanceOf[Value], _: Throwable))
@@ -310,7 +310,7 @@ import org.slf4j.LoggerFactory
     internalMessageAdapter(messageClass, f)
   }
 
-  override def messageAdapter[U](messageClass: Class[U], f: pekko.japi.function.Function[U, T]): ActorRef[U] =
+  override def messageAdapter[U](messageClass: Class[U], f: pekko.japi.function.Function[? >: U, ? <: T]): ActorRef[U] =
     internalMessageAdapter(messageClass, f.apply)
 
   private def internalMessageAdapter[U](messageClass: Class[U], f: U => T): ActorRef[U] = {

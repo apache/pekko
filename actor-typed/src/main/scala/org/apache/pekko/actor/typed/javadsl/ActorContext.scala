@@ -285,7 +285,7 @@ trait ActorContext[T] extends TypedActorContext[T] with ClassicActorContextProvi
    * *Warning*: This method is not thread-safe and must not be accessed from threads other
    * than the ordinary actor message processing thread, such as [[java.util.concurrent.CompletionStage]] callbacks.
    */
-  def messageAdapter[U](messageClass: Class[U], f: pekko.japi.function.Function[U, T]): ActorRef[U]
+  def messageAdapter[U](messageClass: Class[U], f: pekko.japi.function.Function[? >: U, ? <: T]): ActorRef[U]
 
   /**
    * Perform a single request-response message interaction with another actor, and transform the messages back to
@@ -317,8 +317,8 @@ trait ActorContext[T] extends TypedActorContext[T] with ClassicActorContextProvi
       resClass: Class[Res],
       target: RecipientRef[Req],
       responseTimeout: Duration,
-      createRequest: pekko.japi.function.Function[ActorRef[Res], Req],
-      applyToResponse: pekko.japi.function.Function2[Res, Throwable, T]): Unit
+      createRequest: pekko.japi.function.Function[? >: ActorRef[Res], ? <: Req],
+      applyToResponse: pekko.japi.function.Function2[? >: Res, ? >: Throwable, ? <: T]): Unit
 
   /**
    * The same as [[ask]] but only for requests that result in a response of type [[pekko.pattern.StatusReply]].
@@ -330,8 +330,8 @@ trait ActorContext[T] extends TypedActorContext[T] with ClassicActorContextProvi
       resClass: Class[Res],
       target: RecipientRef[Req],
       responseTimeout: Duration,
-      createRequest: pekko.japi.function.Function[ActorRef[StatusReply[Res]], Req],
-      applyToResponse: pekko.japi.function.Function2[Res, Throwable, T]): Unit
+      createRequest: pekko.japi.function.Function[? >: ActorRef[StatusReply[Res]], ? <: Req],
+      applyToResponse: pekko.japi.function.Function2[? >: Res, ? >: Throwable, ? <: T]): Unit
 
   /**
    * Sends the result of the given `CompletionStage` to this Actor (“`self`”), after adapted it with
@@ -342,6 +342,6 @@ trait ActorContext[T] extends TypedActorContext[T] with ClassicActorContextProvi
    */
   def pipeToSelf[Value](
       future: CompletionStage[Value],
-      applyToResult: pekko.japi.function.Function2[Value, Throwable, T]): Unit
+      applyToResult: pekko.japi.function.Function2[? >: Value, ? >: Throwable, ? <: T]): Unit
 
 }

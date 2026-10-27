@@ -51,7 +51,7 @@ final class ReceiveBuilder[T] private (
    * @tparam M type of message to match
    * @return this behavior builder
    */
-  def onMessage[M <: T](`type`: Class[M], handler: JFunction[M, Behavior[T]]): ReceiveBuilder[T] =
+  def onMessage[M <: T](`type`: Class[M], handler: JFunction[? >: M, ? <: Behavior[T]]): ReceiveBuilder[T] =
     withMessage(OptionVal.Some(`type`), OptionVal.None, handler)
 
   /**
@@ -63,7 +63,8 @@ final class ReceiveBuilder[T] private (
    * @tparam M type of message to match
    * @return this behavior builder
    */
-  def onMessage[M <: T](`type`: Class[M], test: JPredicate[M], handler: JFunction[M, Behavior[T]]): ReceiveBuilder[T] =
+  def onMessage[M <: T](`type`: Class[M], test: JPredicate[? >: M], handler: JFunction[? >: M, ? <: Behavior[T]])
+      : ReceiveBuilder[T] =
     withMessage(OptionVal.Some(`type`), OptionVal.Some(test), handler)
 
   /**
@@ -76,7 +77,8 @@ final class ReceiveBuilder[T] private (
    * @param handler action to apply when the type matches
    * @return this behavior builder
    */
-  def onMessageUnchecked[M <: T](`type`: Class[? <: T], handler: JFunction[M, Behavior[T]]): ReceiveBuilder[T] =
+  def onMessageUnchecked[M <: T](`type`: Class[? <: T], handler: JFunction[? >: M, ? <: Behavior[T]])
+      : ReceiveBuilder[T] =
     withMessage[M](OptionVal.Some(`type`.asInstanceOf[Class[M]]), OptionVal.None, handler)
 
   /**
@@ -86,7 +88,7 @@ final class ReceiveBuilder[T] private (
    * @param handler action to apply when the message matches
    * @return this behavior builder
    */
-  def onMessageEquals(msg: T, handler: Creator[Behavior[T]]): ReceiveBuilder[T] =
+  def onMessageEquals(msg: T, handler: Creator[? <: Behavior[T]]): ReceiveBuilder[T] =
     withMessage(OptionVal.Some(msg.getClass),
       OptionVal.Some[JPredicate[T]]((param: T) => param == msg),
       (_: T) => handler.create())
@@ -98,7 +100,7 @@ final class ReceiveBuilder[T] private (
    * @param handler action to apply for any message
    * @return this behavior builder
    */
-  def onAnyMessage(handler: JFunction[T, Behavior[T]]): ReceiveBuilder[T] =
+  def onAnyMessage(handler: JFunction[? >: T, ? <: Behavior[T]]): ReceiveBuilder[T] =
     withMessage(OptionVal.None, OptionVal.None, handler)
 
   /**
@@ -109,7 +111,7 @@ final class ReceiveBuilder[T] private (
    * @tparam M type of signal to match
    * @return this behavior builder
    */
-  def onSignal[M <: Signal](`type`: Class[M], handler: JFunction[M, Behavior[T]]): ReceiveBuilder[T] =
+  def onSignal[M <: Signal](`type`: Class[M], handler: JFunction[? >: M, ? <: Behavior[T]]): ReceiveBuilder[T] =
     withSignal(`type`, OptionVal.None, handler)
 
   /**
@@ -123,8 +125,8 @@ final class ReceiveBuilder[T] private (
    */
   def onSignal[M <: Signal](
       `type`: Class[M],
-      test: JPredicate[M],
-      handler: JFunction[M, Behavior[T]]): ReceiveBuilder[T] =
+      test: JPredicate[? >: M],
+      handler: JFunction[? >: M, ? <: Behavior[T]]): ReceiveBuilder[T] =
     withSignal(`type`, OptionVal.Some(test), handler)
 
   /**
@@ -134,7 +136,7 @@ final class ReceiveBuilder[T] private (
    * @param handler action to apply when the message matches
    * @return this behavior builder
    */
-  def onSignalEquals(signal: Signal, handler: Creator[Behavior[T]]): ReceiveBuilder[T] =
+  def onSignalEquals(signal: Signal, handler: Creator[? <: Behavior[T]]): ReceiveBuilder[T] =
     withSignal(signal.getClass,
       OptionVal.Some[JPredicate[Signal]]((param: Signal) => param == signal),
       (_: Signal) => handler.create())

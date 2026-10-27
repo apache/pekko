@@ -94,7 +94,7 @@ import org.slf4j.event.Level
   /**
    * Matching events for which the supplied function returns `true`.
    */
-  def withCustom(newCustom: Function[LoggingEvent, Boolean]): LoggingTestKit
+  def withCustom(newCustom: Function[? >: LoggingEvent, Boolean]): LoggingTestKit
   // this is a Scala Function, ^ but that can be used with lambda from Java
 
   /**
@@ -109,7 +109,7 @@ import org.slf4j.event.Level
    *
    * Care is taken to remove the testkit when the block is finished or aborted.
    */
-  def expect[T](system: ActorSystem[?], code: Supplier[T]): T
+  def expect[T](system: ActorSystem[?], code: Supplier[? <: T]): T
 
 }
 
@@ -205,7 +205,7 @@ object LoggingTestKit {
    * Create a custom event filter. The filter will match those events for
    * which for which the supplied function returns `true`.
    */
-  def custom(test: Function[LoggingEvent, Boolean]): LoggingTestKit =
+  def custom(test: Function[? >: LoggingEvent, Boolean]): LoggingTestKit =
     empty.withCustom(test) // this is a Scala Function, but that can be used with lambda from Java
 
   /**

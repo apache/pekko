@@ -25,6 +25,7 @@ import com.typesafe.config.ConfigFactory;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.*;
+import java.util.function.BiFunction;
 import org.apache.pekko.Done;
 import org.apache.pekko.actor.testkit.typed.annotations.JUnitJupiterTestKit;
 import org.apache.pekko.actor.testkit.typed.javadsl.ActorTestKit;
@@ -796,5 +797,49 @@ public class EventSourcedBehaviorJavaDslTest {
     probe.expectMessage("0 onCommand");
     probe.expectMessage("1 applyEvent");
     probe.expectMessage("1 thenRun");
+  }
+
+  // handlers typed over supertypes of the command, event and state types, e.g. shared between
+  // behaviors, can be passed as is
+  class SharedHandlersBehavior extends EventSourcedBehavior<String, String, String> {
+    private final ActorRef<String> probe;
+
+    public SharedHandlersBehavior(PersistenceId persistenceId, ActorRef<String> probe) {
+      super(persistenceId);
+      this.probe = probe;
+    }
+
+    @Override
+    public String emptyState() {
+      return "";
+    }
+
+    @Override
+    public CommandHandler<String, String, String> commandHandler() {
+      final org.apache.pekko.japi.function.Procedure<Object> report =
+          state -> probe.tell("state " + state);
+      final BiFunction<Object, CharSequence, EffectBuilder<String, String>> persistCommand =
+          (state, cmd) -> Effect().persist(cmd.toString()).thenRun(report);
+      return newCommandHandlerBuilder().forAnyState().onAnyCommand(persistCommand);
+    }
+
+    @Override
+    public EventHandler<String, String> eventHandler() {
+      final BiFunction<CharSequence, Object, String> append = (state, event) -> state + "" + event;
+      return newEventHandlerBuilder().forAnyState().onAnyEvent(append);
+    }
+  }
+
+  @Test
+  public void acceptHandlersTypedOverSupertypes() {
+    TestProbe<String> probe = testKit.createTestProbe(String.class);
+    ActorRef<String> ref =
+        testKit.spawn(
+            new SharedHandlersBehavior(PersistenceId.ofUniqueId("shared1"), probe.getRef()));
+
+    ref.tell("a");
+    probe.expectMessage("state a");
+    ref.tell("b");
+    probe.expectMessage("state ab");
   }
 }

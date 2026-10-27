@@ -53,7 +53,7 @@ private[pekko] final case class GroupRouterBuilder[T] private[pekko] (
 
   def withConsistentHashingRouting(
       virtualNodesFactor: Int,
-      mapping: function.Function[T, String]): GroupRouterBuilder[T] =
+      mapping: function.Function[? >: T, String]): GroupRouterBuilder[T] =
     withConsistentHashingRouting(virtualNodesFactor, mapping.apply(_))
 
   def withConsistentHashingRouting(virtualNodesFactor: Int, mapping: T => String): GroupRouterBuilder[T] = {

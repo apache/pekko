@@ -208,7 +208,7 @@ final class DurableStateBehaviorTestKit[Command, State](
    * Run one command with a `replyTo: ActorRef` through the behavior. The returned result contains
    * the state after the command has been processed, and the reply.
    */
-  def runCommand[R](creator: JFunction[ActorRef[R], Command]): CommandResultWithReply[Command, State, R] =
+  def runCommand[R](creator: JFunction[? >: ActorRef[R], ? <: Command]): CommandResultWithReply[Command, State, R] =
     new CommandResultWithReply(delegate.runCommand(replyTo => creator.apply(replyTo)))
 
   /**

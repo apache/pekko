@@ -267,7 +267,7 @@ private[pekko] final class ShardedDaemonProcessImpl(system: ActorSystem[?])
       messageClass: Class[T],
       name: String,
       initialNumberOfInstances: Int,
-      behaviorFactory: java.util.function.Function[ShardedDaemonProcessContext, Behavior[T]])
+      behaviorFactory: java.util.function.Function[? >: ShardedDaemonProcessContext, ? <: Behavior[T]])
       : ActorRef[ShardedDaemonProcessCommand] = {
     implicit val classTag: ClassTag[T] = ClassTag[T](messageClass)
     internalInitWithContext[T](name, initialNumberOfInstances, behaviorFactory.apply, None, None, None, true)
@@ -277,7 +277,7 @@ private[pekko] final class ShardedDaemonProcessImpl(system: ActorSystem[?])
       messageClass: Class[T],
       name: String,
       initialNumberOfInstances: Int,
-      behaviorFactory: java.util.function.Function[ShardedDaemonProcessContext, Behavior[T]],
+      behaviorFactory: java.util.function.Function[? >: ShardedDaemonProcessContext, ? <: Behavior[T]],
       settings: ShardedDaemonProcessSettings,
       stopMessage: Optional[T]): ActorRef[ShardedDaemonProcessCommand] =
     initWithContext[T](
@@ -293,7 +293,7 @@ private[pekko] final class ShardedDaemonProcessImpl(system: ActorSystem[?])
       messageClass: Class[T],
       name: String,
       initialNumberOfInstances: Int,
-      behaviorFactory: java.util.function.Function[ShardedDaemonProcessContext, Behavior[T]],
+      behaviorFactory: java.util.function.Function[? >: ShardedDaemonProcessContext, ? <: Behavior[T]],
       settings: ShardedDaemonProcessSettings,
       stopMessage: Optional[T],
       shardAllocationStrategy: Optional[ShardAllocationStrategy]): ActorRef[ShardedDaemonProcessCommand] = {

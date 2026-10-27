@@ -59,8 +59,8 @@ import pekko.util.Timeout
       resClass: Class[Res],
       target: RecipientRef[Req],
       responseTimeout: Duration,
-      createRequest: pekko.japi.function.Function[ActorRef[Res], Req],
-      applyToResponse: pekko.japi.function.Function2[Res, Throwable, T]): Unit = {
+      createRequest: pekko.japi.function.Function[? >: ActorRef[Res], ? <: Req],
+      applyToResponse: pekko.japi.function.Function2[? >: Res, ? >: Throwable, ? <: T]): Unit = {
     require(
       responseTimeout.getSeconds > 0 || responseTimeout.getNano > 0,
       s"Timeout length must be positive, question not sent to [$target]")
@@ -120,7 +120,8 @@ import pekko.util.Timeout
     effectQueue.offer(MessageAdapter(implicitly[ClassTag[U]].runtimeClass.asInstanceOf[Class[U]], f))
     ref
   }
-  override def messageAdapter[U](messageClass: Class[U], f: pekko.japi.function.Function[U, T]): ActorRef[U] = {
+  override def messageAdapter[U](messageClass: Class[U], f: pekko.japi.function.Function[? >: U, ? <: T])
+      : ActorRef[U] = {
     val ref = super.messageAdapter(messageClass, f)
     effectQueue.offer(MessageAdapter[U, T](messageClass, f.apply))
     ref

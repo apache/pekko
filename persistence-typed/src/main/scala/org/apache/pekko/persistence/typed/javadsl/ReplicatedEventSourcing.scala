@@ -101,7 +101,7 @@ object ReplicatedEventSourcing {
       replicationId: ReplicationId,
       allReplicaIds: JSet[ReplicaId],
       queryPluginId: String,
-      behaviorFactory: JFunction[ReplicationContext, EventSourcedBehavior[Command, Event, State]])
+      behaviorFactory: JFunction[? >: ReplicationContext, ? <: EventSourcedBehavior[Command, Event, State]])
       : EventSourcedBehavior[Command, Event, State] =
     perReplicaJournalConfig(
       replicationId,
@@ -127,7 +127,7 @@ object ReplicatedEventSourcing {
   def perReplicaJournalConfig[Command, Event, State](
       replicationId: ReplicationId,
       allReplicasAndQueryPlugins: JMap[ReplicaId, String],
-      eventSourcedBehaviorFactory: JFunction[ReplicationContext, EventSourcedBehavior[Command, Event, State]])
+      eventSourcedBehaviorFactory: JFunction[? >: ReplicationContext, ? <: EventSourcedBehavior[Command, Event, State]])
       : EventSourcedBehavior[Command, Event, State] = {
     val context = new ReplicationContextImpl(replicationId, allReplicasAndQueryPlugins.asScala.toMap)
     eventSourcedBehaviorFactory(context)

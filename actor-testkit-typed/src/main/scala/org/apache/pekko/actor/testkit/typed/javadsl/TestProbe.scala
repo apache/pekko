@@ -128,12 +128,12 @@ abstract class TestProbe[M] extends RecipientRef[M] { this: InternalRecipientRef
    * }
    * }}}
    */
-  def within[T](min: Duration, max: Duration)(f: Supplier[T]): T
+  def within[T](min: Duration, max: Duration)(f: Supplier[? <: T]): T
 
   /**
    * Same as calling `within(0 seconds, max)(f)`.
    */
-  def within[T](max: Duration)(f: Supplier[T]): T
+  def within[T](max: Duration)(f: Supplier[? <: T]): T
 
   /**
    * Same as `expectMessage(remainingOrDefault, obj)`, but using the
@@ -224,7 +224,7 @@ abstract class TestProbe[M] extends RecipientRef[M] { this: InternalRecipientRef
    *            The timeout is scaled using the configuration entry "pekko.actor.testkit.typed.timefactor".
    * @return The messages accepted in the order they arrived
    */
-  def fishForMessage(max: Duration, fisher: java.util.function.Function[M, FishingOutcome]): java.util.List[M]
+  def fishForMessage(max: Duration, fisher: java.util.function.Function[? >: M, ? <: FishingOutcome]): java.util.List[M]
 
   /**
    * Same as the other `fishForMessage` but includes the provided hint in all error messages
@@ -232,7 +232,7 @@ abstract class TestProbe[M] extends RecipientRef[M] { this: InternalRecipientRef
   def fishForMessage(
       max: Duration,
       hint: String,
-      fisher: java.util.function.Function[M, FishingOutcome]): java.util.List[M]
+      fisher: java.util.function.Function[? >: M, ? <: FishingOutcome]): java.util.List[M]
 
   /**
    * Expect the given actor to be stopped or stop within the given timeout or
@@ -255,7 +255,7 @@ abstract class TestProbe[M] extends RecipientRef[M] { this: InternalRecipientRef
    *
    * Note that the timeout is scaled using the configuration entry "pekko.actor.testkit.typed.timefactor".
    */
-  def awaitAssert[A](max: Duration, interval: Duration, creator: Creator[A]): A
+  def awaitAssert[A](max: Duration, interval: Duration, creator: Creator[? <: A]): A
 
   /**
    * Evaluate the given assert every 100 milliseconds until it does not throw an exception and return the
@@ -265,13 +265,13 @@ abstract class TestProbe[M] extends RecipientRef[M] { this: InternalRecipientRef
    *
    * Note that the timeout is scaled using the configuration entry "pekko.actor.testkit.typed.timefactor".
    */
-  def awaitAssert[A](max: Duration, creator: Creator[A]): A
+  def awaitAssert[A](max: Duration, creator: Creator[? <: A]): A
 
   /**
    * Evaluate the given assert every 100 milliseconds until it does not throw an exception and return the
    * result. A max time is taken it from the innermost enclosing `within` block.
    */
-  def awaitAssert[A](creator: Creator[A]): A
+  def awaitAssert[A](creator: Creator[? <: A]): A
 
   // FIXME awaitAssert(Procedure): Unit would be nice for java people to not have to return null
 

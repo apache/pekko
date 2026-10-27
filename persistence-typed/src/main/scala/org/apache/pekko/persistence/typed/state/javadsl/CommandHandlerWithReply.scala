@@ -64,7 +64,7 @@ final class CommandHandlerWithReplyBuilder[Command, State]() {
    *
    * @return A new, mutable, CommandHandlerWithReplyBuilderByState
    */
-  def forState(statePredicate: Predicate[State]): CommandHandlerWithReplyBuilderByState[Command, State, State] = {
+  def forState(statePredicate: Predicate[? >: State]): CommandHandlerWithReplyBuilderByState[Command, State, State] = {
     val builder = CommandHandlerWithReplyBuilderByState.builder[Command, State](statePredicate)
     builders = builder :: builders
     builder
@@ -85,7 +85,7 @@ final class CommandHandlerWithReplyBuilder[Command, State]() {
    */
   def forState[S <: State](
       stateClass: Class[S],
-      statePredicate: Predicate[S]): CommandHandlerWithReplyBuilderByState[Command, S, State] = {
+      statePredicate: Predicate[? >: S]): CommandHandlerWithReplyBuilderByState[Command, S, State] = {
     val builder = new CommandHandlerWithReplyBuilderByState[Command, S, State](stateClass, statePredicate)
     builders = builder.asInstanceOf[CommandHandlerWithReplyBuilderByState[Command, State, State]] :: builders
     builder
@@ -195,7 +195,7 @@ object CommandHandlerWithReplyBuilderByState {
    * @return A new, mutable, CommandHandlerWithReplyBuilderByState
    */
   def builder[Command, State](
-      statePredicate: Predicate[State]): CommandHandlerWithReplyBuilderByState[Command, State, State] =
+      statePredicate: Predicate[? >: State]): CommandHandlerWithReplyBuilderByState[Command, State, State] =
     new CommandHandlerWithReplyBuilderByState(classOf[Any].asInstanceOf[Class[State]], statePredicate)
 
   /**
@@ -209,13 +209,14 @@ object CommandHandlerWithReplyBuilderByState {
 
 final class CommandHandlerWithReplyBuilderByState[Command, S <: State, State] @InternalApi private[persistence] (
     private val stateClass: Class[S],
-    private val statePredicate: Predicate[S]) {
+    private val statePredicate: Predicate[? >: S]) {
 
   import CommandHandlerWithReplyBuilderByState.CommandHandlerCase
 
   private var cases: List[CommandHandlerCase[Command, State]] = Nil
 
-  private def addCase(predicate: Command => Boolean, handler: BiFunction[S, Command, ReplyEffect[State]]): Unit = {
+  private def addCase(predicate: Command => Boolean, handler: BiFunction[? >: S, ? >: Command, ? <: ReplyEffect[State]])
+      : Unit = {
     cases = CommandHandlerCase[Command, State](
       commandPredicate = predicate,
       statePredicate = state =>
@@ -233,8 +234,9 @@ final class CommandHandlerWithReplyBuilderByState[Command, S <: State, State] @I
    * otherwise you risk to 'shadow' part of your command handlers.
    */
   def onCommand(
-      predicate: Predicate[Command],
-      handler: BiFunction[S, Command, ReplyEffect[State]]): CommandHandlerWithReplyBuilderByState[Command, S, State] = {
+      predicate: Predicate[? >: Command],
+      handler: BiFunction[? >: S, ? >: Command, ? <: ReplyEffect[State]])
+      : CommandHandlerWithReplyBuilderByState[Command, S, State] = {
     addCase(cmd => predicate.test(cmd), handler)
     this
   }
@@ -250,10 +252,11 @@ final class CommandHandlerWithReplyBuilderByState[Command, S <: State, State] @I
    * otherwise you risk to 'shadow' part of your command handlers.
    */
   def onCommand(
-      predicate: Predicate[Command],
-      handler: JFunction[Command, ReplyEffect[State]]): CommandHandlerWithReplyBuilderByState[Command, S, State] = {
+      predicate: Predicate[? >: Command],
+      handler: JFunction[? >: Command, ? <: ReplyEffect[State]])
+      : CommandHandlerWithReplyBuilderByState[Command, S, State] = {
     addCase(cmd => predicate.test(cmd),
-      (_: S, cmd: Command) => handler(cmd))
+      ((_: S, cmd: Command) => handler(cmd)): BiFunction[S, Command, ReplyEffect[State]])
     this
   }
 
@@ -266,7 +269,8 @@ final class CommandHandlerWithReplyBuilderByState[Command, S <: State, State] @I
    */
   def onCommand[C <: Command](
       commandClass: Class[C],
-      handler: BiFunction[S, C, ReplyEffect[State]]): CommandHandlerWithReplyBuilderByState[Command, S, State] = {
+      handler: BiFunction[? >: S, ? >: C, ? <: ReplyEffect[State]])
+      : CommandHandlerWithReplyBuilderByState[Command, S, State] = {
     addCase(
       cmd => commandClass.isAssignableFrom(cmd.getClass),
       handler.asInstanceOf[BiFunction[S, Command, ReplyEffect[State]]])
@@ -285,9 +289,9 @@ final class CommandHandlerWithReplyBuilderByState[Command, S <: State, State] @I
    */
   def onCommand[C <: Command](
       commandClass: Class[C],
-      handler: JFunction[C, ReplyEffect[State]]): CommandHandlerWithReplyBuilderByState[Command, S, State] = {
+      handler: JFunction[? >: C, ? <: ReplyEffect[State]]): CommandHandlerWithReplyBuilderByState[Command, S, State] = {
     onCommand[C](commandClass,
-      (_: S, cmd: C) => handler(cmd))
+      ((_: S, cmd: C) => handler(cmd)): BiFunction[S, C, ReplyEffect[State]])
   }
 
   /**
@@ -301,9 +305,9 @@ final class CommandHandlerWithReplyBuilderByState[Command, S <: State, State] @I
    */
   def onCommand[C <: Command](
       commandClass: Class[C],
-      handler: Supplier[ReplyEffect[State]]): CommandHandlerWithReplyBuilderByState[Command, S, State] = {
+      handler: Supplier[? <: ReplyEffect[State]]): CommandHandlerWithReplyBuilderByState[Command, S, State] = {
     onCommand[C](commandClass,
-      (_: S, _: C) => handler.get())
+      ((_: S, _: C) => handler.get()): BiFunction[S, C, ReplyEffect[State]])
   }
 
   /**
@@ -321,7 +325,8 @@ final class CommandHandlerWithReplyBuilderByState[Command, S <: State, State] @I
    *
    * @return A CommandHandlerWithReply from the appended states.
    */
-  def onAnyCommand(handler: BiFunction[S, Command, ReplyEffect[State]]): CommandHandlerWithReply[Command, State] = {
+  def onAnyCommand(
+      handler: BiFunction[? >: S, ? >: Command, ? <: ReplyEffect[State]]): CommandHandlerWithReply[Command, State] = {
     addCase(_ => true, handler)
     build()
   }
@@ -343,9 +348,10 @@ final class CommandHandlerWithReplyBuilderByState[Command, S <: State, State] @I
    *
    * @return A CommandHandlerWithReply from the appended states.
    */
-  def onAnyCommand(handler: JFunction[Command, ReplyEffect[State]]): CommandHandlerWithReply[Command, State] = {
+  def onAnyCommand(
+      handler: JFunction[? >: Command, ? <: ReplyEffect[State]]): CommandHandlerWithReply[Command, State] = {
     addCase(_ => true,
-      (_: S, cmd: Command) => handler(cmd))
+      ((_: S, cmd: Command) => handler(cmd)): BiFunction[S, Command, ReplyEffect[State]])
     build()
   }
 
@@ -366,9 +372,9 @@ final class CommandHandlerWithReplyBuilderByState[Command, S <: State, State] @I
    *
    * @return A CommandHandlerWithReply from the appended states.
    */
-  def onAnyCommand(handler: Supplier[ReplyEffect[State]]): CommandHandlerWithReply[Command, State] = {
+  def onAnyCommand(handler: Supplier[? <: ReplyEffect[State]]): CommandHandlerWithReply[Command, State] = {
     addCase(_ => true,
-      (_: S, _: Command) => handler.get())
+      ((_: S, _: Command) => handler.get()): BiFunction[S, Command, ReplyEffect[State]])
     build()
   }
 

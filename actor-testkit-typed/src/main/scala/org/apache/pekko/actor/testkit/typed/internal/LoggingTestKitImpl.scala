@@ -120,7 +120,7 @@ import org.slf4j.event.Level
     }
   }
 
-  override def expect[T](system: ActorSystem[?], code: Supplier[T]): T =
+  override def expect[T](system: ActorSystem[?], code: Supplier[? <: T]): T =
     expect(code.get())(system)
 
   private def checkLogback(system: ActorSystem[?]): Unit = {
@@ -163,7 +163,7 @@ import org.slf4j.event.Level
   override def withCheckExcess(check: Boolean): LoggingTestKitImpl =
     copy(checkExcess = check)
 
-  override def withCustom(newCustom: Function[LoggingEvent, Boolean]): LoggingTestKitImpl =
+  override def withCustom(newCustom: Function[? >: LoggingEvent, Boolean]): LoggingTestKitImpl =
     copy(custom = Option(newCustom))
 
   override def withCause(newCause: Class[? <: Throwable]): javadsl.LoggingTestKit =

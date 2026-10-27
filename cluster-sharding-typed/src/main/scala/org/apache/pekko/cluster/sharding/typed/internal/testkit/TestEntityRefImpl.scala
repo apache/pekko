@@ -57,7 +57,7 @@ import pekko.util.Timeout
     probe.ask(message)
   }
 
-  def ask[U](message: JFunction[ActorRef[U], M], timeout: Duration): CompletionStage[U] =
+  def ask[U](message: JFunction[? >: ActorRef[U], ? <: M], timeout: Duration): CompletionStage[U] =
     ask[U](replyTo => message.apply(replyTo))(timeout.toScala).asJava
 
   override def askWithStatus[Res](f: ActorRef[StatusReply[Res]] => M, timeout: Duration): CompletionStage[Res] =
