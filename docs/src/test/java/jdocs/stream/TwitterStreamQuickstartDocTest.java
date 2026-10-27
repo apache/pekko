@@ -16,7 +16,6 @@ package jdocs.stream;
 import static jdocs.stream.TwitterStreamQuickstartDocTest.Model.PEKKO;
 import static jdocs.stream.TwitterStreamQuickstartDocTest.Model.tweets;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletionStage;
@@ -279,8 +278,7 @@ public class TwitterStreamQuickstartDocTest extends AbstractJavaTest {
   @Test
   public void demonstrateMapConcat() {
     // #hashtags-mapConcat
-    final Source<Hashtag, NotUsed> hashtags =
-        tweets.mapConcat(t -> new ArrayList<Hashtag>(t.hashtags()));
+    final Source<Hashtag, NotUsed> hashtags = tweets.mapConcat(t -> t.hashtags());
     // #hashtags-mapConcat
   }
 
@@ -304,9 +302,7 @@ public class TwitterStreamQuickstartDocTest extends AbstractJavaTest {
                   final FlowShape<Tweet, Author> toAuthor =
                       b.add(Flow.of(Tweet.class).map(t -> t.author));
                   final FlowShape<Tweet, Hashtag> toTags =
-                      b.add(
-                          Flow.of(Tweet.class)
-                              .mapConcat(t -> new ArrayList<Hashtag>(t.hashtags())));
+                      b.add(Flow.of(Tweet.class).mapConcat(t -> t.hashtags()));
                   final SinkShape<Author> authors = b.add(writeAuthors);
                   final SinkShape<Hashtag> hashtags = b.add(writeHashtags);
 
