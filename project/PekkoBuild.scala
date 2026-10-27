@@ -96,6 +96,12 @@ object PekkoBuild {
       case _                        => false
     }
 
+  private def isScala310OrLater(scalaVersion: String): Boolean =
+    CrossVersion.partialVersion(scalaVersion).exists {
+      case (3, minor) if minor >= 10 => true
+      case _                         => false
+    }
+
   private def testJavacOptions(scalaVersion: String): Seq[String] =
     if (isScala38OrLater(scalaVersion)) Seq("-encoding", "UTF-8", "-nowarn", "-Xlint:none")
     else DefaultJavacOptions
@@ -110,6 +116,8 @@ object PekkoBuild {
         // 'blessed' since 2.13.1
         "-language:higherKinds") ++
       (if (isScala38OrLater(scalaVersion.value)) Seq("-Wconf:any:s") else Seq.empty) ++
+      // Scala 3.10 makes `with` as a type operator an error; `&` is not available in Scala 2.13
+      (if (isScala310OrLater(scalaVersion.value)) Seq("-source:3.9") else Seq.empty) ++
       (if (scalaVersion.value.startsWith("3.3.")) Seq("-Yfuture-lazy-vals") else Seq.empty)
     } else {
       Seq(
