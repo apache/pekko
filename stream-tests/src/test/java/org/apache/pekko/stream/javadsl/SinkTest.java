@@ -15,7 +15,9 @@ package org.apache.pekko.stream.javadsl;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.List;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
@@ -108,6 +110,83 @@ public class SinkTest extends StreamTestJupiter {
         Source.from(list).runWith(Sink.collect(Collectors.toList()), system);
     // #collect-to-list
     assertEquals(list, result.toCompletableFuture().get(1, TimeUnit.SECONDS));
+  }
+
+  @Test
+  public void mustAcceptConcreteFanOutStrategyInCombine() throws Exception {
+    final TestKit probe1 = new TestKit(system);
+    final TestKit probe2 = new TestKit(system);
+    // a fan-out strategy typed with a concrete Graph subtype must be accepted as is
+    final Function<Integer, org.apache.pekko.stream.scaladsl.Broadcast<Integer>> broadcast =
+        width -> new org.apache.pekko.stream.scaladsl.Broadcast<>(width, false);
+
+    final Sink<Integer, NotUsed> sink1 = Sink.actorRef(probe1.getRef(), "done1");
+    final Sink<Integer, NotUsed> sink2 = Sink.actorRef(probe2.getRef(), "done2");
+
+    Source.single(0).runWith(Sink.combine(sink1, sink2, List.of(), broadcast), system);
+    Source.single(1).runWith(Sink.combineMat(sink1, sink2, broadcast, Keep.left()), system);
+    final List<CompletionStage<Integer>> heads =
+        Source.single(2)
+            .runWith(Sink.combine(List.of(Sink.<Integer>head(), Sink.head()), broadcast), system);
+
+    probe1.expectMsgAllOf(0, "done1", 1, "done1");
+    probe2.expectMsgAllOf(0, "done2", 1, "done2");
+    for (CompletionStage<Integer> head : heads) {
+      assertEquals(2, head.toCompletableFuture().get(3, TimeUnit.SECONDS));
+    }
+  }
+
+  @Test
+  public void mustAcceptNonListIterablesOfSinks() throws Exception {
+    final TestKit probe1 = new TestKit(system);
+    final TestKit probe2 = new TestKit(system);
+    final TestKit probe3 = new TestKit(system);
+    // any Iterable of Sink subtypes must be accepted, not only a List
+    final Deque<Sink<Integer, NotUsed>> rest =
+        new ArrayDeque<>(List.of(Sink.actorRef(probe3.getRef(), "done3")));
+    final Deque<Sink<Integer, CompletionStage<Integer>>> heads =
+        new ArrayDeque<>(List.of(Sink.head(), Sink.head()));
+
+    Source.single(0)
+        .runWith(
+            Sink.combine(
+                Sink.actorRef(probe1.getRef(), "done1"),
+                Sink.actorRef(probe2.getRef(), "done2"),
+                rest,
+                Broadcast::create),
+            system);
+    final List<CompletionStage<Integer>> results =
+        Source.single(1).runWith(Sink.combine(heads, Broadcast::create), system);
+
+    probe1.expectMsgAllOf(0, "done1");
+    probe2.expectMsgAllOf(0, "done2");
+    probe3.expectMsgAllOf(0, "done3");
+    for (CompletionStage<Integer> result : results) {
+      assertEquals(1, result.toCompletableFuture().get(3, TimeUnit.SECONDS));
+    }
+  }
+
+  @Test
+  public void mustBeAbleToCombineRestWithConcreteSinkList() throws Exception {
+    final TestKit probe1 = new TestKit(system);
+    final TestKit probe2 = new TestKit(system);
+    final TestKit probe3 = new TestKit(system);
+
+    final Sink<Integer, NotUsed> sink1 = Sink.actorRef(probe1.getRef(), "done1");
+    final Sink<Integer, NotUsed> sink2 = Sink.actorRef(probe2.getRef(), "done2");
+    // a list typed with the concrete materialized value must be accepted as is
+    final List<Sink<Integer, NotUsed>> rest = List.of(Sink.actorRef(probe3.getRef(), "done3"));
+
+    final Sink<Integer, NotUsed> sink = Sink.combine(sink1, sink2, rest, Broadcast::create);
+
+    Source.single(0).runWith(sink, system);
+
+    probe1.expectMsgEquals(0);
+    probe2.expectMsgEquals(0);
+    probe3.expectMsgEquals(0);
+    probe1.expectMsgEquals("done1");
+    probe2.expectMsgEquals("done2");
+    probe3.expectMsgEquals("done3");
   }
 
   @Test

@@ -755,7 +755,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *
    * '''Cancels when''' downstream cancels
    */
-  def mapConcat[T](f: function.Function[Out, java.lang.Iterable[T]]): javadsl.Flow[In, T, Mat] =
+  def mapConcat[T](f: function.Function[Out, ? <: java.lang.Iterable[T]]): javadsl.Flow[In, T, Mat] =
     new Flow(delegate.mapConcat(f(_).asScala))
 
   /**
@@ -907,9 +907,11 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    * '''Cancels when''' downstream cancels
    */
   def statefulMapConcat[T](
-      f: function.Creator[function.Function[Out, java.lang.Iterable[T]]]): javadsl.Flow[In, T, Mat] = {
+      f: function.Creator[? <: function.Function[Out, ? <: java.lang.Iterable[T]]]): javadsl.Flow[In, T, Mat] = {
     import scaladsl.StatefulMapConcatAccumulatorFactory._
-    new Flow(delegate.via(new StatefulMapConcat(f.asFactory)))
+    // cast drops the wildcards so Scala 3 can resolve `asFactory`; erasure is unchanged
+    new Flow(delegate.via(new StatefulMapConcat(f.asInstanceOf[function.Creator[function.Function[Out,
+      java.lang.Iterable[T]]]].asFactory)))
   }
 
   /**
@@ -2171,7 +2173,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    */
   def recoverWithRetries(
       attempts: Int,
-      pf: PartialFunction[Throwable, Graph[SourceShape[Out], NotUsed]]): javadsl.Flow[In, Out, Mat] =
+      pf: PartialFunction[Throwable, ? <: Graph[SourceShape[Out], NotUsed]]): javadsl.Flow[In, Out, Mat] =
     new Flow(delegate.recoverWithRetries(attempts, pf))
 
   /**
@@ -3552,7 +3554,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    * '''Cancels when''' downstream cancels
    */
   def interleaveAll(
-      @Nullable those: java.util.List[? <: Graph[SourceShape[Out], ? <: Any]],
+      @Nullable those: java.lang.Iterable[? <: Graph[SourceShape[Out], ? <: Any]],
       segmentSize: Int,
       eagerClose: Boolean): javadsl.Flow[In, Out, Mat] = {
     import pekko.util.Collections._
@@ -3636,7 +3638,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    * '''Cancels when''' downstream cancels
    */
   def mergeAll(
-      @Nullable those: java.util.List[? <: Graph[SourceShape[Out], ? <: Any]],
+      @Nullable those: java.lang.Iterable[? <: Graph[SourceShape[Out], ? <: Any]],
       eagerComplete: Boolean): javadsl.Flow[In, Out, Mat] = {
     import pekko.util.Collections._
     val seq = if (those ne null) those.collectToImmutableSeq {

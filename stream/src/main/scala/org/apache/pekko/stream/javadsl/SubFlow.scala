@@ -222,7 +222,7 @@ final class SubFlow[In, Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    */
-  def mapConcat[T](f: function.Function[Out, java.lang.Iterable[T]]): SubFlow[In, T, Mat] =
+  def mapConcat[T](f: function.Function[Out, ? <: java.lang.Iterable[T]]): SubFlow[In, T, Mat] =
     new SubFlow(delegate.mapConcat { elem =>
       f(elem).asScala
     })
@@ -375,9 +375,12 @@ final class SubFlow[In, Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    */
-  def statefulMapConcat[T](f: function.Creator[function.Function[Out, java.lang.Iterable[T]]]): SubFlow[In, T, Mat] = {
+  def statefulMapConcat[T](
+      f: function.Creator[? <: function.Function[Out, ? <: java.lang.Iterable[T]]]): SubFlow[In, T, Mat] = {
     import scaladsl.StatefulMapConcatAccumulatorFactory._
-    new SubFlow(delegate.via(new StatefulMapConcat(f.asFactory)))
+    // cast drops the wildcards so Scala 3 can resolve `asFactory`; erasure is unchanged
+    new SubFlow(delegate.via(new StatefulMapConcat(f.asInstanceOf[function.Creator[function.Function[Out,
+      java.lang.Iterable[T]]]].asFactory)))
   }
 
   /**
@@ -1459,7 +1462,7 @@ final class SubFlow[In, Out, Mat](
    * '''Cancels when''' downstream cancels
    */
   def recoverWith(
-      pf: PartialFunction[Throwable, Graph[SourceShape[Out], NotUsed]]): SubFlow[In, Out, Mat @uncheckedVariance] =
+      pf: PartialFunction[Throwable, ? <: Graph[SourceShape[Out], NotUsed]]): SubFlow[In, Out, Mat @uncheckedVariance] =
     new SubFlow(delegate.recoverWith(pf))
 
   /**
@@ -1486,7 +1489,7 @@ final class SubFlow[In, Out, Mat](
    */
   def recoverWithRetries(
       attempts: Int,
-      pf: PartialFunction[Throwable, Graph[SourceShape[Out], NotUsed]]): SubFlow[In, Out, Mat] =
+      pf: PartialFunction[Throwable, ? <: Graph[SourceShape[Out], NotUsed]]): SubFlow[In, Out, Mat] =
     new SubFlow(delegate.recoverWithRetries(attempts, pf))
 
   /**
@@ -2431,7 +2434,7 @@ final class SubFlow[In, Out, Mat](
    * '''Cancels when''' downstream cancels
    */
   def mergeAll(
-      @Nullable those: java.util.List[? <: Graph[SourceShape[Out], ? <: Any]],
+      @Nullable those: java.lang.Iterable[? <: Graph[SourceShape[Out], ? <: Any]],
       eagerComplete: Boolean): SubFlow[In, Out, Mat] = {
     import pekko.util.Collections._
     val seq = if (those ne null) those.collectToImmutableSeq {
@@ -2489,7 +2492,7 @@ final class SubFlow[In, Out, Mat](
    * '''Cancels when''' downstream cancels
    */
   def interleaveAll(
-      @Nullable those: java.util.List[? <: Graph[SourceShape[Out], ? <: Any]],
+      @Nullable those: java.lang.Iterable[? <: Graph[SourceShape[Out], ? <: Any]],
       segmentSize: Int,
       eagerClose: Boolean): SubFlow[In, Out, Mat] = {
     import pekko.util.Collections._
