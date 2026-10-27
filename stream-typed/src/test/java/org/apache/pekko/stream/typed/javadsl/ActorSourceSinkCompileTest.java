@@ -116,8 +116,7 @@ public class ActorSourceSinkCompileTest {
 
   {
     final ActorRef<String> ackTo = null;
-    final Function<Object, Optional<CompletionStrategy>> completionMatcher =
-        m -> Optional.empty();
+    final Function<Object, Optional<CompletionStrategy>> completionMatcher = m -> Optional.empty();
     final Function<Object, Optional<Exception>> failureMatcher = m -> Optional.empty();
 
     ActorSource.<String, String>actorRefWithBackpressure(
