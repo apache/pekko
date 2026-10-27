@@ -2273,4 +2273,22 @@ public class SourceTest extends StreamTestJupiter {
             .toCompletableFuture()
             .get(3, TimeUnit.SECONDS));
   }
+
+  @Test
+  public void mustAcceptAsyncFunctionsReturningCompletionStagesOfSubtypes() throws Exception {
+    // async functions may complete with a subtype of the element type of the resulting stream
+    final Function<Integer, CompletableFuture<Integer>> twice =
+        i -> CompletableFuture.completedFuture(i * 2);
+    final Function2<Number, Number, CompletableFuture<Integer>> sum =
+        (acc, n) -> CompletableFuture.completedFuture(acc.intValue() + n.intValue());
+
+    final Number result =
+        Source.from(List.of(1, 2, 3))
+            .<Number>mapAsync(2, twice)
+            .<Number>foldAsync(0, sum)
+            .runWith(Sink.head(), system)
+            .toCompletableFuture()
+            .get(3, TimeUnit.SECONDS);
+    assertEquals(12, result.intValue());
+  }
 }

@@ -338,9 +338,9 @@ object Flow {
    * '''Cancels when''' downstream cancels
    */
   def lazyCompletionStageFlow[I, O, M](
-      create: Creator[? <: CompletionStage[Flow[I, O, M]]]): Flow[I, O, CompletionStage[M]] =
+      create: Creator[? <: CompletionStage[? <: Flow[I, O, M]]]): Flow[I, O, CompletionStage[M]] =
     scaladsl.Flow
-      .lazyFutureFlow[I, O, M](() => create.create().asScala.map(_.asScala)(ExecutionContext.parasitic))
+      .lazyFutureFlow[I, O, M](() => stageToScala(create.create()).map(_.asScala)(ExecutionContext.parasitic))
       .mapMaterializedValue(_.asJava)
       .asJava
 
@@ -954,8 +954,9 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *
    * @see [[#mapAsyncUnordered]]
    */
-  def mapAsync[T](parallelism: Int, f: function.Function[? >: Out, ? <: CompletionStage[T]]): javadsl.Flow[In, T, Mat] =
-    new Flow(delegate.mapAsync(parallelism)(x => f(x).asScala))
+  def mapAsync[T](parallelism: Int, f: function.Function[? >: Out, ? <: CompletionStage[? <: T]])
+      : javadsl.Flow[In, T, Mat] =
+    new Flow(delegate.mapAsync(parallelism)(x => stageToScala(f(x))))
 
   /**
    * Transforms this stream. Works very similarly to [[#mapAsync]] but with an additional
@@ -987,8 +988,8 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
   def mapAsyncPartitioned[T, P](
       parallelism: Int,
       partitioner: function.Function[? >: Out, ? <: P],
-      f: function.Function2[? >: Out, ? >: P, ? <: CompletionStage[T]]): Flow[In, T, Mat] =
-    new Flow(delegate.mapAsyncPartitioned(parallelism)(partitioner(_))(f(_, _).asScala))
+      f: function.Function2[? >: Out, ? >: P, ? <: CompletionStage[? <: T]]): Flow[In, T, Mat] =
+    new Flow(delegate.mapAsyncPartitioned(parallelism)(partitioner(_))((a, b) => stageToScala(f(a, b))))
 
   /**
    * Transforms this stream. Works very similarly to [[#mapAsyncUnordered]] but with an additional
@@ -1020,8 +1021,8 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
   def mapAsyncPartitionedUnordered[T, P](
       parallelism: Int,
       partitioner: function.Function[? >: Out, ? <: P],
-      f: function.Function2[? >: Out, ? >: P, ? <: CompletionStage[T]]): Flow[In, T, Mat] =
-    new Flow(delegate.mapAsyncPartitionedUnordered(parallelism)(partitioner(_))(f(_, _).asScala))
+      f: function.Function2[? >: Out, ? >: P, ? <: CompletionStage[? <: T]]): Flow[In, T, Mat] =
+    new Flow(delegate.mapAsyncPartitionedUnordered(parallelism)(partitioner(_))((a, b) => stageToScala(f(a, b))))
 
   /**
    * Transform this stream by applying the given function to each of the elements
@@ -1055,9 +1056,9 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *
    * @see [[#mapAsync]]
    */
-  def mapAsyncUnordered[T](parallelism: Int, f: function.Function[? >: Out, ? <: CompletionStage[T]])
+  def mapAsyncUnordered[T](parallelism: Int, f: function.Function[? >: Out, ? <: CompletionStage[? <: T]])
       : javadsl.Flow[In, T, Mat] =
-    new Flow(delegate.mapAsyncUnordered(parallelism)(x => f(x).asScala))
+    new Flow(delegate.mapAsyncUnordered(parallelism)(x => stageToScala(f(x))))
 
   /**
    * Use the `ask` pattern to send a request-reply message to the target `ref` actor.
@@ -1529,10 +1530,10 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *
    * See also [[#scan]]
    */
-  def scanAsync[T](zero: T, f: function.Function2[? >: T, ? >: Out, ? <: CompletionStage[T]])
+  def scanAsync[T](zero: T, f: function.Function2[? >: T, ? >: Out, ? <: CompletionStage[? <: T]])
       : javadsl.Flow[In, T, Mat] =
     new Flow(delegate.scanAsync(zero) { (out, in) =>
-      f(out, in).asScala
+      stageToScala(f(out, in))
     })
 
   /**
@@ -1609,10 +1610,10 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *
    * '''Cancels when''' downstream cancels
    */
-  def foldAsync[T](zero: T, f: function.Function2[? >: T, ? >: Out, ? <: CompletionStage[T]])
+  def foldAsync[T](zero: T, f: function.Function2[? >: T, ? >: Out, ? <: CompletionStage[? <: T]])
       : javadsl.Flow[In, T, Mat] =
     new Flow(delegate.foldAsync(zero) { (out, in) =>
-      f(out, in).asScala
+      stageToScala(f(out, in))
     })
 
   /**

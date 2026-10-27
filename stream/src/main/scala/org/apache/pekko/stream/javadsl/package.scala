@@ -13,9 +13,18 @@
 
 package org.apache.pekko.stream
 
+import java.util.concurrent.CompletionStage
+
+import scala.concurrent.Future
+import scala.jdk.FutureConverters._
+
 import org.apache.pekko
 
 package object javadsl {
+
+  /** Converts a `CompletionStage` of any subtype of `T`, as returned by widened javadsl functions. */
+  private[javadsl] def stageToScala[T](stage: CompletionStage[? <: T]): Future[T] = stage.asScala
+
   def combinerToScala[M1, M2, M](f: pekko.japi.function.Function2[? >: M1, ? >: M2, ? <: M]): (M1, M2) => M =
     f match {
       case x if x eq Keep.left   => scaladsl.Keep.left.asInstanceOf[(M1, M2) => M]

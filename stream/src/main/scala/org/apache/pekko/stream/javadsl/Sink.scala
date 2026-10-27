@@ -73,8 +73,8 @@ object Sink {
    */
   def foldAsync[U, In](
       zero: U,
-      f: function.Function2[? >: U, ? >: In, ? <: CompletionStage[U]]): javadsl.Sink[In, CompletionStage[U]] =
-    new Sink(scaladsl.Sink.foldAsync[U, In](zero)(f(_, _).asScala).toCompletionStage())
+      f: function.Function2[? >: U, ? >: In, ? <: CompletionStage[? <: U]]): javadsl.Sink[In, CompletionStage[U]] =
+    new Sink(scaladsl.Sink.foldAsync[U, In](zero)((a, b) => stageToScala(f(a, b))).toCompletionStage())
 
   /**
    * A `Sink` that will test the given predicate `p` for every received element and
@@ -573,9 +573,10 @@ object Sink {
    * If the `create` function throws or returns a future that is failed, or the stream fails to materialize, in this
    * case the materialized future value is failed with a [[pekko.stream.NeverMaterializedException]].
    */
-  def lazyCompletionStageSink[T, M](create: Creator[? <: CompletionStage[Sink[T, M]]]): Sink[T, CompletionStage[M]] =
+  def lazyCompletionStageSink[T, M](
+      create: Creator[? <: CompletionStage[? <: Sink[T, M]]]): Sink[T, CompletionStage[M]] =
     new Sink(scaladsl.Sink.lazyFutureSink { () =>
-      create.create().asScala.map(_.asScala)(ExecutionContext.parasitic)
+      stageToScala(create.create()).map(_.asScala)(ExecutionContext.parasitic)
     }).mapMaterializedValue(_.asJava)
 }
 

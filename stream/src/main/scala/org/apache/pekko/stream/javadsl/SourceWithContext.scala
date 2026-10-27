@@ -19,7 +19,6 @@ import java.util.concurrent.CompletionStage
 import scala.annotation.unchecked.uncheckedVariance
 import scala.jdk.CollectionConverters._
 import scala.jdk.DurationConverters._
-import scala.jdk.FutureConverters._
 import scala.jdk.OptionConverters._
 import scala.reflect.ClassTag
 
@@ -303,8 +302,8 @@ final class SourceWithContext[+Out, +Ctx, +Mat](delegate: scaladsl.SourceWithCon
    */
   def mapAsync[Out2](
       parallelism: Int,
-      f: function.Function[? >: Out, ? <: CompletionStage[Out2]]): SourceWithContext[Out2, Ctx, Mat] =
-    viaScala(_.mapAsync[Out2](parallelism)(o => f.apply(o).asScala))
+      f: function.Function[? >: Out, ? <: CompletionStage[? <: Out2]]): SourceWithContext[Out2, Ctx, Mat] =
+    viaScala(_.mapAsync[Out2](parallelism)(o => stageToScala(f.apply(o))))
 
   /**
    * Context-preserving variant of [[pekko.stream.javadsl.Source.mapAsyncPartitioned]].
@@ -315,8 +314,8 @@ final class SourceWithContext[+Out, +Ctx, +Mat](delegate: scaladsl.SourceWithCon
   def mapAsyncPartitioned[Out2, P](
       parallelism: Int,
       partitioner: function.Function[? >: Out, ? <: P],
-      f: function.Function2[? >: Out, ? >: P, ? <: CompletionStage[Out2]]): SourceWithContext[Out2, Ctx, Mat] = {
-    viaScala(_.mapAsyncPartitioned(parallelism)(partitioner(_))(f(_, _).asScala))
+      f: function.Function2[? >: Out, ? >: P, ? <: CompletionStage[? <: Out2]]): SourceWithContext[Out2, Ctx, Mat] = {
+    viaScala(_.mapAsyncPartitioned(parallelism)(partitioner(_))((a, b) => stageToScala(f(a, b))))
   }
 
   /**
@@ -328,8 +327,8 @@ final class SourceWithContext[+Out, +Ctx, +Mat](delegate: scaladsl.SourceWithCon
   def mapAsyncPartitionedUnordered[Out2, P](
       parallelism: Int,
       partitioner: function.Function[? >: Out, ? <: P],
-      f: function.Function2[? >: Out, ? >: P, ? <: CompletionStage[Out2]]): SourceWithContext[Out2, Ctx, Mat] =
-    viaScala(_.mapAsyncPartitionedUnordered(parallelism)(partitioner(_))(f(_, _).asScala))
+      f: function.Function2[? >: Out, ? >: P, ? <: CompletionStage[? <: Out2]]): SourceWithContext[Out2, Ctx, Mat] =
+    viaScala(_.mapAsyncPartitionedUnordered(parallelism)(partitioner(_))((a, b) => stageToScala(f(a, b))))
 
   /**
    * Context-preserving variant of [[pekko.stream.javadsl.Source.mapConcat]].

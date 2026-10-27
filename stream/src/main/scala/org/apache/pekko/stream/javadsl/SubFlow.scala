@@ -20,7 +20,6 @@ import scala.annotation.unchecked.uncheckedVariance
 import scala.annotation.varargs
 import scala.jdk.CollectionConverters._
 import scala.jdk.DurationConverters._
-import scala.jdk.FutureConverters._
 import scala.jdk.OptionConverters._
 import scala.reflect.ClassTag
 import scala.util.control.NonFatal
@@ -415,8 +414,8 @@ final class SubFlow[In, Out, Mat](
    *
    * @see [[#mapAsyncUnordered]]
    */
-  def mapAsync[T](parallelism: Int, f: function.Function[? >: Out, ? <: CompletionStage[T]]): SubFlow[In, T, Mat] =
-    new SubFlow(delegate.mapAsync(parallelism)(x => f(x).asScala))
+  def mapAsync[T](parallelism: Int, f: function.Function[? >: Out, ? <: CompletionStage[? <: T]]): SubFlow[In, T, Mat] =
+    new SubFlow(delegate.mapAsync(parallelism)(x => stageToScala(f(x))))
 
   /**
    * Transform this stream by applying the given function to each of the elements
@@ -450,9 +449,9 @@ final class SubFlow[In, Out, Mat](
    *
    * @see [[#mapAsync]]
    */
-  def mapAsyncUnordered[T](parallelism: Int, f: function.Function[? >: Out, ? <: CompletionStage[T]])
+  def mapAsyncUnordered[T](parallelism: Int, f: function.Function[? >: Out, ? <: CompletionStage[? <: T]])
       : SubFlow[In, T, Mat] =
-    new SubFlow(delegate.mapAsyncUnordered(parallelism)(x => f(x).asScala))
+    new SubFlow(delegate.mapAsyncUnordered(parallelism)(x => stageToScala(f(x))))
 
   /**
    * Transforms this stream. Works very similarly to [[#mapAsync]] but with an additional
@@ -484,8 +483,8 @@ final class SubFlow[In, Out, Mat](
   def mapAsyncPartitioned[T, P](
       parallelism: Int,
       partitioner: function.Function[? >: Out, ? <: P],
-      f: function.Function2[? >: Out, ? >: P, ? <: CompletionStage[T]]): SubFlow[In, T, Mat] =
-    new SubFlow(delegate.mapAsyncPartitioned(parallelism)(partitioner(_))(f(_, _).asScala))
+      f: function.Function2[? >: Out, ? >: P, ? <: CompletionStage[? <: T]]): SubFlow[In, T, Mat] =
+    new SubFlow(delegate.mapAsyncPartitioned(parallelism)(partitioner(_))((a, b) => stageToScala(f(a, b))))
 
   /**
    * Transforms this stream. Works very similarly to [[#mapAsyncUnordered]] but with an additional
@@ -517,8 +516,8 @@ final class SubFlow[In, Out, Mat](
   def mapAsyncPartitionedUnordered[T, P](
       parallelism: Int,
       partitioner: function.Function[? >: Out, ? <: P],
-      f: function.Function2[? >: Out, ? >: P, ? <: CompletionStage[T]]): SubFlow[In, T, Mat] =
-    new SubFlow(delegate.mapAsyncPartitionedUnordered(parallelism)(partitioner(_))(f(_, _).asScala))
+      f: function.Function2[? >: Out, ? >: P, ? <: CompletionStage[? <: T]]): SubFlow[In, T, Mat] =
+    new SubFlow(delegate.mapAsyncPartitionedUnordered(parallelism)(partitioner(_))((a, b) => stageToScala(f(a, b))))
 
   /**
    * Only pass on those elements that satisfy the given predicate.
@@ -914,9 +913,10 @@ final class SubFlow[In, Out, Mat](
    *
    * See also [[#scan]]
    */
-  def scanAsync[T](zero: T, f: function.Function2[? >: T, ? >: Out, ? <: CompletionStage[T]]): SubFlow[In, T, Mat] =
+  def scanAsync[T](zero: T, f: function.Function2[? >: T, ? >: Out, ? <: CompletionStage[? <: T]])
+      : SubFlow[In, T, Mat] =
     new SubFlow(delegate.scanAsync(zero) { (out, in) =>
-      f(out, in).asScala
+      stageToScala(f(out, in))
     })
 
   /**
@@ -993,9 +993,10 @@ final class SubFlow[In, Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    */
-  def foldAsync[T](zero: T, f: function.Function2[? >: T, ? >: Out, ? <: CompletionStage[T]]): SubFlow[In, T, Mat] =
+  def foldAsync[T](zero: T, f: function.Function2[? >: T, ? >: Out, ? <: CompletionStage[? <: T]])
+      : SubFlow[In, T, Mat] =
     new SubFlow(delegate.foldAsync(zero) { (out, in) =>
-      f(out, in).asScala
+      stageToScala(f(out, in))
     })
 
   /**

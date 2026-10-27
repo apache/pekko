@@ -290,9 +290,11 @@ object Source {
   /**
    * Same as [[unfold]], but uses an async function to generate the next state-element tuple.
    */
-  def unfoldAsync[S, E](s: S, f: function.Function[? >: S, ? <: CompletionStage[Optional[Pair[S, E]]]])
+  def unfoldAsync[S, E](s: S, f: function.Function[? >: S, ? <: CompletionStage[? <: Optional[Pair[S, E]]]])
       : Source[E, NotUsed] =
-    new Source(scaladsl.Source.fromGraph(new UnfoldAsyncJava[S, E](s, f)))
+    // the stage only applies f and reads the completed value, so the wildcard bounds are safe to drop
+    new Source(scaladsl.Source.fromGraph(new UnfoldAsyncJava[S, E](s,
+      f.asInstanceOf[function.Function[S, CompletionStage[Optional[Pair[S, E]]]]])))
 
   /**
    * Creates a sequential `Source` by iterating with the given predicate and function,
@@ -376,8 +378,8 @@ object Source {
    * If downstream cancels or fails before the function is invoked the materialized value
    * is failed with a [[pekko.stream.NeverMaterializedException]]
    */
-  def lazyCompletionStage[T](create: Creator[? <: CompletionStage[T]]): Source[T, NotUsed] =
-    new Source(scaladsl.Source.lazyFuture(() => create.create().asScala))
+  def lazyCompletionStage[T](create: Creator[? <: CompletionStage[? <: T]]): Source[T, NotUsed] =
+    new Source(scaladsl.Source.lazyFuture(() => stageToScala(create.create())))
 
   /**
    * Defers invoking the `create` function to create a future source until there is downstream demand.
@@ -416,7 +418,7 @@ object Source {
    * is failed with a [[pekko.stream.NeverMaterializedException]]
    */
   def lazyCompletionStageSource[T, M](
-      create: Creator[? <: CompletionStage[Source[T, M]]]): Source[T, CompletionStage[M]] =
+      create: Creator[? <: CompletionStage[? <: Source[T, M]]]): Source[T, CompletionStage[M]] =
     lazySource[T, CompletionStage[M]](() => completionStageSource(create.create()))
       .mapMaterializedValue(_.thenCompose(csm => csm))
 
@@ -824,13 +826,13 @@ object Source {
    * @tparam R the resource type
    */
   def unfoldResourceAsync[T, R](
-      create: function.Creator[? <: CompletionStage[R]],
-      read: function.Function[? >: R, ? <: CompletionStage[Optional[T]]],
+      create: function.Creator[? <: CompletionStage[? <: R]],
+      read: function.Function[? >: R, ? <: CompletionStage[? <: Optional[T]]],
       close: function.Function[? >: R, ? <: CompletionStage[Done]]): javadsl.Source[T, NotUsed] =
     new Source(
       scaladsl.Source.unfoldResourceAsync[T, R](
-        () => create.create().asScala,
-        (resource: R) => read.apply(resource).asScala.map(_.toScala)(scala.concurrent.ExecutionContext.parasitic),
+        () => stageToScala(create.create()),
+        (resource: R) => stageToScala(read.apply(resource)).map(_.toScala)(scala.concurrent.ExecutionContext.parasitic),
         (resource: R) => close.apply(resource).asScala))
 
   /**
@@ -1117,7 +1119,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    */
   def runFoldAsync[U](
       zero: U,
-      f: function.Function2[? >: U, ? >: Out, ? <: CompletionStage[U]],
+      f: function.Function2[? >: U, ? >: Out, ? <: CompletionStage[? <: U]],
       systemProvider: ClassicActorSystemProvider): CompletionStage[U] = runWith(Sink.foldAsync(zero, f), systemProvider)
 
   /**
@@ -1132,7 +1134,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    */
   def runFoldAsync[U](
       zero: U,
-      f: function.Function2[? >: U, ? >: Out, ? <: CompletionStage[U]],
+      f: function.Function2[? >: U, ? >: Out, ? <: CompletionStage[? <: U]],
       materializer: Materializer): CompletionStage[U] = runWith(Sink.foldAsync(zero, f), materializer)
 
   /**
@@ -2917,8 +2919,9 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    *
    * @see [[#mapAsyncUnordered]]
    */
-  def mapAsync[T](parallelism: Int, f: function.Function[? >: Out, ? <: CompletionStage[T]]): javadsl.Source[T, Mat] =
-    new Source(delegate.mapAsync(parallelism)(x => f(x).asScala))
+  def mapAsync[T](parallelism: Int, f: function.Function[? >: Out, ? <: CompletionStage[? <: T]])
+      : javadsl.Source[T, Mat] =
+    new Source(delegate.mapAsync(parallelism)(x => stageToScala(f(x))))
 
   /**
    * Transforms this stream. Works very similarly to [[#mapAsync]] but with an additional
@@ -2950,8 +2953,8 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
   def mapAsyncPartitioned[T, P](
       parallelism: Int,
       partitioner: function.Function[? >: Out, ? <: P],
-      f: function.Function2[? >: Out, ? >: P, ? <: CompletionStage[T]]): javadsl.Source[T, Mat] =
-    new Source(delegate.mapAsyncPartitioned(parallelism)(partitioner(_))(f(_, _).asScala))
+      f: function.Function2[? >: Out, ? >: P, ? <: CompletionStage[? <: T]]): javadsl.Source[T, Mat] =
+    new Source(delegate.mapAsyncPartitioned(parallelism)(partitioner(_))((a, b) => stageToScala(f(a, b))))
 
   /**
    * Transforms this stream. Works very similarly to [[#mapAsyncUnordered]] but with an additional
@@ -2983,8 +2986,8 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
   def mapAsyncPartitionedUnordered[T, P](
       parallelism: Int,
       partitioner: function.Function[? >: Out, ? <: P],
-      f: function.Function2[? >: Out, ? >: P, ? <: CompletionStage[T]]): javadsl.Source[T, Mat] =
-    new Source(delegate.mapAsyncPartitionedUnordered(parallelism)(partitioner(_))(f(_, _).asScala))
+      f: function.Function2[? >: Out, ? >: P, ? <: CompletionStage[? <: T]]): javadsl.Source[T, Mat] =
+    new Source(delegate.mapAsyncPartitionedUnordered(parallelism)(partitioner(_))((a, b) => stageToScala(f(a, b))))
 
   /**
    * Transform this stream by applying the given function to each of the elements
@@ -3018,9 +3021,9 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    *
    * @see [[#mapAsync]]
    */
-  def mapAsyncUnordered[T](parallelism: Int, f: function.Function[? >: Out, ? <: CompletionStage[T]])
+  def mapAsyncUnordered[T](parallelism: Int, f: function.Function[? >: Out, ? <: CompletionStage[? <: T]])
       : javadsl.Source[T, Mat] =
-    new Source(delegate.mapAsyncUnordered(parallelism)(x => f(x).asScala))
+    new Source(delegate.mapAsyncUnordered(parallelism)(x => stageToScala(f(x))))
 
   /**
    * Use the `ask` pattern to send a request-reply message to the target `ref` actor.
@@ -3491,9 +3494,10 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    *
    * See also [[FlowOps#scan]]
    */
-  def scanAsync[T](zero: T, f: function.Function2[? >: T, ? >: Out, ? <: CompletionStage[T]]): javadsl.Source[T, Mat] =
+  def scanAsync[T](zero: T, f: function.Function2[? >: T, ? >: Out, ? <: CompletionStage[? <: T]])
+      : javadsl.Source[T, Mat] =
     new Source(delegate.scanAsync(zero) { (out, in) =>
-      f(out, in).asScala
+      stageToScala(f(out, in))
     })
 
   /**
@@ -3568,9 +3572,10 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    *
    * '''Cancels when''' downstream cancels
    */
-  def foldAsync[T](zero: T, f: function.Function2[? >: T, ? >: Out, ? <: CompletionStage[T]]): javadsl.Source[T, Mat] =
+  def foldAsync[T](zero: T, f: function.Function2[? >: T, ? >: Out, ? <: CompletionStage[? <: T]])
+      : javadsl.Source[T, Mat] =
     new Source(delegate.foldAsync(zero) { (out, in) =>
-      f(out, in).asScala
+      stageToScala(f(out, in))
     })
 
   /**

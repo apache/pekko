@@ -19,7 +19,6 @@ import java.util.concurrent.CompletionStage
 import scala.annotation.unchecked.uncheckedVariance
 import scala.jdk.CollectionConverters._
 import scala.jdk.DurationConverters._
-import scala.jdk.FutureConverters._
 import scala.jdk.OptionConverters._
 import scala.reflect.ClassTag
 
@@ -308,8 +307,8 @@ final class FlowWithContext[In, CtxIn, Out, CtxOut, +Mat](
    */
   def mapAsync[Out2](
       parallelism: Int,
-      f: function.Function[? >: Out, ? <: CompletionStage[Out2]]): FlowWithContext[In, CtxIn, Out2, CtxOut, Mat] =
-    viaScala(_.mapAsync[Out2](parallelism)(o => f.apply(o).asScala))
+      f: function.Function[? >: Out, ? <: CompletionStage[? <: Out2]]): FlowWithContext[In, CtxIn, Out2, CtxOut, Mat] =
+    viaScala(_.mapAsync[Out2](parallelism)(o => stageToScala(f.apply(o))))
 
   /**
    * Context-preserving variant of [[pekko.stream.javadsl.Flow.mapAsyncPartitioned]].
@@ -320,9 +319,9 @@ final class FlowWithContext[In, CtxIn, Out, CtxOut, +Mat](
   def mapAsyncPartitioned[Out2, P](
       parallelism: Int,
       partitioner: function.Function[? >: Out, ? <: P],
-      f: function.Function2[? >: Out, ? >: P, ? <: CompletionStage[Out2]])
+      f: function.Function2[? >: Out, ? >: P, ? <: CompletionStage[? <: Out2]])
       : FlowWithContext[In, CtxIn, Out2, CtxOut, Mat] = {
-    viaScala(_.mapAsyncPartitioned(parallelism)(partitioner(_))(f(_, _).asScala))
+    viaScala(_.mapAsyncPartitioned(parallelism)(partitioner(_))((a, b) => stageToScala(f(a, b))))
   }
 
   /**
@@ -334,9 +333,9 @@ final class FlowWithContext[In, CtxIn, Out, CtxOut, +Mat](
   def mapAsyncPartitionedUnordered[Out2, P](
       parallelism: Int,
       partitioner: function.Function[? >: Out, ? <: P],
-      f: function.Function2[? >: Out, ? >: P, ? <: CompletionStage[Out2]])
+      f: function.Function2[? >: Out, ? >: P, ? <: CompletionStage[? <: Out2]])
       : FlowWithContext[In, CtxIn, Out2, CtxOut, Mat] = {
-    viaScala(_.mapAsyncPartitionedUnordered(parallelism)(partitioner(_))(f(_, _).asScala))
+    viaScala(_.mapAsyncPartitionedUnordered(parallelism)(partitioner(_))((a, b) => stageToScala(f(a, b))))
   }
 
   /**
