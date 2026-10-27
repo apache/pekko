@@ -25,6 +25,7 @@ import org.apache.pekko.actor.testkit.typed.javadsl.LogCapturingExtension;
 import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJUnitJupiterExtension;
 import org.apache.pekko.actor.testkit.typed.javadsl.TestProbe;
 import org.apache.pekko.actor.typed.ActorRef;
+import org.apache.pekko.japi.function.Function;
 import org.apache.pekko.persistence.testkit.PersistenceTestKitDurableStateStorePlugin;
 import org.apache.pekko.persistence.typed.PersistenceId;
 import org.junit.jupiter.api.Test;
@@ -72,6 +73,20 @@ public class DurableStateReplyEffectTest {
             (effect, replyTo) -> effect.persist(1).thenReply(replyTo, state -> state));
     actor.tell(probe.ref());
     probe.expectMessage(1);
+    probe.expectTerminated(actor);
+  }
+
+  @Test
+  public void persistThenReplyWithFunctionOverSupertypeOfState() {
+    // a reply function typed over a supertype of the state can be passed as is
+    final Function<Number, Integer> doubled = n -> n.intValue() * 2;
+    TestProbe<Integer> probe = testKit.createTestProbe();
+    ActorRef<ActorRef<Integer>> actor =
+        spawnStoppingBehavior(
+            "persist-then-reply-with-function-over-supertype",
+            (effect, replyTo) -> effect.persist(21).thenReply(replyTo, doubled));
+    actor.tell(probe.ref());
+    probe.expectMessage(42);
     probe.expectTerminated(actor);
   }
 
