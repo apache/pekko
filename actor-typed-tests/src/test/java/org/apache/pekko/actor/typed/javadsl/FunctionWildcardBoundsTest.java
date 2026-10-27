@@ -112,6 +112,17 @@ public class FunctionWildcardBoundsTest {
   }
 
   @Test
+  public void monitorAcceptsRefOfSupertype() {
+    final TestProbe<Object> monitor = testKit.createTestProbe();
+    final Behavior<String> ignore = Behaviors.ignore();
+
+    final ActorRef<String> ref =
+        testKit.spawn(Behaviors.monitor(String.class, monitor.getRef(), ignore));
+    ref.tell("watched");
+    monitor.expectMessage("watched");
+  }
+
+  @Test
   public void fishForMessageAcceptsFunctionOverSupertype() {
     final TestProbe<String> probe = testKit.createTestProbe();
     final java.util.function.Function<Object, FishingOutcome> untilDone =

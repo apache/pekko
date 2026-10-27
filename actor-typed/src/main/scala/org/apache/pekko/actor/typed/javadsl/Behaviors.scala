@@ -238,9 +238,9 @@ object Behaviors {
    * @param monitor The messages will also be sent to this `ActorRef`
    * @param behavior The inner behavior that is decorated
    */
-  def monitor[T](interceptMessageClass: Class[T], monitor: ActorRef[T], behavior: Behavior[T]): Behavior[T] = {
+  def monitor[T](interceptMessageClass: Class[T], monitor: ActorRef[? >: T], behavior: Behavior[T]): Behavior[T] = {
     implicit val classTag: ClassTag[T] = ClassTag(interceptMessageClass)
-    scaladsl.Behaviors.monitor(monitor, behavior)
+    scaladsl.Behaviors.monitor[T](monitor.narrow[T], behavior)
   }
 
   /**

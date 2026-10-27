@@ -54,3 +54,4 @@ ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.actor.typ
 ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.actor.typed.javadsl.StashBuffer.anyMatch(java.util.function.Predicate)Boolean")
 ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.actor.typed.javadsl.StashBuffer.forEach(org.apache.pekko.japi.function.Procedure)Unit")
 ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.actor.typed.javadsl.StashBuffer.unstash(org.apache.pekko.actor.typed.Behavior,Int,java.util.function.Function)org.apache.pekko.actor.typed.Behavior")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.actor.typed.javadsl.Behaviors.monitor(java.lang.Class,org.apache.pekko.actor.typed.ActorRef,org.apache.pekko.actor.typed.Behavior)org.apache.pekko.actor.typed.Behavior")
