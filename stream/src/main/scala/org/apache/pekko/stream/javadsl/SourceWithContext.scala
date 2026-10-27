@@ -103,9 +103,9 @@ final class SourceWithContext[+Out, +Ctx, +Mat](delegate: scaladsl.SourceWithCon
    * @see [[pekko.stream.javadsl.Flow.via]]
    */
   def via[Out2, Ctx2, Mat2](
-      viaFlow: Graph[FlowShape[Pair[Out @uncheckedVariance, Ctx @uncheckedVariance], Pair[Out2, Ctx2]], Mat2])
+      viaFlow: Graph[? <: FlowShape[? >: Pair[Out @uncheckedVariance, Ctx @uncheckedVariance], Pair[Out2, Ctx2]], Mat2])
       : SourceWithContext[Out2, Ctx2, Mat] =
-    SourceWithContext.fromPairs(asSource().via(viaFlow))
+    SourceWithContext.fromPairs(asSource().via(flowGraph(viaFlow)))
 
   /**
    * Transform this flow by the regular flow. The given flow works on the data portion of the stream and
@@ -121,8 +121,8 @@ final class SourceWithContext[+Out, +Ctx, +Mat](delegate: scaladsl.SourceWithCon
    *  see https://pekko.apache.org/docs/pekko/current/stream/stream-context.html.
    */
   @ApiMayChange def unsafeDataVia[Out2, Mat2](
-      viaFlow: Graph[FlowShape[Out @uncheckedVariance, Out2], Mat2]): SourceWithContext[Out2, Ctx, Mat] =
-    viaScala(_.unsafeDataVia(viaFlow))
+      viaFlow: Graph[? <: FlowShape[? >: Out @uncheckedVariance, Out2], Mat2]): SourceWithContext[Out2, Ctx, Mat] =
+    viaScala(_.unsafeDataVia(flowGraph(viaFlow)))
 
   /**
    * Context-preserving variant of [[pekko.stream.javadsl.Source.withAttributes]].
@@ -292,8 +292,8 @@ final class SourceWithContext[+Out, +Ctx, +Mat](delegate: scaladsl.SourceWithCon
    * @see [[pekko.stream.javadsl.Source.mapOption]]
    * @since 2.0.0
    */
-  def mapOption[Out2](f: function.Function[? >: Out, ? <: Optional[Out2]]): SourceWithContext[Out2, Ctx, Mat] =
-    viaScala(_.mapOption(out => f.apply(out).toScala))
+  def mapOption[Out2](f: function.Function[? >: Out, ? <: Optional[? <: Out2]]): SourceWithContext[Out2, Ctx, Mat] =
+    viaScala(_.mapOption(out => optionalToScala(f.apply(out))))
 
   /**
    * Context-preserving variant of [[pekko.stream.javadsl.Source.mapAsync]].
@@ -359,8 +359,8 @@ final class SourceWithContext[+Out, +Ctx, +Mat](delegate: scaladsl.SourceWithCon
    * @see [[pekko.stream.javadsl.Source.mapConcat]]
    */
   def mapConcat[Out2](
-      f: function.Function[? >: Out, ? <: java.lang.Iterable[Out2]]): SourceWithContext[Out2, Ctx, Mat] =
-    viaScala(_.mapConcat(elem => f.apply(elem).asScala))
+      f: function.Function[? >: Out, ? <: java.lang.Iterable[? <: Out2]]): SourceWithContext[Out2, Ctx, Mat] =
+    viaScala(_.mapConcat(elem => iterableToScala(f.apply(elem))))
 
   /**
    * Apply the given function to each context element (leaving the data elements unchanged).
@@ -567,26 +567,27 @@ final class SourceWithContext[+Out, +Ctx, +Mat](delegate: scaladsl.SourceWithCon
    * concatenating the processing steps of both.
    */
   def to[Mat2](
-      sink: Graph[SinkShape[Pair[Out @uncheckedVariance, Ctx @uncheckedVariance]], Mat2]): javadsl.RunnableGraph[Mat] =
-    asSource().to(sink)
+      sink: Graph[? <: SinkShape[? >: Pair[Out @uncheckedVariance, Ctx @uncheckedVariance]], Mat2])
+      : javadsl.RunnableGraph[Mat] =
+    asSource().to(sinkGraph(sink))
 
   /**
    * Connect this [[pekko.stream.javadsl.SourceWithContext]] to a [[pekko.stream.javadsl.Sink]],
    * concatenating the processing steps of both.
    */
   def toMat[Mat2, Mat3](
-      sink: Graph[SinkShape[Pair[Out @uncheckedVariance, Ctx @uncheckedVariance]], Mat2],
+      sink: Graph[? <: SinkShape[? >: Pair[Out @uncheckedVariance, Ctx @uncheckedVariance]], Mat2],
       combine: function.Function2[? >: Mat, ? >: Mat2, ? <: Mat3]): javadsl.RunnableGraph[Mat3] =
-    asSource().toMat(sink, combine)
+    asSource().toMat(sinkGraph(sink), combine)
 
   /**
    * Connect this [[pekko.stream.javadsl.SourceWithContext]] to a [[pekko.stream.javadsl.Sink]] and run it.
    * The returned value is the materialized value of the `Sink`.
    */
   def runWith[M](
-      sink: Graph[SinkShape[Pair[Out @uncheckedVariance, Ctx @uncheckedVariance]], M],
+      sink: Graph[? <: SinkShape[? >: Pair[Out @uncheckedVariance, Ctx @uncheckedVariance]], M],
       systemProvider: ClassicActorSystemProvider): M =
-    toMat(sink, Keep.right[Mat, M]).run(systemProvider.classicSystem)
+    toMat(sinkGraph(sink), Keep.right[Mat, M]).run(systemProvider.classicSystem)
 
   /**
    * Connect this [[pekko.stream.javadsl.SourceWithContext]] to a [[pekko.stream.javadsl.Sink]] and run it.
@@ -595,9 +596,9 @@ final class SourceWithContext[+Out, +Ctx, +Mat](delegate: scaladsl.SourceWithCon
    * Prefer the method taking an ActorSystem unless you have special requirements.
    */
   def runWith[M](
-      sink: Graph[SinkShape[Pair[Out @uncheckedVariance, Ctx @uncheckedVariance]], M],
+      sink: Graph[? <: SinkShape[? >: Pair[Out @uncheckedVariance, Ctx @uncheckedVariance]], M],
       materializer: Materializer): M =
-    toMat(sink, Keep.right[Mat, M]).run(materializer)
+    toMat(sinkGraph(sink), Keep.right[Mat, M]).run(materializer)
 
   def asScala: scaladsl.SourceWithContext[Out, Ctx, Mat] = delegate
 

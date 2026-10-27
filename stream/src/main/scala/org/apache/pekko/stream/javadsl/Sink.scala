@@ -416,10 +416,10 @@ object Sink {
    * A graph with the shape of a sink logically is a sink, this method makes
    * it so also in type.
    */
-  def fromGraph[T, M](g: Graph[SinkShape[T], M]): Sink[T, M] =
+  def fromGraph[T, M](g: Graph[? <: SinkShape[? >: T], M]): Sink[T, M] =
     g match {
       case s: Sink[T, M] @unchecked => s
-      case other                    => new Sink(scaladsl.Sink.fromGraph(other))
+      case other                    => new Sink(scaladsl.Sink.fromGraph(sinkGraph(other)))
     }
 
   /**
@@ -428,10 +428,10 @@ object Sink {
    * [[Attributes]] of the [[Sink]] returned by this method.
    */
   def fromMaterializer[T, M](
-      factory: function.Function2[? >: Materializer, ? >: Attributes, ? <: Graph[SinkShape[T], M]])
+      factory: function.Function2[? >: Materializer, ? >: Attributes, ? <: Graph[? <: SinkShape[? >: T], M]])
       : Sink[T, CompletionStage[M]] =
     scaladsl.Sink
-      .fromMaterializer((mat, attr) => scaladsl.Sink.fromGraph(factory(mat, attr)))
+      .fromMaterializer((mat, attr) => scaladsl.Sink.fromGraph(sinkGraph(factory(mat, attr))))
       .mapMaterializedValue(_.asJava)
       .asJava
 
@@ -441,11 +441,11 @@ object Sink {
   def combine[T, U](
       output1: Sink[U, ?],
       output2: Sink[U, ?],
-      @Nullable rest: java.lang.Iterable[? <: Graph[SinkShape[U], ?]],
+      @Nullable rest: java.lang.Iterable[? <: Graph[? <: SinkShape[? >: U], ?]],
       fanOutStrategy: function.Function[? >: java.lang.Integer, ? <: Graph[UniformFanOutShape[T, U], NotUsed]])
       : Sink[T, NotUsed] = {
     import scala.jdk.CollectionConverters._
-    val seq = if (rest ne null) rest.asScala.map(scaladsl.Sink.fromGraph(_)).toSeq else Seq()
+    val seq = if (rest ne null) rest.asScala.map(g => scaladsl.Sink.fromGraph(sinkGraph(g))).toSeq else Seq()
     new Sink(scaladsl.Sink.combine(output1.asScala, output2.asScala, seq: _*)(num => fanOutStrategy.apply(num)))
   }
 
@@ -468,13 +468,13 @@ object Sink {
    * @since 1.1.0
    */
   def combine[T, U, M](
-      @Nullable sinks: java.lang.Iterable[? <: Graph[SinkShape[U], M]],
+      @Nullable sinks: java.lang.Iterable[? <: Graph[? <: SinkShape[? >: U], M]],
       fanOutStrategy: function.Function[? >: java.lang.Integer, ? <: Graph[UniformFanOutShape[T, U], NotUsed]])
       : Sink[T, java.util.List[M]] = {
     import pekko.util.Collections._
     val seq = if (sinks ne null) sinks.collectToImmutableSeq {
       case sink: Sink[U @unchecked, M @unchecked] => sink.asScala
-      case other                                  => other
+      case other                                  => sinkGraph(other)
     }
     else Seq()
     import scala.jdk.CollectionConverters._
@@ -528,7 +528,8 @@ object Sink {
    * The materialized future value is completed with the materialized value of the future sink or failed with a
    * [[NeverMaterializedException]] if upstream fails or downstream cancels before the future has completed.
    */
-  def completionStageSink[T, M](future: CompletionStage[? <: Graph[SinkShape[T], M]]): Sink[T, CompletionStage[M]] =
+  def completionStageSink[T, M](
+      future: CompletionStage[? <: Graph[? <: SinkShape[? >: T], M]]): Sink[T, CompletionStage[M]] =
     lazyCompletionStageSink[T, M](() => future.thenApply[Sink[T, M]](g => Sink.fromGraph(g)))
 
   /**
@@ -548,8 +549,9 @@ object Sink {
    * @since 1.5.0
    */
   def eagerCompletionStageSink[T, M](
-      future: CompletionStage[? <: Graph[SinkShape[T], M]]): Sink[T, CompletionStage[M]] =
-    new Sink(scaladsl.Sink.eagerFutureSink(future.asScala.map(scaladsl.Sink.fromGraph(_))(ExecutionContext.parasitic)))
+      future: CompletionStage[? <: Graph[? <: SinkShape[? >: T], M]]): Sink[T, CompletionStage[M]] =
+    new Sink(scaladsl.Sink.eagerFutureSink(
+      future.asScala.map(g => scaladsl.Sink.fromGraph(sinkGraph(g)))(ExecutionContext.parasitic)))
       .mapMaterializedValue(_.asJava)
 
   /**
@@ -603,14 +605,14 @@ final class Sink[In, Mat](delegate: scaladsl.Sink[In, Mat]) extends Graph[SinkSh
    *
    * Note that the `ActorSystem` can be used as the `systemProvider` parameter.
    */
-  def runWith[M](source: Graph[SourceShape[In], M], systemProvider: ClassicActorSystemProvider): M =
-    asScala.runWith(source)(SystemMaterializer(systemProvider.classicSystem).materializer)
+  def runWith[M](source: Graph[? <: SourceShape[? <: In], M], systemProvider: ClassicActorSystemProvider): M =
+    asScala.runWith(sourceGraph(source))(SystemMaterializer(systemProvider.classicSystem).materializer)
 
   /**
    * Connect this `Sink` to a `Source` and run it.
    */
-  def runWith[M](source: Graph[SourceShape[In], M], materializer: Materializer): M =
-    asScala.runWith(source)(materializer)
+  def runWith[M](source: Graph[? <: SourceShape[? <: In], M], materializer: Materializer): M =
+    asScala.runWith(sourceGraph(source))(materializer)
 
   /**
    * Transform this Sink by applying a function to each *incoming* upstream element before
