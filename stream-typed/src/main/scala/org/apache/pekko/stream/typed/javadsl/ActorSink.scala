@@ -43,8 +43,10 @@ object ActorSink {
   def actorRef[T](
       ref: ActorRef[T],
       onCompleteMessage: T,
-      onFailureMessage: pekko.japi.function.Function[Throwable, T]): Sink[T, NotUsed] =
-    typed.scaladsl.ActorSink.actorRef(ref, onCompleteMessage, onFailureMessage.apply).asJava
+      onFailureMessage: pekko.japi.function.Function[? >: Throwable, ? <: T]): Sink[T, NotUsed] =
+    typed.scaladsl.ActorSink
+      .actorRef[T](ref, onCompleteMessage, (t: Throwable) => onFailureMessage.apply(t))
+      .asJava
 
   /**
    * Sends the elements of the stream to the given `ActorRef` that sends back back-pressure signal.
@@ -68,19 +70,19 @@ object ActorSink {
    */
   def actorRefWithBackpressure[T, M, A](
       ref: ActorRef[M],
-      messageAdapter: pekko.japi.function.Function2[ActorRef[A], T, M],
-      onInitMessage: pekko.japi.function.Function[ActorRef[A], M],
+      messageAdapter: pekko.japi.function.Function2[? >: ActorRef[A], ? >: T, ? <: M],
+      onInitMessage: pekko.japi.function.Function[? >: ActorRef[A], ? <: M],
       ackMessage: A,
       onCompleteMessage: M,
-      onFailureMessage: pekko.japi.function.Function[Throwable, M]): Sink[T, NotUsed] =
+      onFailureMessage: pekko.japi.function.Function[? >: Throwable, ? <: M]): Sink[T, NotUsed] =
     typed.scaladsl.ActorSink
-      .actorRefWithBackpressure(
+      .actorRefWithBackpressure[T, M, A](
         ref,
-        messageAdapter.apply,
-        onInitMessage.apply,
+        (a: ActorRef[A], t: T) => messageAdapter.apply(a, t),
+        (a: ActorRef[A]) => onInitMessage.apply(a),
         ackMessage,
         onCompleteMessage,
-        onFailureMessage.apply)
+        (t: Throwable) => onFailureMessage.apply(t))
       .asJava
 
   /**
@@ -104,16 +106,16 @@ object ActorSink {
    */
   def actorRefWithBackpressure[T, M, A](
       ref: ActorRef[M],
-      messageAdapter: pekko.japi.function.Function2[ActorRef[A], T, M],
-      onInitMessage: pekko.japi.function.Function[ActorRef[A], M],
+      messageAdapter: pekko.japi.function.Function2[? >: ActorRef[A], ? >: T, ? <: M],
+      onInitMessage: pekko.japi.function.Function[? >: ActorRef[A], ? <: M],
       onCompleteMessage: M,
-      onFailureMessage: pekko.japi.function.Function[Throwable, M]): Sink[T, NotUsed] =
+      onFailureMessage: pekko.japi.function.Function[? >: Throwable, ? <: M]): Sink[T, NotUsed] =
     typed.scaladsl.ActorSink
-      .actorRefWithBackpressure(
+      .actorRefWithBackpressure[T, M, A](
         ref,
-        messageAdapter.apply,
-        onInitMessage.apply,
+        (a: ActorRef[A], t: T) => messageAdapter.apply(a, t),
+        (a: ActorRef[A]) => onInitMessage.apply(a),
         onCompleteMessage,
-        onFailureMessage.apply)
+        (t: Throwable) => onFailureMessage.apply(t))
       .asJava
 }
