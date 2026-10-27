@@ -2233,4 +2233,62 @@ public class SourceTest extends StreamTestJupiter {
             .get(3, TimeUnit.SECONDS);
     assertEquals(List.of(20, 40), values);
   }
+
+  @Test
+  public void mustAcceptFunctionsOverWiderAndNarrowerTypes() throws Exception {
+    // functions may accept a supertype of the element and return a subtype of the result
+    final Predicate<Number> positive = n -> n.intValue() > 0;
+    final Function<Object, String> describe = Object::toString;
+    final Function<Object, Integer> length = o -> o.toString().length();
+    final Function2<Number, Number, Integer> sum = (acc, n) -> acc.intValue() + n.intValue();
+
+    final Integer result =
+        Source.from(List.of(-1, 1, 22, 333))
+            .filter(positive)
+            .map(describe)
+            .map(length)
+            .fold(0, sum)
+            .runWith(Sink.head(), system)
+            .toCompletableFuture()
+            .get(3, TimeUnit.SECONDS);
+    assertEquals(6, result);
+
+    final String mat =
+        Source.single(1).mapMaterializedValue(describe).to(Sink.ignore()).run(system);
+    assertEquals(NotUsed.getInstance().toString(), mat);
+  }
+
+  @Test
+  public void mustAcceptConcreteSourceCreatorsInRestartSource() throws Exception {
+    // a creator typed with a concrete materialized value must be accepted as is
+    final Creator<Source<Integer, NotUsed>> sourceFactory = () -> Source.single(7);
+    final RestartSettings settings =
+        RestartSettings.create(Duration.ofMillis(10), Duration.ofMillis(100), 0.2);
+
+    assertEquals(
+        7,
+        RestartSource.withBackoff(settings, sourceFactory)
+            .take(1)
+            .runWith(Sink.head(), system)
+            .toCompletableFuture()
+            .get(3, TimeUnit.SECONDS));
+  }
+
+  @Test
+  public void mustAcceptAsyncFunctionsReturningCompletionStagesOfSubtypes() throws Exception {
+    // async functions may complete with a subtype of the element type of the resulting stream
+    final Function<Integer, CompletableFuture<Integer>> twice =
+        i -> CompletableFuture.completedFuture(i * 2);
+    final Function2<Number, Number, CompletableFuture<Integer>> sum =
+        (acc, n) -> CompletableFuture.completedFuture(acc.intValue() + n.intValue());
+
+    final Number result =
+        Source.from(List.of(1, 2, 3))
+            .<Number>mapAsync(2, twice)
+            .<Number>foldAsync(0, sum)
+            .runWith(Sink.head(), system)
+            .toCompletableFuture()
+            .get(3, TimeUnit.SECONDS);
+    assertEquals(12, result.intValue());
+  }
 }

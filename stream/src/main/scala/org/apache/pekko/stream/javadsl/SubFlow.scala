@@ -20,7 +20,6 @@ import scala.annotation.unchecked.uncheckedVariance
 import scala.annotation.varargs
 import scala.jdk.CollectionConverters._
 import scala.jdk.DurationConverters._
-import scala.jdk.FutureConverters._
 import scala.jdk.OptionConverters._
 import scala.reflect.ClassTag
 import scala.util.control.NonFatal
@@ -152,7 +151,7 @@ final class SubFlow[In, Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    */
-  def map[T](f: function.Function[Out, T]): SubFlow[In, T, Mat] =
+  def map[T](f: function.Function[? >: Out, ? <: T]): SubFlow[In, T, Mat] =
     new SubFlow(delegate.map(f.apply))
 
   /**
@@ -171,7 +170,7 @@ final class SubFlow[In, Out, Mat](
    *
    * @since 1.3.0
    */
-  def mapOption[T](f: function.Function[Out, Optional[T]]): SubFlow[In, T, Mat] =
+  def mapOption[T](f: function.Function[? >: Out, ? <: Optional[T]]): SubFlow[In, T, Mat] =
     new SubFlow(delegate.map(f(_)).collect {
       case e if e.isPresent => e.get()
     }.addAttributes(DefaultAttributes.mapOption))
@@ -222,7 +221,7 @@ final class SubFlow[In, Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    */
-  def mapConcat[T](f: function.Function[Out, ? <: java.lang.Iterable[T]]): SubFlow[In, T, Mat] =
+  def mapConcat[T](f: function.Function[? >: Out, ? <: java.lang.Iterable[T]]): SubFlow[In, T, Mat] =
     new SubFlow(delegate.mapConcat { elem =>
       f(elem).asScala
     })
@@ -258,9 +257,9 @@ final class SubFlow[In, Out, Mat](
    * @param onComplete a function that transforms the ongoing state into an optional output element
    */
   def statefulMap[S, T](
-      create: function.Creator[S],
-      f: function.Function2[S, Out, Pair[S, T]],
-      onComplete: function.Function[S, Optional[T]]): javadsl.SubFlow[In, T, Mat] =
+      create: function.Creator[? <: S],
+      f: function.Function2[? >: S, ? >: Out, ? <: Pair[S, T]],
+      onComplete: function.Function[? >: S, ? <: Optional[T]]): javadsl.SubFlow[In, T, Mat] =
     new SubFlow(
       delegate.statefulMap(() => create.create())(
         (s: S, out: Out) => f.apply(s, out).toScala,
@@ -299,9 +298,9 @@ final class SubFlow[In, Out, Mat](
    * @since 1.1.0
    */
   def mapWithResource[R, T](
-      create: function.Creator[R],
-      f: function.Function2[R, Out, T],
-      close: function.Function[R, Optional[T]]): javadsl.SubFlow[In, T, Mat] =
+      create: function.Creator[? <: R],
+      f: function.Function2[? >: R, ? >: Out, ? <: T],
+      close: function.Function[? >: R, ? <: Optional[T]]): javadsl.SubFlow[In, T, Mat] =
     new SubFlow(
       delegate.mapWithResource(() => create.create())(
         (resource, out) => f(resource, out),
@@ -338,8 +337,8 @@ final class SubFlow[In, Out, Mat](
    * @since 1.1.0
    */
   def mapWithResource[R <: AutoCloseable, T](
-      create: function.Creator[R],
-      f: function.Function2[R, Out, T]): javadsl.SubFlow[In, T, Mat] =
+      create: function.Creator[? <: R],
+      f: function.Function2[? >: R, ? >: Out, ? <: T]): javadsl.SubFlow[In, T, Mat] =
     mapWithResource(create, f,
       (resource: AutoCloseable) => {
         resource.close()
@@ -415,8 +414,8 @@ final class SubFlow[In, Out, Mat](
    *
    * @see [[#mapAsyncUnordered]]
    */
-  def mapAsync[T](parallelism: Int, f: function.Function[Out, CompletionStage[T]]): SubFlow[In, T, Mat] =
-    new SubFlow(delegate.mapAsync(parallelism)(x => f(x).asScala))
+  def mapAsync[T](parallelism: Int, f: function.Function[? >: Out, ? <: CompletionStage[? <: T]]): SubFlow[In, T, Mat] =
+    new SubFlow(delegate.mapAsync(parallelism)(x => stageToScala(f(x))))
 
   /**
    * Transform this stream by applying the given function to each of the elements
@@ -450,8 +449,9 @@ final class SubFlow[In, Out, Mat](
    *
    * @see [[#mapAsync]]
    */
-  def mapAsyncUnordered[T](parallelism: Int, f: function.Function[Out, CompletionStage[T]]): SubFlow[In, T, Mat] =
-    new SubFlow(delegate.mapAsyncUnordered(parallelism)(x => f(x).asScala))
+  def mapAsyncUnordered[T](parallelism: Int, f: function.Function[? >: Out, ? <: CompletionStage[? <: T]])
+      : SubFlow[In, T, Mat] =
+    new SubFlow(delegate.mapAsyncUnordered(parallelism)(x => stageToScala(f(x))))
 
   /**
    * Transforms this stream. Works very similarly to [[#mapAsync]] but with an additional
@@ -482,9 +482,9 @@ final class SubFlow[In, Out, Mat](
    */
   def mapAsyncPartitioned[T, P](
       parallelism: Int,
-      partitioner: function.Function[Out, P],
-      f: function.Function2[Out, P, CompletionStage[T]]): SubFlow[In, T, Mat] =
-    new SubFlow(delegate.mapAsyncPartitioned(parallelism)(partitioner(_))(f(_, _).asScala))
+      partitioner: function.Function[? >: Out, ? <: P],
+      f: function.Function2[? >: Out, ? >: P, ? <: CompletionStage[? <: T]]): SubFlow[In, T, Mat] =
+    new SubFlow(delegate.mapAsyncPartitioned(parallelism)(partitioner(_))((a, b) => stageToScala(f(a, b))))
 
   /**
    * Transforms this stream. Works very similarly to [[#mapAsyncUnordered]] but with an additional
@@ -515,9 +515,9 @@ final class SubFlow[In, Out, Mat](
    */
   def mapAsyncPartitionedUnordered[T, P](
       parallelism: Int,
-      partitioner: function.Function[Out, P],
-      f: function.Function2[Out, P, CompletionStage[T]]): SubFlow[In, T, Mat] =
-    new SubFlow(delegate.mapAsyncPartitionedUnordered(parallelism)(partitioner(_))(f(_, _).asScala))
+      partitioner: function.Function[? >: Out, ? <: P],
+      f: function.Function2[? >: Out, ? >: P, ? <: CompletionStage[? <: T]]): SubFlow[In, T, Mat] =
+    new SubFlow(delegate.mapAsyncPartitionedUnordered(parallelism)(partitioner(_))((a, b) => stageToScala(f(a, b))))
 
   /**
    * Only pass on those elements that satisfy the given predicate.
@@ -532,7 +532,7 @@ final class SubFlow[In, Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    */
-  def filter(p: function.Predicate[Out]): SubFlow[In, Out, Mat] =
+  def filter(p: function.Predicate[? >: Out]): SubFlow[In, Out, Mat] =
     new SubFlow(delegate.filter(p.test))
 
   /**
@@ -548,7 +548,7 @@ final class SubFlow[In, Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    */
-  def filterNot(p: function.Predicate[Out]): SubFlow[In, Out, Mat] =
+  def filterNot(p: function.Predicate[? >: Out]): SubFlow[In, Out, Mat] =
     new SubFlow(delegate.filterNot(p.test))
 
   /**
@@ -624,7 +624,7 @@ final class SubFlow[In, Out, Mat](
    *
    * @since 1.2.0
    */
-  def dropRepeated(p: function.Function2[Out, Out, Boolean]): SubFlow[In, Out, Mat] =
+  def dropRepeated(p: function.Function2[? >: Out, ? >: Out, Boolean]): SubFlow[In, Out, Mat] =
     new SubFlow(delegate.dropRepeated(p.apply))
 
   /**
@@ -739,7 +739,7 @@ final class SubFlow[In, Out, Mat](
    * '''Cancels when''' downstream cancels
    */
   def groupedWeighted(minWeight: Long,
-      costFn: function.Function[Out, java.lang.Long]): SubFlow[In, java.util.List[Out @uncheckedVariance], Mat] =
+      costFn: function.Function[? >: Out, java.lang.Long]): SubFlow[In, java.util.List[Out @uncheckedVariance], Mat] =
     new SubFlow(delegate.groupedWeighted(minWeight)(costFn.apply).map(_.asJava)) // TODO optimize to one step
 
   /**
@@ -761,7 +761,8 @@ final class SubFlow[In, Out, Mat](
    *
    * @since 1.2.0
    */
-  def groupedAdjacentBy[R](f: function.Function[Out, R]): SubFlow[In, java.util.List[Out @uncheckedVariance], Mat] =
+  def groupedAdjacentBy[R](
+      f: function.Function[? >: Out, ? <: R]): SubFlow[In, java.util.List[Out @uncheckedVariance], Mat] =
     new SubFlow(delegate.groupedAdjacentBy(f.apply).map(_.asJava))
 
   /**
@@ -784,9 +785,9 @@ final class SubFlow[In, Out, Mat](
    *
    * @since 1.2.0
    */
-  def groupedAdjacentByWeighted[R](f: function.Function[Out, R],
+  def groupedAdjacentByWeighted[R](f: function.Function[? >: Out, ? <: R],
       maxWeight: Long,
-      costFn: function.Function[Out, java.lang.Long])
+      costFn: function.Function[? >: Out, java.lang.Long])
       : SubFlow[In, java.util.List[Out @uncheckedVariance], Mat] =
     new SubFlow(delegate.groupedAdjacentByWeighted(f.apply, maxWeight)(costFn.apply).map(_.asJava))
 
@@ -837,7 +838,7 @@ final class SubFlow[In, Out, Mat](
    *
    * See also [[Flow.take]], [[Flow.takeWithin]], [[Flow.takeWhile]]
    */
-  def limitWeighted(n: Long, costFn: function.Function[Out, java.lang.Long]): javadsl.SubFlow[In, Out, Mat] = {
+  def limitWeighted(n: Long, costFn: function.Function[? >: Out, java.lang.Long]): javadsl.SubFlow[In, Out, Mat] = {
     new SubFlow(delegate.limitWeighted(n)(costFn.apply))
   }
 
@@ -881,7 +882,7 @@ final class SubFlow[In, Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    */
-  def scan[T](zero: T, f: function.Function2[T, Out, T]): SubFlow[In, T, Mat] =
+  def scan[T](zero: T, f: function.Function2[? >: T, ? >: Out, ? <: T]): SubFlow[In, T, Mat] =
     new SubFlow(delegate.scan(zero)(f.apply))
 
   /**
@@ -912,9 +913,10 @@ final class SubFlow[In, Out, Mat](
    *
    * See also [[#scan]]
    */
-  def scanAsync[T](zero: T, f: function.Function2[T, Out, CompletionStage[T]]): SubFlow[In, T, Mat] =
+  def scanAsync[T](zero: T, f: function.Function2[? >: T, ? >: Out, ? <: CompletionStage[? <: T]])
+      : SubFlow[In, T, Mat] =
     new SubFlow(delegate.scanAsync(zero) { (out, in) =>
-      f(out, in).asScala
+      stageToScala(f(out, in))
     })
 
   /**
@@ -938,7 +940,7 @@ final class SubFlow[In, Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    */
-  def fold[T](zero: T, f: function.Function2[T, Out, T]): SubFlow[In, T, Mat] =
+  def fold[T](zero: T, f: function.Function2[? >: T, ? >: Out, ? <: T]): SubFlow[In, T, Mat] =
     new SubFlow(delegate.fold(zero)(f.apply))
 
   /**
@@ -966,7 +968,8 @@ final class SubFlow[In, Out, Mat](
    *
    * @since 1.1.0
    */
-  def foldWhile[T](zero: T, p: function.Predicate[T], f: function.Function2[T, Out, T]): SubFlow[In, T, Mat] =
+  def foldWhile[T](zero: T, p: function.Predicate[? >: T], f: function.Function2[? >: T, ? >: Out, ? <: T])
+      : SubFlow[In, T, Mat] =
     new SubFlow(delegate.foldWhile(zero)(p.test)(f.apply))
 
   /**
@@ -990,9 +993,10 @@ final class SubFlow[In, Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    */
-  def foldAsync[T](zero: T, f: function.Function2[T, Out, CompletionStage[T]]): SubFlow[In, T, Mat] =
+  def foldAsync[T](zero: T, f: function.Function2[? >: T, ? >: Out, ? <: CompletionStage[? <: T]])
+      : SubFlow[In, T, Mat] =
     new SubFlow(delegate.foldAsync(zero) { (out, in) =>
-      f(out, in).asScala
+      stageToScala(f(out, in))
     })
 
   /**
@@ -1010,7 +1014,7 @@ final class SubFlow[In, Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    */
-  def reduce(f: function.Function2[Out, Out, Out @uncheckedVariance]): SubFlow[In, Out, Mat] =
+  def reduce(f: function.Function2[? >: Out, ? >: Out, ? <: Out @uncheckedVariance]): SubFlow[In, Out, Mat] =
     new SubFlow(delegate.reduce(f.apply))
 
   /**
@@ -1119,7 +1123,7 @@ final class SubFlow[In, Out, Mat](
    */
   def groupedWeightedWithin(
       maxWeight: Long,
-      costFn: function.Function[Out, java.lang.Long],
+      costFn: function.Function[? >: Out, java.lang.Long],
       duration: java.time.Duration): javadsl.SubFlow[In, java.util.List[Out @uncheckedVariance], Mat] =
     new SubFlow(delegate.groupedWeightedWithin(maxWeight, duration.toScala)(costFn.apply).map(_.asJava))
 
@@ -1149,7 +1153,7 @@ final class SubFlow[In, Out, Mat](
   def groupedWeightedWithin(
       maxWeight: Long,
       maxNumber: Int,
-      costFn: function.Function[Out, java.lang.Long],
+      costFn: function.Function[? >: Out, java.lang.Long],
       duration: java.time.Duration): javadsl.SubFlow[In, java.util.List[Out @uncheckedVariance], Mat] =
     new SubFlow(delegate.groupedWeightedWithin(maxWeight, maxNumber, duration.toScala)(costFn.apply).map(_.asJava))
 
@@ -1217,7 +1221,7 @@ final class SubFlow[In, Out, Mat](
    * @param overFlowStrategy Strategy that is used when incoming elements cannot fit inside the buffer
    */
   def delayWith(
-      delayStrategyCreator: function.Creator[DelayStrategy[Out]],
+      delayStrategyCreator: function.Creator[? <: DelayStrategy[Out]],
       overFlowStrategy: DelayOverflowStrategy): SubFlow[In, Out, Mat] =
     new SubFlow(delegate.delayWith(() => DelayStrategy.asScala(delayStrategyCreator.create()), overFlowStrategy))
 
@@ -1266,7 +1270,7 @@ final class SubFlow[In, Out, Mat](
    *
    * See also [[SubFlow.limit]], [[SubFlow.limitWeighted]], [[SubFlow.takeWhile]]
    */
-  def takeWhile(p: function.Predicate[Out]): SubFlow[In, Out, Mat] = takeWhile(p, inclusive = false)
+  def takeWhile(p: function.Predicate[? >: Out]): SubFlow[In, Out, Mat] = takeWhile(p, inclusive = false)
 
   /**
    * Terminate processing (and cancel the upstream publisher) after predicate
@@ -1287,7 +1291,7 @@ final class SubFlow[In, Out, Mat](
    *
    * '''Cancels when''' predicate returned false or downstream cancels
    */
-  def takeWhile(p: function.Predicate[Out], inclusive: Boolean): SubFlow[In, Out, Mat] =
+  def takeWhile(p: function.Predicate[? >: Out], inclusive: Boolean): SubFlow[In, Out, Mat] =
     new SubFlow(delegate.takeWhile(p.test, inclusive))
 
   /**
@@ -1310,7 +1314,7 @@ final class SubFlow[In, Out, Mat](
    * See also [[FlowOps.limit]], [[FlowOps.limitWeighted]], [[FlowOps.takeWhile]]
    * @since 1.2.0
    */
-  def takeUntil(p: function.Predicate[Out]): SubFlow[In, Out, Mat] = new SubFlow(delegate.takeUntil(p.test))
+  def takeUntil(p: function.Predicate[? >: Out]): SubFlow[In, Out, Mat] = new SubFlow(delegate.takeUntil(p.test))
 
   /**
    * Discard elements at the beginning of the stream while predicate is true.
@@ -1326,7 +1330,7 @@ final class SubFlow[In, Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    */
-  def dropWhile(p: function.Predicate[Out]): SubFlow[In, Out, Mat] =
+  def dropWhile(p: function.Predicate[? >: Out]): SubFlow[In, Out, Mat] =
     new SubFlow(delegate.dropWhile(p.test))
 
   /**
@@ -1366,7 +1370,7 @@ final class SubFlow[In, Out, Mat](
    *
    * @since 1.3.0
    */
-  def recover(clazz: Class[? <: Throwable], creator: function.Creator[Out]): SubFlow[In, Out, Mat] =
+  def recover(clazz: Class[? <: Throwable], creator: function.Creator[? <: Out]): SubFlow[In, Out, Mat] =
     new SubFlow(delegate.recover {
       case elem if clazz.isInstance(elem) => creator.create()
     })
@@ -1412,7 +1416,7 @@ final class SubFlow[In, Out, Mat](
    *
    * @since 1.3.0
    */
-  def recover(p: function.Predicate[? >: Throwable], creator: function.Creator[Out]): SubFlow[In, Out, Mat] =
+  def recover(p: function.Predicate[? >: Throwable], creator: function.Creator[? <: Out]): SubFlow[In, Out, Mat] =
     new SubFlow(delegate.recover {
       case elem if p.test(elem) => creator.create()
     })
@@ -1738,7 +1742,7 @@ final class SubFlow[In, Out, Mat](
    */
   def mapError[E <: Throwable](
       clazz: Class[E],
-      f: function.Function[E, Throwable]): javadsl.SubFlow[In, Out, Mat @uncheckedVariance] =
+      f: function.Function[? >: E, ? <: Throwable]): javadsl.SubFlow[In, Out, Mat @uncheckedVariance] =
     mapError {
       case err if clazz.isInstance(err) => f(clazz.cast(err))
     }
@@ -1810,8 +1814,8 @@ final class SubFlow[In, Out, Mat](
    * @param aggregate Takes the currently aggregated value and the current pending element to produce a new aggregate
    */
   def conflateWithSeed[S](
-      seed: function.Function[Out, S],
-      aggregate: function.Function2[S, Out, S]): SubFlow[In, S, Mat] =
+      seed: function.Function[? >: Out, ? <: S],
+      aggregate: function.Function2[? >: S, ? >: Out, ? <: S]): SubFlow[In, S, Mat] =
     new SubFlow(delegate.conflateWithSeed(seed.apply)(aggregate.apply))
 
   /**
@@ -1839,7 +1843,7 @@ final class SubFlow[In, Out, Mat](
    *
    * @param aggregate Takes the currently aggregated value and the current pending element to produce a new aggregate
    */
-  def conflate(aggregate: function.Function2[Out, Out, Out]): SubFlow[In, Out, Mat] =
+  def conflate(aggregate: function.Function2[? >: Out, ? >: Out, ? <: Out]): SubFlow[In, Out, Mat] =
     new SubFlow(delegate.conflate(aggregate.apply))
 
   /**
@@ -1868,8 +1872,8 @@ final class SubFlow[In, Out, Mat](
    */
   def batch[S](
       max: Long,
-      seed: function.Function[Out, S],
-      aggregate: function.Function2[S, Out, S]): SubFlow[In, S, Mat] =
+      seed: function.Function[? >: Out, ? <: S],
+      aggregate: function.Function2[? >: S, ? >: Out, ? <: S]): SubFlow[In, S, Mat] =
     new SubFlow(delegate.batch(max, seed.apply)(aggregate.apply))
 
   /**
@@ -1902,9 +1906,9 @@ final class SubFlow[In, Out, Mat](
    */
   def batchWeighted[S](
       max: Long,
-      costFn: function.Function[Out, java.lang.Long],
-      seed: function.Function[Out, S],
-      aggregate: function.Function2[S, Out, S]): SubFlow[In, S, Mat] =
+      costFn: function.Function[? >: Out, java.lang.Long],
+      seed: function.Function[? >: Out, ? <: S],
+      aggregate: function.Function2[? >: S, ? >: Out, ? <: S]): SubFlow[In, S, Mat] =
     new SubFlow(delegate.batchWeighted(max, costFn.apply, seed.apply)(aggregate.apply))
 
   /**
@@ -1941,7 +1945,7 @@ final class SubFlow[In, Out, Mat](
    * @see [[#extrapolate]] for a version that always preserves the original element and allows for an initial "startup"
    *                       element.
    */
-  def expand[U](expander: function.Function[Out, java.util.Iterator[U]]): SubFlow[In, U, Mat] =
+  def expand[U](expander: function.Function[? >: Out, ? <: java.util.Iterator[U]]): SubFlow[In, U, Mat] =
     new SubFlow(delegate.expand(in => expander(in).asScala))
 
   /**
@@ -1974,7 +1978,8 @@ final class SubFlow[In, Out, Mat](
    *                    on the original, to be emitted in case downstream signals demand.
    * @see [[#expand]]
    */
-  def extrapolate(extrapolator: function.Function[Out @uncheckedVariance, java.util.Iterator[Out @uncheckedVariance]])
+  def extrapolate(
+      extrapolator: function.Function[? >: Out @uncheckedVariance, ? <: java.util.Iterator[Out @uncheckedVariance]])
       : SubFlow[In, Out, Mat] =
     new SubFlow(delegate.extrapolate(in => extrapolator(in).asScala))
 
@@ -2010,7 +2015,7 @@ final class SubFlow[In, Out, Mat](
    * @see [[#expand]]
    */
   def extrapolate(
-      extrapolator: function.Function[Out @uncheckedVariance, java.util.Iterator[Out @uncheckedVariance]],
+      extrapolator: function.Function[? >: Out @uncheckedVariance, ? <: java.util.Iterator[Out @uncheckedVariance]],
       initial: Out @uncheckedVariance): SubFlow[In, Out, Mat] =
     new SubFlow(delegate.extrapolate(in => extrapolator(in).asScala, Some(initial)))
 
@@ -2086,7 +2091,7 @@ final class SubFlow[In, Out, Mat](
    */
   def flatMapPrefix[Out2, Mat2](
       n: Int,
-      f: function.Function[java.util.List[Out], javadsl.Flow[Out, Out2, Mat2]]): SubFlow[In, Out2, Mat] = {
+      f: function.Function[? >: java.util.List[Out], ? <: javadsl.Flow[Out, Out2, Mat2]]): SubFlow[In, Out2, Mat] = {
     val newDelegate = delegate.flatMapPrefix(n)(seq => f(seq.asJava).asScala)
     new javadsl.SubFlow(newDelegate)
   }
@@ -2104,7 +2109,7 @@ final class SubFlow[In, Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    */
-  def flatMapConcat[T, M](f: function.Function[Out, ? <: Graph[SourceShape[T], M]]): SubFlow[In, T, Mat] =
+  def flatMapConcat[T, M](f: function.Function[? >: Out, ? <: Graph[SourceShape[T], M]]): SubFlow[In, T, Mat] =
     new SubFlow(delegate.flatMapConcat(x => f(x)))
 
   /**
@@ -2124,7 +2129,7 @@ final class SubFlow[In, Out, Mat](
    */
   def flatMapConcat[T, M](
       parallelism: Int,
-      f: function.Function[Out, ? <: Graph[SourceShape[T], M]]): SubFlow[In, T, Mat] =
+      f: function.Function[? >: Out, ? <: Graph[SourceShape[T], M]]): SubFlow[In, T, Mat] =
     new SubFlow(delegate.flatMapConcat(parallelism, x => f(x)))
 
   /**
@@ -2140,7 +2145,8 @@ final class SubFlow[In, Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    */
-  def flatMapMerge[T, M](breadth: Int, f: function.Function[Out, ? <: Graph[SourceShape[T], M]]): SubFlow[In, T, Mat] =
+  def flatMapMerge[T, M](breadth: Int, f: function.Function[? >: Out, ? <: Graph[SourceShape[T], M]])
+      : SubFlow[In, T, Mat] =
     new SubFlow(delegate.flatMapMerge(breadth, o => f(o)))
 
   /**
@@ -2159,7 +2165,7 @@ final class SubFlow[In, Out, Mat](
    *
    * @since 1.2.0
    */
-  def switchMap[T, M](f: function.Function[Out, ? <: Graph[SourceShape[T], M]]): SubFlow[In, T, Mat] =
+  def switchMap[T, M](f: function.Function[? >: Out, ? <: Graph[SourceShape[T], M]]): SubFlow[In, T, Mat] =
     new SubFlow(delegate.switchMap(o => f(o)))
 
   /**
@@ -2384,7 +2390,7 @@ final class SubFlow[In, Out, Mat](
    *
    * '''Cancels when''' any of the downstreams cancel
    */
-  def divertTo(that: Graph[SinkShape[Out], ?], when: function.Predicate[Out]): SubFlow[In, Out, Mat] =
+  def divertTo(that: Graph[SinkShape[Out], ?], when: function.Predicate[? >: Out]): SubFlow[In, Out, Mat] =
     new SubFlow(delegate.divertTo(that, when.test))
 
   /**
@@ -2634,7 +2640,7 @@ final class SubFlow[In, Out, Mat](
    */
   def zipWith[Out2, Out3](
       that: Graph[SourceShape[Out2], ?],
-      combine: function.Function2[Out, Out2, Out3]): SubFlow[In, Out3, Mat] =
+      combine: function.Function2[? >: Out, ? >: Out2, ? <: Out3]): SubFlow[In, Out3, Mat] =
     new SubFlow(delegate.zipWith[Out2, Out3](that)(combinerToScala(combine)))
 
   /**
@@ -2652,7 +2658,7 @@ final class SubFlow[In, Out, Mat](
    */
   def zipLatestWith[Out2, Out3](
       that: Graph[SourceShape[Out2], ?],
-      combine: function.Function2[Out, Out2, Out3]): SubFlow[In, Out3, Mat] =
+      combine: function.Function2[? >: Out, ? >: Out2, ? <: Out3]): SubFlow[In, Out3, Mat] =
     new SubFlow(delegate.zipLatestWith[Out2, Out3](that)(combinerToScala(combine)))
 
   /**
@@ -2750,7 +2756,7 @@ final class SubFlow[In, Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    */
-  def keepAlive(maxIdle: java.time.Duration, injectedElem: function.Creator[Out]): SubFlow[In, Out, Mat] =
+  def keepAlive(maxIdle: java.time.Duration, injectedElem: function.Creator[? <: Out]): SubFlow[In, Out, Mat] =
     new SubFlow(delegate.keepAlive(maxIdle.toScala, () => injectedElem.create()))
 
   /**
@@ -2865,7 +2871,7 @@ final class SubFlow[In, Out, Mat](
   def throttle(
       cost: Int,
       per: java.time.Duration,
-      costCalculation: function.Function[Out, Integer]): javadsl.SubFlow[In, Out, Mat] =
+      costCalculation: function.Function[? >: Out, Integer]): javadsl.SubFlow[In, Out, Mat] =
     new SubFlow(delegate.throttle(cost, per.toScala, costCalculation.apply))
 
   /**
@@ -2914,7 +2920,7 @@ final class SubFlow[In, Out, Mat](
       cost: Int,
       per: java.time.Duration,
       maximumBurst: Int,
-      costCalculation: function.Function[Out, Integer],
+      costCalculation: function.Function[? >: Out, Integer],
       mode: ThrottleMode): javadsl.SubFlow[In, Out, Mat] =
     new SubFlow(delegate.throttle(cost, per.toScala, maximumBurst, costCalculation.apply, mode))
 
@@ -2998,7 +3004,8 @@ final class SubFlow[In, Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    */
-  def log(name: String, extract: function.Function[Out, Any], @Nullable log: LoggingAdapter): SubFlow[In, Out, Mat] =
+  def log(name: String, extract: function.Function[? >: Out, Any], @Nullable log: LoggingAdapter)
+      : SubFlow[In, Out, Mat] =
     new SubFlow(delegate.log(name, e => extract.apply(e))(log))
 
   /**
@@ -3020,7 +3027,7 @@ final class SubFlow[In, Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    */
-  def log(name: String, extract: function.Function[Out, Any]): SubFlow[In, Out, Mat] =
+  def log(name: String, extract: function.Function[? >: Out, Any]): SubFlow[In, Out, Mat] =
     this.log(name, extract, null)
 
   /**
@@ -3084,8 +3091,8 @@ final class SubFlow[In, Out, Mat](
    */
   def logWithMarker(
       name: String,
-      marker: function.Function[Out, LogMarker],
-      extract: function.Function[Out, Any],
+      marker: function.Function[? >: Out, ? <: LogMarker],
+      extract: function.Function[? >: Out, Any],
       @Nullable log: MarkerLoggingAdapter): SubFlow[In, Out, Mat] =
     new SubFlow(delegate.logWithMarker(name, e => marker.apply(e), e => extract.apply(e))(log))
 
@@ -3110,8 +3117,8 @@ final class SubFlow[In, Out, Mat](
    */
   def logWithMarker(
       name: String,
-      marker: function.Function[Out, LogMarker],
-      extract: function.Function[Out, Any]): SubFlow[In, Out, Mat] =
+      marker: function.Function[? >: Out, ? <: LogMarker],
+      extract: function.Function[? >: Out, Any]): SubFlow[In, Out, Mat] =
     this.logWithMarker(name, marker, extract, null)
 
   /**
@@ -3132,7 +3139,7 @@ final class SubFlow[In, Out, Mat](
    */
   def logWithMarker(
       name: String,
-      marker: function.Function[Out, LogMarker],
+      marker: function.Function[? >: Out, ? <: LogMarker],
       @Nullable log: MarkerLoggingAdapter): SubFlow[In, Out, Mat] =
     this.logWithMarker(name, marker, ConstantFun.javaIdentityFunction[Out], log)
 
@@ -3152,7 +3159,7 @@ final class SubFlow[In, Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    */
-  def logWithMarker(name: String, marker: function.Function[Out, LogMarker]): SubFlow[In, Out, Mat] =
+  def logWithMarker(name: String, marker: function.Function[? >: Out, ? <: LogMarker]): SubFlow[In, Out, Mat] =
     this.logWithMarker(name, marker, ConstantFun.javaIdentityFunction[Out], null)
 
   /**
@@ -3180,9 +3187,9 @@ final class SubFlow[In, Out, Mat](
    * @param harvest     this is invoked before emit within the current stage/operator
    * @param emitOnTimer decide whether the current aggregated elements can be emitted, the custom function is invoked on every interval
    */
-  def aggregateWithBoundary[Agg, Emit](allocate: function.Creator[Agg],
-      aggregate: function.Function2[Agg, Out, Pair[Agg, Boolean]],
-      harvest: function.Function[Agg, Emit],
+  def aggregateWithBoundary[Agg, Emit](allocate: function.Creator[? <: Agg],
+      aggregate: function.Function2[? >: Agg, ? >: Out, ? <: Pair[Agg, Boolean]],
+      harvest: function.Function[? >: Agg, ? <: Emit],
       emitOnTimer: Optional[Pair[function.Predicate[Agg], java.time.Duration]])
       : javadsl.SubFlow[In, Emit, Mat] = {
     import scala.jdk.OptionConverters._

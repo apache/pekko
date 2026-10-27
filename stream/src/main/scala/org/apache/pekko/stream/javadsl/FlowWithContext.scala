@@ -19,7 +19,6 @@ import java.util.concurrent.CompletionStage
 import scala.annotation.unchecked.uncheckedVariance
 import scala.jdk.CollectionConverters._
 import scala.jdk.DurationConverters._
-import scala.jdk.FutureConverters._
 import scala.jdk.OptionConverters._
 import scala.reflect.ClassTag
 
@@ -70,7 +69,7 @@ object FlowWithContext {
   def unsafeOptionalDataVia[FIn, FOut, FViaOut, Ctx, FMat, FViaMat, Mat](
       flow: FlowWithContext[FIn, Ctx, Optional[FOut], Ctx, FMat],
       viaFlow: Flow[FOut, FViaOut, FViaMat],
-      combine: function.Function2[FMat, FViaMat, Mat]
+      combine: function.Function2[? >: FMat, ? >: FViaMat, ? <: Mat]
   ): FlowWithContext[FIn, Ctx, Optional[FViaOut], Ctx, Mat] =
     scaladsl.FlowWithContext.unsafeOptionalDataVia(flow.map(_.toScala).asScala, viaFlow.asScala)(
       combinerToScala(combine)).map(
@@ -148,7 +147,8 @@ final class FlowWithContext[In, CtxIn, Out, CtxOut, +Mat](
    *
    * @see [[pekko.stream.javadsl.Flow.mapMaterializedValue]]
    */
-  def mapMaterializedValue[Mat2](f: function.Function[Mat, Mat2]): FlowWithContext[In, CtxIn, Out, CtxOut, Mat2] =
+  def mapMaterializedValue[Mat2](
+      f: function.Function[? >: Mat, ? <: Mat2]): FlowWithContext[In, CtxIn, Out, CtxOut, Mat2] =
     new FlowWithContext(delegate.mapMaterializedValue[Mat2](f))
 
   /**
@@ -209,7 +209,7 @@ final class FlowWithContext[In, CtxIn, Out, CtxOut, +Mat](
    *
    * @see [[pekko.stream.javadsl.Flow.filter]]
    */
-  def filter(p: function.Predicate[Out]): FlowWithContext[In, CtxIn, Out, CtxOut, Mat] =
+  def filter(p: function.Predicate[? >: Out]): FlowWithContext[In, CtxIn, Out, CtxOut, Mat] =
     viaScala(_.filter(p.test))
 
   /**
@@ -219,7 +219,7 @@ final class FlowWithContext[In, CtxIn, Out, CtxOut, +Mat](
    *
    * @see [[pekko.stream.javadsl.Flow.filterNot]]
    */
-  def filterNot(p: function.Predicate[Out]): FlowWithContext[In, CtxIn, Out, CtxOut, Mat] =
+  def filterNot(p: function.Predicate[? >: Out]): FlowWithContext[In, CtxIn, Out, CtxOut, Mat] =
     viaScala(_.filterNot(p.test))
 
   /**
@@ -237,7 +237,7 @@ final class FlowWithContext[In, CtxIn, Out, CtxOut, +Mat](
    * @see [[pekko.stream.javadsl.Flow.dropRepeated]]
    * @since 2.0.0
    */
-  def dropRepeated(p: function.Function2[Out, Out, Boolean]): FlowWithContext[In, CtxIn, Out, CtxOut, Mat] =
+  def dropRepeated(p: function.Function2[? >: Out, ? >: Out, Boolean]): FlowWithContext[In, CtxIn, Out, CtxOut, Mat] =
     viaScala(_.dropRepeated((left, right) => p.apply(left, right)))
 
   /**
@@ -246,7 +246,7 @@ final class FlowWithContext[In, CtxIn, Out, CtxOut, +Mat](
    * @see [[pekko.stream.javadsl.Flow.dropWhile]]
    * @since 2.0.0
    */
-  def dropWhile(p: function.Predicate[Out]): FlowWithContext[In, CtxIn, Out, CtxOut, Mat] =
+  def dropWhile(p: function.Predicate[? >: Out]): FlowWithContext[In, CtxIn, Out, CtxOut, Mat] =
     viaScala(_.dropWhile(p.test))
 
   /**
@@ -285,7 +285,7 @@ final class FlowWithContext[In, CtxIn, Out, CtxOut, +Mat](
    *
    * @see [[pekko.stream.javadsl.Flow.map]]
    */
-  def map[Out2](f: function.Function[Out, Out2]): FlowWithContext[In, CtxIn, Out2, CtxOut, Mat] =
+  def map[Out2](f: function.Function[? >: Out, ? <: Out2]): FlowWithContext[In, CtxIn, Out2, CtxOut, Mat] =
     viaScala(_.map(f.apply))
 
   /**
@@ -297,7 +297,7 @@ final class FlowWithContext[In, CtxIn, Out, CtxOut, +Mat](
    * @since 2.0.0
    */
   def mapOption[Out2](
-      f: function.Function[Out, Optional[Out2]]): FlowWithContext[In, CtxIn, Out2, CtxOut, Mat] =
+      f: function.Function[? >: Out, ? <: Optional[Out2]]): FlowWithContext[In, CtxIn, Out2, CtxOut, Mat] =
     viaScala(_.mapOption(out => f.apply(out).toScala))
 
   /**
@@ -307,8 +307,8 @@ final class FlowWithContext[In, CtxIn, Out, CtxOut, +Mat](
    */
   def mapAsync[Out2](
       parallelism: Int,
-      f: function.Function[Out, CompletionStage[Out2]]): FlowWithContext[In, CtxIn, Out2, CtxOut, Mat] =
-    viaScala(_.mapAsync[Out2](parallelism)(o => f.apply(o).asScala))
+      f: function.Function[? >: Out, ? <: CompletionStage[? <: Out2]]): FlowWithContext[In, CtxIn, Out2, CtxOut, Mat] =
+    viaScala(_.mapAsync[Out2](parallelism)(o => stageToScala(f.apply(o))))
 
   /**
    * Context-preserving variant of [[pekko.stream.javadsl.Flow.mapAsyncPartitioned]].
@@ -318,9 +318,10 @@ final class FlowWithContext[In, CtxIn, Out, CtxOut, +Mat](
    */
   def mapAsyncPartitioned[Out2, P](
       parallelism: Int,
-      partitioner: function.Function[Out, P],
-      f: function.Function2[Out, P, CompletionStage[Out2]]): FlowWithContext[In, CtxIn, Out2, CtxOut, Mat] = {
-    viaScala(_.mapAsyncPartitioned(parallelism)(partitioner(_))(f(_, _).asScala))
+      partitioner: function.Function[? >: Out, ? <: P],
+      f: function.Function2[? >: Out, ? >: P, ? <: CompletionStage[? <: Out2]])
+      : FlowWithContext[In, CtxIn, Out2, CtxOut, Mat] = {
+    viaScala(_.mapAsyncPartitioned(parallelism)(partitioner(_))((a, b) => stageToScala(f(a, b))))
   }
 
   /**
@@ -331,9 +332,10 @@ final class FlowWithContext[In, CtxIn, Out, CtxOut, +Mat](
    */
   def mapAsyncPartitionedUnordered[Out2, P](
       parallelism: Int,
-      partitioner: function.Function[Out, P],
-      f: function.Function2[Out, P, CompletionStage[Out2]]): FlowWithContext[In, CtxIn, Out2, CtxOut, Mat] = {
-    viaScala(_.mapAsyncPartitionedUnordered(parallelism)(partitioner(_))(f(_, _).asScala))
+      partitioner: function.Function[? >: Out, ? <: P],
+      f: function.Function2[? >: Out, ? >: P, ? <: CompletionStage[? <: Out2]])
+      : FlowWithContext[In, CtxIn, Out2, CtxOut, Mat] = {
+    viaScala(_.mapAsyncPartitionedUnordered(parallelism)(partitioner(_))((a, b) => stageToScala(f(a, b))))
   }
 
   /**
@@ -365,14 +367,14 @@ final class FlowWithContext[In, CtxIn, Out, CtxOut, +Mat](
    * @see [[pekko.stream.javadsl.Flow.mapConcat]]
    */
   def mapConcat[Out2](
-      f: function.Function[Out, ? <: java.lang.Iterable[Out2]]): FlowWithContext[In, CtxIn, Out2, CtxOut, Mat] =
+      f: function.Function[? >: Out, ? <: java.lang.Iterable[Out2]]): FlowWithContext[In, CtxIn, Out2, CtxOut, Mat] =
     viaScala(_.mapConcat(elem => f.apply(elem).asScala))
 
   /**
    * Apply the given function to each context element (leaving the data elements unchanged).
    */
   def mapContext[CtxOut2](
-      extractContext: function.Function[CtxOut, CtxOut2]): FlowWithContext[In, CtxIn, Out, CtxOut2, Mat] = {
+      extractContext: function.Function[? >: CtxOut, ? <: CtxOut2]): FlowWithContext[In, CtxIn, Out, CtxOut2, Mat] = {
     viaScala(_.mapContext(extractContext.apply))
   }
 
@@ -391,7 +393,7 @@ final class FlowWithContext[In, CtxIn, Out, CtxOut, +Mat](
    * @see [[pekko.stream.javadsl.Flow.limitWeighted]]
    * @since 2.0.0
    */
-  def limitWeighted(max: Long, costFn: function.Function[Out, java.lang.Long])
+  def limitWeighted(max: Long, costFn: function.Function[? >: Out, java.lang.Long])
       : FlowWithContext[In, CtxIn, Out, CtxOut, Mat] =
     viaScala(_.limitWeighted(max)(costFn.apply))
 
@@ -415,7 +417,7 @@ final class FlowWithContext[In, CtxIn, Out, CtxOut, +Mat](
    */
   def log(
       name: String,
-      extract: function.Function[Out, Any],
+      extract: function.Function[? >: Out, Any],
       @Nullable log: LoggingAdapter): FlowWithContext[In, CtxIn, Out, CtxOut, Mat] =
     viaScala(_.log(name, e => extract.apply(e))(log))
 
@@ -424,7 +426,7 @@ final class FlowWithContext[In, CtxIn, Out, CtxOut, +Mat](
    *
    * @see [[pekko.stream.javadsl.Flow.log]]
    */
-  def log(name: String, extract: function.Function[Out, Any]): FlowWithContext[In, CtxIn, Out, CtxOut, Mat] =
+  def log(name: String, extract: function.Function[? >: Out, Any]): FlowWithContext[In, CtxIn, Out, CtxOut, Mat] =
     this.log(name, extract, null)
 
   /**
@@ -450,8 +452,8 @@ final class FlowWithContext[In, CtxIn, Out, CtxOut, +Mat](
    */
   def logWithMarker(
       name: String,
-      marker: function.Function2[Out, CtxOut, LogMarker],
-      extract: function.Function[Out, Any],
+      marker: function.Function2[? >: Out, ? >: CtxOut, ? <: LogMarker],
+      extract: function.Function[? >: Out, Any],
       @Nullable log: MarkerLoggingAdapter): FlowWithContext[In, CtxIn, Out, CtxOut, Mat] =
     viaScala(_.logWithMarker(name, (e, c) => marker.apply(e, c), e => extract.apply(e))(log))
 
@@ -462,8 +464,8 @@ final class FlowWithContext[In, CtxIn, Out, CtxOut, +Mat](
    */
   def logWithMarker(
       name: String,
-      marker: function.Function2[Out, CtxOut, LogMarker],
-      extract: function.Function[Out, Any]): FlowWithContext[In, CtxIn, Out, CtxOut, Mat] =
+      marker: function.Function2[? >: Out, ? >: CtxOut, ? <: LogMarker],
+      extract: function.Function[? >: Out, Any]): FlowWithContext[In, CtxIn, Out, CtxOut, Mat] =
     this.logWithMarker(name, marker, extract, null)
 
   /**
@@ -473,7 +475,7 @@ final class FlowWithContext[In, CtxIn, Out, CtxOut, +Mat](
    */
   def logWithMarker(
       name: String,
-      marker: function.Function2[Out, CtxOut, LogMarker],
+      marker: function.Function2[? >: Out, ? >: CtxOut, ? <: LogMarker],
       @Nullable log: MarkerLoggingAdapter): FlowWithContext[In, CtxIn, Out, CtxOut, Mat] =
     this.logWithMarker(name, marker, ConstantFun.javaIdentityFunction[Out], log)
 
@@ -484,7 +486,7 @@ final class FlowWithContext[In, CtxIn, Out, CtxOut, +Mat](
    */
   def logWithMarker(
       name: String,
-      marker: function.Function2[Out, CtxOut, LogMarker]): FlowWithContext[In, CtxIn, Out, CtxOut, Mat] =
+      marker: function.Function2[? >: Out, ? >: CtxOut, ? <: LogMarker]): FlowWithContext[In, CtxIn, Out, CtxOut, Mat] =
     this.logWithMarker(name, marker, ConstantFun.javaIdentityFunction[Out], null)
 
   /**
@@ -494,7 +496,7 @@ final class FlowWithContext[In, CtxIn, Out, CtxOut, +Mat](
    * @since 2.0.0
    */
   def takeWhile(
-      p: function.Predicate[Out],
+      p: function.Predicate[? >: Out],
       inclusive: Boolean): FlowWithContext[In, CtxIn, Out, CtxOut, Mat] =
     viaScala(_.takeWhile(p.test, inclusive))
 
@@ -504,7 +506,7 @@ final class FlowWithContext[In, CtxIn, Out, CtxOut, +Mat](
    * @see [[pekko.stream.javadsl.Flow.takeWhile]]
    * @since 2.0.0
    */
-  def takeWhile(p: function.Predicate[Out]): FlowWithContext[In, CtxIn, Out, CtxOut, Mat] =
+  def takeWhile(p: function.Predicate[? >: Out]): FlowWithContext[In, CtxIn, Out, CtxOut, Mat] =
     takeWhile(p, inclusive = false)
 
   /**
@@ -513,7 +515,7 @@ final class FlowWithContext[In, CtxIn, Out, CtxOut, +Mat](
    * @see [[pekko.stream.javadsl.Flow.takeUntil]]
    * @since 2.0.0
    */
-  def takeUntil(p: function.Predicate[Out]): FlowWithContext[In, CtxIn, Out, CtxOut, Mat] =
+  def takeUntil(p: function.Predicate[? >: Out]): FlowWithContext[In, CtxIn, Out, CtxOut, Mat] =
     viaScala(_.takeUntil(p.test))
 
   /**
@@ -562,7 +564,7 @@ final class FlowWithContext[In, CtxIn, Out, CtxOut, +Mat](
   def throttle(
       cost: Int,
       per: java.time.Duration,
-      costCalculation: function.Function[Out, Integer]): FlowWithContext[In, CtxIn, Out, CtxOut, Mat] =
+      costCalculation: function.Function[? >: Out, Integer]): FlowWithContext[In, CtxIn, Out, CtxOut, Mat] =
     viaScala(_.throttle(cost, per.toScala, costCalculation.apply))
 
   /**
@@ -574,7 +576,7 @@ final class FlowWithContext[In, CtxIn, Out, CtxOut, +Mat](
       cost: Int,
       per: java.time.Duration,
       maximumBurst: Int,
-      costCalculation: function.Function[Out, Integer],
+      costCalculation: function.Function[? >: Out, Integer],
       mode: ThrottleMode): FlowWithContext[In, CtxIn, Out, CtxOut, Mat] =
     viaScala(_.throttle(cost, per.toScala, maximumBurst, costCalculation.apply, mode))
 

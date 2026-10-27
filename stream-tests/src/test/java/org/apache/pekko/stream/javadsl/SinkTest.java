@@ -408,4 +408,20 @@ public class SinkTest extends StreamTestJupiter {
             .get(1, TimeUnit.SECONDS);
     assertEquals(List.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10), r);
   }
+
+  @Test
+  public void mustAcceptFunctionsOverWiderAndNarrowerTypes() throws Exception {
+    // functions may accept a supertype of the element and return a subtype of the result
+    final Function2<Number, Number, Integer> sum = (acc, n) -> acc.intValue() + n.intValue();
+    final Function<Object, Integer> length = o -> o.toString().length();
+    final Sink<String, CompletionStage<Integer>> totalLength =
+        Sink.<Integer, Integer>fold(0, sum).contramap(length);
+
+    assertEquals(
+        6,
+        Source.from(List.of("a", "bb", "ccc"))
+            .runWith(totalLength, system)
+            .toCompletableFuture()
+            .get(3, TimeUnit.SECONDS));
+  }
 }

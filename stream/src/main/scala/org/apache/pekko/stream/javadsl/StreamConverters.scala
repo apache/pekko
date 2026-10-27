@@ -49,7 +49,7 @@ object StreamConverters {
    *
    * @param f A Creator which creates an OutputStream to write to
    */
-  def fromOutputStream(f: function.Creator[OutputStream]): javadsl.Sink[ByteString, CompletionStage[IOResult]] =
+  def fromOutputStream(f: function.Creator[? <: OutputStream]): javadsl.Sink[ByteString, CompletionStage[IOResult]] =
     fromOutputStream(f, autoFlush = false)
 
   /**
@@ -68,7 +68,7 @@ object StreamConverters {
    * @param autoFlush If true the OutputStream will be flushed whenever a byte array is written
    */
   def fromOutputStream(
-      f: function.Creator[OutputStream],
+      f: function.Creator[? <: OutputStream],
       autoFlush: Boolean): javadsl.Sink[ByteString, CompletionStage[IOResult]] =
     new Sink(scaladsl.StreamConverters.fromOutputStream(() => f.create(), autoFlush).toCompletionStage())
 
@@ -121,7 +121,7 @@ object StreamConverters {
    * The created [[InputStream]] will be closed when the [[Source]] is cancelled.
    */
   def fromInputStream(
-      in: function.Creator[InputStream],
+      in: function.Creator[? <: InputStream],
       chunkSize: Int): javadsl.Source[ByteString, CompletionStage[IOResult]] =
     new Source(scaladsl.StreamConverters.fromInputStream(() => in.create(), chunkSize).toCompletionStage())
 
@@ -140,7 +140,7 @@ object StreamConverters {
    *
    * The created [[InputStream]] will be closed when the [[Source]] is cancelled.
    */
-  def fromInputStream(in: function.Creator[InputStream]): javadsl.Source[ByteString, CompletionStage[IOResult]] =
+  def fromInputStream(in: function.Creator[? <: InputStream]): javadsl.Source[ByteString, CompletionStage[IOResult]] =
     fromInputStream(in, 8192)
 
   /**
@@ -200,7 +200,7 @@ object StreamConverters {
    * and the rest of flow.
    */
   def fromJavaStream[O, S <: java.util.stream.BaseStream[O, S]](
-      stream: function.Creator[java.util.stream.BaseStream[O, S]]): javadsl.Source[O, NotUsed] =
+      stream: function.Creator[? <: java.util.stream.BaseStream[O, S]]): javadsl.Source[O, NotUsed] =
     new Source(scaladsl.StreamConverters.fromJavaStream(stream.create _))
 
   /**
@@ -213,7 +213,7 @@ object StreamConverters {
    * Note that a flow can be materialized multiple times, so the function producing the ``Collector`` must be able
    * to handle multiple invocations.
    */
-  def javaCollector[T, R](collector: function.Creator[Collector[T, ? <: Any, R]]): Sink[T, CompletionStage[R]] =
+  def javaCollector[T, R](collector: function.Creator[? <: Collector[T, ? <: Any, R]]): Sink[T, CompletionStage[R]] =
     new Sink(scaladsl.StreamConverters.javaCollector[T, R](() => collector.create()).toCompletionStage())
 
   /**
@@ -227,7 +227,7 @@ object StreamConverters {
    * to handle multiple invocations.
    */
   def javaCollectorParallelUnordered[T, R](parallelism: Int,
-      collector: function.Creator[Collector[T, ? <: Any, R]]): Sink[T, CompletionStage[R]] =
+      collector: function.Creator[? <: Collector[T, ? <: Any, R]]): Sink[T, CompletionStage[R]] =
     new Sink(
       scaladsl.StreamConverters
         .javaCollectorParallelUnordered[T, R](parallelism)(() => collector.create())
