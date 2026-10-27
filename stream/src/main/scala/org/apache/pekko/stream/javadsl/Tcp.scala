@@ -261,7 +261,8 @@ class Tcp(system: ExtendedActorSystem) extends pekko.actor.Extension {
    */
   def outgoingConnectionWithTls(
       remoteAddress: InetSocketAddress,
-      createSSLEngine: function.Creator[SSLEngine]): Flow[ByteString, ByteString, CompletionStage[OutgoingConnection]] =
+      createSSLEngine: function.Creator[? <: SSLEngine])
+      : Flow[ByteString, ByteString, CompletionStage[OutgoingConnection]] =
     Flow.fromGraph(
       delegate
         .outgoingConnectionWithTls(remoteAddress, createSSLEngine = () => createSSLEngine.create())
@@ -279,12 +280,12 @@ class Tcp(system: ExtendedActorSystem) extends pekko.actor.Extension {
    */
   def outgoingConnectionWithTls(
       remoteAddress: InetSocketAddress,
-      createSSLEngine: function.Creator[SSLEngine],
+      createSSLEngine: function.Creator[? <: SSLEngine],
       localAddress: Optional[InetSocketAddress],
       options: JIterable[SocketOption],
       connectTimeout: Optional[java.time.Duration],
       idleTimeout: Optional[java.time.Duration],
-      verifySession: function.Function[SSLSession, Optional[Throwable]],
+      verifySession: function.Function[? >: SSLSession, ? <: Optional[Throwable]],
       closing: TLSClosing): Flow[ByteString, ByteString, CompletionStage[OutgoingConnection]] = {
     Flow.fromGraph(
       delegate
@@ -313,7 +314,7 @@ class Tcp(system: ExtendedActorSystem) extends pekko.actor.Extension {
   def bindWithTls(
       interface: String,
       port: Int,
-      createSSLEngine: function.Creator[SSLEngine]): Source[IncomingConnection, CompletionStage[ServerBinding]] = {
+      createSSLEngine: function.Creator[? <: SSLEngine]): Source[IncomingConnection, CompletionStage[ServerBinding]] = {
     Source.fromGraph(
       delegate
         .bindWithTls(interface, port, createSSLEngine = () => createSSLEngine.create())
@@ -330,11 +331,11 @@ class Tcp(system: ExtendedActorSystem) extends pekko.actor.Extension {
   def bindWithTls(
       interface: String,
       port: Int,
-      createSSLEngine: function.Creator[SSLEngine],
+      createSSLEngine: function.Creator[? <: SSLEngine],
       backlog: Int,
       options: JIterable[SocketOption],
       idleTimeout: Optional[java.time.Duration],
-      verifySession: function.Function[SSLSession, Optional[Throwable]],
+      verifySession: function.Function[? >: SSLSession, ? <: Optional[Throwable]],
       closing: TLSClosing): Source[IncomingConnection, CompletionStage[ServerBinding]] = {
     Source.fromGraph(
       delegate

@@ -127,7 +127,7 @@ object Framing {
       fieldOffset: Int,
       maximumFrameLength: Int,
       byteOrder: ByteOrder,
-      computeFrameSize: pekko.japi.function.Function2[Array[Byte], Integer, Integer])
+      computeFrameSize: pekko.japi.function.Function2[? >: Array[Byte], ? >: Integer, Integer])
       : Flow[ByteString, ByteString, NotUsed] =
     scaladsl.Framing
       .lengthField(

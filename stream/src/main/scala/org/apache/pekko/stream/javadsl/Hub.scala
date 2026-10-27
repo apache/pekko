@@ -326,7 +326,7 @@ object PartitionHub {
    */
   def ofStateful[T](
       @nowarn("msg=never used") clazz: Class[T],
-      partitioner: function.Creator[ToLongBiFunction[ConsumerInfo, T]],
+      partitioner: function.Creator[? <: ToLongBiFunction[ConsumerInfo, T]],
       startAfterNrOfConsumers: Int,
       bufferSize: Int): Sink[T, Source[T, NotUsed]] = {
     val p: () => (pekko.stream.scaladsl.PartitionHub.ConsumerInfo, T) => Long = () => {
@@ -370,7 +370,7 @@ object PartitionHub {
    */
   def ofStateful[T](
       clazz: Class[T],
-      partitioner: function.Creator[ToLongBiFunction[ConsumerInfo, T]],
+      partitioner: function.Creator[? <: ToLongBiFunction[ConsumerInfo, T]],
       startAfterNrOfConsumers: Int): Sink[T, Source[T, NotUsed]] =
     ofStateful(clazz, partitioner, startAfterNrOfConsumers, pekko.stream.scaladsl.PartitionHub.defaultBufferSize)
 
@@ -405,7 +405,7 @@ object PartitionHub {
    */
   def of[T](
       @nowarn("msg=never used") clazz: Class[T],
-      partitioner: function.Function2[Integer, T, Integer],
+      partitioner: function.Function2[? >: Integer, ? >: T, Integer],
       startAfterNrOfConsumers: Int,
       bufferSize: Int): Sink[T, Source[T, NotUsed]] =
     pekko.stream.scaladsl.PartitionHub
@@ -444,7 +444,7 @@ object PartitionHub {
    */
   def of[T](
       clazz: Class[T],
-      partitioner: function.Function2[Integer, T, Integer],
+      partitioner: function.Function2[? >: Integer, ? >: T, Integer],
       startAfterNrOfConsumers: Int): Sink[T, Source[T, NotUsed]] =
     of(clazz, partitioner, startAfterNrOfConsumers, pekko.stream.scaladsl.PartitionHub.defaultBufferSize)
 

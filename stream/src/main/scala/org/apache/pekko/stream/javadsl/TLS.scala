@@ -73,7 +73,7 @@ object TLS {
    * For a description of the `closing` parameter please refer to [[TLSClosing]].
    */
   def create(
-      sslEngineCreator: function.Creator[SSLEngine],
+      sslEngineCreator: function.Creator[? <: SSLEngine],
       sessionVerifier: function.Procedure[SSLSession],
       closing: TLSClosing): BidiFlow[SslTlsOutbound, ByteString, ByteString, SslTlsInbound, NotUsed] =
     new javadsl.BidiFlow(
@@ -88,7 +88,7 @@ object TLS {
    * For a description of the `closing` parameter please refer to [[TLSClosing]].
    */
   def create(
-      sslEngineCreator: function.Creator[SSLEngine],
+      sslEngineCreator: function.Creator[? <: SSLEngine],
       closing: TLSClosing): BidiFlow[SslTlsOutbound, ByteString, ByteString, SslTlsInbound, NotUsed] =
     new javadsl.BidiFlow(scaladsl.TLS.apply(() => sslEngineCreator.create(), closing))
 }

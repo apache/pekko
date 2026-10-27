@@ -16,7 +16,7 @@ package org.apache.pekko.stream
 import org.apache.pekko
 
 package object javadsl {
-  def combinerToScala[M1, M2, M](f: pekko.japi.function.Function2[M1, M2, M]): (M1, M2) => M =
+  def combinerToScala[M1, M2, M](f: pekko.japi.function.Function2[? >: M1, ? >: M2, ? <: M]): (M1, M2) => M =
     f match {
       case x if x eq Keep.left   => scaladsl.Keep.left.asInstanceOf[(M1, M2) => M]
       case x if x eq Keep.right  => scaladsl.Keep.right.asInstanceOf[(M1, M2) => M]

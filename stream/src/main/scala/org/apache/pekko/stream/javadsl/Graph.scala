@@ -346,7 +346,7 @@ object Partition {
    */
   def create[T](
       outputCount: Int,
-      partitioner: function.Function[T, Integer]): Graph[UniformFanOutShape[T, T], NotUsed] =
+      partitioner: function.Function[? >: T, Integer]): Graph[UniformFanOutShape[T, T], NotUsed] =
     new scaladsl.Partition(outputCount, partitioner.apply, eagerCancel = false)
 
   /**
@@ -358,7 +358,7 @@ object Partition {
    */
   def create[T](
       outputCount: Int,
-      partitioner: function.Function[T, Integer],
+      partitioner: function.Function[? >: T, Integer],
       eagerCancel: Boolean): Graph[UniformFanOutShape[T, T], NotUsed] =
     new scaladsl.Partition(outputCount, partitioner.apply, eagerCancel)
 
@@ -372,7 +372,7 @@ object Partition {
   def create[T](
       @nowarn("msg=never used") clazz: Class[T],
       outputCount: Int,
-      partitioner: function.Function[T, Integer]): Graph[UniformFanOutShape[T, T], NotUsed] =
+      partitioner: function.Function[? >: T, Integer]): Graph[UniformFanOutShape[T, T], NotUsed] =
     new scaladsl.Partition(outputCount, partitioner.apply, eagerCancel = false)
 
   /**
@@ -386,7 +386,7 @@ object Partition {
   def create[T](
       @nowarn("msg=never used") clazz: Class[T],
       outputCount: Int,
-      partitioner: function.Function[T, Integer],
+      partitioner: function.Function[? >: T, Integer],
       eagerCancel: Boolean): Graph[UniformFanOutShape[T, T], NotUsed] =
     new scaladsl.Partition(outputCount, partitioner.apply, eagerCancel)
 
@@ -564,7 +564,8 @@ object ZipN {
  * '''Cancels when''' downstream cancels
  */
 object ZipWithN {
-  def create[A, O](zipper: function.Function[java.util.List[A], O], n: Int): Graph[UniformFanInShape[A, O], NotUsed] = {
+  def create[A, O](zipper: function.Function[? >: java.util.List[A], ? <: O], n: Int)
+      : Graph[UniformFanInShape[A, O], NotUsed] = {
     import scala.jdk.CollectionConverters._
     scaladsl.ZipWithN[A, O](seq => zipper.apply(seq.asJava))(n)
   }
@@ -675,7 +676,7 @@ object MergeSequence {
    *
    * @param extractSequence The function to extract the sequence from an element.
    */
-  def create[T](extractSequence: function.Function[T, Long]): Graph[UniformFanInShape[T, T], NotUsed] =
+  def create[T](extractSequence: function.Function[? >: T, Long]): Graph[UniformFanInShape[T, T], NotUsed] =
     scaladsl.MergeSequence[T]()(extractSequence.apply)
 
   /**
@@ -684,7 +685,8 @@ object MergeSequence {
    * @param inputCount The number of input streams.
    * @param extractSequence The function to extract the sequence from an element.
    */
-  def create[T](inputCount: Int, extractSequence: function.Function[T, Long]): Graph[UniformFanInShape[T, T], NotUsed] =
+  def create[T](inputCount: Int, extractSequence: function.Function[? >: T, Long])
+      : Graph[UniformFanInShape[T, T], NotUsed] =
     scaladsl.MergeSequence[T](inputCount)(extractSequence.apply)
 
   /**
@@ -697,7 +699,7 @@ object MergeSequence {
   def create[T](
       @nowarn("msg=never used") clazz: Class[T],
       inputCount: Int,
-      extractSequence: function.Function[T, Long]): Graph[UniformFanInShape[T, T], NotUsed] =
+      extractSequence: function.Function[? >: T, Long]): Graph[UniformFanInShape[T, T], NotUsed] =
     create(inputCount, extractSequence)
 
 }
@@ -743,7 +745,7 @@ object GraphDSL extends GraphCreate {
    */
   def create[IS <: Shape, S <: Shape, M, G <: Graph[IS, M]](
       graphs: java.util.List[G],
-      buildBlock: function.Function2[GraphDSL.Builder[java.util.List[M]], java.util.List[IS], S])
+      buildBlock: function.Function2[? >: GraphDSL.Builder[java.util.List[M]], ? >: java.util.List[IS], ? <: S])
       : Graph[S, java.util.List[M]] = {
     require(!graphs.isEmpty, "The input list must have one or more Graph elements")
     val gbuilder = builder[java.util.List[M]]()

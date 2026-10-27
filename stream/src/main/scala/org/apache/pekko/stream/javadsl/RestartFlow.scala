@@ -45,7 +45,8 @@ object RestartFlow {
    * @param settings [[RestartSettings]] defining restart configuration
    * @param flowFactory A factory for producing the [[Flow]] to wrap.
    */
-  def withBackoff[In, Out](settings: RestartSettings, flowFactory: Creator[Flow[In, Out, ?]]): Flow[In, Out, NotUsed] =
+  def withBackoff[In, Out](settings: RestartSettings, flowFactory: Creator[? <: Flow[In, Out, ?]])
+      : Flow[In, Out, NotUsed] =
     pekko.stream.scaladsl.RestartFlow
       .withBackoff(settings) { () =>
         flowFactory.create().asScala
@@ -72,7 +73,7 @@ object RestartFlow {
    */
   def onFailuresWithBackoff[In, Out](
       settings: RestartSettings,
-      flowFactory: Creator[Flow[In, Out, ?]]): Flow[In, Out, NotUsed] =
+      flowFactory: Creator[? <: Flow[In, Out, ?]]): Flow[In, Out, NotUsed] =
     pekko.stream.scaladsl.RestartFlow
       .onFailuresWithBackoff(settings) { () =>
         flowFactory.create().asScala

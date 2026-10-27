@@ -68,7 +68,7 @@ object SourceWithContext {
   @ApiMayChange
   def unsafeOptionalDataVia[SOut, FOut, Ctx, SMat, FMat, Mat](source: SourceWithContext[Optional[SOut], Ctx, SMat],
       viaFlow: Flow[SOut, FOut, FMat],
-      combine: function.Function2[SMat, FMat, Mat]
+      combine: function.Function2[? >: SMat, ? >: FMat, ? <: Mat]
   ): SourceWithContext[Optional[FOut], Ctx, Mat] =
     scaladsl.SourceWithContext.unsafeOptionalDataVia(source.map(_.toScala).asScala, viaFlow.asScala)(
       combinerToScala(combine)).map(
@@ -146,7 +146,7 @@ final class SourceWithContext[+Out, +Ctx, +Mat](delegate: scaladsl.SourceWithCon
    *
    * @see [[pekko.stream.javadsl.Flow.mapMaterializedValue]]
    */
-  def mapMaterializedValue[Mat2](f: function.Function[Mat, Mat2]): SourceWithContext[Out, Ctx, Mat2] =
+  def mapMaterializedValue[Mat2](f: function.Function[? >: Mat, ? <: Mat2]): SourceWithContext[Out, Ctx, Mat2] =
     viaScala(_.mapMaterializedValue(f.apply _))
 
   /**
@@ -208,7 +208,7 @@ final class SourceWithContext[+Out, +Ctx, +Mat](delegate: scaladsl.SourceWithCon
    *
    * @see [[pekko.stream.javadsl.Source.filter]]
    */
-  def filter(p: function.Predicate[Out]): SourceWithContext[Out, Ctx, Mat] =
+  def filter(p: function.Predicate[? >: Out]): SourceWithContext[Out, Ctx, Mat] =
     viaScala(_.filter(p.test))
 
   /**
@@ -218,7 +218,7 @@ final class SourceWithContext[+Out, +Ctx, +Mat](delegate: scaladsl.SourceWithCon
    *
    * @see [[pekko.stream.javadsl.Source.filterNot]]
    */
-  def filterNot(p: function.Predicate[Out]): SourceWithContext[Out, Ctx, Mat] =
+  def filterNot(p: function.Predicate[? >: Out]): SourceWithContext[Out, Ctx, Mat] =
     viaScala(_.filterNot(p.test))
 
   /**
@@ -236,7 +236,7 @@ final class SourceWithContext[+Out, +Ctx, +Mat](delegate: scaladsl.SourceWithCon
    * @see [[pekko.stream.javadsl.Source.dropRepeated]]
    * @since 2.0.0
    */
-  def dropRepeated(p: function.Function2[Out, Out, Boolean]): SourceWithContext[Out, Ctx, Mat] =
+  def dropRepeated(p: function.Function2[? >: Out, ? >: Out, Boolean]): SourceWithContext[Out, Ctx, Mat] =
     viaScala(_.dropRepeated((left, right) => p.apply(left, right)))
 
   /**
@@ -245,7 +245,7 @@ final class SourceWithContext[+Out, +Ctx, +Mat](delegate: scaladsl.SourceWithCon
    * @see [[pekko.stream.javadsl.Source.dropWhile]]
    * @since 2.0.0
    */
-  def dropWhile(p: function.Predicate[Out]): SourceWithContext[Out, Ctx, Mat] =
+  def dropWhile(p: function.Predicate[? >: Out]): SourceWithContext[Out, Ctx, Mat] =
     viaScala(_.dropWhile(p.test))
 
   /**
@@ -282,7 +282,7 @@ final class SourceWithContext[+Out, +Ctx, +Mat](delegate: scaladsl.SourceWithCon
    *
    * @see [[pekko.stream.javadsl.Source.map]]
    */
-  def map[Out2](f: function.Function[Out, Out2]): SourceWithContext[Out2, Ctx, Mat] =
+  def map[Out2](f: function.Function[? >: Out, ? <: Out2]): SourceWithContext[Out2, Ctx, Mat] =
     viaScala(_.map(f.apply))
 
   /**
@@ -293,7 +293,7 @@ final class SourceWithContext[+Out, +Ctx, +Mat](delegate: scaladsl.SourceWithCon
    * @see [[pekko.stream.javadsl.Source.mapOption]]
    * @since 2.0.0
    */
-  def mapOption[Out2](f: function.Function[Out, Optional[Out2]]): SourceWithContext[Out2, Ctx, Mat] =
+  def mapOption[Out2](f: function.Function[? >: Out, ? <: Optional[Out2]]): SourceWithContext[Out2, Ctx, Mat] =
     viaScala(_.mapOption(out => f.apply(out).toScala))
 
   /**
@@ -303,7 +303,7 @@ final class SourceWithContext[+Out, +Ctx, +Mat](delegate: scaladsl.SourceWithCon
    */
   def mapAsync[Out2](
       parallelism: Int,
-      f: function.Function[Out, CompletionStage[Out2]]): SourceWithContext[Out2, Ctx, Mat] =
+      f: function.Function[? >: Out, ? <: CompletionStage[Out2]]): SourceWithContext[Out2, Ctx, Mat] =
     viaScala(_.mapAsync[Out2](parallelism)(o => f.apply(o).asScala))
 
   /**
@@ -314,8 +314,8 @@ final class SourceWithContext[+Out, +Ctx, +Mat](delegate: scaladsl.SourceWithCon
    */
   def mapAsyncPartitioned[Out2, P](
       parallelism: Int,
-      partitioner: function.Function[Out, P],
-      f: function.Function2[Out, P, CompletionStage[Out2]]): SourceWithContext[Out2, Ctx, Mat] = {
+      partitioner: function.Function[? >: Out, ? <: P],
+      f: function.Function2[? >: Out, ? >: P, ? <: CompletionStage[Out2]]): SourceWithContext[Out2, Ctx, Mat] = {
     viaScala(_.mapAsyncPartitioned(parallelism)(partitioner(_))(f(_, _).asScala))
   }
 
@@ -327,8 +327,8 @@ final class SourceWithContext[+Out, +Ctx, +Mat](delegate: scaladsl.SourceWithCon
    */
   def mapAsyncPartitionedUnordered[Out2, P](
       parallelism: Int,
-      partitioner: function.Function[Out, P],
-      f: function.Function2[Out, P, CompletionStage[Out2]]): SourceWithContext[Out2, Ctx, Mat] =
+      partitioner: function.Function[? >: Out, ? <: P],
+      f: function.Function2[? >: Out, ? >: P, ? <: CompletionStage[Out2]]): SourceWithContext[Out2, Ctx, Mat] =
     viaScala(_.mapAsyncPartitionedUnordered(parallelism)(partitioner(_))(f(_, _).asScala))
 
   /**
@@ -359,13 +359,14 @@ final class SourceWithContext[+Out, +Ctx, +Mat](delegate: scaladsl.SourceWithCon
    *
    * @see [[pekko.stream.javadsl.Source.mapConcat]]
    */
-  def mapConcat[Out2](f: function.Function[Out, ? <: java.lang.Iterable[Out2]]): SourceWithContext[Out2, Ctx, Mat] =
+  def mapConcat[Out2](
+      f: function.Function[? >: Out, ? <: java.lang.Iterable[Out2]]): SourceWithContext[Out2, Ctx, Mat] =
     viaScala(_.mapConcat(elem => f.apply(elem).asScala))
 
   /**
    * Apply the given function to each context element (leaving the data elements unchanged).
    */
-  def mapContext[Ctx2](extractContext: function.Function[Ctx, Ctx2]): SourceWithContext[Out, Ctx2, Mat] =
+  def mapContext[Ctx2](extractContext: function.Function[? >: Ctx, ? <: Ctx2]): SourceWithContext[Out, Ctx2, Mat] =
     viaScala(_.mapContext(extractContext.apply))
 
   /**
@@ -383,7 +384,7 @@ final class SourceWithContext[+Out, +Ctx, +Mat](delegate: scaladsl.SourceWithCon
    * @see [[pekko.stream.javadsl.Source.limitWeighted]]
    * @since 2.0.0
    */
-  def limitWeighted(max: Long, costFn: function.Function[Out, java.lang.Long]): SourceWithContext[Out, Ctx, Mat] =
+  def limitWeighted(max: Long, costFn: function.Function[? >: Out, java.lang.Long]): SourceWithContext[Out, Ctx, Mat] =
     viaScala(_.limitWeighted(max)(costFn.apply))
 
   /**
@@ -402,7 +403,7 @@ final class SourceWithContext[+Out, +Ctx, +Mat](delegate: scaladsl.SourceWithCon
    *
    * @see [[pekko.stream.javadsl.Source.log]]
    */
-  def log(name: String, extract: function.Function[Out, Any], @Nullable log: LoggingAdapter)
+  def log(name: String, extract: function.Function[? >: Out, Any], @Nullable log: LoggingAdapter)
       : SourceWithContext[Out, Ctx, Mat] =
     viaScala(_.log(name, e => extract.apply(e))(log))
 
@@ -411,7 +412,7 @@ final class SourceWithContext[+Out, +Ctx, +Mat](delegate: scaladsl.SourceWithCon
    *
    * @see [[pekko.stream.javadsl.Flow.log]]
    */
-  def log(name: String, extract: function.Function[Out, Any]): SourceWithContext[Out, Ctx, Mat] =
+  def log(name: String, extract: function.Function[? >: Out, Any]): SourceWithContext[Out, Ctx, Mat] =
     this.log(name, extract, null)
 
   /**
@@ -437,8 +438,8 @@ final class SourceWithContext[+Out, +Ctx, +Mat](delegate: scaladsl.SourceWithCon
    */
   def logWithMarker(
       name: String,
-      marker: function.Function2[Out, Ctx, LogMarker],
-      extract: function.Function[Out, Any],
+      marker: function.Function2[? >: Out, ? >: Ctx, ? <: LogMarker],
+      extract: function.Function[? >: Out, Any],
       @Nullable log: MarkerLoggingAdapter): SourceWithContext[Out, Ctx, Mat] =
     viaScala(_.logWithMarker(name, (e, c) => marker.apply(e, c), e => extract.apply(e))(log))
 
@@ -449,8 +450,8 @@ final class SourceWithContext[+Out, +Ctx, +Mat](delegate: scaladsl.SourceWithCon
    */
   def logWithMarker(
       name: String,
-      marker: function.Function2[Out, Ctx, LogMarker],
-      extract: function.Function[Out, Any]): SourceWithContext[Out, Ctx, Mat] =
+      marker: function.Function2[? >: Out, ? >: Ctx, ? <: LogMarker],
+      extract: function.Function[? >: Out, Any]): SourceWithContext[Out, Ctx, Mat] =
     this.logWithMarker(name, marker, extract, null)
 
   /**
@@ -460,7 +461,7 @@ final class SourceWithContext[+Out, +Ctx, +Mat](delegate: scaladsl.SourceWithCon
    */
   def logWithMarker(
       name: String,
-      marker: function.Function2[Out, Ctx, LogMarker],
+      marker: function.Function2[? >: Out, ? >: Ctx, ? <: LogMarker],
       @Nullable log: MarkerLoggingAdapter): SourceWithContext[Out, Ctx, Mat] =
     this.logWithMarker(name, marker, ConstantFun.javaIdentityFunction[Out], log)
 
@@ -469,7 +470,8 @@ final class SourceWithContext[+Out, +Ctx, +Mat](delegate: scaladsl.SourceWithCon
    *
    * @see [[pekko.stream.javadsl.Flow.logWithMarker]]
    */
-  def logWithMarker(name: String, marker: function.Function2[Out, Ctx, LogMarker]): SourceWithContext[Out, Ctx, Mat] =
+  def logWithMarker(name: String, marker: function.Function2[? >: Out, ? >: Ctx, ? <: LogMarker])
+      : SourceWithContext[Out, Ctx, Mat] =
     this.logWithMarker(name, marker, ConstantFun.javaIdentityFunction[Out], null)
 
   /**
@@ -478,7 +480,7 @@ final class SourceWithContext[+Out, +Ctx, +Mat](delegate: scaladsl.SourceWithCon
    * @see [[pekko.stream.javadsl.Source.takeWhile]]
    * @since 2.0.0
    */
-  def takeWhile(p: function.Predicate[Out], inclusive: Boolean): SourceWithContext[Out, Ctx, Mat] =
+  def takeWhile(p: function.Predicate[? >: Out], inclusive: Boolean): SourceWithContext[Out, Ctx, Mat] =
     viaScala(_.takeWhile(p.test, inclusive))
 
   /**
@@ -487,7 +489,7 @@ final class SourceWithContext[+Out, +Ctx, +Mat](delegate: scaladsl.SourceWithCon
    * @see [[pekko.stream.javadsl.Source.takeWhile]]
    * @since 2.0.0
    */
-  def takeWhile(p: function.Predicate[Out]): SourceWithContext[Out, Ctx, Mat] =
+  def takeWhile(p: function.Predicate[? >: Out]): SourceWithContext[Out, Ctx, Mat] =
     takeWhile(p, inclusive = false)
 
   /**
@@ -496,7 +498,7 @@ final class SourceWithContext[+Out, +Ctx, +Mat](delegate: scaladsl.SourceWithCon
    * @see [[pekko.stream.javadsl.Source.takeUntil]]
    * @since 2.0.0
    */
-  def takeUntil(p: function.Predicate[Out]): SourceWithContext[Out, Ctx, Mat] =
+  def takeUntil(p: function.Predicate[? >: Out]): SourceWithContext[Out, Ctx, Mat] =
     viaScala(_.takeUntil(p.test))
 
   /**
@@ -545,7 +547,7 @@ final class SourceWithContext[+Out, +Ctx, +Mat](delegate: scaladsl.SourceWithCon
   def throttle(
       cost: Int,
       per: java.time.Duration,
-      costCalculation: function.Function[Out, Integer]): SourceWithContext[Out, Ctx, Mat] =
+      costCalculation: function.Function[? >: Out, Integer]): SourceWithContext[Out, Ctx, Mat] =
     viaScala(_.throttle(cost, per.toScala, costCalculation.apply))
 
   /**
@@ -557,7 +559,7 @@ final class SourceWithContext[+Out, +Ctx, +Mat](delegate: scaladsl.SourceWithCon
       cost: Int,
       per: java.time.Duration,
       maximumBurst: Int,
-      costCalculation: function.Function[Out, Integer],
+      costCalculation: function.Function[? >: Out, Integer],
       mode: ThrottleMode): SourceWithContext[Out, Ctx, Mat] =
     viaScala(_.throttle(cost, per.toScala, maximumBurst, costCalculation.apply, mode))
 
@@ -575,7 +577,7 @@ final class SourceWithContext[+Out, +Ctx, +Mat](delegate: scaladsl.SourceWithCon
    */
   def toMat[Mat2, Mat3](
       sink: Graph[SinkShape[Pair[Out @uncheckedVariance, Ctx @uncheckedVariance]], Mat2],
-      combine: function.Function2[Mat, Mat2, Mat3]): javadsl.RunnableGraph[Mat3] =
+      combine: function.Function2[? >: Mat, ? >: Mat2, ? <: Mat3]): javadsl.RunnableGraph[Mat3] =
     asSource().toMat(sink, combine)
 
   /**

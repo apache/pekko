@@ -2180,4 +2180,31 @@ public class FlowTest extends StreamTestJupiter {
                 Pair.create(4, 1L))),
         resultSet);
   }
+
+  @Test
+  public void mustAcceptFunctionsOverWiderAndNarrowerTypes() throws Exception {
+    // functions may accept a supertype of the element and return a subtype of the result
+    final Predicate<CharSequence> nonEmpty = s -> s.length() > 0;
+    final Function<Object, Integer> length = o -> o.toString().length();
+    final Function<Object, Boolean> isEven = o -> o.toString().length() % 2 == 0;
+    final Function2<Number, Number, Integer> sum = (acc, n) -> acc.intValue() + n.intValue();
+
+    final Flow<String, Number, NotUsed> lengths = Flow.fromFunction(length);
+    final Flow<String, Integer, NotUsed> flow =
+        Flow.of(String.class)
+            .filter(nonEmpty)
+            .groupBy(2, isEven)
+            .filter(nonEmpty)
+            .mergeSubstreams()
+            .via(lengths)
+            .fold(0, sum);
+
+    assertEquals(
+        6,
+        Source.from(List.of("a", "", "bb", "ccc"))
+            .via(flow)
+            .runWith(Sink.head(), system)
+            .toCompletableFuture()
+            .get(3, TimeUnit.SECONDS));
+  }
 }

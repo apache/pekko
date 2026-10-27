@@ -47,7 +47,7 @@ object Sink {
    * function evaluation when the input stream ends, or completed with `Failure`
    * if there is a failure is signaled in the stream.
    */
-  def fold[U, In](zero: U, f: function.Function2[U, In, U]): javadsl.Sink[In, CompletionStage[U]] =
+  def fold[U, In](zero: U, f: function.Function2[? >: U, ? >: In, ? <: U]): javadsl.Sink[In, CompletionStage[U]] =
     new Sink(scaladsl.Sink.fold[U, In](zero)(f.apply).toCompletionStage())
 
   /**
@@ -60,7 +60,8 @@ object Sink {
    * @since 1.1.0
    */
   def foldWhile[U, In](
-      zero: U, p: function.Predicate[U], f: function.Function2[U, In, U]): javadsl.Sink[In, CompletionStage[U]] =
+      zero: U, p: function.Predicate[? >: U], f: function.Function2[? >: U, ? >: In, ? <: U])
+      : javadsl.Sink[In, CompletionStage[U]] =
     new Sink(scaladsl.Sink.foldWhile[U, In](zero)(p.test)(f.apply).toCompletionStage())
 
   /**
@@ -72,7 +73,7 @@ object Sink {
    */
   def foldAsync[U, In](
       zero: U,
-      f: function.Function2[U, In, CompletionStage[U]]): javadsl.Sink[In, CompletionStage[U]] =
+      f: function.Function2[? >: U, ? >: In, ? <: CompletionStage[U]]): javadsl.Sink[In, CompletionStage[U]] =
     new Sink(scaladsl.Sink.foldAsync[U, In](zero)(f(_, _).asScala).toCompletionStage())
 
   /**
@@ -94,7 +95,7 @@ object Sink {
    *
    * @since 1.1.0
    */
-  def forall[In](p: function.Predicate[In]): javadsl.Sink[In, CompletionStage[java.lang.Boolean]] = {
+  def forall[In](p: function.Predicate[? >: In]): javadsl.Sink[In, CompletionStage[java.lang.Boolean]] = {
     import scala.jdk.FutureConverters._
     new Sink(scaladsl.Sink.forall[In](p.test)
       .mapMaterializedValue(_.map(Boolean.box)(ExecutionContext.parasitic).asJava))
@@ -119,7 +120,7 @@ object Sink {
    *
    * @since 1.2.0
    */
-  def none[In](p: function.Predicate[In]): javadsl.Sink[In, CompletionStage[java.lang.Boolean]] = {
+  def none[In](p: function.Predicate[? >: In]): javadsl.Sink[In, CompletionStage[java.lang.Boolean]] = {
     import scala.jdk.FutureConverters._
     new Sink(scaladsl.Sink.none[In](p.test)
       .mapMaterializedValue(_.map(Boolean.box)(ExecutionContext.parasitic).asJava))
@@ -144,7 +145,7 @@ object Sink {
    *
    * @since 1.1.0
    */
-  def exists[In](p: function.Predicate[In]): javadsl.Sink[In, CompletionStage[java.lang.Boolean]] = {
+  def exists[In](p: function.Predicate[? >: In]): javadsl.Sink[In, CompletionStage[java.lang.Boolean]] = {
     import scala.jdk.FutureConverters._
     new Sink(scaladsl.Sink.exists[In](p.test)
       .mapMaterializedValue(_.map(Boolean.box)(ExecutionContext.parasitic).asJava))
@@ -172,7 +173,7 @@ object Sink {
    * which is semantically in-line with that Scala's standard library collections
    * do in such situations.
    */
-  def reduce[In](f: function.Function2[In, In, In]): Sink[In, CompletionStage[In]] =
+  def reduce[In](f: function.Function2[? >: In, ? >: In, ? <: In]): Sink[In, CompletionStage[In]] =
     new Sink(scaladsl.Sink.reduce[In](f.apply).toCompletionStage())
 
   /**
@@ -243,7 +244,7 @@ object Sink {
    * the stream.
    */
   def foreachAsync[T](parallelism: Int,
-      f: function.Function[T, CompletionStage[Void]]): Sink[T, CompletionStage[Done]] =
+      f: function.Function[? >: T, ? <: CompletionStage[Void]]): Sink[T, CompletionStage[Done]] =
     new Sink(
       scaladsl.Sink
         .foreachAsync(parallelism)((x: T) => f(x).asScala.map(scalaAnyToUnit)(ExecutionContext.parasitic))
@@ -427,7 +428,7 @@ object Sink {
    * [[Attributes]] of the [[Sink]] returned by this method.
    */
   def fromMaterializer[T, M](
-      factory: function.Function2[Materializer, Attributes, ? <: Graph[SinkShape[T], M]])
+      factory: function.Function2[? >: Materializer, ? >: Attributes, ? <: Graph[SinkShape[T], M]])
       : Sink[T, CompletionStage[M]] =
     scaladsl.Sink
       .fromMaterializer((mat, attr) => scaladsl.Sink.fromGraph(factory(mat, attr)))
@@ -441,7 +442,7 @@ object Sink {
       output1: Sink[U, ?],
       output2: Sink[U, ?],
       @Nullable rest: java.lang.Iterable[? <: Graph[SinkShape[U], ?]],
-      fanOutStrategy: function.Function[java.lang.Integer, ? <: Graph[UniformFanOutShape[T, U], NotUsed]])
+      fanOutStrategy: function.Function[? >: java.lang.Integer, ? <: Graph[UniformFanOutShape[T, U], NotUsed]])
       : Sink[T, NotUsed] = {
     import scala.jdk.CollectionConverters._
     val seq = if (rest ne null) rest.asScala.map(scaladsl.Sink.fromGraph(_)).toSeq else Seq()
@@ -455,8 +456,8 @@ object Sink {
   def combineMat[T, U, M1, M2, M](
       first: Sink[U, M1],
       second: Sink[U, M2],
-      fanOutStrategy: function.Function[java.lang.Integer, ? <: Graph[UniformFanOutShape[T, U], NotUsed]],
-      matF: function.Function2[M1, M2, M]): Sink[T, M] = {
+      fanOutStrategy: function.Function[? >: java.lang.Integer, ? <: Graph[UniformFanOutShape[T, U], NotUsed]],
+      matF: function.Function2[? >: M1, ? >: M2, ? <: M]): Sink[T, M] = {
     new Sink(
       scaladsl.Sink.combineMat(first.asScala, second.asScala)(size => fanOutStrategy(size))(combinerToScala(matF)))
   }
@@ -468,7 +469,7 @@ object Sink {
    */
   def combine[T, U, M](
       @Nullable sinks: java.lang.Iterable[? <: Graph[SinkShape[U], M]],
-      fanOutStrategy: function.Function[java.lang.Integer, ? <: Graph[UniformFanOutShape[T, U], NotUsed]])
+      fanOutStrategy: function.Function[? >: java.lang.Integer, ? <: Graph[UniformFanOutShape[T, U], NotUsed]])
       : Sink[T, java.util.List[M]] = {
     import pekko.util.Collections._
     val seq = if (sinks ne null) sinks.collectToImmutableSeq {
@@ -560,7 +561,7 @@ object Sink {
    * If the `create` function throws or returns or the stream fails to materialize, in this
    * case the materialized future value is failed with a [[pekko.stream.NeverMaterializedException]].
    */
-  def lazySink[T, M](create: Creator[Sink[T, M]]): Sink[T, CompletionStage[M]] =
+  def lazySink[T, M](create: Creator[? <: Sink[T, M]]): Sink[T, CompletionStage[M]] =
     lazyCompletionStageSink(() => CompletableFuture.completedFuture(create.create()))
 
   /**
@@ -572,7 +573,7 @@ object Sink {
    * If the `create` function throws or returns a future that is failed, or the stream fails to materialize, in this
    * case the materialized future value is failed with a [[pekko.stream.NeverMaterializedException]].
    */
-  def lazyCompletionStageSink[T, M](create: Creator[CompletionStage[Sink[T, M]]]): Sink[T, CompletionStage[M]] =
+  def lazyCompletionStageSink[T, M](create: Creator[? <: CompletionStage[Sink[T, M]]]): Sink[T, CompletionStage[M]] =
     new Sink(scaladsl.Sink.lazyFutureSink { () =>
       create.create().asScala.map(_.asScala)(ExecutionContext.parasitic)
     }).mapMaterializedValue(_.asJava)
@@ -619,13 +620,13 @@ final class Sink[In, Mat](delegate: scaladsl.Sink[In, Mat]) extends Graph[SinkSh
    * '''Cancels when''' original [[Sink]] backpressures
    * @since 1.1.0
    */
-  def contramap[In2](f: function.Function[In2, In]): Sink[In2, Mat] =
-    javadsl.Flow.fromFunction(f).toMat(this, Keep.right[NotUsed, Mat])
+  def contramap[In2](f: function.Function[? >: In2, ? <: In]): Sink[In2, Mat] =
+    javadsl.Flow.fromFunction[In2, In](f).toMat(this, Keep.right[NotUsed, Mat])
 
   /**
    * Transform only the materialized value of this Sink, leaving all other properties as they were.
    */
-  def mapMaterializedValue[Mat2](f: function.Function[Mat, Mat2]): Sink[In, Mat2] =
+  def mapMaterializedValue[Mat2](f: function.Function[? >: Mat, ? <: Mat2]): Sink[In, Mat2] =
     new Sink(delegate.mapMaterializedValue(f.apply _))
 
   /**
