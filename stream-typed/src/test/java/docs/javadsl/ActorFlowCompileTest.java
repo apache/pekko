@@ -17,6 +17,7 @@ import org.apache.pekko.NotUsed;
 // #ask-actor
 import org.apache.pekko.actor.typed.ActorRef;
 import org.apache.pekko.actor.typed.ActorSystem;
+import org.apache.pekko.japi.function.Function2;
 import org.apache.pekko.pattern.StatusReply;
 import org.apache.pekko.stream.javadsl.Flow;
 import org.apache.pekko.stream.javadsl.Sink;
@@ -118,5 +119,30 @@ public class ActorFlowCompileTest {
         .map(pair -> pair.first().msg)
         .runWith(Sink.seq(), system);
     // #askWithContext
+  }
+
+  // pre-typed message factories: accepting a supertype of the element and reply-to types and
+  // returning a subtype of the question type must work without casts
+  {
+    final ActorRef<Asking> actorRef = null;
+    final ActorRef<AskingWithStatus> actorWithStatusRef = null;
+    final Duration timeout = Duration.ofSeconds(1);
+
+    final Function2<Object, ActorRef<Reply>, Asking> makeMessage =
+        (msg, replyTo) -> new Asking(msg.toString(), replyTo);
+    final Function2<Object, ActorRef<StatusReply<String>>, AskingWithStatus> makeStatusMessage =
+        (msg, replyTo) -> new AskingWithStatus(msg.toString(), replyTo);
+
+    Flow<String, Reply, NotUsed> askFlow = ActorFlow.ask(actorRef, timeout, makeMessage);
+    Flow<String, String, NotUsed> askWithStatusFlow =
+        ActorFlow.askWithStatus(actorWithStatusRef, timeout, makeStatusMessage);
+    Flow<org.apache.pekko.japi.Pair<String, Long>, org.apache.pekko.japi.Pair<Reply, Long>, NotUsed>
+        askWithContextFlow = ActorFlow.askWithContext(actorRef, timeout, makeMessage);
+    Flow<
+            org.apache.pekko.japi.Pair<String, Long>,
+            org.apache.pekko.japi.Pair<String, Long>,
+            NotUsed>
+        askWithStatusAndContextFlow =
+            ActorFlow.askWithStatusAndContext(actorWithStatusRef, timeout, makeStatusMessage);
   }
 }

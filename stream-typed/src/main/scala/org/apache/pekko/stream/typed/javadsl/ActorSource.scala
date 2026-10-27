@@ -57,8 +57,8 @@ object ActorSource {
    * @param overflowStrategy Strategy that is used when incoming elements cannot fit inside the buffer
    */
   def actorRef[T](
-      completionMatcher: function.Predicate[T],
-      failureMatcher: pekko.japi.function.Function[T, java.util.Optional[Throwable]],
+      completionMatcher: function.Predicate[? >: T],
+      failureMatcher: pekko.japi.function.Function[? >: T, ? <: java.util.Optional[? <: Throwable]],
       bufferSize: Int,
       overflowStrategy: OverflowStrategy): Source[T, ActorRef[T]] = {
     pekko.stream.typed.scaladsl.ActorSource
@@ -96,8 +96,9 @@ object ActorSource {
   def actorRefWithBackpressure[T, Ack](
       ackTo: ActorRef[Ack],
       ackMessage: Ack,
-      completionMatcher: pekko.japi.function.Function[T, java.util.Optional[CompletionStrategy]],
-      failureMatcher: pekko.japi.function.Function[T, java.util.Optional[Throwable]]): Source[T, ActorRef[T]] =
+      completionMatcher: pekko.japi.function.Function[? >: T, ? <: java.util.Optional[? <: CompletionStrategy]],
+      failureMatcher: pekko.japi.function.Function[? >: T, ? <: java.util.Optional[? <: Throwable]])
+      : Source[T, ActorRef[T]] =
     pekko.stream.typed.scaladsl.ActorSource
       .actorRefWithBackpressure[T, Ack](
         ackTo,

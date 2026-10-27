@@ -69,7 +69,7 @@ object ActorFlow {
   def ask[I, Q, A](
       ref: ActorRef[Q],
       timeout: java.time.Duration,
-      makeMessage: function.Function2[I, ActorRef[A], Q]): Flow[I, A, NotUsed] =
+      makeMessage: function.Function2[? >: I, ? >: ActorRef[A], ? <: Q]): Flow[I, A, NotUsed] =
     org.apache.pekko.stream.typed.scaladsl.ActorFlow
       .ask[I, Q, A](parallelism = 2)(ref)((i, ref) => makeMessage(i, ref))(
         timeout.toScala)
@@ -83,7 +83,7 @@ object ActorFlow {
   def askWithStatus[I, Q, A](
       ref: ActorRef[Q],
       timeout: java.time.Duration,
-      makeMessage: function.Function2[I, ActorRef[StatusReply[A]], Q]): Flow[I, A, NotUsed] =
+      makeMessage: function.Function2[? >: I, ? >: ActorRef[StatusReply[A]], ? <: Q]): Flow[I, A, NotUsed] =
     org.apache.pekko.stream.typed.scaladsl.ActorFlow
       .askWithStatus[I, Q, A](parallelism = 2)(ref)((i, ref) => makeMessage(i, ref))(
         timeout.toScala)
@@ -140,7 +140,7 @@ object ActorFlow {
       parallelism: Int,
       ref: ActorRef[Q],
       timeout: java.time.Duration,
-      makeMessage: function.Function2[I, ActorRef[StatusReply[A]], Q]): Flow[I, A, NotUsed] =
+      makeMessage: function.Function2[? >: I, ? >: ActorRef[StatusReply[A]], ? <: Q]): Flow[I, A, NotUsed] =
     org.apache.pekko.stream.typed.scaladsl.ActorFlow
       .askWithStatus[I, Q, A](parallelism)(ref)((i, ref) => makeMessage(i, ref))(timeout.toMillis.millis)
       .asJava
@@ -151,7 +151,7 @@ object ActorFlow {
   def askWithContext[I, Q, A, Ctx](
       ref: ActorRef[Q],
       timeout: java.time.Duration,
-      makeMessage: function.Function2[I, ActorRef[A], Q]): Flow[Pair[I, Ctx], Pair[A, Ctx], NotUsed] =
+      makeMessage: function.Function2[? >: I, ? >: ActorRef[A], ? <: Q]): Flow[Pair[I, Ctx], Pair[A, Ctx], NotUsed] =
     org.apache.pekko.stream.scaladsl
       .Flow[Pair[I, Ctx]]
       .map(_.toScala)
@@ -170,7 +170,8 @@ object ActorFlow {
   def askWithStatusAndContext[I, Q, A, Ctx](
       ref: ActorRef[Q],
       timeout: java.time.Duration,
-      makeMessage: function.Function2[I, ActorRef[StatusReply[A]], Q]): Flow[Pair[I, Ctx], Pair[A, Ctx], NotUsed] =
+      makeMessage: function.Function2[? >: I, ? >: ActorRef[StatusReply[A]], ? <: Q])
+      : Flow[Pair[I, Ctx], Pair[A, Ctx], NotUsed] =
     org.apache.pekko.stream.scaladsl
       .Flow[Pair[I, Ctx]]
       .map(_.toScala)
@@ -188,7 +189,7 @@ object ActorFlow {
       parallelism: Int,
       ref: ActorRef[Q],
       timeout: java.time.Duration,
-      makeMessage: function.Function2[I, ActorRef[A], Q]): Flow[Pair[I, Ctx], Pair[A, Ctx], NotUsed] = {
+      makeMessage: function.Function2[? >: I, ? >: ActorRef[A], ? <: Q]): Flow[Pair[I, Ctx], Pair[A, Ctx], NotUsed] = {
     org.apache.pekko.stream.scaladsl
       .Flow[Pair[I, Ctx]]
       .map(_.toScala)
