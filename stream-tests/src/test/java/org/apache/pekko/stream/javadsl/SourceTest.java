@@ -2317,6 +2317,26 @@ public class SourceTest extends StreamTestJupiter {
   }
 
   @Test
+  public void mustAcceptFlowsEmittingASubtypeOfTheResultingElementType() throws Exception {
+    // a flow emitting a subtype can be used where a wider output element type is expected
+    final Flow<Integer, Integer, NotUsed> doubled = Flow.fromFunction(i -> i * 2);
+    final Source<Number, NotUsed> numbers =
+        Source.from(List.of(1, 2)).<Number, NotUsed>via(doubled);
+    final Flow<Integer, Number, NotUsed> asNumbers = Flow.fromGraph(doubled);
+
+    assertEquals(
+        List.of(2, 4),
+        numbers.runWith(Sink.seq(), system).toCompletableFuture().get(3, TimeUnit.SECONDS));
+    assertEquals(
+        List.of(6),
+        Source.single(3)
+            .via(asNumbers)
+            .runWith(Sink.seq(), system)
+            .toCompletableFuture()
+            .get(3, TimeUnit.SECONDS));
+  }
+
+  @Test
   public void mustAcceptFunctionsReturningOptionalsAndIterablesOfSubtypes() throws Exception {
     // functions may return an Optional or Iterable of a subtype of the resulting element type
     final Function<Integer, Optional<Integer>> evenOnly =

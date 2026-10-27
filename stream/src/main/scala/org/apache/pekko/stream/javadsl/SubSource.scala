@@ -105,7 +105,7 @@ final class SubSource[Out, Mat](
    * value of the current flow (ignoring the other Flow’s value), use
    * [[Flow#viaMat viaMat]] if a different strategy is needed.
    */
-  def via[T, M](flow: Graph[? <: FlowShape[? >: Out, T], M]): SubSource[T, Mat] =
+  def via[T, M](flow: Graph[? <: FlowShape[? >: Out, ? <: T], M]): SubSource[T, Mat] =
     new SubSource(delegate.via(flowGraph(flow)))
 
   /**

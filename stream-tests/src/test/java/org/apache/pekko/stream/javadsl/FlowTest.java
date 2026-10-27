@@ -2207,4 +2207,50 @@ public class FlowTest extends StreamTestJupiter {
             .toCompletableFuture()
             .get(3, TimeUnit.SECONDS));
   }
+
+  @Test
+  public void mustAcceptFlowsEmittingASubtypeOfTheResultingElementType() throws Exception {
+    // flows emitting a subtype can be used where a wider output element type is expected
+    final Flow<Integer, Integer, NotUsed> doubled = Flow.of(Integer.class).map(i -> i * 2);
+    final Flow<String, String, NotUsed> shout = Flow.of(String.class).map(s -> s + "!");
+
+    final Flow<Integer, Number, NotUsed> numbers =
+        Flow.of(Integer.class).<Number, NotUsed>via(doubled);
+    final BidiFlow<Integer, Number, String, CharSequence, NotUsed> bidi =
+        BidiFlow.fromFlows(doubled, shout);
+    final Flow<Integer, Number, NotUsed> viaBuilder =
+        Flow.fromGraph(
+            GraphDSL.create(
+                builder -> {
+                  final FlowShape<Integer, Integer> in = builder.add(Flow.of(Integer.class));
+                  final Outlet<Number> out =
+                      builder.from(in).<Number>via(builder.add(doubled)).out();
+                  return new FlowShape<>(in.in(), out);
+                }));
+
+    assertEquals(
+        List.of(2, 4),
+        Source.from(List.of(1, 2))
+            .via(numbers)
+            .runWith(Sink.seq(), system)
+            .toCompletableFuture()
+            .get(3, TimeUnit.SECONDS));
+    assertEquals(
+        List.of(6),
+        Source.single(3)
+            .via(viaBuilder)
+            .runWith(Sink.seq(), system)
+            .toCompletableFuture()
+            .get(3, TimeUnit.SECONDS));
+    final Flow<Integer, CharSequence, NotUsed> roundTrip =
+        bidi.atop(BidiFlow.fromFlows(Flow.of(Number.class), Flow.of(String.class)))
+            .join(Flow.<Number, String>fromFunction(Object::toString));
+    assertEquals(
+        List.of("8!"),
+        Source.single(4)
+            .via(roundTrip)
+            .runWith(Sink.seq(), system)
+            .toCompletableFuture()
+            .get(3, TimeUnit.SECONDS));
+  }
 }

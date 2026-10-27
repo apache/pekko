@@ -979,7 +979,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    * value of the current flow (ignoring the other Flow’s value), use
    * `viaMat` if a different strategy is needed.
    */
-  def via[T, M](flow: Graph[? <: FlowShape[? >: Out, T], M]): javadsl.Source[T, Mat] =
+  def via[T, M](flow: Graph[? <: FlowShape[? >: Out, ? <: T], M]): javadsl.Source[T, Mat] =
     new Source(delegate.via(flowGraph(flow)))
 
   /**
@@ -1002,7 +1002,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    * where appropriate instead of manually writing functions that pass through one of the values.
    */
   def viaMat[T, M, M2](
-      flow: Graph[? <: FlowShape[? >: Out, T], M],
+      flow: Graph[? <: FlowShape[? >: Out, ? <: T], M],
       combine: function.Function2[? >: Mat, ? >: M, ? <: M2]): javadsl.Source[T, M2] =
     new Source(delegate.viaMat(flowGraph(flow))(combinerToScala(combine)))
 

@@ -44,7 +44,7 @@ package object javadsl {
   private[javadsl] def sinkGraph[T, M](graph: Graph[? <: SinkShape[? >: T], M]): Graph[SinkShape[T], M] =
     graph.asInstanceOf[Graph[SinkShape[T], M]]
 
-  private[javadsl] def flowGraph[I, O, M](graph: Graph[? <: FlowShape[? >: I, O], M]): Graph[FlowShape[I, O], M] =
+  private[javadsl] def flowGraph[I, O, M](graph: Graph[? <: FlowShape[? >: I, ? <: O], M]): Graph[FlowShape[I, O], M] =
     graph.asInstanceOf[Graph[FlowShape[I, O], M]]
 
   def combinerToScala[M1, M2, M](f: pekko.japi.function.Function2[? >: M1, ? >: M2, ? <: M]): (M1, M2) => M =

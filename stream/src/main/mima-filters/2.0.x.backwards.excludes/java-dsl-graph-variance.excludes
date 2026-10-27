@@ -133,3 +133,4 @@ ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.stream.ja
 ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.stream.javadsl.SubSource.zip(org.apache.pekko.stream.Graph)org.apache.pekko.stream.javadsl.SubSource")
 ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.stream.javadsl.SubSource.zipAll(org.apache.pekko.stream.Graph,java.lang.Object,java.lang.Object)org.apache.pekko.stream.javadsl.SubSource")
 ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.stream.javadsl.SubSource.zipLatest(org.apache.pekko.stream.Graph)org.apache.pekko.stream.javadsl.SubSource")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.stream.javadsl.GraphDSL#Builder#ForwardOps.via(org.apache.pekko.stream.FlowShape)org.apache.pekko.stream.javadsl.GraphDSL#Builder#ForwardOps")

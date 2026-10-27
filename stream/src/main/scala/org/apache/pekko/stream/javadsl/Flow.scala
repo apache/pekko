@@ -102,7 +102,7 @@ object Flow {
   /**
    * A graph with the shape of a flow logically is a flow, this method makes it so also in type.
    */
-  def fromGraph[I, O, M](g: Graph[? <: FlowShape[? >: I, O], M]): Flow[I, O, M] =
+  def fromGraph[I, O, M](g: Graph[? <: FlowShape[? >: I, ? <: O], M]): Flow[I, O, M] =
     g match {
       case f: Flow[I, O, M] @unchecked => f
       case other                       => new Flow(scaladsl.Flow.fromGraph(flowGraph(other)))
@@ -114,7 +114,7 @@ object Flow {
    * [[Attributes]] of the [[Flow]] returned by this method.
    */
   def fromMaterializer[I, O, M](
-      factory: function.Function2[? >: Materializer, ? >: Attributes, ? <: Graph[? <: FlowShape[? >: I, O], M]])
+      factory: function.Function2[? >: Materializer, ? >: Attributes, ? <: Graph[? <: FlowShape[? >: I, ? <: O], M]])
       : Flow[I, O, CompletionStage[M]] =
     scaladsl.Flow
       .fromMaterializer((mat, attr) => scaladsl.Flow.fromGraph(flowGraph(factory(mat, attr))))
@@ -283,7 +283,7 @@ object Flow {
    * [[NeverMaterializedException]] if upstream fails or downstream cancels before the completion stage has completed.
    */
   def completionStageFlow[I, O, M](
-      flow: CompletionStage[? <: Graph[? <: FlowShape[? >: I, O], M]]): Flow[I, O, CompletionStage[M]] = {
+      flow: CompletionStage[? <: Graph[? <: FlowShape[? >: I, ? <: O], M]]): Flow[I, O, CompletionStage[M]] = {
     import scala.jdk.FutureConverters._
     val sflow =
       scaladsl.Flow
@@ -439,7 +439,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *
    * See also [[viaMat]] when access to materialized values of the parameter is needed.
    */
-  def via[T, M](flow: Graph[? <: FlowShape[? >: Out, T], M]): javadsl.Flow[In, T, Mat] =
+  def via[T, M](flow: Graph[? <: FlowShape[? >: Out, ? <: T], M]): javadsl.Flow[In, T, Mat] =
     new Flow(delegate.via(flowGraph(flow)))
 
   /**
@@ -462,7 +462,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    * where appropriate instead of manually writing functions that pass through one of the values.
    */
   def viaMat[T, M, M2](
-      flow: Graph[? <: FlowShape[? >: Out, T], M],
+      flow: Graph[? <: FlowShape[? >: Out, ? <: T], M],
       combine: function.Function2[? >: Mat, ? >: M, ? <: M2]): javadsl.Flow[In, T, M2] =
     new Flow(delegate.viaMat(flowGraph(flow))(combinerToScala(combine)))
 
@@ -555,7 +555,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *
    * See also [[joinMat]] when access to materialized values of the parameter is needed.
    */
-  def join[M](flow: Graph[? <: FlowShape[? >: Out, In], M]): javadsl.RunnableGraph[Mat] =
+  def join[M](flow: Graph[? <: FlowShape[? >: Out, ? <: In], M]): javadsl.RunnableGraph[Mat] =
     RunnableGraph.fromGraph(delegate.join(flowGraph(flow)))
 
   /**
@@ -574,7 +574,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    * where appropriate instead of manually writing functions that pass through one of the values.
    */
   def joinMat[M, M2](
-      flow: Graph[? <: FlowShape[? >: Out, In], M],
+      flow: Graph[? <: FlowShape[? >: Out, ? <: In], M],
       combine: function.Function2[? >: Mat, ? >: M, ? <: M2]): javadsl.RunnableGraph[M2] =
     RunnableGraph.fromGraph(delegate.joinMat(flowGraph(flow))(combinerToScala(combine)))
 

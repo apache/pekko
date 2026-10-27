@@ -103,7 +103,8 @@ final class SourceWithContext[+Out, +Ctx, +Mat](delegate: scaladsl.SourceWithCon
    * @see [[pekko.stream.javadsl.Flow.via]]
    */
   def via[Out2, Ctx2, Mat2](
-      viaFlow: Graph[? <: FlowShape[? >: Pair[Out @uncheckedVariance, Ctx @uncheckedVariance], Pair[Out2, Ctx2]], Mat2])
+      viaFlow: Graph[? <: FlowShape[? >: Pair[Out @uncheckedVariance, Ctx @uncheckedVariance], ? <: Pair[Out2, Ctx2]],
+        Mat2])
       : SourceWithContext[Out2, Ctx2, Mat] =
     SourceWithContext.fromPairs(asSource().via(flowGraph(viaFlow)))
 
@@ -121,7 +122,7 @@ final class SourceWithContext[+Out, +Ctx, +Mat](delegate: scaladsl.SourceWithCon
    *  see https://pekko.apache.org/docs/pekko/current/stream/stream-context.html.
    */
   @ApiMayChange def unsafeDataVia[Out2, Mat2](
-      viaFlow: Graph[? <: FlowShape[? >: Out @uncheckedVariance, Out2], Mat2]): SourceWithContext[Out2, Ctx, Mat] =
+      viaFlow: Graph[? <: FlowShape[? >: Out @uncheckedVariance, ? <: Out2], Mat2]): SourceWithContext[Out2, Ctx, Mat] =
     viaScala(_.unsafeDataVia(flowGraph(viaFlow)))
 
   /**

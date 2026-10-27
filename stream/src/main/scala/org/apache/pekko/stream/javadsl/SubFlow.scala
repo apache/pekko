@@ -111,7 +111,7 @@ final class SubFlow[In, Out, Mat](
    * value of the current flow (ignoring the other Flow’s value), use
    * [[Flow#viaMat viaMat]] if a different strategy is needed.
    */
-  def via[T, M](flow: Graph[? <: FlowShape[? >: Out, T], M]): SubFlow[In, T, Mat] =
+  def via[T, M](flow: Graph[? <: FlowShape[? >: Out, ? <: T], M]): SubFlow[In, T, Mat] =
     new SubFlow(delegate.via(flowGraph(flow)))
 
   /**
