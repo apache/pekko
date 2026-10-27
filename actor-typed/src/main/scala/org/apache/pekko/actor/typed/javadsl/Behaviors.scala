@@ -340,7 +340,9 @@ object Behaviors {
       behavior: Behavior[Inner],
       selector: JFunction[? >: PFBuilder[Outer, Inner], ? <: PFBuilder[Outer, Inner]]): Behavior[Outer] = {
     implicit val classTag: ClassTag[Outer] = ClassTag(interceptMessageClass)
-    BehaviorImpl.transformMessages(behavior, selector.apply(new PFBuilder).build())
+    // ascribed: Scala 2 erases the wildcard result to Object and fails to find build() at runtime
+    val builder: PFBuilder[Outer, Inner] = selector.apply(new PFBuilder)
+    BehaviorImpl.transformMessages(behavior, builder.build())
   }
 
   /**
