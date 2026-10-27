@@ -2291,4 +2291,65 @@ public class SourceTest extends StreamTestJupiter {
             .get(3, TimeUnit.SECONDS);
     assertEquals(12, result.intValue());
   }
+
+  @Test
+  public void mustAcceptGraphsOfNarrowerAndWiderElementTypes() throws Exception {
+    // sources of a subtype can be combined in, and flows and sinks of a supertype can consume
+    final Source<Integer, NotUsed> integers = Source.from(List.of(1, 2));
+    final Source<Double, NotUsed> doubles = Source.single(3.0);
+    final Flow<Object, String, NotUsed> describe = Flow.fromFunction(Object::toString);
+    final Sink<Object, CompletionStage<List<Object>>> collect = Sink.seq();
+
+    final Source<Number, NotUsed> numbers = Source.<Number>empty().concat(integers).merge(doubles);
+
+    assertEquals(
+        List.of("1", "2", "3.0"),
+        numbers
+            .via(describe)
+            .runWith(Sink.seq(), system)
+            .toCompletableFuture()
+            .get(3, TimeUnit.SECONDS)
+            .stream()
+            .sorted()
+            .collect(Collectors.toList()));
+    assertEquals(
+        3, numbers.runWith(collect, system).toCompletableFuture().get(3, TimeUnit.SECONDS).size());
+  }
+
+  @Test
+  public void mustAcceptFlowsEmittingASubtypeOfTheResultingElementType() throws Exception {
+    // a flow emitting a subtype can be used where a wider output element type is expected
+    final Flow<Integer, Integer, NotUsed> doubled = Flow.fromFunction(i -> i * 2);
+    final Source<Number, NotUsed> numbers =
+        Source.from(List.of(1, 2)).<Number, NotUsed>via(doubled);
+    final Flow<Integer, Number, NotUsed> asNumbers = Flow.fromGraph(doubled);
+
+    assertEquals(
+        List.of(2, 4),
+        numbers.runWith(Sink.seq(), system).toCompletableFuture().get(3, TimeUnit.SECONDS));
+    assertEquals(
+        List.of(6),
+        Source.single(3)
+            .via(asNumbers)
+            .runWith(Sink.seq(), system)
+            .toCompletableFuture()
+            .get(3, TimeUnit.SECONDS));
+  }
+
+  @Test
+  public void mustAcceptFunctionsReturningOptionalsAndIterablesOfSubtypes() throws Exception {
+    // functions may return an Optional or Iterable of a subtype of the resulting element type
+    final Function<Integer, Optional<Integer>> evenOnly =
+        i -> i % 2 == 0 ? Optional.of(i) : Optional.empty();
+    final Function<Number, List<Integer>> twice = n -> List.of(n.intValue(), n.intValue());
+
+    assertEquals(
+        List.of(2, 2, 4, 4),
+        Source.from(List.of(1, 2, 3, 4))
+            .<Number>mapOption(evenOnly)
+            .<Number>mapConcat(twice)
+            .runWith(Sink.seq(), system)
+            .toCompletableFuture()
+            .get(3, TimeUnit.SECONDS));
+  }
 }

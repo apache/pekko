@@ -809,7 +809,7 @@ object GraphDSL extends GraphCreate {
       def to(dst: SinkShape[? >: T]): Builder[Mat] = { _out ~> dst; self }
       def toFanIn[U](j: UniformFanInShape[? >: T, U]): Builder[Mat] = { _out ~> j; self }
       def toFanOut[U](j: UniformFanOutShape[? >: T, U]): Builder[Mat] = { _out ~> j; self }
-      def via[U](f: FlowShape[? >: T, U]): ForwardOps[U] = from((_out ~> f).outlet)
+      def via[U](f: FlowShape[? >: T, ? <: U]): ForwardOps[U] = from((_out ~> f).outlet.asInstanceOf[Outlet[U]])
       def viaFanIn[U](j: UniformFanInShape[? >: T, U]): ForwardOps[U] = from((_out ~> j).outlet)
       def viaFanOut[U](j: UniformFanOutShape[? >: T, U]): ForwardOps[U] = from((_out ~> j).outlet)
       def out(): Outlet[T] = _out

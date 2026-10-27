@@ -20,7 +20,6 @@ import scala.annotation.unchecked.uncheckedVariance
 import scala.annotation.varargs
 import scala.jdk.CollectionConverters._
 import scala.jdk.DurationConverters._
-import scala.jdk.OptionConverters._
 import scala.reflect.ClassTag
 import scala.util.control.NonFatal
 
@@ -106,8 +105,8 @@ final class SubSource[Out, Mat](
    * value of the current flow (ignoring the other Flow’s value), use
    * [[Flow#viaMat viaMat]] if a different strategy is needed.
    */
-  def via[T, M](flow: Graph[FlowShape[Out, T], M]): SubSource[T, Mat] =
-    new SubSource(delegate.via(flow))
+  def via[T, M](flow: Graph[? <: FlowShape[? >: Out, ? <: T], M]): SubSource[T, Mat] =
+    new SubSource(delegate.via(flowGraph(flow)))
 
   /**
    * Connect this [[SubSource]] to a [[Sink]], concatenating the processing steps of both.
@@ -125,8 +124,8 @@ final class SubSource[Out, Mat](
    *     +----------------------------+
    * }}}
    */
-  def to(sink: Graph[SinkShape[Out], ?]): RunnableGraph[Mat] =
-    RunnableGraph.fromGraph(delegate.to(sink))
+  def to(sink: Graph[? <: SinkShape[? >: Out], ?]): RunnableGraph[Mat] =
+    RunnableGraph.fromGraph(delegate.to(sinkGraph(sink)))
 
   /**
    * Transform this stream by applying the given function to each of the elements
@@ -161,7 +160,7 @@ final class SubSource[Out, Mat](
    *
    * @since 1.3.0
    */
-  def mapOption[T](f: function.Function[? >: Out, ? <: Optional[T]]): SubSource[T, Mat] =
+  def mapOption[T](f: function.Function[? >: Out, ? <: Optional[? <: T]]): SubSource[T, Mat] =
     new SubSource(delegate.map(f(_)).collect {
       case e if e.isPresent => e.get()
     }.addAttributes(DefaultAttributes.mapOption))
@@ -212,9 +211,9 @@ final class SubSource[Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    */
-  def mapConcat[T](f: function.Function[? >: Out, ? <: java.lang.Iterable[T]]): SubSource[T, Mat] =
+  def mapConcat[T](f: function.Function[? >: Out, ? <: java.lang.Iterable[? <: T]]): SubSource[T, Mat] =
     new SubSource(delegate.mapConcat { elem =>
-      f(elem).asScala
+      iterableToScala(f(elem))
     })
 
   /**
@@ -249,12 +248,12 @@ final class SubSource[Out, Mat](
    */
   def statefulMap[S, T](
       create: function.Creator[? <: S],
-      f: function.Function2[? >: S, ? >: Out, ? <: Pair[S, T]],
-      onComplete: function.Function[? >: S, ? <: Optional[T]]): javadsl.SubSource[T, Mat] =
+      f: function.Function2[? >: S, ? >: Out, ? <: Pair[? <: S, ? <: T]],
+      onComplete: function.Function[? >: S, ? <: Optional[? <: T]]): javadsl.SubSource[T, Mat] =
     new SubSource(
       delegate.statefulMap(() => create.create())(
         (s: S, out: Out) => f.apply(s, out).toScala,
-        (s: S) => onComplete.apply(s).toScala))
+        (s: S) => optionalToScala(onComplete.apply(s))))
 
   /**
    * Transform each stream element with the help of a resource.
@@ -291,11 +290,11 @@ final class SubSource[Out, Mat](
   def mapWithResource[R, T](
       create: function.Creator[? <: R],
       f: function.Function2[? >: R, ? >: Out, ? <: T],
-      close: function.Function[? >: R, ? <: Optional[T]]): javadsl.SubSource[T, Mat] =
+      close: function.Function[? >: R, ? <: Optional[? <: T]]): javadsl.SubSource[T, Mat] =
     new SubSource(
       delegate.mapWithResource(() => create.create())(
         (resource, out) => f(resource, out),
-        resource => close.apply(resource).toScala))
+        resource => optionalToScala(close.apply(resource))))
 
   /**
    * Transform each stream element with the help of an [[AutoCloseable]] resource and close it when the stream finishes or fails.
@@ -366,7 +365,7 @@ final class SubSource[Out, Mat](
    * '''Cancels when''' downstream cancels
    */
   def statefulMapConcat[T](
-      f: function.Creator[? <: function.Function[Out, ? <: java.lang.Iterable[T]]]): SubSource[T, Mat] = {
+      f: function.Creator[? <: function.Function[Out, ? <: java.lang.Iterable[? <: T]]]): SubSource[T, Mat] = {
     import scaladsl.StatefulMapConcatAccumulatorFactory._
     // cast drops the wildcards so Scala 3 can resolve `asFactory`; erasure is unchanged
     new SubSource(delegate.via(new StatefulMapConcat(f.asInstanceOf[function.Creator[function.Function[Out,
@@ -1435,8 +1434,9 @@ final class SubSource[Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    */
-  def recoverWith(pf: PartialFunction[Throwable, ? <: Graph[SourceShape[Out], NotUsed]]): SubSource[Out, Mat] =
-    new SubSource(delegate.recoverWith(pf))
+  def recoverWith(
+      pf: PartialFunction[Throwable, ? <: Graph[? <: SourceShape[? <: Out], NotUsed]]): SubSource[Out, Mat] =
+    new SubSource(delegate.recoverWith(pf.asInstanceOf[PartialFunction[Throwable, Graph[SourceShape[Out], NotUsed]]]))
 
   /**
    * RecoverWithRetries allows to switch to alternative Source on flow failure. It will stay in effect after
@@ -1460,8 +1460,9 @@ final class SubSource[Out, Mat](
    */
   def recoverWithRetries(
       attempts: Int,
-      pf: PartialFunction[Throwable, ? <: Graph[SourceShape[Out], NotUsed]]): SubSource[Out, Mat] =
-    new SubSource(delegate.recoverWithRetries(attempts, pf))
+      pf: PartialFunction[Throwable, ? <: Graph[? <: SourceShape[? <: Out], NotUsed]]): SubSource[Out, Mat] =
+    new SubSource(delegate.recoverWithRetries(attempts,
+      pf.asInstanceOf[PartialFunction[Throwable, Graph[SourceShape[Out], NotUsed]]]))
 
   /**
    * onErrorComplete allows to complete the stream when an upstream error occurs.
@@ -1612,9 +1613,9 @@ final class SubSource[Out, Mat](
    * @since 1.3.0
    */
   def onErrorResume[T >: Out](
-      fallback: function.Function[? >: Throwable, ? <: Graph[SourceShape[T], NotUsed]]): SubSource[T, Mat] =
+      fallback: function.Function[? >: Throwable, ? <: Graph[? <: SourceShape[? <: T], NotUsed]]): SubSource[T, Mat] =
     new SubSource(delegate.recoverWith {
-      case NonFatal(ex) => fallback(ex)
+      case NonFatal(ex) => sourceGraph(fallback(ex))
     })
 
   /**
@@ -1638,9 +1639,9 @@ final class SubSource[Out, Mat](
    */
   def onErrorResume[T >: Out](
       clazz: Class[? <: Throwable],
-      fallback: function.Function[? >: Throwable, ? <: Graph[SourceShape[T], NotUsed]]): SubSource[T, Mat] =
+      fallback: function.Function[? >: Throwable, ? <: Graph[? <: SourceShape[? <: T], NotUsed]]): SubSource[T, Mat] =
     new SubSource(delegate.recoverWith {
-      case NonFatal(ex) if clazz.isInstance(ex) => fallback(ex)
+      case NonFatal(ex) if clazz.isInstance(ex) => sourceGraph(fallback(ex))
     })
 
   /**
@@ -1664,9 +1665,9 @@ final class SubSource[Out, Mat](
    */
   def onErrorResume[T >: Out](
       predicate: function.Predicate[? >: Throwable],
-      fallback: function.Function[? >: Throwable, ? <: Graph[SourceShape[T], NotUsed]]): SubSource[T, Mat] =
+      fallback: function.Function[? >: Throwable, ? <: Graph[? <: SourceShape[? <: T], NotUsed]]): SubSource[T, Mat] =
     new SubSource(delegate.recoverWith {
-      case NonFatal(ex) if predicate.test(ex) => fallback(ex)
+      case NonFatal(ex) if predicate.test(ex) => sourceGraph(fallback(ex))
     })
 
   /**
@@ -2075,8 +2076,8 @@ final class SubSource[Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    */
-  def flatMapConcat[T, M](f: function.Function[? >: Out, ? <: Graph[SourceShape[T], M]]): SubSource[T, Mat] =
-    new SubSource(delegate.flatMapConcat(x => f(x)))
+  def flatMapConcat[T, M](f: function.Function[? >: Out, ? <: Graph[? <: SourceShape[? <: T], M]]): SubSource[T, Mat] =
+    new SubSource(delegate.flatMapConcat(x => sourceGraph(f(x))))
 
   /**
    * Transform each input element into a `Source` of output elements that is
@@ -2095,8 +2096,8 @@ final class SubSource[Out, Mat](
    */
   def flatMapConcat[T, M](
       parallelism: Int,
-      f: function.Function[? >: Out, ? <: Graph[SourceShape[T], M]]): SubSource[T, Mat] =
-    new SubSource(delegate.flatMapConcat(parallelism, x => f(x)))
+      f: function.Function[? >: Out, ? <: Graph[? <: SourceShape[? <: T], M]]): SubSource[T, Mat] =
+    new SubSource(delegate.flatMapConcat(parallelism, x => sourceGraph(f(x))))
 
   /**
    * Transform each input element into a `Source` of output elements that is
@@ -2111,9 +2112,9 @@ final class SubSource[Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    */
-  def flatMapMerge[T, M](breadth: Int, f: function.Function[? >: Out, ? <: Graph[SourceShape[T], M]])
+  def flatMapMerge[T, M](breadth: Int, f: function.Function[? >: Out, ? <: Graph[? <: SourceShape[? <: T], M]])
       : SubSource[T, Mat] =
-    new SubSource(delegate.flatMapMerge(breadth, o => f(o)))
+    new SubSource(delegate.flatMapMerge(breadth, o => sourceGraph(f(o))))
 
   /**
    * Transforms each input element into a `Source` of output elements that is
@@ -2131,8 +2132,8 @@ final class SubSource[Out, Mat](
    *
    * @since 1.2.0
    */
-  def switchMap[T, M](f: function.Function[? >: Out, ? <: Graph[SourceShape[T], M]]): SubSource[T, Mat] =
-    new SubSource(delegate.switchMap(o => f(o)))
+  def switchMap[T, M](f: function.Function[? >: Out, ? <: Graph[? <: SourceShape[? <: T], M]]): SubSource[T, Mat] =
+    new SubSource(delegate.switchMap(o => sourceGraph(f(o))))
 
   /**
    * Concatenate the given [[Source]] to this [[Flow]], meaning that once this
@@ -2155,8 +2156,8 @@ final class SubSource[Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    */
-  def concat[M](that: Graph[SourceShape[Out], M]): SubSource[Out, Mat] =
-    new SubSource(delegate.concat(that))
+  def concat[M](that: Graph[? <: SourceShape[? <: Out], M]): SubSource[Out, Mat] =
+    new SubSource(delegate.concat(sourceGraph(that)))
 
   /**
    * Concatenate the given [[Source]] to this [[Flow]], meaning that once this
@@ -2181,8 +2182,8 @@ final class SubSource[Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    */
-  def concatLazy[M](that: Graph[SourceShape[Out], M]): SubSource[Out, Mat] =
-    new SubSource(delegate.concatLazy(that))
+  def concatLazy[M](that: Graph[? <: SourceShape[? <: Out], M]): SubSource[Out, Mat] =
+    new SubSource(delegate.concatLazy(sourceGraph(that)))
 
   /**
    * Concatenate the given [[Source]]s to this [[Source]], meaning that once this
@@ -2209,8 +2210,8 @@ final class SubSource[Out, Mat](
    */
   @varargs
   @SafeVarargs
-  def concatAllLazy(those: Graph[SourceShape[Out], ?]*): SubSource[Out, Mat] =
-    new SubSource(delegate.concatAllLazy(those: _*))
+  def concatAllLazy(those: Graph[? <: SourceShape[? <: Out], ?]*): SubSource[Out, Mat] =
+    new SubSource(delegate.concatAllLazy(those.map(sourceGraph(_)): _*))
 
   /**
    * Prepend the given [[Source]] to this [[Flow]], meaning that before elements
@@ -2233,8 +2234,8 @@ final class SubSource[Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    */
-  def prepend[M](that: Graph[SourceShape[Out], M]): SubSource[Out, Mat] =
-    new SubSource(delegate.prepend(that))
+  def prepend[M](that: Graph[? <: SourceShape[? <: Out], M]): SubSource[Out, Mat] =
+    new SubSource(delegate.prepend(sourceGraph(that)))
 
   /**
    * Prepend the given [[Source]] to this [[Flow]], meaning that before elements
@@ -2256,8 +2257,8 @@ final class SubSource[Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    */
-  def prependLazy[M](that: Graph[SourceShape[Out], M]): SubSource[Out, Mat] =
-    new SubSource(delegate.prependLazy(that))
+  def prependLazy[M](that: Graph[? <: SourceShape[? <: Out], M]): SubSource[Out, Mat] =
+    new SubSource(delegate.prependLazy(sourceGraph(that)))
 
   /**
    * Provides a secondary source that will be consumed if this source completes without any
@@ -2281,8 +2282,8 @@ final class SubSource[Out, Mat](
    * '''Cancels when''' downstream cancels and additionally the alternative is cancelled as soon as an element passes
    *                    by from this stream.
    */
-  def orElse[M](secondary: Graph[SourceShape[Out], M]): javadsl.SubSource[Out, Mat] =
-    new SubSource(delegate.orElse(secondary))
+  def orElse[M](secondary: Graph[? <: SourceShape[? <: Out], M]): javadsl.SubSource[Out, Mat] =
+    new SubSource(delegate.orElse(sourceGraph(secondary)))
 
   /**
    * Attaches the given [[Sink]] to this [[Source]], meaning that elements that passes
@@ -2298,8 +2299,8 @@ final class SubSource[Out, Mat](
    *
    * '''Cancels when''' downstream or Sink cancels
    */
-  def alsoTo(that: Graph[SinkShape[Out], ?]): SubSource[Out, Mat] =
-    new SubSource(delegate.alsoTo(that))
+  def alsoTo(that: Graph[? <: SinkShape[? >: Out], ?]): SubSource[Out, Mat] =
+    new SubSource(delegate.alsoTo(sinkGraph(that)))
 
   /**
    * Attaches the given [[Sink]] to this [[Source]], meaning that elements that pass
@@ -2322,8 +2323,8 @@ final class SubSource[Out, Mat](
    *
    * @since 2.0.0
    */
-  def alsoTo(that: Graph[SinkShape[Out], ?], propagateCancellation: Boolean): SubSource[Out, Mat] =
-    new SubSource(delegate.alsoTo(that, propagateCancellation))
+  def alsoTo(that: Graph[? <: SinkShape[? >: Out], ?], propagateCancellation: Boolean): SubSource[Out, Mat] =
+    new SubSource(delegate.alsoTo(sinkGraph(that), propagateCancellation))
 
   /**
    * Attaches the given [[Sink]]s to this [[Source]], meaning that elements that passes
@@ -2341,8 +2342,8 @@ final class SubSource[Out, Mat](
    */
   @varargs
   @SafeVarargs
-  def alsoToAll(those: Graph[SinkShape[Out], ?]*): SubSource[Out, Mat] =
-    new SubSource(delegate.alsoToAll(those: _*))
+  def alsoToAll(those: Graph[? <: SinkShape[? >: Out], ?]*): SubSource[Out, Mat] =
+    new SubSource(delegate.alsoToAll(those.map(sinkGraph(_)): _*))
 
   /**
    * Attaches the given [[Sink]] to this [[Flow]], meaning that elements will be sent to the [[Sink]]
@@ -2356,8 +2357,8 @@ final class SubSource[Out, Mat](
    *
    * '''Cancels when''' any of the downstreams cancel
    */
-  def divertTo(that: Graph[SinkShape[Out], ?], when: function.Predicate[? >: Out]): SubSource[Out, Mat] =
-    new SubSource(delegate.divertTo(that, when.test))
+  def divertTo(that: Graph[? <: SinkShape[? >: Out], ?], when: function.Predicate[? >: Out]): SubSource[Out, Mat] =
+    new SubSource(delegate.divertTo(sinkGraph(that), when.test))
 
   /**
    * Attaches the given [[Sink]] to this [[Flow]] as a wire tap, meaning that elements that pass
@@ -2375,8 +2376,8 @@ final class SubSource[Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    */
-  def wireTap(that: Graph[SinkShape[Out], ?]): SubSource[Out, Mat] =
-    new SubSource(delegate.wireTap(that))
+  def wireTap(that: Graph[? <: SinkShape[? >: Out], ?]): SubSource[Out, Mat] =
+    new SubSource(delegate.wireTap(sinkGraph(that)))
 
   /**
    * Merge the given [[Source]] to this [[Flow]], taking elements as they arrive from input streams,
@@ -2390,8 +2391,8 @@ final class SubSource[Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    */
-  def merge(that: Graph[SourceShape[Out], ?]): SubSource[Out, Mat] =
-    new SubSource(delegate.merge(that))
+  def merge(that: Graph[? <: SourceShape[? <: Out], ?]): SubSource[Out, Mat] =
+    new SubSource(delegate.merge(sourceGraph(that)))
 
   /**
    * Merge the given [[Source]]s to the current one, taking elements as they arrive from input streams,
@@ -2406,7 +2407,7 @@ final class SubSource[Out, Mat](
    * '''Cancels when''' downstream cancels
    */
   def mergeAll(
-      @Nullable those: java.lang.Iterable[? <: Graph[SourceShape[Out], ? <: Any]],
+      @Nullable those: java.lang.Iterable[? <: Graph[? <: SourceShape[? <: Out], ? <: Any]],
       eagerComplete: Boolean): SubSource[Out, Mat] = {
     import pekko.util.Collections._
     val seq = if (those ne null) those.collectToImmutableSeq {
@@ -2414,7 +2415,7 @@ final class SubSource[Out, Mat](
       case other                             => other
     }
     else Seq()
-    new SubSource(delegate.mergeAll(seq, eagerComplete))
+    new SubSource(delegate.mergeAll(seq.map(sourceGraph(_)), eagerComplete))
   }
 
   /**
@@ -2441,8 +2442,8 @@ final class SubSource[Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    */
-  def interleave(that: Graph[SourceShape[Out], ?], segmentSize: Int): SubSource[Out, Mat] =
-    new SubSource(delegate.interleave(that, segmentSize))
+  def interleave(that: Graph[? <: SourceShape[? <: Out], ?], segmentSize: Int): SubSource[Out, Mat] =
+    new SubSource(delegate.interleave(sourceGraph(that), segmentSize))
 
   /**
    * Interleave is a deterministic merge of the given [[Source]] with elements of this [[Flow]].
@@ -2465,7 +2466,7 @@ final class SubSource[Out, Mat](
    * '''Cancels when''' downstream cancels
    */
   def interleaveAll(
-      @Nullable those: java.lang.Iterable[? <: Graph[SourceShape[Out], ? <: Any]],
+      @Nullable those: java.lang.Iterable[? <: Graph[? <: SourceShape[? <: Out], ? <: Any]],
       segmentSize: Int,
       eagerClose: Boolean): SubSource[Out, Mat] = {
     import pekko.util.Collections._
@@ -2474,7 +2475,7 @@ final class SubSource[Out, Mat](
       case other                             => other
     }
     else Seq()
-    new SubSource(delegate.interleaveAll(seq, segmentSize, eagerClose))
+    new SubSource(delegate.interleaveAll(seq.map(sourceGraph(_)), segmentSize, eagerClose))
   }
 
   /**
@@ -2488,9 +2489,9 @@ final class SubSource[Out, Mat](
    * '''Completes when''' all upstreams complete (eagerClose=false) or one upstream completes (eagerClose=true)
    */
   def mergeLatest[M](
-      that: Graph[SourceShape[Out], M],
+      that: Graph[? <: SourceShape[? <: Out], M],
       eagerComplete: Boolean): javadsl.SubSource[java.util.List[Out], Mat] =
-    new SubSource(delegate.mergeLatest(that, eagerComplete).map(_.asJava))
+    new SubSource(delegate.mergeLatest(sourceGraph(that), eagerComplete).map(_.asJava))
 
   /**
    * Merge two sources. Prefer one source if both sources have elements ready.
@@ -2502,10 +2503,10 @@ final class SubSource[Out, Mat](
    * '''completes''' when all upstreams complete (This behavior is changeable to completing when any upstream completes by setting `eagerComplete=true`.)
    */
   def mergePreferred[M](
-      that: Graph[SourceShape[Out], M],
+      that: Graph[? <: SourceShape[? <: Out], M],
       preferred: Boolean,
       eagerComplete: Boolean): javadsl.SubSource[Out, Mat] =
-    new SubSource(delegate.mergePreferred(that, preferred, eagerComplete))
+    new SubSource(delegate.mergePreferred(sourceGraph(that), preferred, eagerComplete))
 
   /**
    * Merge two sources. Prefer the sources depending on the 'priority' parameters.
@@ -2517,11 +2518,11 @@ final class SubSource[Out, Mat](
    * '''completes''' when both upstreams complete (This behavior is changeable to completing when any upstream completes by setting `eagerComplete=true`.)
    */
   def mergePrioritized[M](
-      that: Graph[SourceShape[Out], M],
+      that: Graph[? <: SourceShape[? <: Out], M],
       leftPriority: Int,
       rightPriority: Int,
       eagerComplete: Boolean): javadsl.SubSource[Out, Mat] =
-    new SubSource(delegate.mergePrioritized(that, leftPriority, rightPriority, eagerComplete))
+    new SubSource(delegate.mergePrioritized(sourceGraph(that), leftPriority, rightPriority, eagerComplete))
 
   /**
    * Merge the given [[Source]] to this [[Source]], taking elements as they arrive from input streams,
@@ -2538,8 +2539,8 @@ final class SubSource[Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    */
-  def mergeSorted[M](that: Graph[SourceShape[Out], M], comp: Comparator[Out]): javadsl.SubSource[Out, Mat] =
-    new SubSource(delegate.mergeSorted(that)(Ordering.comparatorToOrdering(comp)))
+  def mergeSorted[M](that: Graph[? <: SourceShape[? <: Out], M], comp: Comparator[Out]): javadsl.SubSource[Out, Mat] =
+    new SubSource(delegate.mergeSorted(sourceGraph(that))(Ordering.comparatorToOrdering(comp)))
 
   /**
    * Combine the elements of current [[Flow]] and the given [[Source]] into a stream of tuples.
@@ -2552,8 +2553,8 @@ final class SubSource[Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    */
-  def zip[T](source: Graph[SourceShape[T], ?]): SubSource[pekko.japi.Pair[Out @uncheckedVariance, T], Mat] =
-    new SubSource(delegate.zip(source).map { case (o, t) => pekko.japi.Pair.create(o, t) })
+  def zip[T](source: Graph[? <: SourceShape[? <: T], ?]): SubSource[pekko.japi.Pair[Out @uncheckedVariance, T], Mat] =
+    new SubSource(delegate.zip(sourceGraph(source)).map { case (o, t) => pekko.japi.Pair.create(o, t) })
 
   /**
    * Combine the elements of current flow and the given [[Source]] into a stream of tuples.
@@ -2567,10 +2568,10 @@ final class SubSource[Out, Mat](
    * '''Cancels when''' downstream cancels
    */
   def zipAll[U, A >: Out](
-      that: Graph[SourceShape[U], ?],
+      that: Graph[? <: SourceShape[? <: U], ?],
       thisElem: A,
       thatElem: U): SubSource[pekko.japi.Pair[A, U], Mat] =
-    new SubSource(delegate.zipAll(that, thisElem, thatElem).map { case (a, u) => Pair.create(a, u) })
+    new SubSource(delegate.zipAll(sourceGraph(that), thisElem, thatElem).map { case (a, u) => Pair.create(a, u) })
 
   /**
    * Combine the elements of current [[Flow]] and the given [[Source]] into a stream of tuples, picking always the latest element of each.
@@ -2584,8 +2585,9 @@ final class SubSource[Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    */
-  def zipLatest[T](source: Graph[SourceShape[T], ?]): SubSource[pekko.japi.Pair[Out @uncheckedVariance, T], Mat] =
-    new SubSource(delegate.zipLatest(source).map { case (o, t) => pekko.japi.Pair.create(o, t) })
+  def zipLatest[T](
+      source: Graph[? <: SourceShape[? <: T], ?]): SubSource[pekko.japi.Pair[Out @uncheckedVariance, T], Mat] =
+    new SubSource(delegate.zipLatest(sourceGraph(source)).map { case (o, t) => pekko.japi.Pair.create(o, t) })
 
   /**
    * Put together the elements of current [[Flow]] and the given [[Source]]
@@ -2606,9 +2608,9 @@ final class SubSource[Out, Mat](
    * '''Cancels when''' downstream cancels
    */
   def zipWith[Out2, Out3](
-      that: Graph[SourceShape[Out2], ?],
+      that: Graph[? <: SourceShape[? <: Out2], ?],
       combine: function.Function2[? >: Out, ? >: Out2, ? <: Out3]): SubSource[Out3, Mat] =
-    new SubSource(delegate.zipWith[Out2, Out3](that)(combinerToScala(combine)))
+    new SubSource(delegate.zipWith[Out2, Out3](sourceGraph(that))(combinerToScala(combine)))
 
   /**
    * Put together the elements of current [[Flow]] and the given [[Source]]
@@ -2624,9 +2626,9 @@ final class SubSource[Out, Mat](
    * '''Cancels when''' downstream cancels
    */
   def zipLatestWith[Out2, Out3](
-      that: Graph[SourceShape[Out2], ?],
+      that: Graph[? <: SourceShape[? <: Out2], ?],
       combine: function.Function2[? >: Out, ? >: Out2, ? <: Out3]): SubSource[Out3, Mat] =
-    new SubSource(delegate.zipLatestWith[Out2, Out3](that)(combinerToScala(combine)))
+    new SubSource(delegate.zipLatestWith[Out2, Out3](sourceGraph(that))(combinerToScala(combine)))
 
   /**
    * Combine the elements of current [[Source]] into a stream of tuples consisting
@@ -3154,7 +3156,7 @@ final class SubSource[Out, Mat](
    * @param emitOnTimer decide whether the current aggregated elements can be emitted, the custom function is invoked on every interval
    */
   def aggregateWithBoundary[Agg, Emit](allocate: function.Creator[? <: Agg],
-      aggregate: function.Function2[? >: Agg, ? >: Out, ? <: Pair[Agg, Boolean]],
+      aggregate: function.Function2[? >: Agg, ? >: Out, ? <: Pair[? <: Agg, Boolean]],
       harvest: function.Function[? >: Agg, ? <: Emit],
       emitOnTimer: Optional[Pair[function.Predicate[Agg], java.time.Duration]])
       : javadsl.SubSource[Emit, Mat] = {

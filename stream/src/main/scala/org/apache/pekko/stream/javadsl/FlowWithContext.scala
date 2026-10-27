@@ -103,9 +103,11 @@ final class FlowWithContext[In, CtxIn, Out, CtxOut, +Mat](
    * @see [[pekko.stream.javadsl.Flow.via]]
    */
   def via[Out2, CtxOut2, Mat2](
-      viaFlow: Graph[FlowShape[Pair[Out @uncheckedVariance, CtxOut @uncheckedVariance], Pair[Out2, CtxOut2]], Mat2])
+      viaFlow: Graph[? <: FlowShape[? >: Pair[Out @uncheckedVariance, CtxOut @uncheckedVariance],
+        ? <: Pair[Out2, CtxOut2]],
+        Mat2])
       : FlowWithContext[In, CtxIn, Out2, CtxOut2, Mat] = {
-    val under = asFlow().via(viaFlow)
+    val under = asFlow().via(flowGraph(viaFlow))
     FlowWithContext.fromPairs(under)
   }
 
@@ -123,8 +125,9 @@ final class FlowWithContext[In, CtxIn, Out, CtxOut, +Mat](
    *  see https://pekko.apache.org/docs/pekko/current/stream/stream-context.html.
    */
   @ApiMayChange def unsafeDataVia[Out2, Mat2](
-      viaFlow: Graph[FlowShape[Out @uncheckedVariance, Out2], Mat2]): FlowWithContext[In, CtxIn, Out2, CtxOut, Mat] =
-    viaScala(_.unsafeDataVia(viaFlow))
+      viaFlow: Graph[? <: FlowShape[? >: Out @uncheckedVariance, ? <: Out2], Mat2])
+      : FlowWithContext[In, CtxIn, Out2, CtxOut, Mat] =
+    viaScala(_.unsafeDataVia(flowGraph(viaFlow)))
 
   /**
    * Context-preserving variant of [[pekko.stream.javadsl.Flow.withAttributes]].
@@ -297,8 +300,8 @@ final class FlowWithContext[In, CtxIn, Out, CtxOut, +Mat](
    * @since 2.0.0
    */
   def mapOption[Out2](
-      f: function.Function[? >: Out, ? <: Optional[Out2]]): FlowWithContext[In, CtxIn, Out2, CtxOut, Mat] =
-    viaScala(_.mapOption(out => f.apply(out).toScala))
+      f: function.Function[? >: Out, ? <: Optional[? <: Out2]]): FlowWithContext[In, CtxIn, Out2, CtxOut, Mat] =
+    viaScala(_.mapOption(out => optionalToScala(f.apply(out))))
 
   /**
    * Context-preserving variant of [[pekko.stream.javadsl.Flow.mapAsync]].
@@ -367,8 +370,9 @@ final class FlowWithContext[In, CtxIn, Out, CtxOut, +Mat](
    * @see [[pekko.stream.javadsl.Flow.mapConcat]]
    */
   def mapConcat[Out2](
-      f: function.Function[? >: Out, ? <: java.lang.Iterable[Out2]]): FlowWithContext[In, CtxIn, Out2, CtxOut, Mat] =
-    viaScala(_.mapConcat(elem => f.apply(elem).asScala))
+      f: function.Function[? >: Out, ? <: java.lang.Iterable[? <: Out2]])
+      : FlowWithContext[In, CtxIn, Out2, CtxOut, Mat] =
+    viaScala(_.mapConcat(elem => iterableToScala(f.apply(elem))))
 
   /**
    * Apply the given function to each context element (leaving the data elements unchanged).

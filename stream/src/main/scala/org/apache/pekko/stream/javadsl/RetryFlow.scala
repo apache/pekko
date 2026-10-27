@@ -16,7 +16,6 @@ package org.apache.pekko.stream.javadsl
 import java.util.Optional
 
 import scala.jdk.DurationConverters._
-import scala.jdk.OptionConverters._
 
 import org.apache.pekko
 import pekko.japi.Pair
@@ -51,11 +50,11 @@ object RetryFlow {
       randomFactor: Double,
       maxRetries: Int,
       flow: Flow[In, Out, Mat],
-      decideRetry: pekko.japi.function.Function2[? >: In, ? >: Out, ? <: Optional[In]]): Flow[In, Out, Mat] =
+      decideRetry: pekko.japi.function.Function2[? >: In, ? >: Out, ? <: Optional[? <: In]]): Flow[In, Out, Mat] =
     scaladsl.RetryFlow
       .withBackoff[In, Out, Mat](minBackoff.toScala, maxBackoff.toScala, randomFactor, maxRetries, flow.asScala) {
         (in, out) =>
-          decideRetry.apply(in, out).toScala
+          optionalToScala(decideRetry.apply(in, out))
       }
       .asJava
 
@@ -90,7 +89,7 @@ object RetryFlow {
       maxRetries: Int,
       flow: FlowWithContext[In, InCtx, Out, OutCtx, Mat],
       decideRetry: pekko.japi.function.Function2[? >: Pair[In, InCtx], ? >: Pair[Out, OutCtx],
-        ? <: Optional[Pair[In, InCtx]]])
+        ? <: Optional[? <: Pair[In, InCtx]]])
       : FlowWithContext[In, InCtx, Out, OutCtx, Mat] =
     scaladsl.RetryFlow
       .withBackoffAndContext[In, InCtx, Out, OutCtx, Mat](
@@ -99,7 +98,7 @@ object RetryFlow {
         randomFactor,
         maxRetries,
         flow.asScala) { (in, out) =>
-        decideRetry.apply(Pair(in._1, in._2), Pair(out._1, out._2)).toScala.map(_.toScala)
+        optionalToScala(decideRetry.apply(Pair(in._1, in._2), Pair(out._1, out._2))).map(_.toScala)
       }
       .asJava[In, InCtx, Out, OutCtx, Mat]
 
