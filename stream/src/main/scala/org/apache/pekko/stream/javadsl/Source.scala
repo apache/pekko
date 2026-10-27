@@ -184,13 +184,13 @@ object Source {
    * being used as a `Source`. Otherwise the stream may fail with
    * `ConcurrentModificationException` or other more subtle errors may occur.
    */
-  def from[O](iterable: java.lang.Iterable[O]): javadsl.Source[O, NotUsed] = {
+  def from[O](iterable: java.lang.Iterable[? <: O]): javadsl.Source[O, NotUsed] = {
     // this adapter is not immutable if the underlying java.lang.Iterable is modified
     // but there is not anything we can do to prevent that from happening.
     // ConcurrentModificationException will be thrown in some cases.
     iterable match {
-      case c: java.util.Collection[O] if c.isEmpty     => empty()
-      case c: java.util.Collection[O] if c.size() == 1 => single(c.iterator().next())
+      case c: java.util.Collection[?] if c.isEmpty     => empty()
+      case c: java.util.Collection[?] if c.size() == 1 => single[O](iterable.iterator().next())
       case _                                           =>
         val scalaIterable = new immutable.Iterable[O] {
           override def iterator: Iterator[O] = iterable.iterator().asScala
@@ -212,7 +212,7 @@ object Source {
    *
    * @since 1.3.0
    */
-  def fromOption[T](optional: Optional[T]): Source[T, NotUsed] =
+  def fromOption[T](optional: Optional[? <: T]): Source[T, NotUsed] =
     if (optional.isPresent) single(optional.get()) else empty()
 
   /**
@@ -330,16 +330,17 @@ object Source {
    * Emits a single value when the given `CompletionStage` is successfully completed and then completes the stream.
    * If the `CompletionStage` is completed with a failure the stream is failed.
    */
-  def completionStage[T](completionStage: CompletionStage[T]): Source[T, NotUsed] =
-    new Source(scaladsl.Source.future(completionStage.asScala))
+  def completionStage[T](completionStage: CompletionStage[? <: T]): Source[T, NotUsed] =
+    new Source(scaladsl.Source.future[T](completionStage.asScala))
 
   /**
    * Turn a `CompletionStage[Source]` into a source that will emit the values of the source when the future completes successfully.
    * If the `CompletionStage` is completed with a failure the stream is failed.
    */
-  def completionStageSource[T, M](completionStageSource: CompletionStage[Source[T, M]]): Source[T, CompletionStage[M]] =
+  def completionStageSource[T, M](
+      completionStageSource: CompletionStage[? <: Graph[SourceShape[T], M]]): Source[T, CompletionStage[M]] =
     scaladsl.Source
-      .futureSource(completionStageSource.asScala.map(_.asScala)(ExecutionContext.parasitic))
+      .futureSource(completionStageSource.asScala.map(scaladsl.Source.fromGraph(_))(ExecutionContext.parasitic))
       .mapMaterializedValue(_.asJava)
       .asJava
 
@@ -531,8 +532,12 @@ object Source {
    * [[Attributes]] of the [[Source]] returned by this method.
    */
   def fromMaterializer[T, M](
-      factory: function.Function2[Materializer, Attributes, Source[T, M]]): Source[T, CompletionStage[M]] =
-    scaladsl.Source.fromMaterializer((mat, attr) => factory(mat, attr).asScala).mapMaterializedValue(_.asJava).asJava
+      factory: function.Function2[Materializer, Attributes, ? <: Graph[SourceShape[T], M]])
+      : Source[T, CompletionStage[M]] =
+    scaladsl.Source
+      .fromMaterializer((mat, attr) => scaladsl.Source.fromGraph(factory(mat, attr)))
+      .mapMaterializedValue(_.asJava)
+      .asJava
 
   /**
    * Combines several sources with fan-in strategy like [[Merge]] or [[Concat]] into a single [[Source]].
@@ -2419,7 +2424,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    */
   def recoverWith(
       clazz: Class[? <: Throwable],
-      creator: function.Creator[Graph[SourceShape[Out], NotUsed]]): Source[Out, Mat] =
+      creator: function.Creator[? <: Graph[SourceShape[Out], NotUsed]]): Source[Out, Mat] =
     recoverWith({
       case elem if clazz.isInstance(elem) => creator.create()
     }: PartialFunction[Throwable, Graph[SourceShape[Out], NotUsed]])
@@ -2480,7 +2485,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
   def recoverWithRetries(
       attempts: Int,
       clazz: Class[? <: Throwable],
-      creator: function.Creator[Graph[SourceShape[Out], NotUsed]]): Source[Out, Mat] =
+      creator: function.Creator[? <: Graph[SourceShape[Out], NotUsed]]): Source[Out, Mat] =
     recoverWithRetries(attempts,
       {
         case elem if clazz.isInstance(elem) => creator.create()

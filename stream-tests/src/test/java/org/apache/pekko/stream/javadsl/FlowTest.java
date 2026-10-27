@@ -2097,6 +2097,54 @@ public class FlowTest extends StreamTestJupiter {
   }
 
   @Test
+  public void mustAcceptAnyFlowGraphInFlowFactories() throws Exception {
+    // any Graph can be supplied, not only a javadsl.Flow
+    final Graph<FlowShape<Integer, Integer>, NotUsed> doubler =
+        Flow.of(Integer.class).map(elem -> elem * 2);
+    final CompletionStage<Graph<FlowShape<Integer, Integer>, NotUsed>> futureGraph =
+        CompletableFuture.completedFuture(doubler);
+    final Function2<Materializer, Attributes, Graph<FlowShape<Integer, Integer>, NotUsed>> factory =
+        (mat, attr) -> doubler;
+
+    final List<Integer> result =
+        Source.from(List.of(1, 2))
+            .via(Flow.completionStageFlow(futureGraph))
+            .via(Flow.fromMaterializer(factory))
+            .runWith(Sink.seq(), system)
+            .toCompletableFuture()
+            .get(3, TimeUnit.SECONDS);
+
+    assertEquals(List.of(4, 8), result);
+  }
+
+  @Test
+  public void flowRecoverWithMustAcceptConcreteSourceCreator() throws Exception {
+    // a creator typed with a concrete Source result must be accepted as is
+    final Creator<Source<Integer, NotUsed>> recover = () -> Source.single(0);
+
+    assertEquals(
+        List.of(1, 0),
+        Source.from(List.of(1, 2, 3))
+            .via(
+                Flow.of(Integer.class)
+                    .map(FlowTest::failOnTwo)
+                    .recoverWith(RuntimeException.class, recover))
+            .runWith(Sink.seq(), system)
+            .toCompletableFuture()
+            .get(3, TimeUnit.SECONDS));
+    assertEquals(
+        List.of(1, 0),
+        Source.from(List.of(1, 2, 3))
+            .via(
+                Flow.of(Integer.class)
+                    .map(FlowTest::failOnTwo)
+                    .recoverWithRetries(1, RuntimeException.class, recover))
+            .runWith(Sink.seq(), system)
+            .toCompletableFuture()
+            .get(3, TimeUnit.SECONDS));
+  }
+
+  @Test
   public void zipWithIndex() {
     final List<Integer> input = List.of(1, 2, 3);
     final List<Pair<Integer, Long>> expected =

@@ -113,8 +113,12 @@ object Flow {
    * [[Attributes]] of the [[Flow]] returned by this method.
    */
   def fromMaterializer[I, O, M](
-      factory: function.Function2[Materializer, Attributes, Flow[I, O, M]]): Flow[I, O, CompletionStage[M]] =
-    scaladsl.Flow.fromMaterializer((mat, attr) => factory(mat, attr).asScala).mapMaterializedValue(_.asJava).asJava
+      factory: function.Function2[Materializer, Attributes, ? <: Graph[FlowShape[I, O], M]])
+      : Flow[I, O, CompletionStage[M]] =
+    scaladsl.Flow
+      .fromMaterializer((mat, attr) => scaladsl.Flow.fromGraph(factory(mat, attr)))
+      .mapMaterializedValue(_.asJava)
+      .asJava
 
   /**
    * Creates a `Flow` from a `Sink` and a `Source` where the Flow's input
@@ -276,10 +280,13 @@ object Flow {
    * The materialized completion stage value is completed with the materialized value of the future flow or failed with a
    * [[NeverMaterializedException]] if upstream fails or downstream cancels before the completion stage has completed.
    */
-  def completionStageFlow[I, O, M](flow: CompletionStage[Flow[I, O, M]]): Flow[I, O, CompletionStage[M]] = {
+  def completionStageFlow[I, O, M](
+      flow: CompletionStage[? <: Graph[FlowShape[I, O], M]]): Flow[I, O, CompletionStage[M]] = {
     import scala.jdk.FutureConverters._
     val sflow =
-      scaladsl.Flow.futureFlow(flow.asScala.map(_.asScala)(ExecutionContext.parasitic)).mapMaterializedValue(_.asJava)
+      scaladsl.Flow
+        .futureFlow(flow.asScala.map(scaladsl.Flow.fromGraph(_))(ExecutionContext.parasitic))
+        .mapMaterializedValue(_.asJava)
     new javadsl.Flow(sflow)
   }
 
@@ -2141,7 +2148,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    */
   def recoverWith(
       clazz: Class[? <: Throwable],
-      creator: function.Creator[Graph[SourceShape[Out], NotUsed]]): javadsl.Flow[In, Out, Mat] =
+      creator: function.Creator[? <: Graph[SourceShape[Out], NotUsed]]): javadsl.Flow[In, Out, Mat] =
     recoverWith({
       case elem if clazz.isInstance(elem) => creator.create()
     }: PartialFunction[Throwable, Graph[SourceShape[Out], NotUsed]])
@@ -2205,7 +2212,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
   def recoverWithRetries(
       attempts: Int,
       clazz: Class[? <: Throwable],
-      creator: function.Creator[Graph[SourceShape[Out], NotUsed]]): javadsl.Flow[In, Out, Mat] =
+      creator: function.Creator[? <: Graph[SourceShape[Out], NotUsed]]): javadsl.Flow[In, Out, Mat] =
     recoverWithRetries(attempts,
       {
         case elem if clazz.isInstance(elem) => creator.create()

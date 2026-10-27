@@ -25,8 +25,11 @@ import org.apache.pekko.Done;
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.japi.Pair;
 import org.apache.pekko.japi.function.Function;
+import org.apache.pekko.japi.function.Function2;
 import org.apache.pekko.stream.Attributes;
 import org.apache.pekko.stream.Graph;
+import org.apache.pekko.stream.Materializer;
+import org.apache.pekko.stream.SinkShape;
 import org.apache.pekko.stream.StreamTestJupiter;
 import org.apache.pekko.stream.UniformFanOutShape;
 import org.apache.pekko.stream.testkit.TestSubscriber;
@@ -164,6 +167,54 @@ public class SinkTest extends StreamTestJupiter {
     for (CompletionStage<Integer> result : results) {
       assertEquals(1, result.toCompletableFuture().get(3, TimeUnit.SECONDS));
     }
+  }
+
+  @Test
+  public void mustAcceptAnySinkGraphInSinkFactories() throws Exception {
+    // any Graph can be supplied, not only a javadsl.Sink
+    final Graph<SinkShape<Integer>, CompletionStage<Integer>> head = Sink.head();
+    final Function2<Materializer, Attributes, Graph<SinkShape<Integer>, CompletionStage<Integer>>>
+        factory = (mat, attr) -> head;
+
+    assertEquals(
+        1,
+        Source.single(1)
+            .runWith(Sink.fromMaterializer(factory), system)
+            .thenCompose(m -> m)
+            .toCompletableFuture()
+            .get(3, TimeUnit.SECONDS));
+    assertEquals(
+        2,
+        Source.single(2)
+            .runWith(Sink.completionStageSink(CompletableFuture.completedFuture(head)), system)
+            .thenCompose(m -> m)
+            .toCompletableFuture()
+            .get(3, TimeUnit.SECONDS));
+    assertEquals(
+        3,
+        Source.single(3)
+            .runWith(Sink.eagerCompletionStageSink(CompletableFuture.completedFuture(head)), system)
+            .thenCompose(m -> m)
+            .toCompletableFuture()
+            .get(3, TimeUnit.SECONDS));
+  }
+
+  @Test
+  public void actorRefWithBackpressureMustAcceptWiderFailureFunction() {
+    final TestKit probe = new TestKit(system);
+    // a failure function over a supertype of Throwable must be accepted as is
+    final Function<Object, String> onFailure = Object::toString;
+
+    Source.single(1)
+        .runWith(
+            Sink.actorRefWithBackpressure(probe.getRef(), "init", "ack", "done", onFailure),
+            system);
+
+    probe.expectMsgEquals("init");
+    probe.reply("ack");
+    probe.expectMsgEquals(1);
+    probe.reply("ack");
+    probe.expectMsgEquals("done");
   }
 
   @Test
