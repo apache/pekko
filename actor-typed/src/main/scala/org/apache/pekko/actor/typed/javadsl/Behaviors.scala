@@ -124,7 +124,7 @@ object Behaviors {
    * that can potentially be different from this one. State is maintained by returning
    * a new behavior that holds the new immutable state.
    */
-  def receive[T](onMessage: JapiFunction2[ActorContext[T], T, Behavior[T]]): Behavior[T] =
+  def receive[T](onMessage: JapiFunction2[? >: ActorContext[T], ? >: T, ? <: Behavior[T]]): Behavior[T] =
     new BehaviorImpl.ReceiveBehavior((ctx, msg) => onMessage.apply(ctx.asJava, msg))
 
   /**
@@ -182,8 +182,8 @@ object Behaviors {
    * a new behavior that holds the new immutable state.
    */
   def receive[T](
-      onMessage: JapiFunction2[ActorContext[T], T, Behavior[T]],
-      onSignal: JapiFunction2[ActorContext[T], Signal, Behavior[T]]): Behavior[T] = {
+      onMessage: JapiFunction2[? >: ActorContext[T], ? >: T, ? <: Behavior[T]],
+      onSignal: JapiFunction2[? >: ActorContext[T], ? >: Signal, ? <: Behavior[T]]): Behavior[T] = {
     new BehaviorImpl.ReceiveBehavior((ctx, msg) => onMessage.apply(ctx.asJava, msg),
       {
         case (ctx, sig) => onSignal.apply(ctx.asJava, sig)
@@ -207,7 +207,7 @@ object Behaviors {
   /**
    * Construct an actor behavior that can react to lifecycle signals only.
    */
-  def receiveSignal[T](handler: JapiFunction2[ActorContext[T], Signal, Behavior[T]]): Behavior[T] = {
+  def receiveSignal[T](handler: JapiFunction2[? >: ActorContext[T], ? >: Signal, ? <: Behavior[T]]): Behavior[T] = {
     receive(two2same, handler)
   }
 

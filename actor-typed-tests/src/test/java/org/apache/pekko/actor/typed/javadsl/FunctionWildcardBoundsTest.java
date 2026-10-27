@@ -32,6 +32,7 @@ import org.apache.pekko.actor.testkit.typed.javadsl.TestProbe;
 import org.apache.pekko.actor.typed.ActorRef;
 import org.apache.pekko.actor.typed.Behavior;
 import org.apache.pekko.japi.function.Function;
+import org.apache.pekko.japi.function.Function2;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -57,6 +58,21 @@ public class FunctionWildcardBoundsTest {
     final ActorRef<String> ref = testKit.spawn(Behaviors.receiveMessage(forward));
     ref.tell("hello");
     probe.expectMessage("hello");
+  }
+
+  @Test
+  public void receiveAcceptsHandlerOverSupertypes() {
+    final TestProbe<Object> probe = testKit.createTestProbe();
+    final Function2<Object, Object, Behavior<String>> forward =
+        (context, msg) -> {
+          probe.getRef().tell(msg);
+          return Behaviors.same();
+        };
+
+    final Behavior<String> behavior = Behaviors.receive(forward);
+    final ActorRef<String> ref = testKit.spawn(behavior);
+    ref.tell("hi");
+    probe.expectMessage("hi");
   }
 
   @Test
