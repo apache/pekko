@@ -83,7 +83,7 @@ abstract class BehaviorTestKit[T] {
    *
    * @since 1.3.0
    */
-  def runAsk[Res](messageFactory: JFunction[ActorRef[Res], T]): ReplyInbox[Res]
+  def runAsk[Res](messageFactory: JFunction[? >: ActorRef[Res], ? <: T]): ReplyInbox[Res]
 
   /**
    * The same as `runAsk`, but with the response class specified.  This improves type inference in Java
@@ -98,7 +98,7 @@ abstract class BehaviorTestKit[T] {
    * @since 1.3.0
    */
   @nowarn("msg=never used") // responseClass is a pretend param to guide inference
-  def runAsk[Res](responseClass: Class[Res], messageFactory: JFunction[ActorRef[Res], T]): ReplyInbox[Res] =
+  def runAsk[Res](responseClass: Class[Res], messageFactory: JFunction[? >: ActorRef[Res], ? <: T]): ReplyInbox[Res] =
     runAsk(messageFactory)
 
   /**
@@ -106,7 +106,7 @@ abstract class BehaviorTestKit[T] {
    *
    * @since 1.3.0
    */
-  def runAskWithStatus[Res](messageFactory: JFunction[ActorRef[StatusReply[Res]], T]): StatusReplyInbox[Res]
+  def runAskWithStatus[Res](messageFactory: JFunction[? >: ActorRef[StatusReply[Res]], ? <: T]): StatusReplyInbox[Res]
 
   /**
    * The same as `runAskWithStatus`, but with the response class specified.  This improves type inference in
@@ -122,7 +122,7 @@ abstract class BehaviorTestKit[T] {
    */
   @nowarn("msg=never used") // responseClass is a pretend param to guide inference
   def runAskWithStatus[Res](responseClass: Class[Res],
-      messageFactory: JFunction[ActorRef[StatusReply[Res]], T]): StatusReplyInbox[Res] =
+      messageFactory: JFunction[? >: ActorRef[StatusReply[Res]], ? <: T]): StatusReplyInbox[Res] =
     runAskWithStatus(messageFactory)
 
   /**

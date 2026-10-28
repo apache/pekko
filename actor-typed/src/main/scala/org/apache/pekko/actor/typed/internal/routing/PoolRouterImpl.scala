@@ -51,7 +51,7 @@ private[pekko] final case class PoolRouterBuilder[T](
 
   def withRoundRobinRouting(): PoolRouterBuilder[T] = copy(logicFactory = _ => new RoutingLogics.RoundRobinLogic[T])
 
-  def withConsistentHashingRouting(virtualNodesFactor: Int, mapping: function.Function[T, String]): PoolRouter[T] =
+  def withConsistentHashingRouting(virtualNodesFactor: Int, mapping: function.Function[? >: T, String]): PoolRouter[T] =
     withConsistentHashingRouting(virtualNodesFactor, mapping.apply(_))
 
   def withConsistentHashingRouting(virtualNodesFactor: Int, mapping: T => String): PoolRouterBuilder[T] = {
@@ -63,7 +63,7 @@ private[pekko] final case class PoolRouterBuilder[T](
 
   def withRouteeProps(routeeProps: Props): PoolRouterBuilder[T] = copy(routeeProps = routeeProps)
 
-  override def withBroadcastPredicate(predicate: Predicate[T]): PoolRouter[T] =
+  override def withBroadcastPredicate(predicate: Predicate[? >: T]): PoolRouter[T] =
     copy(broadcastPredicate = value => predicate.test(value))
 
   override def withBroadcastPredicate(predicate: T => Boolean): scaladsl.PoolRouter[T] =

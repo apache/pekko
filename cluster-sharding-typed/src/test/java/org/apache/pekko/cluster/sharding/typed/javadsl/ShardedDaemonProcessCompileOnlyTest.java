@@ -16,9 +16,11 @@ package org.apache.pekko.cluster.sharding.typed.javadsl;
 import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.IntFunction;
 import org.apache.pekko.actor.typed.ActorRef;
 import org.apache.pekko.actor.typed.ActorSystem;
 import org.apache.pekko.actor.typed.Behavior;
+import org.apache.pekko.actor.typed.javadsl.AbstractBehavior;
 import org.apache.pekko.actor.typed.javadsl.Behaviors;
 import org.apache.pekko.cluster.sharding.ShardCoordinator;
 import org.apache.pekko.cluster.sharding.typed.ClusterShardingSettings;
@@ -111,6 +113,19 @@ public class ShardedDaemonProcessCompileOnlyTest {
                 settings,
                 Optional.empty(),
                 Optional.empty());
+  }
+
+  void acceptFactoriesOfBehaviorSubtypes(
+      ActorSystem<Void> system, ShardedDaemonProcessSettings settings) {
+    // a pre-typed factory of a Behavior subtype can be passed as is
+    final IntFunction<AbstractBehavior<Command>> factory = id -> null;
+
+    ShardedDaemonProcess.get(system).init(Command.class, "name", 8, factory);
+    ShardedDaemonProcess.get(system).init(Command.class, "name", 8, factory, Stop.INSTANCE);
+    ShardedDaemonProcess.get(system)
+        .init(Command.class, "name", 8, factory, settings, Optional.of(Stop.INSTANCE));
+    ShardedDaemonProcess.get(system)
+        .init(Command.class, "name", 8, factory, settings, Optional.empty(), Optional.empty());
   }
 
   static class TagProcessor {

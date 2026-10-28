@@ -56,7 +56,7 @@ object DistributedData extends ExtensionId[DistributedData] {
    * @tparam B Type of the [[ReplicatedData]].
    */
   def withReplicatorMessageAdapter[A, B <: ReplicatedData](
-      factory: JFunction[ReplicatorMessageAdapter[A, B], Behavior[A]]): Behavior[A] = {
+      factory: JFunction[? >: ReplicatorMessageAdapter[A, B], ? <: Behavior[A]]): Behavior[A] = {
     Behaviors.setup[A] { context =>
       val distributedData = pekko.cluster.ddata.typed.scaladsl.DistributedData(context.getSystem)
       val replicatorAdapter =

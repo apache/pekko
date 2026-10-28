@@ -127,7 +127,7 @@ abstract class GroupRouter[T] extends DeferredBehavior[T] {
    */
   def withConsistentHashingRouting(
       virtualNodesFactor: Int,
-      mapping: java.util.function.Function[T, String]): GroupRouter[T]
+      mapping: java.util.function.Function[? >: T, String]): GroupRouter[T]
 
 }
 
@@ -182,7 +182,7 @@ abstract class PoolRouter[T] extends DeferredBehavior[T] {
    */
   def withConsistentHashingRouting(
       virtualNodesFactor: Int,
-      mapping: java.util.function.Function[T, String]): PoolRouter[T]
+      mapping: java.util.function.Function[? >: T, String]): PoolRouter[T]
 
   /**
    * Set a new pool size from the one set at construction
@@ -197,5 +197,5 @@ abstract class PoolRouter[T] extends DeferredBehavior[T] {
   /**
    * Any message that the predicate returns true for will be broadcast to all routees.
    */
-  def withBroadcastPredicate(predicate: Predicate[T]): PoolRouter[T]
+  def withBroadcastPredicate(predicate: Predicate[? >: T]): PoolRouter[T]
 }

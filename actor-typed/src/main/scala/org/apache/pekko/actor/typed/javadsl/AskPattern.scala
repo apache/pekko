@@ -47,7 +47,7 @@ object AskPattern {
    */
   def ask[Req, Res](
       actor: RecipientRef[Req],
-      messageFactory: JFunction[ActorRef[Res], Req],
+      messageFactory: JFunction[? >: ActorRef[Res], ? <: Req],
       timeout: Duration,
       scheduler: Scheduler): CompletionStage[Res] =
     actor.ask(messageFactory.apply)(timeout.toScala, scheduler).asJava
@@ -60,7 +60,7 @@ object AskPattern {
    */
   def askWithStatus[Req, Res](
       actor: RecipientRef[Req],
-      messageFactory: JFunction[ActorRef[StatusReply[Res]], Req],
+      messageFactory: JFunction[? >: ActorRef[StatusReply[Res]], ? <: Req],
       timeout: Duration,
       scheduler: Scheduler): CompletionStage[Res] =
     actor.askWithStatus(messageFactory.apply)(timeout.toScala, scheduler).asJava

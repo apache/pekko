@@ -1,0 +1,57 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+# Widen javadsl function parameters with wildcard bounds (generic signature only, erasure unchanged)
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.actor.typed.javadsl.ActorContext.ask(java.lang.Class,org.apache.pekko.actor.typed.RecipientRef,java.time.Duration,org.apache.pekko.japi.function.Function,org.apache.pekko.japi.function.Function2)Unit")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.actor.typed.javadsl.ActorContext.askWithStatus(java.lang.Class,org.apache.pekko.actor.typed.RecipientRef,java.time.Duration,org.apache.pekko.japi.function.Function,org.apache.pekko.japi.function.Function2)Unit")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.actor.typed.javadsl.ActorContext.messageAdapter(java.lang.Class,org.apache.pekko.japi.function.Function)org.apache.pekko.actor.typed.ActorRef")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.actor.typed.javadsl.ActorContext.pipeToSelf(java.util.concurrent.CompletionStage,org.apache.pekko.japi.function.Function2)Unit")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.actor.typed.javadsl.AskPattern.ask(org.apache.pekko.actor.typed.RecipientRef,org.apache.pekko.japi.function.Function,java.time.Duration,org.apache.pekko.actor.typed.Scheduler)java.util.concurrent.CompletionStage")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.actor.typed.javadsl.AskPattern.askWithStatus(org.apache.pekko.actor.typed.RecipientRef,org.apache.pekko.japi.function.Function,java.time.Duration,org.apache.pekko.actor.typed.Scheduler)java.util.concurrent.CompletionStage")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.actor.typed.javadsl.BehaviorBuilder.onAnyMessage(org.apache.pekko.japi.function.Function)org.apache.pekko.actor.typed.javadsl.BehaviorBuilder")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.actor.typed.javadsl.BehaviorBuilder.onMessage(java.lang.Class,org.apache.pekko.japi.function.Function)org.apache.pekko.actor.typed.javadsl.BehaviorBuilder")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.actor.typed.javadsl.BehaviorBuilder.onMessage(java.lang.Class,org.apache.pekko.japi.function.Predicate,org.apache.pekko.japi.function.Function)org.apache.pekko.actor.typed.javadsl.BehaviorBuilder")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.actor.typed.javadsl.BehaviorBuilder.onMessageEquals(java.lang.Object,org.apache.pekko.japi.function.Creator)org.apache.pekko.actor.typed.javadsl.BehaviorBuilder")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.actor.typed.javadsl.BehaviorBuilder.onMessageUnchecked(java.lang.Class,org.apache.pekko.japi.function.Function)org.apache.pekko.actor.typed.javadsl.BehaviorBuilder")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.actor.typed.javadsl.BehaviorBuilder.onSignal(java.lang.Class,org.apache.pekko.japi.function.Function)org.apache.pekko.actor.typed.javadsl.BehaviorBuilder")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.actor.typed.javadsl.BehaviorBuilder.onSignal(java.lang.Class,org.apache.pekko.japi.function.Predicate,org.apache.pekko.japi.function.Function)org.apache.pekko.actor.typed.javadsl.BehaviorBuilder")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.actor.typed.javadsl.BehaviorBuilder.onSignalEquals(org.apache.pekko.actor.typed.Signal,org.apache.pekko.japi.function.Creator)org.apache.pekko.actor.typed.javadsl.BehaviorBuilder")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.actor.typed.javadsl.Behaviors.intercept(java.util.function.Supplier,org.apache.pekko.actor.typed.Behavior)org.apache.pekko.actor.typed.Behavior")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.actor.typed.javadsl.Behaviors.receive(org.apache.pekko.japi.function.Function2,org.apache.pekko.japi.function.Function2)org.apache.pekko.actor.typed.Behavior")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.actor.typed.javadsl.Behaviors.receive(org.apache.pekko.japi.function.Function2)org.apache.pekko.actor.typed.Behavior")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.actor.typed.javadsl.Behaviors.receiveSignal(org.apache.pekko.japi.function.Function2)org.apache.pekko.actor.typed.Behavior")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.actor.typed.javadsl.Behaviors.setup(org.apache.pekko.japi.function.Function)org.apache.pekko.actor.typed.Behavior")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.actor.typed.javadsl.Behaviors.transformMessages(java.lang.Class,org.apache.pekko.actor.typed.Behavior,java.util.function.Function)org.apache.pekko.actor.typed.Behavior")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.actor.typed.javadsl.Behaviors.withMdc(java.lang.Class,java.util.Map,org.apache.pekko.japi.function.Function,org.apache.pekko.actor.typed.Behavior)org.apache.pekko.actor.typed.Behavior")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.actor.typed.javadsl.Behaviors.withMdc(java.lang.Class,org.apache.pekko.japi.function.Function,org.apache.pekko.actor.typed.Behavior)org.apache.pekko.actor.typed.Behavior")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.actor.typed.javadsl.Behaviors.withStash(Int,java.util.function.Function)org.apache.pekko.actor.typed.Behavior")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.actor.typed.javadsl.Behaviors.withTimers(org.apache.pekko.japi.function.Function)org.apache.pekko.actor.typed.Behavior")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.actor.typed.javadsl.GroupRouter.withConsistentHashingRouting(Int,java.util.function.Function)org.apache.pekko.actor.typed.javadsl.GroupRouter")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.actor.typed.javadsl.PoolRouter.withBroadcastPredicate(java.util.function.Predicate)org.apache.pekko.actor.typed.javadsl.PoolRouter")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.actor.typed.javadsl.PoolRouter.withConsistentHashingRouting(Int,java.util.function.Function)org.apache.pekko.actor.typed.javadsl.PoolRouter")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.actor.typed.javadsl.ReceiveBuilder.onAnyMessage(org.apache.pekko.japi.function.Function)org.apache.pekko.actor.typed.javadsl.ReceiveBuilder")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.actor.typed.javadsl.ReceiveBuilder.onMessage(java.lang.Class,org.apache.pekko.japi.function.Function)org.apache.pekko.actor.typed.javadsl.ReceiveBuilder")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.actor.typed.javadsl.ReceiveBuilder.onMessage(java.lang.Class,org.apache.pekko.japi.function.Predicate,org.apache.pekko.japi.function.Function)org.apache.pekko.actor.typed.javadsl.ReceiveBuilder")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.actor.typed.javadsl.ReceiveBuilder.onMessageEquals(java.lang.Object,org.apache.pekko.japi.function.Creator)org.apache.pekko.actor.typed.javadsl.ReceiveBuilder")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.actor.typed.javadsl.ReceiveBuilder.onMessageUnchecked(java.lang.Class,org.apache.pekko.japi.function.Function)org.apache.pekko.actor.typed.javadsl.ReceiveBuilder")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.actor.typed.javadsl.ReceiveBuilder.onSignal(java.lang.Class,org.apache.pekko.japi.function.Function)org.apache.pekko.actor.typed.javadsl.ReceiveBuilder")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.actor.typed.javadsl.ReceiveBuilder.onSignal(java.lang.Class,org.apache.pekko.japi.function.Predicate,org.apache.pekko.japi.function.Function)org.apache.pekko.actor.typed.javadsl.ReceiveBuilder")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.actor.typed.javadsl.ReceiveBuilder.onSignalEquals(org.apache.pekko.actor.typed.Signal,org.apache.pekko.japi.function.Creator)org.apache.pekko.actor.typed.javadsl.ReceiveBuilder")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.actor.typed.javadsl.StashBuffer.anyMatch(java.util.function.Predicate)Boolean")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.actor.typed.javadsl.StashBuffer.forEach(org.apache.pekko.japi.function.Procedure)Unit")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.actor.typed.javadsl.StashBuffer.unstash(org.apache.pekko.actor.typed.Behavior,Int,java.util.function.Function)org.apache.pekko.actor.typed.Behavior")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.actor.typed.javadsl.Behaviors.monitor(java.lang.Class,org.apache.pekko.actor.typed.ActorRef,org.apache.pekko.actor.typed.Behavior)org.apache.pekko.actor.typed.Behavior")

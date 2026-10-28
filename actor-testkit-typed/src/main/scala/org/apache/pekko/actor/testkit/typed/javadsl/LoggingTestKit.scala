@@ -109,7 +109,7 @@ import org.slf4j.event.Level
    *
    * Care is taken to remove the testkit when the block is finished or aborted.
    */
-  def expect[T](system: ActorSystem[?], code: Supplier[T]): T
+  def expect[T](system: ActorSystem[?], code: Supplier[? <: T]): T
 
 }
 

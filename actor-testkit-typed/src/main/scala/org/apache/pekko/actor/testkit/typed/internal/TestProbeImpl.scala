@@ -126,10 +126,10 @@ private[pekko] final class TestProbeImpl[M](name: String, system: ActorSystem[?]
   override def within[T](max: FiniteDuration)(f: => T): T =
     within_internal(Duration.Zero, max.dilated, f)
 
-  override def within[T](min: JDuration, max: JDuration)(f: Supplier[T]): T =
+  override def within[T](min: JDuration, max: JDuration)(f: Supplier[? <: T]): T =
     within_internal(min.toScala, max.toScala.dilated, f.get())
 
-  def within[T](max: JDuration)(f: Supplier[T]): T =
+  def within[T](max: JDuration)(f: Supplier[? <: T]): T =
     within_internal(Duration.Zero, max.toScala.dilated, f.get())
 
   private def within_internal[T](min: FiniteDuration, max: FiniteDuration, f: => T): T = {
@@ -287,13 +287,14 @@ private[pekko] final class TestProbeImpl[M](name: String, system: ActorSystem[?]
   override def fishForMessagePF(max: FiniteDuration)(fisher: PartialFunction[M, FishingOutcome]): Seq[M] =
     fishForMessage(max)(fisher)
 
-  override def fishForMessage(max: JDuration, fisher: java.util.function.Function[M, FishingOutcome]): JList[M] =
+  override def fishForMessage(max: JDuration, fisher: java.util.function.Function[? >: M, ? <: FishingOutcome])
+      : JList[M] =
     fishForMessage(max, "", fisher)
 
   override def fishForMessage(
       max: JDuration,
       hint: String,
-      fisher: java.util.function.Function[M, FishingOutcome]): JList[M] =
+      fisher: java.util.function.Function[? >: M, ? <: FishingOutcome]): JList[M] =
     fishForMessage_internal(max.toScala.dilated, hint, fisher.apply).asJava
 
   private def fishForMessage_internal(max: FiniteDuration, hint: String, fisher: M => FishingOutcome): List[M] = {
@@ -362,13 +363,13 @@ private[pekko] final class TestProbeImpl[M](name: String, system: ActorSystem[?]
   override def awaitAssert[A](a: => A): A =
     awaitAssert_internal(a, remainingOrDefault, 100.millis)
 
-  override def awaitAssert[A](max: JDuration, interval: JDuration, creator: Creator[A]): A =
+  override def awaitAssert[A](max: JDuration, interval: JDuration, creator: Creator[? <: A]): A =
     awaitAssert_internal(creator.create(), max.toScala.dilated, interval.toScala)
 
-  def awaitAssert[A](max: JDuration, creator: Creator[A]): A =
+  def awaitAssert[A](max: JDuration, creator: Creator[? <: A]): A =
     awaitAssert(max, JDuration.ofMillis(100), creator)
 
-  def awaitAssert[A](creator: Creator[A]): A =
+  def awaitAssert[A](creator: Creator[? <: A]): A =
     awaitAssert(getRemainingOrDefault, creator)
 
   private def awaitAssert_internal[A](a: => A, max: FiniteDuration, interval: FiniteDuration): A = {

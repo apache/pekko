@@ -53,7 +53,7 @@ final class EventHandlerBuilder[State, Event]() {
    *
    * @return A new, mutable, EventHandlerBuilderByState
    */
-  def forState(statePredicate: Predicate[State]): EventHandlerBuilderByState[State, State, Event] = {
+  def forState(statePredicate: Predicate[? >: State]): EventHandlerBuilderByState[State, State, Event] = {
     val builder = EventHandlerBuilderByState.builder[State, Event](statePredicate)
     builders = builder :: builders
     builder
@@ -74,7 +74,7 @@ final class EventHandlerBuilder[State, Event]() {
    */
   def forState[S <: State](
       stateClass: Class[S],
-      statePredicate: Predicate[S]): EventHandlerBuilderByState[S, State, Event] = {
+      statePredicate: Predicate[? >: S]): EventHandlerBuilderByState[S, State, Event] = {
     val builder = new EventHandlerBuilderByState[S, State, Event](stateClass, statePredicate)
     builders = builder.asInstanceOf[EventHandlerBuilderByState[State, State, Event]] :: builders
     builder
@@ -183,7 +183,7 @@ object EventHandlerBuilderByState {
    *                       useful for example when state type is an Optional
    * @return A new, mutable, EventHandlerBuilderByState
    */
-  def builder[State, Event](statePredicate: Predicate[State]): EventHandlerBuilderByState[State, State, Event] =
+  def builder[State, Event](statePredicate: Predicate[? >: State]): EventHandlerBuilderByState[State, State, Event] =
     new EventHandlerBuilderByState(classOf[Any].asInstanceOf[Class[State]], statePredicate)
 
   /**
@@ -197,7 +197,7 @@ object EventHandlerBuilderByState {
 
 final class EventHandlerBuilderByState[S <: State, State, Event](
     private val stateClass: Class[S],
-    private val statePredicate: Predicate[S]) {
+    private val statePredicate: Predicate[? >: S]) {
 
   import EventHandlerBuilderByState.EventHandlerCase
 
@@ -221,7 +221,7 @@ final class EventHandlerBuilderByState[S <: State, State, Event](
    */
   def onEvent[E <: Event](
       eventClass: Class[E],
-      handler: BiFunction[S, E, State]): EventHandlerBuilderByState[S, State, Event] = {
+      handler: BiFunction[? >: S, ? >: E, ? <: State]): EventHandlerBuilderByState[S, State, Event] = {
     addCase(e => eventClass.isAssignableFrom(e.getClass), handler.asInstanceOf[BiFunction[State, Event, State]])
     this
   }
@@ -238,9 +238,9 @@ final class EventHandlerBuilderByState[S <: State, State, Event](
    */
   def onEvent[E <: Event](
       eventClass: Class[E],
-      handler: JFunction[E, State]): EventHandlerBuilderByState[S, State, Event] = {
+      handler: JFunction[? >: E, ? <: State]): EventHandlerBuilderByState[S, State, Event] = {
     onEvent[E](eventClass,
-      (_: S, event: E) => handler(event))
+      ((_: S, event: E) => handler(event)): BiFunction[S, E, State])
   }
 
   /**
@@ -254,7 +254,7 @@ final class EventHandlerBuilderByState[S <: State, State, Event](
    */
   def onEvent[E <: Event](
       eventClass: Class[E],
-      handler: Supplier[State]): EventHandlerBuilderByState[S, State, Event] = {
+      handler: Supplier[? <: State]): EventHandlerBuilderByState[S, State, Event] = {
 
     val supplierBiFunction: BiFunction[S, E, State] = (_: S, _: E) => handler.get()
 
@@ -273,7 +273,7 @@ final class EventHandlerBuilderByState[S <: State, State, Event](
    *
    * @return An EventHandler from the appended states.
    */
-  def onAnyEvent(handler: BiFunction[State, Event, State]): EventHandler[State, Event] = {
+  def onAnyEvent(handler: BiFunction[? >: State, ? >: Event, ? <: State]): EventHandler[State, Event] = {
     addCase(_ => true, handler.asInstanceOf[BiFunction[State, Event, State]])
     build()
   }
@@ -293,7 +293,7 @@ final class EventHandlerBuilderByState[S <: State, State, Event](
    *
    * @return An EventHandler from the appended states.
    */
-  def onAnyEvent(handler: JFunction[Event, State]): EventHandler[State, Event] = {
+  def onAnyEvent(handler: JFunction[? >: Event, ? <: State]): EventHandler[State, Event] = {
     onAnyEvent((_: State, event: Event) => handler(event))
     build()
   }

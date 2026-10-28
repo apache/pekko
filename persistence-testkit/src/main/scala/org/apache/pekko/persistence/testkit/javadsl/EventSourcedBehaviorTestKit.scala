@@ -248,7 +248,8 @@ final class EventSourcedBehaviorTestKit[Command, Event, State](
    * Run one command  with a `replyTo: ActorRef` through the behavior. The returned result contains emitted events,
    * the state after applying the events, and the reply.
    */
-  def runCommand[R](creator: JFunction[ActorRef[R], Command]): CommandResultWithReply[Command, Event, State, R] =
+  def runCommand[R](
+      creator: JFunction[? >: ActorRef[R], ? <: Command]): CommandResultWithReply[Command, Event, State, R] =
     new CommandResultWithReply(delegate.runCommand(replyTo => creator.apply(replyTo)))
 
   /**

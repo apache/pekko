@@ -154,7 +154,7 @@ import pekko.persistence.typed.state.internal.SideEffect
    *                  explicitly typing the lambda parameter like so: `thenRun((SubState state) -> { ... })`).
    *                  If the state is not of the expected type a [[java.lang.ClassCastException]] is thrown.
    */
-  final def thenRun[NewState <: State](callback: function.Procedure[NewState]): EffectBuilder[State] =
+  final def thenRun[NewState <: State](callback: function.Procedure[? >: NewState]): EffectBuilder[State] =
     CompositeEffect(this, SideEffect[State](s => callback.apply(s.asInstanceOf[NewState])))
 
   /**
@@ -189,7 +189,7 @@ import pekko.persistence.typed.state.internal.SideEffect
    */
   def thenReply[ReplyMessage](
       replyTo: ActorRef[ReplyMessage],
-      replyWithMessage: function.Function[State, ReplyMessage]): ReplyEffectWithStop[State] =
+      replyWithMessage: function.Function[? >: State, ? <: ReplyMessage]): ReplyEffectWithStop[State] =
     CompositeEffect(this, SideEffect[State](newState => replyTo ! replyWithMessage(newState)))
 
   /**

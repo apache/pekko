@@ -71,7 +71,7 @@ private[pekko] final class BehaviorTestKitImpl[T](
     new ReplyInboxImpl(OptionVal(replyToInbox))
   }
 
-  override def runAsk[Res](messageFactory: JFunction[ActorRef[Res], T]): ReplyInboxImpl[Res] =
+  override def runAsk[Res](messageFactory: JFunction[? >: ActorRef[Res], ? <: T]): ReplyInboxImpl[Res] =
     runAsk(messageFactory.apply _)
 
   override def runAskWithStatus[Res](f: ActorRef[StatusReply[Res]] => T): StatusReplyInboxImpl[Res] = {
@@ -82,7 +82,7 @@ private[pekko] final class BehaviorTestKitImpl[T](
   }
 
   override def runAskWithStatus[Res](
-      messageFactory: JFunction[ActorRef[StatusReply[Res]], T]): StatusReplyInboxImpl[Res] =
+      messageFactory: JFunction[? >: ActorRef[StatusReply[Res]], ? <: T]): StatusReplyInboxImpl[Res] =
     runAskWithStatus(messageFactory.apply _)
 
   override def retrieveEffect(): Effect = context.effectQueue.poll() match {

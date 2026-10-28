@@ -153,7 +153,7 @@ object Adapter {
    * takes a classic [[pekko.actor.Props]] parameter. Cluster Sharding is an
    * example of that.
    */
-  def props[T](behavior: Creator[Behavior[T]], deploy: Props): pekko.actor.Props =
+  def props[T](behavior: Creator[? <: Behavior[T]], deploy: Props): pekko.actor.Props =
     pekko.actor.typed.internal.adapter.PropsAdapter(
       () => Behaviors.supervise(behavior.create()).onFailure(SupervisorStrategy.stop),
       deploy,
@@ -168,7 +168,7 @@ object Adapter {
    * takes a classic [[pekko.actor.Props]] parameter. Cluster Sharding is an
    * example of that.
    */
-  def props[T](behavior: Creator[Behavior[T]]): pekko.actor.Props =
+  def props[T](behavior: Creator[? <: Behavior[T]]): pekko.actor.Props =
     props(behavior, Props.empty)
 
   def toClassic(scheduler: Scheduler): pekko.actor.Scheduler =

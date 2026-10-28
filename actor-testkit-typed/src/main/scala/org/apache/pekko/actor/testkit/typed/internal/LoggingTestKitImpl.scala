@@ -120,7 +120,7 @@ import org.slf4j.event.Level
     }
   }
 
-  override def expect[T](system: ActorSystem[?], code: Supplier[T]): T =
+  override def expect[T](system: ActorSystem[?], code: Supplier[? <: T]): T =
     expect(code.get())(system)
 
   private def checkLogback(system: ActorSystem[?]): Unit = {

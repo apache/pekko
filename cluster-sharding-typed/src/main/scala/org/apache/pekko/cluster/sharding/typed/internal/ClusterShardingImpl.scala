@@ -351,7 +351,7 @@ import pekko.util.Timeout
     replyTo.ask(shardRegion, entityId, m, timeout)
   }
 
-  override def ask[U](message: JFunction[ActorRef[U], M], timeout: Duration): CompletionStage[U] =
+  override def ask[U](message: JFunction[? >: ActorRef[U], ? <: M], timeout: Duration): CompletionStage[U] =
     ask[U](replyTo => message.apply(replyTo))(timeout.toScala).asJava
 
   override def askWithStatus[Res](f: ActorRef[StatusReply[Res]] => M)(implicit timeout: Timeout): Future[Res] =

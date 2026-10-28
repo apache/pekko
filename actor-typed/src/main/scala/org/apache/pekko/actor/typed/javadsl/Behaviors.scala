@@ -49,13 +49,14 @@ object Behaviors {
    * case it will be started immediately after it is returned, i.e. next message will be
    * processed by the started behavior.
    */
-  def setup[T](factory: pekko.japi.function.Function[ActorContext[T], Behavior[T]]): Behavior[T] =
+  def setup[T](factory: pekko.japi.function.Function[? >: ActorContext[T], ? <: Behavior[T]]): Behavior[T] =
     BehaviorImpl.DeferredBehavior(ctx => factory.apply(ctx.asJava))
 
   /**
    * Support for stashing messages to unstash at a later time.
    */
-  def withStash[T](capacity: Int, factory: java.util.function.Function[StashBuffer[T], Behavior[T]]): Behavior[T] =
+  def withStash[T](capacity: Int, factory: java.util.function.Function[? >: StashBuffer[T], ? <: Behavior[T]])
+      : Behavior[T] =
     setup(ctx => {
       factory(StashBufferImpl[T](ctx.asScala, capacity))
     })
@@ -123,7 +124,7 @@ object Behaviors {
    * that can potentially be different from this one. State is maintained by returning
    * a new behavior that holds the new immutable state.
    */
-  def receive[T](onMessage: JapiFunction2[ActorContext[T], T, Behavior[T]]): Behavior[T] =
+  def receive[T](onMessage: JapiFunction2[? >: ActorContext[T], ? >: T, ? <: Behavior[T]]): Behavior[T] =
     new BehaviorImpl.ReceiveBehavior((ctx, msg) => onMessage.apply(ctx.asJava, msg))
 
   /**
@@ -142,7 +143,7 @@ object Behaviors {
    * that can potentially be different from this one. State is maintained by returning
    * a new behavior that holds the new immutable state.
    */
-  def receiveMessage[T](onMessage: pekko.japi.function.Function[T, Behavior[T]]): Behavior[T] =
+  def receiveMessage[T](onMessage: pekko.japi.function.Function[? >: T, ? <: Behavior[T]]): Behavior[T] =
     new BehaviorImpl.ReceiveBehavior((_, msg) => onMessage.apply(msg))
 
   /**
@@ -162,7 +163,7 @@ object Behaviors {
    *
    * @since 1.1.0
    */
-  def receiveMessageWithSame[T](onMessage: pekko.japi.function.Procedure[T]): Behavior[T] =
+  def receiveMessageWithSame[T](onMessage: pekko.japi.function.Procedure[? >: T]): Behavior[T] =
     new BehaviorImpl.ReceiveBehavior((_, msg) => {
       onMessage.apply(msg)
       same[T]
@@ -181,8 +182,8 @@ object Behaviors {
    * a new behavior that holds the new immutable state.
    */
   def receive[T](
-      onMessage: JapiFunction2[ActorContext[T], T, Behavior[T]],
-      onSignal: JapiFunction2[ActorContext[T], Signal, Behavior[T]]): Behavior[T] = {
+      onMessage: JapiFunction2[? >: ActorContext[T], ? >: T, ? <: Behavior[T]],
+      onSignal: JapiFunction2[? >: ActorContext[T], ? >: Signal, ? <: Behavior[T]]): Behavior[T] = {
     new BehaviorImpl.ReceiveBehavior((ctx, msg) => onMessage.apply(ctx.asJava, msg),
       {
         case (ctx, sig) => onSignal.apply(ctx.asJava, sig)
@@ -206,7 +207,7 @@ object Behaviors {
   /**
    * Construct an actor behavior that can react to lifecycle signals only.
    */
-  def receiveSignal[T](handler: JapiFunction2[ActorContext[T], Signal, Behavior[T]]): Behavior[T] = {
+  def receiveSignal[T](handler: JapiFunction2[? >: ActorContext[T], ? >: Signal, ? <: Behavior[T]]): Behavior[T] = {
     receive(two2same, handler)
   }
 
@@ -221,7 +222,8 @@ object Behaviors {
    * If the interceptor has no state the same instance can be returned from the factory to avoid unnecessary object
    * creation.
    */
-  def intercept[O, I](behaviorInterceptor: Supplier[BehaviorInterceptor[O, I]], behavior: Behavior[I]): Behavior[O] =
+  def intercept[O, I](behaviorInterceptor: Supplier[? <: BehaviorInterceptor[O, I]], behavior: Behavior[I])
+      : Behavior[O] =
     BehaviorImpl.intercept(() => behaviorInterceptor.get())(behavior)
 
   /**
@@ -236,9 +238,9 @@ object Behaviors {
    * @param monitor The messages will also be sent to this `ActorRef`
    * @param behavior The inner behavior that is decorated
    */
-  def monitor[T](interceptMessageClass: Class[T], monitor: ActorRef[T], behavior: Behavior[T]): Behavior[T] = {
+  def monitor[T](interceptMessageClass: Class[T], monitor: ActorRef[? >: T], behavior: Behavior[T]): Behavior[T] = {
     implicit val classTag: ClassTag[T] = ClassTag(interceptMessageClass)
-    scaladsl.Behaviors.monitor(monitor, behavior)
+    scaladsl.Behaviors.monitor[T](monitor.narrow[T], behavior)
   }
 
   /**
@@ -336,9 +338,11 @@ object Behaviors {
   def transformMessages[Outer, Inner](
       interceptMessageClass: Class[Outer],
       behavior: Behavior[Inner],
-      selector: JFunction[PFBuilder[Outer, Inner], PFBuilder[Outer, Inner]]): Behavior[Outer] = {
+      selector: JFunction[? >: PFBuilder[Outer, Inner], ? <: PFBuilder[Outer, Inner]]): Behavior[Outer] = {
     implicit val classTag: ClassTag[Outer] = ClassTag(interceptMessageClass)
-    BehaviorImpl.transformMessages(behavior, selector.apply(new PFBuilder).build())
+    // ascribed: Scala 2 erases the wildcard result to Object and fails to find build() at runtime
+    val builder: PFBuilder[Outer, Inner] = selector.apply(new PFBuilder)
+    BehaviorImpl.transformMessages(behavior, builder.build())
   }
 
   /**
@@ -348,7 +352,7 @@ object Behaviors {
    *
    * @see [[TimerScheduler]]
    */
-  def withTimers[T](factory: pekko.japi.function.Function[TimerScheduler[T], Behavior[T]]): Behavior[T] =
+  def withTimers[T](factory: pekko.japi.function.Function[? >: TimerScheduler[T], ? <: Behavior[T]]): Behavior[T] =
     TimerSchedulerImpl.withTimers(timers => factory.apply(timers))
 
   /**
@@ -364,7 +368,7 @@ object Behaviors {
    */
   def withMdc[T](
       interceptMessageClass: Class[T],
-      mdcForMessage: pekko.japi.function.Function[T, java.util.Map[String, String]],
+      mdcForMessage: pekko.japi.function.Function[? >: T, ? <: java.util.Map[String, String]],
       behavior: Behavior[T]): Behavior[T] =
     withMdc(interceptMessageClass, Collections.emptyMap[String, String], mdcForMessage, behavior)
 
@@ -405,7 +409,7 @@ object Behaviors {
   def withMdc[T](
       interceptMessageClass: Class[T],
       @Nullable staticMdc: java.util.Map[String, String],
-      @Nullable mdcForMessage: pekko.japi.function.Function[T, java.util.Map[String, String]],
+      @Nullable mdcForMessage: pekko.japi.function.Function[? >: T, ? <: java.util.Map[String, String]],
       behavior: Behavior[T]): Behavior[T] = {
 
     def asScalaMap(m: java.util.Map[String, String]): Map[String, String] = {

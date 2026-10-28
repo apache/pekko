@@ -57,7 +57,8 @@ final class SignalHandlerBuilder[State] {
   /**
    * If the behavior receives a signal of type `T`, `callback` is invoked with the signal instance as input.
    */
-  def onSignal[T <: Signal](signalType: Class[T], callback: BiConsumer[State, T]): SignalHandlerBuilder[State] = {
+  def onSignal[T <: Signal](signalType: Class[T], callback: BiConsumer[? >: State, ? >: T])
+      : SignalHandlerBuilder[State] = {
     val newPF: PartialFunction[(State, Signal), Unit] = {
       case (state, t) if signalType.isInstance(t) =>
         callback.accept(state, t.asInstanceOf[T])
@@ -69,7 +70,7 @@ final class SignalHandlerBuilder[State] {
   /**
    * If the behavior receives exactly the signal `signal`, `callback` is invoked.
    */
-  def onSignal[T <: Signal](signal: T, callback: Consumer[State]): SignalHandlerBuilder[State] = {
+  def onSignal[T <: Signal](signal: T, callback: Consumer[? >: State]): SignalHandlerBuilder[State] = {
     val newPF: PartialFunction[(State, Signal), Unit] = {
       case (state, `signal`) =>
         callback.accept(state)

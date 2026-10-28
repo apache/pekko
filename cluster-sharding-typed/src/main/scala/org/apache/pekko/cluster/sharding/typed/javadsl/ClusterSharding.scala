@@ -243,7 +243,7 @@ object Entity {
    */
   def of[M](
       typeKey: EntityTypeKey[M],
-      createBehavior: JFunction[EntityContext[M], Behavior[M]]): Entity[M, ShardingEnvelope[M]] = {
+      createBehavior: JFunction[? >: EntityContext[M], ? <: Behavior[M]]): Entity[M, ShardingEnvelope[M]] = {
     new Entity(
       createBehavior,
       typeKey,
@@ -489,7 +489,7 @@ object EntityTypeKey {
    *
    * @tparam Res The response protocol, what the other actor sends back
    */
-  def ask[Res](message: JFunction[ActorRef[Res], M], timeout: Duration): CompletionStage[Res]
+  def ask[Res](message: JFunction[? >: ActorRef[Res], ? <: M], timeout: Duration): CompletionStage[Res]
 
   /**
    * The same as [[ask]] but only for requests that result in a response of type [[pekko.pattern.StatusReply]].

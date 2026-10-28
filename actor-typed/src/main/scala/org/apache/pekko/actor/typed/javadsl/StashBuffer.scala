@@ -88,7 +88,7 @@ import pekko.japi.function.Procedure
    *
    * @param f the function to apply to each element
    */
-  def forEach(f: Procedure[T]): Unit
+  def forEach(f: Procedure[? >: T]): Unit
 
   /**
    * Tests whether this [[StashBuffer]] contains a given message.
@@ -104,7 +104,7 @@ import pekko.japi.function.Procedure
    * @param predicate the predicate used to test
    * @return true if the predicate holds for at least one message, false otherwise.
    */
-  def anyMatch(predicate: Predicate[T]): Boolean
+  def anyMatch(predicate: Predicate[? >: T]): Boolean
 
   /**
    * Removes all messages from the buffer.
@@ -150,7 +150,7 @@ import pekko.japi.function.Procedure
    *
    * The `behavior` passed to `unstash` must not be `unhandled`.
    */
-  def unstash(behavior: Behavior[T], numberOfMessages: Int, wrap: JFunction[T, T]): Behavior[T]
+  def unstash(behavior: Behavior[T], numberOfMessages: Int, wrap: JFunction[? >: T, ? <: T]): Behavior[T]
 
 }
 

@@ -141,7 +141,7 @@ import pekko.util.OptionVal
     }
   }
 
-  override def forEach(f: Procedure[T]): Unit = foreach(f.apply)
+  override def forEach(f: Procedure[? >: T]): Unit = foreach(f.apply)
 
   override def contains[U >: T](message: U): Boolean =
     exists(_ == message)
@@ -156,7 +156,7 @@ import pekko.util.OptionVal
     hasElement
   }
 
-  override def anyMatch(predicate: Predicate[T]): Boolean = exists(predicate.test)
+  override def anyMatch(predicate: Predicate[? >: T]): Boolean = exists(predicate.test)
 
   override def unstashAll(behavior: Behavior[T]): Behavior[T] = {
     val behav = unstash(behavior, size, ConstantFun.scalaIdentityFunction[T])
@@ -256,7 +256,7 @@ import pekko.util.OptionVal
       scalaCtx.system.deadLetters ! DeadLetter(wrap(node.message), classicDeadLetters, ctx.asScala.self.toClassic))
   }
 
-  override def unstash(behavior: Behavior[T], numberOfMessages: Int, wrap: JFunction[T, T]): Behavior[T] =
+  override def unstash(behavior: Behavior[T], numberOfMessages: Int, wrap: JFunction[? >: T, ? <: T]): Behavior[T] =
     unstash(behavior, numberOfMessages, x => wrap.apply(x))
 
   override def toString: String =
