@@ -27,7 +27,6 @@ import scala.util.Random
 import com.github.luben.zstd.{
   Zstd,
   ZstdCompressCtx,
-  ZstdDecompressCtx,
   ZstdException,
   ZstdInputStream,
   ZstdInputStreamNoFinalizer,
@@ -146,22 +145,14 @@ class ZstdSpec extends CoderSpec[ZstdException]("zstd") {
           .join
           .awaitResult(3.seconds)
 
-      // ZstdDecompressCtx.setLongMax is newer than zstd-jni 1.5.7-24 (#3674)
-      val supported = classOf[ZstdDecompressCtx].getMethods.exists(_.getName == "setLongMax")
-      if (supported) {
-        val ex = the[RuntimeException] thrownBy decompress(23)
-        ex.ultimateCause shouldBe a[ZstdException]
-        decompress(24) should ===(input)
-        Source
-          .single(compressed)
-          .via(JavaCompression.zstdDecompress(ZstdDecompressionSettings.create().withWindowLogMax(24)))
-          .join
-          .awaitResult(3.seconds) should ===(input)
-      } else {
-        // a configured limit must not be silently ignored
-        val ex = the[Exception] thrownBy decompress(24)
-        ex.ultimateCause shouldBe an[UnsupportedOperationException]
-      }
+      val ex = the[RuntimeException] thrownBy decompress(23)
+      ex.ultimateCause shouldBe a[ZstdException]
+      decompress(24) should ===(input)
+      Source
+        .single(compressed)
+        .via(JavaCompression.zstdDecompress(ZstdDecompressionSettings.create().withWindowLogMax(24)))
+        .join
+        .awaitResult(3.seconds) should ===(input)
       // without a limit, the libzstd default of 2^27 applies
       ourDecode(compressed) should ===(input)
     }

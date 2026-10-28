@@ -51,9 +51,8 @@ final class ZstdDecompressionSettings private (
    * greater or equal to `Compression.ZstdMinWindowLog` and less than or equal to `Compression.ZstdMaxWindowLog`.
    * For example, RFC 9659 limits the HTTP `zstd` content-coding to a window log of 23 (8 MiB).
    *
-   * A value other than 0 requires a zstd-jni version that provides `ZstdDecompressCtx.setLongMax`, which is newer
-   * than 1.5.7-24. With an older version, materializing the decompression operator fails with an
-   * `UnsupportedOperationException`.
+   * A value other than 0 requires zstd-jni 1.5.7-25 or later. With an older version, materializing the
+   * decompression operator fails with an `UnsupportedOperationException`.
    */
   def withWindowLogMax(windowLogMax: Int): ZstdDecompressionSettings = copy(windowLogMax = windowLogMax)
 
