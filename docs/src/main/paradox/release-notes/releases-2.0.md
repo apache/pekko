@@ -38,6 +38,7 @@ Some of the bug fixes listed below have also been backported to Pekko 1.x releas
 * New pekko-serialization-jackson3 module. Users who are happy with pekko-serialization-jackson, which uses Jackson 2, can stick with that ([PR2348](https://github.com/apache/pekko/pull/2348))
 * Switch to `PEKK` as the default magic header in pekko-remote Artery comms. See @ref:[Changing TCP magic header](../additional/rolling-updates.md#changing-tcp-magic-header) for what this means for rolling updates ([PR3425](https://github.com/apache/pekko/pull/3425))
 * Java 21 and 25 support improvements, including virtual thread support for more dispatcher types and JDK-aware ForkJoinPool tuning ([#2232](https://github.com/apache/pekko/issues/2232), [PR2169](https://github.com/apache/pekko/pull/2169), [PR2242](https://github.com/apache/pekko/pull/2242), [PR2871](https://github.com/apache/pekko/pull/2871), [PR2890](https://github.com/apache/pekko/pull/2890))
+* Java DSL methods across streams, stream-typed, actor-typed, cluster-sharding-typed, distributed-data, persistence-typed and the testkits now use wildcard bounds (`? super` / `? extends`) on their function, graph and collection parameters, so Java code can pass functions, sources, sinks and collections typed over a supertype or subtype without casts or `upcast`. Collections of graphs (for example in `Source.combine`, `zipN` and `mergeAll`) and the events passed to `Effect.persist` now accept any `java.lang.Iterable` instead of only `java.util.List` ([PR3713](https://github.com/apache/pekko/pull/3713), [PR3714](https://github.com/apache/pekko/pull/3714), [PR3717](https://github.com/apache/pekko/pull/3717), [PR3718](https://github.com/apache/pekko/pull/3718), [PR3719](https://github.com/apache/pekko/pull/3719), [PR3720](https://github.com/apache/pekko/pull/3720))
 * Added [JSpecify](https://jspecify.dev/) nullness annotations to the Java DSL APIs of streams, persistence, actor-typed, cluster-sharding-typed and testkit ([#2563](https://github.com/apache/pekko/issues/2563), [PR2617](https://github.com/apache/pekko/pull/2617), [PR2850](https://github.com/apache/pekko/pull/2850), [PR3380](https://github.com/apache/pekko/pull/3380))
 * Serialization improvements: predefined `JsonSerializable` and `CborSerializable` marker traits, zstd compression for the Jackson serializers and automatic binding of ScalaPB messages to the protobuf serializer - see the Additions and Ported from Akka sections below
 * A number of security hardening changes - see the Security Hardening section below
@@ -73,7 +74,7 @@ defaults that have changed in Pekko 2.0.0.
 **Actors, dispatchers and logging**
 
 * High concurrency issues introduced when switching from `sun.misc.Unsafe` to VarHandles ([PR3007](https://github.com/apache/pekko/pull/3007), [PR3008](https://github.com/apache/pekko/pull/3008))
-* Stop handing a reused `Mailbox` object to the fork-join dispatcher, which could permanently damage a ForkJoinPool work queue or stop a mailbox from running again. `Mailbox` no longer extends `ForkJoinTask` ([#3613](https://github.com/apache/pekko/issues/3613), [#3620](https://github.com/apache/pekko/issues/3620), [PR3621](https://github.com/apache/pekko/pull/3621), [PR3628](https://github.com/apache/pekko/pull/3628), [PR3668](https://github.com/apache/pekko/pull/3668))
+* Stop handing a reused `Mailbox` object to the fork-join dispatcher, which could permanently damage a ForkJoinPool work queue or stop a mailbox from running again. `Mailbox` no longer extends `ForkJoinTask` ([#3613](https://github.com/apache/pekko/issues/3613), [#3620](https://github.com/apache/pekko/issues/3620), [PR3621](https://github.com/apache/pekko/pull/3621), [PR3628](https://github.com/apache/pekko/pull/3628))
 * Stop dispatcher failure reporting from recursing into a `StackOverflowError` ([#3613](https://github.com/apache/pekko/issues/3613), [PR3622](https://github.com/apache/pekko/pull/3622))
 * Keep colliding virtual nodes in ConsistentHash, so the ring no longer depends on the order in which nodes were added or removed. Routing only changes for keys that land on a colliding ring position, but during a rolling update nodes on 1.x and 2.x could route those few keys differently ([PR3611](https://github.com/apache/pekko/pull/3611))
 * Fix reentrant BatchingExecutor execution ([PR3331](https://github.com/apache/pekko/pull/3331))
@@ -127,6 +128,7 @@ defaults that have changed in Pekko 2.0.0.
 * Release lease on shard stop ([PR2738](https://github.com/apache/pekko/pull/2738))
 * Stop cluster sharding entities stuck in passivation after a timeout ([PR3573](https://github.com/apache/pekko/pull/3573))
 * Filter messages from the remember-entities store ([PR3411](https://github.com/apache/pekko/pull/3411))
+* Recreate a sharding replicator that has stopped (for example because its durable store failed to load) when another entity type is started, instead of reusing the stopped replicator ([PR3700](https://github.com/apache/pekko/pull/3700))
 * Support `java.math.BigInteger`/`BigDecimal` in cluster-metrics ([#3385](https://github.com/apache/pekko/issues/3385), [PR3382](https://github.com/apache/pekko/pull/3382))
 
 **Persistence**
@@ -139,6 +141,7 @@ defaults that have changed in Pekko 2.0.0.
 **Testkit**
 
 * Return a proper non-cancelled Cancellable from StubbedActorContext.scheduleOnce ([PR3268](https://github.com/apache/pekko/pull/3268))
+* The multi-node test conductor answers address queries asynchronously, so a bind failure fails the caller's `Future` instead of escaping the message handler ([#3693](https://github.com/apache/pekko/issues/3693), [PR3707](https://github.com/apache/pekko/pull/3707))
 * Allow overriding `testKit` with a `val` in `ScalaTestWithActorTestKit` ([#1140](https://github.com/apache/pekko/issues/1140), [PR3610](https://github.com/apache/pekko/pull/3610))
 
 ### Ported from Akka
@@ -160,7 +163,7 @@ These changes were copied from Akka releases (up to and including Akka 2.9.0) th
 
 **Remoting and DNS**
 
-* Handle Artery uid collisions gracefully: the colliding peer is quarantined and the handshake fails instead of leaving the association in a broken state. Artery system uids are also generated in a way that makes collisions much less likely ([PR3652](https://github.com/apache/pekko/pull/3652))
+* Handle Artery uid collisions gracefully: the colliding peer is quarantined and told that it is quarantined, and the handshake fails instead of leaving the association in a broken state. Artery system uids are also generated in a way that makes collisions much less likely ([PR3652](https://github.com/apache/pekko/pull/3652), [PR3676](https://github.com/apache/pekko/pull/3676))
 * Include roundtrip latency and sequence number in the heartbeat debug log ([PR2736](https://github.com/apache/pekko/pull/2736))
 * Auto-select SRV lookup for the name lookup if the entry looks like an SRV name ([PR2745](https://github.com/apache/pekko/pull/2745))
 * DnsResolutionActor and in-flight request deduplication ([PR2919](https://github.com/apache/pekko/pull/2919))
@@ -280,6 +283,9 @@ These changes were copied from Akka releases (up to and including Akka 2.9.0) th
 * Stream Java DSL now uses `pekko.japi.function` types throughout ([#2118](https://github.com/apache/pekko/issues/2118), [PR2143](https://github.com/apache/pekko/pull/2143))
 * Fix the Java DSL `SourceWithContext`/`FlowWithContext` shape to use `pekko.japi.Pair` ([#2510](https://github.com/apache/pekko/issues/2510), [PR3388](https://github.com/apache/pekko/pull/3388))
 * Replace `scala.Tuple2` with `pekko.japi.Pair` in `FSMTransitionHandlerBuilder` ([PR3378](https://github.com/apache/pekko/pull/3378))
+* Use `CompletionStage` and Java collections in the Java shard allocation strategy API (`ShardCoordinator.AbstractShardAllocationStrategy`) ([PR3677](https://github.com/apache/pekko/pull/3677))
+* Widen Java DSL function, graph and collection parameters with wildcard bounds, and accept `java.lang.Iterable` for collections of graphs and in `Effect.persist` ([PR3713](https://github.com/apache/pekko/pull/3713), [PR3714](https://github.com/apache/pekko/pull/3714), [PR3717](https://github.com/apache/pekko/pull/3717), [PR3718](https://github.com/apache/pekko/pull/3718), [PR3719](https://github.com/apache/pekko/pull/3719), [PR3720](https://github.com/apache/pekko/pull/3720))
+* In typed persistence (event sourcing and durable state, Scala and Java DSLs), `thenStop` is only available on the new `ReplyEffectWithStop` returned by `reply`, `noReply`, `thenReply` and `thenNoReply`, so `stash().thenStop()`, which discarded the stashed command without a reply, no longer compiles ([PR3682](https://github.com/apache/pekko/pull/3682))
 * Replace `immutable.Traversable` in the public io and stream APIs ([PR3467](https://github.com/apache/pekko/pull/3467), [PR3468](https://github.com/apache/pekko/pull/3468))
 * Remove `ExecutorServiceFactoryProvider` from `ThreadPoolConfig` ([#2171](https://github.com/apache/pekko/issues/2171), [PR2175](https://github.com/apache/pekko/pull/2175))
 * Replace the actor based fanout publisher runtime (`Sink.asPublisher(fanout = true)`) with a GraphStage bridge ([PR2874](https://github.com/apache/pekko/pull/2874))

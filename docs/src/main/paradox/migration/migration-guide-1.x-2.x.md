@@ -109,14 +109,6 @@ rolling updates. ([PR3425](https://github.com/apache/pekko/pull/3425))
 * `RemoveInternalClusterShardingData` no longer supports removing Cluster Sharding coordinator data stored
 by Akka 2.3.x. The `-2.3` program argument and the `remove2dot3Data` parameter of
 `RemoveInternalClusterShardingData.remove` have been removed. ([PR3608](https://github.com/apache/pekko/pull/3608))
-
-### Persistence
-
-* In pekko-persistence-testkit, the `PersistenceTestKitReadJournal` tag queries (`eventsByTag`,
-`currentEventsByTag`) and the live `eventsBySlices` query now put a `TimestampOffset` in their envelopes instead of
-`Sequence`. Code that cast these offsets to `Sequence` needs updating; the per-persistence-id sequence number is
-still available as `envelope.sequenceNr`. These queries also now accept a `TimestampOffset` to resume from.
-([PR3615](https://github.com/apache/pekko/pull/3615))
 * `ShardCoordinator.AbstractShardAllocationStrategy`, the Java API for custom shard allocation strategies, no longer
 leaks Scala types. Its `allocateShard` and `rebalance` methods now return a `java.util.concurrent.CompletionStage`
 instead of a Scala `Future`, and the current shard allocations are passed as a
@@ -129,6 +121,20 @@ are unaffected. Java strategies that need initialization on the coordinator node
 `ShardCoordinator.StartableAllocationStrategy` and override `void start()`; the coordinator calls it before
 `allocateShard` or `rebalance`.
 ([PR3677](https://github.com/apache/pekko/pull/3677))
+
+### Persistence
+
+* In typed persistence (event sourcing and durable state, Scala and Java DSLs), `thenStop` has moved from
+`ReplyEffect` to the new `ReplyEffectWithStop` subtype, which `reply`, `noReply`, `thenReply` and `thenNoReply`
+return. `stash().thenStop()` no longer compiles, because it discarded the stashed command without replying.
+Code that calls `thenStop` on a value typed as `ReplyEffect`, such as the result of a helper method, must declare
+that value or the helper's return type as `ReplyEffectWithStop` instead.
+([PR3682](https://github.com/apache/pekko/pull/3682))
+* In pekko-persistence-testkit, the `PersistenceTestKitReadJournal` tag queries (`eventsByTag`,
+`currentEventsByTag`) and the live `eventsBySlices` query now put a `TimestampOffset` in their envelopes instead of
+`Sequence`. Code that cast these offsets to `Sequence` needs updating; the per-persistence-id sequence number is
+still available as `envelope.sequenceNr`. These queries also now accept a `TimestampOffset` to resume from.
+([PR3615](https://github.com/apache/pekko/pull/3615))
 
 ## Dependency Changes in Pekko 2.x
 
