@@ -365,7 +365,7 @@ Some additional APIs have been deprecated and will be removed in a future releas
 * Scala 2.13.18 and 3.3.9
 * netty 4.2.19.Final
 * jackson 2.22.4 (pekko-serialization-jackson) and jackson 3.2.4 (pekko-serialization-jackson3)
-* aeron 1.54.0 and agrona 2.6.1
+* aeron 1.54.0 and agrona 2.7.0
 * protobuf-java 4.36.2
 * lightbend/config 1.4.9
 * slf4j 2.0.20
