@@ -1,0 +1,2 @@
+# Scala 3.3.9 emits more precise generic signatures (generic signature only, erasure unchanged)
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.cluster.ddata.LmdbDurableStore.dbPut(org.lmdbjava.Txn,java.lang.String,org.apache.pekko.cluster.ddata.DurableStore#DurableDataEnvelope)Unit")

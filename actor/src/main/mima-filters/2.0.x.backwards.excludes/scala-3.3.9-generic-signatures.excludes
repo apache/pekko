@@ -1,0 +1,6 @@
+# Scala 3.3.9 emits more precise generic signatures (generic signature only, erasure unchanged)
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.util.Helpers#Requiring.equals$extension(java.lang.Object,java.lang.Object)Boolean")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.util.Helpers#Requiring.hashCode$extension(java.lang.Object)Int")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.util.Helpers#Requiring.requiring$extension(java.lang.Object,Boolean,scala.Function0)java.lang.Object")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.util.Helpers#Requiring.requiring$extension(java.lang.Object,scala.Function1,scala.Function0)java.lang.Object")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.util.Helpers.Requiring(java.lang.Object)java.lang.Object")
