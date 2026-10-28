@@ -24,5 +24,3 @@ ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.actor.tes
 ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.actor.testkit.typed.javadsl.TestProbe.fishForMessage(java.time.Duration,java.util.function.Function)java.util.List")
 ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.actor.testkit.typed.javadsl.TestProbe.within(java.time.Duration,java.time.Duration,java.util.function.Supplier)java.lang.Object")
 ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.actor.testkit.typed.javadsl.TestProbe.within(java.time.Duration,java.util.function.Supplier)java.lang.Object")
-ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.actor.testkit.typed.javadsl.LoggingTestKit.custom(scala.Function1)org.apache.pekko.actor.testkit.typed.javadsl.LoggingTestKit")
-ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.actor.testkit.typed.javadsl.LoggingTestKit.withCustom(scala.Function1)org.apache.pekko.actor.testkit.typed.javadsl.LoggingTestKit")

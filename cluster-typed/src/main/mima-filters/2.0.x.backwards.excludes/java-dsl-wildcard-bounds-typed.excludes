@@ -17,8 +17,3 @@
 
 # Widen javadsl function parameters with wildcard bounds (generic signature only, erasure unchanged)
 ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.cluster.ddata.typed.javadsl.DistributedData.withReplicatorMessageAdapter(java.util.function.Function)org.apache.pekko.actor.typed.Behavior")
-ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.cluster.ddata.typed.javadsl.ReplicatorMessageAdapter.askDelete(java.util.function.Function,java.util.function.Function)Unit")
-ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.cluster.ddata.typed.javadsl.ReplicatorMessageAdapter.askGet(java.util.function.Function,java.util.function.Function)Unit")
-ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.cluster.ddata.typed.javadsl.ReplicatorMessageAdapter.askReplicaCount(java.util.function.Function,java.util.function.Function)Unit")
-ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.cluster.ddata.typed.javadsl.ReplicatorMessageAdapter.askUpdate(java.util.function.Function,java.util.function.Function)Unit")
-ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.cluster.ddata.typed.javadsl.ReplicatorMessageAdapter.subscribe(org.apache.pekko.cluster.ddata.Key,org.apache.pekko.japi.function.Function)Unit")

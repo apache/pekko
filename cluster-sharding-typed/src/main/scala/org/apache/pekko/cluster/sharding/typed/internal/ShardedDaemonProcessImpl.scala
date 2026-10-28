@@ -213,7 +213,7 @@ private[pekko] final class ShardedDaemonProcessImpl(system: ActorSystem[?])
       messageClass: Class[T],
       name: String,
       numberOfInstances: Int,
-      behaviorFactory: IntFunction[Behavior[T]]): Unit = {
+      behaviorFactory: IntFunction[? <: Behavior[T]]): Unit = {
     implicit val ct: ClassTag[T] = ClassTag(messageClass)
     init(name, numberOfInstances, n => behaviorFactory(n))
   }
@@ -222,7 +222,7 @@ private[pekko] final class ShardedDaemonProcessImpl(system: ActorSystem[?])
       messageClass: Class[T],
       name: String,
       numberOfInstances: Int,
-      behaviorFactory: IntFunction[Behavior[T]],
+      behaviorFactory: IntFunction[? <: Behavior[T]],
       stopMessage: T): Unit = {
     implicit val ct: ClassTag[T] = ClassTag(messageClass)
     init(
@@ -238,7 +238,7 @@ private[pekko] final class ShardedDaemonProcessImpl(system: ActorSystem[?])
       messageClass: Class[T],
       name: String,
       numberOfInstances: Int,
-      behaviorFactory: IntFunction[Behavior[T]],
+      behaviorFactory: IntFunction[? <: Behavior[T]],
       settings: ShardedDaemonProcessSettings,
       stopMessage: Optional[T]): Unit = {
     implicit val ct: ClassTag[T] = ClassTag(messageClass)
@@ -249,7 +249,7 @@ private[pekko] final class ShardedDaemonProcessImpl(system: ActorSystem[?])
       messageClass: Class[T],
       name: String,
       numberOfInstances: Int,
-      behaviorFactory: IntFunction[Behavior[T]],
+      behaviorFactory: IntFunction[? <: Behavior[T]],
       settings: ShardedDaemonProcessSettings,
       stopMessage: Optional[T],
       shardAllocationStrategy: Optional[ShardAllocationStrategy]): Unit = {

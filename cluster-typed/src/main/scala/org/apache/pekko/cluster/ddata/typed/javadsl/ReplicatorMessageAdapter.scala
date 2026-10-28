@@ -75,8 +75,7 @@ class ReplicatorMessageAdapter[A, B <: ReplicatedData](
    * the given `responseAdapter` function.
    */
   def subscribe(
-      key: Key[B], responseAdapter: pekko.japi.function.Function[? >: Replicator.SubscribeResponse[B], ? <: A])
-      : Unit = {
+      key: Key[B], responseAdapter: pekko.japi.function.Function[Replicator.SubscribeResponse[B], A]): Unit = {
     // unsubscribe in case it's called more than once per key
     unsubscribe(key)
 
@@ -106,8 +105,8 @@ class ReplicatorMessageAdapter[A, B <: ReplicatedData](
    * Use that `ActorRef[UpdateResponse]` as the `replyTo` parameter in the `Update` message.
    */
   def askUpdate(
-      createRequest: JFunction[? >: ActorRef[Replicator.UpdateResponse[B]], ? <: Replicator.Update[B]],
-      responseAdapter: JFunction[? >: Replicator.UpdateResponse[B], ? <: A]): Unit = {
+      createRequest: JFunction[ActorRef[Replicator.UpdateResponse[B]], Replicator.Update[B]],
+      responseAdapter: JFunction[Replicator.UpdateResponse[B], A]): Unit = {
     context.asScala
       .ask[Replicator.Update[B], Replicator.UpdateResponse[B]](replicator, askReplyTo => createRequest(askReplyTo)) {
         case Success(value) => responseAdapter(value)
@@ -126,8 +125,8 @@ class ReplicatorMessageAdapter[A, B <: ReplicatedData](
    */
   @nowarn
   def askGet(
-      createRequest: JFunction[? >: ActorRef[Replicator.GetResponse[B]], ? <: Replicator.Get[B]],
-      responseAdapter: JFunction[? >: Replicator.GetResponse[B], ? <: A]): Unit = {
+      createRequest: JFunction[ActorRef[Replicator.GetResponse[B]], Replicator.Get[B]],
+      responseAdapter: JFunction[Replicator.GetResponse[B], A]): Unit = {
     context.asScala
       .ask[Replicator.Get[B], Replicator.GetResponse[B]](replicator, askReplyTo => createRequest(askReplyTo)) {
         case Success(value) => responseAdapter(value)
@@ -145,8 +144,8 @@ class ReplicatorMessageAdapter[A, B <: ReplicatedData](
    * Use that `ActorRef[DeleteResponse]` as the `replyTo` parameter in the `Delete` message.
    */
   def askDelete(
-      createRequest: JFunction[? >: ActorRef[Replicator.DeleteResponse[B]], ? <: Replicator.Delete[B]],
-      responseAdapter: JFunction[? >: Replicator.DeleteResponse[B], ? <: A]): Unit = {
+      createRequest: JFunction[ActorRef[Replicator.DeleteResponse[B]], Replicator.Delete[B]],
+      responseAdapter: JFunction[Replicator.DeleteResponse[B], A]): Unit = {
     context.asScala
       .ask[Replicator.Delete[B], Replicator.DeleteResponse[B]](replicator, askReplyTo => createRequest(askReplyTo)) {
         case Success(value) => responseAdapter(value)
@@ -164,8 +163,8 @@ class ReplicatorMessageAdapter[A, B <: ReplicatedData](
    * Use that `ActorRef[ReplicaCount]` as the `replyTo` parameter in the `GetReplicaCount` message.
    */
   def askReplicaCount(
-      createRequest: JFunction[? >: ActorRef[Replicator.ReplicaCount], ? <: Replicator.GetReplicaCount],
-      responseAdapter: JFunction[? >: Replicator.ReplicaCount, ? <: A]): Unit = {
+      createRequest: JFunction[ActorRef[Replicator.ReplicaCount], Replicator.GetReplicaCount],
+      responseAdapter: JFunction[Replicator.ReplicaCount, A]): Unit = {
     context.asScala
       .ask[Replicator.GetReplicaCount, Replicator.ReplicaCount](replicator, askReplyTo => createRequest(askReplyTo)) {
         case Success(value) => responseAdapter(value)

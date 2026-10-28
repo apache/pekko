@@ -163,7 +163,7 @@ import org.slf4j.event.Level
   override def withCheckExcess(check: Boolean): LoggingTestKitImpl =
     copy(checkExcess = check)
 
-  override def withCustom(newCustom: Function[? >: LoggingEvent, Boolean]): LoggingTestKitImpl =
+  override def withCustom(newCustom: Function[LoggingEvent, Boolean]): LoggingTestKitImpl =
     copy(custom = Option(newCustom))
 
   override def withCause(newCause: Class[? <: Throwable]): javadsl.LoggingTestKit =
