@@ -34,8 +34,7 @@ By default, zstd accepts frames with a window of up to 128 MiB (a window log of 
 the window buffer from the frame header before any data is decompressed. When decompressing untrusted input, use
 `withWindowLogMax` to reject frames with a larger window, for example a window log of 23 (8 MiB), the limit that
 [RFC 9659](https://www.rfc-editor.org/rfc/rfc9659) sets for the HTTP `zstd` content-coding. `withWindowLogMax`
-requires a zstd-jni version newer than 1.5.7-24, which provides `ZstdDecompressCtx.setLongMax`; with an older
-version, the operator fails when it is materialized.
+requires zstd-jni 1.5.7-25 or later; with an older version, the operator fails when it is materialized.
 
 ## Reactive Streams semantics
 

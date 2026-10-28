@@ -17,7 +17,6 @@
 
 package org.apache.pekko.stream.impl.io.compression
 
-import java.lang.invoke.{ MethodHandle, MethodHandles, MethodType }
 import java.nio.ByteBuffer
 
 import scala.annotation.tailrec
@@ -37,28 +36,16 @@ import pekko.util.ByteString
   private val EmptyInput = ByteBuffer.allocate(0)
   private val NoInput: Iterator[ByteBuffer] = Iterator.empty
 
-  // ZstdDecompressCtx.setLongMax was added after zstd-jni 1.5.7-24 (luben/zstd-jni#431). zstd-jni is an optional
-  // dependency that users add themselves, so the method is looked up rather than linked against, and is used when a
-  // newer zstd-jni is on the classpath.
-  // TODO call setLongMax directly once Pekko depends on a zstd-jni release that has it (#3674)
-  private lazy val setLongMax: Option[MethodHandle] =
-    try
-      Some(
-        MethodHandles
-          .publicLookup()
-          .findVirtual(
-            classOf[ZstdDecompressCtx],
-            "setLongMax",
-            MethodType.methodType(classOf[ZstdDecompressCtx], Integer.TYPE))
-          .asType(MethodType.methodType(classOf[AnyRef], classOf[AnyRef], Integer.TYPE)))
-    catch { case _: NoSuchMethodException => None }
-
-  private def setWindowLogMax(ctx: ZstdDecompressCtx, windowLogMax: Int): Unit = {
-    val handle = setLongMax.getOrElse(throw new UnsupportedOperationException(
-      "ZstdDecompressionSettings.withWindowLogMax requires a zstd-jni version that provides " +
-      "ZstdDecompressCtx.setLongMax, which is newer than 1.5.7-24"))
-    val _: AnyRef = handle.invokeExact(ctx.asInstanceOf[AnyRef], windowLogMax)
-  }
+  // zstd-jni is an optional dependency that users add themselves, so an older version without
+  // ZstdDecompressCtx.setLongMax may be on the classpath
+  private def setWindowLogMax(ctx: ZstdDecompressCtx, windowLogMax: Int): Unit =
+    try ctx.setLongMax(windowLogMax)
+    catch {
+      case e: NoSuchMethodError =>
+        throw new UnsupportedOperationException(
+          "ZstdDecompressionSettings.withWindowLogMax requires zstd-jni 1.5.7-25 or later",
+          e)
+    }
 
   // The level only applies to compression. Each materialization loads the dictionary into its own
   // context, which owns the digested dictionary and frees it on close. A shared ZstdDictDecompress

@@ -49,7 +49,7 @@ object Dependencies {
 
   val reactiveStreamsVersion = "1.0.4"
 
-  val zstdJniVersion = "1.5.7-24"
+  val zstdJniVersion = "1.5.7-25"
 
   val scalaTestVersion = "3.2.20"
   val scalaTestScalaCheckVersion = "1-19"
