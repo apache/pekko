@@ -273,7 +273,7 @@ Some additional APIs have been deprecated and will be removed in a future releas
 ### Dependency Changes
 
 * Java 17 is the minimum supported version
-* Scala 2.13.18 and 3.3.8
+* Scala 2.13.18 and 3.3.9
 * netty 4.2.19.Final
 * jackson 2.22.4 (pekko-serialization-jackson) and jackson 3.2.4 (pekko-serialization-jackson3)
 * aeron 1.53.3 and agrona 2.6.1
