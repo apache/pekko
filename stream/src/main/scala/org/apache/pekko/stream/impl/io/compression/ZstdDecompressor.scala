@@ -17,6 +17,7 @@
 
 package org.apache.pekko.stream.impl.io.compression
 
+import java.lang.invoke.{ MethodHandle, MethodHandles, MethodType }
 import java.nio.ByteBuffer
 
 import scala.annotation.tailrec
@@ -36,6 +37,29 @@ import pekko.util.ByteString
   private val EmptyInput = ByteBuffer.allocate(0)
   private val NoInput: Iterator[ByteBuffer] = Iterator.empty
 
+  // ZstdDecompressCtx.setLongMax was added after zstd-jni 1.5.7-24 (luben/zstd-jni#431). zstd-jni is an optional
+  // dependency that users add themselves, so the method is looked up rather than linked against, and is used when a
+  // newer zstd-jni is on the classpath.
+  // TODO call setLongMax directly once Pekko depends on a zstd-jni release that has it (#3674)
+  private lazy val setLongMax: Option[MethodHandle] =
+    try
+      Some(
+        MethodHandles
+          .publicLookup()
+          .findVirtual(
+            classOf[ZstdDecompressCtx],
+            "setLongMax",
+            MethodType.methodType(classOf[ZstdDecompressCtx], Integer.TYPE))
+          .asType(MethodType.methodType(classOf[AnyRef], classOf[AnyRef], Integer.TYPE)))
+    catch { case _: NoSuchMethodException => None }
+
+  private def setWindowLogMax(ctx: ZstdDecompressCtx, windowLogMax: Int): Unit = {
+    val handle = setLongMax.getOrElse(throw new UnsupportedOperationException(
+      "ZstdDecompressionSettings.withWindowLogMax requires a zstd-jni version that provides " +
+      "ZstdDecompressCtx.setLongMax, which is newer than 1.5.7-24"))
+    val _: AnyRef = handle.invokeExact(ctx.asInstanceOf[AnyRef], windowLogMax)
+  }
+
   // The level only applies to compression. Each materialization loads the dictionary into its own
   // context, which owns the digested dictionary and frees it on close. A shared ZstdDictDecompress
   // could not be closed when one materialization stops, and has no Cleaner, so it would only be freed
@@ -54,7 +78,10 @@ import pekko.util.ByteString
 }
 
 /** INTERNAL API */
-@InternalApi private[pekko] class ZstdDecompressor(maxBytesPerChunk: Int, dictionary: Option[ZstdDictionaryImpl])
+@InternalApi private[pekko] class ZstdDecompressor(
+    maxBytesPerChunk: Int,
+    dictionary: Option[ZstdDictionaryImpl],
+    windowLogMax: Int = 0)
     extends SimpleLinearGraphStage[ByteString] {
   import ZstdDecompressor._
 
@@ -67,8 +94,10 @@ import pekko.util.ByteString
 
       private val decompressCtx = new ZstdDecompressCtx()
       // postStop is not called if creating the logic fails, so close the context here
-      try decompressDict.foreach(decompressCtx.loadDict)
-      catch {
+      try {
+        if (windowLogMax != 0) setWindowLogMax(decompressCtx, windowLogMax)
+        decompressDict.foreach(decompressCtx.loadDict)
+      } catch {
         case NonFatal(e) =>
           decompressCtx.close()
           throw e

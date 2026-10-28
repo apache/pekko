@@ -201,7 +201,7 @@ object Compression {
 
   /**
    * Same as [[zstdDecompress]] with the given settings, see [[pekko.stream.ZstdDecompressionSettings]] for the chunk
-   * size and dictionary.
+   * size, window limit and dictionary.
    *
    * @since 2.0.0
    */

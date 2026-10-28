@@ -209,13 +209,13 @@ object Compression {
 
   /**
    * Same as [[zstdDecompress]] with the given settings, see [[pekko.stream.ZstdDecompressionSettings]] for the chunk
-   * size and dictionary.
+   * size, window limit and dictionary.
    *
    * @since 2.0.0
    */
   @ApiMayChange
   def zstdDecompress(settings: ZstdDecompressionSettings): Flow[ByteString, ByteString, NotUsed] =
     Flow[ByteString]
-      .via(new ZstdDecompressor(settings.maxBytesPerChunk, settings.dictionaryImpl))
+      .via(new ZstdDecompressor(settings.maxBytesPerChunk, settings.dictionaryImpl, settings.windowLogMax))
       .named("zstdDecompress")
 }
