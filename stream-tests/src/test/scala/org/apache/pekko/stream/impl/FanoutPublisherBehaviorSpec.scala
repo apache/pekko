@@ -153,6 +153,39 @@ class FanoutPublisherBehaviorSpec extends StreamSpec {
       subscriber2.expectComplete()
     }
 
+    "bound subscriber lag while readers join and the oldest readers cancel" in {
+      val (start, publisher) = Source
+        .maybe[Int]
+        .concat(Source(1 to 16))
+        .toMat(Sink.asPublisher[Int](true).withAttributes(Attributes.inputBuffer(1, 4)))(Keep.both)
+        .run()
+      val fast = TestSubscriber.manualProbe[Int]()
+      val slow = TestSubscriber.manualProbe[Int]()
+      publisher.subscribe(fast)
+      fast.expectSubscription().request(Long.MaxValue)
+      publisher.subscribe(slow)
+      val slowSubscription = slow.expectSubscription()
+      start.success(None)
+
+      fast.expectNext(1, 2, 3, 4)
+      fast.expectNoMessage()
+      slowSubscription.request(1)
+      slow.expectNext(1)
+      fast.expectNext(5)
+
+      val joining = TestSubscriber.manualProbe[Int]()
+      publisher.subscribe(joining)
+      val joiningSubscription = joining.expectSubscription()
+      joiningSubscription.request(1)
+      joining.expectNext(2)
+      slowSubscription.cancel()
+      fast.expectNext(6)
+      fast.expectNoMessage()
+      joiningSubscription.cancel()
+      fast.expectNextN(7 to 16)
+      fast.expectComplete()
+    }
+
     "shut down late subscribers normally after buffered active subscribers drain a completed upstream" in {
       val upstream = TestPublisher.probe[Int]()
       val publisher = Source

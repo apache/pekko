@@ -16,6 +16,11 @@ This method gives you the capability to publish the data from the `Sink` through
 Generally, in Pekko Streams a `Sink` is considered a subscriber, which consumes the data from source. To integrate with other Reactive Stream implementations `Sink.asPublisher` provides a `Publisher` materialized value when run.
 Now, the data from this publisher can be consumed by subscribing to it. We can control if we allow more than one downstream subscriber from the single running Pekko stream through the `fanout` parameter.
 
+With fanout enabled, subscribers share a buffer. The maximum `inputBuffer` size configured on the sink bounds how
+many elements the fastest subscriber can be ahead of the slowest subscriber. Once this limit is reached, the publisher
+backpressures upstream until the slowest subscribers request more elements or cancel. A new subscriber starts with the
+oldest element still retained in this buffer; elements already consumed by all subscribers are not replayed.
+
 In Java 9, the Reactive Stream API was included in the JDK, and `Publisher` is available through [Flow.Publisher](https://docs.oracle.com/javase/9/docs/api/java/util/concurrent/Flow.Publisher.html).
 Since those APIs are identical but exist at different package namespaces and does not depend on the Reactive Streams package a separate API for those is available 
 through @scala[`org.apache.pekko.stream.scaladsl.JavaFlowSupport.Sink#asPublisher`]@java[`org.apache.pekko.stream.javadsl.JavaFlowSupport.Sink#asPublisher`].
