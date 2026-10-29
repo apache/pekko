@@ -280,8 +280,13 @@ import pekko.util.ByteString
       private def outboundCompleted: Boolean =
         userOrEngineOutboundCompleted || transportOutput.isClosed
 
-      private def inboundReady: Boolean = (transportInput.isReady && userOutput.isDemandAvailable) ||
+      private def inboundReady: Boolean =
+        (transportInput.isReady && userOutput.isDemandAvailable && !inboundBlockedOnWrap) ||
         userOutput.isCancelled
+
+      // While the engine needs to wrap, unwrap returns the record unread, so wait for ciphertext demand.
+      private def inboundBlockedOnWrap: Boolean =
+        lastHandshakeStatus == NEED_WRAP && !transportOutput.isDemandAvailable && !transportOutput.isClosed
 
       private def inboundCompleted: Boolean = (transportInput.isCompleted || userOutput.isClosed) &&
         (engine.isInboundDone || userOutput.isErrored)
@@ -293,7 +298,7 @@ import pekko.util.ByteString
         engineNeedsWrapCompleted || transportOutput.isClosed
 
       private def inboundHalfClosedReady: Boolean =
-        transportInput.isReady && !engine.isInboundDone && !drainBeforeInboundClose
+        transportInput.isReady && !engine.isInboundDone && !drainBeforeInboundClose && !inboundBlockedOnWrap
 
       private def inboundHalfClosedCompleted: Boolean =
         transportInput.isCompleted || engine.isInboundDone
