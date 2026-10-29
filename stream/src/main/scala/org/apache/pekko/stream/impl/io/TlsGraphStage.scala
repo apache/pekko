@@ -34,6 +34,7 @@ import pekko.io.{ BufferPool, Tcp }
 import pekko.stream._
 import pekko.stream.TLSProtocol._
 import pekko.stream.impl.Stages.DefaultAttributes
+import pekko.stream.impl.fusing.ActorGraphInterpreter
 import pekko.stream.stage.{ GraphStage, InHandler, OutHandler, TimerGraphStageLogic }
 import pekko.util.ByteString
 
@@ -189,8 +190,9 @@ import pekko.util.ByteString
           case FlushingOutboundPhase => outboundHalfClosedReady && !outboundHalfClosedCompleted
           case AwaitingClosePhase    => awaitingCloseReady && !awaitingCloseCompleted
           case OutboundClosedPhase   => (outboundHalfClosedReady || inboundReady) && !outboundClosedCompleted
-          case InboundClosedPhase    => (outboundReady || inboundHalfClosedReady) && !inboundClosedCompleted
-          case _                     => false
+          case InboundClosedPhase    =>
+            (outboundReady || inboundHalfClosedReady || mustCloseOutboundOnCancel) && !inboundClosedCompleted
+          case _ => false
         }
 
       private def phaseCompleted: Boolean =
@@ -278,7 +280,7 @@ import pekko.util.ByteString
         engineNeedsWrapCompleted || transportOutput.isClosed
 
       private def inboundHalfClosedReady: Boolean =
-        transportInput.isReady && !engine.isInboundDone
+        transportInput.isReady && !engine.isInboundDone && !drainBeforeInboundClose
 
       private def inboundHalfClosedCompleted: Boolean =
         transportInput.isCompleted || engine.isInboundDone
@@ -286,8 +288,8 @@ import pekko.util.ByteString
       private def outboundClosedCompleted: Boolean =
         outboundHalfClosedCompleted && inboundCompleted
 
-      private def inboundClosedCompleted: Boolean =
-        outboundCompleted && inboundHalfClosedCompleted
+      private def inboundClosedCompleted: Boolean = transportOutput.isClosed ||
+        (outboundCompleted && inboundHalfClosedCompleted)
 
       private def awaitingCloseReady: Boolean =
         transportInput.isPending && !engine.isInboundDone
@@ -310,7 +312,7 @@ import pekko.util.ByteString
       }
 
       private def doInbound(isOutboundClosed: Boolean, inboundHalfClosedMode: Boolean): Boolean =
-        if (transportInput.isDepleted && transportInput.isEmpty) {
+        if (transportInput.isDepleted && transportInput.isEmpty && !drainBeforeInboundClose) {
           try engine.closeInbound()
           catch {
             case _: SSLException => userOutput.enqueue(SessionTruncated)
@@ -321,12 +323,24 @@ import pekko.util.ByteString
         } else if (!inboundHalfClosedMode && userOutput.isCancelled) {
           if (!isOutboundClosed && closing.ignoreCancel) {
             nextPhase(InboundClosedPhase)
+            true
+          } else if (!isOutboundClosed && canDrainAcceptedUserInput &&
+            (userInBufferHasRemaining || !userInput.isEmpty)) {
+            userInput.finishAcceptedInput()
+            nextPhase(InboundClosedPhase)
+            false
           } else {
             engine.closeOutbound()
             lastHandshakeStatus = engine.getHandshakeStatus
             nextPhase(FlushingOutboundPhase)
+            true
           }
-          true
+        } else if (inboundHalfClosedMode && mustCloseOutboundOnCancel) {
+          // Cancellation must not wait for a new handshake in order to drain application data.
+          engine.closeOutbound()
+          lastHandshakeStatus = engine.getHandshakeStatus
+          nextPhase(FlushingOutboundPhase)
+          false
         } else if (if (inboundHalfClosedMode) inboundHalfClosedReady else inboundReady) {
           transportInput.chopInto(transportInBuffer)
           if (TlsEngineHelpers.hasCompleteTlsRecord(transportInBuffer))
@@ -369,6 +383,15 @@ import pekko.util.ByteString
               completeOrFlush()
           }
         }
+
+      private def mustCloseOutboundOnCancel: Boolean =
+        !closing.ignoreCancel && !canDrainAcceptedUserInput
+
+      private def drainBeforeInboundClose: Boolean =
+        transportInput.isDepleted && transportInput.isEmpty && userOutput.isCancelled &&
+        !closing.ignoreCancel && canDrainAcceptedUserInput && (userInBufferHasRemaining || !userInput.isEmpty)
+
+      private def canDrainAcceptedUserInput: Boolean = (stateBits & PlainDataAllowedFlag) != 0 && mayCloseOutbound
 
       private def mayCloseOutbound: Boolean =
         lastHandshakeStatus match {
@@ -789,6 +812,36 @@ import pekko.util.ByteString
             !hasBeenPulled(inlet))
             pull(inlet)
 
+        def finishAcceptedInput(): Unit = {
+          cancelPendingBatchTimer()
+          if (!logic.isClosed(inlet)) logic.cancel(inlet)
+          // AfterDelay cancellation leaves the inlet open temporarily; completion must not abort the drain.
+          setHandler(inlet,
+            new InHandler {
+              override def onPush(): Unit = ()
+              override def onUpstreamFinish(): Unit = ()
+              override def onUpstreamFailure(ex: Throwable): Unit = failTls(ex)
+            })
+          stateBits |= UserInputFinishedFlag
+
+          // Only drain data belonging to the current session. Do not start a queued renegotiation
+          // or send the data following it in the old session while closing.
+          var retained = 0
+          while (retained < pendingCount &&
+            pendingQueue((pendingHead + retained) & UserInputQueueMask).isInstanceOf[SendBytes])
+            retained += 1
+          var index = retained
+          while (index < pendingCount) {
+            pendingQueue((pendingHead + index) & UserInputQueueMask) = null
+            index += 1
+          }
+          pendingCount = retained
+          if (pendingCount == 0) {
+            pendingHead = 0
+            stateBits &= ~UserInputHasPendingFlag
+          }
+        }
+
         def cancel(): Unit =
           if ((stateBits & UserInputCancelledFlag) == 0) {
             stateBits |= UserInputCancelledFlag
@@ -1081,7 +1134,9 @@ import pekko.util.ByteString
   private[pekko] final val UserInputQueueSize = InputBufferMaxSize
   private[pekko] final val UserInputQueueMask = UserInputQueueSize - 1
   private[pekko] val StreamTlsAttributes: Attributes =
-    Attributes.asyncBoundary and Attributes.inputBuffer(InputBufferInitialSize, InputBufferMaxSize)
+    Attributes.asyncBoundary and Attributes.inputBuffer(InputBufferInitialSize, InputBufferMaxSize) and
+    // Send plaintext messages before a subsequent plaintext-output cancellation from the same handler.
+    Attributes(ActorGraphInterpreter.UnbatchedInput)
 
   private[pekko] final val PlainDataAllowedFlag = 1 << 0
   private[pekko] final val StageClosedFlag = 1 << 1

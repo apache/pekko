@@ -161,6 +161,30 @@ Java
 
 The `SSLEngine` instance can then be used with the binding or outgoing connection factory methods.
 
+The GraphStage TLS engine keeps an asynchronous boundary around TLS processing. It sends element
+messages across that boundary without sender-side batching, preserving their order relative to a
+later plaintext-output cancellation from the same handler. This orders boundary messages; it does
+not drain elements still buffered in other operators or change TLS closing policies.
+
+### TLS closing policies
+
+The `closing` parameter of @apidoc[TLS](stream.*.TLS$) controls how plaintext-input completion
+and plaintext-output cancellation close the connection; see @apidoc[TLSClosing](stream.TLSClosing).
+When cancellation closes the connection, bytes not yet accepted by the operator may be discarded.
+With `pekko.stream.materializer.tls.engine = graph-stage`, the operator stops further plaintext input
+and attempts to send data already accepted for the established session, subject to transport
+availability. This includes up to 64 queued messages plus plaintext already buffered for wrapping.
+Message sizes are unbounded, so termination can be delayed until that data is sent. Data queued after
+a renegotiation request is discarded, and draining stops if a new handshake is required. Cancellation
+during a handshake or a transport failure can still prevent delivery. The default `legacy-actor`
+engine discards accepted plaintext on cancellation. Use the `IgnoreCancel` closing policy
+(`TLSClosing.ignoreCancel()` in Java) if the handler needs to continue producing a response after it
+stops reading.
+
+The GraphStage drain also applies when plaintext-output cancellation is observed before the peer's
+transport input completes. If transport-input completion is observed first, the existing inbound-close
+contract applies and accepted plaintext is discarded, matching the legacy actor engine.
+
 ## Streaming File IO
 
 Pekko Streams provide simple Sources and Sinks that can work with @apidoc[util.ByteString] instances to perform IO operations

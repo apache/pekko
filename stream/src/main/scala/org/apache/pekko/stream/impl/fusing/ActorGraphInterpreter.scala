@@ -57,6 +57,9 @@ import org.reactivestreams.Subscription
     def batch(elements: Array[AnyRef]): Unit
   }
 
+  // Opt out of sender-side batching when ordering with signals on another port matters (TLS).
+  private[stream] case object UnbatchedInput extends Attributes.Attribute
+
   sealed abstract class BoundaryEvent extends DeadLetterSuppression with NoSerializationVerificationNeeded {
     def shell: GraphInterpreterShell
 
@@ -560,8 +563,9 @@ import org.reactivestreams.Subscription
         if (subscriber eq null) {
           subscriber = sub
           boundarySubscriber = sub match {
-            case boundary: BoundarySubscriber => boundary
-            case _                            => null
+            case boundary: BatchingActorInputBoundary if boundary.attributes.contains(UnbatchedInput) => null
+            case boundary: BoundarySubscriber                                                         => boundary
+            case _                                                                                    => null
           }
           val subscription = new Subscription with SubscriptionWithCancelException {
             override def request(elements: Long): Unit = actor ! new RequestMore(ActorOutputBoundary.this, elements)

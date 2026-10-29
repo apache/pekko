@@ -253,15 +253,24 @@ class TlsGraphStageDeferredCloseSpec extends StreamSpec(TlsGraphStageDeferredClo
   private val ApplicationCiphertext = ByteString(0x5A.toByte)
   private val CloseCiphertext = ByteString(0x5B.toByte)
 
-  private final class ScriptedSSLEngine(delegate: SSLEngine, wrapOnCloseInbound: Boolean) extends SSLEngine {
+  private final class ScriptedSSLEngine(
+      delegate: SSLEngine,
+      wrapOnCloseInbound: Boolean,
+      requestHandshakeAfterApplication: Boolean,
+      requestWrapOnSubsequentUnwrap: Boolean) extends SSLEngine {
     private var handshakeStatus: SSLEngineResult.HandshakeStatus = NEED_UNWRAP
     @volatile var unwrapCount = 0
     private var inboundDone = false
     private var outboundDone = false
 
     @volatile var applicationWraps = 0
+    @volatile var applicationBytes = 0
+    @volatile var handshakesStarted = 0
 
-    override def beginHandshake(): Unit = handshakeStatus = NEED_UNWRAP
+    override def beginHandshake(): Unit = {
+      handshakesStarted += 1
+      handshakeStatus = NEED_UNWRAP
+    }
 
     override def getHandshakeStatus: SSLEngineResult.HandshakeStatus = handshakeStatus
 
@@ -287,12 +296,14 @@ class TlsGraphStageDeferredCloseSpec extends StreamSpec(TlsGraphStageDeferredClo
           1
         } else if (consumed > 0) {
           applicationWraps += 1
+          applicationBytes += consumed
           dst.put(ApplicationCiphertext.head)
           1
         } else 0
 
-      handshakeStatus = NOT_HANDSHAKING
-      new SSLEngineResult(if (closeWrap) CLOSED else OK, NOT_HANDSHAKING, consumed, produced)
+      handshakeStatus =
+        if (consumed > 0 && requestHandshakeAfterApplication) NEED_UNWRAP else NOT_HANDSHAKING
+      new SSLEngineResult(if (closeWrap) CLOSED else OK, handshakeStatus, consumed, produced)
     }
 
     override def unwrap(
@@ -307,9 +318,12 @@ class TlsGraphStageDeferredCloseSpec extends StreamSpec(TlsGraphStageDeferredClo
       if (unwrapCount == 1) {
         handshakeStatus = NOT_HANDSHAKING
         new SSLEngineResult(OK, FINISHED, consumed, 0)
-      } else {
+      } else if (requestWrapOnSubsequentUnwrap) {
         handshakeStatus = NEED_WRAP
         new SSLEngineResult(OK, NEED_WRAP, consumed, 0)
+      } else {
+        handshakeStatus = NOT_HANDSHAKING
+        new SSLEngineResult(OK, NOT_HANDSHAKING, consumed, 0)
       }
     }
 
@@ -350,9 +364,15 @@ class TlsGraphStageDeferredCloseSpec extends StreamSpec(TlsGraphStageDeferredClo
       val cipherOut: TestSubscriber.Probe[ByteString],
       val plainOut: TestSubscriber.Probe[SslTlsInbound])
 
-  private def newHarness(wrapOnCloseInbound: Boolean = false): DeferredCloseHarness = {
+  private def newHarness(
+      wrapOnCloseInbound: Boolean = false,
+      closing: TLSClosing = IgnoreComplete,
+      requestHandshakeAfterApplication: Boolean = false,
+      requestWrapOnSubsequentUnwrap: Boolean = true,
+      extraAttributes: Attributes = Attributes.none): DeferredCloseHarness = {
     val engine =
-      new ScriptedSSLEngine(TlsSpec.initSslContext("TLSv1.2").createSSLEngine(), wrapOnCloseInbound)
+      new ScriptedSSLEngine(TlsSpec.initSslContext("TLSv1.2").createSSLEngine(), wrapOnCloseInbound,
+        requestHandshakeAfterApplication, requestWrapOnSubsequentUnwrap)
     val probes =
       RunnableGraph
         .fromGraph(
@@ -363,12 +383,16 @@ class TlsGraphStageDeferredCloseSpec extends StreamSpec(TlsGraphStageDeferredClo
             TestSink[SslTlsInbound]())(Tuple4.apply) { implicit b => (plainIn, cipherIn, cipherOut, plainOut) =>
             val tls = b.add(
               BidiFlow
-                .fromGraph(new TlsGraphStage(() => engine, _ => Success(()), IgnoreComplete))
-                .withAttributes(Attributes.inputBuffer(1, 1)))
-            plainIn  ~> tls.in1
-            tls.out1 ~> cipherOut
-            cipherIn ~> tls.in2
-            tls.out2 ~> plainOut
+                .fromGraph(new TlsGraphStage(() => engine, _ => Success(()), closing))
+                .withAttributes(Attributes.inputBuffer(1, 1).and(extraAttributes)))
+            plainIn                                          ~> tls.in1
+            tls.out1                                         ~> cipherOut
+            cipherIn                                         ~> tls.in2
+            if (extraAttributes == Attributes.none) tls.out2 ~> plainOut
+            else {
+              // Keep the subscriber boundary's cancellation independent of the TLS stage's attributes.
+              tls.out2 ~> Flow[SslTlsInbound].map(identity) ~> plainOut
+            }
             ClosedShape
           })
         .run()
@@ -389,6 +413,193 @@ class TlsGraphStageDeferredCloseSpec extends StreamSpec(TlsGraphStageDeferredClo
   }
 
   "TlsGraphStage deferred close handling" must {
+
+    for (closing <- Seq(IgnoreComplete, EagerClose)) {
+      s"flush accepted plaintext on output cancellation with $closing before the batch timer fires" in {
+        val harness = newHarness(closing = closing)
+        finishInitialHandshake(harness)
+
+        harness.plainIn.sendNext(SendBytes(ByteString("a")))
+        harness.plainIn.expectRequest() // the stage owns the bytes, but the batch timer has not run
+        harness.plainOut.cancel()
+        harness.plainIn.expectCancellation()
+
+        // Cancellation must stop new input without discarding the accepted batch or bypassing backpressure.
+        harness.engine.applicationWraps shouldBe 0
+        harness.cipherOut.request(1)
+        harness.cipherOut.expectNext(ApplicationCiphertext)
+        harness.cipherOut.expectComplete()
+        harness.cipherIn.expectCancellation()
+        harness.engine.applicationBytes shouldBe 1
+      }
+
+      s"drain a partially sent large message on output cancellation with $closing" in {
+        val harness = newHarness(closing = closing)
+        finishInitialHandshake(harness)
+        // The scripted engine consumes one input buffer per wrap. Keep a tail in the accepted ByteString
+        // so draining must refill that buffer on later transport requests; TLS record boundaries are not modeled.
+        val applicationBuffers = TlsGraphStage.MaxApplicationRecordsPerEngineCall * 2 + 1
+        val payload = ByteString("a" * (harness.engine.getSession.getApplicationBufferSize * applicationBuffers))
+        harness.plainIn.sendNext(SendBytes(payload))
+        harness.plainIn.expectRequest()
+
+        harness.cipherOut.request(1)
+        harness.cipherOut.expectNext(ApplicationCiphertext)
+        val initiallySent = harness.engine.applicationBytes
+        initiallySent should be > 0
+        initiallySent should be < payload.size
+
+        harness.plainOut.cancel()
+        harness.plainIn.expectCancellation()
+        // Processing cancellation must not wrap more plaintext without transport demand.
+        harness.engine.applicationBytes shouldBe initiallySent
+
+        var sent = initiallySent
+        while (sent < payload.size) {
+          harness.cipherOut.request(1)
+          harness.cipherOut.expectNext(ApplicationCiphertext)
+          val nextSent = harness.engine.applicationBytes
+          nextSent should be > sent
+          nextSent should be <= payload.size
+          sent = nextSent
+        }
+        // The last data element consumed the demand; allow the outbound close to run as well.
+        harness.cipherOut.request(1)
+        harness.cipherOut.expectComplete()
+        harness.cipherIn.expectCancellation()
+        harness.engine.applicationBytes shouldBe payload.size
+      }
+    }
+
+    "close without waiting for peer handshake input while draining cancelled plaintext" in {
+      val harness = newHarness(requestHandshakeAfterApplication = true)
+      finishInitialHandshake(harness)
+      harness.plainIn.sendNext(SendBytes(ByteString("a")))
+      harness.plainIn.expectRequest()
+      harness.plainOut.cancel()
+      harness.plainIn.expectCancellation()
+
+      harness.cipherOut.request(1)
+      harness.cipherOut.expectNext(ApplicationCiphertext)
+      harness.cipherOut.expectComplete()
+      harness.cipherIn.expectCancellation()
+      harness.engine.applicationBytes shouldBe 1
+    }
+
+    "stop draining when the transport output is cancelled" in {
+      val harness = newHarness()
+      finishInitialHandshake(harness)
+      harness.plainIn.sendNext(SendBytes(ByteString("a")))
+      harness.plainIn.expectRequest()
+      harness.plainOut.cancel()
+      harness.plainIn.expectCancellation()
+
+      harness.cipherOut.cancel()
+      harness.cipherIn.expectCancellation()
+      harness.engine.applicationWraps shouldBe 0
+    }
+
+    for (closing <- Seq(IgnoreComplete, EagerClose)) {
+      s"drain accepted plaintext when transport input completes during cancellation with $closing" in {
+        val harness = newHarness(closing = closing)
+        finishInitialHandshake(harness)
+        harness.plainIn.sendNext(SendBytes(ByteString("a")))
+        harness.plainIn.expectRequest()
+        harness.plainOut.cancel()
+        harness.plainIn.expectCancellation()
+        harness.cipherIn.sendComplete()
+
+        harness.cipherOut.request(1)
+        harness.cipherOut.expectNext(ApplicationCiphertext)
+        harness.cipherOut.expectComplete()
+        harness.engine.applicationBytes shouldBe 1
+      }
+    }
+
+    for (closing <- Seq(IgnoreCancel, IgnoreBoth)) {
+      s"terminate when both outputs are cancelled with $closing and silent transport input" in {
+        val harness = newHarness(closing = closing)
+        finishInitialHandshake(harness)
+        harness.plainOut.cancel()
+        harness.cipherOut.cancel()
+
+        harness.cipherIn.expectCancellation()
+        harness.plainIn.expectCancellation()
+      }
+    }
+
+    "fail transport when upstream fails during delayed cancellation" in {
+      val harness = newHarness(requestWrapOnSubsequentUnwrap = false,
+        extraAttributes = Attributes(
+          Attributes.CancellationStrategy(
+            Attributes.CancellationStrategy.AfterDelay(1.second, Attributes.CancellationStrategy.PropagateFailure))))
+      finishInitialHandshake(harness)
+      harness.plainIn.sendNext(SendBytes(ByteString("a")))
+      harness.plainIn.expectRequest()
+      harness.plainOut.cancel()
+      // A second signal from the cancelled output proves that its cancellation was processed.
+      harness.cipherIn.sendNext(TlsRecord)
+      harness.cipherIn.expectRequest()
+      awaitAssert(harness.engine.unwrapCount shouldBe 2)
+      val failure = new RuntimeException("plaintext input failed during cancellation")
+      harness.plainIn.sendError(failure)
+
+      harness.cipherOut.expectError() shouldBe failure
+      system.scheduler.asInstanceOf[ExplicitlyTriggeredScheduler].timePasses(1.second)
+      harness.cipherIn.expectCancellation()
+    }
+
+    "preserve the accepted batch when upstream completes during delayed cancellation" in {
+      val harness = newHarness(extraAttributes = Attributes(
+        Attributes.CancellationStrategy(
+          Attributes.CancellationStrategy.AfterDelay(1.second, Attributes.CancellationStrategy.PropagateFailure))))
+      finishInitialHandshake(harness)
+      harness.plainIn.sendNext(SendBytes(ByteString("a")))
+      harness.plainIn.expectRequest()
+
+      harness.plainOut.cancel()
+      harness.plainIn.sendComplete()
+      harness.cipherOut.request(1)
+      harness.cipherOut.expectNext(ApplicationCiphertext)
+      harness.cipherOut.expectComplete()
+      harness.engine.applicationBytes shouldBe 1
+      system.scheduler.asInstanceOf[ExplicitlyTriggeredScheduler].timePasses(1.second)
+      harness.cipherIn.expectCancellation()
+    }
+
+    "close promptly on output cancellation during the initial handshake" in {
+      val harness = newHarness()
+      harness.plainIn.sendNext(SendBytes(ByteString("a")))
+      harness.plainIn.expectRequest()
+      harness.plainOut.cancel()
+
+      harness.plainIn.expectCancellation()
+      harness.cipherIn.expectCancellation()
+      harness.cipherOut.expectComplete()
+      harness.engine.applicationWraps shouldBe 0
+    }
+
+    "drain only the current session before a queued renegotiation on output cancellation" in {
+      val harness = newHarness()
+      finishInitialHandshake(harness)
+
+      harness.plainIn.sendNext(SendBytes(ByteString("a")))
+      harness.plainIn.expectRequest()
+      harness.plainIn.sendNext(NegotiateNewSession)
+      harness.plainIn.expectRequest()
+      harness.plainIn.sendNext(SendBytes(ByteString("b")))
+      harness.plainIn.expectRequest()
+      harness.plainOut.cancel()
+      harness.plainIn.expectCancellation()
+
+      harness.cipherOut.request(1)
+      harness.cipherOut.expectNext(ApplicationCiphertext)
+      harness.cipherOut.expectComplete()
+      harness.cipherIn.expectCancellation()
+      harness.engine.applicationBytes shouldBe 1
+      harness.engine.handshakesStarted shouldBe 1
+    }
+
     "complete when inbound closes before a deferred user batch runs" in {
       val harness = newHarness()
       finishInitialHandshake(harness)
