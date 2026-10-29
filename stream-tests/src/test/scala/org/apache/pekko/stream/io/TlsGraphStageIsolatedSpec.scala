@@ -21,10 +21,11 @@ import java.nio.ByteBuffer
 import java.util.concurrent.ThreadFactory
 import javax.net.ssl._
 import javax.net.ssl.SSLEngineResult.HandshakeStatus.{ FINISHED, NEED_UNWRAP, NEED_WRAP, NOT_HANDSHAKING }
-import javax.net.ssl.SSLEngineResult.Status.{ CLOSED, OK }
+import javax.net.ssl.SSLEngineResult.Status.{ BUFFER_OVERFLOW, BUFFER_UNDERFLOW, CLOSED, OK }
 
 import scala.concurrent.Await
 import scala.concurrent.ExecutionContext
+import scala.concurrent.Promise
 import scala.concurrent.duration._
 import scala.util.Success
 
@@ -41,6 +42,7 @@ import pekko.stream.scaladsl._
 import pekko.stream.scaladsl.GraphDSL.Implicits._
 import pekko.stream.testkit.{ StreamSpec, TestPublisher, TestSubscriber }
 import pekko.stream.testkit.scaladsl.{ TestSink, TestSource }
+import pekko.stream.testkit.scaladsl.StreamTestKit.assertAllStagesStopped
 import pekko.testkit.{ ExplicitlyTriggeredScheduler, WithLogCapturing }
 import pekko.util.ByteString
 
@@ -247,28 +249,97 @@ class TlsGraphStageIsolatedSpec extends StreamSpec(TlsSpec.configOverrides) with
   }
 }
 
-class TlsGraphStageDeferredCloseSpec extends StreamSpec(TlsGraphStageDeferredCloseSpec.config) {
+class TlsGraphStageSmallBufferSpec
+    extends StreamSpec(
+      ConfigFactory.parseString("pekko.io.tcp.direct-buffer-size = 8192")
+        .withFallback(ConfigFactory.parseString(TlsSpec.configOverrides))) {
 
-  private val TlsRecord = ByteString(Array[Byte](23, 3, 3, 0, 0))
-  private val ApplicationCiphertext = ByteString(0x5A.toByte)
-  private val CloseCiphertext = ByteString(0x5B.toByte)
+  "TlsGraphStage" must {
+    for (protocol <- Seq("TLSv1.2", "TLSv1.3")) {
+      s"round-trip $protocol records larger than the TCP pool buffers" in {
+        assertAllStagesStopped {
+          val context = TlsSpec.initSslContext(protocol)
+          def tls(client: Boolean) =
+            BidiFlow.fromGraph(new TlsGraphStage(
+              () => {
+                val engine = context.createSSLEngine()
+                engine.setUseClientMode(client)
+                engine.setEnabledProtocols(Array(protocol))
+                engine
+              },
+              _ => Success(()),
+              IgnoreComplete)).withAttributes(TlsGraphStage.StreamTlsAttributes)
 
-  private final class ScriptedSSLEngine(
+          val payload = ByteString.fromArray(Array.tabulate[Byte](32768)(_.toByte))
+          val echo = Flow[SslTlsInbound].collect { case SessionBytes(_, bytes) => SendBytes(bytes) }
+          val received = Source.single[SslTlsOutbound](SendBytes(payload))
+            .via(tls(client = true).atop(tls(client = false).reversed).join(echo))
+            .collect { case SessionBytes(_, bytes) => bytes }
+            .scan(ByteString.empty)(_ ++ _)
+            .filter(_.size >= payload.size)
+            .runWith(Sink.head)
+
+          Await.result(received, remainingOrDefault) shouldBe payload
+        }
+
+        // TLS fallback buffers must not enter the shared, fixed-size TCP pool.
+        val pool = pekko.io.Tcp(system).bufferPool
+        val buffer = pool.acquire()
+        try {
+          buffer.isDirect shouldBe true
+          buffer.capacity() shouldBe 8192
+        } finally pool.release(buffer)
+      }
+    }
+  }
+}
+
+abstract class TlsGraphStageBufferTestBase(config: Config) extends StreamSpec(config) {
+
+  protected val TlsRecord = ByteString(Array[Byte](23, 3, 3, 0, 0))
+  protected val ApplicationCiphertext = ByteString(0x5A.toByte)
+  protected val CloseCiphertext = ByteString(0x5B.toByte)
+
+  protected final class ScriptedSSLEngine(
       delegate: SSLEngine,
       wrapOnCloseInbound: Boolean,
       requestHandshakeAfterApplication: Boolean,
-      requestWrapOnSubsequentUnwrap: Boolean) extends SSLEngine {
+      requestWrapOnSubsequentUnwrap: Boolean,
+      @volatile var requiredOutputSpace: Int,
+      negotiatedPacketSize: Int,
+      negotiatedApplicationSize: Int) extends SSLEngine {
     private var handshakeStatus: SSLEngineResult.HandshakeStatus = NEED_UNWRAP
     @volatile var unwrapCount = 0
     private var inboundDone = false
     private var outboundDone = false
+    private var handshakePending = true
 
     @volatile var applicationWraps = 0
     @volatile var applicationBytes = 0
     @volatile var handshakesStarted = 0
+    @volatile var overflowWraps = 0
+    @volatile var largestOutputCapacity = 0
+    @volatile var inputArray: Array[Byte] = _
+    @volatile var outputArray: Array[Byte] = _
+    @volatile var underflowUnwraps = 0
+    @volatile var overflowUnwraps = 0
+    // Keep the scripted session's initial requirements independent of the JDK provider.
+    private var reportedPacketSize = 8192
+    private var reportedApplicationSize = 4096
+    private var consecutiveBufferRetries = 0
+    @volatile var sessionQueries = 0
+    private lazy val reportedSession = java.lang.reflect.Proxy.newProxyInstance(
+      classOf[SSLSession].getClassLoader,
+      Array[Class[?]](classOf[SSLSession]),
+      (_: AnyRef, method: java.lang.reflect.Method, args: Array[AnyRef]) =>
+        if (method.getName == "getPacketBufferSize") Int.box(reportedPacketSize)
+        else if (method.getName == "getApplicationBufferSize") Int.box(reportedApplicationSize)
+        else method.invoke(delegate.getSession, Option(args).getOrElse(Array.empty[AnyRef]): _*))
+      .asInstanceOf[SSLSession]
 
     override def beginHandshake(): Unit = {
       handshakesStarted += 1
+      handshakePending = true
       handshakeStatus = NEED_UNWRAP
     }
 
@@ -279,6 +350,12 @@ class TlsGraphStageDeferredCloseSpec extends StreamSpec(TlsGraphStageDeferredClo
         offset: Int,
         length: Int,
         dst: ByteBuffer): SSLEngineResult = {
+      largestOutputCapacity = math.max(largestOutputCapacity, dst.capacity())
+      if (dst.hasArray) outputArray = dst.array()
+      if (dst.remaining() < requiredOutputSpace) {
+        overflowWraps += 1
+        return new SSLEngineResult(BUFFER_OVERFLOW, handshakeStatus, 0, 0)
+      }
       var consumed = 0
       var index = offset
       while (index < offset + length) {
@@ -311,13 +388,34 @@ class TlsGraphStageDeferredCloseSpec extends StreamSpec(TlsGraphStageDeferredClo
         dsts: Array[ByteBuffer],
         offset: Int,
         length: Int): SSLEngineResult = {
+      if (src.hasArray) inputArray = src.array()
+      if (!handshakePending && negotiatedPacketSize > 0) {
+        reportedPacketSize = negotiatedPacketSize
+        if (negotiatedApplicationSize > 0) reportedApplicationSize = negotiatedApplicationSize
+        consecutiveBufferRetries += 1
+        if (consecutiveBufferRetries > 8) throw new SSLException("TLS buffers were not resized after repeated retries")
+        if (dsts(offset).remaining() < negotiatedApplicationSize) {
+          overflowUnwraps += 1
+          return new SSLEngineResult(BUFFER_OVERFLOW, NOT_HANDSHAKING, 0, 0)
+        }
+        if (src.remaining() < negotiatedPacketSize) {
+          underflowUnwraps += 1
+          return new SSLEngineResult(BUFFER_UNDERFLOW, NOT_HANDSHAKING, 0, 0)
+        }
+      }
+      consecutiveBufferRetries = 0
       val consumed = src.remaining()
       src.position(src.limit())
       unwrapCount += 1
 
-      if (unwrapCount == 1) {
+      if (handshakePending) {
+        handshakePending = false
         handshakeStatus = NOT_HANDSHAKING
         new SSLEngineResult(OK, FINISHED, consumed, 0)
+      } else if (negotiatedPacketSize > 0) {
+        val produced = math.max(1, negotiatedApplicationSize)
+        dsts(offset).put(Array.fill[Byte](produced)(0x41.toByte))
+        new SSLEngineResult(OK, NOT_HANDSHAKING, consumed, produced)
       } else if (requestWrapOnSubsequentUnwrap) {
         handshakeStatus = NEED_WRAP
         new SSLEngineResult(OK, NEED_WRAP, consumed, 0)
@@ -340,7 +438,10 @@ class TlsGraphStageDeferredCloseSpec extends StreamSpec(TlsGraphStageDeferredClo
     override def isInboundDone: Boolean = inboundDone
     override def isOutboundDone: Boolean = outboundDone
     override def getDelegatedTask: Runnable = null
-    override def getSession: SSLSession = delegate.getSession
+    override def getSession: SSLSession = {
+      sessionQueries += 1
+      if (negotiatedPacketSize > 0) reportedSession else delegate.getSession
+    }
     override def getSupportedCipherSuites: Array[String] = delegate.getSupportedCipherSuites
     override def getEnabledCipherSuites: Array[String] = delegate.getEnabledCipherSuites
     override def setEnabledCipherSuites(suites: Array[String]): Unit = delegate.setEnabledCipherSuites(suites)
@@ -357,22 +458,28 @@ class TlsGraphStageDeferredCloseSpec extends StreamSpec(TlsGraphStageDeferredClo
     override def getEnableSessionCreation: Boolean = delegate.getEnableSessionCreation
   }
 
-  private final class DeferredCloseHarness(
+  protected final class DeferredCloseHarness(
       val engine: ScriptedSSLEngine,
+      val sessionVerified: Promise[Unit],
       val plainIn: TestPublisher.Probe[SslTlsOutbound],
       val cipherIn: TestPublisher.Probe[ByteString],
       val cipherOut: TestSubscriber.Probe[ByteString],
       val plainOut: TestSubscriber.Probe[SslTlsInbound])
 
-  private def newHarness(
+  protected def newHarness(
       wrapOnCloseInbound: Boolean = false,
       closing: TLSClosing = IgnoreComplete,
       requestHandshakeAfterApplication: Boolean = false,
       requestWrapOnSubsequentUnwrap: Boolean = true,
-      extraAttributes: Attributes = Attributes.none): DeferredCloseHarness = {
+      extraAttributes: Attributes = Attributes.none,
+      requiredOutputSpace: Int = 0,
+      negotiatedPacketSize: Int = 0,
+      negotiatedApplicationSize: Int = 0): DeferredCloseHarness = {
     val engine =
       new ScriptedSSLEngine(TlsSpec.initSslContext("TLSv1.2").createSSLEngine(), wrapOnCloseInbound,
-        requestHandshakeAfterApplication, requestWrapOnSubsequentUnwrap)
+        requestHandshakeAfterApplication, requestWrapOnSubsequentUnwrap,
+        requiredOutputSpace, negotiatedPacketSize, negotiatedApplicationSize)
+    val sessionVerified = Promise[Unit]()
     val probes =
       RunnableGraph
         .fromGraph(
@@ -383,7 +490,13 @@ class TlsGraphStageDeferredCloseSpec extends StreamSpec(TlsGraphStageDeferredClo
             TestSink[SslTlsInbound]())(Tuple4.apply) { implicit b => (plainIn, cipherIn, cipherOut, plainOut) =>
             val tls = b.add(
               BidiFlow
-                .fromGraph(new TlsGraphStage(() => engine, _ => Success(()), closing))
+                .fromGraph(new TlsGraphStage(
+                  () => engine,
+                  _ => {
+                    sessionVerified.trySuccess(())
+                    Success(())
+                  },
+                  closing))
                 .withAttributes(Attributes.inputBuffer(1, 1).and(extraAttributes)))
             plainIn                                          ~> tls.in1
             tls.out1                                         ~> cipherOut
@@ -397,7 +510,7 @@ class TlsGraphStageDeferredCloseSpec extends StreamSpec(TlsGraphStageDeferredClo
           })
         .run()
 
-    val harness = new DeferredCloseHarness(engine, probes._1, probes._2, probes._3, probes._4)
+    val harness = new DeferredCloseHarness(engine, sessionVerified, probes._1, probes._2, probes._3, probes._4)
     harness.plainIn.expectRequest()
     harness.cipherIn.expectRequest()
     harness.cipherOut.ensureSubscription()
@@ -405,12 +518,18 @@ class TlsGraphStageDeferredCloseSpec extends StreamSpec(TlsGraphStageDeferredClo
     harness
   }
 
-  private def finishInitialHandshake(harness: DeferredCloseHarness): Unit = {
+  protected def finishInitialHandshake(harness: DeferredCloseHarness): Unit = {
     harness.plainOut.request(1)
     harness.cipherIn.sendNext(TlsRecord)
     harness.cipherIn.expectRequest()
     awaitAssert(harness.engine.unwrapCount shouldBe 1)
+    // unwrapCount is incremented before the stage processes FINISHED and queries the session.
+    Await.result(harness.sessionVerified.future, remainingOrDefault)
   }
+
+}
+
+class TlsGraphStageDeferredCloseSpec extends TlsGraphStageBufferTestBase(TlsGraphStageDeferredCloseSpec.config) {
 
   "TlsGraphStage deferred close handling" must {
 
@@ -431,6 +550,25 @@ class TlsGraphStageDeferredCloseSpec extends StreamSpec(TlsGraphStageDeferredClo
         harness.cipherOut.expectComplete()
         harness.cipherIn.expectCancellation()
         harness.engine.applicationBytes shouldBe 1
+      }
+
+      s"grow the transport buffer while draining accepted plaintext on output cancellation with $closing" in {
+        val poolBufferSize = pekko.io.Tcp(system).Settings.DirectBufferSize
+        val harness = newHarness(closing = closing, requiredOutputSpace = poolBufferSize + 1)
+        finishInitialHandshake(harness)
+        harness.plainIn.sendNext(SendBytes(ByteString("a")))
+        harness.plainIn.expectRequest()
+        harness.plainOut.cancel()
+        harness.plainIn.expectCancellation()
+
+        harness.engine.applicationWraps shouldBe 0
+        harness.cipherOut.request(1)
+        harness.cipherOut.expectNext(ApplicationCiphertext)
+        harness.cipherOut.expectComplete()
+        harness.cipherIn.expectCancellation()
+        harness.engine.applicationBytes shouldBe 1
+        harness.engine.overflowWraps shouldBe 1
+        harness.engine.largestOutputCapacity should be > poolBufferSize
       }
 
       s"drain a partially sent large message on output cancellation with $closing" in {
@@ -646,6 +784,182 @@ class TlsGraphStageDeferredCloseSpec extends StreamSpec(TlsGraphStageDeferredClo
       harness.plainOut.expectComplete()
       harness.plainIn.expectCancellation()
     }
+
+    "grow an empty transport buffer and return only unique pooled buffers after termination" in {
+      val tcp = pekko.io.Tcp(system)
+      val poolBufferSize = tcp.Settings.DirectBufferSize
+      assertAllStagesStopped {
+        val harness = newHarness(requiredOutputSpace = poolBufferSize + 1)
+        finishInitialHandshake(harness)
+
+        harness.plainIn.sendNext(SendBytes(ByteString.fromArray(Array.fill[Byte](2048)(1))))
+        harness.cipherOut.request(1)
+        harness.cipherOut.expectNext(ApplicationCiphertext)
+        harness.engine.overflowWraps shouldBe 1
+        harness.engine.largestOutputCapacity should be > poolBufferSize
+
+        harness.cipherIn.sendComplete()
+        harness.cipherOut.expectComplete()
+        harness.plainOut.expectComplete()
+        harness.plainIn.expectCancellation()
+      }
+
+      // Hold the entire free list at once to detect oversized buffers and duplicate releases.
+      val buffers = Vector.fill(tcp.Settings.MaxDirectBufferPoolSize)(tcp.bufferPool.acquire())
+      try {
+        buffers.foreach { buffer =>
+          buffer.isDirect shouldBe true
+          buffer.capacity() shouldBe poolBufferSize
+        }
+        for (i <- buffers.indices; j <- 0 until i)
+          (buffers(i) eq buffers(j)) shouldBe false
+      } finally buffers.foreach(tcp.bufferPool.release)
+    }
+
+    "return to a pooled output buffer after a handshake lowers the capacity requirement" in {
+      val poolBufferSize = pekko.io.Tcp(system).Settings.DirectBufferSize
+      val harness = newHarness(requiredOutputSpace = poolBufferSize + 1)
+      finishInitialHandshake(harness)
+      val payload = SendBytes(ByteString.fromArray(Array.fill[Byte](2048)(1)))
+
+      for (_ <- 1 to 2) {
+        harness.plainIn.sendNext(payload)
+        harness.cipherOut.request(1)
+        harness.cipherOut.expectNext(ApplicationCiphertext)
+      }
+      // A real empty-buffer overflow sets a lower bound until the next completed handshake.
+      harness.engine.overflowWraps shouldBe 1
+      harness.engine.largestOutputCapacity should be > poolBufferSize
+      harness.engine.requiredOutputSpace = 0
+      harness.engine.largestOutputCapacity = 0
+
+      harness.cipherOut.request(1)
+      harness.plainIn.sendNext(NegotiateNewSession)
+      awaitAssert(harness.engine.handshakesStarted shouldBe 2)
+      harness.cipherIn.sendNext(TlsRecord)
+      harness.cipherIn.expectRequest()
+      awaitAssert(harness.engine.unwrapCount shouldBe 2)
+      harness.engine.largestOutputCapacity = 0
+      harness.plainIn.sendNext(payload)
+      harness.cipherOut.expectNext(ApplicationCiphertext)
+      harness.engine.largestOutputCapacity shouldBe poolBufferSize
+      harness.engine.overflowWraps shouldBe 1
+
+      harness.cipherIn.sendComplete()
+      harness.cipherOut.expectComplete()
+      harness.plainOut.expectComplete()
+      harness.plainIn.expectCancellation()
+    }
+
+    "flush deferred cipher bytes before retrying an overflow without growing the buffer" in {
+      val poolBufferSize = system.settings.config.getBytes("pekko.io.tcp.direct-buffer-size").toInt
+      val harness = newHarness(requiredOutputSpace = poolBufferSize)
+      finishInitialHandshake(harness)
+
+      harness.cipherIn.sendNext(TlsRecord) // bypass the user batch timer for the first write
+      harness.cipherIn.expectRequest()
+      awaitAssert(harness.engine.unwrapCount shouldBe 2)
+      harness.plainIn.sendNext(SendBytes(ByteString("a")))
+      harness.plainIn.expectRequest()
+      harness.cipherOut.request(1)
+      awaitAssert(harness.engine.applicationWraps shouldBe 1)
+
+      // The overflow is caused by buffered ciphertext, not an undersized empty buffer.
+      harness.plainIn.sendNext(SendBytes(ByteString.fromArray(Array.fill[Byte](2048)(1))))
+      harness.cipherOut.expectNext(ApplicationCiphertext)
+      harness.cipherOut.request(1)
+      harness.cipherOut.expectNext(ApplicationCiphertext)
+      harness.engine.overflowWraps shouldBe 1
+      harness.engine.applicationWraps shouldBe 2
+      harness.engine.largestOutputCapacity shouldBe poolBufferSize
+
+      harness.cipherIn.sendComplete()
+      harness.cipherOut.expectComplete()
+      harness.plainOut.expectComplete()
+      harness.plainIn.expectCancellation()
+    }
+  }
+}
+
+class TlsGraphStageHeapBufferSpec
+    extends TlsGraphStageBufferTestBase(
+      ConfigFactory.parseString("pekko.io.tcp.direct-buffer-size = 4096")
+        .withFallback(TlsGraphStageDeferredCloseSpec.config)) {
+
+  "TlsGraphStage heap buffers" must {
+    "share one allocation between the three initial transport buffers" in {
+      val harness = newHarness(negotiatedPacketSize = 32768)
+      finishInitialHandshake(harness)
+      harness.plainIn.sendNext(SendBytes(ByteString.fromArray(Array.fill[Byte](2048)(1))))
+      harness.cipherOut.request(1)
+      harness.cipherOut.expectNext(ApplicationCiphertext)
+
+      harness.engine.inputArray.length shouldBe 8192 * 3
+      (harness.engine.inputArray eq harness.engine.outputArray) shouldBe true
+      harness.cipherIn.sendComplete()
+      harness.cipherOut.expectComplete()
+      harness.plainOut.expectComplete()
+      harness.plainIn.expectCancellation()
+    }
+  }
+}
+
+class TlsGraphStageBufferGrowthSpec
+    extends TlsGraphStageBufferTestBase(
+      ConfigFactory.parseString("pekko.io.tcp.direct-buffer-size = 18432")
+        .withFallback(TlsGraphStageDeferredCloseSpec.config)) {
+
+  "TlsGraphStage buffer growth" must {
+    "avoid querying session sizes for an ordinary partial record" in {
+      val harness = newHarness(negotiatedPacketSize = 32768)
+      finishInitialHandshake(harness)
+      val sessionQueries = harness.engine.sessionQueries
+      harness.cipherIn.sendNext(TlsRecord)
+      harness.cipherIn.expectRequest()
+      awaitAssert(harness.engine.underflowUnwraps shouldBe 1)
+      harness.plainOut.cancel()
+      harness.cipherOut.cancel()
+      harness.cipherIn.expectCancellation()
+      harness.plainIn.expectCancellation()
+      // Cancellation is processed after the stage handles the BUFFER_UNDERFLOW result.
+      harness.engine.sessionQueries shouldBe sessionQueries
+    }
+
+    for (applicationSize <- Seq(0, 32700)) {
+      s"grow inbound buffers after session sizes increase (application size $applicationSize)" in {
+        val packetSize = 32768
+        val harness = newHarness(negotiatedPacketSize = packetSize, negotiatedApplicationSize = applicationSize)
+        finishInitialHandshake(harness)
+        val bodySize = packetSize - 5
+        val record = ByteString(23.toByte, 3.toByte, 3.toByte, (bodySize >> 8).toByte, bodySize.toByte) ++
+          ByteString.fromArray(Array.fill[Byte](bodySize)(1))
+
+        harness.cipherIn.sendNext(record)
+        harness.plainOut.expectNext().asInstanceOf[SessionBytes].bytes shouldBe
+        ByteString.fromArray(Array.fill[Byte](math.max(1, applicationSize))(0x41.toByte))
+        harness.engine.unwrapCount shouldBe 2
+        if (applicationSize == 0) harness.engine.underflowUnwraps should be > 0
+        else harness.engine.overflowUnwraps should be > 0
+
+        harness.plainIn.sendNext(SendBytes(ByteString.fromArray(Array.fill[Byte](65536)(1))))
+        harness.cipherOut.request(1)
+        harness.cipherOut.expectNext(ApplicationCiphertext)
+        harness.engine.largestOutputCapacity should be >= packetSize
+
+        // Successful records reset the retry guard; the connection can process more than eight records.
+        for (_ <- 1 to 10) {
+          harness.plainOut.request(1)
+          harness.cipherIn.sendNext(record)
+          harness.plainOut.expectNext().asInstanceOf[SessionBytes].bytes.size shouldBe math.max(1, applicationSize)
+        }
+        harness.plainOut.request(1)
+        harness.cipherIn.sendComplete()
+        harness.cipherOut.expectComplete()
+        harness.plainOut.expectComplete()
+        harness.plainIn.expectCancellation()
+      }
+    }
+
   }
 }
 
@@ -661,6 +975,8 @@ object TlsGraphStageDeferredCloseSpec {
   val config: Config =
     ConfigFactory
       .parseString(
-        s"""pekko.scheduler.implementation = "${classOf[DeferredZeroTimerScheduler].getName}"""")
+        s"""pekko.scheduler.implementation = "${classOf[DeferredZeroTimerScheduler].getName}"
+           |pekko.io.tcp.direct-buffer-pool-limit = 8
+           |""".stripMargin)
       .withFallback(ConfigFactory.parseString(TlsSpec.configOverrides))
 }

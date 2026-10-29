@@ -150,6 +150,19 @@ Similar factories as shown above for raw TCP but where the data is encrypted usi
 through `outgoingConnectionWithTls`, `bindWithTls` and `bindAndHandleWithTls`,
 see the @scala[@scaladoc[`Tcp Scaladoc`](pekko.stream.scaladsl.Tcp)]@java[@javadoc[`Tcp Javadoc`](pekko.stream.javadsl.Tcp)]  for details.
 
+When using `pekko.stream.materializer.tls.engine = graph-stage`, TLS packet buffers are sized to
+the requirements of the `SSLEngine`. The `pekko.io.tcp.direct-buffer-size` setting controls the
+size of reusable TCP buffers; it does not limit the TLS record size. If a TLS buffer needs more
+space than the TCP pool provides, the TLS stage uses heap buffers for that connection, initially
+sharing one allocation between its three transport buffers. Packet buffers grow if session requirements
+increase, preserving pending ciphertext. After a handshake reduces the required output capacity, the
+stage shrinks its output buffer once pending ciphertext has been sent, returning to a pooled buffer
+when it fits. A capacity required by an empty-buffer overflow is retained until the next handshake
+to avoid repeated allocation. Heap fallback buffers are never returned to the shared TCP pool.
+Small transport buffers can restrict plaintext
+batches to one TLS record per engine call; batch limits are recalculated from the actual output
+capacity as it grows. Measure allocation and throughput for your workload before tuning this setting.
+
 Using TLS requires a keystore and a truststore and then a somewhat involved dance of configuring the SSLEngine and the details for how the session should be negotiated:
 
 Scala
