@@ -82,6 +82,7 @@ import pekko.util.ByteString
       private var bufferPool: BufferPool = _
       private var pooledBufferSize = 0
       private var transportPacketSize = 0
+      private var minimumTransportOutBufferSize = 0
       private var applicationRecordSize = 0
       private var maxUserInBufferSize = 0
       private var maxUserOutBufferSize = 0
@@ -136,15 +137,21 @@ import pekko.util.ByteString
       private def allocateBuffers(session: SSLSession): Unit = {
         val packetSize = math.max(1, session.getPacketBufferSize)
         val applicationSize = math.max(1, session.getApplicationBufferSize)
-        val applicationBatchSize = applicationBufferSize(applicationSize, packetSize)
         transportPacketSize = packetSize
+        minimumTransportOutBufferSize = packetSize
         applicationRecordSize = applicationSize
-        maxUserInBufferSize = applicationBatchSize
-        maxUserOutBufferSize = applicationBatchSize
-
-        transportOutBuffer = acquireTransportBuffer(packetSize)
-        transportInBuffer = acquireTransportBuffer(packetSize)
-        transportUnreadBuffer = acquireTransportBuffer(packetSize)
+        if (packetSize > pooledBufferSize && packetSize <= Int.MaxValue / 3) {
+          // Share one heap allocation without allowing the three buffers to overwrite each other.
+          val transportBuffers = ByteBuffer.allocate(packetSize * 3)
+          transportOutBuffer = transportBuffers.slice(0, packetSize)
+          transportInBuffer = transportBuffers.slice(packetSize, packetSize)
+          transportUnreadBuffer = transportBuffers.slice(packetSize * 2, packetSize)
+        } else {
+          transportOutBuffer = acquireTransportBuffer(packetSize)
+          transportInBuffer = acquireTransportBuffer(packetSize)
+          transportUnreadBuffer = acquireTransportBuffer(packetSize)
+        }
+        updateApplicationBufferSizes()
         userInBuffer = ByteBuffer.allocate(applicationSize)
         userOutBuffer = ByteBuffer.allocate(applicationSize)
 
@@ -154,9 +161,15 @@ import pekko.util.ByteString
       }
 
       private def applicationBufferSize(applicationSize: Int, packetSize: Int): Int = {
-        val recordsThatFitTransportBuffer = math.max(1, pooledBufferSize / packetSize)
+        val recordsThatFitTransportBuffer = math.max(1, transportOutBuffer.capacity() / packetSize)
         val recordsPerEngineCall = math.min(MaxApplicationRecordsPerEngineCall, recordsThatFitTransportBuffer)
         applicationSize * recordsPerEngineCall
+      }
+
+      private def updateApplicationBufferSizes(): Unit = {
+        val applicationBatchSize = applicationBufferSize(applicationRecordSize, transportPacketSize)
+        maxUserInBufferSize = applicationBatchSize
+        maxUserOutBufferSize = applicationBatchSize
       }
 
       private def runPump(): Unit =
@@ -421,7 +434,8 @@ import pekko.util.ByteString
               else nextPhase(AwaitingClosePhase)
 
             case BUFFER_OVERFLOW =>
-              growTransportOutBuffer()
+              if (transportOutBuffer.position() > 0) flushToTransport()
+              else growTransportOutBuffer()
 
             case status =>
               failTls(new IllegalStateException(s"unexpected status $status in doWrap()"))
@@ -456,6 +470,7 @@ import pekko.util.ByteString
           growUserOutBuffer()
 
         val oldInPosition = transportInBuffer.position()
+        val emptyUserOutBuffer = userOutBuffer.position() == 0
         val result = engine.unwrap(transportInBuffer, userOutBuffer)
         if (ignoreOutput) userOutBuffer.clear()
         lastHandshakeStatus = result.getHandshakeStatus
@@ -496,15 +511,44 @@ import pekko.util.ByteString
 
           case BUFFER_UNDERFLOW =>
             flushToUser()
+            if (transportInBuffer.remaining() == transportInBuffer.capacity()) ensureInboundBufferSizes()
 
           case BUFFER_OVERFLOW =>
             flushToUser()
+            if (emptyUserOutBuffer) ensureInboundBufferSizes()
             transportInput.putBackUnreadBuffer(transportInBuffer)
 
           case null =>
             failTls(new IllegalStateException("unexpected status null in doUnwrap()"))
         }
       }
+
+      private def ensureInboundBufferSizes(): Unit = ensureInboundBufferSizes(engine.getSession)
+
+      private def ensureInboundBufferSizes(session: SSLSession): Unit = {
+        // Session requirements can increase while an incoming record is being inspected.
+        val packetSize = math.max(1, session.getPacketBufferSize)
+        transportInBuffer = ensureReadBufferCapacity(transportInBuffer, packetSize)
+        transportUnreadBuffer = ensureReadBufferCapacity(transportUnreadBuffer, packetSize)
+        transportPacketSize = math.max(transportPacketSize, packetSize)
+        minimumTransportOutBufferSize = math.max(minimumTransportOutBufferSize, transportPacketSize)
+        ensureTransportOutBufferCapacity(transportPacketSize)
+
+        val applicationSize = math.max(1, session.getApplicationBufferSize)
+        applicationRecordSize = math.max(applicationRecordSize, applicationSize)
+        updateApplicationBufferSizes()
+        if (userOutBuffer.capacity() < applicationSize) growUserOutBuffer()
+      }
+
+      private def ensureReadBufferCapacity(buffer: ByteBuffer, requiredCapacity: Int): ByteBuffer =
+        if (buffer.capacity() >= requiredCapacity) buffer
+        else {
+          val expanded = acquireTransportBuffer(requiredCapacity)
+          expanded.put(buffer)
+          expanded.flip()
+          releaseTransportBuffer(buffer)
+          expanded
+        }
 
       private def runDelegatedTasks(): Unit =
         if (TlsEngineHelpers.runDelegatedTasks(engine) > 0 || lastHandshakeStatus == NEED_TASK)
@@ -516,6 +560,12 @@ import pekko.util.ByteString
           case Success(()) =>
             currentSession = session
             stateBits |= PlainDataAllowedFlag
+            transportPacketSize = math.max(1, session.getPacketBufferSize)
+            applicationRecordSize = math.max(1, session.getApplicationBufferSize)
+            // An empty-buffer overflow remains a lower bound until a new session is established.
+            minimumTransportOutBufferSize = transportPacketSize
+            ensureInboundBufferSizes(session)
+            shrinkTransportOutBufferIfNeeded()
             flushToUser()
             true
 
@@ -545,6 +595,7 @@ import pekko.util.ByteString
         if (transportOutBuffer.hasRemaining && !transportOutput.isClosed)
           transportOutput.enqueue(ByteString(transportOutBuffer))
         transportOutBuffer.clear()
+        shrinkTransportOutBufferIfNeeded()
       }
 
       private def flushToTransportIfNeeded(result: SSLEngineResult): Unit =
@@ -599,17 +650,34 @@ import pekko.util.ByteString
       }
 
       private def growTransportOutBuffer(): Unit = {
-        val oldBuffer = transportOutBuffer
-        val oldCapacity = oldBuffer.capacity()
+        val oldCapacity = transportOutBuffer.capacity()
         if (oldCapacity > Int.MaxValue / 2)
           throw new IllegalStateException(s"Cannot grow TLS transport output buffer beyond $oldCapacity bytes")
 
-        val bigger = acquireTransportBuffer(oldCapacity * 2)
-        transportOutBuffer.flip()
-        bigger.put(transportOutBuffer)
-        releaseTransportBuffer(oldBuffer)
-        transportOutBuffer = bigger
+        minimumTransportOutBufferSize = oldCapacity * 2
+        ensureTransportOutBufferCapacity(minimumTransportOutBufferSize)
+        updateApplicationBufferSizes()
       }
+
+      private def shrinkTransportOutBufferIfNeeded(): Unit = {
+        val requiredCapacity = math.max(pooledBufferSize, minimumTransportOutBufferSize)
+        if (transportOutBuffer.position() == 0 && transportOutBuffer.capacity() > requiredCapacity) {
+          val oldBuffer = transportOutBuffer
+          transportOutBuffer = acquireTransportBuffer(requiredCapacity)
+          releaseTransportBuffer(oldBuffer)
+          updateApplicationBufferSizes()
+        }
+      }
+
+      private def ensureTransportOutBufferCapacity(requiredCapacity: Int): Unit =
+        if (transportOutBuffer.capacity() < requiredCapacity) {
+          val oldBuffer = transportOutBuffer
+          val bigger = acquireTransportBuffer(requiredCapacity)
+          oldBuffer.flip()
+          bigger.put(oldBuffer)
+          transportOutBuffer = bigger
+          releaseTransportBuffer(oldBuffer)
+        }
 
       private def failTls(ex: Throwable): Unit = failTls(ex, closeTransport = true)
 
@@ -702,18 +770,19 @@ import pekko.util.ByteString
         userInBuffer = null
       }
 
-      private def acquireTransportBuffer(requiredCapacity: Int): ByteBuffer = {
-        val buffer = bufferPool.acquire()
-        if (buffer.capacity >= requiredCapacity) buffer
-        else {
-          releaseTransportBuffer(buffer)
-          throw new IllegalStateException(
-            s"TLS packet buffer requires $requiredCapacity bytes but pekko.io.tcp.direct-buffer-size is $pooledBufferSize")
-        }
-      }
+      private def acquireTransportBuffer(requiredCapacity: Int): ByteBuffer =
+        if (requiredCapacity <= pooledBufferSize) {
+          val buffer = bufferPool.acquire()
+          if (buffer.capacity() >= requiredCapacity) buffer
+          else {
+            releaseTransportBuffer(buffer)
+            ByteBuffer.allocate(requiredCapacity)
+          }
+        } else ByteBuffer.allocate(requiredCapacity)
 
       private def releaseTransportBuffer(buffer: ByteBuffer): Unit =
-        if (buffer ne null) {
+        // Stage-owned heap buffers and buffers with another size must not enter the fixed-size TCP pool.
+        if ((buffer ne null) && buffer.isDirect && buffer.capacity() == pooledBufferSize) {
           buffer.clear()
           bufferPool.release(buffer)
         }
