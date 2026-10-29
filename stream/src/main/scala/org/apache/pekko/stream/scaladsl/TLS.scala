@@ -56,8 +56,10 @@ import com.typesafe.config.{ ConfigException, ConfigFactory }
  * drain includes up to 64 queued messages plus any plaintext already buffered for
  * wrapping; message sizes are unbounded, so cancellation can delay termination
  * until that data is sent. Data queued after a renegotiation request is discarded,
- * and draining stops if a new handshake is required. The engine is selected with
- * `pekko.stream.materializer.tls.engine`, which defaults to `legacy-actor`.
+ * and draining stops if a new handshake is required. The drain continues after a
+ * TLS 1.3 peer sends `close_notify`, but a TLS 1.2 `close_notify` ends it. The engine
+ * is selected with `pekko.stream.materializer.tls.engine`, which defaults to
+ * `legacy-actor`.
  *
  * Especially for a client the common idiom of attaching
  * a finite Source to the plaintext input and transforming the plaintext response

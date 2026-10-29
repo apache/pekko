@@ -401,8 +401,11 @@ import pekko.util.ByteString
         !closing.ignoreCancel && !canDrainAcceptedUserInput
 
       private def drainBeforeInboundClose: Boolean =
-        transportInput.isDepleted && transportInput.isEmpty && userOutput.isCancelled &&
-        !closing.ignoreCancel && canDrainAcceptedUserInput && (userInBufferHasRemaining || !userInput.isEmpty)
+        transportInput.isDepleted && transportInput.isEmpty && drainingAcceptedUserInput
+
+      private def drainingAcceptedUserInput: Boolean =
+        userOutput.isCancelled && !closing.ignoreCancel && canDrainAcceptedUserInput &&
+        (userInBufferHasRemaining || !userInput.isEmpty)
 
       private def canDrainAcceptedUserInput: Boolean = (stateBits & PlainDataAllowedFlag) != 0 && mayCloseOutbound
 
@@ -507,7 +510,9 @@ import pekko.util.ByteString
 
           case CLOSED =>
             flushToUser()
-            completeOrFlush()
+            // A TLS 1.3 close_notify only closes the inbound direction, so keep draining accepted plaintext.
+            if (phase.toInt != InboundClosedPhase || engine.isOutboundDone || !drainingAcceptedUserInput)
+              completeOrFlush()
 
           case BUFFER_UNDERFLOW =>
             flushToUser()

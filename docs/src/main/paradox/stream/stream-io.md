@@ -197,6 +197,9 @@ stops reading.
 The GraphStage drain also applies when plaintext-output cancellation is observed before the peer's
 transport input completes. If transport-input completion is observed first, the existing inbound-close
 contract applies and accepted plaintext is discarded, matching the legacy actor engine.
+The drain also continues after a TLS 1.3 peer sends `close_notify`, because that only closes the
+peer's sending direction. A TLS 1.2 `close_notify` closes both directions of the `SSLEngine`, so it
+ends the drain and accepted plaintext that has not been sent is discarded.
 
 ## Streaming File IO
 
