@@ -46,8 +46,18 @@ import pekko.util.ByteString
  * that it transports—to be precise a half-close will always promptly lead to a
  * full close. This means that canceling the plaintext output or completing the
  * plaintext input of the SslTls operator will lead to full termination of the
- * secure connection without regard to whether bytes are remaining to be sent or
- * received, respectively. Especially for a client the common idiom of attaching
+ * secure connection, subject to the closing policy described below. Bytes not yet
+ * accepted by the operator may be discarded. When cancellation closes the
+ * connection, the `legacy-actor` engine also discards accepted plaintext. The
+ * `graph-stage` engine stops accepting plaintext and attempts to send data already
+ * accepted for the established session, subject to transport availability. This
+ * drain includes up to 64 queued messages plus any plaintext already buffered for
+ * wrapping; message sizes are unbounded, so cancellation can delay termination
+ * until that data is sent. Data queued after a renegotiation request is discarded,
+ * and draining stops if a new handshake is required. The engine is selected with
+ * `pekko.stream.materializer.tls.engine`, which defaults to `legacy-actor`.
+ *
+ * Especially for a client the common idiom of attaching
  * a finite Source to the plaintext input and transforming the plaintext response
  * bytes coming out will not work out of the box due to early termination of the
  * connection. For this reason there is a parameter that determines whether the
