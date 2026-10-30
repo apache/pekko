@@ -70,6 +70,15 @@ nodes or the majority of nodes. The `WeaklyUp` node is not counted
 as part of the cluster. So 3 nodes + 5 `WeaklyUp` is essentially a
 3 node cluster as far as consistent actions are concerned.
 
+The membership check for replication reads, writes and deltas recognizes members first observed in
+`Leaving`, `Exiting`, `Down`, `PreparingForShutdown` or `ReadyForShutdown` status until `MemberRemoved`.
+Including `Down` is intentional: members already known before becoming `Down` also remain known until removal.
+Passing this check does not guarantee that a message is applied. For example, deltas are discarded if a key's
+pruning state already includes the sender, even before `MemberRemoved`.
+Learning about a member for the first time in one of these statuses does not add it to consistency quorums.
+The configured role restrictions still apply. Replication reads, writes and deltas from unknown members
+or earlier incarnations at the same address are ignored.
+
 This sample uses the replicated data type `GCounter` to implement a counter that can be written to on any node of the
 cluster: 
 
