@@ -77,6 +77,9 @@ class FanoutPublisherBenchmark {
   @Param(Array("1", "2", "8", "32", "128"))
   var subscribers = 0
 
+  @Param(Array("1", "16", "9223372036854775807"))
+  var requestBatchSize = 0L
+
   private implicit var system: ActorSystem = _
 
   @Setup
@@ -97,11 +100,23 @@ class FanoutPublisherBenchmark {
     for (_ <- 1 to subscribers) {
       publisher.subscribe(new Subscriber[Int] {
         private var received = 0
+        private var subscription: Subscription = _
+        private var remaining = requestBatchSize
         override def onSubscribe(subscription: Subscription): Unit = {
-          subscription.request(Long.MaxValue)
+          this.subscription = subscription
+          subscription.request(requestBatchSize)
           subscribed.countDown()
         }
-        override def onNext(element: Int): Unit = received += element
+        override def onNext(element: Int): Unit = {
+          received += element
+          if (requestBatchSize != Long.MaxValue) {
+            remaining -= 1
+            if (remaining == 0 && received < 100000) {
+              remaining = requestBatchSize
+              subscription.request(requestBatchSize)
+            }
+          }
+        }
         override def onError(cause: Throwable): Unit = {
           failure.compareAndSet(null, cause)
           completed.countDown()

@@ -159,16 +159,24 @@ private[pekko] trait SubscriberManagement[T] extends ResizableMultiReaderRingBuf
     }
 
   private final def requestFromUpstreamIfRequired(): Unit = {
-    @tailrec def maxRequested(remaining: Subscriptions, result: Long = 0): Long =
-      remaining match {
-        case head :: tail => maxRequested(tail, math.max(head.totalDemand, result))
-        case _            => result
+    val available = buffer.maxAvailable
+    // Outstanding requests already reserve buffer space, so no demand scan is needed if it is all reserved.
+    if (available > pendingFromUpstream) {
+      @tailrec def maxRequested(remaining: Subscriptions, result: Long = 0): Long =
+        remaining match {
+          case head :: tail =>
+            val demand = head.totalDemand
+            // Demand beyond the available capacity cannot increase the upstream request.
+            if (demand >= available) available
+            else maxRequested(tail, math.max(demand, result))
+          case _ => result
+        }
+      val desired =
+        Math.min(Int.MaxValue, Math.min(maxRequested(subscriptions), available) - pendingFromUpstream).toInt
+      if (desired > 0) {
+        pendingFromUpstream += desired
+        requestFromUpstream(desired)
       }
-    val desired =
-      Math.min(Int.MaxValue, Math.min(maxRequested(subscriptions), buffer.maxAvailable) - pendingFromUpstream).toInt
-    if (desired > 0) {
-      pendingFromUpstream += desired
-      requestFromUpstream(desired)
     }
   }
 
