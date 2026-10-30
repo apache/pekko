@@ -52,7 +52,7 @@ import pekko.util.ByteString
     closing: TLSClosing)
     extends GraphStage[BidiShape[SslTlsOutbound, ByteString, ByteString, SslTlsInbound]] {
 
-  private val plainIn = Inlet[SslTlsOutbound]("TlsGraphStage.plainIn")
+  private val plainIn = Inlet[SslTlsOutbound](TlsGraphStage.PlainInName)
   private val plainOut = Outlet[SslTlsInbound]("TlsGraphStage.plainOut")
   private val cipherIn = Inlet[ByteString]("TlsGraphStage.cipherIn")
   private val cipherOut = Outlet[ByteString]("TlsGraphStage.cipherOut")
@@ -1201,6 +1201,7 @@ import pekko.util.ByteString
 }
 
 @InternalApi private[pekko] object TlsGraphStage {
+  private[pekko] final val PlainInName = "TlsGraphStage.plainIn"
   private[pekko] final val TransportFlushTimer = "TlsGraphStageTransportFlush"
   private[pekko] final val UserInputBatchTimer = "TlsGraphStageUserInputBatch"
   private[pekko] final val InitialOutputFlushTimer = "TlsGraphStageInitialOutputFlush"
@@ -1215,7 +1216,8 @@ import pekko.util.ByteString
   private[pekko] val StreamTlsAttributes: Attributes =
     Attributes.asyncBoundary and Attributes.inputBuffer(InputBufferInitialSize, InputBufferMaxSize) and
     // Send plaintext messages before a subsequent plaintext-output cancellation from the same handler.
-    Attributes(ActorGraphInterpreter.UnbatchedInput)
+    // Ciphertext input keeps sender-side batching; only plaintext ordering relative to cancellation matters.
+    Attributes(ActorGraphInterpreter.UnbatchedInput(Set(PlainInName)))
 
   private[pekko] final val PlainDataAllowedFlag = 1 << 0
   private[pekko] final val StageClosedFlag = 1 << 1

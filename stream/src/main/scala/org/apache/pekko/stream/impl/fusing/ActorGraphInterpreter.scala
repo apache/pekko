@@ -57,8 +57,8 @@ import org.reactivestreams.Subscription
     def batch(elements: Array[AnyRef]): Unit
   }
 
-  // Opt out of sender-side batching when ordering with signals on another port matters (TLS).
-  private[stream] case object UnbatchedInput extends Attributes.Attribute
+  // Opt the named inlets out of sender-side batching when ordering with signals on another port matters (TLS).
+  private[stream] final case class UnbatchedInput(inletNames: Set[String]) extends Attributes.Attribute
 
   sealed abstract class BoundaryEvent extends DeadLetterSuppression with NoSerializationVerificationNeeded {
     def shell: GraphInterpreterShell
@@ -173,6 +173,9 @@ import org.reactivestreams.Subscription
 
     private def requestBatchSize = math.max(1, inputBuffer.length / 2)
     private var batchRemaining = requestBatchSize
+
+    // Set by the materializer before preStart when the fed inlet is listed in UnbatchedInput.
+    private[stream] var unbatched = false
 
     val out: Outlet[Any] = Outlet[Any]("UpstreamBoundary:" + internalPortName)
     out.id = 0
@@ -438,6 +441,7 @@ import org.reactivestreams.Subscription
 
     private var subscriber: Subscriber[Any] = _
     private var boundarySubscriber: BoundarySubscriber = _
+    private[stream] def batchesToSubscriber: Boolean = boundarySubscriber ne null
     private var downstreamDemand: Long = 0L
     // This flag is only used if complete/fail is called externally since this op turns into a Finished one inside the
     // interpreter (i.e. inside this op this flag has no effects since if it is completed the op will not be invoked)
@@ -563,9 +567,9 @@ import org.reactivestreams.Subscription
         if (subscriber eq null) {
           subscriber = sub
           boundarySubscriber = sub match {
-            case boundary: BatchingActorInputBoundary if boundary.attributes.contains(UnbatchedInput) => null
-            case boundary: BoundarySubscriber                                                         => boundary
-            case _                                                                                    => null
+            case boundary: BatchingActorInputBoundary if boundary.unbatched => null
+            case boundary: BoundarySubscriber                               => boundary
+            case _                                                          => null
           }
           val subscription = new Subscription with SubscriptionWithCancelException {
             override def request(elements: Long): Unit = actor ! new RequestMore(ActorOutputBoundary.this, elements)

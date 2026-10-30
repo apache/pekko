@@ -820,10 +820,28 @@ private[pekko] object GraphStageIsland {
     logics.add(boundary)
     boundary.stageId = logics.size() - 1
     boundary.attributes = connection.inOwner.attributes.and(DefaultAttributes.inputBoundary)
+    boundary.unbatched = isUnbatchedInput(connection)
 
     boundary.portToConn(boundary.out.id + boundary.inCount) = connection
     connection.outHandler = boundary.handlers(0).asInstanceOf[OutHandler]
     connection.outOwner = boundary
+  }
+
+  private def isUnbatchedInput(connection: Connection): Boolean = {
+    val owner = connection.inOwner
+    owner.attributes.get[ActorGraphInterpreter.UnbatchedInput] match {
+      case Some(unbatched) =>
+        owner.originalStage match {
+          case OptionVal.Some(stage) =>
+            // Port ids are positions in the shape, see TraversalBuilder.initShape.
+            val inlets = stage.shape.inlets
+            var i = 0
+            while (i < owner.inCount && (owner.portToConn(i) ne connection)) i += 1
+            i < owner.inCount && unbatched.inletNames.contains(inlets(i).s)
+          case _ => false
+        }
+      case None => false
+    }
   }
 
   override def onIslandReady(): Unit = {

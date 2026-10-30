@@ -25,6 +25,7 @@ import javax.net.ssl.SSLEngineResult.Status.{ BUFFER_OVERFLOW, BUFFER_UNDERFLOW,
 
 import scala.concurrent.Await
 import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
 import scala.concurrent.Promise
 import scala.concurrent.duration._
 import scala.util.Success
@@ -32,14 +33,17 @@ import scala.util.Success
 import com.typesafe.config.{ Config, ConfigFactory }
 
 import org.apache.pekko
+import pekko.Done
 import pekko.NotUsed
 import pekko.actor.Cancellable
 import pekko.event.LoggingAdapter
 import pekko.stream._
 import pekko.stream.TLSProtocol._
+import pekko.stream.impl.fusing.ActorGraphInterpreter.ActorOutputBoundary
 import pekko.stream.impl.io.TlsGraphStage
 import pekko.stream.scaladsl._
 import pekko.stream.scaladsl.GraphDSL.Implicits._
+import pekko.stream.stage.{ GraphStageLogic, GraphStageWithMaterializedValue, OutHandler }
 import pekko.stream.testkit.{ StreamSpec, TestPublisher, TestSubscriber }
 import pekko.stream.testkit.scaladsl.{ TestSink, TestSource }
 import pekko.stream.testkit.scaladsl.StreamTestKit.assertAllStagesStopped
@@ -246,6 +250,57 @@ class TlsGraphStageIsolatedSpec extends StreamSpec(TlsSpec.configOverrides) with
 
       outputs.foldLeft(ByteString.empty)(_ ++ _) shouldEqual expected
     }
+
+    "batch transport input across its async boundary but not plaintext input" in {
+      assertAllStagesStopped {
+        val stop = Promise[Done]()
+        val (plainBatched, cipherBatched) =
+          RunnableGraph
+            .fromGraph(GraphDSL.createGraph(
+              new BoundaryBatchingProbe[SslTlsOutbound](stop.future),
+              new BoundaryBatchingProbe[ByteString](stop.future))(Tuple2.apply) { implicit b => (plain, cipher) =>
+              val tls = b.add(stageFlow(initSslContext("TLSv1.2"), TLS12Ciphers, clientMode = true, IgnoreComplete))
+              plain    ~> tls.in1
+              tls.out1 ~> Sink.ignore
+              cipher   ~> tls.in2
+              tls.out2 ~> Sink.ignore
+              ClosedShape
+            })
+            .run()
+
+        // Plaintext must not overtake a later plaintext-output cancellation; ciphertext has no such constraint.
+        Await.result(plainBatched, 3.seconds) shouldBe false
+        Await.result(cipherBatched, 3.seconds) shouldBe true
+        stop.success(Done)
+      }
+    }
+  }
+}
+
+/** Reports whether the output boundary after this source sends sender-side batches. */
+private final class BoundaryBatchingProbe[T](stop: Future[Done])
+    extends GraphStageWithMaterializedValue[SourceShape[T], Future[Boolean]] {
+  private val out = Outlet[T]("BoundaryBatchingProbe.out")
+  override val shape: SourceShape[T] = SourceShape(out)
+
+  override def createLogicAndMaterializedValue(inheritedAttributes: Attributes): (GraphStageLogic, Future[Boolean]) = {
+    val batched = Promise[Boolean]()
+    val logic = new GraphStageLogic(shape) with OutHandler {
+      override def preStart(): Unit = {
+        val complete = getAsyncCallback[Done](_ => completeStage())
+        stop.foreach(complete.invoke)(ExecutionContext.parasitic)
+      }
+
+      // The first pull follows the downstream subscription, after which the boundary has chosen its mode.
+      override def onPull(): Unit =
+        portToConn(out.id + inCount).inOwner match {
+          case boundary: ActorOutputBoundary => batched.trySuccess(boundary.batchesToSubscriber)
+          case other                         => batched.tryFailure(new AssertionError(s"Unexpected downstream $other"))
+        }
+
+      setHandler(out, this)
+    }
+    (logic, batched.future)
   }
 }
 
