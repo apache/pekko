@@ -188,7 +188,9 @@ With `pekko.stream.materializer.tls.engine = graph-stage`, the operator stops fu
 and attempts to send data already accepted for the established session, subject to transport
 availability. This includes up to 64 queued messages plus plaintext already buffered for wrapping.
 Message sizes are unbounded, so termination can be delayed until that data is sent. Data queued after
-a renegotiation request is discarded, and draining stops if a new handshake is required. Cancellation
+a renegotiation request is discarded, and draining stops if a new handshake is required. A TLS 1.3
+post-handshake message such as a KeyUpdate is not a new handshake, so the response is sent and draining
+continues; in TLS 1.2 any further handshake stops the drain. Cancellation
 during a handshake or a transport failure can still prevent delivery. The default `legacy-actor`
 engine discards accepted plaintext on cancellation. Use the `IgnoreCancel` closing policy
 (`TLSClosing.ignoreCancel()` in Java) if the handler needs to continue producing a response after it

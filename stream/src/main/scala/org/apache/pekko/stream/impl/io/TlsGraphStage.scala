@@ -412,7 +412,13 @@ import pekko.util.ByteString
         userOutput.isCancelled && !closing.ignoreCancel && canDrainAcceptedUserInput &&
         (userInBufferHasRemaining || !userInput.isEmpty)
 
-      private def canDrainAcceptedUserInput: Boolean = (stateBits & PlainDataAllowedFlag) != 0 && mayCloseOutbound
+      private def canDrainAcceptedUserInput: Boolean = (stateBits & PlainDataAllowedFlag) != 0 &&
+        (mayCloseOutbound || needsPostHandshakeWrap)
+
+      // TLS 1.3 has no renegotiation, so NEED_WRAP in an established session is a post-handshake
+      // message such as a KeyUpdate response. Wrapping it does not start a new handshake.
+      private def needsPostHandshakeWrap: Boolean =
+        lastHandshakeStatus == NEED_WRAP && currentSession.getProtocol == "TLSv1.3"
 
       private def mayCloseOutbound: Boolean =
         lastHandshakeStatus match {

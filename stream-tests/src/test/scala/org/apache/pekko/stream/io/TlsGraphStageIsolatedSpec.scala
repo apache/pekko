@@ -299,6 +299,7 @@ abstract class TlsGraphStageBufferTestBase(config: Config) extends StreamSpec(co
   protected val TlsRecord = ByteString(Array[Byte](23, 3, 3, 0, 0))
   protected val ApplicationCiphertext = ByteString(0x5A.toByte)
   protected val CloseCiphertext = ByteString(0x5B.toByte)
+  protected val HandshakeCiphertext = ByteString(0x5C.toByte)
 
   protected final class ScriptedSSLEngine(
       delegate: SSLEngine,
@@ -307,7 +308,9 @@ abstract class TlsGraphStageBufferTestBase(config: Config) extends StreamSpec(co
       requestWrapOnSubsequentUnwrap: Boolean,
       @volatile var requiredOutputSpace: Int,
       negotiatedPacketSize: Int,
-      negotiatedApplicationSize: Int) extends SSLEngine {
+      negotiatedApplicationSize: Int,
+      sessionProtocol: String = null,
+      wrapHandshakeOnNeedWrap: Boolean = false) extends SSLEngine {
     private var handshakeStatus: SSLEngineResult.HandshakeStatus = NEED_UNWRAP
     @volatile var unwrapCount = 0
     private var inboundDone = false
@@ -334,6 +337,7 @@ abstract class TlsGraphStageBufferTestBase(config: Config) extends StreamSpec(co
       (_: AnyRef, method: java.lang.reflect.Method, args: Array[AnyRef]) =>
         if (method.getName == "getPacketBufferSize") Int.box(reportedPacketSize)
         else if (method.getName == "getApplicationBufferSize") Int.box(reportedApplicationSize)
+        else if (method.getName == "getProtocol" && (sessionProtocol ne null)) sessionProtocol
         else method.invoke(delegate.getSession, Option(args).getOrElse(Array.empty[AnyRef]): _*))
       .asInstanceOf[SSLSession]
 
@@ -355,6 +359,13 @@ abstract class TlsGraphStageBufferTestBase(config: Config) extends StreamSpec(co
       if (dst.remaining() < requiredOutputSpace) {
         overflowWraps += 1
         return new SSLEngineResult(BUFFER_OVERFLOW, handshakeStatus, 0, 0)
+      }
+      if (wrapHandshakeOnNeedWrap && handshakeStatus == NEED_WRAP && !(wrapOnCloseInbound && inboundDone)) {
+        // Like the JDK, a wrap while NEED_WRAP produces only the handshake message and consumes no plaintext.
+        // SunJSSE reports FINISHED for a TLS 1.3 KeyUpdate response, then NOT_HANDSHAKING from the engine.
+        dst.put(HandshakeCiphertext.head)
+        handshakeStatus = NOT_HANDSHAKING
+        return new SSLEngineResult(OK, FINISHED, 0, 1)
       }
       var consumed = 0
       var index = offset
@@ -440,7 +451,7 @@ abstract class TlsGraphStageBufferTestBase(config: Config) extends StreamSpec(co
     override def getDelegatedTask: Runnable = null
     override def getSession: SSLSession = {
       sessionQueries += 1
-      if (negotiatedPacketSize > 0) reportedSession else delegate.getSession
+      if (negotiatedPacketSize > 0 || (sessionProtocol ne null)) reportedSession else delegate.getSession
     }
     override def getSupportedCipherSuites: Array[String] = delegate.getSupportedCipherSuites
     override def getEnabledCipherSuites: Array[String] = delegate.getEnabledCipherSuites
@@ -474,11 +485,14 @@ abstract class TlsGraphStageBufferTestBase(config: Config) extends StreamSpec(co
       extraAttributes: Attributes = Attributes.none,
       requiredOutputSpace: Int = 0,
       negotiatedPacketSize: Int = 0,
-      negotiatedApplicationSize: Int = 0): DeferredCloseHarness = {
+      negotiatedApplicationSize: Int = 0,
+      sessionProtocol: String = null,
+      wrapHandshakeOnNeedWrap: Boolean = false): DeferredCloseHarness = {
     val engine =
       new ScriptedSSLEngine(TlsSpec.initSslContext("TLSv1.2").createSSLEngine(), wrapOnCloseInbound,
         requestHandshakeAfterApplication, requestWrapOnSubsequentUnwrap,
-        requiredOutputSpace, negotiatedPacketSize, negotiatedApplicationSize)
+        requiredOutputSpace, negotiatedPacketSize, negotiatedApplicationSize, sessionProtocol,
+        wrapHandshakeOnNeedWrap)
     val sessionVerified = Promise[Unit]()
     val probes =
       RunnableGraph
@@ -622,6 +636,48 @@ class TlsGraphStageDeferredCloseSpec extends TlsGraphStageBufferTestBase(TlsGrap
       harness.cipherOut.expectComplete()
       harness.cipherIn.expectCancellation()
       harness.engine.applicationBytes shouldBe 1
+    }
+
+    // The scripted engine answers the first post-handshake unwrap with NEED_WRAP, like a received
+    // TLS 1.3 KeyUpdate that requests an update, and wraps the response before any plaintext.
+    for (keyUpdateBeforeCancel <- Seq(true, false)) {
+      val order = if (keyUpdateBeforeCancel) "before" else "after"
+      s"keep draining accepted plaintext after a TLS 1.3 KeyUpdate received $order output cancellation" in {
+        val harness = newHarness(sessionProtocol = "TLSv1.3", wrapHandshakeOnNeedWrap = true)
+        finishInitialHandshake(harness)
+        harness.plainIn.sendNext(SendBytes(ByteString("a")))
+        harness.plainIn.expectRequest()
+        if (keyUpdateBeforeCancel) {
+          harness.cipherIn.sendNext(TlsRecord)
+          awaitAssert(harness.engine.unwrapCount shouldBe 2)
+        }
+        harness.plainOut.cancel()
+        harness.plainIn.expectCancellation()
+        if (!keyUpdateBeforeCancel) {
+          harness.cipherIn.sendNext(TlsRecord)
+          awaitAssert(harness.engine.unwrapCount shouldBe 2)
+        }
+
+        // A KeyUpdate response is not a new handshake, so it must not discard the accepted plaintext.
+        val sent = harness.cipherOut.toStrict(remainingOrDefault).foldLeft(ByteString.empty)(_ ++ _)
+        sent shouldBe HandshakeCiphertext ++ ApplicationCiphertext
+        harness.engine.applicationBytes shouldBe 1
+      }
+    }
+
+    "stop draining when a TLS 1.2 engine needs to wrap during output cancellation" in {
+      val harness = newHarness(sessionProtocol = "TLSv1.2", wrapHandshakeOnNeedWrap = true)
+      finishInitialHandshake(harness)
+      harness.plainIn.sendNext(SendBytes(ByteString("a")))
+      harness.plainIn.expectRequest()
+      harness.cipherIn.sendNext(TlsRecord)
+      awaitAssert(harness.engine.unwrapCount shouldBe 2)
+      harness.plainOut.cancel()
+      harness.plainIn.expectCancellation()
+
+      // TLS 1.2 NEED_WRAP may start a renegotiation, so draining must stop instead of waiting for it.
+      harness.cipherOut.toStrict(remainingOrDefault) shouldBe empty
+      harness.engine.applicationBytes shouldBe 0
     }
 
     "stop draining when the transport output is cancelled" in {

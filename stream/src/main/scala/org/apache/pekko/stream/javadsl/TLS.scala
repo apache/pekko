@@ -54,7 +54,9 @@ import pekko.util.ByteString
  * drain includes up to 64 queued messages plus any plaintext already buffered for
  * wrapping; message sizes are unbounded, so cancellation can delay termination
  * until that data is sent. Data queued after a renegotiation request is discarded,
- * and draining stops if a new handshake is required. The drain continues after a
+ * and draining stops if a new handshake is required. A TLS 1.3 post-handshake
+ * message such as a KeyUpdate is not a new handshake and does not stop the drain;
+ * in TLS 1.2 any further handshake stops it. The drain continues after a
  * TLS 1.3 peer sends `close_notify`, but a TLS 1.2 `close_notify` ends it. The engine
  * is selected with `pekko.stream.materializer.tls.engine`, which defaults to
  * `legacy-actor`.
