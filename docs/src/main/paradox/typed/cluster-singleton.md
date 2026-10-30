@@ -181,6 +181,11 @@ the owner is set to the @scala[`Cluster(system).selfAddress.hostPort`]@java[`Clu
 If the cluster singleton manager can't acquire the lease it will keep retrying while it is the oldest node in the cluster.
 If the lease is lost then the singleton actor will be terminated then the lease will be retried.
 
+When the manager releases its lease, failed releases are logged even if the manager has stopped before the release
+completes. A failed release can delay singleton activation on another node until the lease expires.
+A direct stop of an oldest manager releases its lease after the singleton actor has terminated.
+Restarting the manager does not introduce an additional release solely because of the restart.
+
 ## Configuration
 
 The following configuration properties are read by the @apidoc[ClusterSingletonManagerSettings](singleton.ClusterSingletonManagerSettings)
