@@ -74,6 +74,7 @@ import pekko.stream.Attributes._
     val batchWeighted = name("batchWeighted")
     val expand = name("expand")
     val statefulMap = name("statefulMap")
+    val gather = name("gather")
     val statefulMapConcat = name("statefulMapConcat")
     val mapConcat = name("mapConcat")
     val detacher = name("detacher")
