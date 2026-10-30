@@ -33,6 +33,7 @@ object ActorsLeakSpec {
        pekko.loggers = ["org.apache.pekko.testkit.SilenceAllTestEventListener"]
        pekko.actor.provider = remote
        pekko.remote.artery.enabled = false
+       pekko.remote.classic.netty.tcp.port = 0
        pekko.remote.classic.netty.tcp.applied-adapters = ["trttl"]
        #pekko.remote.log-lifecycle-events = on
        pekko.remote.classic.transport-failure-detector.heartbeat-interval = 1 s
@@ -84,6 +85,19 @@ class ActorsLeakSpec extends PekkoSpec(ActorsLeakSpec.config) with ImplicitSende
 
   "Remoting" must {
 
+    "allocate independent ports for actor systems" in {
+      val remoteSystem = ActorSystem("remote", config)
+      try {
+        val localAddress = RARP(system).provider.getDefaultAddress
+        val remoteAddress = RARP(remoteSystem).provider.getDefaultAddress
+        localAddress.port.get should be > 0
+        remoteAddress.port.get should be > 0
+        remoteAddress.port should not be localAddress.port
+      } finally {
+        Await.result(remoteSystem.terminate(), 10.seconds)
+      }
+    }
+
     "not leak actors" in {
       system.actorOf(Props[EchoActor](), "echo")
       val echoPath = RootActorPath(RARP(system).provider.getDefaultAddress) / "user" / "echo"
@@ -117,18 +131,27 @@ class ActorsLeakSpec extends PekkoSpec(ActorsLeakSpec.config) with ImplicitSende
       }
 
       // Quarantine an old incarnation case
+      var previousIncarnation = Option.empty[(Address, Int)]
       for (_ <- 1 to 3) {
-        // always use the same address
+        // Let the first incarnation bind an available port, then reuse its address after shutdown.
+        val port = previousIncarnation.fold(0) { case (address, _) => address.port.get }
         val remoteSystem =
           ActorSystem(
             "remote",
-            ConfigFactory.parseString("""
+            ConfigFactory.parseString(s"""
                 pekko.remote.artery.enabled = false
-                pekko.remote.classic.netty.tcp.port = 7356
+                pekko.remote.classic.netty.tcp.port = $port
               """.stripMargin).withFallback(config))
 
         try {
           val remoteAddress = RARP(remoteSystem).provider.getDefaultAddress
+          @nowarn
+          val currentUid = AddressUidExtension(remoteSystem).addressUid
+          previousIncarnation.foreach { case (address, uid) =>
+            remoteAddress shouldBe address
+            currentUid should not be uid
+          }
+          previousIncarnation = Some(remoteAddress -> currentUid)
 
           remoteSystem.actorOf(Props[StoppableActor](), "stoppable")
 
@@ -140,8 +163,7 @@ class ActorsLeakSpec extends PekkoSpec(ActorsLeakSpec.config) with ImplicitSende
           val beforeQuarantineActors = targets.flatMap(collectLiveActors).toSet
 
           // it must not quarantine the current connection
-          @nowarn
-          val addressUid = AddressUidExtension(remoteSystem).addressUid + 1
+          val addressUid = currentUid + 1
           RARP(system).provider.transport.quarantine(remoteAddress, Some(addressUid), "test")
 
           // the message from local to remote should reuse passive inbound connection
@@ -153,10 +175,8 @@ class ActorsLeakSpec extends PekkoSpec(ActorsLeakSpec.config) with ImplicitSende
           assertResult(beforeQuarantineActors)(afterQuarantineActors)
 
         } finally {
-          remoteSystem.terminate()
+          Await.result(remoteSystem.terminate(), 10.seconds)
         }
-
-        Await.result(remoteSystem.whenTerminated, 10.seconds)
 
       }
 
