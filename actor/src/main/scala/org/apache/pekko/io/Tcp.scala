@@ -616,6 +616,9 @@ class TcpExt(system: ExtendedActorSystem) extends IO.Extension {
     val NrOfSelectors: Int = getInt("nr-of-selectors").requiring(_ > 0, "nr-of-selectors must be > 0")
 
     val BatchAcceptLimit: Int = getInt("batch-accept-limit").requiring(_ > 0, "batch-accept-limit must be > 0")
+    val AcceptErrorRetryDelay: FiniteDuration = _config
+      .getMillisDuration("accept-error-retry-delay")
+      .requiring(_ > Duration.Zero, "accept-error-retry-delay must be at least 1 millisecond")
     val DirectBufferSize: Int = getIntBytes("direct-buffer-size")
     val MaxDirectBufferPoolSize: Int = getInt("direct-buffer-pool-limit")
     val RegisterTimeout: Duration = getString("register-timeout") match {
