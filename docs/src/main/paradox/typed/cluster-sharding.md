@@ -826,6 +826,12 @@ To use a lease for sharding set `pekko.cluster.sharding.use-lease` to the config
 of the lease to use. Each shard will try and acquire a lease with the name `<actor system name>-shard-<type name>-<shard id>` and
 the owner is set to the `Cluster(system).selfAddress.hostPort`.
 
+A shard can acknowledge hand-off while it is waiting to acquire its lease or load its remembered entity identifiers,
+because no entities have started in these states. When a lease acquisition is still pending, the old shard waits for
+that operation to complete before releasing the lease and stopping. This prevents a replacement on the same node from
+acquiring the same lease instance before the old acquisition completes and its release is invoked. If the lease operation never completes,
+a replacement on that node remains unable to start; messages for it remain subject to the region's normal buffering limits.
+
 If a shard can't acquire a lease it will remain uninitialized so messages for entities it owns will
 be buffered in the `ShardRegion`. If the lease is lost after initialization the Shard will be terminated.
 

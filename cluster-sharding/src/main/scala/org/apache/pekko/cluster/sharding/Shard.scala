@@ -18,6 +18,7 @@ import java.nio.charset.StandardCharsets
 import java.util
 
 import scala.annotation.nowarn
+import scala.concurrent.Future
 import scala.concurrent.duration._
 
 import org.apache.pekko
@@ -501,6 +502,8 @@ private[pekko] class Shard(
       Cluster(context.system).selfAddress.hostPort)
   }
 
+  private var leaseAcquire: Future[Boolean] = Future.successful(false)
+
   private val leaseRetryInterval = settings.leaseSettings match {
     case Some(l) => l.leaseRetryInterval
     case None    => 5.seconds // not used
@@ -548,6 +551,8 @@ private[pekko] class Shard(
       receiveLeaseLost(ll)
     case me: MemberEvent =>
       receiveMemberEvent(me)
+    case msg: CoordinatorMessage =>
+      receiveCoordinatorMessage(msg)
     case msg =>
       if (verboseDebug)
         log.debug(
@@ -569,7 +574,8 @@ private[pekko] class Shard(
 
   private def tryGetLease(l: Lease): Unit = {
     log.info("{}: Acquiring lease {}", typeName, l.settings)
-    pipe(l.acquire(reason => self ! LeaseLost(reason)).map(r => LeaseAcquireResult(r, None)).recover {
+    leaseAcquire = l.acquire(reason => self ! LeaseLost(reason))
+    pipe(leaseAcquire.map(r => LeaseAcquireResult(r, None)).recover {
       case t => LeaseAcquireResult(acquired = false, Some(t))
     }).to(self)
   }
@@ -596,6 +602,8 @@ private[pekko] class Shard(
       onEntitiesRemembered(entityIds)
     case RememberEntityTimeout(GetEntities) =>
       loadingEntityIdsFailed()
+    case msg: CoordinatorMessage =>
+      receiveCoordinatorMessage(msg)
     case me: MemberEvent =>
       receiveMemberEvent(me)
     case msg =>
@@ -893,7 +901,15 @@ private[pekko] class Shard(
 
       // does conversion so only do once
       val activeEntities = entities.activeEntities()
-      if (preparingForShutdown) {
+      if (activeEntities.isEmpty && !leaseAcquire.isCompleted) {
+        // Acknowledge now, but keep this incarnation until its acquire finishes. The region must
+        // not reuse the same Lease instance before the old acquire completes and release is invoked.
+        replyTo ! ShardStopped(shardId)
+        context.become {
+          case _: LeaseAcquireResult   => context.stop(self)
+          case msg: CoordinatorMessage => receiveCoordinatorMessage(msg)
+        }
+      } else if (preparingForShutdown) {
         log.info("{}: HandOff shard [{}] while preparing for shutdown. Stopping right away.", typeName, shardId)
         activeEntities.foreach { _ ! handOffStopMessage }
         replyTo ! ShardStopped(shardId)
