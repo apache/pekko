@@ -67,8 +67,27 @@ private[remote] class OutboundHandshake(
     timeout: FiniteDuration,
     retryInterval: FiniteDuration,
     injectHandshakeInterval: FiniteDuration,
-    livenessProbeInterval: Duration)
+    livenessProbeInterval: Duration,
+    postStopAction: (Vector[OutboundEnvelope], Option[Long]) => Unit)
     extends GraphStage[FlowShape[OutboundEnvelope, OutboundEnvelope]] {
+
+  def this(
+      system: ActorSystem,
+      outboundContext: OutboundContext,
+      outboundEnvelopePool: ObjectPool[ReusableOutboundEnvelope],
+      timeout: FiniteDuration,
+      retryInterval: FiniteDuration,
+      injectHandshakeInterval: FiniteDuration,
+      livenessProbeInterval: Duration) =
+    this(
+      system,
+      outboundContext,
+      outboundEnvelopePool,
+      timeout,
+      retryInterval,
+      injectHandshakeInterval,
+      livenessProbeInterval,
+      (pending, _) => pending.foreach(system.deadLetters ! _))
 
   val in: Inlet[OutboundEnvelope] = Inlet("OutboundHandshake.in")
   val out: Outlet[OutboundEnvelope] = Outlet("OutboundHandshake.out")
@@ -80,6 +99,7 @@ private[remote] class OutboundHandshake(
 
       private var handshakeState: HandshakeState = Start
       private var pendingMessage: OptionVal[OutboundEnvelope] = OptionVal.None
+      private var pendingMessageUid: Option[Long] = None
       private var injectHandshakeTickScheduled = false
 
       private val uniqueRemoteAddressAsyncCallback = getAsyncCallback[UniqueAddress] { _ =>
@@ -104,8 +124,16 @@ private[remote] class OutboundHandshake(
       }
 
       override def postStop(): Unit = {
-        outboundContext.associationState.removeUniqueRemoteAddressListener(uniqueRemoteAddressListener)
-        super.postStop()
+        val pending = pendingMessage match {
+          case OptionVal.Some(envelope) => Vector(envelope)
+          case _                        => Vector.empty
+        }
+        pendingMessage = OptionVal.None
+        try postStopAction(pending, pendingMessageUid)
+        finally {
+          try outboundContext.associationState.removeUniqueRemoteAddressListener(uniqueRemoteAddressListener)
+          finally super.postStop()
+        }
       }
 
       // InHandler
@@ -122,12 +150,17 @@ private[remote] class OutboundHandshake(
           else {
             if (pendingMessage.isDefined)
               throw new IllegalStateException(s"pendingMessage expected to be empty")
-            pendingMessage = OptionVal.Some(grab(in))
+            holdPendingMessage()
           }
         } else {
+          holdPendingMessage()
           pushHandshakeReq()
-          pendingMessage = OptionVal.Some(grab(in))
         }
+      }
+
+      private def holdPendingMessage(): Unit = {
+        pendingMessageUid = outboundContext.associationState.uniqueRemoteAddress().map(_.uid)
+        pendingMessage = OptionVal.Some(grab(in))
       }
 
       // OutHandler
@@ -138,6 +171,7 @@ private[remote] class OutboundHandshake(
               case OptionVal.Some(p) =>
                 push(out, p)
                 pendingMessage = OptionVal.None
+                pendingMessageUid = None
               case _ =>
                 if (!hasBeenPulled(in))
                   pull(in)
