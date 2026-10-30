@@ -362,9 +362,10 @@ abstract class TlsGraphStageBufferTestBase(config: Config) extends StreamSpec(co
       }
       if (wrapHandshakeOnNeedWrap && handshakeStatus == NEED_WRAP && !(wrapOnCloseInbound && inboundDone)) {
         // Like the JDK, a wrap while NEED_WRAP produces only the handshake message and consumes no plaintext.
+        // SunJSSE reports FINISHED for a TLS 1.3 KeyUpdate response, then NOT_HANDSHAKING from the engine.
         dst.put(HandshakeCiphertext.head)
         handshakeStatus = NOT_HANDSHAKING
-        return new SSLEngineResult(OK, NOT_HANDSHAKING, 0, 1)
+        return new SSLEngineResult(OK, FINISHED, 0, 1)
       }
       var consumed = 0
       var index = offset
