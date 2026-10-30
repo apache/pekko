@@ -108,6 +108,7 @@ defaults that have changed in Pekko 2.0.0.
 * Notify BroadcastHub and PartitionHub consumers on materializer shutdown ([#3345](https://github.com/apache/pekko/issues/3345), [PR3346](https://github.com/apache/pekko/pull/3346), [PR3347](https://github.com/apache/pekko/pull/3347))
 * Preserve StageActor demand across fused streams ([#3459](https://github.com/apache/pekko/issues/3459), [PR3461](https://github.com/apache/pekko/pull/3461))
 * Handle unexpected stop of the TLS actor gracefully ([PR2801](https://github.com/apache/pekko/pull/2801))
+* Wait for transport demand instead of failing with `Stuck in unwrap loop` when TLS unwrap needs a wrap, in both TLS engines ([#442](https://github.com/apache/pekko/issues/442), [#3732](https://github.com/apache/pekko/issues/3732), [PR3734](https://github.com/apache/pekko/pull/3734))
 * Fix deferred TLS output handling on inbound close and abort the TLS transport on session verification failure ([PR3323](https://github.com/apache/pekko/pull/3323), [PR3324](https://github.com/apache/pekko/pull/3324))
 
 **IO, TCP and DNS**
@@ -125,7 +126,7 @@ defaults that have changed in Pekko 2.0.0.
 
 **Cluster and Cluster Sharding**
 
-* Release lease on shard stop ([PR2738](https://github.com/apache/pekko/pull/2738))
+* Release lease on shard stop, and log an error when the release fails ([PR2738](https://github.com/apache/pekko/pull/2738), [#3705](https://github.com/apache/pekko/issues/3705), [PR3733](https://github.com/apache/pekko/pull/3733))
 * Stop cluster sharding entities stuck in passivation after a timeout ([PR3573](https://github.com/apache/pekko/pull/3573))
 * Filter messages from the remember-entities store ([PR3411](https://github.com/apache/pekko/pull/3411))
 * Recreate a sharding replicator that has stopped (for example because its durable store failed to load) when another entity type is started, instead of reusing the stopped replicator ([PR3700](https://github.com/apache/pekko/pull/3700))
@@ -237,7 +238,7 @@ These changes were copied from Akka releases (up to and including Akka 2.9.0) th
 * Add `withContext` operators ([PR3199](https://github.com/apache/pekko/pull/3199))
 * Add an `alsoTo` overload with configurable cancellation propagation ([PR3127](https://github.com/apache/pekko/pull/3127))
 * Add supervision strategy support to more operators that accept user functions (`groupedWeightedWithin`, `batch`, `expand` and `extrapolate`) and log supervision Resume/Restart in mapAsync operators ([#3110](https://github.com/apache/pekko/issues/3110), [PR3124](https://github.com/apache/pekko/pull/3124), [PR3180](https://github.com/apache/pekko/pull/3180), [PR3184](https://github.com/apache/pekko/pull/3184), [PR3185](https://github.com/apache/pekko/pull/3185))
-* Add an opt-in GraphStage based TLS engine (the actor based implementation remains the default) ([PR2878](https://github.com/apache/pekko/pull/2878))
+* Add an opt-in GraphStage based TLS engine (the actor based implementation remains the default). Later fixes drain plaintext already accepted when the plaintext output is cancelled (including after a TLS 1.3 `close_notify` or KeyUpdate) and fall back to heap buffers when the TCP buffer pool is too small for the SSLEngine ([PR2878](https://github.com/apache/pekko/pull/2878), [PR3727](https://github.com/apache/pekko/pull/3727), [PR3728](https://github.com/apache/pekko/pull/3728), [PR3731](https://github.com/apache/pekko/pull/3731), [PR3738](https://github.com/apache/pekko/pull/3738))
 
 **Dispatchers and IO**
 
@@ -332,6 +333,7 @@ These changes were copied from Akka releases (up to and including Akka 2.9.0) th
 * Optimize `Source.actorRef` with a direct-push fast path ([PR3091](https://github.com/apache/pekko/pull/3091))
 * Avoid Holder allocation in ordered mapAsync for already-completed futures ([PR3018](https://github.com/apache/pekko/pull/3018))
 * Use an ArrayList in BroadcastHub ([PR2262](https://github.com/apache/pekko/pull/2262))
+* Avoid quadratic cursor scans in fanout publishers (`Sink.asPublisher(fanout = true)`) with many subscribers ([PR3730](https://github.com/apache/pekko/pull/3730))
 * Reduce receive-timeout state allocations and avoid type pollution ([PR3332](https://github.com/apache/pekko/pull/3332), [PR3334](https://github.com/apache/pekko/pull/3334))
 * Validate actor path elements without `String.charAt` ([PR3542](https://github.com/apache/pekko/pull/3542))
 
