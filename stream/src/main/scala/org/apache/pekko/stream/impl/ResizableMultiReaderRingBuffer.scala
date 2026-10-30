@@ -48,6 +48,10 @@ import pekko.annotation.InternalApi
   private var writeIx = 0
   private var readIx = 0 // the "oldest" of all read cursor indices, i.e. the one that is most behind
 
+  // Number of cursors at readIx. Discover it on the first scan, since the owner may still be
+  // initializing its cursors when constructing the buffer (as in SubscriberManagement).
+  private var readersAtReadIx = -1
+
   // current array.length log2, we don't keep it as an extra field because `Integer.numberOfTrailingZeros`
   // is a JVM intrinsic compiling down to a `BSF` instruction on x86, which is very fast on modern CPUs
   private def lenBit: Int = Integer.numberOfTrailingZeros(array.length)
@@ -82,7 +86,10 @@ import pekko.annotation.InternalApi
   /**
    * Initializes the given Cursor to the oldest buffer entry that is still available.
    */
-  def initCursor(cursor: Cursor): Unit = cursor.cursor = readIx
+  def initCursor(cursor: Cursor): Unit = {
+    cursor.cursor = readIx
+    if (readersAtReadIx >= 0) readersAtReadIx += 1
+  }
 
   /**
    * Tries to write the given value into the buffer thereby potentially growing the backing array.
@@ -130,22 +137,32 @@ import pekko.annotation.InternalApi
     } else throw NothingToReadException
   }
 
+  // Must be called after removing the cursor from cursors.cursors.
   def onCursorRemoved(cursor: Cursor): Unit =
     if (cursor.cursor == readIx) // if this cursor is the last one it must be at readIx
       updateReadIx()
 
-  private def updateReadIx(): Unit = {
-    @tailrec def minCursor(remaining: List[Cursor], result: Int): Int =
-      remaining match {
-        case head :: tail => minCursor(tail, math.min(head.cursor - writeIx, result))
-        case _            => result
+  private def updateReadIx(): Unit =
+    if (readersAtReadIx > 1) readersAtReadIx -= 1
+    else {
+      // Only the last reader leaving readIx can free elements. Scanning on every reader's
+      // advance would make broadcasting an element to N equally paced readers O(N^2).
+      @tailrec def minCursor(remaining: List[Cursor], result: Int, count: Int): Int =
+        remaining match {
+          case head :: tail =>
+            val offset = head.cursor - writeIx
+            if (offset < result) minCursor(tail, offset, 1)
+            else minCursor(tail, result, if (offset == result) count + 1 else count)
+          case _ =>
+            readersAtReadIx = count
+            result
+        }
+      val newReadIx = writeIx + minCursor(cursors.cursors, 0, 0)
+      while (readIx != newReadIx) {
+        array(readIx & mask) = null
+        readIx += 1
       }
-    val newReadIx = writeIx + minCursor(cursors.cursors, 0)
-    while (readIx != newReadIx) {
-      array(readIx & mask) = null
-      readIx += 1
     }
-  }
 
   protected def underlyingArray: Array[Any] = array
 

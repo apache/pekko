@@ -129,6 +129,84 @@ class ResizableMultiReaderRingBufferSpec extends AnyWordSpec with Matchers {
       inspect shouldEqual "0 0 0 0 0 0 0 0 (size=0, writeIx=5, readIx=5, cursors=2)"
     }
 
+    "keep cursor reads linear when equally paced readers consume an element" in {
+      class CountingCursor extends Cursor {
+        private var index = 0
+        var reads = 0
+        def cursor: Int = {
+          reads += 1
+          index
+        }
+        def cursor_=(value: Int): Unit = index = value
+      }
+
+      val readers = List.fill(32)(new CountingCursor)
+      val buffer = new TestBuffer(2, 4, new Cursors { def cursors = readers })
+      for (element <- 1 to 10) {
+        readers.foreach(_.reads = 0)
+        buffer.write(element) shouldBe true
+        val order = if (element % 2 == 0) readers.reverse else readers
+        order.foreach(reader => buffer.read(reader) shouldBe element)
+        buffer.isEmpty shouldBe true
+        readers.map(_.reads).sum should be <= (4 * readers.size)
+      }
+    }
+
+    "track the oldest readers across joining, removal, growth and wraparound" in {
+      def newCursor(): Cursor = new Cursor { var cursor = 0 }
+      val fast = newCursor()
+      val slow = newCursor()
+      var readers = List(fast, slow)
+      val buffer = new TestBuffer(2, 4, new Cursors { def cursors = readers })
+
+      buffer.write(1) shouldBe true
+      buffer.write(2) shouldBe true
+      buffer.read(fast) shouldBe 1
+      buffer.read(fast) shouldBe 2
+
+      val joining = newCursor()
+      readers ::= joining
+      buffer.initCursor(joining)
+      readers = readers.filterNot(_ eq slow)
+      buffer.onCursorRemoved(slow)
+      buffer.size shouldBe 2
+      buffer.write(3) shouldBe true // grow while two readers share the oldest position
+      buffer.read(fast) shouldBe 3
+      buffer.read(joining) shouldBe 1
+      buffer.size shouldBe 2
+
+      val late = newCursor()
+      readers ::= late
+      buffer.initCursor(late)
+      buffer.read(joining) shouldBe 2
+      readers = readers.filterNot(_ eq joining)
+      buffer.onCursorRemoved(joining)
+      buffer.size shouldBe 2
+      buffer.read(late) shouldBe 2
+      buffer.size shouldBe 1
+      buffer.read(late) shouldBe 3
+      buffer.isEmpty shouldBe true
+      readers = readers.filterNot(_ eq late)
+      buffer.onCursorRemoved(late)
+
+      for (element <- 4 to 12) {
+        buffer.write(element) shouldBe true
+        buffer.read(fast) shouldBe element
+        buffer.isEmpty shouldBe true
+      }
+      buffer.write(13) shouldBe true
+      readers = Nil
+      buffer.onCursorRemoved(fast)
+      buffer.isEmpty shouldBe true
+      buffer.inspect should startWith("0 0 0 0 ")
+
+      readers = List(late)
+      buffer.initCursor(late)
+      buffer.write(14) shouldBe true
+      buffer.read(late) shouldBe 14
+      buffer.isEmpty shouldBe true
+    }
+
     "pass the stress test" in {
       // create 100 buffers with an initialSize of 1 and a maxSize of 1 to 64,
       // for each one attach 1 to 8 cursors and randomly try reading and writing to the buffer;
@@ -187,8 +265,10 @@ class ResizableMultiReaderRingBufferSpec extends AnyWordSpec with Matchers {
             }
           } else {
             val cursor = activeCursors(index)
-            if (cursor.tryReadAndReturnTrueIfDone(buf))
+            if (cursor.tryReadAndReturnTrueIfDone(buf)) {
               activeCursors = activeCursors.filter(_ != cursor)
+              buf.onCursorRemoved(cursor)
+            }
           }
         }
       }
