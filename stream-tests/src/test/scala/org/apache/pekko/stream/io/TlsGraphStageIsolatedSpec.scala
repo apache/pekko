@@ -37,7 +37,7 @@ import pekko.actor.Cancellable
 import pekko.event.LoggingAdapter
 import pekko.stream._
 import pekko.stream.TLSProtocol._
-import pekko.stream.impl.io.TlsGraphStage
+import pekko.stream.impl.io.{ TlsGraphStage, TlsModule }
 import pekko.stream.scaladsl._
 import pekko.stream.scaladsl.GraphDSL.Implicits._
 import pekko.stream.testkit.{ StreamSpec, TestPublisher, TestSubscriber }
@@ -310,16 +310,20 @@ abstract class TlsGraphStageBufferTestBase(config: Config) extends StreamSpec(co
       negotiatedPacketSize: Int,
       negotiatedApplicationSize: Int,
       sessionProtocol: String = null,
-      wrapHandshakeOnNeedWrap: Boolean = false) extends SSLEngine {
+      wrapHandshakeOnNeedWrap: Boolean = false,
+      closeOnInitialWrap: Boolean = false) extends SSLEngine {
     private var handshakeStatus: SSLEngineResult.HandshakeStatus = NEED_UNWRAP
     @volatile var unwrapCount = 0
     private var inboundDone = false
-    private var outboundDone = false
+    @volatile private var outboundDone = false
     private var handshakePending = true
 
     @volatile var applicationWraps = 0
     @volatile var applicationBytes = 0
     @volatile var handshakesStarted = 0
+    @volatile var closeInboundCalls = 0
+    @volatile var unwrapFailure: SSLException = _
+    @volatile var failedUnwraps = 0
     @volatile var overflowWraps = 0
     @volatile var largestOutputCapacity = 0
     @volatile var inputArray: Array[Byte] = _
@@ -344,7 +348,7 @@ abstract class TlsGraphStageBufferTestBase(config: Config) extends StreamSpec(co
     override def beginHandshake(): Unit = {
       handshakesStarted += 1
       handshakePending = true
-      handshakeStatus = NEED_UNWRAP
+      handshakeStatus = if (closeOnInitialWrap) NEED_WRAP else NEED_UNWRAP
     }
 
     override def getHandshakeStatus: SSLEngineResult.HandshakeStatus = handshakeStatus
@@ -359,6 +363,13 @@ abstract class TlsGraphStageBufferTestBase(config: Config) extends StreamSpec(co
       if (dst.remaining() < requiredOutputSpace) {
         overflowWraps += 1
         return new SSLEngineResult(BUFFER_OVERFLOW, handshakeStatus, 0, 0)
+      }
+      if (closeOnInitialWrap && handshakePending) {
+        handshakePending = false
+        outboundDone = true
+        handshakeStatus = NOT_HANDSHAKING
+        dst.put(CloseCiphertext.head)
+        return new SSLEngineResult(CLOSED, NOT_HANDSHAKING, 0, 1)
       }
       if (wrapHandshakeOnNeedWrap && handshakeStatus == NEED_WRAP && !(wrapOnCloseInbound && inboundDone)) {
         // Like the JDK, a wrap while NEED_WRAP produces only the handshake message and consumes no plaintext.
@@ -399,6 +410,10 @@ abstract class TlsGraphStageBufferTestBase(config: Config) extends StreamSpec(co
         dsts: Array[ByteBuffer],
         offset: Int,
         length: Int): SSLEngineResult = {
+      if (unwrapFailure ne null) {
+        failedUnwraps += 1
+        throw unwrapFailure
+      }
       if (src.hasArray) inputArray = src.array()
       if (!handshakePending && negotiatedPacketSize > 0) {
         reportedPacketSize = negotiatedPacketSize
@@ -437,6 +452,7 @@ abstract class TlsGraphStageBufferTestBase(config: Config) extends StreamSpec(co
     }
 
     override def closeInbound(): Unit = {
+      closeInboundCalls += 1
       inboundDone = true
       handshakeStatus = if (wrapOnCloseInbound) NEED_WRAP else NOT_HANDSHAKING
     }
@@ -487,13 +503,24 @@ abstract class TlsGraphStageBufferTestBase(config: Config) extends StreamSpec(co
       negotiatedPacketSize: Int = 0,
       negotiatedApplicationSize: Int = 0,
       sessionProtocol: String = null,
-      wrapHandshakeOnNeedWrap: Boolean = false): DeferredCloseHarness = {
+      wrapHandshakeOnNeedWrap: Boolean = false,
+      useLegacyActor: Boolean = false,
+      closeOnInitialWrap: Boolean = false): DeferredCloseHarness = {
     val engine =
       new ScriptedSSLEngine(TlsSpec.initSslContext("TLSv1.2").createSSLEngine(), wrapOnCloseInbound,
         requestHandshakeAfterApplication, requestWrapOnSubsequentUnwrap,
         requiredOutputSpace, negotiatedPacketSize, negotiatedApplicationSize, sessionProtocol,
-        wrapHandshakeOnNeedWrap)
+        wrapHandshakeOnNeedWrap, closeOnInitialWrap)
     val sessionVerified = Promise[Unit]()
+    val verifySession = (_: SSLSession) => {
+      sessionVerified.trySuccess(())
+      Success(())
+    }
+    val tlsFlow =
+      if (useLegacyActor)
+        BidiFlow.fromGraph(TlsModule(Attributes.none, () => engine, verifySession, closing))
+      else
+        BidiFlow.fromGraph(new TlsGraphStage(() => engine, verifySession, closing))
     val probes =
       RunnableGraph
         .fromGraph(
@@ -503,15 +530,7 @@ abstract class TlsGraphStageBufferTestBase(config: Config) extends StreamSpec(co
             TestSink[ByteString](),
             TestSink[SslTlsInbound]())(Tuple4.apply) { implicit b => (plainIn, cipherIn, cipherOut, plainOut) =>
             val tls = b.add(
-              BidiFlow
-                .fromGraph(new TlsGraphStage(
-                  () => engine,
-                  _ => {
-                    sessionVerified.trySuccess(())
-                    Success(())
-                  },
-                  closing))
-                .withAttributes(Attributes.inputBuffer(1, 1).and(extraAttributes)))
+              tlsFlow.withAttributes(Attributes.inputBuffer(1, 1).and(extraAttributes)))
             plainIn                                          ~> tls.in1
             tls.out1                                         ~> cipherOut
             cipherIn                                         ~> tls.in2
@@ -691,6 +710,125 @@ class TlsGraphStageDeferredCloseSpec extends TlsGraphStageBufferTestBase(TlsGrap
       harness.cipherOut.cancel()
       harness.cipherIn.expectCancellation()
       harness.engine.applicationWraps shouldBe 0
+    }
+
+    "complete without truncation when the transport output is cancelled before the initial handshake" in {
+      val harness = newHarness()
+
+      // No port has received an element or demand that would otherwise start the pump.
+      harness.cipherOut.cancel()
+
+      harness.plainIn.expectCancellation()
+      harness.cipherIn.expectCancellation()
+      harness.plainOut.expectComplete()
+      harness.engine.unwrapCount shouldBe 0
+      harness.engine.closeInboundCalls shouldBe 0
+    }
+
+    "report transport output cancellation without closing the established engine inbound" in {
+      val harness = newHarness()
+      finishInitialHandshake(harness)
+
+      harness.cipherOut.cancel()
+
+      harness.plainIn.expectCancellation()
+      harness.cipherIn.expectCancellation()
+      harness.plainOut.expectNext(SessionTruncated)
+      harness.plainOut.expectComplete()
+      harness.engine.closeInboundCalls shouldBe 0
+    }
+
+    "complete when transport output cancels before a deferred initial close is pushed" in {
+      assertAllStagesStopped {
+        val harness = newHarness(closeOnInitialWrap = true)
+        harness.cipherOut.request(1)
+        awaitAssert(harness.engine.isOutboundDone shouldBe true)
+        // The first output is held by InitialOutputFlushTimer until the explicit scheduler advances.
+        harness.cipherOut.expectNoMessage(100.millis)
+        harness.cipherOut.cancel()
+
+        harness.cipherIn.expectCancellation()
+        harness.plainIn.expectCancellation()
+        harness.plainOut.expectComplete()
+        harness.engine.unwrapCount shouldBe 0
+        harness.engine.closeInboundCalls shouldBe 0
+        harness.sessionVerified.future.isCompleted shouldBe false
+      }
+    }
+
+    "report transport output cancellation after the engine outbound has closed" in {
+      val harness = newHarness(closing = EagerClose)
+      finishInitialHandshake(harness)
+
+      harness.plainIn.sendComplete()
+      harness.cipherOut.request(1)
+      awaitAssert(harness.engine.isOutboundDone shouldBe true)
+      harness.cipherOut.cancel()
+
+      harness.cipherIn.expectCancellation()
+      harness.plainOut.expectNext(SessionTruncated)
+      harness.plainOut.expectComplete()
+      harness.engine.closeInboundCalls shouldBe 0
+    }
+
+    for {
+      useLegacyActor <- List(false, true)
+      bufferedInput <- List(false, true)
+    } {
+      val engine = if (useLegacyActor) "legacy actor" else "graph stage"
+      s"report cancellation after transport input completes without closing inbound ($engine, buffered=$bufferedInput)" in {
+        assertAllStagesStopped {
+          val harness = newHarness(
+            negotiatedPacketSize = TlsRecord.size,
+            negotiatedApplicationSize = 1,
+            useLegacyActor = useLegacyActor)
+          finishInitialHandshake(harness)
+
+          // Consume the handshake's remaining plaintext demand before completing transport input.
+          harness.cipherIn.sendNext(TlsRecord)
+          harness.plainOut.expectNext().asInstanceOf[SessionBytes].bytes shouldBe ByteString("A")
+          if (bufferedInput) harness.cipherIn.sendNext(TlsRecord)
+          // These probe calls enqueue completion, cancellation, then demand in that order.
+          harness.cipherIn.sendComplete()
+          harness.cipherOut.cancel()
+          // With nothing left to decrypt, teardown releases the plaintext input without waiting for demand.
+          if (!bufferedInput) harness.plainIn.expectCancellation()
+          harness.plainOut.request(2)
+
+          if (bufferedInput)
+            harness.plainOut.expectNext().asInstanceOf[SessionBytes].bytes shouldBe ByteString("A")
+          harness.plainOut.expectNext(SessionTruncated)
+          harness.plainOut.expectComplete()
+          if (bufferedInput) harness.plainIn.expectCancellation()
+          harness.engine.closeInboundCalls shouldBe 0
+        }
+      }
+    }
+
+    for (useLegacyActor <- List(false, true)) {
+      val engine = if (useLegacyActor) "legacy actor" else "graph stage"
+      s"preserve an unwrap failure during transport output cancellation ($engine)" in {
+        assertAllStagesStopped {
+          val harness = newHarness(
+            negotiatedPacketSize = TlsRecord.size,
+            negotiatedApplicationSize = 1,
+            useLegacyActor = useLegacyActor)
+          finishInitialHandshake(harness)
+          harness.cipherIn.sendNext(TlsRecord)
+          harness.plainOut.expectNext().asInstanceOf[SessionBytes].bytes shouldBe ByteString("A")
+
+          val failure = new SSLException("failed final inbound round")
+          harness.engine.unwrapFailure = failure
+          harness.cipherIn.sendNext(TlsRecord)
+          harness.cipherOut.cancel()
+          harness.plainOut.request(1)
+
+          harness.plainOut.expectError() shouldBe failure
+          harness.plainIn.expectCancellation()
+          harness.cipherIn.expectCancellation()
+          harness.engine.failedUnwraps shouldBe 1
+        }
+      }
     }
 
     for (closing <- Seq(IgnoreComplete, EagerClose)) {
