@@ -18,7 +18,11 @@ import java.nio.charset.StandardCharsets
 import java.util
 
 import scala.annotation.nowarn
+import scala.concurrent.Future
 import scala.concurrent.duration._
+import scala.util.Failure
+import scala.util.Success
+import scala.util.Try
 
 import org.apache.pekko
 import pekko.actor.Actor
@@ -1235,8 +1239,30 @@ private[pekko] class Shard(
 
   override def postStop(): Unit = {
     passivateIntervalTask.foreach(_.cancel())
-    lease.foreach(_.release())
+    releaseLease()
     log.debug("{}: Shard [{}] shutting down", typeName, shardId)
   }
+
+  private def releaseLease(): Unit =
+    lease.foreach { l =>
+      // The shard is stopping, so log from the callback; the adapter is thread-safe.
+      val releaseLog = log
+      val tn = typeName
+      val id = shardId
+      Future.fromTry(Try(l.release())).flatten.onComplete {
+        case Success(true)  =>
+        case Success(false) =>
+          releaseLog.error(
+            "{}: Failed to release lease for shard id [{}]. Shard may not be able to start elsewhere until lease timeout",
+            tn,
+            id)
+        case Failure(t) =>
+          releaseLog.error(
+            t,
+            "{}: Failed to release lease for shard id [{}]. Shard may not be able to start elsewhere until lease timeout",
+            tn,
+            id)
+      }
+    }
 
 }

@@ -25,7 +25,7 @@ import pekko.actor.Props
 import pekko.cluster.Cluster
 import pekko.cluster.MemberStatus
 import pekko.cluster.sharding.ShardRegion.ShardId
-import pekko.coordination.lease.{ LeaseUsageSettings, TestLeaseExt }
+import pekko.coordination.lease.{ LeaseUsageSettings, TestLease, TestLeaseExt }
 import pekko.testkit.EventFilter
 import pekko.testkit.PekkoSpec
 import pekko.testkit.TestProbe
@@ -162,6 +162,18 @@ class ShardWithLeaseSpec extends PekkoSpec(ShardWithLeaseSpec.config) with WithL
       sharding.tell(EntityEnvelope(1, "hello"), probe.ref)
       probe.expectNoMessage(shortDuration)
     }
+
+    "log an error if releasing the lease returns false when the shard stops" in new Setup {
+      expectReleaseFailureLoggedOnStop(Future.successful(false))
+    }
+
+    "log an error if releasing the lease fails when the shard stops" in new Setup {
+      expectReleaseFailureLoggedOnStop(Future.failed(BadLease("release failed")))
+    }
+
+    "log an error if releasing the lease throws when the shard stops" in new Setup {
+      expectReleaseFailureLoggedOnStop(throw BadLease("release threw"))
+    }
   }
 
   var typeIdx = 0
@@ -186,6 +198,23 @@ class ShardWithLeaseSpec extends PekkoSpec(ShardWithLeaseSpec.config) with WithL
         if (customLeaseName.isEmpty) s"${system.name}-shard-$typeName-$shardId"
         else s"$customLeaseName-$shardId"
       testLeaseExt.getTestLease(leaseName)
+    }
+
+    def expectReleaseFailureLoggedOnStop(releaseResult: => Future[Boolean]): Unit = {
+      val probe = TestProbe()
+      sharding.tell(EntityEnvelope(1, "hello"), probe.ref)
+      val lease = leaseFor("1")
+      lease.initialPromise.complete(Success(true))
+      probe.expectMsg("ack hello")
+
+      lease.setNextReleaseResult(releaseResult)
+      EventFilter
+        .error(start = s"$typeName: Failed to release lease for shard id [1]", occurrences = 1)
+        .intercept {
+          // losing the lease stops the shard, which releases the lease in postStop
+          lease.getCurrentCallback().apply(Some(BadLease("bye bye lease")))
+          lease.probe.fishForSpecificMessage() { case TestLease.ReleaseReq(_) => () }
+        }
     }
   }
 
