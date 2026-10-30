@@ -215,6 +215,13 @@ import pekko.util.ByteString
     def isCompleted = engine.isOutboundDone
   }
 
+  // While the engine needs to wrap, unwrap returns the record unread, so wait for transport demand.
+  val engineNotBlockedOnWrap = new TransferState {
+    def isReady =
+      lastHandshakeStatus != NEED_WRAP || outputBunch.isPending(TransportOut) || outputBunch.isCancelled(TransportOut)
+    def isCompleted = false
+  }
+
   val engineInboundOpen = new TransferState {
     def isReady = true
     def isCompleted = engine.isInboundDone
@@ -232,11 +239,12 @@ import pekko.util.ByteString
 
   // bidirectional case
   val outbound = (userHasData || engineNeedsWrap) && outputBunch.demandAvailableFor(TransportOut)
-  val inbound = (transportInChoppingBlock && outputBunch.demandAvailableFor(UserOut)) || userOutCancelled
+  val inbound =
+    (transportInChoppingBlock && outputBunch.demandAvailableFor(UserOut) && engineNotBlockedOnWrap) || userOutCancelled
 
   // half-closed
   val outboundHalfClosed = engineNeedsWrap && outputBunch.demandAvailableFor(TransportOut)
-  val inboundHalfClosed = transportInChoppingBlock && engineInboundOpen
+  val inboundHalfClosed = transportInChoppingBlock && engineInboundOpen && engineNotBlockedOnWrap
 
   val bidirectional = TransferPhase(outbound || inbound) { () =>
     if (tracing) log.debug("bidirectional")
@@ -423,9 +431,8 @@ import pekko.util.ByteString
         result.getHandshakeStatus match {
           case NEED_WRAP =>
             // https://github.com/apache/pekko/issues/442
-            // A second workaround for an infinite loop we have not been able to reproduce/isolate,
-            // if you see this, and can reproduce consistently, please report back to the Apache Pekko team
-            // with a reproducer or details about the client causing it
+            // Guards against an infinite loop. Peer data arriving while the engine needs to wrap without
+            // transport demand used to hit this; engineNotBlockedOnWrap now waits for demand instead (#3732).
             unwrapPutBackCounter += 1
             if (unwrapPutBackCounter > maxTLSIterations) {
               throw new IllegalStateException(
