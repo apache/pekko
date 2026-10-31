@@ -203,6 +203,37 @@ The drain also continues after a TLS 1.3 peer sends `close_notify`, because that
 peer's sending direction. A TLS 1.2 `close_notify` closes both directions of the `SSLEngine`, so it
 ends the drain and accepted plaintext that has not been sent is discarded.
 
+Unless a clean shutdown is already waiting for the peer's reply, cancelling the transport output
+ends the session, because nothing more can be sent to the peer. That
+teardown is not silent: once the session is established, the operator still delivers the inbound
+data it can decrypt in the round that observes the cancellation, and then reports
+`SessionTruncated` before the plaintext output completes if the peer's `close_notify` has not been
+processed. This also applies with no buffered inbound records and during renegotiation of an
+established session: truncation means that a clean peer shutdown was not observed, rather than proof
+that application bytes were lost. Inbound records still buffered beyond that round are discarded.
+The operator does not wait for more ciphertext to complete a partial TLS record: cancellation can
+discard fragments still in flight, and the truncation signal makes that abandonment observable.
+An already pending plaintext element is delivered before the signal. A plaintext output that is
+already closed, or a session cancelled before its initial handshake finished, completes without that
+signal. The transport-output cancellation itself does not call `SSLEngine.closeInbound()` or
+invalidate the established `SSLSession`. If transport input has already completed and is depleted,
+the cancellation path skips the final inbound round and reports truncation directly.
+
+If the operator has already sent its own `close_notify` and is waiting for the peer's reply,
+transport-output cancellation preserves that existing wait while the plaintext output is open.
+Cancelling the plaintext output as well ends the wait. An operator still flushing outbound data
+cannot continue sending after transport-output cancellation.
+
+The truncation signal obeys plaintext backpressure. The plaintext input is cancelled immediately
+when the transport output is cancelled, even if the final inbound round is waiting for plaintext
+demand. The transport input is cancelled after that round; the operator then stays alive until
+the signal is consumed or the plaintext output is cancelled.
+Applications that stop reading must cancel that output as well; applications requiring a time bound
+can apply `completionTimeout` to the plaintext stream. Consumers using the TLS `BidiFlow` directly
+must handle `SessionTruncated` explicitly rather than using a partial `map` that only matches
+`SessionBytes`. The Scala and Java `Tcp.bindWithTls` and `Tcp.outgoingConnectionWithTls` APIs expose
+`ByteString` streams and filter out this signal.
+
 ## Streaming File IO
 
 Pekko Streams provide simple Sources and Sinks that can work with @apidoc[util.ByteString] instances to perform IO operations

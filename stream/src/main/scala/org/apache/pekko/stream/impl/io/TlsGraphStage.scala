@@ -73,6 +73,8 @@ import pekko.util.ByteString
       private var phase: Byte = BidirectionalPhase.toByte
       private var deferredTransportFlushes = 0
       private var stateBits = 0
+      private var sessionEstablished = false
+      private var inboundTruncationPending = false
 
       private var transportOutBuffer: ByteBuffer = _
       private var userOutBuffer: ByteBuffer = _
@@ -205,6 +207,13 @@ import pekko.util.ByteString
           case OutboundClosedPhase   => (outboundHalfClosedReady || inboundReady) && !outboundClosedCompleted
           case InboundClosedPhase    =>
             (outboundReady || inboundHalfClosedReady || mustCloseOutboundOnCancel) && !inboundClosedCompleted
+          case TransportOutputCancelledPhase =>
+            TlsEngineHelpers.transportOutputCancellationReady(
+              userOutputDemand = userOutput.isDemandAvailable,
+              transportInputPending = transportInput.isReady && !transportInput.isDepleted,
+              sessionEstablished = sessionEstablished,
+              inboundClosed = engine.isInboundDone,
+              userOutputClosed = userOutput.isClosed)
           case _ => false
         }
 
@@ -216,11 +225,20 @@ import pekko.util.ByteString
           case OutboundClosedPhase   => outboundClosedCompleted
           case InboundClosedPhase    => inboundClosedCompleted
           case CompletedPhase        => true
-          case _                     => false
+          // Only runPhase completes cancellation, after the final inbound round and truncation decision.
+          case TransportOutputCancelledPhase => false
+          case _                             => false
         }
 
       private def runPhase(): Unit =
         (phase.toInt: @switch) match {
+          case TransportOutputCancelledPhase =>
+            // Depletion is also ready, but cancellation must not run doInbound's closeInbound path.
+            if (inboundReady && !userOutput.isClosed && !transportInput.isDepleted)
+              doInbound(isOutboundClosed = true, inboundHalfClosedMode = false)
+            signalInboundTruncation()
+            nextPhase(CompletedPhase)
+
           case BidirectionalPhase =>
             val continue = doInbound(isOutboundClosed = false, inboundHalfClosedMode = false)
             if (continue) doOutbound(isInboundClosed = false)
@@ -575,6 +593,7 @@ import pekko.util.ByteString
         verifySession(session) match {
           case Success(()) =>
             currentSession = session
+            sessionEstablished = true
             stateBits |= PlainDataAllowedFlag
             transportPacketSize = math.max(1, session.getPacketBufferSize)
             applicationRecordSize = math.max(1, session.getApplicationBufferSize)
@@ -733,12 +752,28 @@ import pekko.util.ByteString
             case NonFatal(_) => ()
           }
 
+      // Do not closeInbound here: a missing
+      // close_notify can invalidate the SSLSession. Record the signal separately so an already
+      // pending plaintext element is delivered first, including during renegotiation.
+      private def signalInboundTruncation(): Unit =
+        if (TlsEngineHelpers.shouldReportInboundTruncation(
+            sessionEstablished, engine.isInboundDone, userOutput.isClosed))
+          inboundTruncationPending = true
+
+      private def completeUserOutput(): Unit = {
+        if (inboundTruncationPending && (userOutput.isClosed || !userOutput.hasPending)) {
+          inboundTruncationPending = false
+          userOutput.enqueue(SessionTruncated)
+        }
+        if (!inboundTruncationPending) userOutput.completeOutput()
+      }
+
       private def pumpFinished(): Unit =
         if ((stateBits & StageClosedFlag) == 0) {
           userInput.cancel()
           transportInput.cancel()
           transportOutput.completeOutput()
-          userOutput.completeOutput()
+          completeUserOutput()
           stateBits |= StageCompletionPendingFlag
           completeStageIfReady()
         }
@@ -746,6 +781,7 @@ import pekko.util.ByteString
       private def completeStageIfReady(): Unit =
         if ((stateBits & StageCompletionPendingFlag) != 0 &&
           (stateBits & StageClosedFlag) == 0 &&
+          !inboundTruncationPending &&
           !userOutput.hasPending &&
           !transportOutput.hasPending) {
           stateBits |= StageClosedFlag
@@ -1152,6 +1188,7 @@ import pekko.util.ByteString
               scheduleOnce(InitialOutputFlushTimer, Duration.Zero)
           } else {
             pushPending()
+            if ((stateBits & StageCompletionPendingFlag) != 0) completeUserOutput()
             completeStageIfReady()
             runPump()
           }
@@ -1171,6 +1208,7 @@ import pekko.util.ByteString
 
         override def onDownstreamFinish(cause: Throwable): Unit = {
           onCancel()
+          if ((stateBits & StageCompletionPendingFlag) != 0) completeUserOutput()
           completeStageIfReady()
           runPump()
         }
@@ -1188,6 +1226,16 @@ import pekko.util.ByteString
         def onCancel(): Unit = {
           stateBits |= cancelledFlag
           pending = null.asInstanceOf[T]
+          if (cancelledFlag == TransportOutputCancelledFlag &&
+            (stateBits & (StageClosedFlag | StageCompletionPendingFlag)) == 0) {
+            userInput.cancel()
+            stateBits |= InitialPumpEnabledFlag
+            // Once close_notify has been sent, only the peer's reply is needed for a clean shutdown.
+            if (phase != AwaitingClosePhase || userOutput.isClosed) nextPhase(TransportOutputCancelledPhase)
+          } else if (cancelledFlag == UserOutputCancelledFlag && transportOutput.isCancelled &&
+            phase == AwaitingClosePhase) {
+            nextPhase(CompletedPhase)
+          }
         }
 
         def completeOutput(): Unit =
@@ -1249,4 +1297,5 @@ import pekko.util.ByteString
   private[pekko] final val OutboundClosedPhase = 4
   private[pekko] final val InboundClosedPhase = 5
   private[pekko] final val CompletedPhase = 6
+  private[pekko] final val TransportOutputCancelledPhase = 7
 }
