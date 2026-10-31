@@ -36,6 +36,7 @@ import pekko.actor.NoSerializationVerificationNeeded
 import pekko.actor.Props
 import pekko.actor.Terminated
 import pekko.annotation.DoNotInherit
+import pekko.annotation.InternalApi
 import pekko.annotation.InternalStableApi
 import pekko.cluster._
 import pekko.cluster.ClusterEvent._
@@ -203,6 +204,12 @@ object ClusterSingletonManager {
    * INTERNAL API
    */
   private[pekko] object Internal {
+
+    /**
+     * INTERNAL API: Local construction option for singletons that need a different stop
+     * message after lease loss than during a normal hand-over.
+     */
+    @InternalApi private[pekko] final case class TerminationMessages(normal: Any, leaseLost: Any)
 
     /**
      * Sent from new oldest to previous oldest to initiate the
@@ -507,6 +514,11 @@ class ClusterSingletonManager(singletonProps: Props, terminationMessage: Any, se
   import ClusterSingletonManager.Internal._
   import ClusterSingletonManager.Internal.OldestChangedBuffer._
   import settings._
+
+  private def singletonTerminationMessage(leaseLost: Boolean): Any = terminationMessage match {
+    case TerminationMessages(normal, onLeaseLost) => if (leaseLost) onLeaseLost else normal
+    case message                                  => message
+  }
 
   val cluster = Cluster(context.system)
   val selfUniqueAddressOption = Some(cluster.selfUniqueAddress)
@@ -991,7 +1003,7 @@ class ClusterSingletonManager(singletonProps: Props, terminationMessage: Any, se
       log.warning("Lease has been lost. Reason: {}. Terminating singleton and trying to re-acquire lease", reason)
       singleton match {
         case Some(s) =>
-          s ! terminationMessage
+          s ! singletonTerminationMessage(leaseLost = true)
           goto(AcquiringLease).using(AcquiringLeaseData(leaseRequestInProgress = false, singleton))
         case None =>
           tryAcquireLease()
@@ -1067,7 +1079,7 @@ class ClusterSingletonManager(singletonProps: Props, terminationMessage: Any, se
       case Some(s) =>
         handOverTo.foreach { _ ! HandOverInProgress }
         logInfo("Singleton manager stopping singleton actor [{}]", s.path)
-        s ! terminationMessage
+        s ! singletonTerminationMessage(leaseLost = false)
         goto(HandingOver).using(HandingOverData(s, handOverTo))
     }
   }
@@ -1119,7 +1131,7 @@ class ClusterSingletonManager(singletonProps: Props, terminationMessage: Any, se
 
   def gotoStopping(singleton: ActorRef): State = {
     logInfo("Singleton manager stopping singleton actor [{}]", singleton.path)
-    singleton ! terminationMessage
+    singleton ! singletonTerminationMessage(leaseLost = false)
     goto(Stopping).using(StoppingData(singleton))
   }
 
