@@ -71,10 +71,21 @@ import pekko.util.ByteString
   import TLSActor._
 
   private var stopped = false
+  private var terminationCompleted = false
+  private var awaitingPeerClose = false
 
   private val maxTLSIterations = 1000
   private var unwrapPutBackCounter: Int = 0
-  protected val outputBunch = new OutputBunch(outputCount = 2, self, this)
+  protected val outputBunch: OutputBunch = new OutputBunch(outputCount = 2, self, this) {
+    override def onCancel(output: Int): Unit =
+      if (output == TransportOut) {
+        inputBunch.cancel(UserIn)
+        // Once close_notify has been sent, only the peer's reply is needed for a clean shutdown.
+        if (!awaitingPeerClose || userOutDemand.isCompleted) nextPhase(transportOutputCancelled)
+      } else if (output == UserOut && outputBunch.isCancelled(TransportOut)) {
+        nextPhase(completedPhase)
+      }
+  }
   outputBunch.markAllOutputs()
 
   protected val inputBunch = new InputBunch(inputCount = 2, maxInputBufferSize, this) {
@@ -165,6 +176,7 @@ import pekko.util.ByteString
 
   var lastHandshakeStatus: HandshakeStatus = null
   var corkUser = true
+  private var sessionEstablished = false
 
   // The engine could also be instantiated in ActorMaterializerImpl but if creation fails
   // during materialization it would be worse than failing later on.
@@ -238,9 +250,9 @@ import pekko.util.ByteString
   }
 
   // bidirectional case
+  private val userOutDemand = outputBunch.demandAvailableFor(UserOut)
   val outbound = (userHasData || engineNeedsWrap) && outputBunch.demandAvailableFor(TransportOut)
-  val inbound =
-    (transportInChoppingBlock && outputBunch.demandAvailableFor(UserOut) && engineNotBlockedOnWrap) || userOutCancelled
+  val inbound = (transportInChoppingBlock && userOutDemand && engineNotBlockedOnWrap) || userOutCancelled
 
   // half-closed
   val outboundHalfClosed = engineNeedsWrap && outputBunch.demandAvailableFor(TransportOut)
@@ -287,13 +299,46 @@ import pekko.util.ByteString
     }
   }
 
+  private val signallingInboundTruncation = TransferPhase(userOutDemand) { () =>
+    if (tracing) log.debug("signalling SessionTruncated after TransportOut cancellation")
+    outputBunch.enqueue(UserOut, SessionTruncated)
+    nextPhase(completedPhase)
+  }
+
+  private def transportInDepleted: Boolean =
+    inputBunch.isDepleted(TransportIn) && transportInChoppingBlock.isEmpty
+
+  // Cancellation must also wake an idle pump, unless it is already waiting for a peer close_notify.
+  private val transportOutputCancelled = TransferPhase(new TransferState {
+    def isReady = TlsEngineHelpers.transportOutputCancellationReady(
+      userOutputDemand = userOutDemand.isReady,
+      transportInputPending = transportInChoppingBlock.isReady && !transportInDepleted,
+      sessionEstablished = sessionEstablished,
+      inboundClosed = engine.isInboundDone,
+      userOutputClosed = userOutDemand.isCompleted)
+    // fail() can re-enter the pump; do not execute another cancellation round after failure.
+    def isCompleted = stopped
+  }) { () =>
+    // Depletion is also ready, but cancellation must not run doInbound's closeInbound path.
+    if (inbound.isReady && !userOutDemand.isCompleted && !transportInDepleted)
+      doInbound(isOutboundClosed = true, inbound)
+    if (!stopped) {
+      // Do not closeInbound here: some providers invalidate a session missing close_notify.
+      val reportTruncation = TlsEngineHelpers.shouldReportInboundTruncation(
+        sessionEstablished, engine.isInboundDone, userOutDemand.isCompleted)
+      inputBunch.cancel()
+      if (reportTruncation) nextPhase(signallingInboundTruncation)
+      else nextPhase(completedPhase)
+    }
+  }
+
   def completeOrFlush(): Unit =
     if (engine.isOutboundDone || (engine.isInboundDone && userInChoppingBlock.isEmpty && !userInBuffer.hasRemaining))
       nextPhase(completedPhase)
     else nextPhase(flushingOutbound)
 
   private def doInbound(isOutboundClosed: Boolean, inboundState: TransferState): Boolean =
-    if (inputBunch.isDepleted(TransportIn) && transportInChoppingBlock.isEmpty) {
+    if (transportInDepleted) {
       if (tracing) log.debug("closing inbound")
       try engine.closeInbound()
       catch { case _: SSLException => outputBunch.enqueue(UserOut, SessionTruncated) }
@@ -410,7 +455,10 @@ import pekko.util.ByteString
       case CLOSED =>
         flushToTransport()
         if (engine.isInboundDone) nextPhase(completedPhase)
-        else nextPhase(awaitingClose)
+        else {
+          awaitingPeerClose = true
+          nextPhase(awaitingClose)
+        }
       case s => fail(new IllegalStateException(s"unexpected status $s in doWrap()"))
     }
   }
@@ -482,6 +530,7 @@ import pekko.util.ByteString
       case Success(()) =>
         currentSession = session
         corkUser = false
+        sessionEstablished = true
         flushToUser()
       case Failure(ex) =>
         fail(ex, closeTransport = true)
@@ -497,12 +546,14 @@ import pekko.util.ByteString
 
   protected def fail(e: Throwable, closeTransport: Boolean = true): Unit = {
     if (tracing) log.debug("fail {} due to: {}", self, e.getMessage)
-    inputBunch.cancel()
+    // Publish the failure before cancelling the peer's output: its prompt cancellation handling
+    // can otherwise cancel our transport output before the error reaches its subscriber.
     if (closeTransport) {
       log.debug("closing output")
       outputBunch.error(TransportOut, e)
     }
     outputBunch.error(UserOut, e)
+    inputBunch.cancel()
     stopped = true
     pump()
   }
@@ -512,9 +563,9 @@ import pekko.util.ByteString
       val e = new RuntimeException(
         s"Unexpected termination of TLS actor for connection to ${engine.getPeerHost}:${engine.getPeerPort}")
       log.warning(e.getMessage)
-      inputBunch.cancel()
       outputBunch.error(TransportOut, e)
       outputBunch.error(UserOut, e)
+      inputBunch.cancel()
     } else if (tracing) {
       log.debug("postStop")
     }
@@ -523,13 +574,15 @@ import pekko.util.ByteString
 
   override protected def pumpFailed(e: Throwable): Unit = fail(e)
 
-  override protected def pumpFinished(): Unit = {
-    inputBunch.cancel()
-    outputBunch.complete()
-    if (tracing) log.debug("STOP Outbound Closed: {} Inbound closed: {}", engine.isOutboundDone, engine.isInboundDone)
-    stopped = true
-    context.stop(self)
-  }
+  override protected def pumpFinished(): Unit =
+    if (!terminationCompleted) {
+      terminationCompleted = true
+      inputBunch.cancel()
+      outputBunch.complete()
+      if (tracing) log.debug("STOP Outbound Closed: {} Inbound closed: {}", engine.isOutboundDone, engine.isInboundDone)
+      stopped = true
+      context.stop(self)
+    }
 }
 
 /**

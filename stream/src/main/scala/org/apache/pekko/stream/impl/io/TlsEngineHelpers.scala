@@ -28,6 +28,21 @@ import pekko.annotation.InternalApi
  */
 @InternalApi private[stream] object TlsEngineHelpers {
 
+  def shouldReportInboundTruncation(
+      sessionEstablished: Boolean,
+      inboundClosed: Boolean,
+      userOutputClosed: Boolean): Boolean =
+    sessionEstablished && !inboundClosed && !userOutputClosed
+
+  def transportOutputCancellationReady(
+      userOutputDemand: Boolean,
+      transportInputPending: Boolean,
+      sessionEstablished: Boolean,
+      inboundClosed: Boolean,
+      userOutputClosed: Boolean): Boolean =
+    userOutputDemand || !transportInputPending ||
+    !shouldReportInboundTruncation(sessionEstablished, inboundClosed, userOutputClosed)
+
   @inline
   def emptyReadBuffer(buffer: ByteBuffer): Unit = {
     buffer.clear().flip()

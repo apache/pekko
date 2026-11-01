@@ -48,6 +48,16 @@ Please read the @ref:[Migration Guide](../migration/migration-guide-1.x-2.x.md) 
 breaking API changes, dependency changes (such as the Agrona 2.x `--add-opens` requirement) and the configuration
 defaults that have changed in Pekko 2.0.0.
 
+Unless already waiting for the peer's `close_notify`, cancelling a TLS operator's transport output
+now reports `SessionTruncated` on its plaintext output
+if a session was established and the peer's `close_notify` has not been processed, including when
+no inbound data is buffered or a renegotiation is in progress ([PR3740](https://github.com/apache/pekko/pull/3740)).
+Previously this path could complete silently after discarding received records. Consumers using
+the TLS `BidiFlow` directly must handle `SessionTruncated` as well as `SessionBytes`. The Scala and
+Java `Tcp.bindWithTls` and `Tcp.outgoingConnectionWithTls` APIs filter out this signal and continue
+to expose `ByteString` streams. The final signal obeys backpressure; cancel the plaintext output
+too if it will no longer be consumed. See @ref:[Stream IO](../stream/stream-io.md) for details.
+
 ### Bug Fixes
 
 * Replaying a replicated event sourced actor from a snapshot caused a bug ([PR2372](https://github.com/apache/pekko/pull/2372))
