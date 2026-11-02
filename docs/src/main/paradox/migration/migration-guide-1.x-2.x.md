@@ -97,6 +97,13 @@ Replace `outgoingTlsConnection` with `outgoingConnectionWithTls` and `bindTls` w
 See the Scala and Java @ref:[TLS examples](../stream/stream-io.md#tls) for general engine setup,
 adding the client hostname-verification and SNI settings described above.
 
+Cancelling a TLS operator's transport output now reports `SessionTruncated` on the plaintext output when a session
+was established and the peer's `close_notify` has not been processed, instead of completing silently.
+If you use the TLS `BidiFlow` directly, handle `SessionTruncated` as well as `SessionBytes`, and cancel the
+plaintext output too if it will no longer be consumed. `Tcp.bindWithTls` and `Tcp.outgoingConnectionWithTls`
+filter out this signal. See @ref:[Stream IO](../stream/stream-io.md) for details.
+([PR3740](https://github.com/apache/pekko/pull/3740))
+
 ### Remoting
 
 * In pekko-remote Artery comms, `"PEKK"` is now the default magic header

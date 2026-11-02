@@ -50,6 +50,16 @@ Please read the @ref:[Migration Guide](../migration/migration-guide-1.x-2.x.md) 
 breaking API changes, dependency changes (such as the Agrona 2.x `--add-opens` requirement) and the configuration
 defaults that have changed in Pekko 2.0.0.
 
+Unless already waiting for the peer's `close_notify`, cancelling a TLS operator's transport output
+now reports `SessionTruncated` on its plaintext output
+if a session was established and the peer's `close_notify` has not been processed, including when
+no inbound data is buffered or a renegotiation is in progress ([PR3740](https://github.com/apache/pekko/pull/3740)).
+Previously this path could complete silently after discarding received records. Consumers using
+the TLS `BidiFlow` directly must handle `SessionTruncated` as well as `SessionBytes`. The Scala and
+Java `Tcp.bindWithTls` and `Tcp.outgoingConnectionWithTls` APIs filter out this signal and continue
+to expose `ByteString` streams. The final signal obeys backpressure; cancel the plaintext output
+too if it will no longer be consumed. See @ref:[Stream IO](../stream/stream-io.md) for details.
+
 ### Security Hardening
 
 * Pekko Remote TLS: optional hostname verification for classic remoting, warnings when hostname verification is not enabled or when TLS is not used, a new keystore-password config, eager SSLContext initialization in Artery so that misconfiguration fails fast and support for multiple certificates in the rotating keys engine `ca-cert-file` ([PR3164](https://github.com/apache/pekko/pull/3164), [PR3200](https://github.com/apache/pekko/pull/3200), [PR3397](https://github.com/apache/pekko/pull/3397), [PR3398](https://github.com/apache/pekko/pull/3398), [PR3400](https://github.com/apache/pekko/pull/3400), [PR3479](https://github.com/apache/pekko/pull/3479), [PR3528](https://github.com/apache/pekko/pull/3528))
