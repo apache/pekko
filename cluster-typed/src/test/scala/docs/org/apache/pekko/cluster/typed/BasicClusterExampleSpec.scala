@@ -132,11 +132,15 @@ class BasicClusterConfigSpec extends AnyWordSpec with ScalaFutures with Eventual
       val sys1Port = addresses.head.getPort
       val sys2Port = addresses.last.getPort
       sys1Port should not be sys2Port
+      val arteryEnabled =
+        configSystem1.withFallback(ConfigFactory.defaultReference()).getBoolean("pekko.remote.artery.enabled")
+      val protocol = if (arteryEnabled) "pekko" else "pekko.tcp"
       def config(port: Int) = ConfigFactory.parseString(s"""
+          pekko.remote.classic.netty.tcp.hostname = "127.0.0.1"
           pekko.remote.classic.netty.tcp.port = $port
           pekko.remote.artery.canonical.port = $port
           pekko.cluster.jmx.multi-mbeans-in-same-jvm = on
-          pekko.cluster.seed-nodes = [ "pekko://ClusterSystem@127.0.0.1:$sys1Port", "pekko://ClusterSystem@127.0.0.1:$sys2Port" ]
+          pekko.cluster.seed-nodes = [ "$protocol://ClusterSystem@127.0.0.1:$sys1Port", "$protocol://ClusterSystem@127.0.0.1:$sys2Port" ]
         """)
 
       val system1 =
@@ -149,6 +153,8 @@ class BasicClusterConfigSpec extends AnyWordSpec with ScalaFutures with Eventual
           clusters.foreach { cluster =>
             cluster.state.members.size shouldBe 2
             cluster.state.members.unsorted.map(_.status) shouldBe Set(MemberStatus.Up)
+            cluster.state.members.unsorted.map(_.address.protocol) shouldBe Set(protocol)
+            cluster.state.members.unsorted.map(_.address.host) shouldBe Set(Some("127.0.0.1"))
             cluster.state.members.unsorted.map(_.address.port.get) shouldBe Set(sys1Port, sys2Port)
           }
         }
