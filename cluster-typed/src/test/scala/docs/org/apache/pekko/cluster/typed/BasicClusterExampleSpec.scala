@@ -140,6 +140,9 @@ class BasicClusterConfigSpec extends AnyWordSpec with ScalaFutures with Eventual
           pekko.remote.classic.netty.tcp.port = $port
           pekko.remote.artery.canonical.port = $port
           pekko.cluster.jmx.multi-mbeans-in-same-jvm = on
+          # the default 5s lets the first seed form the cluster just after the other node's
+          # second InitJoin, so the join can take ~10s and race the eventually timeout
+          pekko.cluster.seed-node-timeout = 1s
           pekko.cluster.seed-nodes = [ "$protocol://ClusterSystem@127.0.0.1:$sys1Port", "$protocol://ClusterSystem@127.0.0.1:$sys2Port" ]
         """)
 
