@@ -29,7 +29,7 @@ import pekko.util.ByteString
  * compression.
  *
  * @see https://github.com/facebook/zstd?tab=readme-ov-file#dictionary-compression-how-to
- * @see https://facebook.github.io/zstd/zstd_manual.html#Chapter10
+ * @see https://meta.github.io/zstd/zstd_manual.html#Chapter10
  * @since 2.0.0
  */
 @ApiMayChange

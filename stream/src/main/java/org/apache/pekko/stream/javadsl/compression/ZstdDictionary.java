@@ -35,7 +35,7 @@ import java.util.OptionalInt;
  * @see <a
  *     href="https://github.com/facebook/zstd?tab=readme-ov-file#dictionary-compression-how-to">Zstd
  *     dictionary readme</a>
- * @see <a href="https://facebook.github.io/zstd/zstd_manual.html#Chapter10">Zstd C manual</a>
+ * @see <a href="https://meta.github.io/zstd/zstd_manual.html#Chapter10">Zstd C manual</a>
  * @since 2.0.0
  */
 @ApiMayChange
