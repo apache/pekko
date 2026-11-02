@@ -126,7 +126,7 @@ jobs:
       matrix:
         command:
           - cluster/test distributed-data/test cluster-tools/test cluster-metrics/test
-          - cluster-typed/test
+          - cluster-typed/test cluster-sharding-typed/test
     steps:
       - name: Checkout
         uses: actions/checkout@v7.0.1
