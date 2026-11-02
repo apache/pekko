@@ -220,7 +220,7 @@ These changes were copied from Akka releases (up to and including Akka 2.9.0) th
 
 **Other**
 
-* Other Akka 2.8.4 changes ([PR3432](https://github.com/apache/pekko/pull/3432))
+* Other Akka 2.9.0 changes ([PR3432](https://github.com/apache/pekko/pull/3432))
 
 ### Additions
 
