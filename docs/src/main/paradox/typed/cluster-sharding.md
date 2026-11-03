@@ -829,6 +829,13 @@ the owner is set to the `Cluster(system).selfAddress.hostPort`.
 If a shard can't acquire a lease it will remain uninitialized so messages for entities it owns will
 be buffered in the `ShardRegion`. If the lease is lost after initialization the Shard will be terminated.
 
+A separate lease can be configured for the shard coordinator singleton using
+`pekko.cluster.sharding.coordinator-singleton.use-lease`. If this lease is lost while the node remains
+in the cluster and is not shutting down, only the coordinator is stopped. The local `ShardRegion` and
+its existing shards continue running. The coordinator must acquire the lease again before restarting
+and allocating new shards. This does not change the graceful shutdown of the local region when the
+node leaves the cluster or runs CoordinatedShutdown.
+
 ## Removal of internal Cluster Sharding data
 
 Removal of internal Cluster Sharding data is only relevant for "Persistence Mode".

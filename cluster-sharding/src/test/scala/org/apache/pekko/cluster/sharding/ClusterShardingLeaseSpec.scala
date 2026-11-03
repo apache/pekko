@@ -13,6 +13,7 @@
 
 package org.apache.pekko.cluster.sharding
 import scala.concurrent.Future
+import scala.concurrent.Promise
 import scala.concurrent.duration._
 import scala.util.Success
 import scala.util.control.NoStackTrace
@@ -22,6 +23,7 @@ import pekko.actor.Props
 import pekko.cluster.{ Cluster, MemberStatus }
 import pekko.cluster.sharding.ShardRegion.StartEntity
 import pekko.coordination.lease.TestLease
+import pekko.coordination.lease.TestLease.{ AcquireReq, ReleaseReq }
 import pekko.coordination.lease.TestLeaseExt
 import pekko.testkit.{ ImplicitSender, PekkoSpec, WithLogCapturing }
 import pekko.testkit.TestActors.EchoActor
@@ -38,6 +40,10 @@ object ClusterShardingLeaseSpec {
     pekko.cluster.sharding {
        use-lease = "test-lease"
        lease-retry-interval = 200ms
+       coordinator-singleton {
+         use-lease = "test-lease"
+         lease-retry-interval = 200ms
+       }
        distributed-data.durable {
         keys = []
        }
@@ -101,6 +107,9 @@ class ClusterShardingLeaseSpec(config: Config, rememberEntities: Boolean)
       settings = ClusterShardingSettings(system).withRememberEntities(rememberEntities),
       extractEntityId = extractEntityId,
       extractShardId = extractShardId)
+    val lease = coordinatorLease
+    lease.probe.expectMsg(AcquireReq(leaseOwner))
+    lease.initialPromise.success(true)
   }
 
   def region = ClusterSharding(system).shardRegion(typeName)
@@ -113,6 +122,10 @@ class ClusterShardingLeaseSpec(config: Config, rememberEntities: Boolean)
 
   def leaseNameFor(shardId: Int, typeName: String = typeName): String =
     s"${system.name}-shard-$typeName-$shardId"
+
+  private def coordinatorLease: TestLease = awaitAssert {
+    testLeaseExt.getTestLease(s"${system.name}-singleton-pekko://${system.name}/system/sharding/${typeName}Coordinator")
+  }
 
   "Cluster sharding with lease" should {
     "not start until lease is acquired" in {
@@ -151,6 +164,29 @@ class ClusterShardingLeaseSpec(config: Config, rememberEntities: Boolean)
           region ! 4
           expectMsg(4)
         }, max = 10.seconds)
+    }
+    "keep the local region running when the coordinator lease is lost" in {
+      val originalRegion = region
+      originalRegion ! 5
+      leaseForShard(5).initialPromise.success(true)
+      expectMsg(5)
+
+      val lease = coordinatorLease
+      val reacquired = Promise[Boolean]()
+      lease.setNextAcquireResult(reacquired.future)
+      lease.getCurrentCallback()(Some(LeaseFailed("coordinator lease lost")))
+      lease.probe.expectMsg(ReleaseReq(leaseOwner))
+      lease.probe.expectMsg(AcquireReq(leaseOwner))
+
+      cluster.selfMember.status shouldEqual MemberStatus.Up
+      region shouldEqual originalRegion
+      region ! 5
+      expectMsg(5)
+
+      reacquired.success(true)
+      region ! 6
+      leaseForShard(6).initialPromise.success(true)
+      expectMsg(6)
     }
   }
 }

@@ -30,6 +30,7 @@ import pekko.annotation.DoNotInherit
 import pekko.cluster.Cluster
 import pekko.cluster.ClusterEvent
 import pekko.cluster.ClusterEvent._
+import pekko.cluster.MemberStatus
 import pekko.cluster.ddata.LWWRegister
 import pekko.cluster.ddata.LWWRegisterKey
 import pekko.cluster.ddata.Replicator._
@@ -1005,8 +1006,17 @@ abstract class ShardCoordinator(
     }: Receive).orElse[Any, Unit](receiveTerminated)
 
   private def terminate(): Unit = {
-    if (aliveRegions.exists(_.path.address.hasLocalScope) || gracefulShutdownInProgress.exists(
-        _.path.address.hasLocalScope)) {
+    val memberIsTerminating = cluster.selfMember.status match {
+      case MemberStatus.Leaving | MemberStatus.Exiting | MemberStatus.Down | MemberStatus.Removed => true
+      case _                                                                                      => false
+    }
+    val nodeIsTerminating =
+      memberIsTerminating || cluster.isTerminated || CoordinatedShutdown(context.system).shutdownReason().isDefined
+
+    // Losing the coordinator singleton lease must not shut down a region on a node that is still running.
+    if (nodeIsTerminating &&
+      (aliveRegions.exists(_.path.address.hasLocalScope) || gracefulShutdownInProgress.exists(
+        _.path.address.hasLocalScope))) {
       aliveRegions
         .find(_.path.address.hasLocalScope)
         .foreach(region =>
