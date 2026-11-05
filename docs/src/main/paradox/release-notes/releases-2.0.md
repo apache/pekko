@@ -10,18 +10,22 @@ Apache Pekko 2.0.0 is a new major release. Do not assume binary compatibility wi
 against Pekko 1.x need to be rebuilt against Pekko 2.0.0, and some code will need source changes. Please read the
 @ref:[Migration Guide](../migration/migration-guide-1.x-2.x.md) before upgrading.
 
+Users who built and tested with the 2.0.0 milestone releases may find that the 2.0.0 release has further changes, so
+you should rebuild and retest against 2.0.0.
+
 It could take months for the other Pekko modules, such as Pekko HTTP, Pekko Connectors, Pekko gRPC, Pekko Management
 and the persistence plugins, to have 2.0.0 releases. Until then, users might be able to use the 2.0.0 milestone
 releases of those modules with Pekko 2.0.0, but you should test very carefully before relying on this in production.
 
 @@@
 
-The changes in this release were previewed in a series of milestone releases. See the GitHub milestones for
+Many of the changes in this release were previewed in a series of milestone releases. See the GitHub milestones for
 [2.0.0-M1](https://github.com/apache/pekko/milestone/5?closed=1),
 [2.0.0-M2](https://github.com/apache/pekko/milestone/19?closed=1),
-[2.0.0-M3](https://github.com/apache/pekko/milestone/28?closed=1),
-[2.0.0-M4](https://github.com/apache/pekko/milestone/31?closed=1) and
-[2.0.0-M5](https://github.com/apache/pekko/milestone/35?closed=1) for a fuller list of changes.
+[2.0.0-M3](https://github.com/apache/pekko/milestone/28?closed=1) and
+[2.0.0-M4](https://github.com/apache/pekko/milestone/31?closed=1) for a fuller list of changes.
+There was no 2.0.0-M5 release: the changes made after 2.0.0-M4 are listed in the
+[2.0.0-M5](https://github.com/apache/pekko/milestone/35?closed=1) GitHub milestone and were first released in 2.0.0.
 
 Some of the bug fixes listed below have also been backported to Pekko 1.x releases.
 
@@ -78,6 +82,8 @@ too if it will no longer be consumed. See @ref:[Stream IO](../stream/stream-io.m
 * Don't dereference a null superclass in the protobuf allow list check ([PR3509](https://github.com/apache/pekko/pull/3509))
 * Bound persistence event replay batches ([PR3325](https://github.com/apache/pekko/pull/3325))
 * Add `maxTotalBufferSize` to MergeHub for an aggregate queue bound ([PR3392](https://github.com/apache/pekko/pull/3392))
+* Check the remote deployment allow list before deserializing the constructor arguments of a remotely deployed actor ([PR3493](https://github.com/apache/pekko/pull/3493))
+* Stop resolving a wire-supplied manifest class for serializers that declare `includeManifest = false`, so a peer can no longer use them to drive class loading ([PR3495](https://github.com/apache/pekko/pull/3495))
 
 ### Bug Fixes
 
@@ -126,6 +132,7 @@ too if it will no longer be consumed. See @ref:[Stream IO](../stream/stream-io.m
 * Harden async DNS request id handling ([PR2960](https://github.com/apache/pekko/pull/2960))
 * Avoid NPE in the outbound TCP stage when upstream finishes before connect ([PR3259](https://github.com/apache/pekko/pull/3259))
 * Close unregistered TCP channels on setup failure ([PR3273](https://github.com/apache/pekko/pull/3273))
+* Close IO resources left open on abrupt or failing paths: the `resolv.conf` file parser, the `InputStream` of `StreamConverters.fromInputStream` on abrupt termination and the Artery Aeron UDP port auto-selection channel ([PR3532](https://github.com/apache/pekko/pull/3532))
 
 **Remoting**
 
@@ -280,7 +287,7 @@ These changes were copied from Akka releases (up to and including Akka 2.9.0) th
 
 **Other**
 
-* Add `ByteString.endsWith`, `indexOf` with from and to, and make `ByteString.copyToBuffer(buffer, offset)` public ([PR2271](https://github.com/apache/pekko/pull/2271), [PR2862](https://github.com/apache/pekko/pull/2862), [PR2946](https://github.com/apache/pekko/pull/2946))
+* Add `ByteString.endsWith`, `indexOf` with from and to, `copyToArray` and `decodeString` overloads that read a sub-range without slicing, and make `ByteString.copyToBuffer(buffer, offset)` public ([PR2271](https://github.com/apache/pekko/pull/2271), [PR2862](https://github.com/apache/pekko/pull/2862), [PR2946](https://github.com/apache/pekko/pull/2946), [PR3464](https://github.com/apache/pekko/pull/3464))
 * Add OSGi headers to pekko-pki and pekko-cluster-typed and compute OSGi imports for Pekko packages dynamically ([PR2107](https://github.com/apache/pekko/pull/2107), [PR2112](https://github.com/apache/pekko/pull/2112), [PR2313](https://github.com/apache/pekko/pull/2313))
 * Add Scala 3.8 and 3.9 compatibility (Pekko is still published using Scala 3.3 LTS) ([PR3072](https://github.com/apache/pekko/pull/3072), [PR3073](https://github.com/apache/pekko/pull/3073), [PR3074](https://github.com/apache/pekko/pull/3074), [PR3295](https://github.com/apache/pekko/pull/3295), [PR3303](https://github.com/apache/pekko/pull/3303))
 
@@ -346,6 +353,8 @@ These changes were copied from Akka releases (up to and including Akka 2.9.0) th
 * Avoid quadratic cursor scans in fanout publishers (`Sink.asPublisher(fanout = true)`) with many subscribers ([PR3730](https://github.com/apache/pekko/pull/3730))
 * Reduce receive-timeout state allocations and avoid type pollution ([PR3332](https://github.com/apache/pekko/pull/3332), [PR3334](https://github.com/apache/pekko/pull/3334))
 * Validate actor path elements without `String.charAt` ([PR3542](https://github.com/apache/pekko/pull/3542))
+* Avoid redundant bounds checks on `ByteString` indexed reads in `ByteStringParser` and the DNS over TCP client ([PR3533](https://github.com/apache/pekko/pull/3533))
+* Defer log message rendering in typed persistence and the testkit log capturing by using slf4j placeholders ([PR3537](https://github.com/apache/pekko/pull/3537))
 
 ### Removed
 
