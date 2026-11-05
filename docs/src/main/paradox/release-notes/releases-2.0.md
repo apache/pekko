@@ -25,7 +25,7 @@ Many of the changes in this release were previewed in a series of milestone rele
 [2.0.0-M3](https://github.com/apache/pekko/milestone/28?closed=1) and
 [2.0.0-M4](https://github.com/apache/pekko/milestone/31?closed=1) for a fuller list of changes.
 There was no 2.0.0-M5 release: the changes made after 2.0.0-M4 are listed in the
-[2.0.0-M5](https://github.com/apache/pekko/milestone/35?closed=1) GitHub milestone and were first released in 2.0.0.
+[2.0.0-M5](https://github.com/apache/pekko/milestone/35?closed=1) GitHub milestone.
 
 Some of the bug fixes listed below have also been backported to Pekko 1.x releases.
 
