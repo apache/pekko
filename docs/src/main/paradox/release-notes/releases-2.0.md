@@ -139,6 +139,7 @@ too if it will no longer be consumed. See @ref:[Stream IO](../stream/stream-io.m
 * Classic remoting robustness fixes: ignore stale ACKs, harden EndpointReader against dispatch errors, resume the reader after a failed handoff and buffer messages during passive handoff ([PR3158](https://github.com/apache/pekko/pull/3158), [PR3166](https://github.com/apache/pekko/pull/3166), [PR3173](https://github.com/apache/pekko/pull/3173), [PR3205](https://github.com/apache/pekko/pull/3205), [PR3361](https://github.com/apache/pekko/pull/3361))
 * Validate the full UniqueAddress in Artery system message ACK/NACK handling ([PR3175](https://github.com/apache/pekko/pull/3175))
 * Bound Artery stream shutdown ([PR3317](https://github.com/apache/pekko/pull/3317))
+* Distribute `ActorSelection` messages across the Artery outbound lanes by target path, instead of sending them all to the same lane when `outbound-lanes` is greater than 1 ([PR3092](https://github.com/apache/pekko/pull/3092))
 * Use a Seq rather than a Set to hold TCP magic ByteStrings ([PR3484](https://github.com/apache/pekko/pull/3484))
 
 **Cluster and Cluster Sharding**
@@ -287,8 +288,9 @@ These changes were copied from Akka releases (up to and including Akka 2.9.0) th
 
 **Other**
 
-* Add `ByteString.endsWith`, `indexOf` with from and to, `copyToArray` and `decodeString` overloads that read a sub-range without slicing, and make `ByteString.copyToBuffer(buffer, offset)` public ([PR2271](https://github.com/apache/pekko/pull/2271), [PR2862](https://github.com/apache/pekko/pull/2862), [PR2946](https://github.com/apache/pekko/pull/2946), [PR3464](https://github.com/apache/pekko/pull/3464))
+* Add `ByteString.endsWith`, `indexOf` with from and to, `lastIndexOfSlice`, `copyToArray` and `decodeString` overloads that read a sub-range without slicing, and make `ByteString.copyToBuffer(buffer, offset)` public ([PR2271](https://github.com/apache/pekko/pull/2271), [PR2855](https://github.com/apache/pekko/pull/2855), [PR2862](https://github.com/apache/pekko/pull/2862), [PR2946](https://github.com/apache/pekko/pull/2946), [PR3464](https://github.com/apache/pekko/pull/3464))
 * Add OSGi headers to pekko-pki and pekko-cluster-typed and compute OSGi imports for Pekko packages dynamically ([PR2107](https://github.com/apache/pekko/pull/2107), [PR2112](https://github.com/apache/pekko/pull/2112), [PR2313](https://github.com/apache/pekko/pull/2313))
+* Add `LeaseHealthCheck`, which checks that a lease implementation's API is reachable by trying to acquire and release a test lease ([PR3423](https://github.com/apache/pekko/pull/3423))
 * Add Scala 3.8 and 3.9 compatibility (Pekko is still published using Scala 3.3 LTS) ([PR3072](https://github.com/apache/pekko/pull/3072), [PR3073](https://github.com/apache/pekko/pull/3073), [PR3074](https://github.com/apache/pekko/pull/3074), [PR3295](https://github.com/apache/pekko/pull/3295), [PR3303](https://github.com/apache/pekko/pull/3303))
 
 ### Changes
