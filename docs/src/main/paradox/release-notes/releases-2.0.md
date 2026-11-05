@@ -400,3 +400,4 @@ Some additional APIs have been deprecated and will be removed in a future releas
 ### Known Issues
 
 * MergeLatest does not backpressure upstreams and buffers without bound ([#3592](https://github.com/apache/pekko/issues/3592)).
+* `Serialization.deserialize` with serializer id 0 (`NullSerializer`) and a non-empty manifest returns `Success(null)`, whatever the bytes contain ([#3749](https://github.com/apache/pekko/issues/3749)). Previously this failed with `NotSerializableException` unless the manifest named a loadable class. Id 0 is a common default for a missing int value, so a corrupt stored record can load as a `null` payload instead of failing. As a workaround, code that reads serializer ids from storage should treat a record with id 0 and non-empty bytes as a failure before calling `deserialize`. `NullSerializer` only ever writes an empty array, so such a record cannot be valid.
