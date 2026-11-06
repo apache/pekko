@@ -306,6 +306,19 @@ class SerializeSpec extends PekkoSpec(SerializationTests.serializeConf) {
       }
     }
 
+    "fail to deserialize empty bytes with a non-empty manifest with the NullSerializer" in {
+      val empty = Array.empty[Byte]
+      // a loadable class is rejected too: the check must not depend on class loading
+      for (manifest <- Seq("not-a-class", classOf[String].getName)) {
+        val failure = ser.deserialize(empty, NullSerializer.identifier, manifest).failed.get
+        failure shouldBe a[NotSerializableException]
+        failure.getMessage should include(manifest)
+        intercept[NotSerializableException] {
+          ser.deserializeByteBuffer(ByteBuffer.wrap(empty), NullSerializer.identifier, manifest)
+        }
+      }
+    }
+
     "log warning if non-Pekko serializer is configured for Pekko message" in {
       EventFilter.warning(pattern = ".*not implemented by Apache Pekko.*", occurrences = 1).intercept {
         ser.serialize(new Other).get
