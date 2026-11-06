@@ -289,6 +289,23 @@ class SerializeSpec extends PekkoSpec(SerializationTests.serializeConf) {
         s"${classOf[ByteArraySerializer].getName} only serializes byte arrays, not [java.lang.String]")
     }
 
+    "round trip null with the NullSerializer" in {
+      val bytes = ser.serialize(null).get
+      bytes.length should ===(0)
+      ser.deserialize(bytes, NullSerializer.identifier, "").get should ===(null)
+      ser.deserializeByteBuffer(ByteBuffer.wrap(bytes), NullSerializer.identifier, "") should ===(null)
+    }
+
+    "fail to deserialize non-empty bytes with the NullSerializer" in {
+      val garbage = "garbage".getBytes(StandardCharsets.UTF_8)
+      for (manifest <- Seq("", "not-a-class")) {
+        ser.deserialize(garbage, NullSerializer.identifier, manifest).failed.get shouldBe a[NotSerializableException]
+        intercept[NotSerializableException] {
+          ser.deserializeByteBuffer(ByteBuffer.wrap(garbage), NullSerializer.identifier, manifest)
+        }
+      }
+    }
+
     "log warning if non-Pekko serializer is configured for Pekko message" in {
       EventFilter.warning(pattern = ".*not implemented by Apache Pekko.*", occurrences = 1).intercept {
         ser.serialize(new Other).get
