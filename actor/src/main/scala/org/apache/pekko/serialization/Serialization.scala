@@ -211,8 +211,14 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
     withTransportInformation { () =>
       NestedDeserialization.atNextLevel(maxNestingDepth) {
         serializer match {
-          case s2: SerializerWithStringManifest => s2.fromBinary(bytes, manifest)
-          case s1                               =>
+          case s2: SerializerWithStringManifest    => s2.fromBinary(bytes, manifest)
+          case _: NullSerializer if manifest != "" =>
+            // A serialized null never has a manifest (see `Serializers.manifestFor`), so this is not
+            // a null, for example a corrupt stored record with a missing serializer id that defaulted
+            // to 0. It is rejected without resolving the manifest, which must not reach class loading.
+            throw new NotSerializableException(
+              s"Unexpected manifest [$manifest] for serializer with id [${serializer.identifier}].")
+          case s1 =>
             if (manifest == "" || !s1.includeManifest)
               // A conforming peer only sends a manifest for a serializer that asks for one
               // (see `Serializers.manifestFor`), and a serializer with `includeManifest = false`

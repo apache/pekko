@@ -95,6 +95,10 @@ It is important to use the serializer identifier in this way to support rolling 
 consisting of the bytes, the serializer id, and the manifest should always be transferred or stored together so that
 they can be deserialized with different `serialization-bindings` configuration.
 
+Serializer id 0 is reserved for @apidoc[serialization.NullSerializer], which represents `null` as an empty array of bytes
+with an empty manifest. Deserializing any other bytes or manifest with id 0 fails with a `NotSerializableException`. This
+can happen if a stored serializer id is missing and your code reads it as 0, such as an empty database column.
+
 The @apidoc[SerializationExtension$] is a Classic @apidoc[actor.Extension], but it can be used with an @apidoc[actor.typed.ActorSystem](typed.ActorSystem) like this:
 
 Scala

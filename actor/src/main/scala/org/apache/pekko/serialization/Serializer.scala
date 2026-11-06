@@ -437,8 +437,19 @@ class NullSerializer extends Serializer {
   def includeManifest: Boolean = false
   def identifier = 0
   def toBinary(o: AnyRef): Array[Byte] = nullAsBytes
+
+  /**
+   * Returns `null` for the empty array that `toBinary` produces. Any other input did not come from this
+   * serializer, for example a corrupt stored record with a missing serializer id that defaulted to 0,
+   * so it is rejected rather than silently discarded.
+   */
   @throws(classOf[NotSerializableException])
-  def fromBinary(bytes: Array[Byte], clazz: Option[Class[?]]): AnyRef = null
+  def fromBinary(bytes: Array[Byte], clazz: Option[Class[?]]): AnyRef = {
+    if ((bytes ne null) && bytes.length != 0)
+      throw new NotSerializableException(
+        s"${getClass.getName} (serializer id [$identifier]) only deserializes empty input, got [${bytes.length}] bytes.")
+    null
+  }
 }
 
 /**
