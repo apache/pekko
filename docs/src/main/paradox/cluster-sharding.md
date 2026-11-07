@@ -240,6 +240,10 @@ directly sending messages to the individual entities.
 ## Lease
 
 A lease can be used as an additional safety measure to ensure a shard does not run on two nodes.
+The coordinator singleton can also use a lease. Losing its lease restarts the coordinator without
+stopping the local `ShardRegion`; normal singleton hand-over still drains the local region.
+While no coordinator is available, messages for shards with unknown locations are buffered up to
+`pekko.cluster.sharding.buffer-size`; excess messages are sent to dead letters.
 See @ref:[Lease](typed/cluster-sharding.md#lease) in the documentation of the new APIs.
 
 ## Configuration
