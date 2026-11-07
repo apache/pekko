@@ -15,6 +15,7 @@ package org.apache.pekko.cluster.singleton
 
 import java.util.concurrent.atomic.AtomicInteger
 
+import scala.concurrent.Future
 import scala.concurrent.Promise
 import scala.concurrent.duration._
 import scala.util.Success
@@ -27,9 +28,12 @@ import pekko.actor.ExtendedActorSystem
 import pekko.actor.PoisonPill
 import pekko.actor.Props
 import pekko.cluster.Cluster
+import pekko.cluster.ClusterEvent.MemberDowned
 import pekko.cluster.MemberStatus
 import pekko.coordination.lease.TestLease
 import pekko.coordination.lease.TestLeaseExt
+import pekko.event.Logging
+import pekko.testkit.EventFilter
 import pekko.testkit.PekkoSpec
 import pekko.testkit.TestException
 import pekko.testkit.TestProbe
@@ -57,6 +61,7 @@ class ImportantSingleton(lifeCycleProbe: ActorRef) extends Actor with ActorLoggi
 class ClusterSingletonLeaseSpec extends PekkoSpec(ConfigFactory.parseString("""
      pekko.loglevel = INFO
      pekko.actor.provider = cluster
+     pekko.remote.artery.canonical.port = 0
 
      pekko.cluster.singleton {
        use-lease = "test-lease"
@@ -89,6 +94,30 @@ class ClusterSingletonLeaseSpec extends PekkoSpec(ConfigFactory.parseString("""
 
   def leaseNameFor(settings: ClusterSingletonManagerSettings): String =
     s"ClusterSingletonLeaseSpec-singleton-pekko://ClusterSingletonLeaseSpec/user/${settings.singletonName}"
+
+  private def startedSingleton(restartable: Boolean = false): (ActorRef, TestLease, TestProbe) = {
+    val lifecycleProbe = TestProbe()
+    val settings = nextSettings()
+    val singletonProps = Props(new ImportantSingleton(lifecycleProbe.ref))
+    val props = ClusterSingletonManager.props(singletonProps, PoisonPill, settings)
+    val managerProps =
+      if (restartable)
+        Props(new ClusterSingletonManager(singletonProps, PoisonPill, settings) {
+          override protected[pekko] def aroundReceive(receive: Actor.Receive, msg: Any): Unit = msg match {
+            case "crash-manager" => throw TestException("restart singleton manager")
+            case _               => super.aroundReceive(receive, msg)
+          }
+        }).withDispatcher(props.dispatcher)
+      else props
+    val manager = system.actorOf(managerProps, settings.singletonName)
+    val testLease = awaitAssert {
+      testLeaseExt.getTestLease(leaseNameFor(settings))
+    }
+    testLease.probe.expectMsg(AcquireReq(leaseOwner))
+    testLease.initialPromise.success(true)
+    lifecycleProbe.expectMsg("preStart")
+    (manager, testLease, lifecycleProbe)
+  }
 
   "A singleton with lease" should {
 
@@ -215,6 +244,104 @@ class ClusterSingletonLeaseSpec extends PekkoSpec(ConfigFactory.parseString("""
       intercept[IllegalStateException] {
         testLeaseExt.getTestLease(leaseNameFor(settings))
       }
+    }
+
+    "log error when lease release fails leaving oldest" in {
+      val (manager, testLease, lifecycleProbe) = startedSingleton()
+      testLease.setNextAcquireResult(Promise[Boolean]().future)
+      testLease.setNextReleaseResult(Future.failed(TestException("no release for you")))
+      EventFilter[TestException](pattern = ".*Failed to release lease.*", occurrences = 1).intercept {
+        testLease.getCurrentCallback()(Some(TestException("lease lost")))
+        testLease.probe.expectMsg(ReleaseReq(leaseOwner))
+      }
+      lifecycleProbe.expectMsg("postStop")
+      lifecycleProbe.watch(manager)
+      system.stop(manager)
+      lifecycleProbe.expectTerminated(manager)
+    }
+
+    "log error when lease release throws synchronously" in {
+      val (manager, testLease, lifecycleProbe) = startedSingleton()
+      testLease.setNextAcquireResult(Promise[Boolean]().future)
+      testLease.setNextReleaseResult(throw TestException("synchronous release failure"))
+      EventFilter[TestException](pattern = ".*Failed to release lease.*", occurrences = 1).intercept {
+        testLease.getCurrentCallback()(None)
+        testLease.probe.expectMsg(ReleaseReq(leaseOwner))
+      }
+      lifecycleProbe.expectMsg("postStop")
+      testLease.probe.expectMsg(AcquireReq(leaseOwner))
+      lifecycleProbe.watch(manager)
+      system.stop(manager)
+      lifecycleProbe.expectTerminated(manager)
+    }
+
+    "log a failed release with the manager logger after the manager has stopped" in {
+      val (manager, testLease, lifecycleProbe) = startedSingleton()
+      val terminationProbe = TestProbe()
+      val releaseResult = Promise[Boolean]()
+      testLease.setNextReleaseResult(releaseResult.future)
+      terminationProbe.watch(manager)
+      manager ! MemberDowned(cluster.selfMember.copy(MemberStatus.Down))
+      testLease.probe.expectMsg(ReleaseReq(leaseOwner))
+      lifecycleProbe.expectMsg("postStop")
+      terminationProbe.expectTerminated(manager)
+      val failure = TestException("late release failure")
+      EventFilter.custom({
+          case error: Logging.Error =>
+            (error.cause eq failure) && error.logClass == classOf[ClusterSingletonManager] &&
+            error.message.toString.startsWith("Failed to release lease")
+        }, occurrences = 1).intercept {
+        releaseResult.failure(failure)
+      }
+      // The transition already released the lease; termination must not release it again.
+      testLease.probe.expectNoMessage(shortDuration)
+    }
+
+    "log an unsuccessful release after the manager has stopped" in {
+      val (manager, testLease, lifecycleProbe) = startedSingleton()
+      val terminationProbe = TestProbe()
+      val releaseResult = Promise[Boolean]()
+      testLease.setNextReleaseResult(releaseResult.future)
+      terminationProbe.watch(manager)
+      manager ! MemberDowned(cluster.selfMember.copy(MemberStatus.Down))
+      testLease.probe.expectMsg(ReleaseReq(leaseOwner))
+      lifecycleProbe.expectMsg("postStop")
+      terminationProbe.expectTerminated(manager)
+      EventFilter.error(pattern = ".*Failed to release lease.*", occurrences = 1).intercept {
+        releaseResult.success(false)
+      }
+    }
+
+    "release the lease once when stopped directly as oldest" in {
+      val (manager, testLease, lifecycleProbe) = startedSingleton()
+      val terminationProbe = TestProbe()
+      terminationProbe.watch(manager)
+      system.stop(manager)
+      lifecycleProbe.expectMsg("postStop")
+      terminationProbe.expectTerminated(manager)
+      testLease.probe.expectMsg(ReleaseReq(leaseOwner))
+      testLease.probe.expectNoMessage(shortDuration)
+    }
+
+    "retain the lease across an exceptional restart and release it on the final stop" in {
+      val (manager, testLease, lifecycleProbe) = startedSingleton(restartable = true)
+      EventFilter[TestException](message = "restart singleton manager", occurrences = 1).intercept {
+        manager ! "crash-manager"
+        lifecycleProbe.expectMsg("postStop")
+        // A release here would precede the new acquire and could revoke its ownership later.
+        testLease.probe.expectMsg(AcquireReq(leaseOwner))
+        lifecycleProbe.expectMsg("preStart")
+      }
+      // The restarted singleton sent preStart, so reply to that exact actor incarnation.
+      lifecycleProbe.reply("still active")
+      lifecycleProbe.expectMsg("still active")
+      val terminationProbe = TestProbe()
+      terminationProbe.watch(manager)
+      system.stop(manager)
+      lifecycleProbe.expectMsg("postStop")
+      terminationProbe.expectTerminated(manager)
+      testLease.probe.expectMsg(ReleaseReq(leaseOwner))
+      testLease.probe.expectNoMessage(shortDuration)
     }
 
     "release lease when leaving oldest" in {

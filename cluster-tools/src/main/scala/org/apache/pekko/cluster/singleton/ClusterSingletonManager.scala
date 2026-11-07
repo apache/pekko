@@ -18,6 +18,9 @@ import scala.concurrent.Future
 import scala.concurrent.Promise
 import scala.concurrent.duration._
 import scala.jdk.DurationConverters._
+import scala.util.Failure
+import scala.util.Success
+import scala.util.Try
 import scala.util.control.NonFatal
 
 import org.apache.pekko
@@ -551,6 +554,8 @@ class ClusterSingletonManager(singletonProps: Props, terminationMessage: Any, se
 
   var selfExited = false
 
+  private var restarting = false
+
   // keep track of previously removed members
   var removed = Map.empty[UniqueAddress, Deadline]
 
@@ -620,10 +625,19 @@ class ClusterSingletonManager(singletonProps: Props, terminationMessage: Any, se
     cluster.registerOnMemberUp(self ! StartOldestChangedBuffer)
   }
 
+  override def preRestart(reason: Throwable, message: Option[Any]): Unit = {
+    // The default preRestart calls postStop. Preserve lease ownership across that restart.
+    restarting = true
+    super.preRestart(reason, message)
+  }
+
   override def postStop(): Unit = {
     cancelTimer(CleanupTimer)
     cluster.unsubscribe(self)
     memberExitingProgress.trySuccess(Done)
+    // A final stop skips onTransition, and the singleton child has already terminated here.
+    if (!restarting && stateName == Oldest)
+      releaseLease()
     super.postStop()
   }
 
@@ -849,6 +863,26 @@ class ClusterSingletonManager(singletonProps: Props, terminationMessage: Any, se
       }).to(self)
     }
     goto(AcquiringLease).using(AcquiringLeaseData(leaseRequestInProgress = true, None))
+  }
+
+  private def releaseLease(): Unit = {
+    import context.dispatcher
+
+    // This adapter is thread-safe and retains the manager's logger identity after it stops.
+    val releaseLog = log
+    lease.foreach { l =>
+      Future.fromTry(Try(l.release())).flatten.onComplete {
+        case Success(true) =>
+          if (LogInfo) releaseLog.info("Lease released")
+        case Success(false) =>
+          releaseLog.error(
+            "Failed to release lease. Singleton may not be able to run on another node until lease timeout occurs")
+        case Failure(t) =>
+          releaseLog.error(
+            t,
+            "Failed to release lease. Singleton may not be able to run on another node until lease timeout occurs")
+      }
+    }
   }
 
   // Try and go to oldest, taking the lease if needed
@@ -1222,21 +1256,16 @@ class ClusterSingletonManager(singletonProps: Props, terminationMessage: Any, se
       stateData match {
         case AcquiringLeaseData(true, _) =>
           logInfo("Releasing lease as leaving AcquiringLease going to [{}]", to)
-          import context.dispatcher
-          lease.foreach(l =>
-            pipe(l.release().map[Any](ReleaseLeaseResult(_)).recover {
-              case t => ReleaseLeaseFailure(t)
-            }).to(self))
+          releaseLease()
         case _ =>
       }
   }
 
   onTransition {
     case Oldest -> _ =>
-      lease.foreach { l =>
+      if (lease.nonEmpty) {
         logInfo("Releasing lease as leaving Oldest")
-        import context.dispatcher
-        pipe(l.release().map(ReleaseLeaseResult(_))).to(self)
+        releaseLease()
       }
   }
 
