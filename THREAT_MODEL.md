@@ -6,13 +6,13 @@
 | --- | --- |
 | **Project** | Apache Pekko (core toolkit) |
 | **Written against** | commit `0fb37bfd`, `main` |
-| **Authors** | ASF Security team, at the request of the Pekko PMC |
+| **Owner** | Apache Pekko PMC |
 | **Version binding** | This model is versioned alongside the project. A report against Pekko version *N* is triaged against the model as it stood at *N*, not at `main`. |
 | **Reporting** | Findings that violate a §8 property should be reported per [`SECURITY.md`](SECURITY.md). Findings that fall under §3 or §9 will be closed citing this document. |
 
 **Provenance legend.** Every non-trivial claim is tagged:
 *(documented)* — stated in Pekko's own docs, cited.
-*(maintainer)* — stated by a Pekko maintainer in review of this document.
+*(maintainer)* — a ruling by the Pekko maintainers.
 *(inferred)* — reasoned from code or config defaults, **not yet confirmed**; each has a matching question in §14.
 
 ## §1 Overview
@@ -51,7 +51,7 @@ Three caller roles matter, and they are not equally trusted:
 | Benchmarks | `bench-jmh` | — | — | **no** — §3 |
 | Build / docs | `docs`, `project`, `scripts`, `legal`, `kubernetes` (test-cluster provisioning scripts), `plugins`, `bill-of-materials`, `scala-nightly` | — | — | **no** — §3 |
 
-*(inferred — the in/out split is the ASF Security team's proposal, except `osgi`, which is confirmed in model; see §14 Q6)*
+*(inferred — the in/out split is not yet confirmed, except `osgi`, which is in model; see §14 Q6)*
 
 ---
 
@@ -317,42 +317,40 @@ Feed this section to scanners and AI triage as a suppression list.
 
 ---
 
-## §14 Maintainer rulings (formerly open questions)
+## §14 Maintainer rulings
 
-All thirteen questions are answered. They are kept so cross-references resolve and the reasoning stays visible.
-
-**Q1 — The plaintext transport default. ANSWERED *(maintainer)*.**
-`transport` ships `tcp`, so a stock cluster has no peer authentication. **Answer:** the default is a compatibility choice under §5b, not a security claim. Reports route as follows:
+**Q1 — The plaintext transport default *(maintainer)*.**
+`transport` ships `tcp`, so a stock cluster has no peer authentication. The default is a compatibility choice under §5b, not a security claim. Reports route as follows:
 - "the default should be `tls-tcp`" → `BY-DESIGN: default-configuration`; §5b.3 invites the proposal on the development list.
 - "an unauthenticated peer can associate", assuming internet exposure → `BY-DESIGN: property-disclaimed`; §9 disclaims peer authentication by default.
 - harm reachable **pre-association** from an adjacent-network host → `VALID`.
 - harm reachable from an adjacent-network host that has completed the **unauthenticated** `tcp` handshake but holds no operator-granted standing (§7: *associated* means *authenticated*) → `VALID`. Completing that handshake does not convert the attacker into the trusted peer §7 excludes; "pre-association" is read as "pre-authentication". *(maintainer)*
 
-**Q2 — `allow-java-serialization`. ANSWERED *(maintainer)*.** Enabling it is not recommended. **Answer:** any finding that requires `allow-java-serialization = on` to manifest is `OUT-OF-MODEL: non-default-build`, including gadget-chain deserialization. An operator who enables it takes on gadget-chain defence **entirely**: Pekko integrates no serialization filter, so the only lever is the JVM's own — `-Djdk.serialFilter`, or an `ObjectInputFilter` installed process-wide. Maintaining that allow list is the operator's responsibility, not Pekko's.
+**Q2 — `allow-java-serialization` *(maintainer)*.** Enabling it is not recommended. Any finding that requires `allow-java-serialization = on` to manifest is `OUT-OF-MODEL: non-default-build`, including gadget-chain deserialization. An operator who enables it takes on gadget-chain defence **entirely**: Pekko integrates no serialization filter, so the only lever is the JVM's own — `-Djdk.serialFilter`, or an `ObjectInputFilter` installed process-wide. Maintaining that allow list is the operator's responsibility, not Pekko's.
 
 Two things this does **not** dispose of, per §5b.4:
 - A serious defect in Pekko's own serialization implementation is in scope and may warrant a CVE, whatever the flag is set to.
 - Java deserialization occurring **despite** `allow-java-serialization = off` violates §8 P1 and is `VALID`, Critical.
 
-**Q3 — `hostname-verification = off`. ANSWERED *(maintainer)*.** **Answer:** a compatibility default under §5b, deliberate rather than legacy, supporting deployments where hostnames are dynamic and not known up front. Pekko additionally warns at runtime under `LogMarker.Security` whenever TLS is enabled and verification is off, on both transports (`artery/tcp/ConfigSSLEngineProvider.scala`, `transport/netty/SSLEngineProvider.scala`), so the operator is told at startup. A report that "any PKI cert authenticates as any node" is `BY-DESIGN: property-disclaimed` per §9; a report that the default should be `on` is `BY-DESIGN: default-configuration`.
+**Q3 — `hostname-verification = off` *(maintainer)*.** A compatibility default under §5b, deliberate rather than legacy, supporting deployments where hostnames are dynamic and not known up front. Pekko additionally warns at runtime under `LogMarker.Security` whenever TLS is enabled and verification is off, on both transports (`artery/tcp/ConfigSSLEngineProvider.scala`, `transport/netty/SSLEngineProvider.scala`), so the operator is told at startup. A report that "any PKI cert authenticates as any node" is `BY-DESIGN: property-disclaimed` per §9; a report that the default should be `on` is `BY-DESIGN: default-configuration`.
 
-**Q4 — Are `untrusted-mode` and `enable-allow-list` security boundaries or hardening? ANSWERED *(maintainer)*.** **Answer:** both are **hardening** features, per the documented *"does not give full protection"*, and shipping them `off` is a §5b compatibility choice — adoption is the operator's decision. A request that either default to `on` is `BY-DESIGN: default-configuration`.
+**Q4 — Are `untrusted-mode` and `enable-allow-list` security boundaries or hardening? *(maintainer)*** Both are **hardening** features, per the documented *"does not give full protection"*, and shipping them `off` is a §5b compatibility choice — adoption is the operator's decision. A request that either default to `on` is `BY-DESIGN: default-configuration`.
 
 A **bypass of either once enabled** is a separate matter and is **not** covered by that. It violates §8 P5 or P4 respectively, so it is `VALID` at the severity §8 assigns, per §5b.4.
 
-**Q5 — Persistence backend trust. ANSWERED *(maintainer)*.** **Answer:** journal and snapshot stores are **trusted**. Securing the database or persistence store is the responsibility of whoever administers it, and Pekko does not treat persisted values as potentially compromised on replay. A finding whose precondition is an attacker who can write to the journal or snapshot store is `OUT-OF-MODEL: trusted-input`.
+**Q5 — Persistence backend trust *(maintainer)*.** Journal and snapshot stores are **trusted**. Securing the database or persistence store is the responsibility of whoever administers it, and Pekko does not treat persisted values as potentially compromised on replay. A finding whose precondition is an attacker who can write to the journal or snapshot store is `OUT-OF-MODEL: trusted-input`.
 
 This is a trust statement about the **store**, not a licence for the plugin SPI: a defect in Pekko's own replay handling is in scope per §5b.4.
 
-**Q6 — Module in/out split (§2 table). ANSWERED *(maintainer)*, except the residual split noted below.**
+**Q6 — Module in/out split (§2 table) *(maintainer, except as noted below)*.**
 
-- **`osgi` — answered *(maintainer)*.** It stays **in model**: security reports against it are accepted. It is a barely used feature, and the project may in future remove it rather than carry the maintenance overhead — but while it ships it is supported, and a finding in it is not `OUT-OF-MODEL: unsupported-component`. If it is removed, §12 applies.
-- **`kubernetes/` — answered *(maintainer)*.** It is test-cluster provisioning tooling — four files (`setup.sh`, `create-cluster-gke.sh`, `test-node-base.yaml`, `.gitignore`), not a build module. It is correctly out of scope with the build and docs sources. Kubernetes *functionality* — discovery, bootstrap, lease — is not in this repository at all: it lives in **Apache Pekko Management**. That is a different repository, not a different security process: reports are made and triaged exactly as they are for core, per §3.
-- The rest of the in/out split shown in §2 remains the ASF Security team's proposal *(inferred)*.
+- **`osgi` *(maintainer)*.** It stays **in model**: security reports against it are accepted. It is a barely used feature, and the project may in future remove it rather than carry the maintenance overhead — but while it ships it is supported, and a finding in it is not `OUT-OF-MODEL: unsupported-component`. If it is removed, §12 applies.
+- **`kubernetes/` *(maintainer)*.** It is test-cluster provisioning tooling — four files (`setup.sh`, `create-cluster-gke.sh`, `test-node-base.yaml`, `.gitignore`), not a build module. It is correctly out of scope with the build and docs sources. Kubernetes *functionality* — discovery, bootstrap, lease — is not in this repository at all: it lives in **Apache Pekko Management**. That is a different repository, not a different security process: reports are made and triaged exactly as they are for core, per §3.
+- The rest of the in/out split shown in §2 is not yet confirmed *(inferred)*.
 
-**Q7 — The negative claims in §5. ANSWERED *(maintainer)*.** Each negative claim in §5 — environment variables, sockets, signal handlers and child processes, the two shutdown hooks, stdout, and process-global state — is confirmed against the main sources and stated there with its exception.
+**Q7 — The negative claims in §5 *(maintainer)*.** Each negative claim in §5 — environment variables, sockets, signal handlers and child processes, the two shutdown hooks, stdout, and process-global state — is confirmed against the main sources and stated there with its exception.
 
-**Q8 — Resource guarantees. ANSWERED *(maintainer)*.** **CPU cost is not in itself a security concern.** A report that Pekko does more work than a reporter expected, or that load from a peer degrades throughput, is a performance issue and is handled as one — not a vulnerability. Constant-factor overhead proportional to a message is expected and is never a finding.
+**Q8 — Resource guarantees *(maintainer)*.** **CPU cost is not in itself a security concern.** A report that Pekko does more work than a reporter expected, or that load from a peer degrades throughput, is a performance issue and is handled as one — not a vulnerability. Constant-factor overhead proportional to a message is expected and is never a finding.
 
 The exception is an input that is **completely out of the ordinary**: one crafted so that cost explodes disproportionately to it — an algorithmic-complexity path where work grows super-linearly in the size or structure of a single message. That is a defect per §5b.4, and where it is reachable from an adversary §7 admits, it is `VALID`.
 
@@ -363,11 +361,11 @@ The test is **disproportionate cost**, not the appearance of the input; an input
 - Exhaustion driven by message **volume** from an authenticated peer is not covered, and remains subject to §7, under which such a peer is trusted.
 - **Disproportionate cost includes node loss.** Framing failures on one Artery TCP connection tear down only that connection, but the decoder and deserializer stages downstream of the `MergeHub` are shared by every inbound connection. They drop messages on `NonFatal` errors; a **fatal** JVM error there (`OutOfMemoryError`, `StackOverflowError`) fails the shared inbound stream, and `ArteryTransport.attachInboundStreamRestart` terminates the whole `ActorSystem` after `inbound-max-restarts` (default 5) failures within `inbound-restart-timeout` (default 5 seconds). A single input that provokes a fatal error on that path therefore costs the node, not the message, and is judged as disproportionate cost under this ruling. *(maintainer)*
 
-**Q9 — Byzantine generalisation. ANSWERED *(maintainer)*.** **Answer:** it holds for all of them. No subsystem — cluster membership, sharding, singleton or `distributed-data` — claims resilience against a misbehaving member, and Pekko has no guarantee of being able to recognise a compromised node at all. Failure detection is heartbeat-based and answers "is this member responding?", not "is this member honest".
+**Q9 — Byzantine generalisation *(maintainer)*.** The no-Byzantine-peer reading of §7 holds for all of them. No subsystem — cluster membership, sharding, singleton or `distributed-data` — claims resilience against a misbehaving member, and Pekko has no guarantee of being able to recognise a compromised node at all. Failure detection is heartbeat-based and answers "is this member responding?", not "is this member honest".
 
 Consequently a finding whose precondition is "a cluster member misbehaves" is `OUT-OF-MODEL: adversary-not-in-scope`, and so is one that assumes Pekko should have detected the compromise.
 
-**Q10 — Coexistence. ANSWERED *(maintainer)*.** Three documents carry security information, each canonical for one thing:
+**Q10 — Coexistence *(maintainer)*.** Three documents carry security information, each canonical for one thing:
 
 | Document | Canonical for | Reached by |
 | --- | --- | --- |
@@ -377,13 +375,13 @@ Consequently a finding whose precondition is "a cluster member misbehaves" is `O
 
 Every other document **links** to `SECURITY.md` for the reporting policy and to this document for scope, rather than restating either. A change to the policy is therefore made in one place.
 
-**Q11 — The §3/§7 boundary non-goals. ANSWERED *(maintainer)*.** Confirmed:
+**Q11 — The §3/§7 boundary non-goals *(maintainer)*.** Confirmed:
 
 - Pekko is **not a sandbox** and **not an authorization framework** (§3).
 - Out of the adversary model: an attacker with code execution in the embedding JVM, a hostile classpath, and side-channel observers — Pekko makes no timing or memory-access guarantees of its own. TLS is delegated to the JDK's JSSE, whose own guarantees are unaffected by this disclaimer.
 - **In** the adversary model: attacker-influenced *message content* arriving by the ordinary path, since that is how application data travels. This covers defects in **Pekko's own handling** of that content — a serializer, codec or framing defect reachable from a well-formed message is `VALID` per §5b.4. It does not extend to the application's interpretation of the content, which is the application's responsibility per §6.
 
-**Q12 — Clock assumptions. ANSWERED.** **Pekko has no code that validates or cross-checks another node's clock**, and almost nothing that reads one. Verified:
+**Q12 — Clock assumptions.** **Pekko has no code that validates or cross-checks another node's clock**, and almost nothing that reads one. Verified:
 
 - **Failure detection uses the local clock only.** `PhiAccrualFailureDetector` records arrival times through its own `clock()` (`FailureDetector.scala`). No remote timestamp enters it, so a peer misreporting its clock cannot influence reachability.
 - **The heartbeat timestamp is the sender's own, round-tripped.** `Heartbeat` carries `System.nanoTime()` taken by the sender; the receiver echoes it back verbatim in `HeartbeatRsp`; the original sender subtracts it from its own clock (`ClusterHeartbeat.scala`). No node ever interprets another node's clock value, and the result feeds only a debug log guarded by `verboseHeartbeat` — a peer echoing a false value changes nothing else.
@@ -392,7 +390,7 @@ Every other document **links** to `SECURITY.md` for the reporting policy and to 
 
 **Disposition.** Pekko makes no claim against adversarial clock manipulation on a cluster member: such a member is misbehaving, and Q9 places it out of model. A report that LWW data diverges under clock skew is `BY-DESIGN: property-disclaimed` — the constraint is stated on the type itself.
 
-**Q13 — Classic remoting's place in the supported surface. ANSWERED *(maintainer)*.** **Answer:** classic remoting is still **supported**. Deprecation is not desupport: security reports against it are accepted on exactly the same terms as artery. Configuration is the operator's, per §5b — its defaults are compatibility choices and a request to tighten one is a change request. Bugs in the implementation will be looked at, per §5b.4.
+**Q13 — Classic remoting's place in the supported surface *(maintainer)*.** Classic remoting is still **supported**. Deprecation is not desupport: security reports against it are accepted on exactly the same terms as artery. Configuration is the operator's, per §5b — its defaults are compatibility choices and a request to tighten one is a change request. Bugs in the implementation will be looked at, per §5b.4.
 
 Its settings in §5a therefore follow the same rulings as their artery equivalents: `pekko.remote.classic.untrusted-mode` and `trusted-selection-paths` follow Q4, and `netty.tcp.enable-ssl` follows Q1.
 
