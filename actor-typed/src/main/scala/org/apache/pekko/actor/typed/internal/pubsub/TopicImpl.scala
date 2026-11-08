@@ -51,6 +51,12 @@ private[pekko] object TopicImpl {
   final case class TopicInstancesUpdated[T](topics: Set[ActorRef[TopicImpl.Command[T]]]) extends Command[T]
   final case class MessagePublished[T](message: T) extends Command[T]
   final case class SubscriberTerminated[T](subscriber: ActorRef[T]) extends Command[T]
+
+  /**
+   * Max number of messages published before the first receptionist listing that are kept
+   * to be forwarded to the other topic instances once the listing arrives.
+   */
+  val MaxPublishedBeforeFirstListing = 1000
 }
 
 /**
@@ -80,6 +86,11 @@ private[pekko] final class TopicImpl[T](topicName: String, context: ActorContext
   private var topicInstances = Set.empty[ActorRef[TopicImpl.Command[T]]]
   private var localSubscribers = Set.empty[ActorRef[T]]
 
+  // Until the first listing arrives the other topic instances are unknown, so published messages are
+  // kept and forwarded once it arrives. The flag tells whether the message already reached local subscribers.
+  private var firstListingSeen = false
+  private var publishedBeforeFirstListing = Vector.empty[(T, Boolean)]
+
   private val receptionist = context.system.receptionist
   private val receptionistAdapter = context.messageAdapter[Receptionist.Listing] {
     case topicServiceKey.Listing(topics) => TopicInstancesUpdated(topics)
@@ -88,6 +99,25 @@ private[pekko] final class TopicImpl[T](topicName: String, context: ActorContext
   receptionist ! Receptionist.Subscribe(topicServiceKey, receptionistAdapter)
 
   override def onMessage(msg: TopicImpl.Command[T]): Behavior[TopicImpl.Command[T]] = msg match {
+
+    case Publish(message) if !firstListingSeen =>
+      val deliveredLocally = localSubscribers.nonEmpty
+      localSubscribers.foreach(_ ! message)
+      if (publishedBeforeFirstListing.size < MaxPublishedBeforeFirstListing) {
+        context.log.trace(
+          "Publishing message of type [{}] before topic listing seen, keeping it to forward once seen",
+          message.getClass)
+        publishedBeforeFirstListing :+= (message -> deliveredLocally)
+      } else {
+        context.log.trace(
+          "Publishing message of type [{}] before topic listing seen, too many such messages, dropping",
+          message.getClass)
+        context.system.deadLetters ! Dropped(
+          message,
+          s"Too many messages published before topic listing was seen (max $MaxPublishedBeforeFirstListing)",
+          context.self.toClassic)
+      }
+      this
 
     case Publish(message) =>
       if (topicInstances.isEmpty) {
@@ -156,6 +186,10 @@ private[pekko] final class TopicImpl[T](topicName: String, context: ActorContext
     case TopicInstancesUpdated(newTopics) =>
       context.log.debug("Topic list updated [{}]", newTopics)
       topicInstances = newTopics
+      if (!firstListingSeen) {
+        firstListingSeen = true
+        forwardPublishedBeforeFirstListing()
+      }
       this
 
     case GetTopicStats(replyTo) =>
@@ -165,5 +199,25 @@ private[pekko] final class TopicImpl[T](topicName: String, context: ActorContext
     case other =>
       // can't do exhaustiveness check correctly because of protocol internal/public design
       throw new IllegalArgumentException(s"Unexpected command type ${other.getClass}")
+  }
+
+  private def forwardPublishedBeforeFirstListing(): Unit = {
+    // local subscribers already got these messages when they were published
+    val otherTopicInstances = topicInstances - context.self
+    publishedBeforeFirstListing.foreach {
+      case (message, deliveredLocally) =>
+        if (otherTopicInstances.nonEmpty) {
+          val pub = MessagePublished(message)
+          otherTopicInstances.foreach(_ ! pub)
+        } else if (!deliveredLocally) {
+          context.system.deadLetters ! Dropped(message, "No topic subscribers known", context.self.toClassic)
+        }
+    }
+    if (publishedBeforeFirstListing.nonEmpty)
+      context.log.debug(
+        "Topic listing seen, forwarding [{}] messages published before it to [{}] other topic instances",
+        publishedBeforeFirstListing.size,
+        otherTopicInstances.size)
+    publishedBeforeFirstListing = Vector.empty
   }
 }

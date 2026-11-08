@@ -16,6 +16,9 @@ package org.apache.pekko.actor.typed.pubsub
 import scala.concurrent.duration._
 
 import org.apache.pekko
+import pekko.actor.DeadLetter
+import pekko.actor.Dropped
+import pekko.actor.testkit.typed.scaladsl.FishingOutcomes
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
 import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
 
@@ -90,6 +93,77 @@ class LocalPubSubSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike wit
       } finally {
         testKit.stop(fruitTopic1)
         testKit.stop(fruitTopic2)
+      }
+    }
+
+    "deliver messages published to a new topic instance before its first listing to other instances" in {
+      val fruitTopic1 = testKit.spawn(Topic[String]("fruit5"))
+
+      try {
+        val probe1 = testKit.createTestProbe[String]()
+        fruitTopic1 ! Topic.Subscribe(probe1.ref)
+
+        // the receptionist knows about the subscribed instance
+        val statsProbe = testKit.createTestProbe[Topic.TopicStats]()
+        statsProbe.awaitAssert {
+          fruitTopic1 ! Topic.GetTopicStats(statsProbe.ref)
+          statsProbe.receiveMessage().topicInstanceCount should ===(1)
+        }
+
+        // published right after spawning, before the new instance has seen the receptionist listing
+        val fruitTopic2 = testKit.spawn(Topic[String]("fruit5"))
+        try {
+          fruitTopic2 ! Topic.Publish("cherry")
+          fruitTopic2 ! Topic.Publish("plum")
+          probe1.expectMessage("cherry")
+          probe1.expectMessage("plum")
+
+          // and messages published after the listing is seen still arrive, in order
+          fruitTopic2 ! Topic.Publish("kiwi")
+          probe1.expectMessage("kiwi")
+        } finally {
+          testKit.stop(fruitTopic2)
+        }
+      } finally {
+        testKit.stop(fruitTopic1)
+      }
+    }
+
+    "deliver messages published before the first listing to local subscribers only once" in {
+      val fruitTopic = testKit.spawn(Topic[String]("fruit6"))
+
+      try {
+        val probe1 = testKit.createTestProbe[String]()
+        fruitTopic ! Topic.Subscribe(probe1.ref)
+        fruitTopic ! Topic.Publish("lemon")
+        probe1.expectMessage("lemon")
+
+        // the listing including this instance itself arrives, the message must not be forwarded to it again
+        val statsProbe = testKit.createTestProbe[Topic.TopicStats]()
+        statsProbe.awaitAssert {
+          fruitTopic ! Topic.GetTopicStats(statsProbe.ref)
+          statsProbe.receiveMessage().topicInstanceCount should ===(1)
+        }
+        fruitTopic ! Topic.Publish("lime")
+        probe1.expectMessage("lime")
+        probe1.expectNoMessage(100.millis)
+      } finally {
+        testKit.stop(fruitTopic)
+      }
+    }
+
+    "drop messages published before the first listing when there are no subscribers" in {
+      val deadLetterProbe = testKit.createDeadLetterProbe()
+      val fruitTopic = testKit.spawn(Topic[String]("fruit7"))
+
+      try {
+        fruitTopic ! Topic.Publish("melon")
+        deadLetterProbe.fishForMessagePF(deadLetterProbe.remainingOrDefault) {
+          case DeadLetter(Dropped("melon", _, _, _), _, _) => FishingOutcomes.complete
+          case _                                           => FishingOutcomes.continueAndIgnore
+        }
+      } finally {
+        testKit.stop(fruitTopic)
       }
     }
 
