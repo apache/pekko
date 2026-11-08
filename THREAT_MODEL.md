@@ -1,12 +1,11 @@
 # Apache Pekko — Threat Model
 
-**Status:** Reviewed by the Apache Pekko PMC, 2026-08-27; refreshed against `main` 2026-11-08. The residual module in/out split (§2, Q6) is the one open item.
+**Status:** The residual module in/out split (§2, Q6) is the one open item.
 
 | | |
 | --- | --- |
 | **Project** | Apache Pekko (core toolkit) |
 | **Written against** | commit `0fb37bfd`, `main` |
-| **Date** | 2026-08-27, refreshed 2026-11-08 |
 | **Authors** | ASF Security team, at the request of the Pekko PMC |
 | **Version binding** | This model is versioned alongside the project. A report against Pekko version *N* is triaged against the model as it stood at *N*, not at `main`. |
 | **Reporting** | Findings that violate a §8 property should be reported per [`SECURITY.md`](SECURITY.md). Findings that fall under §3 or §9 will be closed citing this document. |
