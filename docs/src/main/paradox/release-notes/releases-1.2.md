@@ -6,7 +6,7 @@ Apache Pekko 1.2.x releases support Java 8 and above.
 
 Pekko 1.2.1 has some bug fixes and some code has been deprecated to signal that it is likely to be removed in 2.0.0. See the [GitHub Milestone for 1.2.1](https://github.com/apache/pekko/milestone/20?closed=1) for a fuller list of changes.
 
-### Bug Fixes
+### Bug Fixes in 1.2.1
 
 * Add back BackoffSupervisor.calculateDelay due to bin compat issues ([PR2195](https://github.com/apache/pekko/pull/2195))
 
@@ -25,7 +25,7 @@ Pekko 1.2.0 has some new features, performance updates and dependency upgrades. 
 
 Most of the changes appeared in the milestone releases (1.2.0-M1 and 1.2.0-M2) but some additional changes were made for the 1.2.0 release. These extra changes include deprecating some methods that will be removed in a future release.
 
-### Bug Fixes
+### Bug Fixes in 1.2.0
 
 * Fix a leak in FlatMapPrefix operator ([PR1622](https://github.com/apache/pekko/pull/1622))
 * Fix a leak in PrefixAndTail operator ([PR1623](https://github.com/apache/pekko/pull/1623))

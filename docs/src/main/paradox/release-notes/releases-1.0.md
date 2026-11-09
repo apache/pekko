@@ -6,7 +6,7 @@ Apache Pekko 1.0.x releases support Java 8 and above.
 
 Contains all the changes in 1.0.3-M1 but this release is safe to be used in production. There are a few additional changes.
 
-### Bug Fixes
+### Bug Fixes in 1.0.3
 
 * TcpDnsClient cannot recover if registration on TcpConnection times out ([PR1183](https://github.com/apache/pekko/pull/1183))
 * Fix `ByteIterator#indexWhere` ([PR1282](https://github.com/apache/pekko/pull/1282))
@@ -19,7 +19,7 @@ Contains all the changes in 1.0.3-M1 but this release is safe to be used in prod
 ## 1.0.3-M1
 This is a milestone release and is aimed at testing some new support for users who want to add Pekko nodes to an existing Akka cluster. This support is experimental. This release should not be used in production.
 
-### Bug Fixes
+### Bug Fixes in 1.0.3-M1
 
 * Fix StackOverflowError in ByteStringBuilder.addAll ([PR903](https://github.com/apache/pekko/pull/903))
 * Fix issue with possible int overflow in snapshot interval calculation ([PR1088](https://github.com/apache/pekko/pull/1088))
@@ -37,7 +37,7 @@ This is a milestone release and is aimed at testing some new support for users w
 ## 1.0.2
 A minor bug fix release.
 
-### Bug Fixes
+### Bug Fixes in 1.0.2
 
 * Do not render env variables when logging configs. This relates to the optional config `pekko.log-config-on-start`. We do not recommend logging configs in production environments. ([PR771](https://github.com/apache/pekko/pull/771))
 * Allow `pekko-actor-testkit-typed` to work with slf4j-api v2.0.x. ([PR784](https://github.com/apache/pekko/pull/784))
@@ -52,7 +52,7 @@ A minor bug fix release. The class renaming described below (`#491`) is not expe
 upgrading from version 1.0.0 but it is strongly recommended that Apache Pekko users switch to the 1.0.1
 release when it becomes available.
 
-### Bug Fixes
+### Bug Fixes in 1.0.1
 
 * Issue with class name of package private object `PekkoPduProtobufCodec$` ([#491](https://github.com/apache/pekko/issues/491))
 
@@ -72,7 +72,7 @@ We have gone through the code base and have tried to properly acknowledge all th
 Apache Pekko code base. If anyone believes that there are any instances of third party source code that is not
 properly acknowledged, please get in touch.
 
-### Bug Fixes
+### Bug Fixes in 1.0.0
 We haven't had to fix many bugs that were in Akka 2.6.20.
 
 * Optimized JsonFraming breaks existing functionality in v2.6.20 ([PR44](https://github.com/apache/pekko/pull/44))

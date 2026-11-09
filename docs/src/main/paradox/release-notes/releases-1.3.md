@@ -10,7 +10,7 @@ With work on 2.0.0 commencing, we have deprecated some methods that we plan to r
 
 This release includes a number of changes from Akka 2.7.0, which have recently become available under the Apache License, Version 2.0.
 
-### Bug Fixes
+### Bug Fixes in 1.3.0
 
 * Fix issues with OSGi imports for Pekko packages ([#2312](https://github.com/apache/pekko/issues/2312))
 * Fix close in cancel for statefulMap ([PR2388](https://github.com/apache/pekko/pull/2388))

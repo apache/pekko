@@ -6,7 +6,7 @@ Apache Pekko 1.1.x releases support Java 8 and above.
 
 Pekko 1.1.5 is a bug fix release. See [GitHub Milestone for 1.1.5](https://github.com/apache/pekko/milestone/17?closed=1) for a fuller list of changes.
 
-### Bug Fixes
+### Bug Fixes in 1.1.5
 
 * Fix issue with number deserialization in pekko-cluster-metrics ([PR1899](https://github.com/apache/pekko/pull/1899))
 
@@ -14,7 +14,7 @@ Pekko 1.1.5 is a bug fix release. See [GitHub Milestone for 1.1.5](https://githu
 
 Pekko 1.1.4 is a bug fix and dependency upgrade release. See [GitHub Milestone for 1.1.4](https://github.com/apache/pekko/milestone/14?closed=1) for a fuller list of changes.
 
-### Bug Fixes
+### Bug Fixes in 1.1.4
 
 * Fix occasional ordering issue in FlowWithContext#unsafeOptionalDataVia ([PR1681](https://github.com/apache/pekko/pull/1681))
 * Issue forming mixed Akka/Pekko cluster when classic remoting with SSL/TLS is used ([PR1857](https://github.com/apache/pekko/pull/1857))
@@ -33,7 +33,7 @@ Pekko 1.1.4 is a bug fix and dependency upgrade release. See [GitHub Milestone f
 
 Pekko 1.1.3 is a bug fix and dependency upgrade release. See [GitHub Milestone for 1.1.3](https://github.com/apache/pekko/milestone/13?closed=1) for a fuller list of changes.
 
-### Bug Fixes
+### Bug Fixes in 1.1.3
 
 * Revert zipWithIndex changes ([PR1526](https://github.com/apache/pekko/pull/1526))
 * Fix occasional ordering issue in result in unsafeOptionalDataVia ([PR1611](https://github.com/apache/pekko/pull/1611))
@@ -56,7 +56,7 @@ Pekko 1.1.3 is a bug fix and dependency upgrade release. See [GitHub Milestone f
 
 Pekko 1.1.2 is a bug fix and dependency upgrade release. See [GitHub Milestone for 1.1.2](https://github.com/apache/pekko/milestone/11?closed=1) for a fuller list of changes.
 
-### Bug Fixes
+### Bug Fixes in 1.1.2
 
 * Fix version issue in OSGi metadata ([PR1480](https://github.com/apache/pekko/pull/1480))
 * Support primitives in Flow#collectType ([PR1490](https://github.com/apache/pekko/pull/1490))
@@ -74,7 +74,7 @@ Pekko 1.1.2 is a bug fix and dependency upgrade release. See [GitHub Milestone f
 
 Pekko 1.1.1 is a bug fix release. See [GitHub Milestone for 1.1.1](https://github.com/apache/pekko/milestone/10?closed=1) for a fuller list of changes.
 
-### Bug Fixes
+### Bug Fixes in 1.1.1
 
 * Cluster sharding delivers message to the wrong entity ([PR1464](https://github.com/apache/pekko/pull/1464))
 
@@ -90,7 +90,7 @@ Please review the Known Issues below.
 
 Apache Pekko 1.1.0 contains all of the changes that have been released in the @ref:[1.0.x releases](releases-1.0.md) up to and including v1.0.3.
 
-### Bug Fixes
+### Bug Fixes in 1.1.0
 
 * in TlsActor, flush data to user only after handshake has finished ([PR1128](https://github.com/apache/pekko/pull/1128))
 * proper path when promise actor terminated quickly ([PR1156](https://github.com/apache/pekko/pull/1156))

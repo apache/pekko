@@ -6,7 +6,7 @@ Apache Pekko 1.5.x releases support Java 8 and above.
 
 Pekko 1.5.0 has some bug fixes and small enhancements. See the [GitHub Milestone for 1.5.0](https://github.com/apache/pekko/milestone/26?closed=1) for a fuller list of changes.
 
-### Bug Fixes
+### Bug Fixes in 1.5.0
 
 * RecoverWith operator break of semantics in 1.2.0 release ([#2620](https://github.com/apache/pekko/issues/2620))
 * Release lease on shard stop ([PR2740](https://github.com/apache/pekko/pull/2740))

@@ -85,7 +85,7 @@ too if it will no longer be consumed. See @ref:[Stream IO](../stream/stream-io.m
 * Check the remote deployment allow list before deserializing the constructor arguments of a remotely deployed actor ([PR3493](https://github.com/apache/pekko/pull/3493))
 * Stop resolving a wire-supplied manifest class for serializers that declare `includeManifest = false`, so a peer can no longer use them to drive class loading ([PR3495](https://github.com/apache/pekko/pull/3495))
 
-### Bug Fixes
+### Bug Fixes in 2.0.0
 
 **Actors, dispatchers and logging**
 
