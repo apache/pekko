@@ -17,7 +17,11 @@
 
 package org.apache.pekko.stream.impl.io.compression
 
-import org.apache.pekko.annotation.{ InternalApi, InternalStableApi }
+import com.github.luben.zstd.ZstdDictContentType
+
+import org.apache.pekko
+import pekko.annotation.{ InternalApi, InternalStableApi }
+import pekko.stream.ZstdDictionaryContentType
 
 @InternalStableApi
 private[pekko] abstract class ZstdDictionaryImpl {
@@ -25,6 +29,8 @@ private[pekko] abstract class ZstdDictionaryImpl {
   def level: Option[Int]
   def offset: Option[Int]
   def length: Option[Int]
+  // not abstract, so that existing implementations keep working
+  def contentType: ZstdDictionaryContentType = ZstdDictionaryContentType.AUTO
 }
 
 /** INTERNAL API */
@@ -34,4 +40,27 @@ private[pekko] abstract class ZstdDictionaryImpl {
       offset >= 0 && length >= 0 && offset <= bytes.length - length,
       s"ZstdDictionary offset [$offset] and length [$length] must be within the dictionary of " +
       s"[${bytes.length}] bytes")
+
+  /**
+   * Runs `auto` for [[ZstdDictionaryContentType.AUTO]], which uses the zstd-jni methods without a content type, and
+   * otherwise `typed` with the zstd-jni content type. zstd-jni is an optional dependency that users add themselves,
+   * so a version older than 1.5.7-26, without ZstdDictContentType, may be on the classpath.
+   */
+  def withContentType[T](contentType: ZstdDictionaryContentType)(auto: => T)(typed: ZstdDictContentType => T): T =
+    contentType match {
+      case ZstdDictionaryContentType.AUTO => auto
+      case other                          =>
+        try {
+          val zstdContentType = other match {
+            case ZstdDictionaryContentType.RAW_CONTENT => ZstdDictContentType.RAW_CONTENT
+            case _                                     => ZstdDictContentType.FULL_DICT
+          }
+          typed(zstdContentType)
+        } catch {
+          case e @ (_: NoClassDefFoundError | _: NoSuchMethodError) =>
+            throw new UnsupportedOperationException(
+              s"ZstdDictionary content type [$other] requires zstd-jni 1.5.7-26 or later",
+              e)
+        }
+    }
 }

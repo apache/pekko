@@ -19,6 +19,7 @@ package org.apache.pekko.stream.javadsl.compression;
 
 import org.apache.pekko.annotation.ApiMayChange;
 import org.apache.pekko.annotation.InternalApi;
+import org.apache.pekko.stream.ZstdDictionaryContentType;
 import org.apache.pekko.stream.impl.io.compression.ZstdDictionaryImpl;
 import org.apache.pekko.util.ByteString;
 import org.apache.pekko.util.OptionalUtil;
@@ -44,13 +45,24 @@ public final class ZstdDictionary {
   private final OptionalInt level;
   private final OptionalInt offset;
   private final OptionalInt length;
+  private final ZstdDictionaryContentType contentType;
 
   private ZstdDictionary(
-      ByteString dictionary, OptionalInt level, OptionalInt offset, OptionalInt length) {
+      ByteString dictionary,
+      OptionalInt level,
+      OptionalInt offset,
+      OptionalInt length,
+      ZstdDictionaryContentType contentType) {
     this.dictionary = Objects.requireNonNull(dictionary, "dictionary");
     this.level = level;
     this.offset = offset;
     this.length = length;
+    this.contentType = Objects.requireNonNull(contentType, "contentType");
+  }
+
+  private ZstdDictionary(
+      ByteString dictionary, OptionalInt level, OptionalInt offset, OptionalInt length) {
+    this(dictionary, level, offset, length, ZstdDictionaryContentType.AUTO);
   }
 
   private static OptionalInt optionalInt(Integer value) {
@@ -135,6 +147,23 @@ public final class ZstdDictionary {
     return length;
   }
 
+  /**
+   * @since 2.1.0
+   */
+  public ZstdDictionaryContentType getContentType() {
+    return contentType;
+  }
+
+  /**
+   * Sets how zstd interprets the dictionary bytes. The default is {@link
+   * ZstdDictionaryContentType#AUTO}; any other type requires zstd-jni 1.5.7-26 or later.
+   *
+   * @since 2.1.0
+   */
+  public ZstdDictionary withContentType(ZstdDictionaryContentType contentType) {
+    return new ZstdDictionary(dictionary, level, offset, length, contentType);
+  }
+
   @Override
   public boolean equals(Object other) {
     if (this == other) return true;
@@ -143,12 +172,13 @@ public final class ZstdDictionary {
     return dictionary.equals(that.dictionary)
         && level.equals(that.level)
         && offset.equals(that.offset)
-        && length.equals(that.length);
+        && length.equals(that.length)
+        && contentType == that.contentType;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(dictionary, level, offset, length);
+    return Objects.hash(dictionary, level, offset, length, contentType);
   }
 
   @Override
@@ -161,6 +191,8 @@ public final class ZstdDictionary {
         + offset
         + ", length="
         + length
+        + ", contentType="
+        + contentType
         + ")";
   }
 
@@ -188,6 +220,11 @@ public final class ZstdDictionary {
       @Override
       public Option<Object> length() {
         return OptionalUtil.convertOptionalToScala(length);
+      }
+
+      @Override
+      public ZstdDictionaryContentType contentType() {
+        return contentType;
       }
     };
   }

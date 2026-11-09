@@ -26,7 +26,7 @@ import com.github.luben.zstd.{ Zstd, ZstdDecompressCtx, ZstdException }
 
 import org.apache.pekko
 import pekko.annotation.InternalApi
-import pekko.stream.Attributes
+import pekko.stream.{ Attributes, ZstdDictionaryContentType }
 import pekko.stream.impl.fusing.GraphStages.SimpleLinearGraphStage
 import pekko.stream.stage.{ GraphStageLogic, InHandler, OutHandler }
 import pekko.util.ByteString
@@ -75,6 +75,7 @@ import pekko.util.ByteString
   require(maxBytesPerChunk > 0, "maxBytesPerChunk must be greater than 0")
 
   private val decompressDict = dictionary.map(dictionaryBytes)
+  private val contentType = dictionary.fold(ZstdDictionaryContentType.AUTO)(_.contentType)
 
   override def createLogic(inheritedAttributes: Attributes): GraphStageLogic = {
     new GraphStageLogic(shape) with InHandler with OutHandler {
@@ -83,7 +84,10 @@ import pekko.util.ByteString
       // postStop is not called if creating the logic fails, so close the context here
       try {
         if (windowLogMax != 0) setWindowLogMax(decompressCtx, windowLogMax)
-        decompressDict.foreach(decompressCtx.loadDict)
+        decompressDict.foreach { bytes =>
+          ZstdDictionaryImpl.withContentType(contentType)(decompressCtx.loadDict(bytes))(
+            decompressCtx.loadDict(bytes, _))
+        }
       } catch {
         case NonFatal(e) =>
           decompressCtx.close()

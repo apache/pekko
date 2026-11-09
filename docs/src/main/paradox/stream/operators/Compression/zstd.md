@@ -32,6 +32,14 @@ Use the `zstd(level, dictionary)` overload to control the compression level and,
 dictionary. Output compressed with a dictionary can only be decompressed with the same dictionary, see
 @ref[zstdDecompress](zstdDecompress.md).
 
+By default, zstd auto-detects the type of the dictionary: bytes that start with the zstd dictionary magic number
+(`0xEC30A437`) are parsed as a formatted dictionary, as produced by `zstd --train`, and any other bytes are used as
+raw content. Use `ZstdDictionary.withContentType` with a @apidoc[ZstdDictionaryContentType](stream.ZstdDictionaryContentType)
+to always use the bytes as raw content (`RAW_CONTENT`), for example when the dictionary can be any data, as with the
+HTTP `dcz` content-coding of [RFC 9842](https://www.rfc-editor.org/rfc/rfc9842), or to require a formatted
+dictionary (`FULL_DICT`). Content types other than `AUTO` require zstd-jni 1.5.7-26 or later; with an older version,
+the operator fails when the dictionary is loaded.
+
 The `zstd(settings)` overload takes a @apidoc[ZstdCompressionSettings](stream.ZstdCompressionSettings), which sets the level and dictionary as well as:
 
 * `withAutoFlush`: if `true` (the default), the compressor flushes after every single element in the stream. If it is
