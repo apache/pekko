@@ -19,6 +19,7 @@ import java.time.{ LocalDateTime, ZoneOffset }
 import java.util.concurrent.{ CountDownLatch, TimeUnit }
 import java.util.{ Calendar, Date, GregorianCalendar, TimeZone }
 
+import scala.concurrent.{ Await, ExecutionContext, Future }
 import scala.concurrent.duration._
 import scala.util.control.NoStackTrace
 
@@ -149,6 +150,34 @@ object LoggerSpec {
     override def receive: Receive = {
       case InitializeLogger(_) => sender() ! "not-initialized"
       case _                   =>
+    }
+  }
+
+  val gatedLoggerConfig =
+    ConfigFactory.parseString("""
+      pekko {
+        stdout-loglevel = "OFF"
+        loglevel = "WARNING"
+        loggers = ["org.apache.pekko.event.LoggerSpec$GatedLogger"]
+      }
+    """).withFallback(PekkoSpec.testConf)
+
+  // when set, GatedLogger holds back its LoggerInitialized reply until the gate opens
+  @volatile var gatedLoggerGate: CountDownLatch = _
+  @volatile var gatedLoggerEntered: CountDownLatch = _
+  @volatile var gatedLoggerRef: ActorRef = _
+
+  class GatedLogger extends Actor {
+    override def receive: Receive = {
+      case InitializeLogger(_) =>
+        val gate = gatedLoggerGate
+        if (gate ne null) {
+          gatedLoggerRef = self
+          gatedLoggerEntered.countDown()
+          gate.await(10, TimeUnit.SECONDS)
+        }
+        sender() ! LoggerInitialized
+      case _ =>
     }
   }
 
@@ -334,6 +363,38 @@ class LoggerSpec extends AnyWordSpec with Matchers {
       lifecycleLoggerBus.hasSubscriptions(lifecycleLoggerRef) should ===(false)
       lifecycleLoggerStopped.await(5, TimeUnit.SECONDS) should ===(true)
       wrongReplyLoggerStopped.await(5, TimeUnit.SECONDS) should ===(true)
+    }
+  }
+
+  "A LoggingBus whose default loggers are stopped while they are still starting" must {
+
+    "not leave the logger that finished starting after the stop running or subscribed" in {
+      implicit val system: ActorSystem = ActorSystem("gatedLogger", gatedLoggerConfig)
+      try {
+        val bus = new EventStream(system, false)
+        gatedLoggerGate = new CountDownLatch(1)
+        gatedLoggerEntered = new CountDownLatch(1)
+        gatedLoggerRef = null
+
+        val starter =
+          Future(bus.startDefaultLoggers(system.asInstanceOf[ActorSystemImpl]))(ExecutionContext.global)
+        // the logger actor exists and is waiting to reply to InitializeLogger
+        gatedLoggerEntered.await(5, TimeUnit.SECONDS) should ===(true)
+        // terminate() runs this pass, which cannot see the logger that is still starting
+        bus.stopDefaultLoggers(system)
+        gatedLoggerGate.countDown()
+        Await.result(starter, 10.seconds)
+
+        val logger = gatedLoggerRef
+        logger should not be null
+        bus.hasSubscriptions(logger) should ===(false)
+        val probe = TestProbe()
+        probe.watch(logger)
+        probe.expectTerminated(logger)
+      } finally {
+        gatedLoggerGate = null
+        TestKit.shutdownActorSystem(system)
+      }
     }
   }
 

@@ -51,6 +51,9 @@ trait LoggingBus extends ActorEventBus {
   private val guard = new ReentrantLock()
   private var loggers = Seq.empty[ActorRef]
   @volatile private var _logLevel: LogLevel = OffLevel
+  // set (under guard) once stopDefaultLoggers has run, so that a startDefaultLoggers call
+  // that is still starting loggers does not publish them after the stop pass
+  private var defaultLoggersStopped = false
 
   /**
    * Query currently set log level. See object Logging for more information.
@@ -165,31 +168,40 @@ trait LoggingBus extends ActorEventBus {
       }
       guard.lock()
       try {
-        previousLoggers = loggers
-        previousLogLevel = _logLevel
-        loggers = started
-        _logLevel = level
-        published = true
+        // if stopDefaultLoggers has already run, it could not see these loggers
+        if (!defaultLoggersStopped) {
+          previousLoggers = loggers
+          previousLogLevel = _logLevel
+          loggers = started
+          _logLevel = level
+          published = true
+        }
       } finally {
         guard.unlock()
       }
-      try {
-        if (system.settings.DebugUnhandledMessage)
-          subscribe(
-            system.systemActorOf(
-              Props(new Actor {
-                def receive = {
-                  case UnhandledMessage(msg, sender, rcp) =>
-                    publish(Debug(rcp.path.toString, rcp.getClass, "unhandled message from " + sender + ": " + msg))
-                }
-              }), "UnhandledMessageForwarder"),
-            classOf[UnhandledMessage])
-      } catch {
-        case _: InvalidActorNameException => // ignore if it is already running
-      }
-      publish(Debug(logName, this.getClass, "Default Loggers started"))
-      if (!(defaultLoggers contains StandardOutLogger.getClass.getName)) {
-        unsubscribe(StandardOutLogger)
+      if (!published) {
+        // stopDefaultLoggers ran (the system is terminating) while these loggers were
+        // starting, so it could not see them; stop them here instead of publishing them
+        started.foreach(stopLogger)
+      } else {
+        try {
+          if (system.settings.DebugUnhandledMessage)
+            subscribe(
+              system.systemActorOf(
+                Props(new Actor {
+                  def receive = {
+                    case UnhandledMessage(msg, sender, rcp) =>
+                      publish(Debug(rcp.path.toString, rcp.getClass, "unhandled message from " + sender + ": " + msg))
+                  }
+                }), "UnhandledMessageForwarder"),
+              classOf[UnhandledMessage])
+        } catch {
+          case _: InvalidActorNameException => // ignore if it is already running
+        }
+        publish(Debug(logName, this.getClass, "Default Loggers started"))
+        if (!(defaultLoggers contains StandardOutLogger.getClass.getName)) {
+          unsubscribe(StandardOutLogger)
+        }
       }
     } catch {
       case e: Exception =>
@@ -230,8 +242,10 @@ trait LoggingBus extends ActorEventBus {
   private[pekko] def stopDefaultLoggers(system: ActorSystem): Unit = {
     val currentLoggers = {
       guard.lock()
-      try loggers
-      finally guard.unlock()
+      try {
+        defaultLoggersStopped = true
+        loggers
+      } finally guard.unlock()
     }
     if (!(currentLoggers contains StandardOutLogger)) {
       setUpStdoutLogger(system.settings)
