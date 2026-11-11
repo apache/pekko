@@ -111,6 +111,12 @@ filter out this signal. See @ref:[Stream IO](../stream/stream-io.md) for details
 @ref:[Changing TCP magic header](../additional/rolling-updates.md#changing-tcp-magic-header) for what this means for
 rolling updates. ([PR3425](https://github.com/apache/pekko/pull/3425))
 
+### Cluster command-line management
+
+The deprecated `pekko-cluster` JMX client script has been removed. Use the
+@ref:[HTTP management](../additional/operations.md#http) API with [curl](https://curl.se/) or a similar
+HTTP client instead. The cluster's @ref:[JMX MBeans](../additional/operations.md#jmx) remain available.
+
 ### Cluster Sharding
 
 * `RemoveInternalClusterShardingData` no longer supports removing Cluster Sharding coordinator data stored
