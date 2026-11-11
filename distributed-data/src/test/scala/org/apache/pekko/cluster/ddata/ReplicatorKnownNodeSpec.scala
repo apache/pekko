@@ -44,6 +44,7 @@ class ReplicatorKnownNodeSpec
     extends PekkoSpec(ConfigFactory.parseString("""
       pekko.actor.provider = cluster
       pekko.remote.artery.canonical.port = 0
+      pekko.remote.artery.canonical.hostname = 127.0.0.1
       pekko.cluster.roles = [replica]
     """)) {
 
@@ -164,6 +165,10 @@ class ReplicatorKnownNodeSpec
           deltaFrom(event.member, "known-delta")
           probe.send(replicator, Replicator.GetReplicaCount)
           probe.expectMsg(Replicator.ReplicaCount(if (event.member.status == MemberStatus.Up) 2 else 1))
+          probe.send(replicator, MemberRemoved(event.member.copy(MemberStatus.Removed), event.member.status))
+          rejectReplicationFrom(event.member, "removed")
+          probe.send(replicator, Replicator.GetReplicaCount)
+          probe.expectMsg(Replicator.ReplicaCount(1))
         }
       }
     }
@@ -185,6 +190,25 @@ class ReplicatorKnownNodeSpec
         probe.send(replicator, MemberLeft(current))
         writeAndReadFrom(current, "current-incarnation")
         rejectReplicationFrom(previous, "previous-incarnation")
+      }
+    }
+
+    "keep a replacement incarnation known when the previous incarnation is removed" in new TestSetup {
+      run {
+        val previous = memberOn(12356).copy(MemberStatus.Up)
+        val current = Member(
+          UniqueAddress(previous.address, previous.uniqueAddress.longUid + 1),
+          previous.roles,
+          Version.Zero).copy(MemberStatus.Up)
+        probe.send(replicator, MemberUp(previous))
+        writeAndReadFrom(previous, "previous-incarnation")
+        probe.send(replicator, MemberUp(current))
+        probe.send(replicator, MemberRemoved(previous.copy(MemberStatus.Removed), previous.status))
+        rejectReplicationFrom(previous, "removed-incarnation")
+        writeAndReadFrom(current, "replacement-incarnation")
+        deltaFrom(current, "replacement-delta")
+        probe.send(replicator, Replicator.GetReplicaCount)
+        probe.expectMsg(Replicator.ReplicaCount(2))
       }
     }
 
