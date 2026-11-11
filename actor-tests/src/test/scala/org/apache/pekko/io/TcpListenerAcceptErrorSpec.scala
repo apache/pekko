@@ -112,6 +112,7 @@ class TcpListenerAcceptErrorSpec
       listener ! Tcp.ResumeAccepting(1)
       registrationProbe.expectMsg(OP_ACCEPT)
       failAccept()
+      listener.underlyingActor.acceptLimit shouldBe 1
 
       EventFilter[ClosedChannelException](occurrences = 0).intercept {
         listener ! Tcp.ResumeAccepting(3)
@@ -119,8 +120,10 @@ class TcpListenerAcceptErrorSpec
         listener ! ChannelAcceptable
       }
       registrationProbe.expectNoMessage(Duration.Zero)
+      listener.underlyingActor.acceptLimit shouldBe 3
       scheduler.timePasses(100.millis)
       registrationProbe.expectMsg(OP_ACCEPT)
+      listener.underlyingActor.acceptLimit shouldBe 3
       scheduler.timePasses(100.millis)
       registrationProbe.expectNoMessage(Duration.Zero)
     }
