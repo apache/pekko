@@ -15,13 +15,13 @@ package org.apache.pekko.actor.typed.scaladsl
 
 import scala.concurrent.Future
 import scala.concurrent.Promise
-import scala.util.{ Failure, Success }
 import scala.util.control.NoStackTrace
+import scala.util.{ Failure, Success }
 
 import org.apache.pekko
-import pekko.actor.testkit.typed.scaladsl.{ ScalaTestWithActorTestKit, TestProbe }
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
 import pekko.actor.testkit.typed.scaladsl.LoggingTestKit
+import pekko.actor.testkit.typed.scaladsl.{ ScalaTestWithActorTestKit, TestProbe }
 import pekko.actor.typed.Props
 
 import org.scalatest.wordspec.AnyWordSpecLike

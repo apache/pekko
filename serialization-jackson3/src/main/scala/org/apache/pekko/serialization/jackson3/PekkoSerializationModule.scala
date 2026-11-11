@@ -14,9 +14,9 @@
 package org.apache.pekko.serialization.jackson3
 
 import tools.jackson.core.{ JsonGenerator, JsonParser }
-import tools.jackson.databind.{ DeserializationContext, JsonNode, SerializationContext }
 import tools.jackson.databind.deser.std.StdScalarDeserializer
 import tools.jackson.databind.ser.std.StdScalarSerializer
+import tools.jackson.databind.{ DeserializationContext, JsonNode, SerializationContext }
 
 import org.apache.pekko
 import pekko.serialization.{ SerializationExtension, Serializer, Serializers }

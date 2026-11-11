@@ -24,8 +24,8 @@ import pekko.actor.Cancellable
 import pekko.actor.Props
 import pekko.annotation.InternalApi
 import pekko.event.Logging
-import pekko.stream._
 import pekko.stream.Supervision.Decider
+import pekko.stream._
 import pekko.stream.impl.fusing.GraphInterpreter.{
   Connection,
   DownstreamBoundaryStageLogic,

@@ -21,9 +21,9 @@ import scala.util.control.NonFatal
 import org.apache.pekko
 import pekko.actor.ExtendedActorSystem
 import pekko.annotation.InternalApi
-import pekko.discovery.{ Discovery, Lookup, ServiceDiscovery }
 import pekko.discovery.ServiceDiscovery.Resolved
 import pekko.discovery.aggregate.AggregateServiceDiscovery.Methods
+import pekko.discovery.{ Discovery, Lookup, ServiceDiscovery }
 import pekko.dispatch.MessageDispatcher
 import pekko.event.Logging
 import pekko.util.Helpers.Requiring

@@ -18,13 +18,14 @@ import java.net.SocketAddress
 import scala.annotation.nowarn
 import scala.jdk.CollectionConverters._
 
+import org.apache.pekko
+import pekko.event.MarkerLoggingAdapter
+
 import io.netty.channel.Channel
 import io.netty.handler.ssl.SslHandler
 import io.netty.util.concurrent.Future
 
 import com.typesafe.config.Config
-import org.apache.pekko
-import pekko.event.MarkerLoggingAdapter
 
 /**
  * INTERNAL API

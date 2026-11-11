@@ -22,12 +22,11 @@ import scala.concurrent.duration.{ FiniteDuration, TimeUnit }
 import scala.jdk.CollectionConverters._
 
 import org.apache.pekko
-import pekko.{ Done, NotUsed }
 import pekko.actor._
 import pekko.dispatch.Dispatchers
 import pekko.pattern.StatusReply
-import pekko.remote._
 import pekko.remote.WireFormats.AddressData
+import pekko.remote._
 import pekko.remote.routing.RemoteRouterConfig
 import pekko.routing._
 import pekko.serialization.{
@@ -37,6 +36,7 @@ import pekko.serialization.{
   SerializerWithStringManifest,
   WireConfig
 }
+import pekko.{ Done, NotUsed }
 
 import com.typesafe.config.{ Config, ConfigFactory, ConfigRenderOptions }
 

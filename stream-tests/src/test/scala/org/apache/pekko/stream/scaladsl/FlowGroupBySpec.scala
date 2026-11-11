@@ -26,13 +26,13 @@ import org.apache.pekko
 import pekko.Done
 import pekko.NotUsed
 import pekko.actor.ActorSystem
-import pekko.stream._
 import pekko.stream.Attributes._
 import pekko.stream.Supervision.resumingDecider
+import pekko.stream._
 import pekko.stream.impl.SinkModule
 import pekko.stream.impl.fusing.GroupBy
-import pekko.stream.testkit._
 import pekko.stream.testkit.Utils._
+import pekko.stream.testkit._
 import pekko.stream.testkit.scaladsl.TestSink
 import pekko.stream.testkit.scaladsl.TestSource
 import pekko.testkit.TestLatch

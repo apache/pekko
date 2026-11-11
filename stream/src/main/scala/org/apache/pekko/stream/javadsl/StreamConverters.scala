@@ -22,10 +22,10 @@ import scala.jdk.DurationConverters._
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.japi.function
-import pekko.stream.{ javadsl, scaladsl }
 import pekko.stream.IOResult
 import pekko.stream.scaladsl.SinkToCompletionStage
 import pekko.stream.scaladsl.SourceToCompletionStage
+import pekko.stream.{ javadsl, scaladsl }
 import pekko.util.ByteString
 
 /**

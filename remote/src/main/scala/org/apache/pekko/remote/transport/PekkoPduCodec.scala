@@ -19,8 +19,8 @@ import org.apache.pekko
 import pekko.PekkoException
 import pekko.actor.{ ActorRef, Address, AddressFromURIString, InternalActorRef }
 import pekko.protobufv3.internal.InvalidProtocolBufferException
-import pekko.remote._
 import pekko.remote.WireFormats._
+import pekko.remote._
 import pekko.util.ByteString
 import pekko.util.OptionVal
 

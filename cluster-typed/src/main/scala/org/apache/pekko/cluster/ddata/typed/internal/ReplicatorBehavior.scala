@@ -23,8 +23,8 @@ import pekko.actor.typed.Terminated
 import pekko.actor.typed.scaladsl.Behaviors
 import pekko.actor.typed.scaladsl.adapter._
 import pekko.annotation.InternalApi
-import pekko.cluster.{ ddata => dd }
 import pekko.cluster.ddata.ReplicatedData
+import pekko.cluster.{ ddata => dd }
 import pekko.pattern.ask
 import pekko.util.Timeout
 

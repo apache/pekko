@@ -17,8 +17,8 @@
 
 package org.apache.pekko.dispatch
 
-import java.util.concurrent.{ ForkJoinPool, ForkJoinTask, ForkJoinWorkerThread }
 import java.util.concurrent.atomic.{ AtomicBoolean, AtomicInteger }
+import java.util.concurrent.{ ForkJoinPool, ForkJoinTask, ForkJoinWorkerThread }
 
 import org.apache.pekko
 import pekko.dispatch.ForkJoinExecutorConfigurator.PekkoForkJoinPool

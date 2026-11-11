@@ -20,15 +20,14 @@ import java.util.concurrent.TimeoutException
 import javax.net.ssl._
 
 import scala.concurrent.Await
-import scala.concurrent.{ Future, Promise }
 import scala.concurrent.duration._
+import scala.concurrent.{ Future, Promise }
 import scala.util.{ Failure, Random, Success }
 
 import org.apache.pekko
-import pekko.{ Done, NotUsed }
 import pekko.pattern.{ after => later }
-import pekko.stream._
 import pekko.stream.TLSProtocol._
+import pekko.stream._
 import pekko.stream.impl.fusing.GraphStages.SimpleLinearGraphStage
 import pekko.stream.impl.io.{ TlsGraphStage, TlsModule }
 import pekko.stream.scaladsl._
@@ -37,6 +36,7 @@ import pekko.stream.testkit._
 import pekko.testkit.TestDuration
 import pekko.testkit.WithLogCapturing
 import pekko.util.ByteString
+import pekko.{ Done, NotUsed }
 
 object TlsSpec {
 

@@ -21,8 +21,8 @@ import pekko.stream.ActorAttributes
 import pekko.stream.ClosedShape
 import pekko.stream.OverflowStrategy
 import pekko.stream.Supervision
-import pekko.stream.testkit._
 import pekko.stream.testkit.Utils.TE
+import pekko.stream.testkit._
 
 class GraphPartitionSpec extends StreamSpec("""
     pekko.stream.materializer.initial-input-buffer-size = 2

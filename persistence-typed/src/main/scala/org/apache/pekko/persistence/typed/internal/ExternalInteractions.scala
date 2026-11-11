@@ -26,9 +26,9 @@ import pekko.actor.typed.scaladsl.Behaviors
 import pekko.actor.typed.scaladsl.LoggerOps
 import pekko.annotation.InternalApi
 import pekko.annotation.InternalStableApi
-import pekko.persistence._
 import pekko.persistence.JournalProtocol.ReplayMessages
 import pekko.persistence.SnapshotProtocol.LoadSnapshot
+import pekko.persistence._
 import pekko.util.OptionVal
 
 /** INTERNAL API */

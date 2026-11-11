@@ -18,8 +18,8 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import org.apache.pekko
-import pekko.actor._
 import pekko.actor.DeadLetter
+import pekko.actor._
 import pekko.pattern.ask
 import pekko.util.Timeout
 

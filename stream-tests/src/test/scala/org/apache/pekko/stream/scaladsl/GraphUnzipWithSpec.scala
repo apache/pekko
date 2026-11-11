@@ -22,9 +22,9 @@ import org.apache.pekko
 import pekko.Done
 import pekko.NotUsed
 import pekko.stream._
-import pekko.stream.testkit._
 import pekko.stream.testkit.TestSubscriber.Probe
 import pekko.stream.testkit.Utils.TE
+import pekko.stream.testkit._
 import pekko.testkit.EventFilter
 import pekko.testkit.TestProbe
 

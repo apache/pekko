@@ -25,8 +25,8 @@ import pekko.persistence.query.TimestampOffset
 import pekko.persistence.query.typed.EventEnvelope
 import pekko.persistence.testkit.{ EventStorage, PersistenceTestKitPlugin }
 import pekko.persistence.typed.PersistenceId
-import pekko.stream.{ Attributes, Outlet, SourceShape }
 import pekko.stream.stage.{ GraphStage, GraphStageLogic, GraphStageLogicWithLogging, OutHandler }
+import pekko.stream.{ Attributes, Outlet, SourceShape }
 
 /**
  * INTERNAL API

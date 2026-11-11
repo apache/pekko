@@ -21,9 +21,9 @@ import scala.util.control.NonFatal
 
 import org.apache.pekko
 import pekko.annotation.InternalApi
-import pekko.stream.{ Attributes, FlowShape, Inlet, Outlet, Supervision }
 import pekko.stream.ActorAttributes.SupervisionStrategy
 import pekko.stream.stage.{ GraphStage, GraphStageLogic, InHandler, OutHandler }
+import pekko.stream.{ Attributes, FlowShape, Inlet, Outlet, Supervision }
 
 /**
  * Concatenating an iterable / iterator / range source to a stream is common enough

@@ -14,15 +14,15 @@
 package org.apache.pekko.actor
 
 import java.util.Optional
-import java.util.concurrent._
 import java.util.concurrent.TimeUnit.MILLISECONDS
+import java.util.concurrent._
 import java.util.concurrent.atomic.AtomicReference
 import java.util.function.Supplier
 
 import scala.annotation.tailrec
-import scala.concurrent.{ Await, ExecutionContext, Future, Promise }
-import scala.concurrent.duration._
 import scala.concurrent.duration.FiniteDuration
+import scala.concurrent.duration._
+import scala.concurrent.{ Await, ExecutionContext, Future, Promise }
 import scala.jdk.FutureConverters._
 import scala.jdk.OptionConverters._
 import scala.util.Try

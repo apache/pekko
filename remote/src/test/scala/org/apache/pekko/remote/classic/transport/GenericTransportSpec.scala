@@ -19,10 +19,10 @@ import scala.concurrent.{ Await, Future }
 import org.apache.pekko
 import pekko.actor.{ Address, ExtendedActorSystem }
 import pekko.remote.RemoteActorRefProvider
-import pekko.remote.transport.{ AssociationRegistry => _, _ }
 import pekko.remote.transport.AssociationHandle.{ ActorHandleEventListener, Disassociated, InboundPayload }
 import pekko.remote.transport.TestTransport._
 import pekko.remote.transport.Transport._
+import pekko.remote.transport.{ AssociationRegistry => _, _ }
 import pekko.testkit.{ DefaultTimeout, ImplicitSender, PekkoSpec }
 import pekko.util.ByteString
 

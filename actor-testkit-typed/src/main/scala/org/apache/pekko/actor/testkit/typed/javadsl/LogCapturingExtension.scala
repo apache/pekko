@@ -17,8 +17,8 @@ import java.lang.reflect.Method
 
 import scala.util.control.NonFatal
 
-import org.junit.jupiter.api.extension.{ ExtensionContext, InvocationInterceptor, ReflectiveInvocationContext }
 import org.junit.jupiter.api.extension.InvocationInterceptor.Invocation
+import org.junit.jupiter.api.extension.{ ExtensionContext, InvocationInterceptor, ReflectiveInvocationContext }
 
 import org.apache.pekko
 import pekko.actor.testkit.typed.internal.CapturingAppender

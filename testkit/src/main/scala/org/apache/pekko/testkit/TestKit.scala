@@ -13,8 +13,8 @@
 
 package org.apache.pekko.testkit
 
-import java.util.concurrent._
 import java.util.concurrent.TimeUnit
+import java.util.concurrent._
 import java.util.concurrent.atomic.AtomicInteger
 
 import scala.annotation.nowarn
@@ -25,13 +25,13 @@ import scala.reflect.ClassTag
 import scala.util.control.NonFatal
 
 import org.apache.pekko
-import pekko.actor._
 import pekko.actor.DeadLetter
 import pekko.actor.IllegalActorStateException
 import pekko.actor.Terminated
+import pekko.actor._
 import pekko.annotation.InternalApi
-import pekko.util.{ BoxedType, Timeout }
 import pekko.util.Helpers.toRootLowerCase
+import pekko.util.{ BoxedType, Timeout }
 
 object TestActor {
   type Ignore = Option[PartialFunction[Any, Boolean]]

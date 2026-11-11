@@ -23,8 +23,8 @@ import scala.jdk.CollectionConverters._
 import org.apache.pekko
 import pekko.actor.{ Address, ExtendedActorSystem }
 import pekko.annotation.InternalApi
-import pekko.cluster._
 import pekko.cluster.InternalClusterAction._
+import pekko.cluster._
 import pekko.cluster.protobuf.msg.{ ClusterMessages => cm }
 import pekko.cluster.routing.{ ClusterRouterPool, ClusterRouterPoolSettings }
 import pekko.protobufv3.internal.MessageLite

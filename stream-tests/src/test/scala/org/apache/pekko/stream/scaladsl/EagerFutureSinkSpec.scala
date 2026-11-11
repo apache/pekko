@@ -20,9 +20,9 @@ package org.apache.pekko.stream.scaladsl
 import scala.concurrent.{ Future, Promise }
 
 import org.apache.pekko
-import pekko.stream.{ AbruptStageTerminationException, Materializer }
 import pekko.stream.testkit.StreamSpec
 import pekko.stream.testkit.Utils._
+import pekko.stream.{ AbruptStageTerminationException, Materializer }
 
 class EagerFutureSinkSpec extends StreamSpec("""
     pekko.stream.materializer.initial-input-buffer-size = 1

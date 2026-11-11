@@ -22,8 +22,8 @@ import java.util.concurrent.atomic.AtomicReference
 
 import scala.annotation.tailrec
 import scala.collection.immutable
-import scala.concurrent.{ Await, Future }
 import scala.concurrent.duration._
+import scala.concurrent.{ Await, Future }
 import scala.util.control.NonFatal
 
 import io.aeron.Aeron

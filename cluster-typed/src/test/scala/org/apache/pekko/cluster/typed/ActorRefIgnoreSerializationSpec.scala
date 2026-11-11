@@ -14,11 +14,11 @@
 package org.apache.pekko.cluster.typed
 
 import org.apache.pekko
-import pekko.{ actor => classic }
-import pekko.actor.{ ExtendedActorSystem, IgnoreActorRef }
-import pekko.actor.typed.{ ActorRef, ActorRefResolver, ActorSystem }
 import pekko.actor.typed.scaladsl.Behaviors
 import pekko.actor.typed.scaladsl.adapter._
+import pekko.actor.typed.{ ActorRef, ActorRefResolver, ActorSystem }
+import pekko.actor.{ ExtendedActorSystem, IgnoreActorRef }
+import pekko.{ actor => classic }
 
 import org.scalatest.BeforeAndAfterAll
 import org.scalatest.concurrent.ScalaFutures

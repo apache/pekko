@@ -21,9 +21,9 @@ import scala.concurrent.{ Future, Promise }
 
 import org.apache.pekko
 import pekko.annotation.InternalApi
-import pekko.stream.{ AbruptStageTerminationException, Attributes, Inlet, SinkShape }
 import pekko.stream.impl.Stages.DefaultAttributes
 import pekko.stream.stage.{ GraphStageLogic, GraphStageWithMaterializedValue, InHandler }
+import pekko.stream.{ AbruptStageTerminationException, Attributes, Inlet, SinkShape }
 
 /**
  * INTERNAL API

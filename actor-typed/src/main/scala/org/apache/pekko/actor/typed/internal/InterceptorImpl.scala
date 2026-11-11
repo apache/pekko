@@ -17,8 +17,8 @@ import scala.reflect.ClassTag
 
 import org.apache.pekko
 import pekko.actor.typed
-import pekko.actor.typed._
 import pekko.actor.typed.LogOptions
+import pekko.actor.typed._
 import pekko.actor.typed.scaladsl.Behaviors
 import pekko.annotation.InternalApi
 import pekko.util.LineNumbers

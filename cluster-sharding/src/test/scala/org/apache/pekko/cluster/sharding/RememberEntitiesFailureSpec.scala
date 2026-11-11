@@ -18,11 +18,11 @@ import scala.concurrent.ExecutionContext
 import scala.concurrent.duration._
 
 import org.apache.pekko
-import pekko.cluster.sharding.ShardCoordinator.ShardAllocationStrategy
 import pekko.Done
 import pekko.actor.{ Actor, ActorLogging, ActorRef, Props, Timers }
 import pekko.cluster.Cluster
 import pekko.cluster.MemberStatus
+import pekko.cluster.sharding.ShardCoordinator.ShardAllocationStrategy
 import pekko.cluster.sharding.ShardRegion.ShardId
 import pekko.cluster.sharding.internal.RememberEntitiesCoordinatorStore
 import pekko.cluster.sharding.internal.RememberEntitiesProvider

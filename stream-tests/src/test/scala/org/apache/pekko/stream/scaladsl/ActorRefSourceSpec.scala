@@ -20,10 +20,10 @@ import scala.concurrent.duration._
 import org.apache.pekko
 import pekko.Done
 import pekko.actor.{ ActorRef, ActorSystem, Kill, PoisonPill, Status }
-import pekko.stream.{ OverflowStrategy, _ }
-import pekko.stream.testkit._
 import pekko.stream.testkit.Utils._
+import pekko.stream.testkit._
 import pekko.stream.testkit.scaladsl._
+import pekko.stream.{ OverflowStrategy, _ }
 
 import org.reactivestreams.Publisher
 

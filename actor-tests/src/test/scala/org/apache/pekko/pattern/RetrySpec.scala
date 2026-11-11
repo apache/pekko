@@ -15,8 +15,8 @@ package org.apache.pekko.pattern
 
 import java.util.concurrent.atomic.AtomicInteger
 
-import scala.concurrent.{ Await, ExecutionContextExecutor, Future }
 import scala.concurrent.duration._
+import scala.concurrent.{ Await, ExecutionContextExecutor, Future }
 
 import org.apache.pekko
 import pekko.actor.Scheduler

@@ -31,8 +31,8 @@ import pekko.remote.testkit.MultiNodeConfig
 import pekko.remote.testkit.MultiNodeSpec
 import pekko.remote.testkit.STMultiNodeSpec
 import pekko.serialization.jackson.CborSerializable
-import pekko.testkit._
 import pekko.testkit.TestEvent._
+import pekko.testkit._
 
 import com.typesafe.config.ConfigFactory
 

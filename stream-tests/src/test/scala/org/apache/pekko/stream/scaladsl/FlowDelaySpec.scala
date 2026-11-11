@@ -19,9 +19,9 @@ import scala.util.control.NoStackTrace
 
 import org.apache.pekko
 import pekko.Done
-import pekko.stream._
 import pekko.stream.Attributes._
 import pekko.stream.OverflowStrategies.EmitEarly
+import pekko.stream._
 import pekko.stream.testkit.StreamSpec
 import pekko.stream.testkit.TestPublisher
 import pekko.stream.testkit.TestSubscriber

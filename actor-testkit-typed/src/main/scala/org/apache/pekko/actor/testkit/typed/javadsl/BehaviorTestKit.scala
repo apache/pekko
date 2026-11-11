@@ -18,10 +18,10 @@ import java.util.concurrent.ThreadLocalRandom
 import scala.annotation.nowarn
 
 import org.apache.pekko
-import pekko.actor.testkit.typed.{ CapturedLogEvent, Effect }
 import pekko.actor.testkit.typed.internal.{ ActorSystemStub, BehaviorTestKitImpl }
-import pekko.actor.typed.{ ActorRef, Behavior, Signal }
+import pekko.actor.testkit.typed.{ CapturedLogEvent, Effect }
 import pekko.actor.typed.receptionist.Receptionist
+import pekko.actor.typed.{ ActorRef, Behavior, Signal }
 import pekko.annotation.{ ApiMayChange, DoNotInherit }
 import pekko.japi.function.{ Function => JFunction }
 import pekko.pattern.StatusReply

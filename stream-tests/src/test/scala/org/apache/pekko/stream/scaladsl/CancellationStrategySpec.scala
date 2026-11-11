@@ -38,8 +38,8 @@ import pekko.stream.testkit.StreamSpec
 import pekko.stream.testkit.TestPublisher
 import pekko.stream.testkit.TestSubscriber
 import pekko.stream.testkit.Utils.TE
-import pekko.testkit._
 import pekko.testkit.WithLogCapturing
+import pekko.testkit._
 
 class CancellationStrategySpec extends StreamSpec("""pekko.loglevel = DEBUG
        pekko.loggers = ["org.apache.pekko.testkit.SilenceAllTestEventListener"]""") with WithLogCapturing {

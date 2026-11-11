@@ -14,8 +14,8 @@
 package org.apache.pekko.persistence.journal.leveldb
 
 import org.apache.pekko
-import pekko.persistence.{ PersistenceSpec, PluginCleanup }
 import pekko.persistence.journal.JournalSpec
+import pekko.persistence.{ PersistenceSpec, PluginCleanup }
 
 class LeveldbJournalNativeSpec
     extends JournalSpec(

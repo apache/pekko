@@ -19,9 +19,9 @@ import scala.concurrent.duration._
 
 import org.apache.pekko
 import pekko.actor.ActorSystem
-import pekko.discovery.{ Discovery, Lookup }
 import pekko.discovery.ServiceDiscovery
 import pekko.discovery.ServiceDiscovery.ResolvedTarget
+import pekko.discovery.{ Discovery, Lookup }
 import pekko.io.dns.DockerBindDnsService
 import pekko.testkit.{ SocketUtil, TestKit }
 

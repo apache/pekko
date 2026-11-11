@@ -16,9 +16,9 @@ package org.apache.pekko.stream.scaladsl
 import scala.annotation.nowarn
 
 import org.apache.pekko
-import pekko.stream._
 import pekko.stream.ActorMaterializer
 import pekko.stream.ActorMaterializerSettings
+import pekko.stream._
 import pekko.stream.testkit._
 
 import org.reactivestreams.Subscriber

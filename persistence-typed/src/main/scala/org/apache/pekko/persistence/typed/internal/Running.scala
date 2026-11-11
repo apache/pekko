@@ -24,10 +24,10 @@ import scala.annotation.tailrec
 
 import org.apache.pekko
 import pekko.actor.UnhandledMessage
-import pekko.actor.typed.{ Behavior, Signal }
 import pekko.actor.typed.eventstream.EventStream
 import pekko.actor.typed.internal.PoisonPill
 import pekko.actor.typed.scaladsl.{ AbstractBehavior, ActorContext, Behaviors, LoggerOps }
+import pekko.actor.typed.{ Behavior, Signal }
 import pekko.annotation.{ InternalApi, InternalStableApi }
 import pekko.event.Logging
 import pekko.persistence.DeleteMessagesFailure
@@ -43,8 +43,15 @@ import pekko.persistence.SaveSnapshotFailure
 import pekko.persistence.SaveSnapshotSuccess
 import pekko.persistence.SnapshotProtocol
 import pekko.persistence.journal.Tagged
-import pekko.persistence.query.{ EventEnvelope, PersistenceQuery }
 import pekko.persistence.query.scaladsl.EventsByPersistenceIdQuery
+import pekko.persistence.query.{ EventEnvelope, PersistenceQuery }
+import pekko.persistence.typed.ReplicaId
+import pekko.persistence.typed.ReplicationId
+import pekko.persistence.typed.internal.EventSourcedBehaviorImpl.{ GetSeenSequenceNr, GetState, GetStateReply }
+import pekko.persistence.typed.internal.InternalProtocol.ReplicatedEventEnvelope
+import pekko.persistence.typed.internal.JournalInteractions.EventToPersist
+import pekko.persistence.typed.internal.Running.WithSeqNrAccessible
+import pekko.persistence.typed.scaladsl.Effect
 import pekko.persistence.typed.{
   DeleteEventsCompleted,
   DeleteEventsFailed,
@@ -60,18 +67,11 @@ import pekko.persistence.typed.{
   SnapshotMetadata,
   SnapshotSelectionCriteria
 }
-import pekko.persistence.typed.ReplicaId
-import pekko.persistence.typed.ReplicationId
-import pekko.persistence.typed.internal.EventSourcedBehaviorImpl.{ GetSeenSequenceNr, GetState, GetStateReply }
-import pekko.persistence.typed.internal.InternalProtocol.ReplicatedEventEnvelope
-import pekko.persistence.typed.internal.JournalInteractions.EventToPersist
-import pekko.persistence.typed.internal.Running.WithSeqNrAccessible
-import pekko.persistence.typed.scaladsl.Effect
-import pekko.stream.{ RestartSettings, SystemMaterializer, WatchedActorTerminatedException }
-import pekko.stream.scaladsl.{ RestartSource, Sink }
 import pekko.stream.scaladsl.Keep
 import pekko.stream.scaladsl.Source
+import pekko.stream.scaladsl.{ RestartSource, Sink }
 import pekko.stream.typed.scaladsl.ActorFlow
+import pekko.stream.{ RestartSettings, SystemMaterializer, WatchedActorTerminatedException }
 import pekko.util.OptionVal
 import pekko.util.Timeout
 

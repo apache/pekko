@@ -22,25 +22,25 @@ import java.util.concurrent.TimeoutException
 import scala.annotation.nowarn
 import scala.collection.immutable
 import scala.collection.immutable.HashMap
-import scala.concurrent.{ Await, Future, Promise }
 import scala.concurrent.duration._
-import scala.util.{ Failure, Success }
+import scala.concurrent.{ Await, Future, Promise }
 import scala.util.control.NonFatal
+import scala.util.{ Failure, Success }
 
 import org.apache.pekko
 import pekko.Done
-import pekko.actor._
 import pekko.actor.SupervisorStrategy._
+import pekko.actor._
 import pekko.annotation.InternalStableApi
-import pekko.dispatch.{ RequiresMessageQueue, UnboundedMessageQueueSemantics }
 import pekko.dispatch.MessageDispatcher
+import pekko.dispatch.{ RequiresMessageQueue, UnboundedMessageQueueSemantics }
 import pekko.event.{ Logging, LoggingAdapter }
 import pekko.pattern.{ ask, gracefulStop, pipe }
 import pekko.remote.EndpointManager._
 import pekko.remote.Remoting.TransportSupervisor
-import pekko.remote.transport._
 import pekko.remote.transport.PekkoPduCodec.Message
 import pekko.remote.transport.Transport.{ ActorAssociationEventListener, AssociationEventListener, InboundAssociation }
+import pekko.remote.transport._
 import pekko.util.OptionVal
 
 import com.typesafe.config.Config

@@ -13,9 +13,9 @@
 
 package org.apache.pekko.dispatch
 
-import java.util.concurrent.{ Callable, Executor, ExecutorService }
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.CompletionStage
+import java.util.concurrent.{ Callable, Executor, ExecutorService }
 
 import scala.concurrent.{ ExecutionContext, ExecutionContextExecutor, ExecutionContextExecutorService, Future, Promise }
 

@@ -18,9 +18,10 @@ import java.util.concurrent.atomic.AtomicLong
 import scala.concurrent.Future
 
 import org.apache.pekko
-import pekko.{ Done, NotUsed }
 import pekko.actor.ExtendedActorSystem
 import pekko.persistence.Persistence
+import pekko.persistence.query.scaladsl.{ DurableStateStorePagedPersistenceIdsQuery, DurableStateStoreQuery }
+import pekko.persistence.query.typed.scaladsl.DurableStateStoreBySliceQuery
 import pekko.persistence.query.{
   DeletedDurableState,
   DurableStateChange,
@@ -29,8 +30,6 @@ import pekko.persistence.query.{
   Sequence,
   UpdatedDurableState
 }
-import pekko.persistence.query.scaladsl.{ DurableStateStorePagedPersistenceIdsQuery, DurableStateStoreQuery }
-import pekko.persistence.query.typed.scaladsl.DurableStateStoreBySliceQuery
 import pekko.persistence.state.scaladsl.{ DurableStateUpdateStore, GetObjectResult }
 import pekko.persistence.typed.PersistenceId
 import pekko.stream.OverflowStrategy
@@ -38,6 +37,7 @@ import pekko.stream.scaladsl.BroadcastHub
 import pekko.stream.scaladsl.Keep
 import pekko.stream.scaladsl.Source
 import pekko.stream.typed.scaladsl.ActorSource
+import pekko.{ Done, NotUsed }
 
 object PersistenceTestKitDurableStateStore {
   val Identifier = "pekko.persistence.testkit.state"

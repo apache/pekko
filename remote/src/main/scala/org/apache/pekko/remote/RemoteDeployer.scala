@@ -19,8 +19,8 @@ import org.apache.pekko
 import pekko.ConfigurationException
 import pekko.actor._
 import pekko.remote.routing.RemoteRouterConfig
-import pekko.routing._
 import pekko.routing.Pool
+import pekko.routing._
 
 import com.typesafe.config._
 

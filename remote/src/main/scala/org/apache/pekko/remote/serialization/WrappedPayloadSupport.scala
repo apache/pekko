@@ -21,12 +21,12 @@ import pekko.event.{ Logging, LoggingAdapter }
 import pekko.protobufv3.internal.ByteString
 import pekko.remote.ByteStringUtils
 import pekko.remote.ContainerFormats
-import pekko.serialization.{ SerializationExtension, Serializers }
 import pekko.serialization.ByteBufferSerializer
 import pekko.serialization.DisabledJavaSerializer
 import pekko.serialization.NestedDeserialization
 import pekko.serialization.Serialization
 import pekko.serialization.SerializerWithStringManifest
+import pekko.serialization.{ SerializationExtension, Serializers }
 
 /**
  * INTERNAL API

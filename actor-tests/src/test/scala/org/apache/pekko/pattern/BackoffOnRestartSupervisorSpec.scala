@@ -21,8 +21,8 @@ import scala.concurrent.duration._
 import org.apache.pekko
 import pekko.actor._
 import pekko.pattern.TestActor.NormalException
-import pekko.testkit.{ filterException, ImplicitSender, PekkoSpec, TestProbe }
 import pekko.testkit.WithLogCapturing
+import pekko.testkit.{ ImplicitSender, PekkoSpec, TestProbe, filterException }
 
 object TestActor {
 

@@ -17,9 +17,9 @@ import java.util.concurrent.ThreadLocalRandom
 
 import org.apache.pekko
 import pekko.Done
-import pekko.actor.{ Address, RootActorPath }
 import pekko.actor.testkit.typed.internal.TestInboxImpl
 import pekko.actor.typed.ActorRef
+import pekko.actor.{ Address, RootActorPath }
 import pekko.annotation.{ ApiMayChange, DoNotInherit }
 import pekko.pattern.StatusReply
 

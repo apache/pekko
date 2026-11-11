@@ -14,17 +14,16 @@
 package org.apache.pekko.actor
 
 import java.io.Closeable
-import java.util.concurrent._
 import java.util.concurrent.ThreadLocalRandom
+import java.util.concurrent._
+import atomic.{ AtomicInteger, AtomicReference }
 
 import scala.annotation.nowarn
-import scala.concurrent.{ Await, ExecutionContext, Future }
 import scala.concurrent.duration._
+import scala.concurrent.{ Await, ExecutionContext, Future }
 import scala.util.Try
 import scala.util.control.NoStackTrace
 import scala.util.control.NonFatal
-
-import atomic.{ AtomicInteger, AtomicReference }
 
 import org.apache.pekko
 import pekko.pattern.ask

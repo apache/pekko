@@ -52,9 +52,9 @@ import pekko.persistence.typed.ReplicaId
 import pekko.persistence.typed.SnapshotAdapter
 import pekko.persistence.typed.SnapshotCompleted
 import pekko.persistence.typed.SnapshotFailed
+import pekko.persistence.typed.scaladsl.RetentionCriteria
 import pekko.persistence.typed.scaladsl._
 import pekko.persistence.typed.scaladsl.{ Recovery => TypedRecovery }
-import pekko.persistence.typed.scaladsl.RetentionCriteria
 import pekko.util.ConstantFun
 
 import org.slf4j.LoggerFactory

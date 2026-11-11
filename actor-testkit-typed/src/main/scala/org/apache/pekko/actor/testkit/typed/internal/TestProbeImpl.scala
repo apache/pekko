@@ -14,10 +14,10 @@
 package org.apache.pekko.actor.testkit.typed.internal
 
 import java.time.{ Duration => JDuration }
-import java.util.{ List => JList }
 import java.util.concurrent.BlockingDeque
 import java.util.concurrent.LinkedBlockingDeque
 import java.util.function.Supplier
+import java.util.{ List => JList }
 
 import scala.annotation.tailrec
 import scala.concurrent.duration._
@@ -32,8 +32,8 @@ import pekko.actor.ExtendedActorSystem
 import pekko.actor.testkit.typed.FishingOutcome
 import pekko.actor.testkit.typed.TestKitSettings
 import pekko.actor.testkit.typed.javadsl.{ TestProbe => JavaTestProbe }
-import pekko.actor.testkit.typed.scaladsl.{ TestProbe => ScalaTestProbe }
 import pekko.actor.testkit.typed.scaladsl.TestDuration
+import pekko.actor.testkit.typed.scaladsl.{ TestProbe => ScalaTestProbe }
 import pekko.actor.typed.ActorRef
 import pekko.actor.typed.ActorSystem
 import pekko.actor.typed.Behavior

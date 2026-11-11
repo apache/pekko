@@ -14,8 +14,8 @@
 package org.apache.pekko.stream.scaladsl
 
 import scala.annotation.nowarn
-import scala.concurrent.{ Future, Promise }
 import scala.concurrent.duration._
+import scala.concurrent.{ Future, Promise }
 import scala.util.control.NoStackTrace
 
 import org.apache.pekko

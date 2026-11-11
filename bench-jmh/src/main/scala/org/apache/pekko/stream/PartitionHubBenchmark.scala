@@ -27,8 +27,8 @@ import pekko.actor.ActorSystem
 import pekko.remote.artery.BenchTestSource
 import pekko.remote.artery.FixedSizePartitionHub
 import pekko.remote.artery.LatchSink
-import pekko.stream.scaladsl._
 import pekko.stream.scaladsl.PartitionHub
+import pekko.stream.scaladsl._
 import pekko.stream.testkit.scaladsl.StreamTestKit
 
 import com.typesafe.config.ConfigFactory

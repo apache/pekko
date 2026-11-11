@@ -20,8 +20,8 @@ import pekko.actor.{ Actor, ActorRef, Props }
 import pekko.cluster.MultiNodeClusterSpec
 import pekko.pattern.ask
 import pekko.remote.testkit.MultiNodeConfig
-import pekko.routing.{ Broadcast, ConsistentHashingGroup, GetRoutees, Routees }
 import pekko.routing.ConsistentHashingRouter.ConsistentHashMapping
+import pekko.routing.{ Broadcast, ConsistentHashingGroup, GetRoutees, Routees }
 import pekko.testkit._
 
 object ClusterConsistentHashingGroupMultiJvmSpec extends MultiNodeConfig {

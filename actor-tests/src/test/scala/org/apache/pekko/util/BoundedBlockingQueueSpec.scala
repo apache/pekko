@@ -31,8 +31,8 @@ import pekko.util.DefaultExecutionContext._
 
 import org.scalatest.concurrent.{ Signaler, ThreadSignaler }
 import org.scalatest.exceptions.TestFailedDueToTimeoutException
-import org.scalatest.matchers.{ MatchResult, Matcher }
 import org.scalatest.matchers.should.Matchers
+import org.scalatest.matchers.{ MatchResult, Matcher }
 import org.scalatest.time.Span
 import org.scalatest.time.SpanSugar._
 import org.scalatest.wordspec.AnyWordSpec

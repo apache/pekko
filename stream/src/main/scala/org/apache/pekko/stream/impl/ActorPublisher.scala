@@ -22,8 +22,8 @@ import org.apache.pekko
 import pekko.actor.{ Actor, ActorRef, Terminated }
 import pekko.annotation.InternalApi
 
-import org.reactivestreams.{ Publisher, Subscriber }
 import org.reactivestreams.Subscription
+import org.reactivestreams.{ Publisher, Subscriber }
 
 /**
  * INTERNAL API

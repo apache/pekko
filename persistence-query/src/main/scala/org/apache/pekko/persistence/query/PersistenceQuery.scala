@@ -19,8 +19,8 @@ import scala.reflect.ClassTag
 import org.apache.pekko
 import pekko.actor._
 import pekko.annotation.InternalApi
-import pekko.persistence.{ PersistencePlugin, PluginProvider }
 import pekko.persistence.query.scaladsl.ReadJournal
+import pekko.persistence.{ PersistencePlugin, PluginProvider }
 
 import com.typesafe.config.{ Config, ConfigFactory }
 

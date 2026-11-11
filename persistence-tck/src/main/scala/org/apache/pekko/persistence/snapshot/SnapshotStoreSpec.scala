@@ -15,8 +15,8 @@ package org.apache.pekko.persistence.snapshot
 
 import org.apache.pekko
 import pekko.actor._
-import pekko.persistence._
 import pekko.persistence.SnapshotProtocol._
+import pekko.persistence._
 import pekko.persistence.scalatest.{ MayVerb, OptionalTests }
 import pekko.testkit.TestProbe
 

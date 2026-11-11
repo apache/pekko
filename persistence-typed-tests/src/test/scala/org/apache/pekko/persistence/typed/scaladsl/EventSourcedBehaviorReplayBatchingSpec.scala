@@ -17,8 +17,8 @@
 
 package org.apache.pekko.persistence.typed.scaladsl
 
-import scala.concurrent.{ Await, Future, Promise }
 import scala.concurrent.duration._
+import scala.concurrent.{ Await, Future, Promise }
 
 import org.apache.pekko
 import pekko.actor.Actor
@@ -28,8 +28,8 @@ import pekko.persistence.JournalProtocol.{ ReplayBatchResponse, ReplayedMessage 
 import pekko.persistence.PersistentRepr
 import pekko.persistence.journal.SteppingInmemJournal
 import pekko.persistence.journal.inmem.InmemJournal
-import pekko.persistence.typed.{ PersistenceId, RecoveryCompleted, RecoveryFailed }
 import pekko.persistence.typed.internal.EventSourcedBehaviorImpl.WriterIdentity
+import pekko.persistence.typed.{ PersistenceId, RecoveryCompleted, RecoveryFailed }
 
 import org.scalatest.wordspec.AnyWordSpecLike
 

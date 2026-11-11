@@ -14,8 +14,8 @@
 package org.apache.pekko.remote.artery
 
 import org.apache.pekko
-import pekko.actor.{ ActorSystem, Address, BootstrapSetup, RootActorPath }
 import pekko.actor.setup.ActorSystemSetup
+import pekko.actor.{ ActorSystem, Address, BootstrapSetup, RootActorPath }
 import pekko.remote.RARP
 import pekko.testkit.{ PekkoSpec, SocketUtil }
 

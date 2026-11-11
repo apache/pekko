@@ -18,9 +18,9 @@ import scala.util.control.NonFatal
 
 import org.apache.pekko
 import pekko.annotation.InternalApi
-import pekko.stream._
 import pekko.stream.ActorAttributes.SupervisionStrategy
 import pekko.stream.ThrottleMode.Enforcing
+import pekko.stream._
 import pekko.stream.impl.fusing.GraphStages.SimpleLinearGraphStage
 import pekko.stream.stage._
 import pekko.util.NanoTimeTokenBucket

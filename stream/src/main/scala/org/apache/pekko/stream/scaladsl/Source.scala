@@ -15,21 +15,21 @@ package org.apache.pekko.stream.scaladsl
 
 import java.util.concurrent.CompletionStage
 
-import scala.annotation.{ nowarn, switch, tailrec, varargs }
 import scala.annotation.unchecked.uncheckedVariance
-import scala.collection.{ immutable, AbstractIterator }
-import scala.concurrent.{ Future, Promise }
+import scala.annotation.{ nowarn, switch, tailrec, varargs }
+import scala.collection.{ AbstractIterator, immutable }
 import scala.concurrent.duration.FiniteDuration
+import scala.concurrent.{ Future, Promise }
 import scala.jdk.FutureConverters._
 import scala.util.control.NonFatal
 
 import org.apache.pekko
-import pekko.{ Done, NotUsed }
 import pekko.actor.{ ActorRef, Cancellable }
 import pekko.annotation.InternalApi
 import pekko.stream._
-import pekko.stream.impl._
 import pekko.stream.impl.Stages.DefaultAttributes
+import pekko.stream.impl._
+import pekko.stream.impl.fusing.GraphStages._
 import pekko.stream.impl.fusing.{
   ArraySource,
   GraphStages,
@@ -39,9 +39,9 @@ import pekko.stream.impl.fusing.{
   LazySingleSource,
   RangeSource
 }
-import pekko.stream.impl.fusing.GraphStages._
 import pekko.stream.stage.GraphStageWithMaterializedValue
 import pekko.util.ConstantFun
+import pekko.{ Done, NotUsed }
 
 import org.reactivestreams.{ Publisher, Subscriber }
 

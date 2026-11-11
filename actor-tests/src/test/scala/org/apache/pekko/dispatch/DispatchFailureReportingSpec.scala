@@ -17,6 +17,7 @@
 
 package org.apache.pekko.dispatch
 
+import java.util.concurrent.atomic.{ AtomicBoolean, AtomicInteger }
 import java.util.concurrent.{
   CountDownLatch,
   ExecutorService,
@@ -26,14 +27,13 @@ import java.util.concurrent.{
   ThreadPoolExecutor,
   TimeUnit
 }
-import java.util.concurrent.atomic.{ AtomicBoolean, AtomicInteger }
 
 import scala.annotation.nowarn
 
 import org.apache.pekko
 import pekko.actor._
-import pekko.event.{ EventStream, Logging }
 import pekko.event.Logging.Error
+import pekko.event.{ EventStream, Logging }
 import pekko.testkit.{ PekkoSpec, TestProbe }
 
 import com.typesafe.config.{ Config, ConfigFactory }

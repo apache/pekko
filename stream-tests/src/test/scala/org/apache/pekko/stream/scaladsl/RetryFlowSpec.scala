@@ -19,8 +19,8 @@ import scala.util.{ Failure, Success, Try }
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.stream.OverflowStrategy
-import pekko.stream.testkit.{ StreamSpec, TestPublisher, TestSubscriber }
 import pekko.stream.testkit.scaladsl.{ TestSink, TestSource }
+import pekko.stream.testkit.{ StreamSpec, TestPublisher, TestSubscriber }
 
 import org.scalatest.matchers.{ MatchResult, Matcher }
 

@@ -12,11 +12,11 @@
  */
 
 package org.apache.pekko.persistence.query.typed
-import com.typesafe.config.Config
-
 import org.apache.pekko
 import pekko.actor.ExtendedActorSystem
 import pekko.persistence.query.ReadJournalProvider
+
+import com.typesafe.config.Config
 
 final class EventsBySliceFirehoseReadJournalProvider(system: ExtendedActorSystem, config: Config, cfgPath: String)
     extends ReadJournalProvider {

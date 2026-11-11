@@ -14,8 +14,8 @@
 package org.apache.pekko.cluster.routing
 
 import org.apache.pekko
-import pekko.actor._
 import pekko.actor.OneForOneStrategy
+import pekko.actor._
 import pekko.cluster.Cluster
 import pekko.cluster.ClusterEvent.CurrentClusterState
 import pekko.cluster.MemberStatus

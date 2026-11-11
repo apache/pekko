@@ -21,9 +21,9 @@ import scala.util.{ Failure, Success, Try }
 
 import org.apache.pekko
 import pekko.annotation.InternalApi
-import pekko.japi.{ function, Pair }
-import pekko.stream._
+import pekko.japi.{ Pair, function }
 import pekko.stream.Attributes.SourceLocation
+import pekko.stream._
 import pekko.stream.impl.Stages.DefaultAttributes
 import pekko.stream.stage.{ GraphStage, GraphStageLogic, OutHandler }
 

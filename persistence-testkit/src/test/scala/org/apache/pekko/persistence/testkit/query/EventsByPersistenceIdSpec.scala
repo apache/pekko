@@ -19,8 +19,8 @@ import org.apache.pekko
 import pekko.Done
 import pekko.actor.testkit.typed.scaladsl.{ LogCapturing, ScalaTestWithActorTestKit }
 import pekko.actor.typed.ActorRef
-import pekko.persistence.query.{ EventEnvelope, PersistenceQuery }
 import pekko.persistence.query.Sequence
+import pekko.persistence.query.{ EventEnvelope, PersistenceQuery }
 import pekko.persistence.testkit.PersistenceTestKitPlugin
 import pekko.persistence.testkit.query.scaladsl.PersistenceTestKitReadJournal
 import pekko.persistence.typed.PersistenceId

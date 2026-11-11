@@ -14,9 +14,9 @@
 package org.apache.pekko.serialization.jackson
 
 import com.fasterxml.jackson.core.{ JsonGenerator, JsonParser, ObjectCodec }
-import com.fasterxml.jackson.databind.{ DeserializationContext, JsonNode, SerializerProvider }
 import com.fasterxml.jackson.databind.deser.std.StdScalarDeserializer
 import com.fasterxml.jackson.databind.ser.std.StdScalarSerializer
+import com.fasterxml.jackson.databind.{ DeserializationContext, JsonNode, SerializerProvider }
 
 import org.apache.pekko
 import pekko.serialization.{ SerializationExtension, Serializer, Serializers }

@@ -25,8 +25,9 @@ import pekko.pattern.StatusReply
 import pekko.persistence.AtomicWrite
 import pekko.persistence.JournalProtocol
 
-import com.typesafe.config.ConfigFactory
 import org.scalatest.wordspec.AnyWordSpecLike
+
+import com.typesafe.config.ConfigFactory
 
 object EventWriterSpec {
   def config =

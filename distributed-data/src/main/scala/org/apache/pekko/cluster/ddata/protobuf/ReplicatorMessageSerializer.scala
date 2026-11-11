@@ -19,9 +19,9 @@ import java.util.concurrent.atomic.AtomicInteger
 
 import scala.annotation.tailrec
 import scala.collection.immutable
-import scala.concurrent.duration._
 import scala.concurrent.duration.Duration
 import scala.concurrent.duration.FiniteDuration
+import scala.concurrent.duration._
 import scala.jdk.CollectionConverters._
 
 import org.apache.pekko
@@ -35,8 +35,8 @@ import pekko.cluster.ddata.Key.KeyR
 import pekko.cluster.ddata.PruningState
 import pekko.cluster.ddata.PruningState.PruningPerformed
 import pekko.cluster.ddata.ReplicatedData
-import pekko.cluster.ddata.Replicator._
 import pekko.cluster.ddata.Replicator.Internal._
+import pekko.cluster.ddata.Replicator._
 import pekko.cluster.ddata.VersionVector
 import pekko.cluster.ddata.protobuf.msg.{ ReplicatorMessages => dm }
 import pekko.remote.ByteStringUtils

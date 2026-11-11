@@ -22,8 +22,8 @@ import scala.concurrent.{ ExecutionContext, Future, Promise, TimeoutException }
 import scala.util.Try
 
 import org.apache.pekko
-import pekko.persistence.{ AtomicWrite, JournalProtocol, PersistenceSpec, PersistentRepr }
 import pekko.persistence.journal.AsyncWriteJournalResponseOrderSpec._
+import pekko.persistence.{ AtomicWrite, JournalProtocol, PersistenceSpec, PersistentRepr }
 import pekko.testkit.ImplicitSender
 
 /**

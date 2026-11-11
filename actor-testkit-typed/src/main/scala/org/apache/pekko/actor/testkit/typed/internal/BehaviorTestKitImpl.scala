@@ -23,12 +23,12 @@ import scala.util.control.NonFatal
 
 import org.apache.pekko
 import pekko.actor.ActorPath
-import pekko.actor.testkit.typed.{ CapturedLogEvent, Effect }
 import pekko.actor.testkit.typed.Effect._
-import pekko.actor.typed.{ ActorRef, Behavior, BehaviorInterceptor, PostStop, Signal, TypedActorContext }
+import pekko.actor.testkit.typed.{ CapturedLogEvent, Effect }
 import pekko.actor.typed.internal.{ AdaptMessage, AdaptWithRegisteredMessageAdapter }
 import pekko.actor.typed.receptionist.Receptionist
 import pekko.actor.typed.scaladsl.Behaviors
+import pekko.actor.typed.{ ActorRef, Behavior, BehaviorInterceptor, PostStop, Signal, TypedActorContext }
 import pekko.annotation.InternalApi
 import pekko.japi.function.{ Function => JFunction }
 import pekko.pattern.StatusReply

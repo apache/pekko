@@ -17,8 +17,8 @@ import scala.concurrent.Await
 
 import org.apache.pekko
 import pekko.stream.StreamLimitReachedException
-import pekko.stream.testkit.scaladsl.TestSink
 import pekko.stream.testkit.StreamSpec
+import pekko.stream.testkit.scaladsl.TestSink
 
 class FlowLimitSpec extends StreamSpec("""
     pekko.stream.materializer.initial-input-buffer-size = 2

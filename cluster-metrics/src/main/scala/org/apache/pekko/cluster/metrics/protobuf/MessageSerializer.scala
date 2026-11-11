@@ -13,9 +13,9 @@
 
 package org.apache.pekko.cluster.metrics.protobuf
 
-import java.{ lang => jl }
 import java.io.{ ByteArrayOutputStream, NotSerializableException, ObjectOutputStream }
 import java.util.zip.GZIPOutputStream
+import java.{ lang => jl }
 
 import scala.collection.immutable
 import scala.jdk.CollectionConverters._

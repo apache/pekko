@@ -22,12 +22,12 @@ import scala.util.control.NonFatal
 
 import org.apache.pekko
 import pekko.annotation.InternalApi
-import pekko.stream.{ Attributes, Outlet, SourceShape, Supervision }
 import pekko.stream.ActorAttributes.SupervisionStrategy
 import pekko.stream.impl.ReactiveStreamsCompliance
 import pekko.stream.impl.Stages.DefaultAttributes
 import pekko.stream.impl.fusing.GraphStages.ValuePresentedSource
 import pekko.stream.stage.{ GraphStage, GraphStageLogic, OutHandler }
+import pekko.stream.{ Attributes, Outlet, SourceShape, Supervision }
 
 @InternalApi
 private[pekko] final class IterableSource[T](val elements: immutable.Iterable[T])

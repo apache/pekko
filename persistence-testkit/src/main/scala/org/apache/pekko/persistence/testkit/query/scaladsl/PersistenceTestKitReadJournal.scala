@@ -20,10 +20,10 @@ import pekko.NotUsed
 import pekko.actor.ExtendedActorSystem
 import pekko.persistence.Persistence
 import pekko.persistence.journal.Tagged
-import pekko.persistence.query.{ EventEnvelope, Sequence }
 import pekko.persistence.query.NoOffset
 import pekko.persistence.query.Offset
 import pekko.persistence.query.TimestampOffset
+import pekko.persistence.query.scaladsl.EventsByTagQuery
 import pekko.persistence.query.scaladsl.{
   CurrentEventsByPersistenceIdQuery,
   CurrentEventsByTagQuery,
@@ -31,12 +31,12 @@ import pekko.persistence.query.scaladsl.{
   PagedPersistenceIdsQuery,
   ReadJournal
 }
-import pekko.persistence.query.scaladsl.EventsByTagQuery
 import pekko.persistence.query.typed
 import pekko.persistence.query.typed.scaladsl.CurrentEventsByPersistenceIdTypedQuery
 import pekko.persistence.query.typed.scaladsl.CurrentEventsBySliceQuery
 import pekko.persistence.query.typed.scaladsl.EventsByPersistenceIdTypedQuery
 import pekko.persistence.query.typed.scaladsl.EventsBySliceQuery
+import pekko.persistence.query.{ EventEnvelope, Sequence }
 import pekko.persistence.testkit.EventStorage
 import pekko.persistence.testkit.internal.InMemStorageExtension
 import pekko.persistence.testkit.query.internal.EventsByPersistenceIdStage

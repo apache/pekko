@@ -21,8 +21,8 @@ import scala.concurrent.Promise
 import org.apache.pekko
 import pekko.Done
 import pekko.NotUsed
-import pekko.stream._
 import pekko.stream.Attributes.Attribute
+import pekko.stream._
 import pekko.stream.scaladsl.AttributesSpec.AttributesSource
 import pekko.stream.stage.GraphStage
 import pekko.stream.stage.GraphStageLogic

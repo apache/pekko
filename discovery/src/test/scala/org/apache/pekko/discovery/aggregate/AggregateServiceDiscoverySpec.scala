@@ -19,8 +19,8 @@ import scala.concurrent.duration._
 
 import org.apache.pekko
 import pekko.actor.{ ActorSystem, ExtendedActorSystem }
-import pekko.discovery.{ Discovery, Lookup, ServiceDiscovery }
 import pekko.discovery.ServiceDiscovery.{ Resolved, ResolvedTarget }
+import pekko.discovery.{ Discovery, Lookup, ServiceDiscovery }
 import pekko.testkit.TestKit
 
 import org.scalatest.BeforeAndAfterAll

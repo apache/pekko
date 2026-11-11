@@ -15,8 +15,8 @@ package org.apache.pekko.osgi
 
 import java.io._
 import java.net.URL
-import java.util.{ Date, HashMap, ServiceLoader, UUID }
 import java.util.jar.JarInputStream
+import java.util.{ Date, HashMap, ServiceLoader, UUID }
 
 import scala.annotation.{ nowarn, tailrec }
 import scala.concurrent.duration._

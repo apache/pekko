@@ -16,8 +16,8 @@ package org.apache.pekko.testkit
 import scala.concurrent.duration.FiniteDuration
 
 import org.apache.pekko
-import pekko.actor.{ ActorSystem, ExtendedActorSystem, Extension, ExtensionId }
 import pekko.actor.ClassicActorSystemProvider
+import pekko.actor.{ ActorSystem, ExtendedActorSystem, Extension, ExtensionId }
 import pekko.util.Timeout
 
 import com.typesafe.config.Config

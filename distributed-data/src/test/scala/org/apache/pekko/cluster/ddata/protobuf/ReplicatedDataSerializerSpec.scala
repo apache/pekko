@@ -24,8 +24,8 @@ import pekko.actor.Props
 import pekko.actor.RootActorPath
 import pekko.cluster.Cluster
 import pekko.cluster.UniqueAddress
-import pekko.cluster.ddata._
 import pekko.cluster.ddata.Replicator.Internal._
+import pekko.cluster.ddata._
 import pekko.remote.RARP
 import pekko.testkit.TestActors
 import pekko.testkit.TestKit

@@ -19,10 +19,8 @@ import scala.concurrent.ExecutionContextExecutor
 import scala.jdk.FutureConverters._
 
 import org.apache.pekko
-import pekko.{ actor => classic }
 import pekko.Done
 import pekko.actor
-import pekko.actor.{ ActorRefProvider, Address, ExtendedActorSystem, InvalidMessageException }
 import pekko.actor.typed.ActorRef
 import pekko.actor.typed.ActorSystem
 import pekko.actor.typed.Behavior
@@ -40,8 +38,10 @@ import pekko.actor.typed.internal.PropsImpl.DispatcherFromConfig
 import pekko.actor.typed.internal.PropsImpl.DispatcherSameAsParent
 import pekko.actor.typed.internal.SystemMessage
 import pekko.actor.typed.scaladsl.Behaviors
+import pekko.actor.{ ActorRefProvider, Address, ExtendedActorSystem, InvalidMessageException }
 import pekko.annotation.InternalApi
 import pekko.util.OptionVal
+import pekko.{ actor => classic }
 
 import org.slf4j.{ Logger, LoggerFactory }
 

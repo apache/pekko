@@ -13,8 +13,8 @@
 
 package org.apache.pekko.actor
 
-import java.util.{ LinkedList => JLinkedList }
 import java.util.concurrent.locks.ReentrantLock
+import java.util.{ LinkedList => JLinkedList }
 
 import scala.annotation.nowarn
 import scala.annotation.tailrec

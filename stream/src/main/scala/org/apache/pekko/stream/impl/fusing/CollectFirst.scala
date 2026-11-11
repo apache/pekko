@@ -22,9 +22,9 @@ import scala.util.control.NonFatal
 
 import org.apache.pekko
 import pekko.annotation.InternalApi
-import pekko.stream._
 import pekko.stream.ActorAttributes.SupervisionStrategy
 import pekko.stream.Attributes.SourceLocation
+import pekko.stream._
 import pekko.stream.impl.Stages.DefaultAttributes
 import pekko.stream.stage.{ GraphStage, GraphStageLogic, InHandler, OutHandler }
 

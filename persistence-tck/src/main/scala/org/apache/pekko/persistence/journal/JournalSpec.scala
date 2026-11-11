@@ -18,8 +18,8 @@ import scala.concurrent.duration._
 
 import org.apache.pekko
 import pekko.actor._
-import pekko.persistence._
 import pekko.persistence.JournalProtocol._
+import pekko.persistence._
 import pekko.persistence.scalatest.{ MayVerb, OptionalTests }
 import pekko.testkit._
 

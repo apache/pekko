@@ -20,8 +20,8 @@ import pekko.actor.typed.ActorRef
 import pekko.annotation.DoNotInherit
 import pekko.annotation.InternalApi
 import pekko.japi.function
-import pekko.persistence.typed.internal._
 import pekko.persistence.typed.internal.SideEffect
+import pekko.persistence.typed.internal._
 
 /**
  * INTERNAL API: see `class EffectFactories`

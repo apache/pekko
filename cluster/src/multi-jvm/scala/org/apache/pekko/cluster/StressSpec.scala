@@ -43,8 +43,8 @@ import pekko.remote.artery.ArterySettings.AeronUpd
 import pekko.remote.testkit.MultiNodeConfig
 import pekko.remote.testkit.MultiNodeSpec
 import pekko.remote.transport.ThrottlerTransportAdapter
-import pekko.testkit._
 import pekko.testkit.TestEvent._
+import pekko.testkit._
 import pekko.util.Helpers.ConfigOps
 import pekko.util.Helpers.Requiring
 

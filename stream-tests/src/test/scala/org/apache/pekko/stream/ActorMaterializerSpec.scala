@@ -21,17 +21,17 @@ import scala.util.{ Failure, Try }
 
 import org.apache.pekko
 import pekko.Done
-import pekko.actor.{ Actor, ActorSystem, PoisonPill, Props }
 import pekko.actor.ExtendedActorSystem
 import pekko.actor.Extension
 import pekko.actor.ExtensionId
 import pekko.actor.ExtensionIdProvider
+import pekko.actor.{ Actor, ActorSystem, PoisonPill, Props }
 import pekko.stream.ActorMaterializerSpec.ActorWithMaterializer
 import pekko.stream.impl.{ PhasedFusingActorMaterializer, StreamSupervisor }
 import pekko.stream.scaladsl.{ Sink, Source }
 import pekko.stream.testkit.{ StreamSpec, TestPublisher }
-import pekko.testkit.{ ImplicitSender, TestProbe }
 import pekko.testkit.TestKit
+import pekko.testkit.{ ImplicitSender, TestProbe }
 
 import com.typesafe.config.ConfigFactory
 

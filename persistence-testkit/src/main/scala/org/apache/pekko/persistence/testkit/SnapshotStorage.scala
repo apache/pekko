@@ -16,9 +16,9 @@ package org.apache.pekko.persistence.testkit
 import org.apache.pekko
 import pekko.actor.Extension
 import pekko.annotation.InternalApi
-import pekko.persistence.{ SelectedSnapshot, SnapshotMetadata, SnapshotSelectionCriteria }
 import pekko.persistence.testkit.ProcessingPolicy.DefaultPolicies
 import pekko.persistence.testkit.internal.TestKitStorage
+import pekko.persistence.{ SelectedSnapshot, SnapshotMetadata, SnapshotSelectionCriteria }
 
 /**
  * INTERNAL API

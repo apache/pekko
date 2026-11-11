@@ -22,6 +22,8 @@ import scala.jdk.DurationConverters._
 import scala.jdk.OptionConverters._
 import scala.reflect.ClassTag
 
+import org.jspecify.annotations.Nullable
+
 import org.apache.pekko
 import pekko.actor.ClassicActorSystemProvider
 import pekko.annotation.ApiMayChange
@@ -30,8 +32,6 @@ import pekko.japi.Pair
 import pekko.japi.function
 import pekko.stream._
 import pekko.util.ConstantFun
-
-import org.jspecify.annotations.Nullable
 
 object SourceWithContext {
 

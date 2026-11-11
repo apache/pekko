@@ -24,7 +24,7 @@ import pekko.event.Logging
 import pekko.event.Logging.LogLevel
 import pekko.japi.Util._
 import pekko.remote.artery.ArterySettings
-import pekko.util.Helpers.{ toRootLowerCase, ConfigOps, Requiring }
+import pekko.util.Helpers.{ ConfigOps, Requiring, toRootLowerCase }
 import pekko.util.Timeout
 
 import com.typesafe.config.Config

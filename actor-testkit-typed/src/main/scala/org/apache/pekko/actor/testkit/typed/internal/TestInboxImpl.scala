@@ -18,8 +18,8 @@ import java.util.concurrent.ConcurrentLinkedQueue
 import scala.annotation.tailrec
 
 import org.apache.pekko
-import pekko.actor.{ ActorPath, Address, RootActorPath }
 import pekko.actor.typed.ActorRef
+import pekko.actor.{ ActorPath, Address, RootActorPath }
 import pekko.annotation.InternalApi
 import pekko.pattern.StatusReply
 import pekko.util.OptionVal

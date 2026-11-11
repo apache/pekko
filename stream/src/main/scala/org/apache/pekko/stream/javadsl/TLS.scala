@@ -20,8 +20,8 @@ import scala.util.Try
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.japi.function
-import pekko.stream._
 import pekko.stream.TLSProtocol._
+import pekko.stream._
 import pekko.util.ByteString
 
 /**

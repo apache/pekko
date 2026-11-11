@@ -28,8 +28,8 @@ import pekko.actor.typed.Behavior
 import pekko.actor.typed.internal.BehaviorImpl.DeferredBehavior
 import pekko.actor.typed.javadsl.ActorContext
 import pekko.annotation.InternalApi
-import pekko.persistence.typed._
 import pekko.persistence.typed.EventAdapter
+import pekko.persistence.typed._
 import pekko.persistence.typed.internal._
 
 import com.typesafe.config.Config

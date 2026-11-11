@@ -20,9 +20,9 @@ import scala.concurrent.duration.FiniteDuration
 
 import org.apache.pekko
 import pekko.actor.ClassicActorSystemProvider
-import pekko.stream.{ Materializer, SystemMaterializer }
 import pekko.stream.impl.PhasedFusingActorMaterializer
 import pekko.stream.testkit.scaladsl
+import pekko.stream.{ Materializer, SystemMaterializer }
 
 object StreamTestKit {
 

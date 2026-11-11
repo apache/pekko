@@ -20,8 +20,8 @@ import scala.jdk.CollectionConverters._
 import org.apache.pekko
 import pekko.actor.ExtendedActorSystem
 import pekko.annotation.InternalApi
-import pekko.discovery.{ Lookup, ServiceDiscovery }
 import pekko.discovery.ServiceDiscovery.{ Resolved, ResolvedTarget }
+import pekko.discovery.{ Lookup, ServiceDiscovery }
 import pekko.event.Logging
 
 import com.typesafe.config.{ Config, ConfigUtil }

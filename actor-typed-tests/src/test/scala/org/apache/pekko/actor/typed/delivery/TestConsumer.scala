@@ -16,9 +16,9 @@ package org.apache.pekko.actor.typed.delivery
 import java.io.NotSerializableException
 import java.nio.charset.StandardCharsets
 
-import scala.concurrent.duration._
 import scala.concurrent.duration.Duration
 import scala.concurrent.duration.FiniteDuration
+import scala.concurrent.duration._
 
 import org.apache.pekko
 import pekko.actor.typed.ActorRef

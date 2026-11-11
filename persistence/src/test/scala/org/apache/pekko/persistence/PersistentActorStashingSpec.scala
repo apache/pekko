@@ -18,8 +18,8 @@ import scala.concurrent.duration._
 import scala.reflect.ClassTag
 
 import org.apache.pekko
-import pekko.actor.{ Actor, ActorRef, OneForOneStrategy, Props }
 import pekko.actor.SupervisorStrategy.Resume
+import pekko.actor.{ Actor, ActorRef, OneForOneStrategy, Props }
 import pekko.persistence.journal.SteppingInmemJournal
 import pekko.testkit.ImplicitSender
 

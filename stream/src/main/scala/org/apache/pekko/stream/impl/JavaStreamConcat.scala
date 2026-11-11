@@ -22,8 +22,8 @@ import scala.util.control.NonFatal
 
 import org.apache.pekko
 import pekko.annotation.InternalApi
-import pekko.stream.{ Attributes, FlowShape, Inlet, Outlet }
 import pekko.stream.stage.{ GraphStage, GraphStageLogic, InHandler, OutHandler }
+import pekko.stream.{ Attributes, FlowShape, Inlet, Outlet }
 
 /**
  * Concatenating a `Source.fromJavaStream` to a stream is common enough that it warrants

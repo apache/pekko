@@ -16,8 +16,8 @@ package org.apache.pekko.routing
 import java.util.concurrent.atomic.AtomicInteger
 
 import scala.collection.immutable
-import scala.concurrent.{ ExecutionContext, Promise }
 import scala.concurrent.duration._
+import scala.concurrent.{ ExecutionContext, Promise }
 import scala.jdk.DurationConverters._
 import scala.util.Random
 
@@ -25,7 +25,7 @@ import org.apache.pekko
 import pekko.actor._
 import pekko.dispatch.Dispatchers
 import pekko.japi.Util.immutableSeq
-import pekko.pattern.{ ask, pipe, AskTimeoutException }
+import pekko.pattern.{ AskTimeoutException, ask, pipe }
 import pekko.util.Helpers.ConfigOps
 import pekko.util.Timeout
 

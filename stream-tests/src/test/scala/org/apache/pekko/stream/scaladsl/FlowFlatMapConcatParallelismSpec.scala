@@ -30,8 +30,8 @@ import org.apache.pekko
 import pekko.NotUsed
 import pekko.pattern.FutureTimeoutSupport
 import pekko.stream._
-import pekko.stream.testkit.{ ScriptedTest, StreamSpec }
 import pekko.stream.testkit.scaladsl.TestSink
+import pekko.stream.testkit.{ ScriptedTest, StreamSpec }
 
 import org.scalatest.time.{ Seconds, Span }
 

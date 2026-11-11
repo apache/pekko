@@ -13,9 +13,9 @@
 
 package org.apache.pekko.persistence.typed.serialization
 
-import java.{ lang => jl }
 import java.io.NotSerializableException
 import java.util.{ ArrayList, Collections, Comparator }
+import java.{ lang => jl }
 
 import scala.annotation.tailrec
 import scala.collection.immutable.TreeMap

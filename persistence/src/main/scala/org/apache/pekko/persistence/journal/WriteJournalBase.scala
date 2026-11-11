@@ -15,8 +15,8 @@ package org.apache.pekko.persistence.journal
 
 import org.apache.pekko
 import pekko.actor.Actor
-import pekko.persistence.{ Persistence, PersistentEnvelope, PersistentRepr }
 import pekko.persistence.AtomicWrite
+import pekko.persistence.{ Persistence, PersistentEnvelope, PersistentRepr }
 
 private[pekko] trait WriteJournalBase {
   this: Actor =>

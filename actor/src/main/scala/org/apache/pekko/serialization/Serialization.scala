@@ -21,9 +21,9 @@ import java.util.concurrent.atomic.AtomicReference
 
 import scala.annotation.tailrec
 import scala.collection.mutable.ArrayBuffer
-import scala.util.{ DynamicVariable, Failure, Try }
 import scala.util.Success
 import scala.util.control.NonFatal
+import scala.util.{ DynamicVariable, Failure, Try }
 
 import org.apache.pekko
 import pekko.actor._

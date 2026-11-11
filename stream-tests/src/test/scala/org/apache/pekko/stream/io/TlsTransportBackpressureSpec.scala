@@ -19,20 +19,20 @@ package org.apache.pekko.stream.io
 
 import java.nio.ByteBuffer
 import java.nio.charset.StandardCharsets
-import javax.net.ssl.{ SSLContext, SSLEngine, SSLEngineResult }
 import javax.net.ssl.SSLEngineResult.HandshakeStatus._
+import javax.net.ssl.{ SSLContext, SSLEngine, SSLEngineResult }
 
 import scala.concurrent.duration._
 import scala.util.Success
 
 import org.apache.pekko
 import pekko.NotUsed
-import pekko.stream._
 import pekko.stream.TLSProtocol._
+import pekko.stream._
 import pekko.stream.impl.io.{ TlsGraphStage, TlsModule }
 import pekko.stream.scaladsl._
-import pekko.stream.testkit.{ StreamSpec, TestPublisher, TestSubscriber }
 import pekko.stream.testkit.scaladsl.{ TestSink, TestSource }
+import pekko.stream.testkit.{ StreamSpec, TestPublisher, TestSubscriber }
 import pekko.testkit.WithLogCapturing
 import pekko.util.ByteString
 

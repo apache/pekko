@@ -22,12 +22,12 @@ import org.apache.commons.io.FileUtils
 import org.apache.pekko
 import pekko.Done
 import pekko.actor.{ Actor, ActorLogging, ActorRef, ActorSystem, PoisonPill, Props }
-import pekko.cluster.{ Cluster, MemberStatus }
 import pekko.cluster.ClusterEvent.CurrentClusterState
 import pekko.cluster.sharding.ShardRegion.MessageExtractor
+import pekko.cluster.{ Cluster, MemberStatus }
 import pekko.stream.scaladsl.{ Sink, Source }
-import pekko.testkit.{ DeadLettersFilter, PekkoSpec, TestProbe, WithLogCapturing }
 import pekko.testkit.TestEvent.Mute
+import pekko.testkit.{ DeadLettersFilter, PekkoSpec, TestProbe, WithLogCapturing }
 
 import com.typesafe.config.ConfigFactory
 

@@ -16,11 +16,11 @@ package org.apache.pekko.remote.artery
 import scala.util.control.NoStackTrace
 
 import org.apache.pekko
-import pekko.actor._
 import pekko.actor.ActorIdentity
 import pekko.actor.Identify
-import pekko.remote.{ RARP, RemotingMultiNodeSpec }
+import pekko.actor._
 import pekko.remote.testkit.MultiNodeConfig
+import pekko.remote.{ RARP, RemotingMultiNodeSpec }
 import pekko.testkit._
 
 import org.scalatest.concurrent.ScalaFutures

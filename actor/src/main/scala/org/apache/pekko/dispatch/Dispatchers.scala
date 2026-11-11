@@ -22,8 +22,8 @@ import org.apache.pekko
 import pekko.ConfigurationException
 import pekko.actor.{ ActorSystem, DynamicAccess, Scheduler }
 import pekko.annotation.{ DoNotInherit, InternalApi }
-import pekko.event.{ EventStream, LoggingAdapter }
 import pekko.event.Logging.Warning
+import pekko.event.{ EventStream, LoggingAdapter }
 import pekko.util.Helpers.ConfigOps
 
 import com.typesafe.config.{ Config, ConfigFactory, ConfigValueType }

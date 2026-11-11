@@ -21,10 +21,10 @@ import scala.collection.immutable
 
 import org.apache.pekko
 import pekko.annotation.InternalApi
-import pekko.stream.{ Attributes, Outlet, SourceShape }
 import pekko.stream.impl.ReactiveStreamsCompliance
 import pekko.stream.impl.fusing.GraphStages.ValuePresentedSource
 import pekko.stream.stage.{ GraphStage, GraphStageLogic, OutHandler }
+import pekko.stream.{ Attributes, Outlet, SourceShape }
 
 @InternalApi
 private[pekko] final class RangeSource[T](val range: immutable.Range, defaultAttributes: Attributes)

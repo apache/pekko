@@ -42,8 +42,8 @@ import pekko.io.DirectByteBufferPool
 import pekko.serialization.SerializationExtension
 import pekko.serialization.SerializerWithStringManifest
 import pekko.util.ByteString
-import pekko.util.OptionVal
 import pekko.util.Helpers.toRootLowerCase
+import pekko.util.OptionVal
 
 import com.typesafe.config.Config
 

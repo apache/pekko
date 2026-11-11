@@ -17,11 +17,11 @@ import java.util
 import java.util.Optional
 import java.util.concurrent.{ CompletableFuture, CompletionStage }
 
-import scala.annotation.{ nowarn, varargs }
 import scala.annotation.unchecked.uncheckedVariance
+import scala.annotation.{ nowarn, varargs }
 import scala.collection.immutable
-import scala.concurrent.Promise
 import scala.concurrent.ExecutionContext
+import scala.concurrent.Promise
 import scala.jdk.CollectionConverters._
 import scala.jdk.DurationConverters._
 import scala.jdk.FutureConverters._
@@ -29,19 +29,20 @@ import scala.jdk.OptionConverters._
 import scala.reflect.ClassTag
 import scala.util.control.NonFatal
 
+import org.jspecify.annotations.Nullable
+
 import org.apache.pekko
-import pekko.{ Done, NotUsed }
 import pekko.actor.{ ActorRef, Cancellable, ClassicActorSystemProvider }
 import pekko.event.{ LogMarker, LoggingAdapter, MarkerLoggingAdapter }
-import pekko.japi.{ function, JavaPartialFunction, Pair }
 import pekko.japi.function.Creator
+import pekko.japi.{ JavaPartialFunction, Pair, function }
 import pekko.stream._
-import pekko.stream.impl.{ LinearTraversalBuilder, UnfoldAsyncJava, UnfoldJava }
 import pekko.stream.impl.Stages.DefaultAttributes
 import pekko.stream.impl.fusing.{ RangeSource, StatefulMapConcat, ZipWithIndexJava }
+import pekko.stream.impl.{ LinearTraversalBuilder, UnfoldAsyncJava, UnfoldJava }
 import pekko.util._
+import pekko.{ Done, NotUsed }
 
-import org.jspecify.annotations.Nullable
 import org.reactivestreams.{ Publisher, Subscriber }
 
 /** Java API */

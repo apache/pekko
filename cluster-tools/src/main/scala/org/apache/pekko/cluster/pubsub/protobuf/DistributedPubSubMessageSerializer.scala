@@ -21,10 +21,10 @@ import scala.collection.immutable.TreeMap
 import scala.jdk.CollectionConverters._
 
 import org.apache.pekko
-import pekko.actor.{ Address, ExtendedActorSystem }
 import pekko.actor.ActorRef
-import pekko.cluster.pubsub.DistributedPubSubMediator._
+import pekko.actor.{ Address, ExtendedActorSystem }
 import pekko.cluster.pubsub.DistributedPubSubMediator.Internal._
+import pekko.cluster.pubsub.DistributedPubSubMediator._
 import pekko.cluster.pubsub.protobuf.msg.{ DistributedPubSubMessages => dm }
 import pekko.protobufv3.internal.{ ByteString, MessageLite }
 import pekko.remote.ByteStringUtils

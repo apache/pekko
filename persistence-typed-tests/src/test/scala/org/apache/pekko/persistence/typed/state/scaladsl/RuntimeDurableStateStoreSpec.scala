@@ -28,9 +28,10 @@ import pekko.persistence.state.scaladsl.DurableStateUpdateStore
 import pekko.persistence.testkit.state.PersistenceTestKitDurableStateStoreProvider
 import pekko.persistence.typed.PersistenceId
 
+import org.scalatest.wordspec.AnyWordSpecLike
+
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
-import org.scalatest.wordspec.AnyWordSpecLike
 
 object RuntimeDurableStateStoreSpec {
 

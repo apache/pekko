@@ -24,8 +24,8 @@ import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
 import pekko.actor.testkit.typed.scaladsl.TestProbe
 import pekko.actor.typed.ActorRef
 import pekko.actor.typed.Behavior
-import pekko.actor.typed.scaladsl.{ ActorContext, Behaviors }
 import pekko.actor.typed.scaladsl.adapter._
+import pekko.actor.typed.scaladsl.{ ActorContext, Behaviors }
 import pekko.persistence.testkit.PersistenceTestKitDurableStateStorePlugin
 import pekko.persistence.typed.PersistenceId
 import pekko.persistence.typed.state.RecoveryCompleted

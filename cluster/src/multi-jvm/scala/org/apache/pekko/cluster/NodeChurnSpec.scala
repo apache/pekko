@@ -21,8 +21,8 @@ import pekko.actor._
 import pekko.event.Logging.Info
 import pekko.remote.RARP
 import pekko.remote.testkit.MultiNodeConfig
-import pekko.testkit._
 import pekko.testkit.TestKit
+import pekko.testkit._
 
 import com.typesafe.config.ConfigFactory
 

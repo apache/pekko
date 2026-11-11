@@ -15,8 +15,8 @@ package org.apache.pekko.stream.impl
 
 import org.apache.pekko
 import pekko.annotation.InternalApi
-import pekko.stream._
 import pekko.stream.Attributes._
+import pekko.stream._
 
 /**
  * INTERNAL API

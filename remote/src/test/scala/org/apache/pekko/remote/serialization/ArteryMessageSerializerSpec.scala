@@ -17,8 +17,6 @@ import java.io.NotSerializableException
 
 import org.apache.pekko
 import pekko.actor._
-import pekko.remote.{ ArteryControlFormats, RemoteWatcher, UniqueAddress }
-import pekko.remote.artery.{ ActorSystemTerminating, ActorSystemTerminatingAck, Quarantined, SystemMessageDelivery }
 import pekko.remote.artery.Flush
 import pekko.remote.artery.FlushAck
 import pekko.remote.artery.OutboundHandshake.{ HandshakeReq, HandshakeRsp }
@@ -29,6 +27,8 @@ import pekko.remote.artery.compress.CompressionProtocol.{
   ClassManifestCompressionAdvertisementAck
 }
 import pekko.remote.artery.compress.CompressionTable
+import pekko.remote.artery.{ ActorSystemTerminating, ActorSystemTerminatingAck, Quarantined, SystemMessageDelivery }
+import pekko.remote.{ ArteryControlFormats, RemoteWatcher, UniqueAddress }
 import pekko.serialization.SerializationExtension
 import pekko.testkit.PekkoSpec
 

@@ -13,8 +13,8 @@
 
 package org.apache.pekko.pattern
 
-import scala.concurrent.{ Await, Future }
 import scala.concurrent.duration._
+import scala.concurrent.{ Await, Future }
 
 import org.apache.pekko
 import pekko.Done

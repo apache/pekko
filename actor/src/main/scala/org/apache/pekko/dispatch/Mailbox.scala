@@ -13,10 +13,10 @@
 
 package org.apache.pekko.dispatch
 
-import java.util.{ Comparator, Deque, PriorityQueue, Queue }
 import java.util.concurrent._
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.locks.ReentrantLock
+import java.util.{ Comparator, Deque, PriorityQueue, Queue }
 
 import scala.annotation.tailrec
 import scala.concurrent.duration.{ Duration, FiniteDuration }
@@ -27,8 +27,8 @@ import pekko.actor.{ ActorCell, ActorRef, ActorSystem, DeadLetter, InternalActor
 import pekko.annotation.InternalStableApi
 import pekko.dispatch.sysmsg._
 import pekko.event.Logging.Error
-import pekko.util.{ BoundedBlockingQueue, StablePriorityBlockingQueue, StablePriorityQueue }
 import pekko.util.Helpers.ConfigOps
+import pekko.util.{ BoundedBlockingQueue, StablePriorityBlockingQueue, StablePriorityQueue }
 
 import com.typesafe.config.Config
 

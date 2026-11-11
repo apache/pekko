@@ -30,9 +30,10 @@ import pekko.stream.javadsl
 import pekko.stream.scaladsl.{ Compression, Sink, Source }
 import pekko.util.ByteString
 
-import com.typesafe.config.ConfigFactory
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
+
+import com.typesafe.config.ConfigFactory
 
 /**
  * zstd-jni is an optional dependency of pekko-stream, so the other compression operators must

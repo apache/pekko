@@ -17,11 +17,10 @@ import java.net.InetAddress
 
 import scala.concurrent.duration._
 
-import CachePolicy.Ttl
-
 import org.apache.pekko
-import pekko.io.{ Dns, IO }
+import CachePolicy.Ttl
 import pekko.io.dns.DnsProtocol.{ Ip, RequestType, Srv }
+import pekko.io.{ Dns, IO }
 import pekko.pattern.ask
 import pekko.testkit.SocketUtil
 import pekko.testkit.SocketUtil.Both

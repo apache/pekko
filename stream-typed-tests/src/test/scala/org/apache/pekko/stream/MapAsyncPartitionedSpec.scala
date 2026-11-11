@@ -21,8 +21,8 @@ import java.time.Instant
 import java.util.concurrent.{ ExecutorService, Executors }
 
 import scala.annotation.nowarn
-import scala.concurrent.{ blocking, ExecutionContext, Future }
 import scala.concurrent.duration.{ DurationInt, FiniteDuration }
+import scala.concurrent.{ ExecutionContext, Future, blocking }
 import scala.util.Random
 
 import org.scalacheck.{ Arbitrary, Gen }

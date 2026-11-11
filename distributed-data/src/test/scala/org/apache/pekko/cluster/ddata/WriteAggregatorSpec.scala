@@ -25,8 +25,8 @@ import pekko.actor.Address
 import pekko.actor.Props
 import pekko.cluster.Cluster
 import pekko.cluster.UniqueAddress
-import pekko.cluster.ddata.Replicator._
 import pekko.cluster.ddata.Replicator.Internal._
+import pekko.cluster.ddata.Replicator._
 import pekko.remote.RARP
 import pekko.testkit._
 

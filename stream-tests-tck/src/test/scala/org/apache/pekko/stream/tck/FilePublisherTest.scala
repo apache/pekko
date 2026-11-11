@@ -22,8 +22,8 @@ import pekko.actor.ActorSystem
 import pekko.event.Logging
 import pekko.stream.scaladsl.{ FileIO, Sink }
 import pekko.stream.testkit.Utils._
-import pekko.testkit.{ EventFilter, TestEvent }
 import pekko.testkit.PekkoSpec
+import pekko.testkit.{ EventFilter, TestEvent }
 import pekko.util.ByteString
 
 import org.reactivestreams.Publisher

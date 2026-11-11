@@ -18,14 +18,14 @@ import scala.concurrent.duration._
 import scala.util.control.NonFatal
 
 import org.apache.pekko
-import pekko.actor.typed.{ Behavior, Signal }
 import pekko.actor.typed.internal.PoisonPill
 import pekko.actor.typed.internal.UnstashException
 import pekko.actor.typed.scaladsl.{ AbstractBehavior, ActorContext, Behaviors, LoggerOps }
+import pekko.actor.typed.{ Behavior, Signal }
 import pekko.annotation.{ InternalApi, InternalStableApi }
 import pekko.event.Logging
-import pekko.persistence._
 import pekko.persistence.JournalProtocol._
+import pekko.persistence._
 import pekko.persistence.typed.EmptyEventSeq
 import pekko.persistence.typed.EventSeq
 import pekko.persistence.typed.EventsSeq

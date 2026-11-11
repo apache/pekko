@@ -13,9 +13,8 @@
 
 package org.apache.pekko.stream
 
-import scala.concurrent.{ duration, Await, Future, Promise }
-
-import duration._
+import scala.concurrent.duration._
+import scala.concurrent.{ Await, Future, Promise }
 
 import org.apache.pekko
 import pekko.Done
@@ -24,8 +23,8 @@ import pekko.stream.impl.UnfoldResourceSource
 import pekko.stream.impl.fusing.GraphInterpreter
 import pekko.stream.scaladsl._
 import pekko.stream.stage.{ GraphStage, GraphStageLogic, GraphStageWithMaterializedValue, OutHandler }
-import pekko.stream.testkit.TestPublisher
 import pekko.stream.testkit.StreamSpec
+import pekko.stream.testkit.TestPublisher
 import pekko.stream.testkit.Utils.TE
 import pekko.stream.testkit.scaladsl.TestSink
 

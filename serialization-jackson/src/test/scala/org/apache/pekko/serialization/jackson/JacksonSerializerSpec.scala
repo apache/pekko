@@ -13,9 +13,9 @@
 
 package org.apache.pekko.serialization.jackson
 
-import java.lang
 import java.io.ByteArrayOutputStream
 import java.io.NotSerializableException
+import java.lang
 import java.nio.charset.StandardCharsets
 import java.time.Duration
 import java.time.Instant
@@ -28,11 +28,9 @@ import java.util.UUID
 import java.util.logging.FileHandler
 
 import scala.annotation.nowarn
-import scala.concurrent.duration._
 import scala.concurrent.duration.FiniteDuration
+import scala.concurrent.duration._
 
-import com.github.luben.zstd.{ Zstd, ZstdOutputStream }
-import net.jpountz.lz4.LZ4Factory
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
@@ -56,6 +54,8 @@ import com.fasterxml.jackson.databind.json.JsonMapper
 import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.scala.JsonScalaEnumeration
+import com.github.luben.zstd.{ Zstd, ZstdOutputStream }
+import net.jpountz.lz4.LZ4Factory
 
 import org.apache.pekko
 import pekko.actor.ActorRef

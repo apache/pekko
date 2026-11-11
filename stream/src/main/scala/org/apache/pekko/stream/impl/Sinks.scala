@@ -30,10 +30,10 @@ import pekko.NotUsed
 import pekko.annotation.DoNotInherit
 import pekko.annotation.InternalApi
 import pekko.event.Logging
-import pekko.stream._
 import pekko.stream.ActorAttributes.StreamSubscriptionTimeout
 import pekko.stream.Attributes.InputBuffer
 import pekko.stream.Attributes.SourceLocation
+import pekko.stream._
 import pekko.stream.impl.QueueSink.Output
 import pekko.stream.impl.QueueSink.Pull
 import pekko.stream.impl.Stages.DefaultAttributes

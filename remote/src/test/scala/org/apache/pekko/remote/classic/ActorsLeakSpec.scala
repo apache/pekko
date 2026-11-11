@@ -20,10 +20,10 @@ import scala.concurrent.duration._
 import org.apache.pekko
 import pekko.actor._
 import pekko.actor.dungeon.ChildrenContainer
-import pekko.remote.{ AddressUidExtension, RARP }
 import pekko.remote.transport.ThrottlerTransportAdapter.ForceDisassociate
-import pekko.testkit._
+import pekko.remote.{ AddressUidExtension, RARP }
 import pekko.testkit.TestActors.EchoActor
+import pekko.testkit._
 
 import com.typesafe.config.ConfigFactory
 

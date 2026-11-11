@@ -17,12 +17,12 @@ import scala.concurrent.duration._
 
 import org.apache.pekko
 import pekko.actor.testkit.typed.TestKitSettings
-import pekko.actor.testkit.typed.scaladsl.{ ScalaTestWithActorTestKit, TestProbe }
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
-import pekko.actor.typed.{ ActorRef, Behavior }
+import pekko.actor.testkit.typed.scaladsl.{ ScalaTestWithActorTestKit, TestProbe }
 import pekko.actor.typed.internal.PoisonPill
 import pekko.actor.typed.scaladsl.Behaviors
 import pekko.actor.typed.scaladsl.adapter._
+import pekko.actor.typed.{ ActorRef, Behavior }
 import pekko.cluster.typed.ClusterSingletonPoisonPillSpec.GetSelf
 
 import org.scalatest.wordspec.AnyWordSpecLike

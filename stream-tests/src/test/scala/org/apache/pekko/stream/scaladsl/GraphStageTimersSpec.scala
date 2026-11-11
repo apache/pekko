@@ -24,8 +24,8 @@ import pekko.stream.stage.AsyncCallback
 import pekko.stream.stage.InHandler
 import pekko.stream.stage.OutHandler
 import pekko.stream.stage.TimerGraphStageLogic
-import pekko.stream.testkit._
 import pekko.stream.testkit.Utils._
+import pekko.stream.testkit._
 import pekko.testkit.TestDuration
 
 object GraphStageTimersSpec {

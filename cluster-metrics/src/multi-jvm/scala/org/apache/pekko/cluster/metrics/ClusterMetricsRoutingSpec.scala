@@ -32,8 +32,8 @@ import pekko.routing.FromConfig
 import pekko.routing.GetRoutees
 import pekko.routing.Routees
 import pekko.serialization.jackson.CborSerializable
-import pekko.testkit.{ DefaultTimeout, ImplicitSender, LongRunningTest }
 import pekko.testkit.GHExcludeTest
+import pekko.testkit.{ DefaultTimeout, ImplicitSender, LongRunningTest }
 
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory

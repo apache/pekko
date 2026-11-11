@@ -13,12 +13,12 @@
 
 package org.apache.pekko.dispatch
 
-import java.{ util => ju }
 import java.util.concurrent._
+import java.{ util => ju }
 
 import scala.annotation.{ nowarn, tailrec }
-import scala.concurrent.{ ExecutionContext, ExecutionContextExecutor }
 import scala.concurrent.duration.{ Duration, FiniteDuration }
+import scala.concurrent.{ ExecutionContext, ExecutionContextExecutor }
 import scala.util.control.NonFatal
 
 import org.apache.pekko
@@ -27,7 +27,7 @@ import pekko.annotation.{ InternalApi, InternalStableApi }
 import pekko.dispatch.affinity.AffinityPoolConfigurator
 import pekko.dispatch.sysmsg._
 import pekko.event.EventStream
-import pekko.event.Logging.{ emptyMDC, Debug, Error, LogEvent, LogEventException, StandardOutLogger, Warning }
+import pekko.event.Logging.{ Debug, Error, LogEvent, LogEventException, StandardOutLogger, Warning, emptyMDC }
 import pekko.util.Index
 
 import com.typesafe.config.Config

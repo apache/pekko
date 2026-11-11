@@ -17,11 +17,11 @@ import scala.concurrent.Promise
 
 import org.apache.pekko
 import pekko.Done
-import pekko.actor.{ ActorSystem => ClassicActorSystem }
 import pekko.actor.typed.ActorRef
 import pekko.actor.typed.ActorRefResolver
 import pekko.actor.typed.scaladsl.Behaviors
 import pekko.actor.typed.scaladsl.adapter._
+import pekko.actor.{ ActorSystem => ClassicActorSystem }
 import pekko.serialization.jackson.CborSerializable
 import pekko.testkit.PekkoSpec
 

@@ -17,8 +17,8 @@ import scala.concurrent.Future
 
 import org.apache.pekko
 import pekko.Done
-import pekko.stream._
 import pekko.stream.Attributes.Attribute
+import pekko.stream._
 import pekko.stream.scaladsl.AttributesSpec.AttributesSink
 import pekko.stream.testkit.StreamSpec
 import pekko.stream.testkit.Utils._

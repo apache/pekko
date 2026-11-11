@@ -29,8 +29,8 @@ import pekko.annotation.DoNotInherit
 import pekko.event.LogMarker
 import pekko.event.LoggingAdapter
 import pekko.event.MarkerLoggingAdapter
-import pekko.stream._
 import pekko.stream.Attributes.SourceLocation
+import pekko.stream._
 import pekko.stream.impl.FailedConcat
 import pekko.stream.impl.FailedSource
 import pekko.stream.impl.FutureConcat
@@ -48,9 +48,9 @@ import pekko.stream.impl.Throttle
 import pekko.stream.impl.Timers
 import pekko.stream.impl.TraversalBuilder
 import pekko.stream.impl.fusing
-import pekko.stream.impl.fusing._
 import pekko.stream.impl.fusing.FlattenMerge
 import pekko.stream.impl.fusing.GraphStages.{ FutureSource, RepeatSource, SingleSource }
+import pekko.stream.impl.fusing._
 import pekko.stream.stage._
 import pekko.util.ConstantFun
 import pekko.util.OptionVal

@@ -23,10 +23,10 @@ import scala.concurrent.duration._
 import scala.util.Success
 
 import org.apache.pekko
-import pekko.actor._
 import pekko.actor.DeadLetterSuppression
-import pekko.annotation.{ InternalApi, InternalStableApi }
+import pekko.actor._
 import pekko.annotation.DoNotInherit
+import pekko.annotation.{ InternalApi, InternalStableApi }
 import pekko.cluster.Cluster
 import pekko.cluster.ClusterEvent
 import pekko.cluster.ClusterEvent._
@@ -35,17 +35,17 @@ import pekko.cluster.ddata.LWWRegisterKey
 import pekko.cluster.ddata.Replicator._
 import pekko.cluster.ddata.SelfUniqueAddress
 import pekko.cluster.sharding.ShardRegion.ShardId
+import pekko.cluster.sharding.internal.AbstractLeastShardAllocationStrategy
+import pekko.cluster.sharding.internal.ClusterShardAllocationMixin.RegionEntry
+import pekko.cluster.sharding.internal.ClusterShardAllocationMixin.ShardSuitabilityOrdering
+import pekko.cluster.sharding.internal.EventSourcedRememberEntitiesCoordinatorStore.MigrationMarker
 import pekko.cluster.sharding.internal.{
   EventSourcedRememberEntitiesCoordinatorStore,
   RememberEntitiesCoordinatorStore,
   RememberEntitiesProvider
 }
-import pekko.cluster.sharding.internal.AbstractLeastShardAllocationStrategy
-import pekko.cluster.sharding.internal.ClusterShardAllocationMixin.RegionEntry
-import pekko.cluster.sharding.internal.ClusterShardAllocationMixin.ShardSuitabilityOrdering
-import pekko.cluster.sharding.internal.EventSourcedRememberEntitiesCoordinatorStore.MigrationMarker
 import pekko.event.{ BusLogging, Logging }
-import pekko.pattern.{ pipe, AskTimeoutException }
+import pekko.pattern.{ AskTimeoutException, pipe }
 import pekko.persistence._
 import pekko.util.PrettyDuration._
 import pekko.util.Timeout

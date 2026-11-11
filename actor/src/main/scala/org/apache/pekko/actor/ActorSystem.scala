@@ -19,15 +19,15 @@ import java.util.concurrent._
 import java.util.concurrent.atomic.AtomicReference
 
 import scala.annotation.tailrec
-import scala.concurrent.{ Await, ExecutionContext, ExecutionContextExecutor, Future, Promise }
 import scala.concurrent.blocking
 import scala.concurrent.duration.Duration
+import scala.concurrent.{ Await, ExecutionContext, ExecutionContextExecutor, Future, Promise }
 import scala.jdk.CollectionConverters._
 import scala.jdk.DurationConverters._
 import scala.jdk.FutureConverters._
 import scala.jdk.OptionConverters._
-import scala.util.{ Failure, Success, Try }
 import scala.util.control.{ ControlThrowable, NonFatal }
+import scala.util.{ Failure, Success, Try }
 
 import org.apache.pekko
 import pekko.ConfigurationException
@@ -36,12 +36,12 @@ import pekko.actor.setup.{ ActorSystemSetup, Setup }
 import pekko.annotation.DoNotInherit
 import pekko.annotation.InternalApi
 import pekko.dispatch._
-import pekko.event._
 import pekko.event.Logging.DefaultLogger
+import pekko.event._
 import pekko.japi.Util.immutableSeq
 import pekko.serialization.SerializationExtension
-import pekko.util._
 import pekko.util.Helpers.toRootLowerCase
+import pekko.util._
 
 import com.typesafe.config.{ Config, ConfigFactory }
 

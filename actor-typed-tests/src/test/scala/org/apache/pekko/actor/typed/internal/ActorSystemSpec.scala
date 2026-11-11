@@ -20,13 +20,13 @@ import scala.util.control.NonFatal
 
 import org.apache.pekko
 import pekko.Done
-import pekko.actor.{ Address, CoordinatedShutdown, InvalidMessageException }
 import pekko.actor.dungeon.Dispatch
 import pekko.actor.testkit.typed.TestKitSettings
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
 import pekko.actor.testkit.typed.scaladsl.TestInbox
 import pekko.actor.testkit.typed.scaladsl.TestProbe
 import pekko.actor.typed.scaladsl.Behaviors
+import pekko.actor.{ Address, CoordinatedShutdown, InvalidMessageException }
 
 import org.scalatest.BeforeAndAfterAll
 import org.scalatest.concurrent.Eventually

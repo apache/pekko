@@ -13,8 +13,8 @@
 
 package org.apache.pekko.cluster.sharding.typed.internal
 
-import java.util.{ Map => JMap }
 import java.util.concurrent.atomic.AtomicLong
+import java.util.{ Map => JMap }
 
 import scala.jdk.CollectionConverters._
 

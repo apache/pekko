@@ -17,13 +17,12 @@ import scala.annotation.nowarn
 import scala.collection.mutable
 import scala.concurrent.duration.FiniteDuration
 import scala.jdk.DurationConverters._
-
 import language.implicitConversions
 
 import org.apache.pekko
 import pekko.actor._
-import pekko.japi.function.{ Effect, Function2, Predicate, Predicate2, Procedure, Procedure2, Procedure3 }
 import pekko.japi.Pair
+import pekko.japi.function.{ Effect, Function2, Predicate, Predicate2, Procedure, Procedure2, Procedure3 }
 import pekko.japi.pf.{ FSMTransitionHandlerBuilder, UnitMatch, UnitPFBuilder }
 import pekko.routing.{ Deafen, Listen, Listeners }
 

@@ -14,8 +14,8 @@
 package org.apache.pekko.stream.scaladsl
 
 import org.apache.pekko
-import pekko.stream.testkit.{ BaseTwoStreamsSetup, TestSubscriber }
 import pekko.stream.testkit.scaladsl.StreamTestKit._
+import pekko.stream.testkit.{ BaseTwoStreamsSetup, TestSubscriber }
 
 import org.reactivestreams.Publisher
 

@@ -20,10 +20,10 @@ import scala.util.Success
 
 import org.apache.pekko
 import pekko.Done
-import pekko.stream.{ ActorMaterializer, ActorMaterializerSettings, IOOperationIncompleteException, Materializer }
 import pekko.stream.scaladsl.{ Source, StreamConverters }
-import pekko.stream.testkit._
 import pekko.stream.testkit.Utils._
+import pekko.stream.testkit._
+import pekko.stream.{ ActorMaterializer, ActorMaterializerSettings, IOOperationIncompleteException, Materializer }
 import pekko.testkit.TestProbe
 import pekko.util.ByteString
 

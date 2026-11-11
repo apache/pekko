@@ -23,8 +23,8 @@ import scala.jdk.DurationConverters._
 import org.apache.pekko
 import pekko.actor.ActorSystem
 import pekko.annotation.ApiMayChange
-import pekko.persistence.testkit.{ EventStorage, ExpectedFailure, ExpectedRejection, JournalOperation }
 import pekko.persistence.testkit.scaladsl.{ PersistenceTestKit => ScalaTestKit }
+import pekko.persistence.testkit.{ EventStorage, ExpectedFailure, ExpectedRejection, JournalOperation }
 
 /**
  * Class for testing persisted events in persistent actors.

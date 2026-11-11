@@ -18,8 +18,8 @@ import scala.collection.{ immutable => im }
 import org.apache.pekko
 import pekko.actor.typed.ActorRef
 import pekko.annotation.DoNotInherit
-import pekko.persistence.typed.internal._
 import pekko.persistence.typed.internal.SideEffect
+import pekko.persistence.typed.internal._
 
 /**
  * Factory methods for creating [[Effect]] directives - how an event sourced actor reacts on a command.

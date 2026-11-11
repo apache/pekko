@@ -18,8 +18,8 @@ import java.util.concurrent.CancellationException
 import java.util.concurrent.atomic.AtomicInteger
 
 import scala.annotation.nowarn
-import scala.concurrent.{ blocking, ExecutionContext, Future, Promise }
 import scala.concurrent.duration.FiniteDuration
+import scala.concurrent.{ ExecutionContext, Future, Promise, blocking }
 import scala.util.Try
 import scala.util.control.{ NoStackTrace, NonFatal }
 
@@ -30,11 +30,11 @@ import pekko.actor.{ ActorSystem, Address, ExtendedActorSystem }
 import pekko.dispatch.ThreadPoolConfig
 import pekko.event.Logging
 import pekko.remote.RARP
-import pekko.remote.transport.{ AssociationHandle, Transport }
 import pekko.remote.transport.AssociationHandle.HandleEventListener
 import pekko.remote.transport.Transport._
-import pekko.util.{ Helpers, OptionVal }
+import pekko.remote.transport.{ AssociationHandle, Transport }
 import pekko.util.Helpers.Requiring
+import pekko.util.{ Helpers, OptionVal }
 
 import io.netty.bootstrap.{ Bootstrap => ClientBootstrap, ServerBootstrap }
 import io.netty.buffer.{
@@ -44,6 +44,10 @@ import io.netty.buffer.{
   Unpooled,
   UnpooledByteBufAllocator
 }
+import io.netty.channel.group.{ ChannelGroup, ChannelGroupFuture, ChannelMatchers, DefaultChannelGroup }
+import io.netty.channel.nio.NioIoHandler
+import io.netty.channel.socket.SocketChannel
+import io.netty.channel.socket.nio.{ NioServerSocketChannel, NioSocketChannel }
 import io.netty.channel.{
   Channel,
   ChannelFuture,
@@ -54,10 +58,6 @@ import io.netty.channel.{
   EventLoopGroup,
   MultiThreadIoEventLoopGroup
 }
-import io.netty.channel.group.{ ChannelGroup, ChannelGroupFuture, ChannelMatchers, DefaultChannelGroup }
-import io.netty.channel.nio.NioIoHandler
-import io.netty.channel.socket.SocketChannel
-import io.netty.channel.socket.nio.{ NioServerSocketChannel, NioSocketChannel }
 import io.netty.handler.codec.{ LengthFieldBasedFrameDecoder, LengthFieldPrepender }
 import io.netty.handler.flush.FlushConsolidationHandler
 import io.netty.handler.ssl.SslHandler

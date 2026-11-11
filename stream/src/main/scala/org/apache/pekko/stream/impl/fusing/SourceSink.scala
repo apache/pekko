@@ -18,11 +18,10 @@
 package org.apache.pekko.stream.impl.fusing
 
 import org.apache.pekko
-import pekko.stream.impl.Stages.DefaultAttributes
 import pekko.NotUsed
 import pekko.annotation.InternalApi
-import pekko.stream.{ ActorAttributes, Attributes, Inlet, SinkShape, StreamSubscriptionTimeoutTerminationMode }
 import pekko.stream.ActorAttributes.StreamSubscriptionTimeout
+import pekko.stream.impl.Stages.DefaultAttributes
 import pekko.stream.scaladsl.Source
 import pekko.stream.stage.{
   GraphStageLogic,
@@ -31,6 +30,7 @@ import pekko.stream.stage.{
   OutHandler,
   TimerGraphStageLogic
 }
+import pekko.stream.{ ActorAttributes, Attributes, Inlet, SinkShape, StreamSubscriptionTimeoutTerminationMode }
 
 /**
  * INTERNAL API

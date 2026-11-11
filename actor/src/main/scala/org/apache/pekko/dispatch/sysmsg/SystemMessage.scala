@@ -16,8 +16,8 @@ package org.apache.pekko.dispatch.sysmsg
 import scala.annotation.tailrec
 
 import org.apache.pekko
-import pekko.actor.{ ActorInitializationException, ActorRef, InternalActorRef, PossiblyHarmful }
 import pekko.actor.DeadLetterSuppression
+import pekko.actor.{ ActorInitializationException, ActorRef, InternalActorRef, PossiblyHarmful }
 import pekko.annotation.InternalStableApi
 
 /**

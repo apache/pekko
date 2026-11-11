@@ -18,8 +18,8 @@ import java.nio.ByteBuffer
 import java.util.zip.{ GZIPInputStream, GZIPOutputStream }
 
 import scala.annotation.tailrec
-import scala.util.{ Failure, Success }
 import scala.util.control.NonFatal
+import scala.util.{ Failure, Success }
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.jsontype.impl.SubTypeValidator

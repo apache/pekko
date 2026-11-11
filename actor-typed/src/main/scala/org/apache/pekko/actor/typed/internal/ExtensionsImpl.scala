@@ -21,8 +21,8 @@ import scala.jdk.CollectionConverters._
 import scala.util.{ Failure, Success, Try }
 
 import org.apache.pekko
-import pekko.actor.typed.{ ActorSystem, Extension, ExtensionId, Extensions }
 import pekko.actor.typed.ExtensionSetup
+import pekko.actor.typed.{ ActorSystem, Extension, ExtensionId, Extensions }
 import pekko.annotation.InternalApi
 import pekko.util.Reflect
 

@@ -36,14 +36,14 @@ import pekko.annotation.InternalStableApi
 import pekko.dispatch.Dispatchers
 import pekko.event.Logging
 import pekko.event.LoggingAdapter
-import pekko.stream._
 import pekko.stream.Attributes.InputBuffer
+import pekko.stream._
 import pekko.stream.impl.Stages.DefaultAttributes
 import pekko.stream.impl.StreamLayout.AtomicModule
-import pekko.stream.impl.fusing._
 import pekko.stream.impl.fusing.ActorGraphInterpreter.ActorOutputBoundary
 import pekko.stream.impl.fusing.ActorGraphInterpreter.BatchingActorInputBoundary
 import pekko.stream.impl.fusing.GraphInterpreter.Connection
+import pekko.stream.impl.fusing._
 import pekko.stream.impl.io.TLSActor
 import pekko.stream.impl.io.TlsModule
 import pekko.stream.stage.GraphStageLogic

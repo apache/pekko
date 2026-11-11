@@ -29,8 +29,8 @@ import pekko.persistence.query.Sequence
 import pekko.persistence.query.journal.leveldb.AllPersistenceIdsStage
 import pekko.persistence.query.journal.leveldb.EventsByPersistenceIdStage
 import pekko.persistence.query.journal.leveldb.EventsByTagStage
-import pekko.persistence.query.scaladsl._
 import pekko.persistence.query.scaladsl.ReadJournal
+import pekko.persistence.query.scaladsl._
 import pekko.stream.scaladsl.Source
 
 import com.typesafe.config.Config

@@ -19,13 +19,13 @@ import scala.reflect.ClassTag
 import org.apache.pekko
 import pekko.Done
 import pekko.actor.Address
-import pekko.actor.testkit.typed.{ CapturedLogEvent, Effect }
 import pekko.actor.testkit.typed.Effect._
-import pekko.actor.testkit.typed.scaladsl.BehaviorTestKitSpec.{ Child, Parent }
 import pekko.actor.testkit.typed.scaladsl.BehaviorTestKitSpec.Parent._
-import pekko.actor.typed.{ ActorRef, Behavior, Props, Terminated }
+import pekko.actor.testkit.typed.scaladsl.BehaviorTestKitSpec.{ Child, Parent }
+import pekko.actor.testkit.typed.{ CapturedLogEvent, Effect }
 import pekko.actor.typed.receptionist.{ Receptionist, ServiceKey }
 import pekko.actor.typed.scaladsl.Behaviors
+import pekko.actor.typed.{ ActorRef, Behavior, Props, Terminated }
 import pekko.util.Timeout
 
 import org.scalatest.matchers.should.Matchers

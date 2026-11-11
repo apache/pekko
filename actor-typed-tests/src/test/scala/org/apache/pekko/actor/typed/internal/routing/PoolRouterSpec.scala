@@ -15,8 +15,8 @@ package org.apache.pekko.actor.typed.internal.routing
 
 import org.apache.pekko
 import pekko.actor.testkit.typed.scaladsl.{ LogCapturing, ScalaTestWithActorTestKit }
-import pekko.actor.typed.{ ActorRef, Behavior, DispatcherSelector }
 import pekko.actor.typed.scaladsl.{ Behaviors, Routers }
+import pekko.actor.typed.{ ActorRef, Behavior, DispatcherSelector }
 
 import org.scalatest.wordspec.AnyWordSpecLike
 

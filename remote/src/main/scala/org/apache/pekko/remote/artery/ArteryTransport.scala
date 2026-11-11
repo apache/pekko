@@ -50,8 +50,8 @@ import pekko.remote.artery.Encoder.OutboundCompressionAccess
 import pekko.remote.artery.InboundControlJunction.ControlMessageObserver
 import pekko.remote.artery.InboundControlJunction.ControlMessageSubject
 import pekko.remote.artery.OutboundControlJunction.OutboundControlIngress
-import pekko.remote.artery.compress._
 import pekko.remote.artery.compress.CompressionProtocol.CompressionMessage
+import pekko.remote.artery.compress._
 import pekko.remote.transport.ThrottlerTransportAdapter.Blackhole
 import pekko.remote.transport.ThrottlerTransportAdapter.SetThrottle
 import pekko.remote.transport.ThrottlerTransportAdapter.Unthrottled

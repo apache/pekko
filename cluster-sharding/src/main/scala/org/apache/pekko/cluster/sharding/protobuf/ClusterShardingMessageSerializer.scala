@@ -34,8 +34,8 @@ import pekko.cluster.sharding.internal.EventSourcedRememberEntitiesCoordinatorSt
 }
 import pekko.cluster.sharding.internal.EventSourcedRememberEntitiesShardStore.{ EntitiesStarted, EntitiesStopped }
 import pekko.cluster.sharding.internal.EventSourcedRememberEntitiesShardStore.{ State => EntityState }
-import pekko.cluster.sharding.protobuf.msg.{ ClusterShardingMessages => sm }
 import pekko.cluster.sharding.protobuf.msg.ClusterShardingMessages
+import pekko.cluster.sharding.protobuf.msg.{ ClusterShardingMessages => sm }
 import pekko.protobufv3.internal.MessageLite
 import pekko.serialization.BaseSerializer
 import pekko.serialization.Decompression

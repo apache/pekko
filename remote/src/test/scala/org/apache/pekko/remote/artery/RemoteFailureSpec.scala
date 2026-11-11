@@ -20,9 +20,9 @@ import pekko.actor.ActorIdentity
 import pekko.actor.Identify
 import pekko.remote.EndpointDisassociatedException
 import pekko.serialization.jackson.CborSerializable
-import pekko.testkit.{ EventFilter, ImplicitSender, TestActors, TestEvent }
 import pekko.testkit.DeadLettersFilter
 import pekko.testkit.TestEvent.Mute
+import pekko.testkit.{ EventFilter, ImplicitSender, TestActors, TestEvent }
 
 object RemoteFailureSpec {
   final case class Ping(s: String) extends CborSerializable

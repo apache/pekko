@@ -25,14 +25,14 @@ import pekko.cluster.ClusterEvent.{ MemberEvent, MemberRemoved }
 import pekko.event.Logging.ErrorLevel
 import pekko.remote.DefaultFailureDetectorRegistry
 import pekko.remote.testconductor.RoleName
-import pekko.remote.testkit.{ MultiNodeSpec, STMultiNodeSpec }
 import pekko.remote.testkit.MultiNodeConfig
+import pekko.remote.testkit.{ MultiNodeSpec, STMultiNodeSpec }
 import pekko.serialization.jackson.CborSerializable
-import pekko.testkit._
 import pekko.testkit.TestEvent._
+import pekko.testkit._
 
-import org.scalatest.{ Canceled, Outcome, Suite }
 import org.scalatest.exceptions.TestCanceledException
+import org.scalatest.{ Canceled, Outcome, Suite }
 
 import com.typesafe.config.{ Config, ConfigFactory }
 

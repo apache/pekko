@@ -20,8 +20,8 @@ import scala.concurrent.ExecutionContext
 import scala.concurrent.duration.FiniteDuration
 
 import org.apache.pekko
-import pekko.actor.{ Cancellable, NotInfluenceReceiveTimeout }
 import pekko.actor.typed.scaladsl.{ ActorContext, LoggerOps }
+import pekko.actor.{ Cancellable, NotInfluenceReceiveTimeout }
 import pekko.annotation.InternalApi
 import pekko.util.OptionVal
 

@@ -24,8 +24,8 @@ import org.apache.pekko
 import pekko.actor.ActorSystem
 import pekko.annotation.ApiMayChange
 import pekko.japi.Pair
-import pekko.persistence.testkit.{ ExpectedFailure, SnapshotMeta, SnapshotOperation, SnapshotStorage }
 import pekko.persistence.testkit.scaladsl.{ SnapshotTestKit => ScalaTestKit }
+import pekko.persistence.testkit.{ ExpectedFailure, SnapshotMeta, SnapshotOperation, SnapshotStorage }
 
 /**
  * Class for testing persisted snapshots in persistent actors.

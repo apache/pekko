@@ -25,9 +25,9 @@ import pekko.routing.GetRoutees
 import pekko.routing.RoundRobinGroup
 import pekko.routing.RoundRobinPool
 import pekko.routing.Routees
-import pekko.testkit._
 import pekko.testkit.DefaultTimeout
 import pekko.testkit.ImplicitSender
+import pekko.testkit._
 
 import com.typesafe.config.ConfigFactory
 

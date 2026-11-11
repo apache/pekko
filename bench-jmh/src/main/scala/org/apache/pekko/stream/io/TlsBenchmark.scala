@@ -30,8 +30,8 @@ import org.openjdk.jmh.annotations._
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.actor.ActorSystem
-import pekko.stream._
 import pekko.stream.TLSProtocol._
+import pekko.stream._
 import pekko.stream.impl.io.{ TlsGraphStage, TlsModule }
 import pekko.stream.scaladsl._
 import pekko.util.ByteString

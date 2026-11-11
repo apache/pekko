@@ -15,31 +15,31 @@ package org.apache.pekko.stream.stage
 
 import java.lang.invoke.{ MethodHandles, VarHandle }
 import java.util.Spliterator
-import java.util.concurrent.{ CompletionStage, ConcurrentHashMap }
 import java.util.concurrent.atomic.AtomicReference
+import java.util.concurrent.{ CompletionStage, ConcurrentHashMap }
 
 import scala.annotation.nowarn
 import scala.annotation.tailrec
 import scala.collection.{ immutable, mutable }
-import scala.concurrent.{ Await, Future, Promise }
 import scala.concurrent.duration.FiniteDuration
+import scala.concurrent.{ Await, Future, Promise }
 
 import org.apache.pekko
-import pekko.{ Done, NotUsed }
 import pekko.actor._
 import pekko.annotation.InternalApi
-import pekko.pattern.ask
-import pekko.util.Timeout
 import pekko.dispatch.AbstractNodeQueue
 import pekko.japi.function.{ Effect, Procedure }
-import pekko.stream._
+import pekko.pattern.ask
 import pekko.stream.Attributes.SourceLocation
-import pekko.stream.impl.{ ReactiveStreamsCompliance, TraversalBuilder }
+import pekko.stream._
 import pekko.stream.impl.ActorSubscriberMessage
 import pekko.stream.impl.fusing.{ GraphInterpreter, GraphStageModule, SubSink, SubSource }
+import pekko.stream.impl.{ ReactiveStreamsCompliance, TraversalBuilder }
 import pekko.stream.scaladsl.GenericGraphWithChangedAttributes
 import pekko.stream.stage.ConcurrentAsyncCallbackState.{ NoPendingEvents, State }
 import pekko.util.OptionVal
+import pekko.util.Timeout
+import pekko.{ Done, NotUsed }
 
 /**
  * Scala API: A GraphStage represents a reusable graph stream processing operator.
