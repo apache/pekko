@@ -18,11 +18,11 @@ import scala.concurrent.duration.FiniteDuration
 import scala.util.control.NonFatal
 
 import org.apache.pekko
-import pekko.actor.{ ActorRef => ClassicActorRef }
 import pekko.actor.Cancellable
 import pekko.actor.typed.Signal
 import pekko.actor.typed.scaladsl.ActorContext
 import pekko.actor.typed.scaladsl.LoggerOps
+import pekko.actor.{ ActorRef => ClassicActorRef }
 import pekko.annotation.InternalApi
 import pekko.persistence._
 import pekko.persistence.typed.EventAdapter

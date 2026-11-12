@@ -19,11 +19,11 @@ import org.apache.pekko
 import pekko.annotation.InternalApi
 import pekko.cluster.sharding.ClusterShardingSettings
 import pekko.cluster.sharding.ShardRegion.EntityId
-import pekko.util.{ FrequencyList, RecencyList, SegmentedRecencyList }
 import pekko.util.Clock
 import pekko.util.FastFrequencySketch
 import pekko.util.FrequencySketch
 import pekko.util.OptionVal
+import pekko.util.{ FrequencyList, RecencyList, SegmentedRecencyList }
 
 /**
  * INTERNAL API

@@ -13,8 +13,8 @@
 
 package org.apache.pekko.cluster.typed.internal.receptionist
 
-import scala.concurrent.duration._
 import scala.concurrent.duration.Deadline
+import scala.concurrent.duration._
 
 import org.apache.pekko
 import pekko.actor.Address

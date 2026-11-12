@@ -13,7 +13,6 @@
 
 package org.apache.pekko.actor.typed.coexistence
 import org.apache.pekko
-import pekko.{ actor => u }
 import pekko.actor.Actor
 import pekko.actor.testkit.typed.TestException
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
@@ -21,6 +20,7 @@ import pekko.actor.typed._
 import pekko.actor.typed.scaladsl.Behaviors
 import pekko.actor.typed.scaladsl.adapter._
 import pekko.testkit.TestProbe
+import pekko.{ actor => u }
 
 import org.scalatest.BeforeAndAfterAll
 import org.scalatest.wordspec.AnyWordSpecLike

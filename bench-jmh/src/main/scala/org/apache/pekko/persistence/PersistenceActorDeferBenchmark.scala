@@ -16,8 +16,8 @@ package org.apache.pekko.persistence
 import java.io.File
 
 import org.apache.commons.io.FileUtils
-import org.openjdk.jmh.annotations._
 import org.openjdk.jmh.annotations.Scope
+import org.openjdk.jmh.annotations._
 
 import org.apache.pekko
 import pekko.actor._

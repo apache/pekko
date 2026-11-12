@@ -22,10 +22,10 @@ import scala.concurrent.duration
 import scala.concurrent.duration.Duration
 
 import org.apache.pekko
-import pekko.actor.{ ActorPath, ExtendedActorSystem }
 import pekko.actor.Actor
-import pekko.persistence._
+import pekko.actor.{ ActorPath, ExtendedActorSystem }
 import pekko.persistence.AtLeastOnceDelivery._
+import pekko.persistence._
 import pekko.persistence.fsm.PersistentFSM.{ PersistentFSMSnapshot, StateChangeEvent }
 import pekko.persistence.serialization.{ MessageFormats => mf }
 import pekko.protobufv3.internal.ByteString

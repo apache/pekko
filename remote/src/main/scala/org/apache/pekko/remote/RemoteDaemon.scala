@@ -21,6 +21,15 @@ import scala.jdk.CollectionConverters._
 import scala.util.control.NonFatal
 
 import org.apache.pekko
+import pekko.actor.ActorIdentity
+import pekko.actor.ActorRefScope
+import pekko.actor.ActorRefWithCell
+import pekko.actor.ActorSelectionMessage
+import pekko.actor.EmptyLocalActorRef
+import pekko.actor.Identify
+import pekko.actor.SelectChildName
+import pekko.actor.SelectChildPattern
+import pekko.actor.SelectParent
 import pekko.actor.{
   Actor,
   ActorPath,
@@ -34,18 +43,9 @@ import pekko.actor.{
   Props,
   VirtualPathContainer
 }
-import pekko.actor.ActorIdentity
-import pekko.actor.ActorRefScope
-import pekko.actor.ActorRefWithCell
-import pekko.actor.ActorSelectionMessage
-import pekko.actor.EmptyLocalActorRef
-import pekko.actor.Identify
-import pekko.actor.SelectChildName
-import pekko.actor.SelectChildPattern
-import pekko.actor.SelectParent
 import pekko.annotation.InternalApi
-import pekko.dispatch.sysmsg.{ DeathWatchNotification, SystemMessage, Watch }
 import pekko.dispatch.sysmsg.Unwatch
+import pekko.dispatch.sysmsg.{ DeathWatchNotification, SystemMessage, Watch }
 import pekko.event.{ AddressTerminatedTopic, LogMarker, MarkerLoggingAdapter }
 import pekko.util.Switch
 

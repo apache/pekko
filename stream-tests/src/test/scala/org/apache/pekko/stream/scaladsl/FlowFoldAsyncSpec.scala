@@ -25,8 +25,8 @@ import pekko.stream.ActorAttributes.supervisionStrategy
 import pekko.stream.Supervision.restartingDecider
 import pekko.stream.Supervision.resumingDecider
 import pekko.stream.impl.ReactiveStreamsCompliance
-import pekko.stream.testkit._
 import pekko.stream.testkit.Utils._
+import pekko.stream.testkit._
 import pekko.testkit.LongRunningTest
 
 import org.scalatest.concurrent.PatienceConfiguration.Timeout

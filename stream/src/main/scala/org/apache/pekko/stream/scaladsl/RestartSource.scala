@@ -15,8 +15,8 @@ package org.apache.pekko.stream.scaladsl
 
 import org.apache.pekko
 import pekko.NotUsed
-import pekko.stream.{ Attributes, Outlet, RestartSettings, SourceShape }
 import pekko.stream.stage.{ GraphStage, GraphStageLogic }
+import pekko.stream.{ Attributes, Outlet, RestartSettings, SourceShape }
 
 /**
  * A RestartSource wraps a [[Source]] that gets restarted when it completes or fails.

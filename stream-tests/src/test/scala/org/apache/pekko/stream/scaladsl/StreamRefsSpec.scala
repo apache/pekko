@@ -13,18 +13,17 @@
 
 package org.apache.pekko.stream.scaladsl
 
-import scala.concurrent.{ Await, Future }
+import java.util.concurrent.CountDownLatch
+
 import scala.concurrent.Promise
 import scala.concurrent.duration._
+import scala.concurrent.{ Await, Future }
 import scala.util.Try
 import scala.util.control.NoStackTrace
 
-import java.util.concurrent.CountDownLatch
-
 import org.apache.pekko
-import pekko.{ Done, NotUsed }
-import pekko.actor.{ Actor, ActorIdentity, ActorLogging, ActorRef, ActorSystem, ActorSystemImpl, Identify, Props }
 import pekko.actor.Status.Failure
+import pekko.actor.{ Actor, ActorIdentity, ActorLogging, ActorRef, ActorSystem, ActorSystemImpl, Identify, Props }
 import pekko.pattern._
 import pekko.stream._
 import pekko.stream.impl.streamref.{ SinkRefImpl, SourceRefImpl }
@@ -32,6 +31,7 @@ import pekko.stream.testkit.Utils.TE
 import pekko.stream.testkit.scaladsl._
 import pekko.testkit.{ PekkoSpec, TestKit, TestProbe }
 import pekko.util.ByteString
+import pekko.{ Done, NotUsed }
 
 import com.typesafe.config._
 

@@ -16,16 +16,16 @@ package org.apache.pekko.persistence.typed.internal
 import scala.annotation.nowarn
 
 import org.apache.pekko
-import pekko.actor.typed.{ Behavior, PostStop, PreRestart }
 import pekko.actor.typed.internal.PoisonPill
-import pekko.actor.typed.scaladsl.{ ActorContext, Behaviors }
 import pekko.actor.typed.scaladsl.LoggerOps
+import pekko.actor.typed.scaladsl.{ ActorContext, Behaviors }
+import pekko.actor.typed.{ Behavior, PostStop, PreRestart }
 import pekko.annotation.{ InternalApi, InternalStableApi }
-import pekko.persistence._
 import pekko.persistence.SnapshotProtocol.LoadSnapshotFailed
 import pekko.persistence.SnapshotProtocol.LoadSnapshotResult
-import pekko.persistence.typed.{ RecoveryFailed, ReplicaId }
+import pekko.persistence._
 import pekko.persistence.typed.internal.EventSourcedBehaviorImpl.{ GetSeenSequenceNr, GetState }
+import pekko.persistence.typed.{ RecoveryFailed, ReplicaId }
 
 /**
  * INTERNAL API

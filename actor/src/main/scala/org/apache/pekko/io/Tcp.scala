@@ -27,8 +27,8 @@ import org.apache.pekko
 import pekko.actor._
 import pekko.annotation.{ DoNotInherit, InternalApi }
 import pekko.io.Inet._
-import pekko.util.{ ByteString, Helpers }
 import pekko.util.Helpers.Requiring
+import pekko.util.{ ByteString, Helpers }
 
 import com.typesafe.config.Config
 

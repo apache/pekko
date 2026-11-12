@@ -15,21 +15,21 @@ package org.apache.pekko.actor.dungeon
 
 import scala.annotation.nowarn
 import scala.annotation.tailrec
-import scala.util.control.{ NoStackTrace, NonFatal }
 import scala.util.control.Exception.Catcher
+import scala.util.control.{ NoStackTrace, NonFatal }
 
 import org.apache.pekko
 import pekko.PekkoException
 import pekko.actor._
 import pekko.annotation.InternalApi
-import pekko.dispatch.{ DispatchFailureReporting, Envelope, Mailbox }
 import pekko.dispatch.MailboxType
 import pekko.dispatch.ProducesMessageQueue
 import pekko.dispatch.UnboundedMailbox
 import pekko.dispatch.sysmsg._
+import pekko.dispatch.{ DispatchFailureReporting, Envelope, Mailbox }
 import pekko.event.Logging.Error
-import pekko.serialization.{ DisabledJavaSerializer, SerializationExtension, Serializers }
 import pekko.serialization.Serialization
+import pekko.serialization.{ DisabledJavaSerializer, SerializationExtension, Serializers }
 
 @SerialVersionUID(1L)
 final case class SerializationCheckFailedException private[dungeon] (msg: Object, cause: Throwable)

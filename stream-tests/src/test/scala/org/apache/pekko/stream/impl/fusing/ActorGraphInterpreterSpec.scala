@@ -22,9 +22,9 @@ import scala.concurrent.duration._
 import org.apache.pekko
 import pekko.Done
 import pekko.stream._
-import pekko.stream.impl.{ PhasedFusingActorMaterializer, StreamSupervisor }
 import pekko.stream.impl.ReactiveStreamsCompliance.SpecViolation
 import pekko.stream.impl.fusing.GraphStages.SimpleLinearGraphStage
+import pekko.stream.impl.{ PhasedFusingActorMaterializer, StreamSupervisor }
 import pekko.stream.scaladsl._
 import pekko.stream.stage.GraphStage
 import pekko.stream.stage.GraphStageLogic

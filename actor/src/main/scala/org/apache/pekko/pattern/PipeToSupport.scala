@@ -17,13 +17,12 @@ import java.util.concurrent.CompletionStage
 
 import scala.annotation.nowarn
 import scala.concurrent.{ ExecutionContext, Future }
+import language.implicitConversions
 import scala.util.{ Failure, Success }
 
-import language.implicitConversions
-
 import org.apache.pekko
-import pekko.actor.{ Actor, ActorRef, Status }
 import pekko.actor.ActorSelection
+import pekko.actor.{ Actor, ActorRef, Status }
 
 trait PipeToSupport {
 

@@ -28,9 +28,9 @@ import pekko.annotation.InternalApi
 import pekko.annotation.InternalStableApi
 import pekko.event.Logging
 import pekko.stream._
-import pekko.stream.impl._
 import pekko.stream.impl.ReactiveStreamsCompliance._
 import pekko.stream.impl.SubFusingActorMaterializerImpl
+import pekko.stream.impl._
 import pekko.stream.impl.fusing.GraphInterpreter.Connection
 import pekko.stream.impl.fusing.GraphInterpreter.DownstreamBoundaryStageLogic
 import pekko.stream.impl.fusing.GraphInterpreter.UpstreamBoundaryStageLogic

@@ -24,8 +24,8 @@ import pekko.persistence._
 import pekko.persistence.journal.AsyncWriteJournal
 import pekko.persistence.journal.Tagged
 import pekko.persistence.snapshot.SnapshotStore
-import pekko.persistence.testkit.internal.{ InMemStorageExtension, SnapshotStorageEmulatorExtension }
 import pekko.persistence.testkit.internal.CurrentTime
+import pekko.persistence.testkit.internal.{ InMemStorageExtension, SnapshotStorageEmulatorExtension }
 
 import com.typesafe.config.{ Config, ConfigFactory }
 

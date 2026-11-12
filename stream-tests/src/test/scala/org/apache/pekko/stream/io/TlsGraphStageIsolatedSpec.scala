@@ -19,9 +19,9 @@ package org.apache.pekko.stream.io
 
 import java.nio.ByteBuffer
 import java.util.concurrent.ThreadFactory
-import javax.net.ssl._
 import javax.net.ssl.SSLEngineResult.HandshakeStatus.{ FINISHED, NEED_UNWRAP, NEED_WRAP, NOT_HANDSHAKING }
 import javax.net.ssl.SSLEngineResult.Status.{ BUFFER_OVERFLOW, BUFFER_UNDERFLOW, CLOSED, OK }
+import javax.net.ssl._
 
 import scala.concurrent.Await
 import scala.concurrent.ExecutionContext
@@ -29,22 +29,22 @@ import scala.concurrent.Promise
 import scala.concurrent.duration._
 import scala.util.Success
 
-import com.typesafe.config.{ Config, ConfigFactory }
-
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.actor.Cancellable
 import pekko.event.LoggingAdapter
-import pekko.stream._
 import pekko.stream.TLSProtocol._
+import pekko.stream._
 import pekko.stream.impl.io.{ TlsGraphStage, TlsModule }
-import pekko.stream.scaladsl._
 import pekko.stream.scaladsl.GraphDSL.Implicits._
-import pekko.stream.testkit.{ StreamSpec, TestPublisher, TestSubscriber }
-import pekko.stream.testkit.scaladsl.{ TestSink, TestSource }
+import pekko.stream.scaladsl._
 import pekko.stream.testkit.scaladsl.StreamTestKit.assertAllStagesStopped
+import pekko.stream.testkit.scaladsl.{ TestSink, TestSource }
+import pekko.stream.testkit.{ StreamSpec, TestPublisher, TestSubscriber }
 import pekko.testkit.{ ExplicitlyTriggeredScheduler, WithLogCapturing }
 import pekko.util.ByteString
+
+import com.typesafe.config.{ Config, ConfigFactory }
 
 /**
  * Focused [[TlsGraphStage]] tests for early failures, empty inputs, large

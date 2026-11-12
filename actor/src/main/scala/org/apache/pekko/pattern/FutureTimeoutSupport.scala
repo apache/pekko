@@ -15,8 +15,8 @@ package org.apache.pekko.pattern
 
 import java.util.concurrent.{ CompletableFuture, CompletionStage, TimeoutException }
 
-import scala.concurrent.{ ExecutionContext, Future, Promise }
 import scala.concurrent.duration.FiniteDuration
+import scala.concurrent.{ ExecutionContext, Future, Promise }
 import scala.util.control.NonFatal
 
 import org.apache.pekko

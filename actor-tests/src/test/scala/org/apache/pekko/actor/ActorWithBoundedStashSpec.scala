@@ -19,9 +19,9 @@ import scala.concurrent.duration._
 import org.apache.pekko
 import pekko.actor.ActorSystem.Settings
 import pekko.dispatch.BoundedDequeBasedMailbox
-import pekko.testkit._
 import pekko.testkit.DefaultTimeout
 import pekko.testkit.TestEvent._
+import pekko.testkit._
 
 import org.scalatest.BeforeAndAfterEach
 

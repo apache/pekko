@@ -14,8 +14,8 @@
 package org.apache.pekko.serialization
 
 import org.apache.pekko
-import pekko.actor.{ ActorSystem, ExtendedActorSystem, ExtensionId, ExtensionIdProvider }
 import pekko.actor.ClassicActorSystemProvider
+import pekko.actor.{ ActorSystem, ExtendedActorSystem, ExtensionId, ExtensionIdProvider }
 
 /**
  * SerializationExtension is a Pekko Extension to interact with the Serialization

@@ -23,10 +23,10 @@ import pekko.actor.ActorRef
 import pekko.actor.ExtendedActorSystem
 import pekko.discovery
 import pekko.discovery.ServiceDiscovery
-import pekko.discovery.ServiceDiscovery.{ Resolved, ResolvedTarget }
 import pekko.discovery.ServiceDiscovery.DiscoveryTimeoutException
-import pekko.io.dns.{ AAAARecord, ARecord, DnsProtocol, SRVRecord }
+import pekko.discovery.ServiceDiscovery.{ Resolved, ResolvedTarget }
 import pekko.io.dns.CachePolicy.Ttl
+import pekko.io.dns.{ AAAARecord, ARecord, DnsProtocol, SRVRecord }
 import pekko.testkit.PekkoSpec
 import pekko.testkit.TestProbe
 

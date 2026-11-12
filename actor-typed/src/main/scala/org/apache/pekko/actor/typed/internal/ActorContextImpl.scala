@@ -20,8 +20,8 @@ import java.util.Optional
 import java.util.concurrent.CompletionStage
 
 import scala.annotation.{ nowarn, switch }
-import scala.concurrent.{ ExecutionContextExecutor, Future }
 import scala.concurrent.ExecutionContext
+import scala.concurrent.{ ExecutionContextExecutor, Future }
 import scala.jdk.DurationConverters._
 import scala.reflect.ClassTag
 import scala.util.Failure

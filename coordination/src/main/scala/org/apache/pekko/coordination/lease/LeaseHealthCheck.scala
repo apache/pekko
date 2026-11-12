@@ -19,9 +19,9 @@ package org.apache.pekko.coordination.lease
 
 import java.util.UUID
 
+import scala.annotation.nowarn
 import scala.concurrent.{ ExecutionContext, Future }
 import scala.util.{ Failure, Success }
-import scala.annotation.nowarn
 
 import org.apache.pekko
 import pekko.actor.ActorSystem

@@ -19,8 +19,8 @@ import scala.concurrent.duration._
 import org.apache.pekko
 import pekko.actor.ActorSystem
 import pekko.cluster.{ Cluster, ClusterReadView }
-import pekko.testkit.{ LongRunningTest, PekkoSpec }
 import pekko.testkit.WithLogCapturing
+import pekko.testkit.{ LongRunningTest, PekkoSpec }
 
 import com.typesafe.config.{ Config, ConfigFactory }
 

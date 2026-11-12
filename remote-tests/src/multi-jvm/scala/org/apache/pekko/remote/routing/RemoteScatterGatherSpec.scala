@@ -26,8 +26,8 @@ import pekko.remote.testkit.MultiNodeConfig
 import pekko.routing.Broadcast
 import pekko.routing.RoutedActorRef
 import pekko.routing.ScatterGatherFirstCompletedPool
-import pekko.testkit._
 import pekko.testkit.TestEvent._
+import pekko.testkit._
 
 import com.typesafe.config.ConfigFactory
 

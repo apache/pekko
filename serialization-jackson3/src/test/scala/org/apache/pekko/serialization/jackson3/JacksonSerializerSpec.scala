@@ -13,24 +13,28 @@
 
 package org.apache.pekko.serialization.jackson3
 
-import java.lang
 import java.io.ByteArrayOutputStream
 import java.io.NotSerializableException
+import java.lang
 import java.nio.charset.StandardCharsets
-import java.time.{ Duration, Instant, LocalDateTime }
 import java.time.temporal.ChronoUnit
-import java.util.{ Arrays, Optional, UUID }
+import java.time.{ Duration, Instant, LocalDateTime }
 import java.util.logging.FileHandler
+import java.util.{ Arrays, Optional, UUID }
 
 import scala.annotation.nowarn
-import scala.concurrent.duration._
 import scala.concurrent.duration.FiniteDuration
+import scala.concurrent.duration._
 
+import com.fasterxml.jackson.annotation.{ JsonIgnore, JsonSubTypes, JsonTypeInfo }
 import com.github.luben.zstd.{ Zstd, ZstdOutputStream }
 import net.jpountz.lz4.LZ4Factory
-import com.fasterxml.jackson.annotation.{ JsonIgnore, JsonSubTypes, JsonTypeInfo }
-import tools.jackson.core.{ JsonGenerator, StreamReadFeature, StreamWriteFeature }
 import tools.jackson.core.`type`.TypeReference
+import tools.jackson.core.{ JsonGenerator, StreamReadFeature, StreamWriteFeature }
+import tools.jackson.databind.annotation.{ JsonDeserialize, JsonSerialize }
+import tools.jackson.databind.cfg.DateTimeFeature
+import tools.jackson.databind.exc.InvalidTypeIdException
+import tools.jackson.databind.module.SimpleModule
 import tools.jackson.databind.{
   DeserializationFeature,
   JacksonModule,
@@ -38,16 +42,12 @@ import tools.jackson.databind.{
   SerializationContext,
   SerializationFeature
 }
-import tools.jackson.databind.annotation.{ JsonDeserialize, JsonSerialize }
-import tools.jackson.databind.cfg.DateTimeFeature
-import tools.jackson.databind.exc.InvalidTypeIdException
-import tools.jackson.databind.module.SimpleModule
 import tools.jackson.module.scala.JsonScalaEnumeration
 
 import org.apache.pekko
-import pekko.actor.{ ActorRef, ActorSystem, Address, BootstrapSetup, ExtendedActorSystem, Status }
 import pekko.actor.setup.ActorSystemSetup
 import pekko.actor.typed.scaladsl.Behaviors
+import pekko.actor.{ ActorRef, ActorSystem, Address, BootstrapSetup, ExtendedActorSystem, Status }
 import pekko.serialization.{ Serialization, SerializationExtension, SerializerWithStringManifest }
 import pekko.testkit.{ TestActors, TestKit }
 

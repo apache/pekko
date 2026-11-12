@@ -20,14 +20,14 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import org.apache.pekko
-import pekko.{ Die, Ping }
 import pekko.ConfigurationException
 import pekko.dispatch.MailboxType
 import pekko.dispatch.MessageQueue
 import pekko.pattern.ask
 import pekko.routing.RoundRobinPool
-import pekko.testkit._
 import pekko.testkit.TestEvent._
+import pekko.testkit._
+import pekko.{ Die, Ping }
 
 import org.scalatest.BeforeAndAfterEach
 

@@ -20,15 +20,15 @@ import scala.concurrent.duration._
 
 import org.apache.pekko
 import pekko.ConfigurationException
-import pekko.actor.{ Actor, ActorRef, Deploy, Props }
 import pekko.actor.ActorPath
 import pekko.actor.ActorSystem
 import pekko.actor.ExtendedActorSystem
 import pekko.actor.UnstartedCell
+import pekko.actor.{ Actor, ActorRef, Deploy, Props }
 import pekko.pattern.gracefulStop
-import pekko.testkit.{ DefaultTimeout, ImplicitSender, PekkoSpec }
 import pekko.testkit.TestActors.echoActorProps
 import pekko.testkit.TestProbe
+import pekko.testkit.{ DefaultTimeout, ImplicitSender, PekkoSpec }
 
 import com.typesafe.config.Config
 

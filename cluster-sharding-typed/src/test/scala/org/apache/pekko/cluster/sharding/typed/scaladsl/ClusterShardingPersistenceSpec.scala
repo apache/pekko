@@ -32,11 +32,11 @@ import pekko.actor.typed.Behavior
 import pekko.actor.typed.PostStop
 import pekko.actor.typed.internal.PoisonPill
 import pekko.actor.typed.scaladsl.Behaviors
-import pekko.cluster.sharding.{ ClusterSharding => ClassicClusterSharding }
 import pekko.cluster.sharding.ShardRegion.CurrentShardRegionState
 import pekko.cluster.sharding.ShardRegion.GetShardRegionState
 import pekko.cluster.sharding.typed.scaladsl.ClusterSharding.Passivate
 import pekko.cluster.sharding.typed.scaladsl.ClusterSharding.ShardCommand
+import pekko.cluster.sharding.{ ClusterSharding => ClassicClusterSharding }
 import pekko.cluster.typed.Cluster
 import pekko.cluster.typed.Join
 import pekko.persistence.typed.PersistenceId

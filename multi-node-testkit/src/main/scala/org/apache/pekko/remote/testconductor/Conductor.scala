@@ -23,8 +23,6 @@ import scala.concurrent.duration._
 import scala.reflect.classTag
 import scala.util.control.NoStackTrace
 
-import RemoteConnection.getAddrString
-
 import org.apache.pekko
 import pekko.ConfigurationException
 import pekko.PekkoException
@@ -41,14 +39,15 @@ import pekko.actor.{
   Status,
   SupervisorStrategy
 }
-import pekko.event.{ Logging, LoggingAdapter }
 import pekko.event.LoggingReceive
+import pekko.event.{ Logging, LoggingAdapter }
 import pekko.pattern.ask
+import RemoteConnection.getAddrString
 import pekko.remote.transport.ThrottlerTransportAdapter.Direction
 import pekko.util.Timeout
 
-import io.netty.channel.{ Channel, ChannelFuture, ChannelHandlerContext, ChannelInboundHandlerAdapter }
 import io.netty.channel.ChannelHandler.Sharable
+import io.netty.channel.{ Channel, ChannelFuture, ChannelHandlerContext, ChannelInboundHandlerAdapter }
 
 /**
  * The conductor is the one orchestrating the test: it governs the

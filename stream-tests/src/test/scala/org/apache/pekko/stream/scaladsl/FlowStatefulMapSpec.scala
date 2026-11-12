@@ -24,12 +24,12 @@ import scala.util.control.NoStackTrace
 
 import org.apache.pekko
 import pekko.Done
-import pekko.stream.{ AbruptStageTerminationException, ActorAttributes, ActorMaterializer, ClosedShape, Supervision }
 import pekko.stream.testkit.StreamSpec
 import pekko.stream.testkit.TestSubscriber
 import pekko.stream.testkit.Utils.TE
 import pekko.stream.testkit.scaladsl.TestSink
 import pekko.stream.testkit.scaladsl.TestSource
+import pekko.stream.{ AbruptStageTerminationException, ActorAttributes, ActorMaterializer, ClosedShape, Supervision }
 import pekko.testkit.EventFilter
 
 class FlowStatefulMapSpec extends StreamSpec {

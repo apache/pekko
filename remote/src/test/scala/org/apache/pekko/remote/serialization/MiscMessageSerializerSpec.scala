@@ -24,16 +24,16 @@ import scala.concurrent.duration._
 import scala.util.control.NoStackTrace
 
 import org.apache.pekko
-import pekko.{ Done, NotUsed }
 import pekko.actor._
 import pekko.pattern.AskTimeoutException
 import pekko.pattern.StatusReply
-import pekko.remote.{ RemoteScope, RemoteWatcher }
 import pekko.remote.routing.RemoteRouterConfig
+import pekko.remote.{ RemoteScope, RemoteWatcher }
 import pekko.routing._
 import pekko.serialization.SerializationExtension
 import pekko.testkit.JavaSerializable
 import pekko.testkit.PekkoSpec
+import pekko.{ Done, NotUsed }
 
 import com.typesafe.config.{ Config, ConfigFactory }
 

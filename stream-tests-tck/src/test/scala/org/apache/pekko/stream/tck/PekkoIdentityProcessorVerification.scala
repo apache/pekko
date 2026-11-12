@@ -23,9 +23,9 @@ import org.testng.annotations.AfterClass
 import org.apache.pekko
 import pekko.stream.testkit.TestPublisher
 
-import org.reactivestreams.{ Processor, Publisher, Subscriber, Subscription }
 import org.reactivestreams.tck.IdentityProcessorVerification
 import org.reactivestreams.tck.TestEnvironment
+import org.reactivestreams.{ Processor, Publisher, Subscriber, Subscription }
 
 abstract class PekkoIdentityProcessorVerification[T](env: TestEnvironment, publisherShutdownTimeout: Long)
     extends IdentityProcessorVerification[T](env, publisherShutdownTimeout)

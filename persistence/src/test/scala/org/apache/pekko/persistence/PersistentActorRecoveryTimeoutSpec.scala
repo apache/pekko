@@ -16,8 +16,8 @@ package org.apache.pekko.persistence
 import scala.concurrent.duration._
 
 import org.apache.pekko
-import pekko.actor.{ Actor, ActorLogging, ActorRef, Props }
 import pekko.actor.Status.Failure
+import pekko.actor.{ Actor, ActorLogging, ActorRef, Props }
 import pekko.persistence.journal.SteppingInmemJournal
 import pekko.testkit.{ ImplicitSender, PekkoSpec, TestProbe }
 

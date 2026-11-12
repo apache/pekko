@@ -15,8 +15,6 @@ package org.apache.pekko.persistence.typed.state.scaladsl
 
 import scala.annotation.tailrec
 
-import com.typesafe.config.Config
-
 import org.apache.pekko
 import pekko.actor.typed.BackoffSupervisorStrategy
 import pekko.actor.typed.Behavior
@@ -30,6 +28,8 @@ import pekko.annotation.DoNotInherit
 import pekko.persistence.typed.PersistenceId
 import pekko.persistence.typed.SnapshotAdapter
 import pekko.persistence.typed.state.internal._
+
+import com.typesafe.config.Config
 
 /**
  * API May Change

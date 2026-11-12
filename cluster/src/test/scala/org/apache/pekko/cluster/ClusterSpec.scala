@@ -25,8 +25,8 @@ import pekko.actor.Address
 import pekko.actor.CoordinatedShutdown
 import pekko.actor.ExtendedActorSystem
 import pekko.actor.Props
-import pekko.cluster.ClusterEvent._
 import pekko.cluster.ClusterEvent.MemberEvent
+import pekko.cluster.ClusterEvent._
 import pekko.cluster.InternalClusterAction._
 import pekko.stream.Materializer
 import pekko.stream.scaladsl.Sink

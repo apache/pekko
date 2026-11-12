@@ -25,10 +25,10 @@ import pekko.actor.typed.ActorRef
 import pekko.actor.typed.Behavior
 import pekko.annotation.DoNotInherit
 import pekko.annotation.InternalApi
-import pekko.cluster.{ ddata => dd }
 import pekko.cluster.ddata.Key
 import pekko.cluster.ddata.ReplicatedData
 import pekko.cluster.ddata.typed.internal.ReplicatorBehavior
+import pekko.cluster.{ ddata => dd }
 
 /**
  * @see [[pekko.cluster.ddata.Replicator]].

@@ -21,8 +21,8 @@ import scala.concurrent.Future
 import scala.concurrent.Promise
 import scala.concurrent.TimeoutException
 import scala.concurrent.duration._
-import scala.util.{ Failure, Success, Try }
 import scala.util.control.NonFatal
+import scala.util.{ Failure, Success, Try }
 
 import org.apache.pekko
 import pekko.actor._

@@ -18,8 +18,8 @@ import java.util
 import org.apache.pekko
 import pekko.actor.typed.ActorRef
 import pekko.persistence.testkit.{ Cmd, CommonUtils, EmptyState, Evt, Passivate, Recovered, Stopped, TestCommand }
-import pekko.persistence.typed.{ PersistenceId, RecoveryCompleted }
 import pekko.persistence.typed.javadsl.{ CommandHandler, EventHandler, EventSourcedBehavior, SignalHandler }
+import pekko.persistence.typed.{ PersistenceId, RecoveryCompleted }
 
 trait JavaDslUtils extends CommonUtils {
 

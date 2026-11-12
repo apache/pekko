@@ -20,12 +20,12 @@ import scala.concurrent.duration._
 import org.apache.pekko
 import pekko.Done
 import pekko.NotUsed
-import pekko.stream._
 import pekko.stream.Supervision.Decider
+import pekko.stream._
 import pekko.stream.impl.SubscriptionTimeoutException
 import pekko.stream.impl.fusing.Split
-import pekko.stream.testkit._
 import pekko.stream.testkit.Utils._
+import pekko.stream.testkit._
 import pekko.stream.testkit.scaladsl.TestSink
 
 import org.reactivestreams.Publisher

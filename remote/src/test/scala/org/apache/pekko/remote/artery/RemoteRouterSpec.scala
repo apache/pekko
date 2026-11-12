@@ -15,11 +15,11 @@ package org.apache.pekko.remote.artery
 
 import org.apache.pekko
 import pekko.actor._
-import pekko.remote.{ RARP, RemoteScope }
 import pekko.remote.routing._
+import pekko.remote.{ RARP, RemoteScope }
 import pekko.routing._
-import pekko.testkit._
 import pekko.testkit.TestActors.echoActorProps
+import pekko.testkit._
 
 import com.typesafe.config._
 

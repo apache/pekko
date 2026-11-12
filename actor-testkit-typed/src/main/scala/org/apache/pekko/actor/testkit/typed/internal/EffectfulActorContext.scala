@@ -23,11 +23,11 @@ import scala.util.Try
 import scala.util.control.NonFatal
 
 import org.apache.pekko
-import pekko.actor.{ ActorPath, Cancellable }
 import pekko.actor.testkit.typed.Effect
 import pekko.actor.testkit.typed.Effect._
-import pekko.actor.typed.{ ActorRef, Behavior, Props, RecipientRef }
 import pekko.actor.typed.internal.TimerSchedulerCrossDslSupport
+import pekko.actor.typed.{ ActorRef, Behavior, Props, RecipientRef }
+import pekko.actor.{ ActorPath, Cancellable }
 import pekko.annotation.InternalApi
 import pekko.util.Timeout
 

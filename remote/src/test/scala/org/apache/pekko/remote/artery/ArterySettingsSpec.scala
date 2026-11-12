@@ -22,9 +22,10 @@ import java.nio.charset.StandardCharsets
 import org.apache.pekko
 import pekko.util.ByteString
 
-import com.typesafe.config.ConfigFactory
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
+
+import com.typesafe.config.ConfigFactory
 
 class ArterySettingsSpec extends AnyWordSpec with Matchers {
 

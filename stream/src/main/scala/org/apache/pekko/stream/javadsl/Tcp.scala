@@ -28,7 +28,6 @@ import scala.util.Failure
 import scala.util.Success
 
 import org.apache.pekko
-import pekko.{ Done, NotUsed }
 import pekko.actor.ActorSystem
 import pekko.actor.ClassicActorSystemProvider
 import pekko.actor.ExtendedActorSystem
@@ -43,6 +42,7 @@ import pekko.stream.SystemMaterializer
 import pekko.stream.TLSClosing
 import pekko.stream.scaladsl
 import pekko.util.ByteString
+import pekko.{ Done, NotUsed }
 
 object Tcp extends ExtensionId[Tcp] with ExtensionIdProvider {
 

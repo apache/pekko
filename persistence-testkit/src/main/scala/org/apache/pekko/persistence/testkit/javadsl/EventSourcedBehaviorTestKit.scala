@@ -13,9 +13,9 @@
 
 package org.apache.pekko.persistence.testkit.javadsl
 
-import java.util.{ List => JList }
 import java.util.Optional
 import java.util.function.{ Function => JFunction }
+import java.util.{ List => JList }
 
 import scala.annotation.varargs
 import scala.jdk.CollectionConverters._

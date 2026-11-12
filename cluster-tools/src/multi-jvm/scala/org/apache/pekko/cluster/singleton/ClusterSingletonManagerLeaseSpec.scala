@@ -17,8 +17,8 @@ import scala.concurrent.duration._
 
 import org.apache.pekko
 import pekko.actor.{ Actor, ActorIdentity, ActorLogging, ActorRef, Address, Identify, PoisonPill, Props }
-import pekko.cluster._
 import pekko.cluster.MemberStatus.Up
+import pekko.cluster._
 import pekko.cluster.singleton.ClusterSingletonManagerLeaseSpec.ImportantSingleton.Response
 import pekko.coordination.lease.TestLeaseActor
 import pekko.coordination.lease.TestLeaseActorClient

@@ -15,10 +15,10 @@ package org.apache.pekko.pattern
 
 import java.util.concurrent.ThreadLocalRandom
 
-import scala.concurrent.{ ExecutionContext, Future }
 import scala.concurrent.duration.{ Duration, FiniteDuration }
-import scala.util.{ Failure, Success, Try }
+import scala.concurrent.{ ExecutionContext, Future }
 import scala.util.control.NonFatal
+import scala.util.{ Failure, Success, Try }
 
 import org.apache.pekko
 import pekko.actor.Scheduler

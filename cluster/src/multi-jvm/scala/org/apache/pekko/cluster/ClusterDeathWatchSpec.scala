@@ -24,8 +24,8 @@ import pekko.cluster.MultiNodeClusterSpec.EndActor
 import pekko.remote.RemoteActorRef
 import pekko.remote.RemoteWatcher
 import pekko.remote.testkit.MultiNodeConfig
-import pekko.testkit._
 import pekko.testkit.TestEvent._
+import pekko.testkit._
 
 import org.scalatest.concurrent.ScalaFutures
 

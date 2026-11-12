@@ -18,8 +18,8 @@ import pekko.annotation.InternalApi
 import pekko.persistence.journal.Tagged
 import pekko.persistence.query.{ EventEnvelope, Sequence }
 import pekko.persistence.testkit.{ EventStorage, PersistenceTestKitPlugin }
-import pekko.stream.{ Attributes, Outlet, SourceShape }
 import pekko.stream.stage.{ GraphStage, GraphStageLogic, GraphStageLogicWithLogging, OutHandler }
+import pekko.stream.{ Attributes, Outlet, SourceShape }
 
 /**
  * INTERNAL API

@@ -20,8 +20,8 @@ import org.apache.pekko
 import pekko.annotation.InternalApi
 import pekko.stream.ActorAttributes.SupervisionStrategy
 import pekko.stream.Supervision
-import pekko.stream.{ Attributes, FlowShape, Inlet, Outlet }
 import pekko.stream.stage.{ GraphStage, GraphStageLogic, InHandler, OutHandler, TimerGraphStageLogic }
+import pekko.stream.{ Attributes, FlowShape, Inlet, Outlet }
 
 /**
  * INTERNAL API

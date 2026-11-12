@@ -13,17 +13,17 @@
 
 package org.apache.pekko.stream.impl
 
-import scala.concurrent.{ ExecutionContext, Future }
 import scala.concurrent.ExecutionContext.parasitic
-import scala.util.{ Failure, Success, Try }
+import scala.concurrent.{ ExecutionContext, Future }
 import scala.util.control.NonFatal
+import scala.util.{ Failure, Success, Try }
 
 import org.apache.pekko
 import pekko.Done
 import pekko.annotation.InternalApi
-import pekko.stream._
 import pekko.stream.ActorAttributes.SupervisionStrategy
 import pekko.stream.Attributes.SourceLocation
+import pekko.stream._
 import pekko.stream.impl.Stages.DefaultAttributes
 import pekko.stream.stage._
 import pekko.util.OptionVal

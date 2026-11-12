@@ -14,13 +14,13 @@
 package org.apache.pekko.actor.dispatch
 
 import java.rmi.RemoteException
-import java.util.concurrent.{ ConcurrentHashMap, CountDownLatch, TimeUnit }
 import java.util.concurrent.atomic.{ AtomicInteger, AtomicLong }
+import java.util.concurrent.{ ConcurrentHashMap, CountDownLatch, TimeUnit }
 
 import scala.annotation.nowarn
 import scala.annotation.tailrec
-import scala.concurrent.{ Await, Future }
 import scala.concurrent.duration._
+import scala.concurrent.{ Await, Future }
 
 import org.apache.pekko
 import pekko.actor._

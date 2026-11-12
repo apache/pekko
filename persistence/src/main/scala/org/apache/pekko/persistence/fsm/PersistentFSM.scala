@@ -22,9 +22,9 @@ import scala.reflect.ClassTag
 import org.apache.pekko
 import pekko.actor._
 import pekko.annotation.InternalApi
-import pekko.persistence.{ PersistentActor, RecoveryCompleted, SnapshotOffer }
 import pekko.persistence.fsm.PersistentFSM.FSMState
 import pekko.persistence.serialization.Message
+import pekko.persistence.{ PersistentActor, RecoveryCompleted, SnapshotOffer }
 import pekko.util.Helpers.toRootLowerCase
 
 import com.typesafe.config.Config

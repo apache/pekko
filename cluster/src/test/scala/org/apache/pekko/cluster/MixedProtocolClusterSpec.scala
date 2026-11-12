@@ -17,11 +17,12 @@
 
 package org.apache.pekko.cluster
 
+import scala.concurrent.duration._
+
 import org.apache.pekko
 import pekko.testkit.{ LongRunningTest, PekkoSpec }
 
 import com.typesafe.config.{ Config, ConfigFactory }
-import scala.concurrent.duration._
 
 object MixedProtocolClusterSpec {
 

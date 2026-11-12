@@ -19,9 +19,9 @@ import java.util.concurrent.ThreadFactory
 import java.util.concurrent.atomic.AtomicBoolean
 
 import scala.annotation.varargs
-import scala.concurrent.{ Await, ExecutionContext }
 import scala.concurrent.Future
 import scala.concurrent.duration._
+import scala.concurrent.{ Await, ExecutionContext }
 import scala.util.Failure
 import scala.util.Success
 import scala.util.control.NonFatal
@@ -32,10 +32,10 @@ import pekko.actor._
 import pekko.annotation.InternalApi
 import pekko.cluster.ClusterSettings.DataCenter
 import pekko.dispatch.MonitorableThreadFactory
-import pekko.event.{ Logging, LoggingAdapter }
 import pekko.event.LogMarker
 import pekko.event.Logging.LogLevel
 import pekko.event.MarkerLoggingAdapter
+import pekko.event.{ Logging, LoggingAdapter }
 import pekko.japi.Util
 import pekko.pattern._
 import pekko.remote.{ UniqueAddress => _, _ }

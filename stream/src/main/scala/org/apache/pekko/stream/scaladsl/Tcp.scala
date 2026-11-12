@@ -33,11 +33,11 @@ import pekko.Done
 import pekko.NotUsed
 import pekko.actor._
 import pekko.annotation.InternalApi
-import pekko.io.{ Tcp => IoTcp }
 import pekko.io.IO
 import pekko.io.Inet.SocketOption
-import pekko.stream._
+import pekko.io.{ Tcp => IoTcp }
 import pekko.stream.Attributes.Attribute
+import pekko.stream._
 import pekko.stream.impl.fusing.GraphStages.detacher
 import pekko.stream.impl.io.ConnectionSourceStage
 import pekko.stream.impl.io.OutgoingConnectionStage

@@ -15,24 +15,24 @@ package org.apache.pekko.stream.scaladsl
 
 import java.util
 import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.atomic.{ AtomicInteger, AtomicLong, AtomicReference }
 import java.util.concurrent.atomic.AtomicReferenceArray
+import java.util.concurrent.atomic.{ AtomicInteger, AtomicLong, AtomicReference }
 
 import scala.annotation.tailrec
 import scala.collection.immutable
 import scala.collection.immutable.Queue
 import scala.collection.mutable.LongMap
 import scala.concurrent.{ Future, Promise }
-import scala.util.{ Failure, Success, Try }
 import scala.util.control.NonFatal
+import scala.util.{ Failure, Success, Try }
 
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.annotation.DoNotInherit
 import pekko.annotation.InternalApi
 import pekko.dispatch.AbstractNodeQueue
-import pekko.stream._
 import pekko.stream.Attributes.LogLevels
+import pekko.stream._
 import pekko.stream.impl.ActorPublisher
 import pekko.stream.stage._
 import pekko.util.ConstantFun

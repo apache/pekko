@@ -20,8 +20,8 @@ import scala.concurrent.Future
 import scala.concurrent.duration._
 
 import org.apache.pekko
-import pekko.actor.{ Actor, Props }
 import pekko.actor.ActorRef
+import pekko.actor.{ Actor, Props }
 import pekko.pattern.{ ask, pipe }
 import pekko.testkit.{ DefaultTimeout, PekkoSpec }
 

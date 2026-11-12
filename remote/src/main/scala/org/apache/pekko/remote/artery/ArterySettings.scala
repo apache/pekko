@@ -23,8 +23,8 @@ import scala.jdk.CollectionConverters._
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.io.dns.internal.AsyncDnsResolver
-import pekko.util.ByteString
 import pekko.stream.ActorMaterializerSettings
+import pekko.util.ByteString
 import pekko.util.Helpers.ConfigOps
 import pekko.util.Helpers.Requiring
 import pekko.util.Helpers.toRootLowerCase

@@ -483,6 +483,13 @@ If you are using IntelliJ IDEA, you can disable it by unchecking: `Preferences` 
 
 
 It's recommended to run `sbt +sortImports` to keep the *import*s sorted.
+This uses Scalafix's `OrganizeImports` rule, including removal of unused imports.
+Keep `expandRelative = false` and omit `Relative` from `groupSeparately` in
+`.scalafix.conf`: Scalafix 0.14.10 or later then groups relative imports by their
+resolved names, keeping `import org.apache.pekko` and `import pekko.*` together
+without expanding them or inserting a blank line between them.
+Run `scripts/check-organize-imports.sh` to check this grouping, unused import
+removal and idempotence against a small standalone fixture.
 
 #### Java style
 

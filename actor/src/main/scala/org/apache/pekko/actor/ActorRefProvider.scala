@@ -24,9 +24,9 @@ import org.apache.pekko
 import pekko.ConfigurationException
 import pekko.annotation.DoNotInherit
 import pekko.annotation.InternalApi
-import pekko.dispatch.{ Mailboxes, RequiresMessageQueue, UnboundedMessageQueueSemantics }
 import pekko.dispatch.Dispatchers
 import pekko.dispatch.sysmsg._
+import pekko.dispatch.{ Mailboxes, RequiresMessageQueue, UnboundedMessageQueueSemantics }
 import pekko.event._
 import pekko.routing._
 import pekko.serialization.Serialization

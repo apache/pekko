@@ -21,12 +21,12 @@ import scala.concurrent.duration._
 import scala.util.Try
 
 import org.apache.pekko
-import pekko.actor.{ Actor, ActorLogging, ActorRef, NoSerializationVerificationNeeded, Props, Stash }
 import pekko.actor.Status.Failure
+import pekko.actor.{ Actor, ActorLogging, ActorRef, NoSerializationVerificationNeeded, Props, Stash }
 import pekko.annotation.InternalApi
 import pekko.event.{ LogMarker, Logging }
-import pekko.io.{ IO, Tcp, Udp }
 import pekko.io.dns.{ RecordClass, RecordType, ResourceRecord }
+import pekko.io.{ IO, Tcp, Udp }
 import pekko.pattern.{ BackoffOpts, BackoffSupervisor }
 
 /**

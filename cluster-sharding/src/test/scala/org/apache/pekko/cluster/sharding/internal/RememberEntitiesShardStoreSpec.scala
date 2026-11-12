@@ -17,10 +17,10 @@ import java.util.UUID
 
 import org.apache.pekko
 import pekko.actor.Props
-import pekko.cluster.{ Cluster, MemberStatus }
 import pekko.cluster.ddata.{ Replicator, ReplicatorSettings }
 import pekko.cluster.sharding.ClusterShardingSettings
 import pekko.cluster.sharding.ShardRegion.ShardId
+import pekko.cluster.{ Cluster, MemberStatus }
 import pekko.testkit.{ ImplicitSender, PekkoSpec, WithLogCapturing }
 
 import org.scalatest.wordspec.AnyWordSpecLike

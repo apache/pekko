@@ -25,10 +25,11 @@ import pekko.coordination.lease.scaladsl.Lease
 import pekko.pattern.AskTimeoutException
 import pekko.testkit.PekkoSpec
 
-import com.typesafe.config.{ Config, ConfigFactory }
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
+
+import com.typesafe.config.{ Config, ConfigFactory }
 
 class LeaseHealthCheckSpec
     extends PekkoSpec(LeaseHealthCheckSpec.config)

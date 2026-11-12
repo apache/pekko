@@ -17,11 +17,8 @@ import java.time.{ Duration => JDuration }
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
 
-import scala.concurrent.{ ExecutionContext, Promise }
 import scala.concurrent.duration._
-
-import com.typesafe.config.ConfigFactory
-import org.scalatest.concurrent.Eventually
+import scala.concurrent.{ ExecutionContext, Promise }
 
 import org.apache.pekko
 import pekko.NotUsed
@@ -43,6 +40,10 @@ import pekko.stream.testkit.scaladsl.TestSink
 import pekko.stream.testkit.scaladsl.TestSource
 import pekko.testkit.PekkoSpec
 import pekko.testkit.WithLogCapturing
+
+import org.scalatest.concurrent.Eventually
+
+import com.typesafe.config.ConfigFactory
 
 object EventsBySliceFirehoseSpec {
   // real PersistenceId is in pekko-persistence-typed, and no dependency to that from here

@@ -13,8 +13,8 @@
 
 package org.apache.pekko.pattern
 
-import scala.concurrent.{ Await, ExecutionContextExecutor, Future, Promise, TimeoutException }
 import scala.concurrent.duration._
+import scala.concurrent.{ Await, ExecutionContextExecutor, Future, Promise, TimeoutException }
 
 import org.apache.pekko
 import pekko.actor.{ Actor, Props }

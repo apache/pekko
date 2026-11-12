@@ -19,8 +19,8 @@ import java.util.concurrent.ThreadFactory
 import java.util.concurrent.atomic.{ AtomicLong, AtomicReference }
 
 import scala.annotation.tailrec
-import scala.concurrent.{ Await, ExecutionContext, Future, Promise }
 import scala.concurrent.duration._
+import scala.concurrent.{ Await, ExecutionContext, Future, Promise }
 import scala.util.control.NonFatal
 
 import org.apache.pekko

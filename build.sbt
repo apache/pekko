@@ -49,7 +49,7 @@ addCommandAlias(
   name = "fixall",
   value = ";scalafixEnable; scalafixAll; scalafmtAll; test:compile; multi-jvm:compile; reload")
 
-addCommandAlias(name = "sortImports", value = ";scalafixEnable; scalafixAll SortImports; scalafmtAll")
+addCommandAlias(name = "sortImports", value = ";scalafixEnable; scalafixAll OrganizeImports; scalafmtAll")
 
 import PekkoBuild._
 import com.typesafe.tools.mima.plugin.MimaPlugin

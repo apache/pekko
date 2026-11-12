@@ -21,9 +21,9 @@ import org.scalactic.TypeCheckedTripleEquals
 
 import org.apache.pekko
 import pekko.Done
-import pekko.actor.testkit.typed.scaladsl.{ BehaviorTestKit, TestInbox }
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
 import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
+import pekko.actor.testkit.typed.scaladsl.{ BehaviorTestKit, TestInbox }
 import pekko.actor.typed.javadsl.{ Behaviors => JBehaviors }
 import pekko.actor.typed.scaladsl.{ AbstractBehavior => SAbstractBehavior }
 import pekko.actor.typed.scaladsl.{ Behaviors => SBehaviors }

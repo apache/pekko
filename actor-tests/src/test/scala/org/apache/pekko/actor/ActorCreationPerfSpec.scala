@@ -18,9 +18,9 @@ import scala.concurrent.duration._
 import com.codahale.metrics.Histogram
 
 import org.apache.pekko
-import pekko.testkit.{ ImplicitSender, PekkoSpec, PerformanceTest }
-import pekko.testkit.metrics._
 import pekko.testkit.metrics.HeapMemoryUsage
+import pekko.testkit.metrics._
+import pekko.testkit.{ ImplicitSender, PekkoSpec, PerformanceTest }
 
 import org.scalatest.BeforeAndAfterAll
 

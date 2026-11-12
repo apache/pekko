@@ -34,8 +34,8 @@ import pekko.actor.{
 import pekko.japi._
 import pekko.stream._
 import pekko.stream.impl._
-import pekko.testkit.{ TestActor, TestProbe }
 import pekko.testkit.TestActor.AutoPilot
+import pekko.testkit.{ TestActor, TestProbe }
 
 import org.reactivestreams.{ Publisher, Subscriber, Subscription }
 

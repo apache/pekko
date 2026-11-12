@@ -20,9 +20,9 @@ import scala.jdk.OptionConverters.RichOptional
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.annotation.ApiMayChange
-import pekko.stream.{ ZstdCompressionSettings, ZstdDecompressionSettings }
 import pekko.stream.javadsl.compression.ZstdDictionary
 import pekko.stream.scaladsl
+import pekko.stream.{ ZstdCompressionSettings, ZstdDecompressionSettings }
 import pekko.util.ByteString
 
 object Compression {

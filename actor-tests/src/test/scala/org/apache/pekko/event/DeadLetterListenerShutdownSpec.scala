@@ -22,8 +22,6 @@ import scala.concurrent.Future
 import scala.concurrent.Promise
 import scala.concurrent.duration._
 
-import com.typesafe.config.ConfigFactory
-
 import org.apache.pekko
 import pekko.Done
 import pekko.actor.Actor
@@ -36,6 +34,8 @@ import pekko.testkit.PekkoSpec
 import pekko.testkit.TestDuration
 import pekko.testkit.TestKit
 import pekko.testkit.TestProbe
+
+import com.typesafe.config.ConfigFactory
 
 object DeadLetterListenerShutdownSpec {
   case object RunningMsg

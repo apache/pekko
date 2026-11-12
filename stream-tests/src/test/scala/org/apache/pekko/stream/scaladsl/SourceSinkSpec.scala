@@ -18,10 +18,10 @@
 package org.apache.pekko.stream.scaladsl
 
 import org.apache.pekko
-import pekko.stream.{ Attributes, StreamSubscriptionTimeoutTerminationMode }
 import pekko.stream.ActorAttributes.StreamSubscriptionTimeout
 import pekko.stream.testkit.StreamSpec
 import pekko.stream.testkit.scaladsl.{ TestSink, TestSource }
+import pekko.stream.{ Attributes, StreamSubscriptionTimeoutTerminationMode }
 
 class SourceSinkSpec extends StreamSpec("""
     pekko.stream.materializer.initial-input-buffer-size = 2

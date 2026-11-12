@@ -38,9 +38,9 @@ import pekko.event.{ LogMarker, LoggingAdapter, MarkerLoggingAdapter }
 import pekko.japi.Pair
 import pekko.japi.function
 import pekko.japi.function.Creator
-import pekko.stream.{ javadsl, _ }
 import pekko.stream.impl.Stages.DefaultAttributes
 import pekko.stream.impl.fusing.{ StatefulMapConcat, ZipWithIndexJava }
+import pekko.stream.{ javadsl, _ }
 import pekko.util.ConstantFun
 import pekko.util.Timeout
 

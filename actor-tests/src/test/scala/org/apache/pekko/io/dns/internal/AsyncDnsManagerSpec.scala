@@ -18,8 +18,8 @@ import pekko.io.Dns
 import pekko.io.dns.AAAARecord
 import pekko.io.dns.CachePolicy.Ttl
 import pekko.io.dns.DnsProtocol.{ Resolve, Resolved }
-import pekko.testkit.{ ImplicitSender, PekkoSpec }
 import pekko.testkit.WithLogCapturing
+import pekko.testkit.{ ImplicitSender, PekkoSpec }
 
 class AsyncDnsManagerSpec extends PekkoSpec("""
     pekko.loglevel = DEBUG

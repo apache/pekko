@@ -18,8 +18,8 @@ import scala.util.control.NonFatal
 import org.apache.pekko
 import pekko.actor.{ ActorRef, FunctionRef, Kill, PoisonPill }
 import pekko.annotation.InternalApi
-import pekko.stream._
 import pekko.stream.OverflowStrategies._
+import pekko.stream._
 import pekko.stream.impl.Stages.DefaultAttributes
 import pekko.stream.stage._
 import pekko.util.OptionVal

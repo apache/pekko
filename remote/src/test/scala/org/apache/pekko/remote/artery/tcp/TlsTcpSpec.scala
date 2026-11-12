@@ -22,8 +22,8 @@ import scala.concurrent.duration._
 import scala.util.{ Failure, Success }
 
 import org.apache.pekko
-import pekko.actor.{ ActorIdentity, ActorPath, ActorRef, Identify, RootActorPath }
 import pekko.actor.setup.ActorSystemSetup
+import pekko.actor.{ ActorIdentity, ActorPath, ActorRef, Identify, RootActorPath }
 import pekko.remote.artery.tcp.ssl.CipherSuiteSupportCheck
 import pekko.testkit.EventFilter
 import pekko.testkit.ImplicitSender

@@ -20,7 +20,6 @@ import scala.jdk.FutureConverters._
 import scala.jdk.OptionConverters._
 
 import org.apache.pekko
-import pekko.{ Done, NotUsed }
 import pekko.japi.Pair
 import pekko.persistence.query.DurableStateChange
 import pekko.persistence.query.Offset
@@ -30,6 +29,7 @@ import pekko.persistence.state.javadsl.DurableStateUpdateStore
 import pekko.persistence.state.javadsl.GetObjectResult
 import pekko.persistence.testkit.state.scaladsl.{ PersistenceTestKitDurableStateStore => SStore }
 import pekko.stream.javadsl.Source
+import pekko.{ Done, NotUsed }
 
 object PersistenceTestKitDurableStateStore {
   val Identifier = pekko.persistence.testkit.state.scaladsl.PersistenceTestKitDurableStateStore.Identifier

@@ -16,10 +16,10 @@ package org.apache.pekko.persistence.typed.state.internal
 import scala.util.control.NonFatal
 
 import org.apache.pekko
-import pekko.actor.{ ActorRef => ClassicActorRef }
 import pekko.actor.Cancellable
 import pekko.actor.typed.Signal
 import pekko.actor.typed.scaladsl.ActorContext
+import pekko.actor.{ ActorRef => ClassicActorRef }
 import pekko.annotation.InternalApi
 import pekko.persistence._
 import pekko.persistence.state.DurableStateStoreRegistry
@@ -30,10 +30,10 @@ import pekko.persistence.typed.state.internal.InternalProtocol.RecoveryTimeout
 import pekko.persistence.typed.state.scaladsl.DurableStateBehavior
 import pekko.util.OptionVal
 
-import com.typesafe.config.ConfigFactory
-
 import org.slf4j.Logger
 import org.slf4j.MDC
+
+import com.typesafe.config.ConfigFactory
 
 /**
  * INTERNAL API: Carry state for the `DurableStateBehavior` implementation behaviors.

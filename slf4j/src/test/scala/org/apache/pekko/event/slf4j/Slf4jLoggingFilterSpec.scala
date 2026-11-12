@@ -16,8 +16,8 @@ package org.apache.pekko.event.slf4j
 import scala.concurrent.duration._
 
 import org.apache.pekko
-import pekko.actor.{ Actor, ActorLogging, Props }
 import pekko.actor.ActorRef
+import pekko.actor.{ Actor, ActorLogging, Props }
 import pekko.event.Logging
 import pekko.event.Logging.Debug
 import pekko.event.Logging.Info

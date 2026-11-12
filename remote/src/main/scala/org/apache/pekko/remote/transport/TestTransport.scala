@@ -15,9 +15,9 @@ package org.apache.pekko.remote.transport
 
 import java.util.concurrent.{ ConcurrentHashMap, CopyOnWriteArrayList }
 
-import scala.concurrent.{ Await, Future, Promise }
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
+import scala.concurrent.{ Await, Future, Promise }
 
 import org.apache.pekko
 import pekko.actor._

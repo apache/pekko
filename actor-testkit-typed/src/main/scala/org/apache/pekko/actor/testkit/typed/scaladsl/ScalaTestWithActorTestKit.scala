@@ -17,11 +17,11 @@ import org.apache.pekko
 import pekko.actor.testkit.typed.TestKitSettings
 import pekko.actor.typed.ActorSystem
 
-import org.scalatest.{ BeforeAndAfterAll, TestSuite }
 import org.scalatest.concurrent.Eventually
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.time.Span
+import org.scalatest.{ BeforeAndAfterAll, TestSuite }
 
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory

@@ -24,8 +24,8 @@ import pekko.actor.{ ActorRef, ExtendedActorSystem }
 import pekko.event.LogMarker
 import pekko.event.Logging
 import pekko.remote.WireFormats.ActorRefData
-import pekko.serialization.{ BaseSerializer, Serialization }
 import pekko.serialization.SerializationExtension
+import pekko.serialization.{ BaseSerializer, Serialization }
 
 object ProtobufSerializer {
   private val lookup = MethodHandles.lookup()

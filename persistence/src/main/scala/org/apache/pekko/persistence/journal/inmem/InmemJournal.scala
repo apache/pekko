@@ -28,8 +28,8 @@ import pekko.pattern.after
 import pekko.persistence.AtomicWrite
 import pekko.persistence.JournalProtocol.RecoverySuccess
 import pekko.persistence.PersistentRepr
-import pekko.persistence.journal.{ AsyncWriteJournal, Tagged }
 import pekko.persistence.journal.inmem.InmemJournal.{ MessageWithMeta, ReplayWithMeta }
+import pekko.persistence.journal.{ AsyncWriteJournal, Tagged }
 import pekko.serialization.SerializationExtension
 import pekko.serialization.Serializers
 import pekko.util.OptionVal

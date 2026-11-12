@@ -28,8 +28,8 @@ import pekko.actor.Actor
 import pekko.actor.Deploy
 import pekko.actor.Props
 import pekko.remote.DaemonMsgCreate
-import pekko.remote.WireFormats
 import pekko.remote.NotAllowedClassRemoteDeploymentAttemptException
+import pekko.remote.WireFormats
 import pekko.serialization.SerializationExtension
 import pekko.serialization.SerializerWithStringManifest
 import pekko.testkit.PekkoSpec

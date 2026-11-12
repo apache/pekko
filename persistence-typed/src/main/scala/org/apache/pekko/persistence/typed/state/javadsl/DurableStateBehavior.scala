@@ -15,6 +15,8 @@ package org.apache.pekko.persistence.typed.state.javadsl
 
 import java.util.Optional
 
+import scala.jdk.OptionConverters._
+
 import org.jspecify.annotations.Nullable
 
 import org.apache.pekko
@@ -30,8 +32,6 @@ import pekko.persistence.typed.SnapshotAdapter
 import pekko.persistence.typed.state.internal
 import pekko.persistence.typed.state.internal._
 import pekko.persistence.typed.state.scaladsl
-
-import scala.jdk.OptionConverters._
 
 import com.typesafe.config.Config
 

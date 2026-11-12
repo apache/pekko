@@ -30,8 +30,8 @@ import pekko.cluster.ddata.ORMultiMap
 import pekko.cluster.ddata.ORSet
 import pekko.cluster.ddata.PruningState.PruningInitialized
 import pekko.cluster.ddata.PruningState.PruningPerformed
-import pekko.cluster.ddata.Replicator._
 import pekko.cluster.ddata.Replicator.Internal._
+import pekko.cluster.ddata.Replicator._
 import pekko.cluster.ddata.VersionVector
 import pekko.remote.RARP
 import pekko.testkit.TestKit

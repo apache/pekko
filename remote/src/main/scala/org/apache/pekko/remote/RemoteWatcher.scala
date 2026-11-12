@@ -20,9 +20,9 @@ import scala.concurrent.duration._
 import org.apache.pekko
 import pekko.actor._
 import pekko.annotation.InternalApi
-import pekko.dispatch.{ RequiresMessageQueue, UnboundedMessageQueueSemantics }
 import pekko.dispatch.Dispatchers
 import pekko.dispatch.sysmsg.{ DeathWatchNotification, Watch }
+import pekko.dispatch.{ RequiresMessageQueue, UnboundedMessageQueueSemantics }
 import pekko.event.AddressTerminatedTopic
 import pekko.remote.artery.ArteryMessage
 import pekko.remote.artery.ArteryTransport

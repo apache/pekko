@@ -19,9 +19,9 @@ import org.apache.pekko
 import pekko.persistence.CapabilityFlag
 import pekko.persistence.journal.JournalSpec
 import pekko.persistence.snapshot.SnapshotStoreSpec
-import pekko.persistence.testkit._
 import pekko.persistence.testkit.EventStorage.JournalPolicies
 import pekko.persistence.testkit.Reject
+import pekko.persistence.testkit._
 import pekko.persistence.testkit.internal.InMemStorageExtension
 
 class PersistenceTestKitJournalCompatSpec extends JournalSpec(config = PersistenceTestKitPlugin.config) {

@@ -34,12 +34,12 @@ import com.github.luben.zstd.{
 }
 
 import org.apache.pekko
-import pekko.stream.{ ZstdCompressionSettings, ZstdDecompressionSettings }
 import pekko.stream.impl.io.compression.{ Compressor, ZstdCompressor }
-import pekko.stream.javadsl.{ Compression => JavaCompression }
 import pekko.stream.javadsl.compression.{ ZstdDictionary => JavaZstdDictionary }
-import pekko.stream.scaladsl.{ Compression, Flow, Source }
+import pekko.stream.javadsl.{ Compression => JavaCompression }
 import pekko.stream.scaladsl.compression.ZstdDictionary
+import pekko.stream.scaladsl.{ Compression, Flow, Source }
+import pekko.stream.{ ZstdCompressionSettings, ZstdDecompressionSettings }
 import pekko.util.ByteString
 
 class ZstdSpec extends CoderSpec[ZstdException]("zstd") {

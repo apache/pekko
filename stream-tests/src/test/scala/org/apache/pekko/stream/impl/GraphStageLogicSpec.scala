@@ -20,8 +20,8 @@ import pekko.NotUsed
 import pekko.stream._
 import pekko.stream.impl.fusing._
 import pekko.stream.scaladsl._
-import pekko.stream.stage._
 import pekko.stream.stage.GraphStageLogic.{ EagerTerminateInput, EagerTerminateOutput }
+import pekko.stream.stage._
 import pekko.stream.testkit.StreamSpec
 import pekko.stream.testkit.scaladsl.TestSink
 

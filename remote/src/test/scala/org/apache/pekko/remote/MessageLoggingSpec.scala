@@ -13,14 +13,13 @@
 
 package org.apache.pekko.remote
 
-import MessageLoggingSpec._
-
 import org.apache.pekko
 import pekko.actor.{ Actor, ActorIdentity, ActorSystem, ExtendedActorSystem, Identify, Props, RootActorPath }
+import MessageLoggingSpec._
 import pekko.serialization.jackson.CborSerializable
-import pekko.testkit.{ ImplicitSender, PekkoSpec, TestKit }
 import pekko.testkit.EventFilter
 import pekko.testkit.TestActors
+import pekko.testkit.{ ImplicitSender, PekkoSpec, TestKit }
 
 import com.typesafe.config.{ Config, ConfigFactory }
 

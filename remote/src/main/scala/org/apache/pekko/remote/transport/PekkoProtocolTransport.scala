@@ -18,14 +18,13 @@ import java.util.concurrent.atomic.AtomicBoolean
 
 import scala.annotation.nowarn
 import scala.collection.immutable
-import scala.concurrent.{ Future, Promise }
 import scala.concurrent.duration._
+import scala.concurrent.{ Future, Promise }
 import scala.util.control.NonFatal
 
 import org.apache.pekko
-import pekko.{ OnlyCauseStackTrace, PekkoException }
-import pekko.actor._
 import pekko.actor.SupervisorStrategy.Stop
+import pekko.actor._
 import pekko.dispatch.{ RequiresMessageQueue, UnboundedMessageQueueSemantics }
 import pekko.event.LoggingAdapter
 import pekko.pattern.pipe
@@ -38,6 +37,7 @@ import pekko.remote.transport.ProtocolStateActor._
 import pekko.remote.transport.Transport._
 import pekko.util.ByteString
 import pekko.util.Helpers.Requiring
+import pekko.{ OnlyCauseStackTrace, PekkoException }
 
 import com.typesafe.config.Config
 

@@ -18,13 +18,12 @@ import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 
 import scala.annotation.nowarn
-
 import collection.immutable.SortedSet
 
 import org.apache.pekko
 import pekko.actor.{ Address, ExtendedActorSystem }
-import pekko.cluster._
 import pekko.cluster.InternalClusterAction.CompatibleConfig
+import pekko.cluster._
 import pekko.cluster.protobuf.msg.{ ClusterMessages => cm }
 import pekko.cluster.routing.{ ClusterRouterPool, ClusterRouterPoolSettings }
 import pekko.remote.ByteStringUtils

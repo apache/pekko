@@ -21,8 +21,8 @@ import java.util.concurrent.atomic.AtomicInteger
 
 import org.apache.pekko
 import pekko.Done
-import pekko.stream.{ ActorAttributes, Supervision }
 import pekko.stream.testkit._
+import pekko.stream.{ ActorAttributes, Supervision }
 
 class FlowDoOnFirstSpec extends StreamSpec("""
     pekko.stream.materializer.initial-input-buffer-size = 2

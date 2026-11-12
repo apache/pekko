@@ -14,13 +14,12 @@
 package org.apache.pekko.remote.testconductor
 
 import scala.concurrent.duration._
-
 import language.implicitConversions
 
 import org.apache.pekko
 import pekko.actor.Address
-import pekko.remote.testconductor.{ TestConductorProtocol => TCP }
 import pekko.remote.testconductor.TestConductorProtocol.BarrierOp
+import pekko.remote.testconductor.{ TestConductorProtocol => TCP }
 import pekko.remote.transport.ThrottlerTransportAdapter.Direction
 
 import io.netty.channel.ChannelHandlerContext

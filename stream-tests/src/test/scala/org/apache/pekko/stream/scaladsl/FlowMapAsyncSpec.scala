@@ -31,8 +31,8 @@ import pekko.stream.ActorAttributes.supervisionStrategy
 import pekko.stream.Attributes
 import pekko.stream.Supervision
 import pekko.stream.Supervision.resumingDecider
-import pekko.stream.testkit._
 import pekko.stream.testkit.Utils._
+import pekko.stream.testkit._
 import pekko.stream.testkit.scaladsl.TestSink
 import pekko.testkit.EventFilter
 import pekko.testkit.TestDuration

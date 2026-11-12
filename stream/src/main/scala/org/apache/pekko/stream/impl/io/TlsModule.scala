@@ -20,10 +20,10 @@ import scala.util.Try
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.annotation.InternalApi
-import pekko.stream._
 import pekko.stream.TLSProtocol._
-import pekko.stream.impl.{ TlsModuleIslandTag, TraversalBuilder }
+import pekko.stream._
 import pekko.stream.impl.StreamLayout.AtomicModule
+import pekko.stream.impl.{ TlsModuleIslandTag, TraversalBuilder }
 import pekko.util.ByteString
 
 /**

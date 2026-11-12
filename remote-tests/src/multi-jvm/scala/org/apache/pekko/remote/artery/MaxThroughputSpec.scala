@@ -23,12 +23,12 @@ import scala.concurrent.duration._
 
 import org.apache.pekko
 import pekko.actor._
-import pekko.remote.{ RARP, RemoteActorRefProvider, RemotingMultiNodeSpec }
 import pekko.remote.artery.compress.CompressionProtocol.Events.ReceivedActorRefCompressionTable
 import pekko.remote.testconductor.RoleName
 import pekko.remote.testkit.{ MultiNodeConfig, PerfFlamesSupport }
-import pekko.serialization.{ ByteBufferSerializer, SerializerWithStringManifest }
+import pekko.remote.{ RARP, RemoteActorRefProvider, RemotingMultiNodeSpec }
 import pekko.serialization.jackson.CborSerializable
+import pekko.serialization.{ ByteBufferSerializer, SerializerWithStringManifest }
 import pekko.testkit._
 
 import com.typesafe.config.ConfigFactory

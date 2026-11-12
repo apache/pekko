@@ -13,12 +13,12 @@
 
 package org.apache.pekko.io
 
-import java.nio.channels.{ CancelledKeyException, SelectableChannel, SelectionKey }
 import java.nio.channels.ClosedChannelException
 import java.nio.channels.SelectionKey._
 import java.nio.channels.spi.SelectorProvider
-import java.util.{ Iterator => JIterator }
+import java.nio.channels.{ CancelledKeyException, SelectableChannel, SelectionKey }
 import java.util.concurrent.atomic.AtomicBoolean
+import java.util.{ Iterator => JIterator }
 
 import scala.annotation.tailrec
 import scala.concurrent.ExecutionContext

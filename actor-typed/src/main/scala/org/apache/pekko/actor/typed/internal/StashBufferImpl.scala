@@ -13,8 +13,8 @@
 
 package org.apache.pekko.actor.typed.internal
 
-import java.util.function.{ Function => JFunction }
 import java.util.function.Predicate
+import java.util.function.{ Function => JFunction }
 
 import scala.annotation.nowarn
 import scala.annotation.tailrec

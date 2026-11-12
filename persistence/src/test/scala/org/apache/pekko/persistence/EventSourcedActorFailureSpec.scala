@@ -14,8 +14,8 @@
 package org.apache.pekko.persistence
 
 import scala.concurrent.Future
-import scala.util.{ Failure, Try }
 import scala.util.control.NoStackTrace
+import scala.util.{ Failure, Try }
 
 import org.apache.pekko
 import pekko.actor.{ OneForOneStrategy, _ }

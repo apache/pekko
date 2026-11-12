@@ -22,8 +22,8 @@ import scala.concurrent.duration._
 import org.apache.pekko
 import pekko.actor.{ ActorRef, PoisonPill }
 import pekko.io.Tcp._
-import pekko.testkit.{ PekkoSpec, TestProbe }
 import pekko.testkit.WithLogCapturing
+import pekko.testkit.{ PekkoSpec, TestProbe }
 import pekko.util.ByteString
 
 import org.scalatest.concurrent.TimeLimits

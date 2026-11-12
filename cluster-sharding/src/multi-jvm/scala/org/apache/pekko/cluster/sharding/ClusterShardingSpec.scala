@@ -26,11 +26,11 @@ import pekko.cluster.sharding.ShardRegion.{ CurrentRegions, GetCurrentRegions, P
 import pekko.cluster.sharding.internal.{ DDataRememberEntitiesProvider, EventSourcedRememberEntitiesProvider }
 import pekko.cluster.singleton.{ ClusterSingletonManager, ClusterSingletonManagerSettings }
 import pekko.pattern.BackoffOpts
-import pekko.persistence.{ Persistence, PersistentActor }
 import pekko.persistence.journal.leveldb.{ SharedLeveldbJournal, SharedLeveldbStore }
+import pekko.persistence.{ Persistence, PersistentActor }
 import pekko.remote.testconductor.RoleName
-import pekko.testkit._
 import pekko.testkit.TestEvent.Mute
+import pekko.testkit._
 
 import com.typesafe.config.ConfigFactory
 

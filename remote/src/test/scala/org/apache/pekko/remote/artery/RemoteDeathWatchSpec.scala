@@ -17,11 +17,11 @@ import scala.annotation.nowarn
 import scala.concurrent.duration._
 
 import org.apache.pekko
-import pekko.actor._
 import pekko.actor.RootActorPath
+import pekko.actor._
 import pekko.remote.RARP
-import pekko.testkit._
 import pekko.testkit.SocketUtil
+import pekko.testkit._
 
 import com.typesafe.config.ConfigFactory
 

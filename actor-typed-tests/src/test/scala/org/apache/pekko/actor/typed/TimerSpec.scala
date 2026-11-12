@@ -23,8 +23,8 @@ import scala.util.control.NoStackTrace
 import org.apache.pekko
 import pekko.actor.DeadLetter
 import pekko.actor.testkit.typed.TestException
-import pekko.actor.testkit.typed.scaladsl._
 import pekko.actor.testkit.typed.scaladsl.LoggingTestKit
+import pekko.actor.testkit.typed.scaladsl._
 import pekko.actor.typed.scaladsl.Behaviors
 import pekko.actor.typed.scaladsl.TimerScheduler
 import pekko.testkit.TimingTest

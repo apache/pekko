@@ -19,8 +19,8 @@ import scala.concurrent.duration._
 
 import org.apache.pekko
 import pekko.actor.{ ActorRef, ActorSystem, Props }
-import pekko.cluster.{ Cluster, MemberStatus }
 import pekko.cluster.sharding.ShardRegion.CurrentRegions
+import pekko.cluster.{ Cluster, MemberStatus }
 import pekko.persistence.PersistentActor
 import pekko.testkit.{ ImplicitSender, PekkoSpec, TestProbe }
 

@@ -17,8 +17,8 @@ import scala.util.control.NoStackTrace
 
 import org.apache.pekko
 import pekko.Done
-import pekko.stream.testkit._
 import pekko.stream.testkit.Utils._
+import pekko.stream.testkit._
 
 class FlowWireTapSpec extends StreamSpec("pekko.stream.materializer.debug.fuzzing-mode = off") {
 

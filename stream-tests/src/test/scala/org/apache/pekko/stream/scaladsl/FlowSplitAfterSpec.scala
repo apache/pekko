@@ -18,9 +18,9 @@ import scala.concurrent.duration._
 
 import org.apache.pekko
 import pekko.NotUsed
-import pekko.stream._
 import pekko.stream.StreamSubscriptionTimeoutTerminationMode
-import pekko.stream.Supervision.{ resumingDecider, Decider }
+import pekko.stream.Supervision.{ Decider, resumingDecider }
+import pekko.stream._
 import pekko.stream.impl.SubscriptionTimeoutException
 import pekko.stream.testkit.StreamSpec
 import pekko.stream.testkit.TestPublisher

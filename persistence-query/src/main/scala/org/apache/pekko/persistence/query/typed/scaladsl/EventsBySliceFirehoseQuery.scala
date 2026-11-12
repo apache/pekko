@@ -18,8 +18,6 @@ import java.time.Instant
 import scala.annotation.nowarn
 import scala.concurrent.Future
 
-import com.typesafe.config.Config
-
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.actor.ExtendedActorSystem
@@ -30,6 +28,8 @@ import pekko.persistence.query.scaladsl._
 import pekko.persistence.query.typed.EventEnvelope
 import pekko.persistence.query.typed.internal.EventsBySliceFirehose
 import pekko.stream.scaladsl.Source
+
+import com.typesafe.config.Config
 
 object EventsBySliceFirehoseQuery {
   val Identifier = "pekko.persistence.query.events-by-slice-firehose"

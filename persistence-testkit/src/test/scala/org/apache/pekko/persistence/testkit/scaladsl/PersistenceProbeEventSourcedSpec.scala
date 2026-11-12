@@ -15,10 +15,10 @@ package org.apache.pekko.persistence.testkit.scaladsl
 
 import org.apache.pekko
 import pekko.Done
-import pekko.actor.typed.{ Behavior, RecipientRef }
 import pekko.actor.typed.scaladsl.{ ActorContext, Behaviors }
-import pekko.persistence.typed.{ PersistenceId, RecoveryCompleted }
+import pekko.actor.typed.{ Behavior, RecipientRef }
 import pekko.persistence.typed.scaladsl._
+import pekko.persistence.typed.{ PersistenceId, RecoveryCompleted }
 
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec

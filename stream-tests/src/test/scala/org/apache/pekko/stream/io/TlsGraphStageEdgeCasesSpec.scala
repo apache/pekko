@@ -26,8 +26,8 @@ import scala.util.{ Success, Try }
 
 import org.apache.pekko
 import pekko.NotUsed
-import pekko.stream._
 import pekko.stream.TLSProtocol._
+import pekko.stream._
 import pekko.stream.impl.io.TlsGraphStage
 import pekko.stream.scaladsl._
 import pekko.stream.testkit.StreamSpec

@@ -29,8 +29,8 @@ import org.apache.pekko
 import pekko.actor.ActorInitializationException
 import pekko.actor.Dropped
 import pekko.actor.testkit.typed._
-import pekko.actor.testkit.typed.scaladsl._
 import pekko.actor.testkit.typed.scaladsl.LoggingTestKit
+import pekko.actor.testkit.typed.scaladsl._
 import pekko.actor.typed.SupervisorStrategy.Resume
 import pekko.actor.typed.scaladsl.AbstractBehavior
 import pekko.actor.typed.scaladsl.ActorContext

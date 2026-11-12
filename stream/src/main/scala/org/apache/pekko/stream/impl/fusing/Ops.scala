@@ -20,21 +20,22 @@ import scala.annotation.tailrec
 import scala.collection.immutable.VectorBuilder
 import scala.concurrent.Future
 import scala.concurrent.duration.{ FiniteDuration, _ }
-import scala.util.{ Failure, Success, Try }
-import scala.util.control.{ NoStackTrace, NonFatal }
 import scala.util.control.Exception.Catcher
+import scala.util.control.{ NoStackTrace, NonFatal }
+import scala.util.{ Failure, Success, Try }
 
 import org.apache.pekko
 import pekko.actor.{ ActorRef, Terminated }
 import pekko.annotation.InternalApi
-import pekko.event._
 import pekko.event.Logging.LogLevel
-import pekko.stream.{ Supervision, _ }
+import pekko.event._
 import pekko.stream.ActorAttributes.SupervisionStrategy
-import pekko.stream.Attributes.{ InputBuffer, LogLevels }
 import pekko.stream.Attributes.SourceLocation
+import pekko.stream.Attributes.{ InputBuffer, LogLevels }
 import pekko.stream.OverflowStrategies._
 import pekko.stream.Supervision.Decider
+import pekko.stream.impl.Stages.DefaultAttributes
+import pekko.stream.impl.fusing.GraphStages.{ FutureSource, RepeatSource, SimpleLinearGraphStage, SingleSource }
 import pekko.stream.impl.{
   Buffer => BufferImpl,
   ContextPropagation,
@@ -43,8 +44,6 @@ import pekko.stream.impl.{
   ReactiveStreamsCompliance,
   TraversalBuilder
 }
-import pekko.stream.impl.Stages.DefaultAttributes
-import pekko.stream.impl.fusing.GraphStages.{ FutureSource, RepeatSource, SimpleLinearGraphStage, SingleSource }
 import pekko.stream.scaladsl.{
   DelayStrategy,
   Source,
@@ -52,6 +51,7 @@ import pekko.stream.scaladsl.{
   StatefulMapConcatAccumulatorFactory
 }
 import pekko.stream.stage._
+import pekko.stream.{ Supervision, _ }
 import pekko.util.{ ConstantFun, OptionVal }
 
 /**

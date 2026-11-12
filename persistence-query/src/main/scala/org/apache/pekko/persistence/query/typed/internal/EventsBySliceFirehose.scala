@@ -13,8 +13,8 @@
 
 package org.apache.pekko.persistence.query.typed.internal
 
-import java.time.{ Duration => JDuration }
 import java.time.Instant
+import java.time.{ Duration => JDuration }
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 
@@ -23,8 +23,6 @@ import scala.collection.mutable
 import scala.concurrent.duration._
 import scala.jdk.DurationConverters._
 import scala.util.control.NoStackTrace
-
-import com.typesafe.config.Config
 
 import org.apache.pekko
 import pekko.NotUsed
@@ -61,6 +59,8 @@ import pekko.stream.stage.InHandler
 import pekko.stream.stage.OutHandler
 import pekko.stream.stage.StageLogging
 import pekko.util.OptionVal
+
+import com.typesafe.config.Config
 
 /**
  * INTERNAL API

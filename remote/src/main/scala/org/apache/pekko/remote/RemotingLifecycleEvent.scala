@@ -17,8 +17,8 @@ import scala.annotation.nowarn
 
 import org.apache.pekko
 import pekko.actor.{ ActorSystem, Address }
-import pekko.event.{ Logging, LoggingAdapter }
 import pekko.event.Logging.LogLevel
+import pekko.event.{ Logging, LoggingAdapter }
 
 @nowarn("msg=@SerialVersionUID (has no effect|does nothing)")
 @SerialVersionUID(1L)

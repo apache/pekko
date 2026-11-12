@@ -41,10 +41,10 @@ import pekko.io.SimpleDnsCache
 import pekko.io.Tcp._
 import pekko.io.dns.DnsProtocol
 import pekko.stream._
-import pekko.stream.scaladsl._
 import pekko.stream.scaladsl.Flow
 import pekko.stream.scaladsl.Tcp.IncomingConnection
 import pekko.stream.scaladsl.Tcp.ServerBinding
+import pekko.stream.scaladsl._
 import pekko.stream.testkit._
 import pekko.testkit.EventFilter
 import pekko.testkit.SocketUtil.{ temporaryServerAddress, temporaryServerHostnameAndPort }

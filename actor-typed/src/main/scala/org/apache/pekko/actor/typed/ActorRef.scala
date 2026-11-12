@@ -16,9 +16,9 @@ package org.apache.pekko.actor.typed
 import scala.annotation.unchecked.uncheckedVariance
 
 import org.apache.pekko
-import pekko.{ actor => classic }
 import pekko.actor.typed.internal.InternalRecipientRef
 import pekko.annotation.DoNotInherit
+import pekko.{ actor => classic }
 
 /**
  * An ActorRef is the identity or address of an Actor instance. It is valid

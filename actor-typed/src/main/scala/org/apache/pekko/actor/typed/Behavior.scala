@@ -19,10 +19,10 @@ import scala.reflect.ClassTag
 
 import org.apache.pekko
 import pekko.actor.InvalidMessageException
-import pekko.actor.typed.internal.{ BehaviorImpl, BehaviorTags, InterceptorImpl, Supervisor }
 import pekko.actor.typed.internal.BehaviorImpl.DeferredBehavior
 import pekko.actor.typed.internal.BehaviorImpl.StoppedBehavior
 import pekko.actor.typed.internal.CachedProps
+import pekko.actor.typed.internal.{ BehaviorImpl, BehaviorTags, InterceptorImpl, Supervisor }
 import pekko.annotation.DoNotInherit
 import pekko.annotation.InternalApi
 import pekko.util.OptionVal

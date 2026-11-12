@@ -25,8 +25,8 @@ import scala.util.Random
 import org.apache.pekko
 import pekko.stream._
 import pekko.stream.scaladsl.Framing.FramingException
-import pekko.stream.stage._
 import pekko.stream.stage.GraphStage
+import pekko.stream.stage._
 import pekko.stream.testkit.StreamSpec
 import pekko.stream.testkit.TestPublisher
 import pekko.stream.testkit.TestSubscriber

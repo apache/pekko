@@ -18,14 +18,14 @@ import java.io.NotSerializableException
 import org.apache.pekko
 import pekko.actor.{ ActorRef, Address, ExtendedActorSystem }
 import pekko.protobufv3.internal.MessageLite
-import pekko.remote._
 import pekko.remote.RemoteWatcher.ArteryHeartbeatRsp
-import pekko.remote.artery.{ ActorSystemTerminating, ActorSystemTerminatingAck, Quarantined, SystemMessageDelivery }
+import pekko.remote._
 import pekko.remote.artery.Flush
 import pekko.remote.artery.FlushAck
 import pekko.remote.artery.OutboundHandshake.{ HandshakeReq, HandshakeRsp }
-import pekko.remote.artery.compress.{ CompressionProtocol, CompressionTable }
 import pekko.remote.artery.compress.CompressionProtocol._
+import pekko.remote.artery.compress.{ CompressionProtocol, CompressionTable }
+import pekko.remote.artery.{ ActorSystemTerminating, ActorSystemTerminatingAck, Quarantined, SystemMessageDelivery }
 import pekko.serialization.{ BaseSerializer, Serialization, SerializationExtension, SerializerWithStringManifest }
 import pekko.util.Helpers.toRootLowerCase
 

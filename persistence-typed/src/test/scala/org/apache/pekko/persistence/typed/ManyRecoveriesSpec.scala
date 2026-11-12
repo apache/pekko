@@ -22,8 +22,8 @@ import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
 import pekko.actor.testkit.typed.scaladsl.TestProbe
 import pekko.actor.typed.scaladsl.Behaviors
 import pekko.actor.typed.scaladsl.adapter.TypedActorSystemOps
-import pekko.persistence.typed.scaladsl.{ Effect, EventSourcedBehavior }
 import pekko.persistence.typed.scaladsl.EventSourcedBehavior.CommandHandler
+import pekko.persistence.typed.scaladsl.{ Effect, EventSourcedBehavior }
 import pekko.testkit.TestLatch
 
 import org.scalatest.wordspec.AnyWordSpecLike

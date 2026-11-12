@@ -19,11 +19,11 @@ import java.util.concurrent.atomic.AtomicBoolean
 import scala.collection.{ immutable => im }
 
 import org.apache.pekko
-import pekko.actor.Status.Failure
 import pekko.actor.Props
+import pekko.actor.Status.Failure
 import pekko.io.Udp
-import pekko.io.dns.{ ARecord, CachePolicy, RecordClass, RecordType }
 import pekko.io.dns.internal.DnsClient.{ Answer, DropRequest, Dropped, DuplicateId, Question4, Question6 }
+import pekko.io.dns.{ ARecord, CachePolicy, RecordClass, RecordType }
 import pekko.testkit.{ ImplicitSender, PekkoSpec, TestProbe }
 
 class DnsClientSpec extends PekkoSpec with ImplicitSender {

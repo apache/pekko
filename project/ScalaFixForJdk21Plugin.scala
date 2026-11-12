@@ -30,5 +30,5 @@ object ScalaFixForJdk21Plugin extends AutoPlugin with ScalafixSupport {
       updateProjectCommands(
         alias = "fixall",
         value = ";scalafixEnable;scalafixAll;scalafmtAll;test:compile;multi-jvm:compile;reload"),
-      updateProjectCommands(alias = "sortImports", value = ";scalafixEnable;scalafixAll SortImports;scalafmtAll"))
+      updateProjectCommands(alias = "sortImports", value = ";scalafixEnable;scalafixAll OrganizeImports;scalafmtAll"))
 }

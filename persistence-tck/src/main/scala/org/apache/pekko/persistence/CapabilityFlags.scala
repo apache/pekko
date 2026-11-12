@@ -13,8 +13,8 @@
 
 package org.apache.pekko.persistence
 
-import scala.language.implicitConversions
 import scala.jdk.CollectionConverters._
+import scala.language.implicitConversions
 import scala.util.Try
 
 import org.apache.pekko

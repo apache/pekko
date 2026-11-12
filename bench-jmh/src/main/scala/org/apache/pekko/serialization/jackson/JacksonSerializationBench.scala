@@ -13,9 +13,9 @@
 
 package org.apache.pekko.serialization.jackson
 
-import java.time.{ Duration => JDuration }
 import java.time.Instant
 import java.time.LocalDateTime
+import java.time.{ Duration => JDuration }
 import java.util
 import java.util.concurrent.TimeUnit
 

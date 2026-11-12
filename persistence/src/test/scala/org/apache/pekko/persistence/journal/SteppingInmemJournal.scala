@@ -13,15 +13,15 @@
 
 package org.apache.pekko.persistence.journal
 
-import scala.concurrent.{ Await, Future, Promise }
 import scala.concurrent.duration._
+import scala.concurrent.{ Await, Future, Promise }
 import scala.util.Try
 
 import org.apache.pekko
 import pekko.actor.{ ActorRef, ActorSystem }
 import pekko.pattern.ask
-import pekko.persistence.{ AtomicWrite, PersistentRepr }
 import pekko.persistence.journal.inmem.InmemJournal
+import pekko.persistence.{ AtomicWrite, PersistentRepr }
 import pekko.testkit._
 import pekko.util.Timeout
 

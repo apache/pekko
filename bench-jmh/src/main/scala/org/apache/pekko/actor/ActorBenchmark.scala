@@ -15,8 +15,9 @@ package org.apache.pekko.actor
 
 import java.util.concurrent.TimeUnit
 
-import BenchmarkActors._
 import org.openjdk.jmh.annotations._
+
+import BenchmarkActors._
 
 import com.typesafe.config.ConfigFactory
 

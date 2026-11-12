@@ -18,8 +18,8 @@ import java.util.concurrent.TimeUnit
 import java.util.concurrent.locks.ReentrantLock
 
 import scala.annotation.tailrec
-import scala.concurrent.duration._
 import scala.concurrent.duration.Duration
+import scala.concurrent.duration._
 import scala.util.control.NonFatal
 
 import org.apache.pekko
@@ -32,6 +32,7 @@ import pekko.actor.{
   ExtensionId,
   ExtensionIdProvider
 }
+import pekko.dispatch.sysmsg.{ Resume, Suspend, SystemMessage }
 import pekko.dispatch.{
   DefaultSystemMessageQueue,
   DispatcherPrerequisites,
@@ -43,7 +44,6 @@ import pekko.dispatch.{
   MessageQueue,
   TaskInvocation
 }
-import pekko.dispatch.sysmsg.{ Resume, Suspend, SystemMessage }
 import pekko.util.Switch
 
 import com.typesafe.config.Config

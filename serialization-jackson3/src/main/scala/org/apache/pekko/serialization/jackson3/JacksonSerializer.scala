@@ -18,8 +18,8 @@ import java.nio.ByteBuffer
 import java.util.zip.{ GZIPInputStream, GZIPOutputStream }
 
 import scala.annotation.{ nowarn, tailrec }
-import scala.util.{ Failure, Success }
 import scala.util.control.NonFatal
+import scala.util.{ Failure, Success }
 
 import net.jpountz.lz4.LZ4Factory
 import tools.jackson.databind.ObjectMapper

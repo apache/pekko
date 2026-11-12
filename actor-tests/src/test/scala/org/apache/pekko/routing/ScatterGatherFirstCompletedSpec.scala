@@ -20,12 +20,12 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import org.apache.pekko
-import pekko.actor.{ Actor, Props }
 import pekko.actor.ActorSystem
 import pekko.actor.Status
+import pekko.actor.{ Actor, Props }
 import pekko.pattern.ask
-import pekko.testkit.{ DefaultTimeout, ImplicitSender, PekkoSpec, TestLatch }
 import pekko.testkit.TestProbe
+import pekko.testkit.{ DefaultTimeout, ImplicitSender, PekkoSpec, TestLatch }
 
 object ScatterGatherFirstCompletedSpec {
   class TestActor extends Actor {

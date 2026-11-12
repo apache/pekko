@@ -16,13 +16,12 @@ package org.apache.pekko.remote
 import scala.annotation.nowarn
 import scala.concurrent.duration._
 
-import testkit.MultiNodeConfig
-
 import org.apache.pekko
 import pekko.actor.Actor
 import pekko.actor.ActorRef
 import pekko.actor.Props
 import pekko.actor.Terminated
+import testkit.MultiNodeConfig
 
 import com.typesafe.config.ConfigFactory
 

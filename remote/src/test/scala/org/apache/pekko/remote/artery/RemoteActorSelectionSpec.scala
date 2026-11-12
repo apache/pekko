@@ -28,8 +28,8 @@ import pekko.actor.{
   Props,
   Terminated
 }
-import pekko.testkit.{ ImplicitSender, TestActors }
 import pekko.testkit.JavaSerializable
+import pekko.testkit.{ ImplicitSender, TestActors }
 
 object RemoteActorSelectionSpec {
   final case class ActorSelReq(s: String) extends JavaSerializable

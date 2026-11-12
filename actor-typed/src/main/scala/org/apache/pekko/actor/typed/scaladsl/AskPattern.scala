@@ -23,8 +23,8 @@ import pekko.actor.typed.ActorRef
 import pekko.actor.typed.ActorSystem
 import pekko.actor.typed.RecipientRef
 import pekko.actor.typed.Scheduler
-import pekko.actor.typed.internal.{ adapter => adapt }
 import pekko.actor.typed.internal.InternalRecipientRef
+import pekko.actor.typed.internal.{ adapter => adapt }
 import pekko.annotation.InternalStableApi
 import pekko.pattern.PromiseActorRef
 import pekko.pattern.StatusReply

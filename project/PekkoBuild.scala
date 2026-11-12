@@ -109,7 +109,9 @@ object PekkoBuild {
         "-feature",
         "-unchecked",
         // 'blessed' since 2.13.1
-        "-language:higherKinds") ++
+        "-language:higherKinds",
+        // Required for OrganizeImports.removeUnused
+        "-Wunused:imports") ++
       (if (isScala38OrLater(scalaVersion.value)) Seq("-Wconf:any:s") else Seq.empty) ++
       (if (scalaVersion.value.startsWith("3.3.")) Seq("-Yfuture-lazy-vals") else Seq.empty)
     } else {
@@ -120,7 +122,9 @@ object PekkoBuild {
         "-unchecked",
         "-Xlog-reflective-calls",
         // 'blessed' since 2.13.1
-        "-language:higherKinds")
+        "-language:higherKinds",
+        // Required for OrganizeImports.removeUnused
+        "-Wunused:imports")
     }
   }
 

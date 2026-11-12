@@ -24,14 +24,14 @@ import scala.language.existentials
 import scala.util.control.{ NoStackTrace, NonFatal }
 
 import org.apache.pekko
-import pekko.{ ConfigurationException, PekkoException }
-import pekko.actor._
 import pekko.actor.ActorSystem.Settings
+import pekko.actor._
 import pekko.annotation.{ DoNotInherit, InternalApi }
 import pekko.dispatch.RequiresMessageQueue
 import pekko.event.Logging._
 import pekko.util.Helpers
 import pekko.util.Timeout
+import pekko.{ ConfigurationException, PekkoException }
 
 /**
  * This trait brings log level handling to the EventStream: it reads the log

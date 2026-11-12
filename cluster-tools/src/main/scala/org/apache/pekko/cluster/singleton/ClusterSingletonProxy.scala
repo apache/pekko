@@ -17,17 +17,17 @@ import scala.collection.immutable
 import scala.concurrent.duration._
 
 import org.apache.pekko
-import pekko.actor._
 import pekko.actor.NoSerializationVerificationNeeded
 import pekko.actor.RootActorPath
-import pekko.cluster.{ Cluster, Member, MemberStatus }
-import pekko.cluster.ClusterEvent._
+import pekko.actor._
 import pekko.cluster.ClusterEvent.CurrentClusterState
 import pekko.cluster.ClusterEvent.MemberExited
 import pekko.cluster.ClusterEvent.MemberRemoved
 import pekko.cluster.ClusterEvent.MemberUp
+import pekko.cluster.ClusterEvent._
 import pekko.cluster.ClusterSettings
 import pekko.cluster.ClusterSettings.DataCenter
+import pekko.cluster.{ Cluster, Member, MemberStatus }
 import pekko.dispatch.Dispatchers
 import pekko.event.Logging
 import pekko.util.MessageBuffer

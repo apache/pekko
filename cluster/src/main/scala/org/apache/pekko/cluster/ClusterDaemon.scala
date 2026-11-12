@@ -24,16 +24,16 @@ import scala.util.control.NonFatal
 
 import org.apache.pekko
 import pekko.Done
-import pekko.actor._
 import pekko.actor.SupervisorStrategy.Stop
+import pekko.actor._
 import pekko.annotation.InternalApi
 import pekko.cluster.ClusterEvent._
 import pekko.cluster.MemberStatus._
 import pekko.dispatch.{ RequiresMessageQueue, UnboundedMessageQueueSemantics }
 import pekko.event.{ ActorWithLogClass, Logging }
 import pekko.pattern.ask
-import pekko.remote.{ QuarantinedEvent => ClassicQuarantinedEvent, RemoteSettings }
 import pekko.remote.artery.QuarantinedEvent
+import pekko.remote.{ QuarantinedEvent => ClassicQuarantinedEvent, RemoteSettings }
 import pekko.util.{ Timeout, Version }
 
 import com.typesafe.config.Config

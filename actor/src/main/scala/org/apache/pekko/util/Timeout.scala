@@ -16,7 +16,6 @@ package org.apache.pekko.util
 import java.util.concurrent.TimeUnit
 
 import scala.concurrent.duration.{ Duration, FiniteDuration }
-
 import language.implicitConversions
 
 @SerialVersionUID(1L)

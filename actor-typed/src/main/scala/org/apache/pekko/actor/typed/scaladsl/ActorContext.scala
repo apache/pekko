@@ -13,8 +13,8 @@
 
 package org.apache.pekko.actor.typed.scaladsl
 
-import scala.concurrent.{ ExecutionContextExecutor, Future }
 import scala.concurrent.duration.FiniteDuration
+import scala.concurrent.{ ExecutionContextExecutor, Future }
 import scala.reflect.ClassTag
 import scala.util.Try
 

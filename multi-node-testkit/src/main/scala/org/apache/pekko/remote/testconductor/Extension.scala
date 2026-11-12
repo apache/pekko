@@ -14,8 +14,8 @@
 package org.apache.pekko.remote.testconductor
 
 import org.apache.pekko
-import pekko.actor.{ ActorContext, ActorSystem, ExtendedActorSystem, Extension, ExtensionId, ExtensionIdProvider }
 import pekko.actor.ClassicActorSystemProvider
+import pekko.actor.{ ActorContext, ActorSystem, ExtendedActorSystem, Extension, ExtensionId, ExtensionIdProvider }
 import pekko.dispatch.ThreadPoolConfig
 import pekko.remote.RemoteActorRefProvider
 import pekko.util.Timeout

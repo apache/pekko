@@ -13,8 +13,8 @@
 
 package org.apache.pekko.persistence.typed.state.scaladsl
 
-import scala.concurrent.{ Future, Promise }
 import scala.concurrent.duration._
+import scala.concurrent.{ Future, Promise }
 
 import org.apache.pekko
 import pekko.Done

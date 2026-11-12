@@ -13,9 +13,9 @@
 
 package org.apache.pekko.io
 
-import java.net.{ InetAddress, UnknownHostException }
 import java.net.Inet4Address
 import java.net.Inet6Address
+import java.net.{ InetAddress, UnknownHostException }
 import java.security.Security
 import java.util.concurrent.TimeUnit
 
@@ -23,8 +23,8 @@ import scala.concurrent.duration._
 import scala.util.{ Failure, Success, Try }
 
 import org.apache.pekko
-import pekko.actor.{ Actor, ActorLogging }
 import pekko.actor.Status
+import pekko.actor.{ Actor, ActorLogging }
 import pekko.annotation.InternalApi
 import pekko.io.dns.AAAARecord
 import pekko.io.dns.ARecord

@@ -17,8 +17,8 @@
 
 package org.apache.pekko.persistence
 
-import scala.concurrent.{ Await, Future, Promise }
 import scala.concurrent.duration._
+import scala.concurrent.{ Await, Future, Promise }
 import scala.util.Try
 
 import org.apache.pekko.actor.{ ActorIdentity, ActorRef, Identify, Props }

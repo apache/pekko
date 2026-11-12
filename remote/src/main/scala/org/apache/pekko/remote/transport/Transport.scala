@@ -19,8 +19,8 @@ import scala.util.control.NoStackTrace
 
 import org.apache.pekko
 import pekko.PekkoException
-import pekko.actor.{ ActorRef, Address, NoSerializationVerificationNeeded }
 import pekko.actor.DeadLetterSuppression
+import pekko.actor.{ ActorRef, Address, NoSerializationVerificationNeeded }
 import pekko.event.LoggingAdapter
 import pekko.remote.transport.AssociationHandle.HandleEventListener
 import pekko.util.ByteString

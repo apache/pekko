@@ -17,8 +17,8 @@ package internal
 import scala.reflect.ClassTag
 
 import org.apache.pekko
-import pekko.actor.typed.{ TypedActorContext => AC }
 import pekko.actor.typed.scaladsl.{ ActorContext => SAC }
+import pekko.actor.typed.{ TypedActorContext => AC }
 import pekko.annotation.InternalApi
 import pekko.util.{ LineNumbers, OptionVal }
 

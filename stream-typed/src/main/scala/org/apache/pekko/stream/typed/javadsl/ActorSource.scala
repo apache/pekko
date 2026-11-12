@@ -17,8 +17,8 @@ import org.apache.pekko
 import pekko.actor.typed._
 import pekko.japi.JavaPartialFunction
 import pekko.japi.function
-import pekko.stream.{ CompletionStrategy, OverflowStrategy }
 import pekko.stream.javadsl._
+import pekko.stream.{ CompletionStrategy, OverflowStrategy }
 
 /**
  * Collection of Sources aimed at integrating with typed Actors.

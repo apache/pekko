@@ -16,13 +16,13 @@ package org.apache.pekko.osgi
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
-import PojoSRTestSupport.bundle
 import de.kalpatec.pojosr.framework.launch.BundleDescriptor
-import test.{ PingPongActorSystemActivator, RuntimeNameActorSystemActivator, TestActivators }
-import test.PingPong._
 
 import org.apache.pekko
 import pekko.actor.ActorSystem
+import PojoSRTestSupport.bundle
+import test.PingPong._
+import test.{ PingPongActorSystemActivator, RuntimeNameActorSystemActivator, TestActivators }
 import pekko.pattern.ask
 import pekko.util.Timeout
 

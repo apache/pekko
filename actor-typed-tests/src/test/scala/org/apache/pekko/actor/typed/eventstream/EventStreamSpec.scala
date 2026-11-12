@@ -20,8 +20,8 @@ import scala.concurrent.duration._
 
 import org.apache.pekko
 import pekko.actor.DeadLetter
-import pekko.actor.testkit.typed.scaladsl.{ ScalaTestWithActorTestKit, TestProbe }
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
+import pekko.actor.testkit.typed.scaladsl.{ ScalaTestWithActorTestKit, TestProbe }
 import pekko.actor.typed.scaladsl.Behaviors
 
 import org.scalatest.wordspec.AnyWordSpecLike

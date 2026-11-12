@@ -21,14 +21,14 @@ import scala.concurrent.Future
 import scala.util.{ Failure, Success, Try }
 
 import org.apache.pekko
-import pekko.{ util, Done, NotUsed }
 import pekko.actor.ActorRef
 import pekko.annotation.InternalApi
 import pekko.stream._
-import pekko.stream.impl._
 import pekko.stream.impl.Stages.DefaultAttributes
+import pekko.stream.impl._
 import pekko.stream.impl.fusing.{ CountSink, GraphStages, SourceSink }
 import pekko.stream.stage._
+import pekko.{ Done, NotUsed, util }
 
 import org.reactivestreams.{ Publisher, Subscriber }
 

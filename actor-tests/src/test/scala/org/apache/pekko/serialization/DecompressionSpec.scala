@@ -20,11 +20,11 @@ package org.apache.pekko.serialization
 import java.io.{ ByteArrayOutputStream, NotSerializableException }
 import java.util.zip.GZIPOutputStream
 
-import com.typesafe.config.ConfigFactory
-
 import org.apache.pekko
 import pekko.actor.ActorSystem
 import pekko.testkit.PekkoSpec
+
+import com.typesafe.config.ConfigFactory
 
 class DecompressionSpec extends PekkoSpec {
 

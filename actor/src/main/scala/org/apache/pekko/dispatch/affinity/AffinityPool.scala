@@ -15,8 +15,8 @@ package org.apache.pekko.dispatch.affinity
 
 import java.lang.Integer.reverseBytes
 import java.util.Collections
-import java.util.concurrent._
 import java.util.concurrent.TimeUnit.MICROSECONDS
+import java.util.concurrent._
 import java.util.concurrent.atomic.AtomicReference
 import java.util.concurrent.locks.{ LockSupport, ReentrantLock }
 

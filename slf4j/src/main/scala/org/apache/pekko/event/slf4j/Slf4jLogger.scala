@@ -18,8 +18,8 @@ import scala.annotation.nowarn
 import org.apache.pekko
 import pekko.actor._
 import pekko.dispatch.RequiresMessageQueue
-import pekko.event.{ LogMarker, _ }
 import pekko.event.Logging._
+import pekko.event.{ LogMarker, _ }
 import pekko.util.Helpers
 
 import org.slf4j.{ Logger => SLFLogger, LoggerFactory => SLFLoggerFactory, MDC, Marker, MarkerFactory }

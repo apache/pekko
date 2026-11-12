@@ -18,9 +18,9 @@ import java.util.zip.Deflater
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.annotation.ApiMayChange
-import pekko.stream.{ ZstdCompressionSettings, ZstdDecompressionSettings }
 import pekko.stream.impl.io.compression._
 import pekko.stream.scaladsl.compression.ZstdDictionary
+import pekko.stream.{ ZstdCompressionSettings, ZstdDecompressionSettings }
 import pekko.util.ByteString
 
 object Compression {

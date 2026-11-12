@@ -23,7 +23,7 @@ import scala.annotation.tailrec
 import scala.concurrent.duration.FiniteDuration
 import scala.jdk.DurationConverters._
 import scala.jdk.OptionConverters._
-import scala.reflect.{ classTag, ClassTag }
+import scala.reflect.{ ClassTag, classTag }
 import scala.util.control.NonFatal
 
 import org.apache.pekko

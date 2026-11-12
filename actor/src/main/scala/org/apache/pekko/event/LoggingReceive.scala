@@ -13,9 +13,8 @@
 
 package org.apache.pekko.event
 
-import scala.runtime.BoxedUnit
-
 import language.existentials
+import scala.runtime.BoxedUnit
 
 import org.apache.pekko
 import pekko.actor.AbstractActor

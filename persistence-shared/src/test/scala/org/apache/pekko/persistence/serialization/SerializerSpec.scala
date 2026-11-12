@@ -20,8 +20,8 @@ import org.apache.commons.codec.binary.Hex.{ decodeHex, encodeHex }
 
 import org.apache.pekko
 import pekko.actor._
-import pekko.persistence._
 import pekko.persistence.AtLeastOnceDelivery.{ AtLeastOnceDeliverySnapshot, UnconfirmedDelivery }
+import pekko.persistence._
 import pekko.serialization._
 import pekko.testkit._
 import pekko.util.ByteString.UTF_8

@@ -19,8 +19,8 @@ import scala.runtime.BoxedUnit
 import org.apache.pekko
 import pekko.actor._
 import pekko.japi.function.Procedure
-import pekko.testkit.{ EventFilter, ImplicitSender }
 import pekko.testkit.TestEvent.Mute
+import pekko.testkit.{ EventFilter, ImplicitSender }
 
 import com.typesafe.config.ConfigFactory
 

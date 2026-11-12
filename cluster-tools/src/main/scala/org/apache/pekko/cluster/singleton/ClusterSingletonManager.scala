@@ -38,8 +38,8 @@ import pekko.actor.Terminated
 import pekko.annotation.DoNotInherit
 import pekko.annotation.InternalApi
 import pekko.annotation.InternalStableApi
-import pekko.cluster._
 import pekko.cluster.ClusterEvent._
+import pekko.cluster._
 import pekko.coordination.lease.LeaseUsageSettings
 import pekko.coordination.lease.scaladsl.Lease
 import pekko.coordination.lease.scaladsl.LeaseProvider

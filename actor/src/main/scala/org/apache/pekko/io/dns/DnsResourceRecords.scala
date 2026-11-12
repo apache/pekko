@@ -19,12 +19,11 @@ import scala.annotation.nowarn
 import scala.annotation.switch
 import scala.concurrent.duration._
 
-import CachePolicy._
-
 import org.apache.pekko
 import pekko.actor.NoSerializationVerificationNeeded
 import pekko.annotation.DoNotInherit
 import pekko.annotation.InternalApi
+import CachePolicy._
 import pekko.io.dns.internal.{ DomainName, _ }
 import pekko.util.{ ByteIterator, ByteString }
 

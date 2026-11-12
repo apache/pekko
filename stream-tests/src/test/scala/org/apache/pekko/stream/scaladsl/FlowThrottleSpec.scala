@@ -23,8 +23,8 @@ import scala.util.control.NoStackTrace
 
 import org.apache.pekko
 import pekko.Done
-import pekko.stream._
 import pekko.stream.ThrottleMode.{ Enforcing, Shaping }
+import pekko.stream._
 import pekko.stream.testkit._
 import pekko.stream.testkit.scaladsl.TestSink
 import pekko.testkit.TestDuration

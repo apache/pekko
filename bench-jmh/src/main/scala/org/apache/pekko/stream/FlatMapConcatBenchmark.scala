@@ -16,8 +16,8 @@ package org.apache.pekko.stream
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
-import scala.concurrent.{ Await, Future }
 import scala.concurrent.duration._
+import scala.concurrent.{ Await, Future }
 
 import org.openjdk.jmh.annotations._
 

@@ -19,12 +19,12 @@ import scala.util.control.NoStackTrace
 
 import org.apache.pekko
 import pekko.actor.Props
-import pekko.cluster.{ Cluster, MemberStatus }
 import pekko.cluster.sharding.ShardRegion.StartEntity
+import pekko.cluster.{ Cluster, MemberStatus }
 import pekko.coordination.lease.TestLease
 import pekko.coordination.lease.TestLeaseExt
-import pekko.testkit.{ ImplicitSender, PekkoSpec, WithLogCapturing }
 import pekko.testkit.TestActors.EchoActor
+import pekko.testkit.{ ImplicitSender, PekkoSpec, WithLogCapturing }
 
 import com.typesafe.config.{ Config, ConfigFactory }
 

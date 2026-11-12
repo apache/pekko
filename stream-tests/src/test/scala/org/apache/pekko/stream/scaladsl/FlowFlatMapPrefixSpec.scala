@@ -14,7 +14,10 @@
 package org.apache.pekko.stream.scaladsl
 
 import org.apache.pekko
-import pekko.{ Done, NotUsed }
+import pekko.stream.Attributes.Attribute
+import pekko.stream.stage.{ GraphStage, GraphStageLogic, InHandler, OutHandler }
+import pekko.stream.testkit.Utils.TE
+import pekko.stream.testkit.{ StreamSpec, TestPublisher, TestSubscriber }
 import pekko.stream.{
   AbruptStageTerminationException,
   AbruptTerminationException,
@@ -26,10 +29,7 @@ import pekko.stream.{
   Outlet,
   SubscriptionWithCancelException
 }
-import pekko.stream.Attributes.Attribute
-import pekko.stream.stage.{ GraphStage, GraphStageLogic, InHandler, OutHandler }
-import pekko.stream.testkit.{ StreamSpec, TestPublisher, TestSubscriber }
-import pekko.stream.testkit.Utils.TE
+import pekko.{ Done, NotUsed }
 
 // Debug loglevel to diagnose https://github.com/akka/akka/issues/30469
 class FlowFlatMapPrefixSpec extends StreamSpec("pekko.loglevel = debug") {

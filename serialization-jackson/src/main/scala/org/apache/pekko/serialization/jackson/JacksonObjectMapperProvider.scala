@@ -21,6 +21,8 @@ import scala.jdk.OptionConverters._
 import scala.util.{ Failure, Success }
 
 import com.fasterxml.jackson.annotation.{ JsonAutoDetect, JsonCreator, PropertyAccessor }
+import com.fasterxml.jackson.core.json.{ JsonReadFeature, JsonWriteFeature }
+import com.fasterxml.jackson.core.util.{ BufferRecycler, JsonRecyclerPools, RecyclerPool }
 import com.fasterxml.jackson.core.{
   JsonFactory,
   JsonFactoryBuilder,
@@ -31,8 +33,8 @@ import com.fasterxml.jackson.core.{
   StreamWriteConstraints,
   StreamWriteFeature
 }
-import com.fasterxml.jackson.core.json.{ JsonReadFeature, JsonWriteFeature }
-import com.fasterxml.jackson.core.util.{ BufferRecycler, JsonRecyclerPools, RecyclerPool }
+import com.fasterxml.jackson.databind.cfg.EnumFeature
+import com.fasterxml.jackson.databind.json.JsonMapper
 import com.fasterxml.jackson.databind.{
   DeserializationFeature,
   MapperFeature,
@@ -40,11 +42,10 @@ import com.fasterxml.jackson.databind.{
   ObjectMapper,
   SerializationFeature
 }
-import com.fasterxml.jackson.databind.cfg.EnumFeature
-import com.fasterxml.jackson.databind.json.JsonMapper
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule
 
 import org.apache.pekko
+import pekko.actor.setup.Setup
 import pekko.actor.{
   ActorSystem,
   ClassicActorSystemProvider,
@@ -54,7 +55,6 @@ import pekko.actor.{
   ExtensionId,
   ExtensionIdProvider
 }
-import pekko.actor.setup.Setup
 import pekko.annotation.InternalStableApi
 import pekko.event.{ Logging, LoggingAdapter }
 

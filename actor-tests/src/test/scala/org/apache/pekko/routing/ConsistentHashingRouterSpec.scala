@@ -24,8 +24,8 @@ import pekko.pattern.ask
 import pekko.routing.ConsistentHashingRouter.ConsistentHashMapping
 import pekko.routing.ConsistentHashingRouter.ConsistentHashable
 import pekko.routing.ConsistentHashingRouter.ConsistentHashableEnvelope
-import pekko.testkit._
 import pekko.testkit.PekkoSpec
+import pekko.testkit._
 
 object ConsistentHashingRouterSpec {
 
