@@ -150,6 +150,13 @@ Similar factories as shown above for raw TCP but where the data is encrypted usi
 through `outgoingConnectionWithTls`, `bindWithTls` and `bindAndHandleWithTls`,
 see the @scala[@scaladoc[`Tcp Scaladoc`](pekko.stream.scaladsl.Tcp)]@java[@javadoc[`Tcp Javadoc`](pekko.stream.javadsl.Tcp)]  for details.
 
+The TLS engine defaults to `legacy-actor`; `graph-stage` remains an opt-in alternative.
+Selection is process-wide and read once when the TLS factories are initialized, using application
+configuration rather than an individual `ActorSystem` configuration. A non-blank
+`pekko.stream.materializer.tls.engine` system property takes precedence. An empty or
+whitespace-only system property is ignored, allowing application configuration (including enabled
+`CONFIG_FORCE` environment overrides) to select the engine.
+
 When using `pekko.stream.materializer.tls.engine = graph-stage`, TLS packet buffers are sized to
 the requirements of the `SSLEngine`. The `pekko.io.tcp.direct-buffer-size` setting controls the
 size of reusable TCP buffers; it does not limit the TLS record size. If a TLS buffer needs more
