@@ -95,8 +95,19 @@ object TLS {
     systemProperty.map(_.trim).filter(_.nonEmpty).getOrElse(configValue.trim)
 
   private def configuredEngineNameFromConfig: String =
-    try ConfigFactory.load().getString(TlsEngineKey)
-    catch { case _: ConfigException.Missing => LegacyActorEngineName }
+    try {
+      // System properties are handled separately below. ConfigFactory.load()
+      // would reintroduce a blank engine property and hide the configured value.
+      val systemProperties = ConfigFactory.systemProperties().withoutPath(TlsEngineKey)
+      val overrides =
+        if (java.lang.Boolean.getBoolean("config.override_with_env_vars"))
+          ConfigFactory.systemEnvironmentOverrides().withFallback(systemProperties)
+        else systemProperties
+      overrides.withFallback(ConfigFactory.defaultApplication())
+        .withFallback(ConfigFactory.defaultReferenceUnresolved())
+        .resolve()
+        .getString(TlsEngineKey)
+    } catch { case _: ConfigException.Missing => LegacyActorEngineName }
 
   private val selectedEngine: StreamTlsEngine = {
     val configured = configuredEngineName(Option(System.getProperty(TlsEngineKey)), configuredEngineNameFromConfig)
