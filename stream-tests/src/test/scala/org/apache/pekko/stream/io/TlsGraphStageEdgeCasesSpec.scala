@@ -17,6 +17,7 @@
 
 package org.apache.pekko.stream.io
 
+import java.nio.ByteOrder
 import java.util.concurrent.atomic.AtomicInteger
 import javax.net.ssl.{ SSLContext, SSLEngine, SSLSession }
 
@@ -31,6 +32,8 @@ import pekko.stream._
 import pekko.stream.impl.io.TlsGraphStage
 import pekko.stream.scaladsl._
 import pekko.stream.testkit.StreamSpec
+import pekko.stream.testkit.scaladsl.StreamTestKit.assertAllStagesStopped
+import pekko.stream.testkit.scaladsl.TestSink
 import pekko.testkit.TestDuration
 import pekko.util.ByteString
 
@@ -41,16 +44,20 @@ import com.typesafe.config.ConfigFactory
  * shared [[TlsGraphStageSpec]] matrix: fragmented TLS records, user-side
  * backpressure, materialization isolation, and empty-source shutdown.
  */
-class TlsGraphStageEdgeCasesSpec extends StreamSpec(TlsGraphStageEdgeCasesSpec.config) {
+class TlsGraphStageEdgeCasesSpec extends AbstractTlsGraphStageEdgeCasesSpec("TLSv1.2")
+class TlsGraphStageTls13EdgeCasesSpec extends AbstractTlsGraphStageEdgeCasesSpec("TLSv1.3")
 
-  private val sslContext: SSLContext = TlsSpec.initSslContext("TLSv1.2")
-  private val ciphers = TlsSpec.TLS12Ciphers.toArray
+abstract class AbstractTlsGraphStageEdgeCasesSpec(protocol: String)
+    extends StreamSpec(TlsGraphStageEdgeCasesSpec.config) {
+
+  private val sslContext: SSLContext = TlsSpec.initSslContext(protocol)
+  private val ciphers = (if (protocol == "TLSv1.2") TlsSpec.TLS12Ciphers else TlsSpec.TLS13Ciphers).toArray
 
   private def engine(role: TLSRole): SSLEngine = {
     val e = sslContext.createSSLEngine()
     e.setUseClientMode(role == Client)
     e.setEnabledCipherSuites(ciphers)
-    e.setEnabledProtocols(Array("TLSv1.2"))
+    e.setEnabledProtocols(Array(protocol))
     e
   }
 
@@ -86,7 +93,7 @@ class TlsGraphStageEdgeCasesSpec extends StreamSpec(TlsGraphStageEdgeCasesSpec.c
     }
   }
 
-  "TlsGraphStage" must {
+  s"TlsGraphStage with $protocol" must {
 
     "expose async boundary and input buffer attributes for the production path" in {
       val attributes = TlsGraphStage.StreamTlsAttributes
@@ -272,26 +279,54 @@ class TlsGraphStageEdgeCasesSpec extends StreamSpec(TlsGraphStageEdgeCasesSpec.c
       }
     }
 
-    "deliver all bytes when plainOut downstream is slow (backpressure)" in {
+    "deliver all bytes when plainOut downstream requests one chunk at a time" in assertAllStagesStopped {
       val client = graphStageBidi(Client)
       val server = graphStageBidi(Server)
-      // 10x ~16 KiB blocks crosses several TLS records and sustained plainOut
-      // backpressure forces the stage to buffer/wait without losing data.
-      val blocks = (0 until 10).map(_ => ByteString("a" * 16384))
-      val totalSize = blocks.map(_.length).sum
+      // Encode both the logical record number and the offset in every eight-byte
+      // word. A byte-sized counter would repeat every 256 bytes and could hide
+      // a swapped or duplicated 16 KiB record.
+      val recordSize = 16384
+      val recordCount = 10
+      val payload = ByteString.newBuilder
+      for (record <- 0 until recordCount; offset <- 0 until recordSize by 8) {
+        payload.putInt(record)(ByteOrder.BIG_ENDIAN)
+        payload.putInt(offset)(ByteOrder.BIG_ENDIAN)
+      }
+      val expected = payload.result()
+      val records = expected.grouped(recordSize).toVector
+      records.distinct.size shouldBe recordCount
+      // Check that equal-length mutations cannot satisfy the byte-for-byte oracle.
+      (records(1) ++ records.head ++ expected.drop(2 * recordSize)) should not be expected
+      (records.head ++ records.head ++ expected.drop(2 * recordSize)) should not be expected
+      (expected.slice(256, 512) ++ expected.take(256) ++ expected.drop(512)) should not be expected
+      // Writes deliberately cross logical record boundaries; TLS may segment
+      // the payload differently and the consumer must not depend on its chunks.
+      val blocks = expected.grouped(recordSize + 1).toVector
       val echo = Flow[SslTlsInbound].collect { case SessionBytes(_, b) => SendBytes(b) }
-      val received = Await.result(
-        Source(blocks)
-          .map[SslTlsOutbound](b => SendBytes(b))
-          .via(client.atop(server.reversed).join(echo))
-          .collect { case SessionBytes(_, b) => b }
-          .throttle(1, 10.millis)
-          .scan(ByteString.empty)(_ ++ _)
-          .dropWhile(_.size < totalSize)
-          .runWith(Sink.headOption),
-        60.seconds.dilated).getOrElse(ByteString.empty)
-      received.length shouldBe totalSize
-      received shouldBe blocks.foldLeft(ByteString.empty)(_ ++ _)
+      val probe = Source(blocks)
+        .map[SslTlsOutbound](SendBytes.apply)
+        .via(client.atop(server.reversed).join(echo))
+        .runWith(TestSink[SslTlsInbound]())
+
+      try within(30.seconds) {
+          var received = ByteString.empty
+          while (received.size < expected.size) {
+            probe.request(1)
+            probe.expectNext() match {
+              case SessionBytes(session, bytes) =>
+                session.getProtocol shouldBe protocol
+                bytes should not be empty
+                received ++= bytes
+              case other => fail(s"Expected plaintext, got $other")
+            }
+            received.size should be <= expected.size
+            // Withhold demand before asking for the next chunk. No sleep or
+            // throughput assumption is needed to exercise the stalled output.
+            probe.expectNoMessage(10.millis)
+          }
+          received shouldBe expected
+        }
+      finally probe.cancel()
     }
 
     "give each materialization its own SSLEngine (no shared state)" in {
