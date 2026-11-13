@@ -64,6 +64,11 @@ for the topic will not be sent to it.
 As in @ref:[Message Delivery Reliability](../general/message-delivery-reliability.md) of Pekko, message delivery guarantee in distributed pub sub modes is **at-most-once delivery**. In other words, messages can be lost over the wire. In addition to that the registry of nodes which have subscribers is eventually consistent
 meaning that subscribing an actor on one node will have a short delay before it is known on other nodes and published to.
 
+The same applies to a newly started topic actor, which only learns about the other topic instances some time after it started.
+To not lose the first messages published to it, a topic actor keeps the messages published during a short startup window, and
+also delivers them to the topic instances and local subscribers that become known during that window. This is configured with
+`pekko.actor.typed.pubsub.startup-replay-window` and `pekko.actor.typed.pubsub.startup-replay-buffer-size`.
+
 If you are looking for at-least-once delivery guarantee, we recommend [Pekko Connector Kafka]($pekko.doc.dns$/docs/pekko-connectors-kafka/current/).
 
 

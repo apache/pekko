@@ -13,13 +13,19 @@
 
 package org.apache.pekko.actor.typed.internal.pubsub
 
+import java.util.concurrent.TimeUnit
+
+import scala.concurrent.duration._
 import scala.reflect.ClassTag
 
 import org.apache.pekko
+import pekko.actor.Cancellable
 import pekko.actor.Dropped
 import pekko.actor.InvalidMessageException
 import pekko.actor.typed.ActorRef
 import pekko.actor.typed.Behavior
+import pekko.actor.typed.PostStop
+import pekko.actor.typed.Signal
 import pekko.actor.typed.pubsub.Topic
 import pekko.actor.typed.receptionist.Receptionist
 import pekko.actor.typed.receptionist.ServiceKey
@@ -51,12 +57,9 @@ private[pekko] object TopicImpl {
   final case class TopicInstancesUpdated[T](topics: Set[ActorRef[TopicImpl.Command[T]]]) extends Command[T]
   final case class MessagePublished[T](message: T) extends Command[T]
   final case class SubscriberTerminated[T](subscriber: ActorRef[T]) extends Command[T]
+  final case class StartupReplayWindowElapsed[T]() extends Command[T]
 
-  /**
-   * Max number of messages published before the first receptionist listing that are kept
-   * to be forwarded to the other topic instances once the listing arrives.
-   */
-  val MaxPublishedBeforeFirstListing = 1000
+  private final case class Buffered[T](message: T, delivered: Boolean)
 }
 
 /**
@@ -86,10 +89,30 @@ private[pekko] final class TopicImpl[T](topicName: String, context: ActorContext
   private var topicInstances = Set.empty[ActorRef[TopicImpl.Command[T]]]
   private var localSubscribers = Set.empty[ActorRef[T]]
 
-  // Until the first listing arrives the other topic instances are unknown, so published messages are
-  // kept and forwarded once it arrives. The flag tells whether the message already reached local subscribers.
+  /*
+   * Startup replay window: the other topic instances are only learnt from the receptionist, which is eventually
+   * consistent. The first listing arrives some time after the topic actor started, and with the cluster
+   * receptionist it only contains what this node has seen so far. To not lose the first messages published to a
+   * new topic instance, messages published until both the first listing has been seen and the configured
+   * startup-replay-window has elapsed are kept, and are also delivered to every other topic instance and local
+   * subscriber that becomes known during that time. Each of them gets each kept message at most once.
+   */
+  private val pubSubConfig = context.system.settings.config.getConfig("pekko.actor.typed.pubsub")
+  private val startupReplayWindow =
+    pubSubConfig.getDuration("startup-replay-window", TimeUnit.MILLISECONDS).millis
+  private val startupReplayBufferSize = pubSubConfig.getInt("startup-replay-buffer-size")
+
+  private var replayWindowOpen = true
   private var firstListingSeen = false
-  private var publishedBeforeFirstListing = Vector.empty[(T, Boolean)]
+  private var replayWindowElapsed = startupReplayWindow <= Duration.Zero
+  private var replayBuffer = Vector.empty[Buffered[T]]
+  private var replayBufferFullLogged = false
+  // other topic instances and local subscribers that already got all messages in the replay buffer
+  private var replayedToInstances = Set.empty[ActorRef[TopicImpl.Command[T]]]
+  private var replayedToSubscribers = Set.empty[ActorRef[T]]
+  private val replayWindowTimer: Option[Cancellable] =
+    if (replayWindowElapsed) None
+    else Some(context.scheduleOnce(startupReplayWindow, context.self, StartupReplayWindowElapsed[T]()))
 
   private val receptionist = context.system.receptionist
   private val receptionistAdapter = context.messageAdapter[Receptionist.Listing] {
@@ -100,40 +123,35 @@ private[pekko] final class TopicImpl[T](topicName: String, context: ActorContext
 
   override def onMessage(msg: TopicImpl.Command[T]): Behavior[TopicImpl.Command[T]] = msg match {
 
-    case Publish(message) if !firstListingSeen =>
-      val deliveredLocally = localSubscribers.nonEmpty
-      localSubscribers.foreach(_ ! message)
-      if (publishedBeforeFirstListing.size < MaxPublishedBeforeFirstListing) {
-        context.log.trace(
-          "Publishing message of type [{}] before topic listing seen, keeping it to forward once seen",
-          message.getClass)
-        publishedBeforeFirstListing :+= (message -> deliveredLocally)
-      } else {
-        context.log.trace(
-          "Publishing message of type [{}] before topic listing seen, too many such messages, dropping",
-          message.getClass)
-        context.system.deadLetters ! Dropped(
-          message,
-          s"Too many messages published before topic listing was seen (max $MaxPublishedBeforeFirstListing)",
-          context.self.toClassic)
-      }
-      this
-
     case Publish(message) =>
-      if (topicInstances.isEmpty) {
-        if (localSubscribers.isEmpty) {
-          context.log.trace("Publishing message of type [{}] but no subscribers, dropping", msg.getClass)
-          context.system.deadLetters ! Dropped(message, "No topic subscribers known", context.self.toClassic)
-        } else {
-          context.log.trace(
-            "Publishing message of type [{}] to local subscribers only (topic listing not seen yet)",
-            msg.getClass)
-          localSubscribers.foreach(_ ! message)
+      // local subscribers are always delivered to directly, the own instance is not sent the message
+      // even if it is registered, so that local subscribers get it exactly once
+      val otherTopicInstances = topicInstances - context.self
+      val delivered = localSubscribers.nonEmpty || otherTopicInstances.nonEmpty
+      if (delivered) {
+        context.log.trace("Publishing message of type [{}]", message.getClass)
+        localSubscribers.foreach(_ ! message)
+        if (otherTopicInstances.nonEmpty) {
+          val pub = MessagePublished(message)
+          otherTopicInstances.foreach(_ ! pub)
         }
+      }
+      if (replayWindowOpen && replayBuffer.size < startupReplayBufferSize) {
+        context.log.trace("Keeping message of type [{}] published during startup replay window", message.getClass)
+        replayBuffer :+= Buffered(message, delivered)
       } else {
-        context.log.trace("Publishing message of type [{}]", msg.getClass)
-        val pub = MessagePublished(message)
-        topicInstances.foreach(_ ! pub)
+        if (replayWindowOpen && !replayBufferFullLogged) {
+          replayBufferFullLogged = true
+          context.log.debug(
+            "Startup replay buffer of topic [{}] full ([{}] messages), topic instances and subscribers that " +
+            "become known later will not get the messages published from now on before they became known",
+            topicName,
+            startupReplayBufferSize)
+        }
+        if (!delivered) {
+          context.log.trace("Publishing message of type [{}] but no subscribers, dropping", message.getClass)
+          dropNoSubscribers(message)
+        }
       }
       this
 
@@ -154,6 +172,10 @@ private[pekko] final class TopicImpl[T](topicName: String, context: ActorContext
           receptionist ! Receptionist.Register(topicServiceKey, context.self)
         } else {
           context.log.debug("Local subscriber [{}] added", subscriber)
+        }
+        if (replayWindowOpen && !replayedToSubscribers.contains(subscriber)) {
+          replayedToSubscribers += subscriber
+          replayTo(subscriber, replayBuffer.map(_.message))
         }
       } else {
         context.log.debug("Local subscriber [{}] already subscribed, ignoring Subscribe command")
@@ -186,10 +208,21 @@ private[pekko] final class TopicImpl[T](topicName: String, context: ActorContext
     case TopicInstancesUpdated(newTopics) =>
       context.log.debug("Topic list updated [{}]", newTopics)
       topicInstances = newTopics
-      if (!firstListingSeen) {
+      if (replayWindowOpen) {
+        val newInstances = newTopics - context.self -- replayedToInstances
+        if (newInstances.nonEmpty) {
+          replayedToInstances ++= newInstances
+          val messages = replayBuffer.map(_.message)
+          newInstances.foreach(instance => replayTo(instance, messages.map(MessagePublished(_))))
+        }
         firstListingSeen = true
-        forwardPublishedBeforeFirstListing()
+        closeReplayWindowIfDone()
       }
+      this
+
+    case StartupReplayWindowElapsed() =>
+      replayWindowElapsed = true
+      closeReplayWindowIfDone()
       this
 
     case GetTopicStats(replyTo) =>
@@ -201,23 +234,31 @@ private[pekko] final class TopicImpl[T](topicName: String, context: ActorContext
       throw new IllegalArgumentException(s"Unexpected command type ${other.getClass}")
   }
 
-  private def forwardPublishedBeforeFirstListing(): Unit = {
-    // local subscribers already got these messages when they were published
-    val otherTopicInstances = topicInstances - context.self
-    publishedBeforeFirstListing.foreach {
-      case (message, deliveredLocally) =>
-        if (otherTopicInstances.nonEmpty) {
-          val pub = MessagePublished(message)
-          otherTopicInstances.foreach(_ ! pub)
-        } else if (!deliveredLocally) {
-          context.system.deadLetters ! Dropped(message, "No topic subscribers known", context.self.toClassic)
-        }
-    }
-    if (publishedBeforeFirstListing.nonEmpty)
-      context.log.debug(
-        "Topic listing seen, forwarding [{}] messages published before it to [{}] other topic instances",
-        publishedBeforeFirstListing.size,
-        otherTopicInstances.size)
-    publishedBeforeFirstListing = Vector.empty
+  override def onSignal: PartialFunction[Signal, Behavior[TopicImpl.Command[T]]] = {
+    case PostStop =>
+      replayWindowTimer.foreach(_.cancel())
+      this
   }
+
+  private def replayTo[M](recipient: ActorRef[M], messages: Vector[M]): Unit =
+    if (messages.nonEmpty) {
+      context.log.debug("Replaying [{}] messages published during startup to [{}]", messages.size, recipient)
+      messages.foreach(recipient ! _)
+      replayBuffer = replayBuffer.map(_.copy(delivered = true))
+    }
+
+  private def closeReplayWindowIfDone(): Unit =
+    if (replayWindowOpen && firstListingSeen && replayWindowElapsed) {
+      context.log.debug("Startup replay window of topic [{}] closed", topicName)
+      replayBuffer.foreach { b =>
+        if (!b.delivered) dropNoSubscribers(b.message)
+      }
+      replayWindowOpen = false
+      replayBuffer = Vector.empty
+      replayedToInstances = Set.empty
+      replayedToSubscribers = Set.empty
+    }
+
+  private def dropNoSubscribers(message: T): Unit =
+    context.system.deadLetters ! Dropped(message, "No topic subscribers known", context.self.toClassic)
 }
