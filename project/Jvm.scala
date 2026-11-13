@@ -11,10 +11,12 @@
  * Copyright (C) 2009-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
+package sbt
+
 import java.io.File
 import java.lang.{ ProcessBuilder => JProcessBuilder }
 
-import sbt._
+import sbt.*
 import scala.sys.process.Process
 
 object Jvm {
@@ -30,7 +32,7 @@ object Jvm {
   def forkJava(javaBin: File, options: Seq[String], logger: Logger, connectInput: Boolean) = {
     val java = javaBin.toString
     val command = (java :: options.toList).toArray
-    val builder = new JProcessBuilder(command: _*)
+    val builder = new JProcessBuilder(command *)
     Process(builder).run(logger, connectInput)
   }
 
@@ -52,7 +54,7 @@ object Jvm {
   def getPodName(hostAndUser: String, sbtLogger: Logger): String = {
     val command: Array[String] =
       Array("kubectl", "get", "pods", "-l", s"host=$hostAndUser", "--no-headers", "-o", "name")
-    val builder = new JProcessBuilder(command: _*)
+    val builder = new JProcessBuilder(command *)
     sbtLogger.debug("Jvm.getPodName about to run " + command.mkString(" "))
     val podName = Process(builder).!!
     sbtLogger.debug("Jvm.getPodName podName is " + podName)
@@ -63,12 +65,12 @@ object Jvm {
     val podName = getPodName(hostAndUser, sbtLogger)
     val command: Array[String] =
       Array("kubectl", "exec", podName, "--", "/bin/bash", "-c", s"rm -rf $remoteDir && mkdir -p $remoteDir")
-    val builder = new JProcessBuilder(command: _*)
+    val builder = new JProcessBuilder(command *)
     sbtLogger.debug("Jvm.syncJar about to run " + command.mkString(" "))
     val process = Process(builder).run(sbtLogger, false)
     if (process.exitValue() == 0) {
       val command: Array[String] = Array("kubectl", "cp", osPath(jarName), podName + ":" + remoteDir + "/")
-      val builder = new JProcessBuilder(command: _*)
+      val builder = new JProcessBuilder(command *)
       sbtLogger.debug("Jvm.syncJar about to run " + command.mkString(" "))
       Process(builder).run(sbtLogger, false)
     } else {
@@ -99,7 +101,7 @@ object Jvm {
       "-c",
       ("cd " :: (remoteDir :: (" ; " :: javaCommand))).mkString(" "))
     sbtLogger.debug("Jvm.forkRemoteJava about to run " + command.mkString(" "))
-    val builder = new JProcessBuilder(command: _*)
+    val builder = new JProcessBuilder(command *)
     Process(builder).run(logger, connectInput)
   }
 }

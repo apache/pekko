@@ -38,7 +38,7 @@ object SigarLoader {
     Seq(
       //
       // Prepare Sigar agent options.
-      sigarArtifact := {
+      sigarArtifact := Def.uncached {
         val report = update.value
         val artifactList =
           report.matching(moduleFilter(organization = sigarLoader.organization, name = sigarLoader.name))

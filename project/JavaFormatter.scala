@@ -23,10 +23,10 @@ object JavaFormatter extends AutoPlugin {
   private val ignoreConfigFileName: String = ".sbt-java-formatter.conf"
   private val descriptor: String = "sbt-java-formatter"
 
-  import JavaFormatterPlugin.autoImport._
-  import sbt.Keys._
-  import sbt._
-  import sbt.io._
+  import JavaFormatterPlugin.autoImport.*
+  import sbt.Keys.*
+  import sbt.*
+  import sbt.io.*
 
   override lazy val projectSettings: Seq[Def.Setting[?]] =
     Seq(

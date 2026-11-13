@@ -11,15 +11,14 @@
  * Copyright (C) 2009-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-import MultiJvmPlugin.autoImport.MultiJvm
+import sbt.MultiJvmPlugin.autoImport.MultiJvm
 
-import com.lightbend.paradox.projectinfo.ParadoxProjectInfoPluginKeys._
 import com.typesafe.tools.mima.plugin.MimaKeys.mimaReportSignatureProblems
 import sbt.Def
-import sbt.Keys._
-import sbt._
-import sbtassembly.AssemblyPlugin.autoImport._
-import sbtwelcome.WelcomePlugin.autoImport._
+import sbt.Keys.*
+import sbt.*
+import sbtassembly.AssemblyPlugin.autoImport.*
+import sbtwelcome.WelcomePlugin.autoImport.*
 
 import java.io.FileInputStream
 import java.io.InputStreamReader
@@ -27,6 +26,10 @@ import java.nio.charset.StandardCharsets
 import java.util.Properties
 
 object PekkoBuild {
+
+  // TODO [sbt2-migration] Blocked on sbt-paradox-project-info sbt 2 support
+  // This key was previously provided by ParadoxProjectInfoPluginKeys
+  val projectInfoVersion = settingKey[String]("The version to use in project info")
 
   object CliOptions {
     // CI is the env var defined by Github Actions and Travis:
@@ -73,16 +76,21 @@ object PekkoBuild {
           resolver,
           Seq(
             otherResolvers := resolver :: publishTo.value.toList,
-            publishM2Configuration := Classpaths.publishConfig(
-              publishMavenStyle.value,
-              deliverPattern(crossTarget.value),
-              if (isSnapshot.value) "integration" else "release",
-              ivyConfigurations.value.map(c => ConfigRef(c.name)).toVector,
-              artifacts = packagedArtifacts.value.toVector,
-              resolverName = resolver.name,
-              checksums = (publishM2 / checksums).value.toVector,
-              logging = ivyLoggingLevel.value,
-              overwrite = true)))
+            publishM2Configuration := Def.uncached {
+              Classpaths.publishConfig(
+                publishMavenStyle.value,
+                deliverPattern(crossTarget.value),
+                if (isSnapshot.value) "integration" else "release",
+                ivyConfigurations.value.map(c => ConfigRef(c.name)).toVector,
+                // TODO [sbt2-migration] packagedArtifacts now returns HashedVirtualFileRef instead of File
+                artifacts = packagedArtifacts.value.map { case (a, ref) =>
+                  (a, fileConverter.value.toPath(ref).toFile)
+                }.toVector,
+                resolverName = resolver.name,
+                checksums = (publishM2 / checksums).value.toVector,
+                logging = ivyLoggingLevel.value,
+                overwrite = true)
+            }))
     }
 
   lazy val resolverSettings = Def.settings(
@@ -172,7 +180,7 @@ object PekkoBuild {
       }
     },
     ThisBuild / ivyLoggingLevel := UpdateLogging.Quiet,
-    licenses := Seq(("Apache-2.0", url("https://www.apache.org/licenses/LICENSE-2.0.html"))),
+    licenses := Seq(License("Apache-2.0", url("https://www.apache.org/licenses/LICENSE-2.0.html"))),
     homepage := Some(url("https://pekko.apache.org/")),
     description :=
       "Apache Pekko is a toolkit for building highly concurrent, distributed, and resilient message-driven applications for Java and Scala.",
@@ -245,7 +253,7 @@ object PekkoBuild {
     },
     // with forked tests the working directory is set to each module's home directory
     // rather than the Pekko root, some tests depend on Pekko root being working dir, so reset
-    Test / testGrouping := {
+    Test / testGrouping := Def.uncached {
       val original: Seq[Tests.Group] = (Test / testGrouping).value
 
       original.map { group =>
@@ -270,16 +278,17 @@ object PekkoBuild {
     docLintingSettings,
     // a workaround for https://github.com/akka/akka/issues/27661
     // see also project/Protobuf.scala that introduces /../ to make "intellij happy"
-    MultiJvm / assembly / fullClasspath := {
+    MultiJvm / assembly / fullClasspath := Def.uncached {
       val old = (MultiJvm / assembly / fullClasspath).value.toVector
-      val files = old.map(_.data.getCanonicalFile).distinct
+      val conv = fileConverter.value
+      val files = old.map(af => conv.toPath(af.data).toFile.getCanonicalFile).distinct
       files.map { x =>
-        Attributed.blank(x)
+        Attributed.blank(conv.toVirtualFile(x.toPath))
       }
     })
 
   lazy val welcomeSettings: Seq[Setting[?]] = Def.settings {
-    import sbtwelcome._
+    import sbtwelcome.*
     Seq(
       logo := {
         raw"""
@@ -331,7 +340,7 @@ object PekkoBuild {
     doc / javacOptions ++= Seq("-Xdoclint:none", "--ignore-source-errors"))
 
   def loadSystemProperties(fileName: String): Unit = {
-    import scala.jdk.CollectionConverters._
+    import scala.jdk.CollectionConverters.*
     val file = new File(fileName)
     if (file.exists()) {
       println("Loading system properties from file `" + fileName + "`")

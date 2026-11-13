@@ -12,9 +12,9 @@
  */
 
 import com.lightbend.paradox.sbt.ParadoxPlugin
-import com.lightbend.paradox.sbt.ParadoxPlugin.autoImport._
-import sbt.Keys._
-import sbt._
+import com.lightbend.paradox.sbt.ParadoxPlugin.autoImport.*
+import sbt.Keys.*
+import sbt.*
 
 object ParadoxBrowse extends AutoPlugin {
 
@@ -26,7 +26,7 @@ object ParadoxBrowse extends AutoPlugin {
   override lazy val trigger = allRequirements
   override lazy val requires = ParadoxPlugin
 
-  override lazy val projectSettings = Seq(paradoxBrowse := {
+  override lazy val projectSettings = Seq(paradoxBrowse := Def.uncached {
     import java.awt.Desktop
     val rootDocFile = (Compile / paradox).value / "index.html"
     val log = streams.value.log

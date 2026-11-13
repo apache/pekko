@@ -11,8 +11,8 @@
  * Copyright (C) 2016-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-import sbt.Keys._
-import sbt._
+import sbt.Keys.*
+import sbt.*
 
 object TestExtras {
   object Filter {
@@ -27,7 +27,7 @@ object TestExtras {
       lazy val checkTestsHaveRun = taskKey[Unit]("Verify a number of notable tests have actually run")
     }
 
-    import Keys._
+    import Keys.*
 
     private[Filter] object Params {
       lazy val testNamesExclude = systemPropertyAsSeq("pekko.test.names.exclude").toSet
@@ -56,22 +56,14 @@ object TestExtras {
           val tags = onlyTestTags.value
           if (tags.isEmpty) Seq.empty else Seq(Tests.Argument("-n", tags.mkString(" ")))
         },
-        checkTestsHaveRun := {
-          def shouldExist(description: String, filename: String): Unit =
-            require(file(filename).exists, s"$description should be run as part of the build")
-
-          val baseList =
-            List(
-              "The java JavaExtension.java" ->
-              "actor-tests/target/test-reports/TEST-org.apache.pekko.actor.JavaExtension.xml",
-              "FlowPublisherSinkSpec.scala" ->
-              "stream-tests/target/test-reports/TEST-org.apache.pekko.stream.scaladsl.FlowPublisherSinkSpec.xml",
-              "JavaFlowSupportCompileTest.java" ->
-              "stream-tests/target/test-reports/TEST-org.apache.pekko.stream.javadsl.JavaFlowSupportCompileTest.xml")
-
-          val testsToCheck = baseList
-
-          testsToCheck.foreach((shouldExist _).tupled)
+        checkTestsHaveRun := Def.uncached {
+          val actorReports = (LocalProject("actor-tests") / Test / target).value / "test-reports"
+          val streamReports = (LocalProject("stream-tests") / Test / target).value / "test-reports"
+          val expected = Seq(
+            actorReports / "TEST-org.apache.pekko.actor.JavaExtension.xml",
+            streamReports / "TEST-org.apache.pekko.stream.scaladsl.FlowPublisherSinkSpec.xml",
+            streamReports / "TEST-org.apache.pekko.stream.javadsl.JavaFlowSupportCompileTest.xml")
+          expected.foreach(report => require(report.exists, s"${report.getName} should be run as part of the build"))
         })
     }
 

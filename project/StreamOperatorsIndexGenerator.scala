@@ -11,8 +11,8 @@
  * Copyright (C) 2016-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-import sbt._
-import sbt.Keys._
+import sbt.*
+import sbt.Keys.*
 
 import scala.util.control.NonFatal
 

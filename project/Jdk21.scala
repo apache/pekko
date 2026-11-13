@@ -11,11 +11,11 @@
  * Copyright (C) 2017-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-import sbt.Keys._
-import sbt._
+import sbt.Keys.*
+import sbt.*
 
 object Jdk21 extends AutoPlugin {
-  import JdkOptions.JavaVersion._
+  import JdkOptions.JavaVersion.*
 
   private val supportedJavaLTSVersions = List("21")
 
@@ -61,16 +61,18 @@ object Jdk21 extends AutoPlugin {
     unmanagedSourceDirectories := additionalTestSourceDirectories.value,
     scalacOptions := PekkoBuild.DefaultScalacOptions.value ++ Seq("-release", majorVersion.toString),
     javacOptions := PekkoBuild.DefaultJavacOptions ++ Seq("--release", majorVersion.toString),
-    compile := compile.dependsOn(CompileJdk21 / compile).value,
-    classpathConfiguration := TestJdk21,
-    externalDependencyClasspath := (Test / externalDependencyClasspath).value)
+    compile := Def.uncached { compile.dependsOn(CompileJdk21 / compile).value },
+    classpathConfiguration := Def.uncached { TestJdk21 },
+    externalDependencyClasspath := Def.uncached { (Test / externalDependencyClasspath).value })
 
   lazy val compileSettings = Seq(
-    Compile / dependencyClasspathAsJars ++= (CompileJdk21 / exportedProducts).value)
+    Compile / dependencyClasspathAsJars := Def.uncached {
+      (Compile / dependencyClasspathAsJars).value ++ (CompileJdk21 / exportedProducts).value
+    })
 
   lazy val testSettings = Seq((Test / test) := {
-    (Test / test).value
-    (TestJdk21 / test).value
+    (Test / test).toTask("").value
+    (TestJdk21 / test).toTask("").value
   })
 
   override lazy val trigger = noTrigger

@@ -13,10 +13,10 @@
 
 import sbtheader.{ CommentCreator, HeaderPlugin, NewLine }
 import org.apache.commons.lang3.Strings
-import sbt._
+import sbt.*
 
 object CopyrightHeader extends AutoPlugin {
-  import HeaderPlugin.autoImport._
+  import HeaderPlugin.autoImport.*
 
   override lazy val requires = HeaderPlugin
   override lazy val trigger = allRequirements

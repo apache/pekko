@@ -14,13 +14,13 @@
 import java.io.File
 import java.io.PrintWriter
 
-import scala.sys.process._
+import scala.sys.process.*
 
-import sbt._
+import sbt.*
 import sbt.util.CacheStoreFactory
-import Keys._
+import Keys.*
 
-import sbtassembly.AssemblyKeys._
+import sbtassembly.AssemblyKeys.*
 
 object Protobuf {
   lazy val paths = SettingKey[Seq[File]]("protobuf-paths", "The paths that contain *.proto files.")
@@ -38,10 +38,12 @@ object Protobuf {
     outputPaths := Seq((Compile / sourceDirectory).value, (Test / sourceDirectory).value).map(_ / "java"),
     importPath := None,
     // this keeps intellij happy for files that use the shaded protobuf
-    Compile / unmanagedJars += (LocalProject("protobuf-v3") / Compile / packageBin).value,
+    Compile / unmanagedJars := Def.uncached {
+      (Compile / unmanagedJars).value :+ Attributed.blank((LocalProject("protobuf-v3") / Compile / packageBin).value)
+    },
     protoc := "protoc",
     protocVersion := Dependencies.Protobuf.protocVersion,
-    protobufGenerate := {
+    protobufGenerate := Def.uncached {
       val sourceDirs = paths.value
       val targetDirs = outputPaths.value
       val log = streams.value.log
@@ -120,7 +122,7 @@ object Protobuf {
   }
 
   private def generate(protoc: String, srcDir: File, targetDir: File, log: Logger, importPath: Option[File]): Unit = {
-    val protoFiles = (srcDir ** "*.proto").get
+    val protoFiles = (srcDir ** "*.proto").get()
     if (srcDir.exists)
       if (protoFiles.isEmpty)
         log.info("Skipping empty source directory %s".format(srcDir))
@@ -179,7 +181,7 @@ object Protobuf {
           updated
         } else Set.empty
     }
-    val sources = sourceDir.allPaths.get.toSet
+    val sources = sourceDir.allPaths.get().toSet
     runTransform(sources)
     targetDir
   }

@@ -12,7 +12,7 @@
  */
 
 import sbtheader.HeaderPlugin.autoImport.headerSources
-import sbt.{ Compile, Def, Test, _ }
+import sbt.*
 
 object CopyrightHeaderForJdk21 extends AutoPlugin {
 
@@ -20,17 +20,18 @@ object CopyrightHeaderForJdk21 extends AutoPlugin {
   override lazy val trigger = allRequirements
 
   private lazy val additionalFiles = Def.setting {
-    import Jdk21._
+    import Jdk21.*
     for {
       dir <- additionalSourceDirectories.value ++ additionalTestSourceDirectories.value
       language <- List("java", "scala")
-      file <- (dir ** s"*.$language").get
+      file <- (dir ** s"*.$language").get()
     } yield file
   }
 
   override lazy val projectSettings: Seq[Def.Setting[?]] = {
 
-    Seq(Compile / headerSources ++= additionalFiles.value,
-      Test / headerSources ++= additionalFiles.value)
+    Seq(
+      Compile / headerSources := Def.uncached { (Compile / headerSources).value ++ additionalFiles.value },
+      Test / headerSources := Def.uncached { (Test / headerSources).value ++ additionalFiles.value })
   }
 }

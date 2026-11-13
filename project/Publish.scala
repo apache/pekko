@@ -11,9 +11,10 @@
  * Copyright (C) 2009-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-import sbt._
-import sbt.Keys._
-import org.mdedetrich.apache.sonatype.ApacheSonatypePlugin
+import sbt.*
+import sbt.Keys.*
+// TODO [sbt2-migration] Blocked on sbt-pekko-build sbt 2 support
+// import org.mdedetrich.apache.sonatype.ApacheSonatypePlugin
 import sbtdynver.DynVerPlugin
 import sbtdynver.DynVerPlugin.autoImport.dynverSonatypeSnapshots
 
@@ -22,6 +23,8 @@ object Publish extends AutoPlugin {
   override lazy val trigger = allRequirements
 
   override lazy val projectSettings = Seq(
+    publishTo := None,
+    publish := sys.error("sbt 2 migration: publishing is disabled until release plugins are restored."),
     startYear := Some(2022),
     developers := List(
       Developer(
@@ -31,9 +34,14 @@ object Publish extends AutoPlugin {
         url("https://github.com/apache/pekko/graphs/contributors"))))
 
   override lazy val buildSettings = Seq(
+    organization := "org.apache.pekko",
+    organizationName := "Apache Software Foundation",
+    organizationHomepage := Some(url("https://www.apache.org")),
     dynverSonatypeSnapshots := true)
 
-  override lazy val requires = ApacheSonatypePlugin && DynVerPlugin
+  // TODO [sbt2-migration] Blocked on sbt-pekko-build sbt 2 support
+  // override lazy val requires = ApacheSonatypePlugin && DynVerPlugin
+  override lazy val requires = DynVerPlugin
 }
 
 /**

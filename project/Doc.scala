@@ -11,12 +11,12 @@
  * Copyright (C) 2009-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-import sbt._
+import sbt.*
 import sbtunidoc.BaseUnidocPlugin.autoImport.{ unidoc, unidocAllSources, unidocProjectFilter }
 import sbtunidoc.JavaUnidocPlugin.autoImport.JavaUnidoc
 import sbtunidoc.ScalaUnidocPlugin.autoImport.ScalaUnidoc
-import sbtunidoc.GenJavadocPlugin.autoImport._
-import sbt.Keys._
+import sbtunidoc.GenJavadocPlugin.autoImport.*
+import sbt.Keys.*
 import sbt.File
 import scala.annotation.tailrec
 
@@ -35,10 +35,9 @@ object Scaladoc extends AutoPlugin {
   val validateDiagrams = settingKey[Boolean]("Validate generated scaladoc diagrams")
 
   override lazy val projectSettings = {
-    inTask(doc)(
-      Seq(
-        Compile / scalacOptions ++= scaladocOptions(version.value, (ThisBuild / baseDirectory).value),
-        autoAPIMappings := CliOptions.scaladocAutoAPI.get)) ++
+    Seq(
+      Compile / doc / scalacOptions ++= scaladocOptions(version.value, (ThisBuild / baseDirectory).value),
+      doc / autoAPIMappings := CliOptions.scaladocAutoAPI.get) ++
     Seq(Compile / validateDiagrams := true) ++
     CliOptions.scaladocDiagramsEnabled.ifTrue(Compile / doc := {
       val docs = (Compile / doc).value
@@ -128,7 +127,7 @@ object UnidocRoot extends AutoPlugin {
   object autoImport {
     lazy val unidocRootIgnoreProjects = settingKey[Seq[ProjectReference]]("Projects to ignore when generating unidoc")
   }
-  import autoImport._
+  import autoImport.*
 
   override lazy val trigger = noTrigger
   override lazy val requires =
@@ -147,56 +146,32 @@ object UnidocRoot extends AutoPlugin {
     def unidocRootProjectFilter(ignoreProjects: Seq[ProjectReference]): ProjectFilter =
       ignoreProjects.foldLeft(inAnyProject) { _ -- inProjects(_) }
 
-    inTask(unidoc)(
-      Seq(
-        ScalaUnidoc / unidocProjectFilter := unidocRootProjectFilter(unidocRootIgnoreProjects.value),
-        JavaUnidoc / unidocProjectFilter := unidocRootProjectFilter(unidocRootIgnoreProjects.value),
-        Compile / doc / apiMappings ++= {
-          val entries: Seq[Attributed[File]] = (LocalProject("slf4j") / Compile / fullClasspath).value ++
-            (LocalProject("persistence") / Compile / fullClasspath).value ++
-            (LocalProject("remote") / Compile / fullClasspath).value ++
-            (LocalProject("stream") / Compile / fullClasspath).value
-
-          def mappingsFor(organization: String, names: List[String], location: String,
-              revision: String => String = identity): Seq[(File, URL)] = {
-            for {
-              entry: Attributed[File] <- entries
-              module: ModuleID <- entry.get(moduleID.key)
-              if module.organization == organization
-              if names.exists(module.name.startsWith)
-            } yield entry.data -> url(location.format(module.revision))
-          }
-
-          val mappings: Seq[(File, URL)] = {
-            mappingsFor("org.slf4j", List("slf4j-api"), "https://www.javadoc.io/doc/org.slf4j/slf4j-api/%s/") ++
-            mappingsFor("com.typesafe", List("config"), "https://www.javadoc.io/doc/com.typesafe/config/%s/") ++
-            mappingsFor("io.aeron", List("aeron-client", "aeron-driver"),
-              "https://www.javadoc.io/doc/io.aeron/aeron-all/%s/") ++
-            mappingsFor("org.reactivestreams", List("reactive-streams"),
-              "https://www.javadoc.io/doc/org.reactivestreams/reactive-streams/%s/")
-          }
-
-          mappings.toMap
-        },
-        ScalaUnidoc / apiMappings := (Compile / doc / apiMappings).value) ++
-      UnidocRoot.CliOptions.genjavadocEnabled
-        .ifTrue(Seq(JavaUnidoc / unidocAllSources ~= { v =>
-          v.map(
-            _.filterNot(s =>
-              // org.apache.pekko.stream.scaladsl.GraphDSL.Implicits.ReversePortsOps
-              // contains code that genjavadoc turns into (probably
-              // incorrect) Java code that in turn confuses the javadoc
-              // tool.
-              s.getAbsolutePath.endsWith("scaladsl/GraphDSL.java") ||
-              // Since adding -P:genjavadoc:strictVisibility=true,
-              // the javadoc tool would NullPointerException while
-              // determining the upper bound for some generics:
-              s.getAbsolutePath.endsWith("TopicImpl.java") ||
-              s.getAbsolutePath.endsWith("PersistencePlugin.java") ||
-              s.getAbsolutePath.endsWith("GraphDelegate.java") ||
-              s.getAbsolutePath.contains("/impl/")))
-        }))
-        .getOrElse(Nil))
+    Seq(
+      ScalaUnidoc / unidoc / unidocProjectFilter := unidocRootProjectFilter(unidocRootIgnoreProjects.value),
+      JavaUnidoc / unidoc / unidocProjectFilter := unidocRootProjectFilter(unidocRootIgnoreProjects.value)) ++
+    // TODO: sbt 2 migration - apiMappings type changed from Map[File, URL] to Map[HashedVirtualFileRef, URI]
+    // and Attributed[File] changed to Attributed[HashedVirtualFileRef]. Classpath metadata API also changed.
+    // Re-enable after adapting to new sbt 2 classpath types:
+    //   Compile / doc / apiMappings ++= { ... },
+    //   ScalaUnidoc / unidoc / apiMappings := (Compile / doc / apiMappings).value
+    UnidocRoot.CliOptions.genjavadocEnabled
+      .ifTrue(Seq(JavaUnidoc / unidoc / unidocAllSources ~= { v =>
+        v.map(
+          _.filterNot(s =>
+            // org.apache.pekko.stream.scaladsl.GraphDSL.Implicits.ReversePortsOps
+            // contains code that genjavadoc turns into (probably
+            // incorrect) Java code that in turn confuses the javadoc
+            // tool.
+            s.getAbsolutePath.endsWith("scaladsl/GraphDSL.java") ||
+            // Since adding -P:genjavadoc:strictVisibility=true,
+            // the javadoc tool would NullPointerException while
+            // determining the upper bound for some generics:
+            s.getAbsolutePath.endsWith("TopicImpl.java") ||
+            s.getAbsolutePath.endsWith("PersistencePlugin.java") ||
+            s.getAbsolutePath.endsWith("GraphDelegate.java") ||
+            s.getAbsolutePath.contains("/impl/")))
+      }))
+      .getOrElse(Nil)
   }
 }
 
