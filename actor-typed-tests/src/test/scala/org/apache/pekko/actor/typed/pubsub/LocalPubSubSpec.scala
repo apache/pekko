@@ -93,6 +93,39 @@ class LocalPubSubSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike wit
       }
     }
 
+    "deliver messages published to a new topic instance before its first listing to other instances" in {
+      val fruitTopic1 = testKit.spawn(Topic[String]("fruit5"))
+
+      try {
+        val probe1 = testKit.createTestProbe[String]()
+        fruitTopic1 ! Topic.Subscribe(probe1.ref)
+
+        // the receptionist knows about the subscribed instance
+        val statsProbe = testKit.createTestProbe[Topic.TopicStats]()
+        statsProbe.awaitAssert {
+          fruitTopic1 ! Topic.GetTopicStats(statsProbe.ref)
+          statsProbe.receiveMessage().topicInstanceCount should ===(1)
+        }
+
+        // published right after spawning, before the new instance has seen the receptionist listing
+        val fruitTopic2 = testKit.spawn(Topic[String]("fruit5"))
+        try {
+          fruitTopic2 ! Topic.Publish("cherry")
+          fruitTopic2 ! Topic.Publish("plum")
+          probe1.expectMessage("cherry")
+          probe1.expectMessage("plum")
+
+          // and messages published after the listing is seen still arrive, in order
+          fruitTopic2 ! Topic.Publish("kiwi")
+          probe1.expectMessage("kiwi")
+        } finally {
+          testKit.stop(fruitTopic2)
+        }
+      } finally {
+        testKit.stop(fruitTopic1)
+      }
+    }
+
     "doesn't publish across topics unsubscribe" in {
       val fruitTopic =
         testKit.spawn(Topic[String]("fruit3"))
