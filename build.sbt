@@ -21,6 +21,8 @@ sourceDistIncubating := false
 ThisBuild / reproducibleBuildsCheckResolver := Resolver.ApacheMavenStagingRepo
 
 ThisBuild / pekkoCoreProject := true
+// MiMa filters for changes made after 2.0.0 go in src/main/mima-filters/2.1.x.backwards.excludes (or a later 2.x directory)
+ThisBuild / pekkoMimaPreviousVersion := "2.0.0"
 
 Global / excludeLintKeys ++= Set(
   projectInfoVersion,
