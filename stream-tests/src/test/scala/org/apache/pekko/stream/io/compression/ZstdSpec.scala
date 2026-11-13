@@ -325,6 +325,17 @@ class ZstdSpec extends CoderSpec[ZstdException]("zstd") {
       javaDictionary should not be new JavaZstdDictionary(smallTextBytes, Compression.ZstdDefaultCompressionLevel, 1, 4)
       a[NullPointerException] should be thrownBy new JavaZstdDictionary(smallTextBytes).withContentType(null)
     }
+    "only use the zstd-jni content type methods for content types other than auto" in {
+      ZstdDictionaryImpl.withContentType(ZstdDictionaryContentType.AUTO)("auto")(fail("typed path used")) should ===(
+        "auto")
+      ZstdDictionaryImpl.withContentType(ZstdDictionaryContentType.RAW_CONTENT)("auto")("typed") should ===("typed")
+      // as with a zstd-jni version older than 1.5.7-26 on the classpath
+      val e = the[UnsupportedOperationException] thrownBy ZstdDictionaryImpl.withContentType(
+        ZstdDictionaryContentType.RAW_CONTENT)("auto")(
+        throw new NoClassDefFoundError("com/github/luben/zstd/ZstdDictContentType"))
+      e.getMessage should include("RAW_CONTENT")
+      e.getMessage should include("1.5.7-26")
+    }
     "use a raw content dictionary that starts with the zstd dictionary magic number" in {
       // incompressible input that is only found in the dictionary, so the frame must reference the dictionary
       val content = new Array[Byte](4096)

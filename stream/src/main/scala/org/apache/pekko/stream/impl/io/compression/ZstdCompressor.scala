@@ -74,19 +74,21 @@ import pekko.util.{ ByteString, ByteStringBuilder }
     import ZstdDictionaryImpl.withContentType
     val contentType = dict.contentType
     def loadBytes(bytes: Array[Byte]): Unit =
-      withContentType(contentType)(compressCtx.loadDict(bytes))(compressCtx.loadDict(bytes, _))
+      withContentType(contentType) { compressCtx.loadDict(bytes); () } {
+        ZstdTypedDictionary.loadDict(compressCtx, bytes, contentType)
+      }
     (dict.level, dict.length, dict.offset) match {
       case (None, None, None) =>
         loadBytes(dict.dictionary)
         None
       case (Some(dictLevel), None, None) =>
         Some(loadDictCompress(withContentType(contentType)(new ZstdDictCompress(dict.dictionary, dictLevel))(
-          new ZstdDictCompress(dict.dictionary, dictLevel, _))))
+          ZstdTypedDictionary.dictCompress(dict.dictionary, dictLevel, contentType))))
       case (Some(dictLevel), Some(dictLength), Some(dictOffset)) =>
         ZstdDictionaryImpl.requireSlice(dict.dictionary, dictOffset, dictLength)
         Some(loadDictCompress(withContentType(contentType)(
           new ZstdDictCompress(dict.dictionary, dictOffset, dictLength, dictLevel))(
-          new ZstdDictCompress(dict.dictionary, dictOffset, dictLength, dictLevel, _))))
+          ZstdTypedDictionary.dictCompress(dict.dictionary, dictOffset, dictLength, dictLevel, contentType))))
       case (None, Some(dictLength), Some(dictOffset)) =>
         // the context can only load a whole array, so load a copy of the slice
         ZstdDictionaryImpl.requireSlice(dict.dictionary, dictOffset, dictLength)

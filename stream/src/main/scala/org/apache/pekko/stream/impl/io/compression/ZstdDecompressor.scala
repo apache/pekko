@@ -85,8 +85,9 @@ import pekko.util.ByteString
       try {
         if (windowLogMax != 0) setWindowLogMax(decompressCtx, windowLogMax)
         decompressDict.foreach { bytes =>
-          ZstdDictionaryImpl.withContentType(contentType)(decompressCtx.loadDict(bytes))(
-            decompressCtx.loadDict(bytes, _))
+          ZstdDictionaryImpl.withContentType(contentType) { decompressCtx.loadDict(bytes); () } {
+            ZstdTypedDictionary.loadDict(decompressCtx, bytes, contentType)
+          }
         }
       } catch {
         case NonFatal(e) =>
