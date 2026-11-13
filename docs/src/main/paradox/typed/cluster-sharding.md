@@ -186,6 +186,11 @@ round can be limited to make it progress slower since rebalancing too many shard
 result in additional load on the system. For example, causing many Event Sourced entities to be started
 at the same time.
 
+During shard handoff, the coordinator first waits for all participating regions to acknowledge that
+they have stopped routing messages to the previous owner. If that owner terminates during this phase,
+the handoff can complete once the remaining regions acknowledge, without waiting for the terminated
+owner to confirm that the shard has stopped. This also applies to handoff during graceful shutdown.
+
 A new rebalance algorithm is included in Pekko. It can reach optimal balance in a few rebalance rounds
 (typically 1 or 2 rounds). For backwards compatibility the new algorithm is not enabled by default.
 The new algorithm is recommended and will become the default in future versions of Pekko.
