@@ -416,8 +416,11 @@ class ZstdSpec extends CoderSpec[ZstdException]("zstd") {
     }
     "reject a full dictionary content type for bytes that are not a formatted dictionary" in {
       val dictBytes = (smallText * 4).getBytes(StandardCharsets.UTF_8)
-      val compressed = new ZstdCompressor(dictionary = Some(ZstdDictionary(dictBytes).toImpl)).compressAndFinish(
-        smallTextBytes)
+      val compressed = {
+        val compressor = new ZstdCompressor(dictionary = Some(ZstdDictionary(dictBytes).toImpl))
+        try compressor.compressAndFinish(smallTextBytes)
+        finally compressor.close()
+      }
       for (dictionary <-
           Seq(ZstdDictionary(dictBytes), ZstdDictionary(dictBytes, Compression.ZstdDefaultCompressionLevel))
             .map(_.withContentType(ZstdDictionaryContentType.FULL_DICT))) {
