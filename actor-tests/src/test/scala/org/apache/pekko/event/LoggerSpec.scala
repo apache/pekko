@@ -16,13 +16,14 @@ package org.apache.pekko.event
 import java.nio.charset.StandardCharsets
 import java.text.SimpleDateFormat
 import java.time.{ LocalDateTime, ZoneOffset }
-import java.util.concurrent.TimeUnit
+import java.util.concurrent.{ CountDownLatch, TimeUnit }
 import java.util.{ Calendar, Date, GregorianCalendar, TimeZone }
 
 import scala.concurrent.duration._
 import scala.util.control.NoStackTrace
 
 import org.apache.pekko
+import pekko.ConfigurationException
 import pekko.actor._
 import pekko.event.Logging.InitializeLogger
 import pekko.event.Logging.Warning
@@ -94,6 +95,62 @@ object LoggerSpec {
         loggers = ["org.apache.pekko.event.LoggerSpec$TestLogger1"]
       }
     """).withFallback(PekkoSpec.testConf)
+
+  val unloadableLoggerConfig =
+    ConfigFactory.parseString("""
+      pekko {
+        stdout-loglevel = "OFF"
+        loglevel = "WARNING"
+        loggers = ["org.apache.pekko.event.LoggerSpec$LifecycleRecordingLogger", "invalid.LoggerClassName"]
+      }
+    """).withFallback(PekkoSpec.testConf)
+
+  val wrongReplyLoggerConfig =
+    ConfigFactory.parseString("""
+      pekko {
+        stdout-loglevel = "OFF"
+        loglevel = "WARNING"
+        loggers = [
+          "org.apache.pekko.event.LoggerSpec$LifecycleRecordingLogger",
+          "org.apache.pekko.event.LoggerSpec$WrongReplyLogger"]
+      }
+    """).withFallback(PekkoSpec.testConf)
+
+  @volatile var lifecycleLoggerStarted = new CountDownLatch(1)
+  @volatile var lifecycleLoggerStopped = new CountDownLatch(1)
+  @volatile var wrongReplyLoggerStopped = new CountDownLatch(1)
+  @volatile var lifecycleLoggerBus: EventStream = _
+  @volatile var lifecycleLoggerRef: ActorRef = _
+
+  def resetLifecycleLatches(): Unit = {
+    lifecycleLoggerStarted = new CountDownLatch(1)
+    lifecycleLoggerStopped = new CountDownLatch(1)
+    wrongReplyLoggerStopped = new CountDownLatch(1)
+    lifecycleLoggerBus = null
+    lifecycleLoggerRef = null
+  }
+
+  class LifecycleRecordingLogger extends Actor {
+    override def preStart(): Unit = lifecycleLoggerStarted.countDown()
+    override def postStop(): Unit = lifecycleLoggerStopped.countDown()
+    override def receive: Receive = {
+      case InitializeLogger(bus) =>
+        lifecycleLoggerBus = bus.asInstanceOf[EventStream]
+        lifecycleLoggerRef = self
+        sender() ! LoggerInitialized
+      case _ =>
+    }
+  }
+
+  class WrongReplyLogger extends Actor {
+    override def postStop(): Unit = wrongReplyLoggerStopped.countDown()
+    // replies to InitializeLogger right away, but not with LoggerInitialized, so the
+    // handshake fails without depending on logger-startup-timeout
+    override def receive: Receive = {
+      case InitializeLogger(_) => sender() ! "not-initialized"
+      case _                   =>
+    }
+  }
 
   final case class SetTarget(ref: ActorRef, qualifier: Int)
 
@@ -235,6 +292,48 @@ class LoggerSpec extends AnyWordSpec with Matchers {
           TestKit.shutdownActorSystem(system)
         }
       }
+    }
+  }
+
+  "An actor system with an unloadable logger configured after a valid one" must {
+
+    "fail to start without starting the valid logger" in {
+      resetLifecycleLatches()
+
+      val e = intercept[ConfigurationException] {
+        ActorSystem("unloadableLogger", unloadableLoggerConfig)
+      }
+      e.getMessage should include("Logger specified in config can't be loaded [invalid.LoggerClassName]")
+      e.getCause shouldBe a[ConfigurationException]
+      e.getCause.getMessage should include("Logger specified in config can't be loaded [invalid.LoggerClassName]")
+
+      // all logger classes are resolved before any logger actor is created; wait a bit
+      // so that a logger actor created but not yet started would also be detected
+      lifecycleLoggerStarted.await(500, TimeUnit.MILLISECONDS) should ===(false)
+    }
+  }
+
+  "An actor system with a logger that does not reply LoggerInitialized" must {
+
+    "fail to start and stop both the started logger and the failed logger" in {
+      resetLifecycleLatches()
+
+      val e = intercept[ConfigurationException] {
+        ActorSystem("wrongReplyLogger", wrongReplyLoggerConfig)
+      }
+      e.getMessage should include("did not respond with LoggerInitialized")
+      // the logger class could be loaded, it failed to initialize
+      e.getMessage shouldNot include("can't be loaded")
+      e.getCause shouldBe a[LoggerInitializationException]
+
+      // await the start latch instead of a snapshot of getCount
+      lifecycleLoggerStarted.await(5, TimeUnit.SECONDS) should ===(true)
+      // stop assertions can pass without this fix because terminate() stops
+      // /system children anyway; the leak is a leftover subscription
+      lifecycleLoggerBus should not be null
+      lifecycleLoggerBus.hasSubscriptions(lifecycleLoggerRef) should ===(false)
+      lifecycleLoggerStopped.await(5, TimeUnit.SECONDS) should ===(true)
+      wrongReplyLoggerStopped.await(5, TimeUnit.SECONDS) should ===(true)
     }
   }
 

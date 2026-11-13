@@ -129,34 +129,47 @@ trait LoggingBus extends ActorEventBus {
         Error(new LoggerException, logName, this.getClass, "unknown pekko.loglevel " + system.settings.LogLevel))
       ErrorLevel
     }
+    // loggers started in this call; cleaned up locally if startup fails, and
+    // only then published to the shared field
+    var started = Vector.empty[ActorRef]
+    // the shared state replaced on publication, restored if a later step fails
+    var published = false
+    var previousLoggers: Seq[ActorRef] = Seq.empty
+    var previousLogLevel: LogLevel = ErrorLevel
     try {
       val defaultLoggers = system.settings.Loggers match {
         case Nil     => classOf[DefaultLogger].getName :: Nil
         case loggers => loggers
       }
-      val myloggers =
-        for {
-          loggerName <- defaultLoggers
-          if loggerName != StandardOutLogger.getClass.getName
-        } yield {
-          system.dynamicAccess
-            .getClassFor[Actor](loggerName)
-            .map { actorClass =>
-              addLogger(system, actorClass, level, logName)
-            }
-            .recover {
-              case e =>
-                throw new ConfigurationException(
-                  "Logger specified in config can't be loaded [" + loggerName +
-                  "] due to [" + e.toString + "]",
-                  e)
-            }
-            .get
-        }
+      val loggerNames = defaultLoggers.filterNot(_ == StandardOutLogger.getClass.getName)
+      // resolve every logger class before creating any logger actor, so that a class that
+      // can't be loaded fails the startup without having started the earlier loggers
+      val loggerClasses = loggerNames.map { loggerName =>
+        system.dynamicAccess
+          .getClassFor[Actor](loggerName)
+          .recover {
+            case e =>
+              throw new ConfigurationException(
+                "Logger specified in config can't be loaded [" + loggerName +
+                "] due to [" + e.toString + "]",
+                e)
+          }
+          .get
+      }
+      // keep a local list and publish it once with _logLevel, so stopDefaultLoggers
+      // never sees a partial set and setLogLevel never sees the new loggers paired
+      // with the previous level. A setLogLevel call made before publication only
+      // applies to the previous loggers and is superseded by `level`.
+      loggerClasses.foreach { actorClass =>
+        started = started :+ addLogger(system, actorClass, level, logName)
+      }
       guard.lock()
       try {
-        loggers = myloggers
+        previousLoggers = loggers
+        previousLogLevel = _logLevel
+        loggers = started
         _logLevel = level
+        published = true
       } finally {
         guard.unlock()
       }
@@ -180,9 +193,34 @@ trait LoggingBus extends ActorEventBus {
       }
     } catch {
       case e: Exception =>
+        if (published) restorePreviousLoggers(started, previousLoggers, previousLogLevel)
+        started.foreach(stopLoggerSafely(_, e))
         System.err.println("error while starting up loggers")
         e.printStackTrace()
-        throw new ConfigurationException("Could not start logger due to [" + e.toString + "]")
+        if (e.isInstanceOf[InterruptedException]) Thread.currentThread().interrupt()
+        throw new ConfigurationException("Could not start logger due to [" + e.toString + "]", e)
+      case NonFatal(t) =>
+        if (published) restorePreviousLoggers(started, previousLoggers, previousLogLevel)
+        started.foreach(stopLoggerSafely(_, t))
+        throw t
+    }
+  }
+
+  // a later step of startDefaultLoggers failed after the started loggers were published:
+  // remove them from the shared field, so stopDefaultLoggers does not stop them a second
+  // time, and restore the previous loggers (e.g. the still subscribed StandardOutLogger)
+  // and the level matching their subscriptions. Done before stopping the started loggers
+  // so a concurrent setLogLevel cannot resubscribe a logger that is about to be stopped.
+  private def restorePreviousLoggers(
+      started: Vector[ActorRef],
+      previousLoggers: Seq[ActorRef],
+      previousLogLevel: LogLevel): Unit = {
+    guard.lock()
+    try {
+      loggers = (previousLoggers ++ loggers).distinct.filterNot(started.contains)
+      _logLevel = previousLogLevel
+    } finally {
+      guard.unlock()
     }
   }
 
@@ -190,25 +228,38 @@ trait LoggingBus extends ActorEventBus {
    * Internal Pekko use only
    */
   private[pekko] def stopDefaultLoggers(system: ActorSystem): Unit = {
-    @nowarn("msg=never used")
-    val level = _logLevel // volatile access before reading loggers
-    if (!(loggers contains StandardOutLogger)) {
+    val currentLoggers = {
+      guard.lock()
+      try loggers
+      finally guard.unlock()
+    }
+    if (!(currentLoggers contains StandardOutLogger)) {
       setUpStdoutLogger(system.settings)
       publish(Debug(simpleName(this), this.getClass, "shutting down: StandardOutLogger"))
     }
     for {
-      logger <- loggers
+      logger <- currentLoggers
       if logger != StandardOutLogger
-    } {
-      // this is very necessary, else you get infinite loop with DeadLetter
-      unsubscribe(logger)
-      logger match {
-        case ref: InternalActorRef => ref.stop()
-        case _                     =>
-      }
-    }
+    } stopLogger(logger)
     publish(Debug(simpleName(this), this.getClass, "all default loggers stopped"))
   }
+
+  // shared by startDefaultLoggers cleanup, stopDefaultLoggers and addLogger
+  private def stopLogger(logger: ActorRef): Unit = {
+    // this is very necessary, else you get infinite loop with DeadLetter
+    unsubscribe(logger)
+    logger match {
+      case ref: InternalActorRef => ref.stop()
+      case _                     =>
+    }
+  }
+
+  private def stopLoggerSafely(logger: ActorRef, cause: Throwable): Unit =
+    try stopLogger(logger)
+    catch {
+      case NonFatal(cleanup) =>
+        cause.addSuppressed(cleanup)
+    }
 
   /**
    * INTERNAL API
@@ -220,25 +271,35 @@ trait LoggingBus extends ActorEventBus {
       logName: String): ActorRef = {
     val name = "log" + LogExt(system).id() + "-" + simpleName(clazz)
     val actor = system.systemActorOf(Props(clazz).withDispatcher(system.settings.LoggersDispatcher), name)
-    implicit def timeout: Timeout = system.settings.LoggerStartTimeout
-    import pekko.pattern.ask
-    val response =
-      try Await.result(actor ? InitializeLogger(this), timeout.duration)
-      catch {
-        case _: TimeoutException =>
-          publish(
-            Warning(
-              logName,
-              this.getClass,
-              "Logger " + name + " did not respond within " + timeout + " to InitializeLogger(bus)"))
-          "[TIMEOUT]"
-      }
-    if (response != LoggerInitialized)
-      throw new LoggerInitializationException(
-        "Logger " + name + " did not respond with LoggerInitialized, sent instead " + response)
-    AllLogLevels.filter(level >= _).foreach(l => subscribe(actor, classFor(l)))
-    publish(Debug(logName, this.getClass, "logger " + name + " started"))
-    actor
+    try {
+      implicit def timeout: Timeout = system.settings.LoggerStartTimeout
+      import pekko.pattern.ask
+      val response =
+        try Await.result(actor ? InitializeLogger(this), timeout.duration)
+        catch {
+          case _: TimeoutException =>
+            publish(
+              Warning(
+                logName,
+                this.getClass,
+                "Logger " + name + " did not respond within " + timeout + " to InitializeLogger(bus)"))
+            "[TIMEOUT]"
+        }
+      if (response != LoggerInitialized)
+        throw new LoggerInitializationException(
+          "Logger " + name + " did not respond with LoggerInitialized, sent instead " + response)
+      AllLogLevels.filter(level >= _).foreach(l => subscribe(actor, classFor(l)))
+      publish(Debug(logName, this.getClass, "logger " + name + " started"))
+      actor
+    } catch {
+      case e @ (NonFatal(_) | _: InterruptedException) =>
+        // the caller never sees a logger that failed to start (including when interrupted
+        // while waiting for its reply), so it has to be unsubscribed and stopped here.
+        // NonFatal cleanup failures are attached as suppressed so they do not replace
+        // the original handshake failure. Fatal errors are rethrown without cleanup.
+        stopLoggerSafely(actor, e)
+        throw e
+    }
   }
 
 }
