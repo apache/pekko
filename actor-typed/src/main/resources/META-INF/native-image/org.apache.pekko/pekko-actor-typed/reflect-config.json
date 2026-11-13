@@ -1,0 +1,105 @@
+[
+  {
+    "name": "org.apache.pekko.actor.typed.internal.adapter.ActorSystemAdapter$LoadTypedExtensions$",
+    "fields": [
+      {
+        "name": "MODULE$"
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.actor.typed.internal.receptionist.LocalReceptionist$",
+    "fields": [
+      {
+        "name": "MODULE$"
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.actor.typed.internal.adapter.ActorSystemAdapter$AdapterExtension$",
+    "fields": [
+      {
+        "name": "MODULE$"
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.actor.typed.internal.adapter.ActorSystemAdapter$LoadTypedExtensions$",
+    "fields": [
+      {
+        "name": "MODULE$"
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.actor.typed.internal.adapter.AdapterExtension$",
+    "fields": [
+      {
+        "name": "MODULE$"
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.actor.typed.internal.MiscMessageSerializer",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "org.apache.pekko.actor.ExtendedActorSystem"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.actor.typed.internal.receptionist.ServiceKeySerializer",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "org.apache.pekko.actor.ExtendedActorSystem"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.actor.typed.ActorRef"
+  },
+  {
+    "name": "org.apache.pekko.actor.typed.internal.adapter.ActorRefAdapter"
+  },
+  {
+    "name": "org.apache.pekko.actor.typed.internal.receptionist.DefaultServiceKey"
+  },
+  {
+    "name": "org.apache.pekko.actor.typed.ActorRefResolver$",
+    "fields": [
+      {
+        "name": "MODULE$"
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.actor.typed.internal.EventStreamExtension$",
+    "fields": [
+      {
+        "name": "MODULE$"
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.actor.typed.pubsub.PubSub$",
+    "fields": [
+      {
+        "name": "MODULE$"
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.actor.typed.receptionist.Receptionist$",
+    "fields": [
+      {
+        "name": "MODULE$"
+      }
+    ]
+  }
+]

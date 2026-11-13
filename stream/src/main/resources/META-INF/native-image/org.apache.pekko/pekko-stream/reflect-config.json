@@ -1,0 +1,70 @@
+[
+  {
+    "name": "org.apache.pekko.stream.StreamRefResolver$",
+    "fields": [
+      {
+        "name": "MODULE$"
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.stream.SystemMaterializer$",
+    "fields": [
+      {
+        "name": "MODULE$"
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.stream.impl.FlowNames$",
+    "fields": [
+      {
+        "name": "MODULE$"
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.stream.impl.streamref.StreamRefsMaster$",
+    "fields": [
+      {
+        "name": "MODULE$"
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.stream.javadsl.Tcp$",
+    "fields": [
+      {
+        "name": "MODULE$"
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.stream.scaladsl.Tcp$",
+    "fields": [
+      {
+        "name": "MODULE$"
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.stream.serialization.StreamRefSerializer",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "org.apache.pekko.actor.ExtendedActorSystem"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.stream.SinkRef"
+  },
+  {
+    "name": "org.apache.pekko.stream.SourceRef"
+  },
+  {
+    "name": "org.apache.pekko.stream.impl.streamref.StreamRefsProtocol"
+  }
+]
