@@ -216,6 +216,33 @@ class RememberEntitiesFailureSpec
 
   "Remember entities handling in sharding" must {
 
+    "hand off while the initial remember-entities load is pending" in {
+      val storeProbe = TestProbe()
+      system.eventStream.subscribe(storeProbe.ref, classOf[ShardStoreCreated])
+      failShardGetEntities = Map("1" -> NoResponse)
+      val typeName = "hand-off-during-initial-load"
+      val sharding = ClusterSharding(system).start(
+        typeName,
+        Props[EntityActor](),
+        ClusterShardingSettings(system).withRememberEntities(true),
+        extractEntityId,
+        extractShardId)
+      try {
+        sharding.tell(EntityEnvelope(1, "hello"), testActor)
+        val store = storeProbe.expectMsgType[ShardStoreCreated].store
+        val shard = system.actorSelection(store.path.parent).resolveOne(remainingOrDefault).futureValue
+        watch(shard)
+        val coordinatorProbe = TestProbe()
+        coordinatorProbe.send(sharding, ShardCoordinator.Internal.HandOff("1"))
+        coordinatorProbe.expectMsg(ShardCoordinator.Internal.ShardStopped("1"))
+        expectTerminated(shard)
+      } finally {
+        failShardGetEntities = Map.empty
+        system.eventStream.unsubscribe(storeProbe.ref)
+        system.stop(sharding)
+      }
+    }
+
     List(NoResponse, CrashStore, StopStore, Delay(500.millis), Delay(1.second)).foreach { (wayToFail: Fail) =>
       s"recover when initial remember entities load fails $wayToFail" in {
         log.debug("Getting entities for shard 1 will fail")
