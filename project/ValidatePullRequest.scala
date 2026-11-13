@@ -57,7 +57,6 @@ object PekkoValidatePullRequest extends AutoPlugin {
           PathGlobFilter(s"$directory/**")
       }.fold(FileFilter.nothing)(_ || _)
     },
-    validatePullRequestBuildAll / excludeFilter := PathGlobFilter("project/MiMa.scala"),
     prValidatorGithubRepository := Some("apache/pekko"),
     prValidatorTargetBranch := "origin/main")
 
