@@ -39,21 +39,23 @@ interface AsyncWritePlugin {
    * `UnsupportedOperationException` describing the issue. This limitation should also be documented
    * by the journal plugin.
    *
-   * <p>If there are failures when storing any of the messages in the batch the returned `Future`
-   * must be completed with failure. The `Future` must only be completed with success when all
-   * messages in the batch have been confirmed to be stored successfully, i.e. they will be
-   * readable, and visible, in a subsequent replay. If there is uncertainty about if the messages
-   * were stored or not the `Future` must be completed with failure.
+   * <p>If there are failures when storing any of the messages in the batch the returned
+   * `CompletionStage` must be completed exceptionally. The `CompletionStage` must only be completed
+   * normally when every `AtomicWrite` has either been stored successfully or rejected as described
+   * below. All events in a successfully stored `AtomicWrite` must be readable and visible in a
+   * subsequent replay. If there is uncertainty about whether messages were stored or not the
+   * `CompletionStage` must be completed exceptionally.
    *
-   * <p>Data store connection problems must be signaled by completing the `Future` with failure.
+   * <p>Data store connection problems must be signaled by completing the `CompletionStage`
+   * exceptionally.
    *
    * <p>The journal can also signal that it rejects individual messages (`AtomicWrite`) by the
    * returned `Iterable&lt;Optional&lt;Exception&gt;&gt;`. The returned `Iterable` must have as many
-   * elements as the input `messages` `Iterable`. Each `Optional` element signals if the
-   * corresponding `AtomicWrite` is rejected or not, with an exception describing the problem.
-   * Rejecting a message means it was not stored, i.e. it must not be included in a later replay.
-   * Rejecting a message is typically done before attempting to store it, e.g. because of
-   * serialization error.
+   * elements as the input `messages` `Iterable`, in the same order. An empty `Optional` signals
+   * that the corresponding `AtomicWrite` was stored successfully; a non-empty `Optional` signals
+   * rejection, with an exception describing the problem. Rejecting a message means it was not
+   * stored, i.e. it must not be included in a later replay. Rejecting a message is typically done
+   * before attempting to store it, e.g. because of serialization error.
    *
    * <p>Data store connection problems must not be signaled as rejections.
    *

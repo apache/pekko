@@ -463,10 +463,10 @@ trait AsyncWriteJournal extends Actor with WriteJournalBase with AsyncRecovery {
    *
    * If there are failures when storing any of the messages in the batch the returned
    * `Future` must be completed with failure. The `Future` must only be completed with
-   * success when all messages in the batch have been confirmed to be stored successfully,
-   * i.e. they will be readable, and visible, in a subsequent replay. If there is
-   * uncertainty about if the messages were stored or not the `Future` must be completed
-   * with failure.
+   * success when every `AtomicWrite` has either been stored successfully or rejected as
+   * described below. All events in a successfully stored `AtomicWrite` must be readable
+   * and visible in a subsequent replay. If there is uncertainty about whether messages
+   * were stored or not the `Future` must be completed with failure.
    *
    * Data store connection problems must be signaled by completing the `Future` with
    * failure.
@@ -475,16 +475,14 @@ trait AsyncWriteJournal extends Actor with WriteJournalBase with AsyncRecovery {
    * the returned `Seq[Try[Unit]]`. It is possible but not mandatory to reduce
    * number of allocations by returning `Future.successful(Nil)` for the happy path,
    * i.e. when no messages are rejected. Otherwise the returned `Seq` must have as many elements
-   * as the input `messages` `Seq`. Each `Try` element signals if the corresponding
-   * `AtomicWrite` is rejected or not, with an exception describing the problem. Rejecting
+   * as the input `messages` `Seq`, in the same order. Each `Try` element signals if the
+   * corresponding `AtomicWrite` was stored successfully (`Success`) or rejected (`Failure`),
+   * with an exception describing the rejection. Rejecting
    * a message means it was not stored, i.e. it must not be included in a later replay.
    * Rejecting a message is typically done before attempting to store it, e.g. because of
    * serialization error.
    *
    * Data store connection problems must not be signaled as rejections.
-   *
-   * It is possible but not mandatory to reduce number of allocations by returning
-   * `Future.successful(Nil)` for the happy path, i.e. when no messages are rejected.
    *
    * Calls to this method are serialized by the enclosing journal actor. If you spawn
    * work in asynchronous tasks it is alright that they complete the futures in any order,
