@@ -21,6 +21,8 @@ sourceDistIncubating := false
 ThisBuild / reproducibleBuildsCheckResolver := Resolver.ApacheMavenStagingRepo
 
 ThisBuild / pekkoCoreProject := true
+// MiMa filters for changes made after 2.0.0 go in src/main/mima-filters/2.1.x.backwards.excludes (or a later 2.x directory)
+ThisBuild / pekkoMimaPreviousVersion := "2.0.0"
 
 Global / excludeLintKeys ++= Set(
   projectInfoVersion,
@@ -287,7 +289,6 @@ lazy val jackson3 = pekkoModule("serialization-jackson3")
   .settings(OSGi.jackson3)
   .settings(javacOptions += "-parameters")
   .enablePlugins(ScaladocNoVerificationOfDiagrams, SbtOsgi)
-  .disablePlugins(MimaPlugin)
 
 lazy val multiNodeTestkit = pekkoModule("multi-node-testkit")
   .dependsOn(remote, testkit)
@@ -343,7 +344,6 @@ lazy val persistenceTck = pekkoModule("persistence-tck")
   .settings(AutomaticModuleName.settings("pekko.persistence.tck"))
   // .settings(OSGi.persistenceTck) TODO: we do need to export this as OSGi bundle too?
   .settings(Test / fork := true)
-  .disablePlugins(MimaPlugin)
 
 lazy val persistenceTestkit = pekkoModule("persistence-testkit")
   .dependsOn(
@@ -353,7 +353,6 @@ lazy val persistenceTestkit = pekkoModule("persistence-testkit")
     persistenceTck % Test)
   .settings(Dependencies.persistenceTestKit)
   .settings(AutomaticModuleName.settings("pekko.persistence.testkit"))
-  .disablePlugins(MimaPlugin)
 
 lazy val persistenceTypedTests = pekkoModule("persistence-typed-tests")
   .dependsOn(
@@ -422,7 +421,6 @@ lazy val pki =
     .settings(Dependencies.pki)
     .settings(AutomaticModuleName.settings("pekko.pki"))
     .settings(OSGi.pki)
-    .disablePlugins(MimaPlugin)
 
 lazy val remote =
   pekkoModule("remote")
