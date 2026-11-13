@@ -623,6 +623,7 @@ object ShardCoordinator {
       region ! BeginHandOff(shard)
     }
     var remaining = regions
+    private var ownerTerminated = false
 
     if (isRebalance)
       log.debug("{}: Rebalance [{}] from [{}] regions", typeName, shard, regions.size)
@@ -641,6 +642,8 @@ object ShardCoordinator {
         log.debug("{}: BeginHandOffAck for shard [{}] received from [{}].", typeName, shard, sender())
         acked(sender())
       case RebalanceWorker.ShardRegionTerminated(shardRegion) =>
+        if (shardRegion == shardRegionFrom)
+          ownerTerminated = true
         if (remaining.contains(shardRegion)) {
           log.debug(
             "{}: ShardRegion [{}] terminated while waiting for BeginHandOffAck for shard [{}].",
@@ -661,9 +664,19 @@ object ShardCoordinator {
     private def acked(shardRegion: ActorRef) = {
       remaining -= shardRegion
       if (remaining.isEmpty) {
-        log.debug("{}: All shard regions acked, handing off shard [{}].", typeName, shard)
-        shardRegionFrom ! HandOff(shard)
-        context.become(stoppingShard, discardOld = true)
+        if (ownerTerminated) {
+          // All regions have invalidated their cached location and the old owner is already stopped.
+          log.debug(
+            "{}: All shard regions acked and owner [{}] of shard [{}] already terminated, completing handoff.",
+            typeName,
+            shardRegionFrom,
+            shard)
+          done(ok = true)
+        } else {
+          log.debug("{}: All shard regions acked, handing off shard [{}].", typeName, shard)
+          shardRegionFrom ! HandOff(shard)
+          context.become(stoppingShard, discardOld = true)
+        }
       } else {
         log.debug("{}: Remaining shard regions for shard [{}]: {}", typeName, shard, remaining.size)
       }
