@@ -132,6 +132,10 @@ trait LoggingBus extends ActorEventBus {
     // loggers started in this call; cleaned up locally if startup fails, and
     // only then published to the shared field
     var started = Vector.empty[ActorRef]
+    // the shared state replaced on publication, restored if a later step fails
+    var published = false
+    var previousLoggers: Seq[ActorRef] = Seq.empty
+    var previousLogLevel: LogLevel = ErrorLevel
     try {
       val defaultLoggers = system.settings.Loggers match {
         case Nil     => classOf[DefaultLogger].getName :: Nil
@@ -152,16 +156,20 @@ trait LoggingBus extends ActorEventBus {
           }
           .get
       }
-      // keep a local list and publish it once with _logLevel, so a concurrent
-      // setLogLevel or stopDefaultLoggers cannot observe a partial set or the
-      // wrong starting level
+      // keep a local list and publish it once with _logLevel, so stopDefaultLoggers
+      // never sees a partial set and setLogLevel never sees the new loggers paired
+      // with the previous level. A setLogLevel call made before publication only
+      // applies to the previous loggers and is superseded by `level`.
       loggerClasses.foreach { actorClass =>
         started = started :+ addLogger(system, actorClass, level, logName)
       }
       guard.lock()
       try {
+        previousLoggers = loggers
+        previousLogLevel = _logLevel
         loggers = started
         _logLevel = level
+        published = true
       } finally {
         guard.unlock()
       }
@@ -184,35 +192,36 @@ trait LoggingBus extends ActorEventBus {
         unsubscribe(StandardOutLogger)
       }
     } catch {
-      case e: InterruptedException =>
-        stopStartedLoggers(started, e)
-        System.err.println("error while starting up loggers")
-        e.printStackTrace()
-        Thread.currentThread().interrupt()
-        throw new ConfigurationException("Could not start logger due to [" + e.toString + "]", e)
       case e: Exception =>
-        stopStartedLoggers(started, e)
+        if (published) restorePreviousLoggers(started, previousLoggers, previousLogLevel)
+        started.foreach(stopLoggerSafely(_, e))
         System.err.println("error while starting up loggers")
         e.printStackTrace()
+        if (e.isInstanceOf[InterruptedException]) Thread.currentThread().interrupt()
         throw new ConfigurationException("Could not start logger due to [" + e.toString + "]", e)
-      case t: Throwable =>
-        stopStartedLoggers(started, t)
+      case NonFatal(t) =>
+        if (published) restorePreviousLoggers(started, previousLoggers, previousLogLevel)
+        started.foreach(stopLoggerSafely(_, t))
         throw t
     }
   }
 
-  // stops the loggers started by a failed startDefaultLoggers call; if they were already
-  // published (a later step failed), also clear the shared field so stopDefaultLoggers
-  // does not stop them a second time. Clear the field first so a concurrent setLogLevel
-  // cannot resubscribe a logger that is about to be stopped.
-  private def stopStartedLoggers(started: Vector[ActorRef], cause: Throwable): Unit = {
+  // a later step of startDefaultLoggers failed after the started loggers were published:
+  // remove them from the shared field, so stopDefaultLoggers does not stop them a second
+  // time, and restore the previous loggers (e.g. the still subscribed StandardOutLogger)
+  // and the level matching their subscriptions. Done before stopping the started loggers
+  // so a concurrent setLogLevel cannot resubscribe a logger that is about to be stopped.
+  private def restorePreviousLoggers(
+      started: Vector[ActorRef],
+      previousLoggers: Seq[ActorRef],
+      previousLogLevel: LogLevel): Unit = {
     guard.lock()
     try {
-      if (loggers eq started) loggers = Seq.empty
+      loggers = (previousLoggers ++ loggers).distinct.filterNot(started.contains)
+      _logLevel = previousLogLevel
     } finally {
       guard.unlock()
     }
-    started.foreach(stopLoggerSafely(_, Some(cause)))
   }
 
   /**
@@ -245,11 +254,11 @@ trait LoggingBus extends ActorEventBus {
     }
   }
 
-  private def stopLoggerSafely(logger: ActorRef, cause: Option[Throwable]): Unit =
+  private def stopLoggerSafely(logger: ActorRef, cause: Throwable): Unit =
     try stopLogger(logger)
     catch {
       case NonFatal(cleanup) =>
-        cause.foreach(_.addSuppressed(cleanup))
+        cause.addSuppressed(cleanup)
     }
 
   /**
@@ -283,12 +292,12 @@ trait LoggingBus extends ActorEventBus {
       publish(Debug(logName, this.getClass, "logger " + name + " started"))
       actor
     } catch {
-      case e: Throwable =>
+      case e @ (NonFatal(_) | _: InterruptedException) =>
         // the caller never sees a logger that failed to start (including when interrupted
         // while waiting for its reply), so it has to be unsubscribed and stopped here.
         // NonFatal cleanup failures are attached as suppressed so they do not replace
-        // the original handshake failure.
-        stopLoggerSafely(actor, Some(e))
+        // the original handshake failure. Fatal errors are rethrown without cleanup.
+        stopLoggerSafely(actor, e)
         throw e
     }
   }
