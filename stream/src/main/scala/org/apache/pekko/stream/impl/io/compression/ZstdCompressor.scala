@@ -70,24 +70,34 @@ import pekko.util.{ ByteString, ByteStringBuilder }
   /** For tests, to observe that the dictionary is closed. */
   private[pekko] def compressDictionary: Option[ZstdDictCompress] = compressDict
 
-  private def loadDictionary(dict: ZstdDictionaryImpl): Option[ZstdDictCompress] =
+  private def loadDictionary(dict: ZstdDictionaryImpl): Option[ZstdDictCompress] = {
+    import ZstdDictionaryImpl.withContentType
+    val contentType = dict.contentType
+    def loadBytes(bytes: Array[Byte]): Unit =
+      withContentType(contentType) { compressCtx.loadDict(bytes); () } {
+        ZstdTypedDictionary.loadDict(compressCtx, bytes, contentType)
+      }
     (dict.level, dict.length, dict.offset) match {
       case (None, None, None) =>
-        compressCtx.loadDict(dict.dictionary)
+        loadBytes(dict.dictionary)
         None
       case (Some(dictLevel), None, None) =>
-        Some(loadDictCompress(new ZstdDictCompress(dict.dictionary, dictLevel)))
+        Some(loadDictCompress(withContentType(contentType)(new ZstdDictCompress(dict.dictionary, dictLevel))(
+          ZstdTypedDictionary.dictCompress(dict.dictionary, dictLevel, contentType))))
       case (Some(dictLevel), Some(dictLength), Some(dictOffset)) =>
         ZstdDictionaryImpl.requireSlice(dict.dictionary, dictOffset, dictLength)
-        Some(loadDictCompress(new ZstdDictCompress(dict.dictionary, dictOffset, dictLength, dictLevel)))
+        Some(loadDictCompress(withContentType(contentType)(
+          new ZstdDictCompress(dict.dictionary, dictOffset, dictLength, dictLevel))(
+          ZstdTypedDictionary.dictCompress(dict.dictionary, dictOffset, dictLength, dictLevel, contentType))))
       case (None, Some(dictLength), Some(dictOffset)) =>
         // the context can only load a whole array, so load a copy of the slice
         ZstdDictionaryImpl.requireSlice(dict.dictionary, dictOffset, dictLength)
-        compressCtx.loadDict(java.util.Arrays.copyOfRange(dict.dictionary, dictOffset, dictOffset + dictLength))
+        loadBytes(java.util.Arrays.copyOfRange(dict.dictionary, dictOffset, dictOffset + dictLength))
         None
       case _ =>
         throw new IllegalArgumentException("ZstdDictionary offset and length must be set together")
     }
+  }
 
   private def loadDictCompress(dictCompress: ZstdDictCompress): ZstdDictCompress =
     try {

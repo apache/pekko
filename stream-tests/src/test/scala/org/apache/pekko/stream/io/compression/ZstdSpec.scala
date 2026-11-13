@@ -18,6 +18,7 @@
 package org.apache.pekko.stream.io.compression
 
 import java.io.{ ByteArrayInputStream, IOException, InputStream, OutputStream }
+import java.nio.ByteBuffer
 import java.nio.charset.StandardCharsets
 
 import scala.collection.mutable
@@ -25,8 +26,11 @@ import scala.concurrent.duration._
 import scala.util.Random
 
 import com.github.luben.zstd.{
+  EndDirective,
   Zstd,
   ZstdCompressCtx,
+  ZstdDecompressCtx,
+  ZstdDictContentType,
   ZstdException,
   ZstdInputStream,
   ZstdInputStreamNoFinalizer,
@@ -34,12 +38,12 @@ import com.github.luben.zstd.{
 }
 
 import org.apache.pekko
-import pekko.stream.impl.io.compression.{ Compressor, ZstdCompressor }
+import pekko.stream.impl.io.compression.{ Compressor, ZstdCompressor, ZstdDecompressor, ZstdDictionaryImpl }
 import pekko.stream.javadsl.compression.{ ZstdDictionary => JavaZstdDictionary }
 import pekko.stream.javadsl.{ Compression => JavaCompression }
 import pekko.stream.scaladsl.compression.ZstdDictionary
 import pekko.stream.scaladsl.{ Compression, Flow, Source }
-import pekko.stream.{ ZstdCompressionSettings, ZstdDecompressionSettings }
+import pekko.stream.{ ZstdCompressionSettings, ZstdDecompressionSettings, ZstdDictionaryContentType }
 import pekko.util.ByteString
 
 class ZstdSpec extends CoderSpec[ZstdException]("zstd") {
@@ -289,6 +293,151 @@ class ZstdSpec extends CoderSpec[ZstdException]("zstd") {
       java.util.Arrays.fill(dictBytes, 0.toByte)
       for (_ <- 1 to 2) // every materialization loads the dictionary into its own context
         Source.single(compressed).via(decompress).join.awaitResult(3.seconds) should ===(input)
+    }
+    "default the dictionary content type to auto-detection" in {
+      ZstdDictionary(smallTextBytes).contentType should ===(ZstdDictionaryContentType.AUTO)
+      ZstdDictionary(smallTextBytes).toImpl.contentType should ===(ZstdDictionaryContentType.AUTO)
+      new JavaZstdDictionary(smallTextBytes).getContentType should ===(ZstdDictionaryContentType.AUTO)
+      new JavaZstdDictionary(smallTextBytes).toImpl.contentType should ===(ZstdDictionaryContentType.AUTO)
+    }
+    "keep the dictionary content type" in {
+      val scalaDictionary = ZstdDictionary(smallTextBytes, Compression.ZstdDefaultCompressionLevel, 1, 4)
+        .withContentType(ZstdDictionaryContentType.RAW_CONTENT)
+      scalaDictionary.contentType should ===(ZstdDictionaryContentType.RAW_CONTENT)
+      scalaDictionary.toImpl.contentType should ===(ZstdDictionaryContentType.RAW_CONTENT)
+      scalaDictionary.level should ===(Some(Compression.ZstdDefaultCompressionLevel))
+      scalaDictionary.offset should ===(Some(1))
+      scalaDictionary.length should ===(Some(4))
+      scalaDictionary should not be ZstdDictionary(smallTextBytes, Compression.ZstdDefaultCompressionLevel, 1, 4)
+      an[IllegalArgumentException] should be thrownBy ZstdDictionary(smallTextBytes).withContentType(null)
+
+      val javaDictionary = new JavaZstdDictionary(smallTextBytes, Compression.ZstdDefaultCompressionLevel, 1, 4)
+        .withContentType(ZstdDictionaryContentType.FULL_DICT)
+      javaDictionary.getContentType should ===(ZstdDictionaryContentType.FULL_DICT)
+      javaDictionary.toImpl.contentType should ===(ZstdDictionaryContentType.FULL_DICT)
+      javaDictionary.getLevel.getAsInt should ===(Compression.ZstdDefaultCompressionLevel)
+      javaDictionary should ===(
+        new JavaZstdDictionary(smallTextBytes, Compression.ZstdDefaultCompressionLevel, 1, 4)
+          .withContentType(ZstdDictionaryContentType.FULL_DICT))
+      javaDictionary.hashCode should ===(
+        new JavaZstdDictionary(smallTextBytes, Compression.ZstdDefaultCompressionLevel, 1, 4)
+          .withContentType(ZstdDictionaryContentType.FULL_DICT).hashCode)
+      javaDictionary should not be new JavaZstdDictionary(smallTextBytes, Compression.ZstdDefaultCompressionLevel, 1, 4)
+      a[NullPointerException] should be thrownBy new JavaZstdDictionary(smallTextBytes).withContentType(null)
+    }
+    "only use the zstd-jni content type methods for content types other than auto" in {
+      ZstdDictionaryImpl.withContentType(ZstdDictionaryContentType.AUTO)("auto")(fail("typed path used")) should ===(
+        "auto")
+      ZstdDictionaryImpl.withContentType(ZstdDictionaryContentType.RAW_CONTENT)("auto")("typed") should ===("typed")
+      // as with a zstd-jni version older than 1.5.7-26 on the classpath
+      val e = the[UnsupportedOperationException] thrownBy ZstdDictionaryImpl.withContentType(
+        ZstdDictionaryContentType.RAW_CONTENT)("auto")(
+        throw new NoClassDefFoundError("com/github/luben/zstd/ZstdDictContentType"))
+      e.getMessage should include("RAW_CONTENT")
+      e.getMessage should include("1.5.7-26")
+    }
+    "use a raw content dictionary that starts with the zstd dictionary magic number" in {
+      // incompressible input that is only found in the dictionary, so the frame must reference the dictionary
+      val content = new Array[Byte](4096)
+      new Random(42).nextBytes(content)
+      val input = ByteString(content)
+      // the zstd dictionary magic number 0xEC30A437, in little-endian order
+      val magic = Array[Byte](0x37, 0xA4.toByte, 0x30, 0xEC.toByte)
+      val dictBytes = magic ++ content
+      val paddedDictBytes = "padding".getBytes(StandardCharsets.UTF_8) ++ dictBytes
+
+      def compress(dictionary: ZstdDictionaryImpl): ByteString = {
+        val compressor = new ZstdCompressor(dictionary = Some(dictionary))
+        try compressor.compressAndFinish(input)
+        finally compressor.close()
+      }
+      def decompress(compressed: ByteString, dictionary: ZstdDictionaryImpl): ByteString =
+        Source
+          .single(compressed)
+          .via(Flow.fromGraph(new ZstdDecompressor(65536, Some(dictionary))))
+          .join
+          .awaitResult(3.seconds)
+      // what libzstd produces when it loads the dictionary with ZSTD_dct_rawContent
+      val reference = {
+        val ctx = new ZstdCompressCtx()
+        try {
+          ctx.setLevel(Compression.ZstdDefaultCompressionLevel)
+          ctx.loadDict(dictBytes, ZstdDictContentType.RAW_CONTENT)
+          val output = ByteBuffer.allocate(65536)
+          ctx.compressByteBufferStream(output, ByteBuffer.wrap(content), EndDirective.END) should ===(true)
+          output.flip()
+          ByteString(output)
+        } finally ctx.close()
+      }
+      def decompressWithLibzstd(compressed: ByteString): ByteString = {
+        val ctx = new ZstdDecompressCtx()
+        try {
+          ctx.loadDict(dictBytes, ZstdDictContentType.RAW_CONTENT)
+          ByteString(ctx.decompress(compressed.toArray, content.length))
+        } finally ctx.close()
+      }
+
+      val raw = ZstdDictionary(dictBytes).withContentType(ZstdDictionaryContentType.RAW_CONTENT)
+      compress(raw.toImpl) should ===(reference)
+
+      // with auto-detection, the bytes are parsed as a formatted dictionary, which they are not
+      an[Exception] should be thrownBy compress(ZstdDictionary(dictBytes).toImpl)
+      an[Exception] should be thrownBy decompress(reference, ZstdDictionary(dictBytes).toImpl)
+
+      val level = Compression.ZstdDefaultCompressionLevel
+      for (dictionary <- Seq(
+          raw.toImpl,
+          ZstdDictionary(dictBytes, level).withContentType(ZstdDictionaryContentType.RAW_CONTENT).toImpl,
+          ZstdDictionary(paddedDictBytes, level, 7, dictBytes.length)
+            .withContentType(ZstdDictionaryContentType.RAW_CONTENT)
+            .toImpl,
+          // a slice without a level is loaded into the context as a copy
+          new JavaZstdDictionary(paddedDictBytes, null: Integer, Integer.valueOf(7), Integer.valueOf(dictBytes.length))
+            .withContentType(ZstdDictionaryContentType.RAW_CONTENT)
+            .toImpl)) {
+        withClue(s"level ${dictionary.level}, offset ${dictionary.offset}: ") {
+          val compressed = compress(dictionary)
+          compressed.size should be < input.size / 10
+          decompressWithLibzstd(compressed) should ===(input)
+          decompress(compressed, dictionary) should ===(input)
+        }
+      }
+      Source
+        .single(reference)
+        .via(Compression.zstdDecompress(ZstdDecompressionSettings().withDictionary(raw)))
+        .join
+        .awaitResult(3.seconds) should ===(input)
+      Source
+        .single(reference)
+        .via(JavaCompression.zstdDecompress(ZstdDecompressionSettings.create().withDictionary(
+          new JavaZstdDictionary(dictBytes).withContentType(ZstdDictionaryContentType.RAW_CONTENT))))
+        .join
+        .awaitResult(3.seconds) should ===(input)
+    }
+    "reject a full dictionary content type for bytes that are not a formatted dictionary" in {
+      val dictBytes = (smallText * 4).getBytes(StandardCharsets.UTF_8)
+      val compressed = {
+        val compressor = new ZstdCompressor(dictionary = Some(ZstdDictionary(dictBytes).toImpl))
+        try compressor.compressAndFinish(smallTextBytes)
+        finally compressor.close()
+      }
+      for (dictionary <-
+          Seq(ZstdDictionary(dictBytes), ZstdDictionary(dictBytes, Compression.ZstdDefaultCompressionLevel))
+            .map(_.withContentType(ZstdDictionaryContentType.FULL_DICT))) {
+        withClue(s"$dictionary: ") {
+          an[Exception] should be thrownBy {
+            val compressor = new ZstdCompressor(dictionary = Some(dictionary.toImpl))
+            try compressor.compressAndFinish(smallTextBytes)
+            finally compressor.close()
+          }
+          an[Exception] should be thrownBy
+          Source
+            .single(compressed)
+            .via(Compression.zstdDecompress(ZstdDecompressionSettings().withDictionary(dictionary)))
+            .join
+            .awaitResult(3.seconds)
+        }
+      }
     }
     "reject a decompression dictionary with only one of offset and length" in {
       val dictionary = new JavaZstdDictionary(smallTextBytes.toArray, null: Integer, Integer.valueOf(1), null: Integer)

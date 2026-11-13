@@ -17,7 +17,9 @@
 
 package org.apache.pekko.stream.impl.io.compression
 
-import org.apache.pekko.annotation.{ InternalApi, InternalStableApi }
+import org.apache.pekko
+import pekko.annotation.{ InternalApi, InternalStableApi }
+import pekko.stream.ZstdDictionaryContentType
 
 @InternalStableApi
 private[pekko] abstract class ZstdDictionaryImpl {
@@ -25,6 +27,8 @@ private[pekko] abstract class ZstdDictionaryImpl {
   def level: Option[Int]
   def offset: Option[Int]
   def length: Option[Int]
+  // not abstract, so that existing implementations keep working
+  def contentType: ZstdDictionaryContentType = ZstdDictionaryContentType.AUTO
 }
 
 /** INTERNAL API */
@@ -34,4 +38,20 @@ private[pekko] abstract class ZstdDictionaryImpl {
       offset >= 0 && length >= 0 && offset <= bytes.length - length,
       s"ZstdDictionary offset [$offset] and length [$length] must be within the dictionary of " +
       s"[${bytes.length}] bytes")
+
+  /**
+   * Runs `auto` for [[ZstdDictionaryContentType.AUTO]], which uses the zstd-jni methods without a content type, and
+   * otherwise `typed`, which must use [[ZstdTypedDictionary]]. zstd-jni is an optional dependency that users add
+   * themselves, so a version older than 1.5.7-26, without `ZstdDictContentType`, may be on the classpath.
+   */
+  def withContentType[T](contentType: ZstdDictionaryContentType)(auto: => T)(typed: => T): T =
+    if (contentType == ZstdDictionaryContentType.AUTO) auto
+    else
+      try typed
+      catch {
+        case e @ (_: NoClassDefFoundError | _: NoSuchMethodError) =>
+          throw new UnsupportedOperationException(
+            s"ZstdDictionary content type [$contentType] requires zstd-jni 1.5.7-26 or later",
+            e)
+      }
 }

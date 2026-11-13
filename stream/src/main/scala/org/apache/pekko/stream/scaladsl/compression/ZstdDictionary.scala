@@ -21,6 +21,7 @@ import java.nio.charset.StandardCharsets
 
 import org.apache.pekko
 import pekko.annotation.{ ApiMayChange, InternalApi }
+import pekko.stream.ZstdDictionaryContentType
 import pekko.stream.impl.io.compression.ZstdDictionaryImpl
 import pekko.util.ByteString
 
@@ -34,7 +35,18 @@ import pekko.util.ByteString
  */
 @ApiMayChange
 final case class ZstdDictionary private (dictionary: ByteString, level: Option[Int],
-    offset: Option[Int], length: Option[Int]) { clazz =>
+    offset: Option[Int], length: Option[Int], contentType: ZstdDictionaryContentType) { clazz =>
+
+  /**
+   * Sets how zstd interprets the dictionary bytes. The default is [[ZstdDictionaryContentType.AUTO]]; any other
+   * type requires zstd-jni 1.5.7-26 or later.
+   *
+   * @since 2.1.0
+   */
+  def withContentType(contentType: ZstdDictionaryContentType): ZstdDictionary = {
+    require(contentType ne null, "contentType must not be null")
+    new ZstdDictionary(dictionary, level, offset, length, contentType)
+  }
 
   /**
    * INTERNAL API
@@ -46,6 +58,7 @@ final case class ZstdDictionary private (dictionary: ByteString, level: Option[I
     override val level: Option[Int] = clazz.level
     override val offset: Option[Int] = clazz.offset
     override val length: Option[Int] = clazz.length
+    override val contentType: ZstdDictionaryContentType = clazz.contentType
   }
 }
 
@@ -67,13 +80,13 @@ object ZstdDictionary {
     ZstdDictionary(ByteString(dictionary), level, offset, length)
 
   def apply(dictionary: ByteString): ZstdDictionary =
-    ZstdDictionary(dictionary, None, None, None)
+    ZstdDictionary(dictionary, None, None, None, ZstdDictionaryContentType.AUTO)
 
   def apply(dictionary: ByteString, level: Int): ZstdDictionary =
-    ZstdDictionary(dictionary, Some(level), None, None)
+    ZstdDictionary(dictionary, Some(level), None, None, ZstdDictionaryContentType.AUTO)
 
   def apply(dictionary: ByteString, level: Int, offset: Int, length: Int): ZstdDictionary =
-    ZstdDictionary(dictionary, Some(level), Some(offset), Some(length))
+    ZstdDictionary(dictionary, Some(level), Some(offset), Some(length), ZstdDictionaryContentType.AUTO)
 
   def apply(dictionary: String): ZstdDictionary =
     ZstdDictionary(ByteString(dictionary, StandardCharsets.UTF_8))
