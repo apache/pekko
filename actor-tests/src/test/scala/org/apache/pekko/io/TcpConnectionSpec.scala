@@ -555,6 +555,43 @@ class TcpConnectionSpec extends PekkoSpec("""
       }
     }
 
+    "finish a confirmed close without waiting for the peer when Close arrives during a pending write" in
+    new EstablishedConnectionTest() with SmallRcvBuffer {
+      run {
+        ignoreIfWindows()
+        clientSideChannel.socket.setSendBufferSize(1024)
+
+        connectionHandler.send(connectionActor, writeCmd(Ack))
+        connectionActor.underlyingActor.writePending should ===(true)
+        val closeCommander = TestProbe()
+        closeCommander.send(connectionActor, ConfirmedClose)
+        closeCommander.send(connectionActor, Close)
+
+        // No writable notification is delivered until both close commands have been processed.
+        pullFromServerSide(TestSize)
+        connectionHandler.expectMsg(Ack)
+        connectionHandler.expectMsg(Closed)
+        closeCommander.expectMsg(Closed)
+        assertThisConnectionActorTerminated()
+
+        // The peer has not closed its output: Close must not wait for its FIN.
+        serverSideChannel.socket.isOutputShutdown should ===(false)
+        serverSelectionKey should be(selectedAs(OP_READ, 2.seconds))
+        serverSideChannel.read(ByteBuffer.allocate(1)) should ===(-1)
+      }
+    }
+
+    "finish a confirmed close without waiting for the peer when no write is pending" in
+    new EstablishedConnectionTest() {
+      run {
+        connectionHandler.send(connectionActor, ConfirmedClose)
+        clientSideChannel.socket.isOutputShutdown should ===(true)
+        connectionHandler.send(connectionActor, Close)
+        connectionHandler.expectMsg(Closed)
+        assertThisConnectionActorTerminated()
+      }
+    }
+
     "report when peer closed the connection" in new EstablishedConnectionTest() {
       run {
         closeServerSideAndWaitForClientReadable()

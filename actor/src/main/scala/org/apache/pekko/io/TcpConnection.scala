@@ -144,7 +144,8 @@ private[io] abstract class TcpConnection(val tcp: TcpExt, val channel: SocketCha
 
     case WriteFileFailed(e) => handleError(info.handler, e) // rethrow exception from dispatcher task
 
-    case Abort => handleClose(info, Some(sender()), Aborted)
+    case Close if closedEvent == ConfirmedClosed => handleClose(info, closeCommander, Closed)
+    case Abort                                   => handleClose(info, Some(sender()), Aborted)
   }
 
   /** connection is closed on our side and we're waiting from confirmation from the other side */

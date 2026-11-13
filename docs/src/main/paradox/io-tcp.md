@@ -144,6 +144,8 @@ the remote endpoint. Pending writes will be flushed. If the close is successful,
 @scala[@scaladoc[ConfirmedClose](org.apache.pekko.io.Tcp.ConfirmedClose$)]@java[@javadoc[TcpMessage.confirmedClose](org.apache.pekko.io.TcpMessage#confirmedClose())] will close the sending direction of the connection by sending a `FIN` message, but data
 will continue to be received until the remote endpoint closes the connection, too. Pending writes will be flushed. If the close is
 successful, the listener will be notified with @scala[@scaladoc[ConfirmedClosed](org.apache.pekko.io.Tcp.ConfirmedClosed$)]@java[@javadoc[ConfirmedClosed](org.apache.pekko.io.Tcp.ConfirmedClosed$)].
+The actor that requested a confirmed close can send a normal close command to stop waiting for the peer.
+Pending writes are still flushed before the connection closes, and the close notification is `Closed` rather than `ConfirmedClosed`.
 
 @scala[@scaladoc[Abort](org.apache.pekko.io.Tcp.Abort$)]@java[@javadoc[TcpMessage.abort](org.apache.pekko.io.TcpMessage#abort())] will immediately terminate the connection by sending a `RST` message to the remote endpoint. Pending
 writes will not be flushed. If the close is successful, the listener will be notified with @scala[@scaladoc[Aborted](org.apache.pekko.io.Tcp.Aborted$)]@java[@javadoc[Aborted](org.apache.pekko.io.Tcp.Aborted$)].
