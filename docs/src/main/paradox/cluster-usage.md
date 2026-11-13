@@ -380,47 +380,11 @@ There are several management tools for the cluster. Please refer to the
 <a id="cluster-command-line"></a>
 ### Command Line
 
-@@@ warning
+Use the @ref:[HTTP management](additional/operations.md#http) API with [curl](https://curl.se/)
+or a similar HTTP client to manage the cluster from the command line.
 
-**Deprecation warning** - The command line script has been deprecated and may be removed
-in a future release. Use the @ref:[HTTP management](additional/operations.md#http) API with [curl](https://curl.se/)
-or similar instead.
-
-@@@
-
-The cluster can be managed with the script `pekko-cluster` provided in the Pekko GitHub repository @extref[here](github:cluster/jmx-client). The script requires the `jmxsh-R5.jar` library, which is not shipped with Pekko. If the jar is not present, the script
-attempts to download it with `curl` into the directory containing the script; alternatively, obtain it separately and place it
-in the same directory as the script.
-
-Run it without parameters to see instructions about how to use the script:
-
-```
-Usage: ./pekko-cluster <node-hostname> <jmx-port> <command> ...
-
-Supported commands are:
-           join <node-url> - Sends request a JOIN node with the specified URL
-          leave <node-url> - Sends a request for node with URL to LEAVE the cluster
-           down <node-url> - Sends a request for marking node with URL as DOWN
-             member-status - Asks the member node for its current status
-                   members - Asks the cluster for addresses of current members
-               unreachable - Asks the cluster for addresses of unreachable members
-            cluster-status - Asks the cluster for its current status (member ring,
-                             unavailable nodes, meta data etc.)
-                    leader - Asks the cluster who the current leader is
-              is-singleton - Checks if the cluster is a singleton cluster (single
-                             node cluster)
-              is-available - Checks if the member node is available
-Where the <node-url> should be on the format of
-  'pekko.<protocol>://<actor-system-name>@<hostname>:<port>'
-
-Examples: ./pekko-cluster localhost 9999 is-available
-          ./pekko-cluster localhost 9999 join pekko://MySystem@darkstar:7355
-          ./pekko-cluster localhost 9999 cluster-status
-```
-
-To be able to use the script you must enable remote monitoring and management when starting the JVMs of the cluster nodes,
-as described in [Monitoring and Management Using JMX Technology](https://docs.oracle.com/en/java/javase/17/management/monitoring-and-management-using-jmx-technology.html).
-Make sure you understand the security implications of enabling remote monitoring and management.
+The deprecated `pekko-cluster` JMX client script has been removed. Cluster management through
+@ref:[JMX](additional/operations.md#jmx) remains available using a JMX console.
 
 <a id="cluster-configuration"></a>
 
