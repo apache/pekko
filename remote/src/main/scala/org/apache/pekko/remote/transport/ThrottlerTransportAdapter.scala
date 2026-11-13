@@ -289,6 +289,13 @@ private[transport] class ThrottlerManager(wrappedTransport: Transport)
   private var throttlingModes = Map[Address, (ThrottleMode, Direction)]()
   private var handleTable = List[(Address, ThrottlerHandle)]()
 
+  // A restarted inbound ThrottledAssociation would wait for Handle again, but it
+  // is never re-sent, so it would silently drop payloads forever. Stop it instead,
+  // matching the strategy used by PekkoProtocolTransport.
+  override val supervisorStrategy: SupervisorStrategy = OneForOneStrategy() {
+    case NonFatal(_) => SupervisorStrategy.Stop
+  }
+
   private def nakedAddress(address: Address): Address = address.copy(protocol = "", system = "")
 
   override def ready: Receive = {
@@ -340,6 +347,11 @@ private[transport] class ThrottlerManager(wrappedTransport: Transport)
       val naked: Address = nakedAddress(origin)
       handleTable ::= naked -> handle
       setMode(naked, handle)
+
+    case Terminated(ref) =>
+      // the ThrottledAssociation stopped, drop it from the table so that later
+      // SetThrottle/ForceDisassociate calls don't iterate a dead handle
+      handleTable = handleTable.filterNot { case (_, handle) => handle.throttlerActor == ref }
 
   }
 
@@ -406,11 +418,12 @@ private[transport] class ThrottlerManager(wrappedTransport: Transport)
     val managerRef = self
     ThrottlerHandle(
       originalHandle,
-      context.actorOf(
-        RARP(context.system)
-          .configureDispatcher(Props(classOf[ThrottledAssociation], managerRef, listener, originalHandle, inbound))
-          .withDeploy(Deploy.local),
-        "throttler" + nextId()))
+      context.watch(
+        context.actorOf(
+          RARP(context.system)
+            .configureDispatcher(Props(classOf[ThrottledAssociation], managerRef, listener, originalHandle, inbound))
+            .withDeploy(Deploy.local),
+          "throttler" + nextId())))
   }
 }
 
@@ -470,7 +483,10 @@ private[transport] class ThrottledAssociation(
   var throttledMessages = Queue.empty[ByteString]
   var upstreamListener: HandleEventListener = _
 
-  override def postStop(): Unit = originalHandle.disassociate("the owning ThrottledAssociation stopped", log)
+  override def postStop(): Unit = {
+    try originalHandle.disassociate("the owning ThrottledAssociation stopped", log)
+    finally super.postStop()
+  }
 
   if (inbound) startWith(WaitExposedHandle, Uninitialized)
   else {
