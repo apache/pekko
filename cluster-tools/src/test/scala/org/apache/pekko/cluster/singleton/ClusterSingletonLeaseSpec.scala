@@ -119,6 +119,26 @@ class ClusterSingletonLeaseSpec extends PekkoSpec(ConfigFactory.parseString("""
     (manager, testLease, lifecycleProbe)
   }
 
+  /** Downs the manager while its first lease acquire is still in progress. */
+  private def stoppedWhileAcquiring(): (ActorRef, TestLease, TestProbe) = {
+    val lifecycleProbe = TestProbe()
+    val settings = nextSettings()
+    val manager = system.actorOf(
+      ClusterSingletonManager.props(Props(new ImportantSingleton(lifecycleProbe.ref)), PoisonPill, settings),
+      settings.singletonName)
+    val testLease = awaitAssert {
+      testLeaseExt.getTestLease(leaseNameFor(settings))
+    }
+    testLease.probe.expectMsg(AcquireReq(leaseOwner))
+    val terminationProbe = TestProbe()
+    terminationProbe.watch(manager)
+    manager ! MemberDowned(cluster.selfMember.copy(MemberStatus.Down))
+    terminationProbe.expectTerminated(manager)
+    // nothing to release until the acquire completes
+    testLease.probe.expectNoMessage(shortDuration)
+    (manager, testLease, lifecycleProbe)
+  }
+
   "A singleton with lease" should {
 
     "not start until lease is available" in {
@@ -342,6 +362,22 @@ class ClusterSingletonLeaseSpec extends PekkoSpec(ConfigFactory.parseString("""
       terminationProbe.expectTerminated(manager)
       testLease.probe.expectMsg(ReleaseReq(leaseOwner))
       testLease.probe.expectNoMessage(shortDuration)
+    }
+
+    "release a lease acquired after the manager stopped while acquiring it" in {
+      val (_, testLease, lifecycleProbe) = stoppedWhileAcquiring()
+      testLease.initialPromise.success(true)
+      testLease.probe.expectMsg(ReleaseReq(leaseOwner))
+      testLease.probe.expectNoMessage(shortDuration)
+      // the singleton is never started by a stopped manager
+      lifecycleProbe.expectNoMessage(shortDuration)
+    }
+
+    "not release when the acquire in progress at stop does not succeed" in {
+      val (_, testLease, lifecycleProbe) = stoppedWhileAcquiring()
+      testLease.initialPromise.success(false)
+      testLease.probe.expectNoMessage(shortDuration)
+      lifecycleProbe.expectNoMessage(shortDuration)
     }
 
     "release lease when leaving oldest" in {

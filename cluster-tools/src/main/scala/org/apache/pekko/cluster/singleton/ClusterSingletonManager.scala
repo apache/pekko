@@ -14,6 +14,7 @@
 package org.apache.pekko.cluster.singleton
 
 import scala.collection.immutable
+import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 import scala.concurrent.Promise
 import scala.concurrent.duration._
@@ -294,8 +295,10 @@ object ClusterSingletonManager {
     }
 
     final case class AcquireLeaseResult(holdingLease: Boolean) extends DeadLetterSuppression
+    // no longer sent, release results are logged directly; kept for binary compatibility
     final case class ReleaseLeaseResult(released: Boolean) extends DeadLetterSuppression
     final case class AcquireLeaseFailure(t: Throwable) extends DeadLetterSuppression
+    // no longer sent, release results are logged directly; kept for binary compatibility
     final case class ReleaseLeaseFailure(t: Throwable) extends DeadLetterSuppression
     final case class LeaseLost(reason: Option[Throwable]) extends DeadLetterSuppression
 
@@ -568,6 +571,9 @@ class ClusterSingletonManager(singletonProps: Props, terminationMessage: Any, se
 
   private var restarting = false
 
+  // the lease acquire started by the latest tryAcquireLease, if any
+  private var leaseAcquireInProgress: Option[Future[Boolean]] = None
+
   // keep track of previously removed members
   var removed = Map.empty[UniqueAddress, Deadline]
 
@@ -648,8 +654,19 @@ class ClusterSingletonManager(singletonProps: Props, terminationMessage: Any, se
     cluster.unsubscribe(self)
     memberExitingProgress.trySuccess(Done)
     // A final stop skips onTransition, and the singleton child has already terminated here.
-    if (!restarting && stateName == Oldest)
-      releaseLease()
+    if (!restarting) {
+      stateName match {
+        case Oldest if lease.nonEmpty =>
+          logInfo("Releasing lease as manager stopped")
+          releaseLease()
+        case AcquiringLease =>
+          stateData match {
+            case AcquiringLeaseData(true, _) => releaseLeaseIfAcquired()
+            case _                           =>
+          }
+        case _ =>
+      }
+    }
     super.postStop()
   }
 
@@ -870,19 +887,43 @@ class ClusterSingletonManager(singletonProps: Props, terminationMessage: Any, se
     import context.dispatcher
 
     if (!preparingForFullShutdown) {
-      pipe(lease.get.acquire(reason => self ! LeaseLost(reason)).map[Any](AcquireLeaseResult(_)).recover {
+      val acquired = lease.get.acquire(reason => self ! LeaseLost(reason))
+      leaseAcquireInProgress = Some(acquired)
+      pipe(acquired.map[Any](AcquireLeaseResult(_)).recover {
         case NonFatal(t) => AcquireLeaseFailure(t)
       }).to(self)
-    }
+    } else
+      leaseAcquireInProgress = None
     goto(AcquiringLease).using(AcquiringLeaseData(leaseRequestInProgress = true, None))
   }
 
-  private def releaseLease(): Unit = {
-    import context.dispatcher
+  private def releaseLease(): Unit =
+    leaseReleaser().foreach(release => release())
 
+  /**
+   * Releases the lease when the acquire that was in progress when the manager stopped succeeds.
+   * The result of that acquire would otherwise go to dead letters, leaving the lease held until it expires.
+   */
+  private def releaseLeaseIfAcquired(): Unit =
+    for (acquired <- leaseAcquireInProgress; release <- leaseReleaser()) {
+      import context.dispatcher
+      logInfo("Manager stopped while acquiring lease, it will be released if acquired")
+      acquired.onComplete {
+        case Success(true) => release()
+        case _             => // not acquired, nothing to release
+      }
+    }
+
+  /**
+   * Captures what a release needs from the actor, so the returned function can also run after the manager
+   * has stopped.
+   */
+  private def leaseReleaser(): Option[() => Unit] = {
+    // Evaluated now, while the actor context is still valid.
+    implicit val ec: ExecutionContext = context.dispatcher
     // This adapter is thread-safe and retains the manager's logger identity after it stops.
     val releaseLog = log
-    lease.foreach { l =>
+    lease.map { l => () =>
       Future.fromTry(Try(l.release())).flatten.onComplete {
         case Success(true) =>
           if (LogInfo) releaseLog.info("Lease released")
