@@ -13,6 +13,8 @@
 
 package org.apache.pekko.cluster.sharding.typed.delivery.internal
 
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 import java.util.concurrent.TimeoutException
 
 import scala.annotation.nowarn
@@ -59,8 +61,10 @@ import pekko.util.Timeout
   private type OutSeqNr = Long
   private type OutKey = String
 
-  private final case class Ack(outKey: OutKey, confirmedSeqNr: OutSeqNr) extends InternalCommand
-  private final case class AskTimeout(outKey: OutKey, outSeqNr: OutSeqNr) extends InternalCommand
+  private final case class Ack(outKey: OutKey, producerController: ActorRef[?], confirmedSeqNr: OutSeqNr)
+      extends InternalCommand
+  private final case class AskTimeout(outKey: OutKey, producerController: ActorRef[?], outSeqNr: OutSeqNr)
+      extends InternalCommand
 
   private final case class WrappedRequestNext[A](next: ProducerController.RequestNext[A]) extends InternalCommand
 
@@ -102,7 +106,8 @@ import pekko.util.Timeout
       producer: ActorRef[ShardingProducerController.RequestNext[A]],
       out: Map[OutKey, OutState[A]],
       // replyAfterStore is used when durableQueue is enabled, otherwise they are tracked in OutState
-      replyAfterStore: Map[TotalSeqNr, ActorRef[Done]]) {
+      replyAfterStore: Map[TotalSeqNr, ActorRef[Done]],
+      nextChildId: Long = 0L) {
 
     def bufferSize: Long = {
       out.valuesIterator.foldLeft(0L) { case (acc, outState) => acc + outState.buffered.size }
@@ -345,9 +350,10 @@ private class ShardingProducerControllerImpl[A: ClassTag](
             val send: ConsumerController.SequencedMessage[A] => Unit = { seqMsg =>
               region ! ShardingEnvelope(entityId, seqMsg)
             }
+            // Cleanup is asynchronous, so the previous incarnation may still own its name.
             val p = context.spawn(
               ProducerController[A](outKey, durableQueueBehavior = None, producerControllerSettings, send),
-              entityId,
+              s"entity-${URLEncoder.encode(entityId, StandardCharsets.UTF_8.name())}-${s.nextChildId}",
               DispatcherSelector.sameAsParent())
             p ! ProducerController.Start(requestNextAdapter)
             s.copy(
@@ -361,7 +367,8 @@ private class ShardingProducerControllerImpl[A: ClassTag](
                   1L,
                   Vector.empty,
                   System.nanoTime())),
-              replyAfterStore = newReplyAfterStore)
+              replyAfterStore = newReplyAfterStore,
+              nextChildId = s.nextChildId + 1)
         }
 
       active(newState)
@@ -417,7 +424,7 @@ private class ShardingProducerControllerImpl[A: ClassTag](
 
     def receiveAck(ack: Ack): Behavior[InternalCommand] = {
       s.out.get(ack.outKey) match {
-        case Some(outState) =>
+        case Some(outState) if outState.producerController == ack.producerController =>
           if (traceEnabled)
             context.log.trace2("Received Ack, confirmed [{}], current [{}].", ack.confirmedSeqNr, s.currentSeqNr)
           val newUnconfirmed = onAck(outState, ack.confirmedSeqNr)
@@ -426,8 +433,8 @@ private class ShardingProducerControllerImpl[A: ClassTag](
           active(
             s.copy(out =
               s.out.updated(ack.outKey, outState.copy(unconfirmed = newUnconfirmed, usedNanoTime = newUsedNanoTime))))
-        case None =>
-          // obsolete Ack, ConsumerController already deregistered
+        case _ =>
+          // obsolete Ack from an earlier ProducerController incarnation
           Behaviors.unhandled
       }
     }
@@ -436,7 +443,9 @@ private class ShardingProducerControllerImpl[A: ClassTag](
       val next = w.next
       val outKey = next.producerId
       s.out.get(outKey) match {
-        case Some(out) =>
+        // ProducerController exposes its local self as askNextTo. Comparing refs retains the actor UID,
+        // unlike the logical producerId, which is deliberately reused after cleanup.
+        case Some(out) if out.producerController == next.askNextTo =>
           if (out.nextTo.nonEmpty)
             throw new IllegalStateException(s"Received RequestNext but already has demand for [$outKey]")
 
@@ -469,8 +478,11 @@ private class ShardingProducerControllerImpl[A: ClassTag](
             active(newState)
           }
 
+        case Some(_) =>
+          // Ignore demand from a ProducerController stopped by idle cleanup.
+          context.log.debug("Received obsolete RequestNext for [{}]", outKey)
+          Behaviors.same
         case None =>
-          // if ProducerController was stopped and there was a RequestNext in flight, but will not happen in practise
           context.log.warn("Received RequestNext for unknown [{}]", outKey)
           Behaviors.same
       }
@@ -571,8 +583,8 @@ private class ShardingProducerControllerImpl[A: ClassTag](
       case start: Start[A @unchecked] =>
         receiveStart(start)
 
-      case AskTimeout(outKey, outSeqNr) =>
-        context.log.debug(
+      case AskTimeout(outKey, origin, outSeqNr) =>
+        if (s.out.get(outKey).exists(_.producerController == origin)) context.log.debug(
           "Message seqNr [{}] sent to entity [{}] timed out. It will be redelivered.",
           outSeqNr,
           outKey)
@@ -604,9 +616,9 @@ private class ShardingProducerControllerImpl[A: ClassTag](
       case Success(seqNr) =>
         if (seqNr != outSeqNr)
           context.log.error("Inconsistent Ack seqNr [{}] != [{}]", seqNr, outSeqNr)
-        Ack(outKey, seqNr)
+        Ack(outKey, nextTo.askNextTo, seqNr)
       case Failure(_) =>
-        AskTimeout(outKey, outSeqNr)
+        AskTimeout(outKey, nextTo.askNextTo, outSeqNr)
     }
   }
 
