@@ -834,8 +834,10 @@ the owner is set to the `Cluster(system).selfAddress.hostPort`.
 A shard can acknowledge hand-off while it is waiting to acquire its lease or load its remembered entity identifiers,
 because no entities have started in these states. When a lease acquisition is still pending, the old shard waits for
 that operation to complete before releasing the lease and stopping. This prevents a replacement on the same node from
-acquiring the same lease instance before the old acquisition and subsequent release complete. If either lease operation never completes,
-a replacement on that node remains unable to start; messages for it remain subject to the region's normal buffering limits.
+acquiring the same lease instance before the old acquisition and subsequent release complete. If the acquisition was
+declined, there is nothing to release and the shard stops as soon as the result arrives. The wait is bounded by
+`pekko.cluster.sharding.handoff-timeout`; if the lease operations have not completed by then, the shard logs a warning and
+stops anyway. When the node is preparing for shutdown, the shard stops right away without waiting.
 
 If a shard can't acquire a lease it will remain uninitialized so messages for entities it owns will
 be buffered in the `ShardRegion`. If the lease is lost after initialization the Shard will be terminated.
