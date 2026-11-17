@@ -344,6 +344,10 @@ partition heals. A cluster member is not quarantined when the failure detector t
  * Overflow of the system message delivery buffer, e.g. because of too many `watch` requests at the same time
 (`system-message-buffer-size` config).
  * Unexpected exception occurs in the control subchannel of the remoting infrastructure.
+ * An outbound control stream stops unexpectedly with undelivered system messages in its send queue or held
+while sending a periodic handshake. Cleanup of these buffers during local transport shutdown does not quarantine the peer.
+Messages retained by the send queue or handshake stage are sent to dead letters when those stages stop; this
+does not guarantee recovery of messages already passed to other stages.
 
 The UID of the @apidoc[actor.ActorSystem] is exchanged in a two-way handshake when the first message is sent to
 a destination. The handshake will be retried until the other system replies and no other messages will

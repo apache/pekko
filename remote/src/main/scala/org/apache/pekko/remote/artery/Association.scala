@@ -26,6 +26,7 @@ import scala.annotation.tailrec
 import scala.concurrent.Future
 import scala.concurrent.Promise
 import scala.concurrent.duration._
+import scala.util.Success
 import scala.util.control.NoStackTrace
 
 import org.agrona.concurrent.ManyToOneConcurrentArrayQueue
@@ -790,18 +791,66 @@ private[remote] class Association(
 
     val streamKillSwitch = KillSwitches.shared("outboundControlStreamKillSwitch")
 
-    def sendQueuePostStop[T](pending: Vector[OutboundEnvelope]): Unit = {
-      sendToDeadLetters(pending)
-      val systemMessagesCount = pending.count(env => env.message.isInstanceOf[SystemMessage])
-      if (systemMessagesCount > 0)
-        quarantine(s"SendQueue stopped with [$systemMessagesCount] pending system messages.")
+    val queueStopped = Promise[Done]()
+    val handshakeStopped = Promise[Done]()
+    val pendingSystemMessages = new AtomicReference(Map.empty[Long, Int])
+    // The remote UID this stream incarnation was associated with, pinned by the first postStop to run.
+    val stoppedUid = Promise[Option[Long]]()
+    val quarantineHandled = new AtomicBoolean
+
+    def postStopAction(stopped: Promise[Done])(pending: Vector[OutboundEnvelope], uid: Option[Long]): Unit = {
+      try {
+        // Pin the stream's UID at cleanup; a held handshake message reports its UID from when it was grabbed.
+        stoppedUid.trySuccess(associationState.uniqueRemoteAddress().map(_.uid))
+        val count = pending.count(_.message.isInstanceOf[SystemMessage])
+        if (count > 0)
+          uid.foreach { u =>
+            pendingSystemMessages.updateAndGet(counts => counts.updated(u, counts.getOrElse(u, 0) + count))
+          }
+        sendToDeadLetters(pending)
+      } finally stopped.trySuccess(Done)
     }
+
+    def quarantineStoppedStream(reason: String, uid: Long): Unit =
+      if (!transport.isShutdown && !isRemovedAfterQuarantined()) {
+        val current = associationState
+        current.uniqueRemoteAddress() match {
+          case Some(peer) if peer.uid == uid && quarantineHandled.compareAndSet(false, true) =>
+            if (current.isQuarantined(uid)) {
+              // SystemMessageDelivery may already have quarantined while the old ingress was stopping.
+              if (!current.quarantinedButHarmless(uid))
+                sendControl(Quarantined(localAddress, peer))
+            } else quarantine(reason, Some(uid), harmless = false)
+          case Some(peer) if peer.uid == uid =>
+            log.debug("Quarantine of [{}] after outbound control stream stop already handled", remoteAddress)
+          case Some(peer) =>
+            // The replacement stream builds a fresh SystemMessageDelivery, so nothing needs clearing.
+            log.debug(
+              "Quarantine of [{}] after outbound control stream stop ignored, UID [{}] does not match current UID [{}]. " +
+              "Reason: {}",
+              remoteAddress,
+              uid,
+              peer.uid,
+              reason)
+          case None =>
+            log.debug(
+              "Quarantine of [{}] after outbound control stream stop ignored because unknown UID. Reason: {}",
+              remoteAddress,
+              reason)
+        }
+      }
+
+    def quarantinePendingSystemMessages(): Unit =
+      pendingSystemMessages.get().foreach { case (uid, count) =>
+        quarantineStoppedStream(s"Outbound control stream stopped with [$count] pending system messages.", uid)
+      }
 
     val (queueValue, (control, completed)) =
       Source
-        .fromGraph(new SendQueue[OutboundEnvelope](sendQueuePostStop))
+        .fromGraph(new SendQueue[OutboundEnvelope](pending =>
+          postStopAction(queueStopped)(pending, associationState.uniqueRemoteAddress().map(_.uid))))
         .via(streamKillSwitch.flow)
-        .toMat(transport.outboundControl(this))(Keep.both)
+        .toMat(transport.outboundControl(this, postStopAction(handshakeStopped)))(Keep.both)
         .run()(materializer)
 
     queueValue.inject(wrapper.queue)
@@ -811,14 +860,33 @@ private[remote] class Association(
     _outboundControlIngress = OptionVal.Some(control)
     materializing.countDown()
 
-    updateStreamMatValues(ControlQueueIndex, streamKillSwitch, completed)
+    // A transport sink can complete before the upstream stages have run postStop.
+    // Account for both buffers before replacing the control queue and notifying the peer.
+    // This relies on SendQueue and OutboundHandshake always running postStop (they complete their
+    // promise in a finally block); there is no timeout, so a stage skipping postStop would block
+    // the restart and the transport shutdown that waits on `completed`.
+    implicit val ec = materializer.executionContext
+    val stopped = completed.transformWith { result =>
+      queueStopped.future.zip(handshakeStopped.future).transform(_ => result)
+    }
+    updateStreamMatValues(ControlQueueIndex, streamKillSwitch, stopped)
     setupIdleTimer()
     attachOutboundStreamRestart(
       "Outbound control stream",
       ControlQueueIndex,
       controlQueueSize,
-      completed,
-      () => runOutboundControlStream())
+      stopped,
+      () => runOutboundControlStream(),
+      () => quarantinePendingSystemMessages(),
+      reason =>
+        stoppedUid.future.value match {
+          case Some(Success(Some(uid))) => quarantineStoppedStream(reason, uid)
+          case _                        =>
+            log.debug(
+              "Quarantine of [{}] after outbound control stream stop ignored because unknown UID. Reason: {}",
+              remoteAddress,
+              reason)
+        })
   }
 
   private def getOrCreateQueueWrapper(queueIndex: Int, capacity: Int): QueueWrapper = {
@@ -967,9 +1035,11 @@ private[remote] class Association(
       queueIndex: Int,
       queueCapacity: Int,
       streamCompleted: Future[Done],
-      restart: () => Unit): Unit = {
+      restart: () => Unit,
+      afterRestart: () => Unit = () => (),
+      quarantineAfterFailure: String => Unit = reason => quarantine(reason)): Unit = {
 
-    def lazyRestart(): Unit = {
+    def lazyRestart(notifyPending: Boolean = true): Unit = {
       flightRecorder.transportRestartOutbound(remoteAddress, streamName)
       outboundCompressionAccess = Vector.empty
       if (queueIndex == ControlQueueIndex) {
@@ -985,6 +1055,7 @@ private[remote] class Association(
         queues(queueIndex) = LazyQueueWrapper(createQueue(queueCapacity, queueIndex), wrappedRestartFun)
 
       queuesVisibility = true // volatile write for visibility of the queues array
+      if (notifyPending) afterRestart()
     }
 
     implicit val ec = materializer.executionContext
@@ -1037,13 +1108,15 @@ private[remote] class Association(
           case _                         => stoppedIdle || stoppedQuarantined
         }
 
-        if (queueIndex == ControlQueueIndex && !stoppedQuarantined) {
-          cause match {
-            case _: HandshakeTimeoutException => // ok, quarantine not possible without UID
-            case _                            =>
-              // Must quarantine in case all system messages haven't been delivered.
-              // See also comment in the stoppedIdle case below
-              quarantine(s"Outbound control stream restarted. $cause")
+        def restartAndQuarantine(): Unit = {
+          lazyRestart(notifyPending = !stoppedQuarantined)
+          if (queueIndex == ControlQueueIndex && !stoppedQuarantined) {
+            cause match {
+              case _: HandshakeTimeoutException => // ok, quarantine not possible without UID
+              case _                            =>
+                // The new control queue must be installed before quarantine sends its notifications.
+                quarantineAfterFailure(s"Outbound control stream restarted. $cause")
+            }
           }
         }
 
@@ -1054,20 +1127,20 @@ private[remote] class Association(
 
         if (stoppedIdle) {
           log.debug("{} to [{}] was idle and stopped. It will be restarted if used again.", streamName, remoteAddress)
-          lazyRestart()
+          restartAndQuarantine()
         } else if (stoppedQuarantined) {
           log.debug(
             "{} to [{}] was quarantined and stopped. It will be restarted if used again.",
             streamName,
             remoteAddress)
-          lazyRestart()
+          restartAndQuarantine()
         } else if (bypassRestartCounter || restartCounter.restart()) {
           // ConnectException may happen repeatedly and are already logged in connectionFlowWithRestart
           if (isConnectException)
             log.debug("{} to [{}] failed. Restarting it. {}", streamName, remoteAddress, cause)
           else
             log.warning("{} to [{}] failed. Restarting it. {}", streamName, remoteAddress, cause)
-          lazyRestart()
+          restartAndQuarantine()
         } else {
           log.error(
             cause,
