@@ -119,6 +119,26 @@ class ClusterSingletonLeaseSpec extends PekkoSpec(ConfigFactory.parseString("""
     (manager, testLease, lifecycleProbe)
   }
 
+  /** Downs the manager while its first lease acquire is still in progress. */
+  private def stoppedWhileAcquiring(
+      settings: ClusterSingletonManagerSettings = nextSettings()): (ActorRef, TestLease, TestProbe) = {
+    val lifecycleProbe = TestProbe()
+    val manager = system.actorOf(
+      ClusterSingletonManager.props(Props(new ImportantSingleton(lifecycleProbe.ref)), PoisonPill, settings),
+      settings.singletonName)
+    val testLease = awaitAssert {
+      testLeaseExt.getTestLease(leaseNameFor(settings))
+    }
+    testLease.probe.expectMsg(AcquireReq(leaseOwner))
+    val terminationProbe = TestProbe()
+    terminationProbe.watch(manager)
+    manager ! MemberDowned(cluster.selfMember.copy(MemberStatus.Down))
+    terminationProbe.expectTerminated(manager)
+    // nothing to release until the acquire completes
+    testLease.probe.expectNoMessage(shortDuration)
+    (manager, testLease, lifecycleProbe)
+  }
+
   "A singleton with lease" should {
 
     "not start until lease is available" in {
@@ -342,6 +362,67 @@ class ClusterSingletonLeaseSpec extends PekkoSpec(ConfigFactory.parseString("""
       terminationProbe.expectTerminated(manager)
       testLease.probe.expectMsg(ReleaseReq(leaseOwner))
       testLease.probe.expectNoMessage(shortDuration)
+    }
+
+    "release a lease acquired after the manager stopped while acquiring it" in {
+      val (_, testLease, lifecycleProbe) = stoppedWhileAcquiring()
+      testLease.initialPromise.success(true)
+      testLease.probe.expectMsg(ReleaseReq(leaseOwner))
+      testLease.probe.expectNoMessage(shortDuration)
+      // the singleton is never started by a stopped manager
+      lifecycleProbe.expectNoMessage(shortDuration)
+    }
+
+    "not let a replacement manager acquire the lease before the release of a stopped manager completed" in {
+      val settings = nextSettings()
+      val (_, testLease, _) = stoppedWhileAcquiring(settings)
+
+      // same name on the same actor system, so the same lease instance
+      val replacementLifecycleProbe = TestProbe()
+      system.actorOf(
+        ClusterSingletonManager.props(Props(new ImportantSingleton(replacementLifecycleProbe.ref)), PoisonPill,
+          settings),
+        settings.singletonName)
+      // the acquire of the stopped manager is still in progress, and may still need to be released
+      testLease.probe.expectNoMessage(shortDuration)
+      replacementLifecycleProbe.expectNoMessage(shortDuration)
+
+      testLease.initialPromise.success(true)
+      testLease.probe.expectMsg(ReleaseReq(leaseOwner))
+      // only acquired again after the release completed, so the release can't release the replacement's lease
+      testLease.probe.expectMsg(AcquireReq(leaseOwner))
+      replacementLifecycleProbe.expectMsg("preStart")
+      testLease.probe.expectNoMessage(shortDuration)
+    }
+
+    "not let a replacement manager acquire the lease before the release of a stopped oldest completed" in {
+      val (manager, testLease, lifecycleProbe) = startedSingleton()
+      val settings = ClusterSingletonManagerSettings(system).withSingletonName(manager.path.name)
+      val releaseResult = Promise[Boolean]()
+      testLease.setNextReleaseResult(releaseResult.future)
+      watch(manager)
+      system.stop(manager)
+      expectTerminated(manager)
+      lifecycleProbe.expectMsg("postStop")
+      testLease.probe.expectMsg(ReleaseReq(leaseOwner))
+
+      val replacementLifecycleProbe = TestProbe()
+      system.actorOf(
+        ClusterSingletonManager.props(Props(new ImportantSingleton(replacementLifecycleProbe.ref)), PoisonPill,
+          settings),
+        settings.singletonName)
+      testLease.probe.expectNoMessage(shortDuration)
+
+      releaseResult.success(true)
+      testLease.probe.expectMsg(AcquireReq(leaseOwner))
+      replacementLifecycleProbe.expectMsg("preStart")
+    }
+
+    "not release when the acquire in progress at stop does not succeed" in {
+      val (_, testLease, lifecycleProbe) = stoppedWhileAcquiring()
+      testLease.initialPromise.success(false)
+      testLease.probe.expectNoMessage(shortDuration)
+      lifecycleProbe.expectNoMessage(shortDuration)
     }
 
     "release lease when leaving oldest" in {
