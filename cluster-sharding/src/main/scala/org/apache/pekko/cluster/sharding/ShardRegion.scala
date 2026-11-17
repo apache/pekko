@@ -1027,6 +1027,12 @@ private[pekko] class ShardRegion(
       if (handingOff.contains(ref)) {
         handingOff = handingOff - ref
         log.debug("{}: Shard [{}] handoff complete", typeName, shardId)
+        // The shard may have been allocated to this region again while the old incarnation was still
+        // stopping (e.g. waiting for lease cleanup). Start the replacement now instead of waiting for
+        // the next retry tick to re-request the home of the buffered messages.
+        if (!gracefulShutdownInProgress && regionByShard.get(shardId).contains(self) &&
+          shardBuffers.contains(shardId))
+          getShard(shardId)
       } else {
         // if persist fails it will stop
         log.debug("{}: Shard [{}]  terminated while not being handed off", typeName, shardId)

@@ -98,6 +98,9 @@ private[pekko] object Shard {
       extends ClusterShardingSerializable
 
   final case class LeaseAcquireResult(acquired: Boolean, reason: Option[Throwable]) extends DeadLetterSuppression
+  private case object LeaseReleaseCompleted extends DeadLetterSuppression
+  private case object LeaseCleanupTimeout extends DeadLetterSuppression
+  private val LeaseCleanupTimeoutKey = "lease-cleanup-timeout"
   final case class LeaseLost(reason: Option[Throwable]) extends DeadLetterSuppression
 
   case object LeaseRetry extends DeadLetterSuppression
@@ -505,6 +508,10 @@ private[pekko] class Shard(
       Cluster(context.system).selfAddress.hostPort)
   }
 
+  private var leaseAcquire: Future[Boolean] = Future.successful(false)
+  // true once this incarnation has started releasing the lease, or decided there is nothing to release
+  private var leaseReleaseHandled = false
+
   private val leaseRetryInterval = settings.leaseSettings match {
     case Some(l) => l.leaseRetryInterval
     case None    => 5.seconds // not used
@@ -552,6 +559,10 @@ private[pekko] class Shard(
       receiveLeaseLost(ll)
     case me: MemberEvent =>
       receiveMemberEvent(me)
+    case HandOff(`shardId`) =>
+      handOffWhileInitializing(sender())
+    case msg: CoordinatorMessage =>
+      receiveCoordinatorMessage(msg)
     case msg =>
       if (verboseDebug)
         log.debug(
@@ -573,7 +584,8 @@ private[pekko] class Shard(
 
   private def tryGetLease(l: Lease): Unit = {
     log.info("{}: Acquiring lease {}", typeName, l.settings)
-    pipe(l.acquire(reason => self ! LeaseLost(reason)).map(r => LeaseAcquireResult(r, None)).recover {
+    leaseAcquire = l.acquire(reason => self ! LeaseLost(reason))
+    pipe(leaseAcquire.map(r => LeaseAcquireResult(r, None)).recover {
       case t => LeaseAcquireResult(acquired = false, Some(t))
     }).to(self)
   }
@@ -600,6 +612,10 @@ private[pekko] class Shard(
       onEntitiesRemembered(entityIds)
     case RememberEntityTimeout(GetEntities) =>
       loadingEntityIdsFailed()
+    case HandOff(`shardId`) =>
+      handOffWhileInitializing(sender())
+    case msg: CoordinatorMessage =>
+      receiveCoordinatorMessage(msg)
     case me: MemberEvent =>
       receiveMemberEvent(me)
     case msg =>
@@ -931,6 +947,65 @@ private[pekko] class Shard(
       }
   }
 
+  private def handOffWhileInitializing(replyTo: ActorRef): Unit = {
+    replyTo ! ShardStopped(shardId)
+    timers.cancel(LeaseRetryTimer)
+    timers.cancel(RememberEntityTimeoutKey)
+    if (preparingForShutdown) {
+      log.info("{}: HandOff shard [{}] while preparing for shutdown. Stopping right away.", typeName, shardId)
+      // postStop starts the lease release without waiting for it
+      context.stop(self)
+    } else {
+      context.become(awaitingLeaseCleanup)
+      unstashAll()
+      if (lease.isDefined) {
+        // Keep this incarnation until both operations complete. LeaseProvider reuses the same
+        // Lease instance, so merely invoking release before termination is not sufficient.
+        // The wait is bounded by the hand-off timeout, as for stopping entities in a normal hand-off.
+        log.debug("{}: HandOff shard [{}] waiting for outstanding lease operations", typeName, shardId)
+        timers.startSingleTimer(LeaseCleanupTimeoutKey, LeaseCleanupTimeout, settings.tuningParameters.handOffTimeout)
+        leaseAcquire.value.foreach(acquired => onLeaseAcquireCompletedDuringHandOff(acquired.toOption.contains(false)))
+      } else self ! LeaseReleaseCompleted
+    }
+  }
+
+  private def awaitingLeaseCleanup: Receive = {
+    case LeaseAcquireResult(acquired, reason) =>
+      if (!leaseReleaseHandled) onLeaseAcquireCompletedDuringHandOff(declined = !acquired && reason.isEmpty)
+    case LeaseReleaseCompleted =>
+      context.stop(self)
+    case LeaseCleanupTimeout =>
+      log.warning(
+        "{}: HandOff shard [{}] stopping after outstanding lease operations did not complete within [{}]",
+        typeName,
+        shardId,
+        settings.tuningParameters.handOffTimeout.pretty)
+      context.stop(self)
+    case msg: ShardQuery    => receiveShardQuery(msg)
+    case HandOff(`shardId`) => sender() ! ShardStopped(shardId)
+    case me: MemberEvent    =>
+      receiveMemberEvent(me)
+      if (preparingForShutdown) {
+        log.info("{}: Shard [{}] preparing for shutdown while awaiting lease cleanup. Stopping right away.", typeName,
+          shardId)
+        context.stop(self)
+      }
+    case _: LeaseLost | LeaseRetry => // no longer serving or trying to acquire
+    case msg                       =>
+      context.system.deadLetters ! Dropped(msg, "Shard is handing off while awaiting lease cleanup", sender(), self)
+  }
+
+  private def onLeaseAcquireCompletedDuringHandOff(declined: Boolean): Unit = {
+    leaseReleaseHandled = true
+    if (declined) {
+      // the lease was never granted to this owner, so there is nothing to release
+      self ! LeaseReleaseCompleted
+    } else {
+      // a failed acquire may still have taken the lease in the backend, so release defensively
+      releaseLease().onComplete(_ => self ! LeaseReleaseCompleted)
+    }
+  }
+
   private def receiveTerminated(ref: ActorRef): Unit = {
     if (handOffStopper.contains(ref))
       context.stop(self)
@@ -1239,17 +1314,18 @@ private[pekko] class Shard(
 
   override def postStop(): Unit = {
     passivateIntervalTask.foreach(_.cancel())
-    releaseLease()
+    if (!leaseReleaseHandled) releaseLease()
     log.debug("{}: Shard [{}] shutting down", typeName, shardId)
   }
 
-  private def releaseLease(): Unit =
-    lease.foreach { l =>
+  private def releaseLease(): Future[Unit] =
+    lease.fold(Future.successful(())) { l =>
       // The shard is stopping, so log from the callback; the adapter is thread-safe.
       val releaseLog = log
       val tn = typeName
       val id = shardId
-      Future.fromTry(Try(l.release())).flatten.onComplete {
+      val released = Future.fromTry(Try(l.release())).flatten
+      released.onComplete {
         case Success(true)  =>
         case Success(false) =>
           releaseLog.error(
@@ -1263,6 +1339,7 @@ private[pekko] class Shard(
             tn,
             id)
       }
+      released.map(_ => ()).recover { case _ => () }
     }
 
 }
