@@ -20,20 +20,20 @@ import org.apache.pekko.persistence.*;
 interface AsyncWritePlugin {
   // #async-write-plugin-api
   /**
-   * Java API, Plugin API: asynchronously writes a batch ({@code Iterable}) of persistent messages to the
-   * journal.
+   * Java API, Plugin API: asynchronously writes a batch ({@code Iterable}) of persistent messages
+   * to the journal.
    *
    * <p>The batch is only for performance reasons, i.e. all messages don't have to be written
    * atomically. Higher throughput can typically be achieved by using batch inserts of many records
    * compared to inserting records one-by-one, but this aspect depends on the underlying data store
    * and a journal implementation can implement it as efficient as possible. Journals should aim to
-   * persist events in-order for a given {@code persistenceId} as otherwise in case of a failure, the
-   * persistent state may be end up being inconsistent.
+   * persist events in-order for a given {@code persistenceId} as otherwise in case of a failure,
+   * the persistent state may be end up being inconsistent.
    *
    * <p>Each {@code AtomicWrite} message contains the single {@code PersistentRepr} that corresponds
-   * to the event that was passed to the {@code persist} method of the {@code PersistentActor}, or it
-   * contains several {@code PersistentRepr} that corresponds to the events that were passed to the
-   * {@code persistAll} method of the {@code PersistentActor}. All {@code PersistentRepr} of the
+   * to the event that was passed to the {@code persist} method of the {@code PersistentActor}, or
+   * it contains several {@code PersistentRepr} that corresponds to the events that were passed to
+   * the {@code persistAll} method of the {@code PersistentActor}. All {@code PersistentRepr} of the
    * {@code AtomicWrite} must be written to the data store atomically, i.e. all or none must be
    * stored. If the journal (data store) cannot support atomic writes of multiple events it should
    * reject such writes with an {@code Optional} with an {@code UnsupportedOperationException}
@@ -44,7 +44,8 @@ interface AsyncWritePlugin {
    * must only be completed normally when every {@code AtomicWrite} has either been stored
    * successfully or rejected as described below. All events in a successfully stored {@code
    * AtomicWrite} must be readable and visible in a subsequent replay. If there is uncertainty about
-   * whether messages were stored or not the {@code CompletionStage} must be completed exceptionally.
+   * whether messages were stored or not the {@code CompletionStage} must be completed
+   * exceptionally.
    *
    * <p>Data store connection problems must be signaled by completing the {@code CompletionStage}
    * exceptionally.
@@ -52,8 +53,8 @@ interface AsyncWritePlugin {
    * <p>The journal can also signal that it rejects individual messages ({@code AtomicWrite}) by the
    * returned {@code Iterable<Optional<Exception>>}. An empty {@code Iterable} signals that all
    * {@code AtomicWrite} messages were stored successfully. Otherwise, the returned {@code Iterable}
-   * must have as many elements as the input {@code messages} {@code Iterable}, in the same order. An
-   * empty {@code Optional} signals that the corresponding {@code AtomicWrite} was stored
+   * must have as many elements as the input {@code messages} {@code Iterable}, in the same order.
+   * An empty {@code Optional} signals that the corresponding {@code AtomicWrite} was stored
    * successfully; a non-empty {@code Optional} signals rejection, with an exception describing the
    * problem. Rejecting a message means it was not stored, i.e. it must not be included in a later
    * replay. Rejecting a message is typically done before attempting to store it, e.g. because of
@@ -67,13 +68,13 @@ interface AsyncWritePlugin {
    * batch size.
    *
    * <p>Calls to this method are serialized by the enclosing journal actor. If you spawn work in
-   * asynchronous tasks it is alright that they complete the {@code CompletionStage} instances in any
-   * order, but the actual writes for a specific persistenceId should be serialized to avoid issues
-   * such as events of a later write are visible to consumers (query side, or replay) before the
-   * events of an earlier write are visible. This can also be done with consistent hashing if it is
-   * too fine grained to do it on the persistenceId level. Normally a {@code PersistentActor} will
-   * only have one outstanding write request to the journal but it may emit several write requests
-   * when {@code persistAsync} is used and the max batch size is reached.
+   * asynchronous tasks it is alright that they complete the {@code CompletionStage} instances in
+   * any order, but the actual writes for a specific persistenceId should be serialized to avoid
+   * issues such as events of a later write are visible to consumers (query side, or replay) before
+   * the events of an earlier write are visible. This can also be done with consistent hashing if it
+   * is too fine grained to do it on the persistenceId level. Normally a {@code PersistentActor}
+   * will only have one outstanding write request to the journal but it may emit several write
+   * requests when {@code persistAsync} is used and the max batch size is reached.
    *
    * <p>This call is protected with a circuit-breaker.
    *
