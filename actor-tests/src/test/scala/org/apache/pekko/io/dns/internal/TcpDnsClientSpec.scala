@@ -19,7 +19,7 @@ import org.apache.pekko
 import pekko.actor.{ ActorKilledException, Kill, Props }
 import pekko.io.Tcp
 import pekko.io.Tcp.{ Connected, PeerClosed, Register }
-import pekko.io.dns.internal.DnsClient.Answer
+import pekko.io.dns.internal.DnsClient.TcpDnsAnswer
 import pekko.io.dns.{ RecordClass, RecordType }
 import pekko.testkit.{ EventFilter, ImplicitSender, PekkoSpec, TestProbe }
 
@@ -61,7 +61,7 @@ class TcpDnsClientSpec extends PekkoSpec with ImplicitSender {
   "The async TCP DNS client" should {
     val exampleRequestMessage =
       Message(42, MessageFlags(), questions = Seq(Question("pekko.io", RecordType.A, RecordClass.IN)))
-    val exampleResponseMessage = Message(42, MessageFlags(answer = true))
+    val exampleResponseMessage = exampleRequestMessage.copy(flags = MessageFlags(answer = true))
     val dnsServerAddress = InetSocketAddress.createUnresolved("foo", 53)
     val localAddress = InetSocketAddress.createUnresolved("localhost", 13441)
 
@@ -81,7 +81,7 @@ class TcpDnsClientSpec extends PekkoSpec with ImplicitSender {
       expectMsgType[Tcp.Write]
       registered ! Tcp.Received(encodeLength(exampleResponseMessage.write().length) ++ exampleResponseMessage.write())
 
-      answerProbe.expectMsg(Answer(42, Nil))
+      answerProbe.expectMsg(TcpDnsAnswer(42, Nil, questions = exampleRequestMessage.questions))
 
       // When a new request arrived after the connection is closed
       registered ! PeerClosed
@@ -109,7 +109,7 @@ class TcpDnsClientSpec extends PekkoSpec with ImplicitSender {
       registered ! Tcp.Received(fullResponse.take(8))
       registered ! Tcp.Received(fullResponse.drop(8))
 
-      answerProbe.expectMsg(Answer(42, Nil))
+      answerProbe.expectMsg(TcpDnsAnswer(42, Nil, questions = exampleRequestMessage.questions))
     }
 
     "accept merged TCP responses" in {
@@ -134,8 +134,8 @@ class TcpDnsClientSpec extends PekkoSpec with ImplicitSender {
       registered ! Tcp.Received(fullResponse.take(8))
       registered ! Tcp.Received(fullResponse.drop(8))
 
-      answerProbe.expectMsg(Answer(42, Nil))
-      answerProbe.expectMsg(Answer(43, Nil))
+      answerProbe.expectMsg(TcpDnsAnswer(42, Nil, questions = exampleRequestMessage.questions))
+      answerProbe.expectMsg(TcpDnsAnswer(43, Nil, questions = exampleRequestMessage.questions))
     }
 
     "fail when the connection just terminates" in {

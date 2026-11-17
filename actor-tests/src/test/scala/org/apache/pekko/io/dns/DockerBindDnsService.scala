@@ -136,7 +136,7 @@ abstract class DockerBindDnsService(config: Config) extends PekkoSpec(config) wi
         implicit val timeout: Timeout = 2.seconds
         requestId += 1
         val answer = (readinessClient ? DnsClient.Question4(requestId.toShort, "a-single.foo.test"))
-          .mapTo[DnsClient.Answer]
+          .mapTo[DnsClient.DnsAnswer]
           .futureValue
         answer.rrs.collect { case record: ARecord => record.ip } shouldEqual Seq(
           InetAddress.getByName("192.168.1.20"))

@@ -47,8 +47,37 @@ import pekko.pattern.{ BackoffOpts, BackoffSupervisor }
   final case class SrvQuestion(id: Short, name: String) extends DnsQuestion
   final case class Question4(id: Short, name: String) extends DnsQuestion
   final case class Question6(id: Short, name: String) extends DnsQuestion
-  final case class Answer(id: Short, rrs: im.Seq[ResourceRecord], additionalRecs: im.Seq[ResourceRecord] = Nil)
-      extends NoSerializationVerificationNeeded
+  sealed trait DnsAnswer extends NoSerializationVerificationNeeded {
+    def id: Short
+    def rrs: im.Seq[ResourceRecord]
+    def additionalRecs: im.Seq[ResourceRecord]
+  }
+
+  final case class UdpDnsAnswer(id: Short, rrs: im.Seq[ResourceRecord], additionalRecs: im.Seq[ResourceRecord] = Nil)
+      extends DnsAnswer
+
+  final case class TcpDnsAnswer(
+      id: Short,
+      rrs: im.Seq[ResourceRecord],
+      additionalRecs: im.Seq[ResourceRecord] = Nil,
+      questions: im.Seq[Question] = Nil)
+      extends DnsAnswer
+
+  private[internal] def isFallbackQuestion(actual: Seq[Question], expected: Seq[Question]): Boolean =
+    actual.isEmpty || isSameQuestion(actual, expected)
+
+  private def isSameQuestion(q1s: Seq[Question], q2s: Seq[Question]): Boolean = {
+    @tailrec
+    def impl(q1s: List[Question], q2s: List[Question]): Boolean = {
+      (q1s, q2s) match {
+        case (Nil, Nil)           => true
+        case (h1 :: t1, h2 :: t2) => h1.isSame(h2) && impl(t1, t2)
+        case _                    => false
+      }
+    }
+
+    impl(q1s.sortBy(_.name).toList, q2s.sortBy(_.name).toList)
+  }
 
   final case class DuplicateId(id: Short) extends NoSerializationVerificationNeeded
   final case class DropRequest(question: DnsQuestion)
@@ -69,6 +98,9 @@ import pekko.pattern.{ BackoffOpts, BackoffSupervisor }
   private val securityLog = Logging.withMarker(this)
 
   private[internal] var inflightRequests: Map[Short, (ActorRef, Message)] = Map.empty
+
+  // IDs of pending requests handed to the TCP client after a truncated UDP response.
+  private var tcpFallbackRequests: Set[Short] = Set.empty
 
   lazy val tcpDnsClient: ActorRef = createTcpClient()
 
@@ -102,7 +134,7 @@ import pekko.pattern.{ BackoffOpts, BackoffSupervisor }
       inflightRequests.get(msg.id) match {
         case Some((_, orig)) if isSameQuestion(Seq(question(msg)), orig.questions) =>
           log.debug("Dropping request [{}]", msg.id)
-          inflightRequests -= msg.id
+          removeInflightRequest(msg.id)
           sender() ! Dropped(msg.id)
         case Some((_, orig)) =>
           log.warning("Cannot drop inflight DNS request the question [{}] does not match [{}]",
@@ -144,9 +176,11 @@ import pekko.pattern.{ BackoffOpts, BackoffSupervisor }
           Try {
             val msg = Message.parse(send.payload)
             inflightRequests.get(msg.id).foreach {
+              case _ if tcpFallbackRequests.contains(msg.id) =>
+                log.debug("Ignoring UDP send failure after TCP fallback for id {}", msg.id)
               case (s, orig) if isSameQuestion(msg.questions, orig.questions) =>
                 s ! Failure(new RuntimeException("Send failed to nameserver"))
-                inflightRequests -= msg.id
+                removeInflightRequest(msg.id)
               case (_, orig) =>
                 log.warning("Cannot command failed question [{}] does not match [{}]",
                   msg.questions.mkString(","),
@@ -168,11 +202,16 @@ import pekko.pattern.{ BackoffOpts, BackoffSupervisor }
       val msg = Message.parse(data)
       log.debug("Decoded UDP DNS response [{}]", msg)
 
-      if (msg.flags.isTruncated) {
-        log.debug("DNS response truncated, falling back to TCP")
+      if (tcpFallbackRequests.contains(msg.id)) {
+        log.debug("Ignoring UDP response after TCP fallback for id {}", msg.id)
+      } else if (msg.flags.isTruncated) {
         inflightRequests.get(msg.id) match {
-          case Some((_, msg)) =>
-            tcpDnsClient ! msg
+          case Some((_, orig)) if isFallbackQuestion(msg.questions, orig.questions) =>
+            log.debug("DNS response truncated, falling back to TCP")
+            tcpFallbackRequests += msg.id
+            tcpDnsClient ! orig
+          case Some(_) =>
+            log.debug("Ignoring truncated DNS response whose question does not match pending request id {}", msg.id)
           case _ =>
             log.debug("Client for id {} not found. Discarding unsuccessful response.", msg.id)
         }
@@ -184,7 +223,7 @@ import pekko.pattern.{ BackoffOpts, BackoffSupervisor }
               msg.id,
               msg.questions.mkString(","),
               orig.questions.mkString(","))
-          case Some((_, _)) =>
+          case Some((reply, _)) =>
             if (log.isDebugEnabled) {
               log.debug("DNS response id {} has response code {}: question [{}]",
                 msg.id,
@@ -193,21 +232,34 @@ import pekko.pattern.{ BackoffOpts, BackoffSupervisor }
             }
             val (recs, additionalRecs) =
               if (msg.flags.responseCode == ResponseCode.SUCCESS) (msg.answerRecs, msg.additionalRecs) else (Nil, Nil)
-            self ! Answer(msg.id, recs, additionalRecs)
+            completeRequest(UdpDnsAnswer(msg.id, recs, additionalRecs), reply)
           case None =>
             log.warning("Unexpected DNS response invalid id {}", msg.id)
         }
       }
-    case response: Answer =>
-      inflightRequests.get(response.id) match {
-        case Some((reply, _)) =>
-          reply ! response
-          inflightRequests -= response.id
-        case None =>
-          log.debug("Client for id {} not found. Discarding response.", response.id)
-      }
+    case answer: TcpDnsAnswer =>
+      if (tcpFallbackRequests.contains(answer.id)) {
+        inflightRequests.get(answer.id) match {
+          case Some((reply, orig)) if answer.questions.isEmpty || isSameTcpQuestion(answer.questions, orig.questions) =>
+            completeRequest(answer, reply)
+          case Some(_) =>
+            log.debug("Ignoring TCP DNS response whose question does not match pending request id {}", answer.id)
+          case None =>
+            log.debug("Client for id {} not found. Discarding answer.", answer.id)
+        }
+      } else log.debug("No TCP request for id {}. Discarding answer.", answer.id)
     case Udp.Unbind  => socket ! Udp.Unbind
     case Udp.Unbound => context.stop(self)
+  }
+
+  private def removeInflightRequest(id: Short): Unit = {
+    inflightRequests -= id
+    tcpFallbackRequests -= id
+  }
+
+  private def completeRequest(response: DnsAnswer, reply: ActorRef): Unit = {
+    removeInflightRequest(response.id)
+    reply ! response
   }
 
   private def newInflightRequests(msg: Message, theSender: ActorRef)(func: => Unit): Unit = {
@@ -220,17 +272,12 @@ import pekko.pattern.{ BackoffOpts, BackoffSupervisor }
     }
   }
 
-  private def isSameQuestion(q1s: Seq[Question], q2s: Seq[Question]): Boolean = {
-    @tailrec
-    def impl(q1s: List[Question], q2s: List[Question]): Boolean = {
-      (q1s, q2s) match {
-        case (Nil, Nil)           => true
-        case (h1 :: t1, h2 :: t2) => h1.isSame(h2) && impl(t1, t2)
-        case _                    => false
-      }
-    }
+  // DNS names are case-insensitive for ASCII letters (RFC 4343, section 3).
+  private def isSameTcpQuestion(actual: Seq[Question], expected: Seq[Question]): Boolean = {
+    def foldAscii(question: Question): Question =
+      question.copy(name = question.name.map(c => if (c >= 'A' && c <= 'Z') (c + ('a' - 'A')).toChar else c))
 
-    impl(q1s.sortBy(_.name).toList, q2s.sortBy(_.name).toList)
+    isSameQuestion(actual.map(foldAscii), expected.map(foldAscii))
   }
 
   private def question(msg: DnsQuestion): Question =
