@@ -55,6 +55,10 @@ private[io] abstract class TcpConnection(val tcp: TcpExt, val channel: SocketCha
   private var closedMessage: Option[CloseInformation] = None // for ConnectionClosed message in postStop
   private var watchedActor: ActorRef = context.system.deadLetters
   private var registration: Option[ChannelRegistration] = None
+  // senders of further close commands received while already closing; notified with the final event
+  private var additionalCloseCommanders: Set[ActorRef] = Set.empty
+  // a close command is waiting for a pending write to drain, so a peer EOF must not replace it
+  private var drainingRequestedClose = false
 
   def setRegistration(registration: ChannelRegistration): Unit = this.registration = Some(registration)
   protected def signDeathPact(actor: ActorRef): Unit = {
@@ -144,17 +148,29 @@ private[io] abstract class TcpConnection(val tcp: TcpExt, val channel: SocketCha
 
     case WriteFileFailed(e) => handleError(info.handler, e) // rethrow exception from dispatcher task
 
-    case Close if closedEvent == ConfirmedClosed => handleClose(info, closeCommander, Closed)
-    case Abort                                   => handleClose(info, Some(sender()), Aborted)
+    case cmd: CloseCommand =>
+      additionalCloseCommanders += sender()
+      cmd match {
+        case Abort                                   => handleClose(info, closeCommander, Aborted)
+        case Close if closedEvent == ConfirmedClosed =>
+          // stop waiting for the peer's FIN, but still flush the pending write first
+          context.become(closingWithPendingWrite(info, closeCommander, Closed))
+        case _ => // keep draining; the requested close completes when the write finishes
+      }
   }
 
   /** connection is closed on our side and we're waiting from confirmation from the other side */
   def closing(info: ConnectionInfo, closeCommander: Option[ActorRef]): Receive = {
-    case SuspendReading  => suspendReading(info)
-    case ResumeReading   => resumeReading(info, closeCommander)
-    case ChannelReadable => doRead(info, closeCommander)
-    case Close           => doCloseConnection(info.handler, closeCommander, Close.event)
-    case Abort           => handleClose(info, Some(sender()), Aborted)
+    case SuspendReading    => suspendReading(info)
+    case ResumeReading     => resumeReading(info, closeCommander)
+    case ChannelReadable   => doRead(info, closeCommander)
+    case cmd: CloseCommand =>
+      additionalCloseCommanders += sender()
+      cmd match {
+        case Close          => doCloseConnection(info.handler, closeCommander, Close.event)
+        case Abort          => handleClose(info, closeCommander, Aborted)
+        case ConfirmedClose => // already waiting for the peer to confirm
+      }
   }
 
   def handleWriteMessages(info: ConnectionInfo): Receive = {
@@ -318,6 +334,11 @@ private[io] abstract class TcpConnection(val tcp: TcpExt, val channel: SocketCha
       case Aborted =>
         if (TraceLogging) log.debug("Got Abort command. Resetting connection.")
         doCloseConnection(info.handler, closeCommander, closedEvent)
+      case PeerClosed if drainingRequestedClose =>
+        // peer EOF while a requested close is still flushing its write: remember it, so that a
+        // confirmed close completes without waiting, and keep the requested close and its commander
+        if (TraceLogging) log.debug("Read returned end-of-stream while finishing a pending write before closing")
+        peerClosed = true
       case PeerClosed if info.keepOpenOnPeerClosed =>
         // report that peer closed the connection
         info.handler ! PeerClosed
@@ -328,6 +349,7 @@ private[io] abstract class TcpConnection(val tcp: TcpExt, val channel: SocketCha
         // Our registered actor is now free to terminate cleanly
         unsignDeathPact()
         if (TraceLogging) log.debug("Got Close command but write is still pending.")
+        if (closedEvent != PeerClosed) drainingRequestedClose = true
         context.become(closingWithPendingWrite(info, closeCommander, closedEvent))
       case ConfirmedClosed => // shutdown output and wait for confirmation
         if (TraceLogging) log.debug("Got ConfirmedClose command, sending FIN.")
@@ -345,7 +367,7 @@ private[io] abstract class TcpConnection(val tcp: TcpExt, val channel: SocketCha
     }
 
   def doCloseConnection(handler: ActorRef, closeCommander: Option[ActorRef], closedEvent: ConnectionClosed): Unit = {
-    stopWith(CloseInformation(Set(handler) ++ closeCommander, closedEvent))
+    stopWith(CloseInformation(Set(handler) ++ closeCommander ++ additionalCloseCommanders, closedEvent))
   }
 
   def handleError(handler: ActorRef, exception: IOException): Unit = {
