@@ -26,6 +26,7 @@ import scala.annotation.tailrec
 import scala.concurrent.Future
 import scala.concurrent.Promise
 import scala.concurrent.duration._
+import scala.util.Success
 import scala.util.control.NoStackTrace
 
 import org.agrona.concurrent.ManyToOneConcurrentArrayQueue
@@ -793,13 +794,14 @@ private[remote] class Association(
     val queueStopped = Promise[Done]()
     val handshakeStopped = Promise[Done]()
     val pendingSystemMessages = new AtomicReference(Map.empty[Long, Int])
-    val stoppedUid = new AtomicReference[Option[Long]]
+    // The remote UID this stream incarnation was associated with, pinned by the first postStop to run.
+    val stoppedUid = Promise[Option[Long]]()
     val quarantineHandled = new AtomicBoolean
 
     def postStopAction(stopped: Promise[Done])(pending: Vector[OutboundEnvelope], uid: Option[Long]): Unit = {
       try {
         // Pin the stream's UID at cleanup; a held handshake message reports its UID from when it was grabbed.
-        stoppedUid.compareAndSet(null, associationState.uniqueRemoteAddress().map(_.uid))
+        stoppedUid.trySuccess(associationState.uniqueRemoteAddress().map(_.uid))
         val count = pending.count(_.message.isInstanceOf[SystemMessage])
         if (count > 0)
           uid.foreach { u =>
@@ -819,7 +821,22 @@ private[remote] class Association(
               if (!current.quarantinedButHarmless(uid))
                 sendControl(Quarantined(localAddress, peer))
             } else quarantine(reason, Some(uid), harmless = false)
-          case _ =>
+          case Some(peer) if peer.uid == uid =>
+            log.debug("Quarantine of [{}] after outbound control stream stop already handled", remoteAddress)
+          case Some(peer) =>
+            // The replacement stream builds a fresh SystemMessageDelivery, so nothing needs clearing.
+            log.debug(
+              "Quarantine of [{}] after outbound control stream stop ignored, UID [{}] does not match current UID [{}]. " +
+              "Reason: {}",
+              remoteAddress,
+              uid,
+              peer.uid,
+              reason)
+          case None =>
+            log.debug(
+              "Quarantine of [{}] after outbound control stream stop ignored because unknown UID. Reason: {}",
+              remoteAddress,
+              reason)
         }
       }
 
@@ -845,6 +862,9 @@ private[remote] class Association(
 
     // A transport sink can complete before the upstream stages have run postStop.
     // Account for both buffers before replacing the control queue and notifying the peer.
+    // This relies on SendQueue and OutboundHandshake always running postStop (they complete their
+    // promise in a finally block); there is no timeout, so a stage skipping postStop would block
+    // the restart and the transport shutdown that waits on `completed`.
     implicit val ec = materializer.executionContext
     val stopped = completed.transformWith { result =>
       queueStopped.future.zip(handshakeStopped.future).transform(_ => result)
@@ -858,7 +878,15 @@ private[remote] class Association(
       stopped,
       () => runOutboundControlStream(),
       () => quarantinePendingSystemMessages(),
-      reason => stoppedUid.get().foreach(uid => quarantineStoppedStream(reason, uid)))
+      reason =>
+        stoppedUid.future.value match {
+          case Some(Success(Some(uid))) => quarantineStoppedStream(reason, uid)
+          case _                        =>
+            log.debug(
+              "Quarantine of [{}] after outbound control stream stop ignored because unknown UID. Reason: {}",
+              remoteAddress,
+              reason)
+        })
   }
 
   private def getOrCreateQueueWrapper(queueIndex: Int, capacity: Int): QueueWrapper = {
