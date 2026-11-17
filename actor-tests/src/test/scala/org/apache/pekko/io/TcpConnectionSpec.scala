@@ -555,6 +555,141 @@ class TcpConnectionSpec extends PekkoSpec("""
       }
     }
 
+    "finish a confirmed close without waiting for the peer when Close arrives during a pending write" in
+    new EstablishedConnectionTest() with SmallRcvBuffer {
+      run {
+        ignoreIfWindows()
+        clientSideChannel.socket.setSendBufferSize(1024)
+
+        connectionHandler.send(connectionActor, writeCmd(Ack))
+        connectionActor.underlyingActor.writePending should ===(true)
+        val confirmedCloseCommander = TestProbe()
+        val closeCommander = TestProbe()
+        confirmedCloseCommander.send(connectionActor, ConfirmedClose)
+        closeCommander.send(connectionActor, Close)
+
+        // No writable notification is delivered until both close commands have been processed.
+        pullFromServerSide(TestSize)
+        connectionHandler.expectMsg(Ack)
+        // The peer never closes its side, so receiving Closed shows Close did not wait for its FIN.
+        connectionHandler.expectMsg(Closed)
+        confirmedCloseCommander.expectMsg(Closed)
+        closeCommander.expectMsg(Closed)
+        assertThisConnectionActorTerminated()
+
+        serverSelectionKey should be(selectedAs(OP_READ, 2.seconds))
+        serverSideChannel.read(ByteBuffer.allocate(1)) should ===(-1)
+      }
+    }
+
+    "reply to every close commander when Abort arrives during a pending write" in
+    new EstablishedConnectionTest() with SmallRcvBuffer {
+      run {
+        ignoreIfWindows()
+        clientSideChannel.socket.setSendBufferSize(1024)
+
+        connectionHandler.send(connectionActor, writeCmd(Ack))
+        connectionActor.underlyingActor.writePending should ===(true)
+        val confirmedCloseCommander = TestProbe()
+        val secondCommander = TestProbe()
+        val abortCommander = TestProbe()
+        confirmedCloseCommander.send(connectionActor, ConfirmedClose)
+        secondCommander.send(connectionActor, ConfirmedClose)
+        abortCommander.send(connectionActor, Abort)
+
+        connectionHandler.expectMsg(Aborted)
+        confirmedCloseCommander.expectMsg(Aborted)
+        secondCommander.expectMsg(Aborted)
+        abortCommander.expectMsg(Aborted)
+        assertThisConnectionActorTerminated()
+      }
+    }
+
+    "reply to a repeated Close during a pending write once the write has finished" in
+    new EstablishedConnectionTest() with SmallRcvBuffer {
+      run {
+        ignoreIfWindows()
+        clientSideChannel.socket.setSendBufferSize(1024)
+
+        connectionHandler.send(connectionActor, writeCmd(Ack))
+        connectionActor.underlyingActor.writePending should ===(true)
+        val secondCommander = TestProbe()
+        connectionHandler.send(connectionActor, Close)
+        secondCommander.send(connectionActor, Close)
+
+        pullFromServerSide(TestSize)
+        connectionHandler.expectMsg(Ack)
+        connectionHandler.expectMsg(Closed)
+        secondCommander.expectMsg(Closed)
+        assertThisConnectionActorTerminated()
+      }
+    }
+
+    List(false, true).foreach { keepOpen =>
+      s"keep a requested Close when the peer sends EOF during a pending write (keepOpenOnPeerClosed = $keepOpen)" in
+      new EstablishedConnectionTest(keepOpenOnPeerClosed = keepOpen) with SmallRcvBuffer {
+        run {
+          ignoreIfWindows()
+          clientSideChannel.socket.setSendBufferSize(1024)
+
+          connectionHandler.send(connectionActor, writeCmd(Ack))
+          connectionActor.underlyingActor.writePending should ===(true)
+          val closeCommander = TestProbe()
+          closeCommander.send(connectionActor, Close)
+
+          closeServerSideAndWaitForClientReadable(fullClose = false)
+          selector.send(connectionActor, ChannelReadable)
+          connectionHandler.expectNoMessage(100.millis)
+
+          pullFromServerSide(TestSize)
+          connectionHandler.expectMsg(Ack)
+          connectionHandler.expectMsg(Closed)
+          closeCommander.expectMsg(Closed)
+          assertThisConnectionActorTerminated()
+        }
+      }
+
+      s"complete a ConfirmedClose when the peer sends EOF during a pending write (keepOpenOnPeerClosed = $keepOpen)" in
+      new EstablishedConnectionTest(keepOpenOnPeerClosed = keepOpen) with SmallRcvBuffer {
+        run {
+          ignoreIfWindows()
+          clientSideChannel.socket.setSendBufferSize(1024)
+
+          connectionHandler.send(connectionActor, writeCmd(Ack))
+          connectionActor.underlyingActor.writePending should ===(true)
+          val closeCommander = TestProbe()
+          closeCommander.send(connectionActor, ConfirmedClose)
+
+          closeServerSideAndWaitForClientReadable(fullClose = false)
+          selector.send(connectionActor, ChannelReadable)
+          connectionHandler.expectNoMessage(100.millis)
+
+          // the peer already sent its FIN, so the confirmed close completes once the write has drained
+          pullFromServerSide(TestSize)
+          connectionHandler.expectMsg(Ack)
+          connectionHandler.expectMsg(ConfirmedClosed)
+          closeCommander.expectMsg(ConfirmedClosed)
+          assertThisConnectionActorTerminated()
+        }
+      }
+    }
+
+    "reply to a Close from another actor while waiting for the peer to confirm a close" in
+    new EstablishedConnectionTest() {
+      run {
+        connectionHandler.send(connectionActor, ConfirmedClose)
+        clientSideChannel.socket.isOutputShutdown should ===(true)
+        val closeCommander = TestProbe()
+        val repeatedCommander = TestProbe()
+        repeatedCommander.send(connectionActor, ConfirmedClose)
+        closeCommander.send(connectionActor, Close)
+        connectionHandler.expectMsg(Closed)
+        repeatedCommander.expectMsg(Closed)
+        closeCommander.expectMsg(Closed)
+        assertThisConnectionActorTerminated()
+      }
+    }
+
     "report when peer closed the connection" in new EstablishedConnectionTest() {
       run {
         closeServerSideAndWaitForClientReadable()
