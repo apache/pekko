@@ -147,7 +147,8 @@ private[pekko] final class TopicImpl[T](topicName: String, context: ActorContext
         context.log.trace("Keeping message of type [{}] published during startup replay window", message.getClass)
         replayBuffer :+= Buffered(message, delivered)
       } else {
-        if (replayWindowOpen && !replayBufferFullLogged) {
+        // with a buffer size of 0 keeping messages is disabled, the buffer isn't full
+        if (replayWindowOpen && !replayBufferFullLogged && startupReplayBufferSize > 0) {
           replayBufferFullLogged = true
           context.log.debug(
             "Startup replay buffer of topic [{}] full ([{}] messages), topic instances and subscribers that " +

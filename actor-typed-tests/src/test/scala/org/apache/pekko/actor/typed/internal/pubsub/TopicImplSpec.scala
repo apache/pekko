@@ -218,6 +218,32 @@ class TopicImplSpec extends AnyWordSpec with Matchers with LogCapturing {
       other.receiveAll() shouldBe Seq(MessagePublished("a"), MessagePublished("b"))
     }
 
+    "keep and replay nothing, and not log a full buffer, when the startup buffering is turned off" in {
+      val kit = topic(window = "0s", bufferSize = 0)
+      val subscriber = TestInbox[String]()
+      val other = instance()
+
+      kit.run(Subscribe(subscriber.ref))
+      kit.run(Publish("quince"))
+      subscriber.receiveAll() shouldBe Seq("quince")
+
+      kit.run(TopicInstancesUpdated(Set(other.ref)))
+      other.hasMessages shouldBe false
+      kit.logEntries().exists(_.message.contains("full")) shouldBe false
+      assertNothingDropped(kit)
+    }
+
+    "log once that the startup replay buffer is full" in {
+      val kit = topic(bufferSize = 1)
+      val subscriber = TestInbox[String]()
+
+      kit.run(Subscribe(subscriber.ref))
+      kit.run(Publish("a"))
+      kit.run(Publish("b"))
+      kit.run(Publish("c"))
+      kit.logEntries().count(_.message.contains("full")) shouldBe 1
+    }
+
     "drop kept messages that reached no subscriber when the startup replay window closes" in {
       withActorTestKit(config(window = "200ms")) { testKit =>
         val fruitTopic = testKit.spawn(Topic[String]("melons"))
