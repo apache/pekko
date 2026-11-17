@@ -47,8 +47,21 @@ import pekko.pattern.{ BackoffOpts, BackoffSupervisor }
   final case class SrvQuestion(id: Short, name: String) extends DnsQuestion
   final case class Question4(id: Short, name: String) extends DnsQuestion
   final case class Question6(id: Short, name: String) extends DnsQuestion
+  sealed trait DnsAnswer extends NoSerializationVerificationNeeded {
+    def id: Short
+    def rrs: im.Seq[ResourceRecord]
+    def additionalRecs: im.Seq[ResourceRecord]
+  }
+
+  @deprecated("Use UdpDnsAnswer or TcpDnsAnswer to identify the response transport", "2.1.0")
   final case class Answer(id: Short, rrs: im.Seq[ResourceRecord], additionalRecs: im.Seq[ResourceRecord] = Nil)
-      extends NoSerializationVerificationNeeded
+      extends DnsAnswer
+
+  final case class UdpDnsAnswer(id: Short, rrs: im.Seq[ResourceRecord], additionalRecs: im.Seq[ResourceRecord] = Nil)
+      extends DnsAnswer
+
+  final case class TcpDnsAnswer(id: Short, rrs: im.Seq[ResourceRecord], additionalRecs: im.Seq[ResourceRecord] = Nil)
+      extends DnsAnswer
 
   final case class DuplicateId(id: Short) extends NoSerializationVerificationNeeded
   final case class DropRequest(question: DnsQuestion)
@@ -69,6 +82,10 @@ import pekko.pattern.{ BackoffOpts, BackoffSupervisor }
   private val securityLog = Logging.withMarker(this)
 
   private[internal] var inflightRequests: Map[Short, (ActorRef, Message)] = Map.empty
+
+  // Kept alongside the existing request map to preserve its internal accessor shape.
+  // Membership means UDP has handed this pending request over to TCP.
+  private var tcpFallbackRequests: Set[Short] = Set.empty
 
   lazy val tcpDnsClient: ActorRef = createTcpClient()
 
@@ -102,7 +119,7 @@ import pekko.pattern.{ BackoffOpts, BackoffSupervisor }
       inflightRequests.get(msg.id) match {
         case Some((_, orig)) if isSameQuestion(Seq(question(msg)), orig.questions) =>
           log.debug("Dropping request [{}]", msg.id)
-          inflightRequests -= msg.id
+          removeInflightRequest(msg.id)
           sender() ! Dropped(msg.id)
         case Some((_, orig)) =>
           log.warning("Cannot drop inflight DNS request the question [{}] does not match [{}]",
@@ -144,9 +161,11 @@ import pekko.pattern.{ BackoffOpts, BackoffSupervisor }
           Try {
             val msg = Message.parse(send.payload)
             inflightRequests.get(msg.id).foreach {
+              case _ if tcpFallbackRequests.contains(msg.id) =>
+                log.debug("Ignoring UDP send failure after TCP fallback for id {}", msg.id)
               case (s, orig) if isSameQuestion(msg.questions, orig.questions) =>
                 s ! Failure(new RuntimeException("Send failed to nameserver"))
-                inflightRequests -= msg.id
+                removeInflightRequest(msg.id)
               case (_, orig) =>
                 log.warning("Cannot command failed question [{}] does not match [{}]",
                   msg.questions.mkString(","),
@@ -168,11 +187,16 @@ import pekko.pattern.{ BackoffOpts, BackoffSupervisor }
       val msg = Message.parse(data)
       log.debug("Decoded UDP DNS response [{}]", msg)
 
-      if (msg.flags.isTruncated) {
-        log.debug("DNS response truncated, falling back to TCP")
+      if (tcpFallbackRequests.contains(msg.id)) {
+        log.debug("Ignoring UDP response after TCP fallback for id {}", msg.id)
+      } else if (msg.flags.isTruncated) {
         inflightRequests.get(msg.id) match {
-          case Some((_, msg)) =>
-            tcpDnsClient ! msg
+          case Some((_, orig)) if msg.questions.isEmpty || isSameQuestion(msg.questions, orig.questions) =>
+            log.debug("DNS response truncated, falling back to TCP")
+            tcpFallbackRequests += msg.id
+            tcpDnsClient ! orig
+          case Some(_) =>
+            log.debug("Ignoring truncated DNS response whose question does not match pending request id {}", msg.id)
           case _ =>
             log.debug("Client for id {} not found. Discarding unsuccessful response.", msg.id)
         }
@@ -184,7 +208,7 @@ import pekko.pattern.{ BackoffOpts, BackoffSupervisor }
               msg.id,
               msg.questions.mkString(","),
               orig.questions.mkString(","))
-          case Some((_, _)) =>
+          case Some((reply, _)) =>
             if (log.isDebugEnabled) {
               log.debug("DNS response id {} has response code {}: question [{}]",
                 msg.id,
@@ -193,21 +217,35 @@ import pekko.pattern.{ BackoffOpts, BackoffSupervisor }
             }
             val (recs, additionalRecs) =
               if (msg.flags.responseCode == ResponseCode.SUCCESS) (msg.answerRecs, msg.additionalRecs) else (Nil, Nil)
-            self ! Answer(msg.id, recs, additionalRecs)
+            completeRequest(UdpDnsAnswer(msg.id, recs, additionalRecs), reply)
           case None =>
             log.warning("Unexpected DNS response invalid id {}", msg.id)
         }
       }
-    case response: Answer =>
-      inflightRequests.get(response.id) match {
-        case Some((reply, _)) =>
-          reply ! response
-          inflightRequests -= response.id
-        case None =>
-          log.debug("Client for id {} not found. Discarding response.", response.id)
-      }
+    case response: TcpDnsAnswer =>
+      if (tcpFallbackRequests.contains(response.id)) completeRequest(response)
+      else log.debug("No TCP request for id {}. Discarding response.", response.id)
     case Udp.Unbind  => socket ! Udp.Unbind
     case Udp.Unbound => context.stop(self)
+  }
+
+  private def removeInflightRequest(id: Short): Unit = {
+    inflightRequests -= id
+    tcpFallbackRequests -= id
+  }
+
+  private def completeRequest(response: DnsAnswer): Unit = {
+    inflightRequests.get(response.id) match {
+      case Some((reply, _)) =>
+        completeRequest(response, reply)
+      case None =>
+        log.debug("Client for id {} not found. Discarding response.", response.id)
+    }
+  }
+
+  private def completeRequest(response: DnsAnswer, reply: ActorRef): Unit = {
+    removeInflightRequest(response.id)
+    reply ! response
   }
 
   private def newInflightRequests(msg: Message, theSender: ActorRef)(func: => Unit): Unit = {

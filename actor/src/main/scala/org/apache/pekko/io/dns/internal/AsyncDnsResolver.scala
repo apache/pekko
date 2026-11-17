@@ -174,9 +174,6 @@ private[pekko] object AsyncDnsResolver {
   private def isInetAddress(name: String): Boolean =
     isIpv4Address(name) || isIpv6Address(name)
 
-  private val Empty =
-    Future.successful(Answer(-1, Seq.empty[ResourceRecord], Seq.empty[ResourceRecord]))
-
   private[pekko] def failToResolve(name: String, nameServers: List[InetSocketAddress]): ResolveFailedException =
     ResolveFailedException(s"Failed to resolve $name with nameservers $nameServers")
 
@@ -216,7 +213,7 @@ private[pekko] object AsyncDnsResolver {
       result: Try[Any])
       extends NoSerializationVerificationNeeded
 
-  private final case class InjectedDnsQuestionAnswer(requestId: Long, result: Try[Answer])
+  private final case class InjectedDnsQuestionAnswer(requestId: Long, result: Try[DnsAnswer])
       extends NoSerializationVerificationNeeded
 
   private final case class DidntDrop(id: Short) extends NoSerializationVerificationNeeded
@@ -237,7 +234,7 @@ private[pekko] object AsyncDnsResolver {
       case question: DnsQuestionPreInjection =>
         sendQuestionWithNewId(sender(), question)
 
-      case DnsQuestionAnswer(replyTo, request, question, Success(result: Answer)) =>
+      case DnsQuestionAnswer(replyTo, request, question, Success(result: DnsAnswer)) =>
         activeRequestIds -= question.id
         replyTo ! InjectedDnsQuestionAnswer(request.requestId, Success(result))
 
@@ -332,7 +329,7 @@ private[pekko] object AsyncDnsResolver {
     private implicit val timeout: Timeout = Timeout(settings.ResolveTimeout)
     private implicit val ec: ExecutionContextExecutor = context.dispatcher
     private var nextRequestId = 0L
-    private var pendingQuestions = Map.empty[Long, Promise[Answer]]
+    private var pendingQuestions = Map.empty[Long, Promise[DnsAnswer]]
 
     private def failToResolve(): Unit = {
       responseActor ! ResolutionAnswer(name, mode, Failure(AsyncDnsResolver.failToResolve(name, settings.NameServers)))
@@ -425,36 +422,43 @@ private[pekko] object AsyncDnsResolver {
       context.stop(self)
     }
 
-    private def sendQuestion(createQuestion: Long => DnsQuestionPreInjection): Future[Answer] = {
+    private def sendQuestion(createQuestion: Long => DnsQuestionPreInjection): Future[DnsAnswer] = {
       nextRequestId += 1
       val requestId = nextRequestId
-      val promise = Promise[Answer]()
+      val promise = Promise[DnsAnswer]()
       pendingQuestions += requestId -> promise
       requestIdInjector.tell(createQuestion(requestId), self)
       promise.future
     }
 
+    private def resolvedAnswer(searchName: String, answer: Future[DnsAnswer]): Future[DnsProtocol.Resolved] =
+      answer.map { result =>
+        DnsProtocol.Resolved(searchName, result.rrs, result.additionalRecs)
+      }(parasitic)
+
     private def resolvedFut(searchName: String, resolver: ActorRef): Future[DnsProtocol.Resolved] =
       mode match {
-        case Ip(ipv4, ipv6) =>
-          val ipv4Recs =
-            if (ipv4) sendQuestion(Question4PreInjection(_, resolver, searchName, timeout))
-            else Empty
-
-          val ipv6Recs =
-            if (ipv6) sendQuestion(Question6PreInjection(_, resolver, searchName, timeout))
-            else Empty
-
+        case Ip(true, true) =>
+          // Dispatch both questions eagerly, retaining IPv4-before-IPv6 result and failure ordering.
+          val ipv4Recs = sendQuestion(Question4PreInjection(_, resolver, searchName, timeout))
+          val ipv6Recs = sendQuestion(Question6PreInjection(_, resolver, searchName, timeout))
           ipv4Recs.flatMap { v4 =>
             ipv6Recs.map { v6 =>
               DnsProtocol.Resolved(searchName, v4.rrs ++ v6.rrs, v4.additionalRecs ++ v6.additionalRecs)
             }(parasitic)
           }(parasitic)
 
+        case Ip(true, false) =>
+          resolvedAnswer(searchName, sendQuestion(Question4PreInjection(_, resolver, searchName, timeout)))
+
+        case Ip(false, true) =>
+          resolvedAnswer(searchName, sendQuestion(Question6PreInjection(_, resolver, searchName, timeout)))
+
+        case Ip(false, false) =>
+          Future.successful(DnsProtocol.Resolved(searchName, Nil))
+
         case Srv =>
-          sendQuestion(SrvQuestionPreInjection(_, resolver, searchName, timeout)).map { answer =>
-            DnsProtocol.Resolved(searchName, answer.rrs, answer.additionalRecs)
-          }(parasitic)
+          resolvedAnswer(searchName, sendQuestion(SrvQuestionPreInjection(_, resolver, searchName, timeout)))
       }
   }
 }
