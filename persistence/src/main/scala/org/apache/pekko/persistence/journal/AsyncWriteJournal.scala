@@ -461,8 +461,8 @@ trait AsyncWriteJournal extends Actor with WriteJournalBase with AsyncRecovery {
    * `UnsupportedOperationException` describing the issue. This limitation should
    * also be documented by the journal plugin.
    *
-   * If there are failures when storing any of the messages in the batch the returned
-   * `Future` must be completed with failure. The `Future` must only be completed with
+   * If storing the batch fails for reasons other than the rejections described below, the
+   * returned `Future` must be completed with failure. The `Future` must only be completed with
    * success when every `AtomicWrite` has either been stored successfully or rejected as
    * described below. All events in a successfully stored `AtomicWrite` must be readable
    * and visible in a subsequent replay. If there is uncertainty about whether messages
@@ -480,7 +480,8 @@ trait AsyncWriteJournal extends Actor with WriteJournalBase with AsyncRecovery {
    * with an exception describing the rejection. Rejecting
    * a message means it was not stored, i.e. it must not be included in a later replay.
    * Rejecting a message is typically done before attempting to store it, e.g. because of
-   * serialization error.
+   * serialization error. A write may also be rejected after a storage attempt, but only if it
+   * is guaranteed not to have been stored and not to be visible in a later replay.
    *
    * Data store connection problems must not be signaled as rejections.
    *
