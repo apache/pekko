@@ -117,7 +117,7 @@ jobs:
         # binary version is required and Pekko build will set the right
         # full version from it.
         scalaVersion: ["2.13.x", "3.3.x"]
-        javaVersion: [17, 21, 25]
+        javaVersion: [17, 25, 27]
     env:
       DEVELOCITY_ACCESS_KEY: ${{ secrets.DEVELOCITY_ACCESS_KEY }}
     steps:
