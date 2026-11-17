@@ -96,6 +96,11 @@ private[pekko] final class TopicImpl[T](topicName: String, context: ActorContext
    * new topic instance, messages published until both the first listing has been seen and the configured
    * startup-replay-window has elapsed are kept, and are also delivered to every other topic instance and local
    * subscriber that becomes known during that time. Each of them gets each kept message at most once.
+   *
+   * Another topic instance that drops out of the listing and comes back during the window (the receptionist
+   * listing can flap, e.g. while a node is unreachable) is sent the kept messages published while it was absent,
+   * but not those it already got. A local subscriber only gets the kept messages when it first subscribes during
+   * the window: after an explicit unsubscribe it is not sent the messages published while it was unsubscribed.
    */
   private val pubSubConfig = context.system.settings.config.getConfig("pekko.actor.typed.pubsub")
   private val startupReplayWindow =
@@ -107,8 +112,10 @@ private[pekko] final class TopicImpl[T](topicName: String, context: ActorContext
   private var replayWindowElapsed = startupReplayWindow <= Duration.Zero
   private var replayBuffer = Vector.empty[Buffered[T]]
   private var replayBufferFullLogged = false
-  // other topic instances and local subscribers that already got all messages in the replay buffer
-  private var replayedToInstances = Set.empty[ActorRef[TopicImpl.Command[T]]]
+  // other topic instances that left the listing during the replay window, with the number of messages that were
+  // in the replay buffer at that point, i.e. the messages they already got
+  private var departedInstances = Map.empty[ActorRef[TopicImpl.Command[T]], Int]
+  // local subscribers that already got all messages in the replay buffer
   private var replayedToSubscribers = Set.empty[ActorRef[T]]
   private val replayWindowTimer: Option[Cancellable] =
     if (replayWindowElapsed) None
@@ -175,7 +182,7 @@ private[pekko] final class TopicImpl[T](topicName: String, context: ActorContext
         }
         if (replayWindowOpen && !replayedToSubscribers.contains(subscriber)) {
           replayedToSubscribers += subscriber
-          replayTo(subscriber, replayBuffer.map(_.message))
+          replayTo(subscriber, 0, identity[T])
         }
       } else {
         context.log.debug("Local subscriber [{}] already subscribed, ignoring Subscribe command")
@@ -207,13 +214,17 @@ private[pekko] final class TopicImpl[T](topicName: String, context: ActorContext
 
     case TopicInstancesUpdated(newTopics) =>
       context.log.debug("Topic list updated [{}]", newTopics)
+      val oldOtherInstances = topicInstances - context.self
       topicInstances = newTopics
       if (replayWindowOpen) {
-        val newInstances = newTopics - context.self -- replayedToInstances
-        if (newInstances.nonEmpty) {
-          replayedToInstances ++= newInstances
-          val messages = replayBuffer.map(_.message)
-          newInstances.foreach(instance => replayTo(instance, messages.map(MessagePublished(_))))
+        val newOtherInstances = newTopics - context.self
+        (oldOtherInstances -- newOtherInstances).foreach { departed =>
+          departedInstances = departedInstances.updated(departed, replayBuffer.size)
+        }
+        (newOtherInstances -- oldOtherInstances).foreach { added =>
+          val alreadyGot = departedInstances.getOrElse(added, 0)
+          departedInstances -= added
+          replayTo(added, alreadyGot, MessagePublished(_: T))
         }
         firstListingSeen = true
         closeReplayWindowIfDone()
@@ -237,25 +248,37 @@ private[pekko] final class TopicImpl[T](topicName: String, context: ActorContext
   override def onSignal: PartialFunction[Signal, Behavior[TopicImpl.Command[T]]] = {
     case PostStop =>
       replayWindowTimer.foreach(_.cancel())
+      if (replayWindowOpen) dropUndelivered()
       this
   }
 
-  private def replayTo[M](recipient: ActorRef[M], messages: Vector[M]): Unit =
-    if (messages.nonEmpty) {
-      context.log.debug("Replaying [{}] messages published during startup to [{}]", messages.size, recipient)
-      messages.foreach(recipient ! _)
-      replayBuffer = replayBuffer.map(_.copy(delivered = true))
+  /** Send the kept messages from index `from` on to `recipient`. */
+  private def replayTo[M](recipient: ActorRef[M], from: Int, wrap: T => M): Unit =
+    if (from < replayBuffer.size) {
+      context.log.debug(
+        "Replaying [{}] messages published during startup to [{}]",
+        replayBuffer.size - from,
+        recipient)
+      replayBuffer = replayBuffer.zipWithIndex.map {
+        case (b, i) if i >= from =>
+          recipient ! wrap(b.message)
+          if (b.delivered) b else b.copy(delivered = true)
+        case (b, _) => b
+      }
+    }
+
+  private def dropUndelivered(): Unit =
+    replayBuffer.foreach { b =>
+      if (!b.delivered) dropNoSubscribers(b.message)
     }
 
   private def closeReplayWindowIfDone(): Unit =
     if (replayWindowOpen && firstListingSeen && replayWindowElapsed) {
       context.log.debug("Startup replay window of topic [{}] closed", topicName)
-      replayBuffer.foreach { b =>
-        if (!b.delivered) dropNoSubscribers(b.message)
-      }
+      dropUndelivered()
       replayWindowOpen = false
       replayBuffer = Vector.empty
-      replayedToInstances = Set.empty
+      departedInstances = Map.empty
       replayedToSubscribers = Set.empty
     }
 

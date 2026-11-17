@@ -132,8 +132,19 @@ class TopicImplSpec extends AnyWordSpec with Matchers with LogCapturing {
       other2.receiveAll() shouldBe Seq(MessagePublished("apple"), MessagePublished("pear"))
       other1.hasMessages shouldBe false
 
-      // an instance that leaves and comes back doesn't get the kept messages again
+      // an instance that leaves and comes back doesn't get the kept messages it already got again
       kit.run(TopicInstancesUpdated(Set(other2.ref)))
+      kit.run(TopicInstancesUpdated(Set(other1.ref, other2.ref)))
+      other1.hasMessages shouldBe false
+
+      // but it does get the kept messages published while it was absent, exactly once
+      kit.run(TopicInstancesUpdated(Set(other2.ref)))
+      kit.run(Publish("plum"))
+      other2.receiveAll() shouldBe Seq(MessagePublished("plum"))
+      other1.hasMessages shouldBe false
+      kit.run(TopicInstancesUpdated(Set(other1.ref, other2.ref)))
+      other1.receiveAll() shouldBe Seq(MessagePublished("plum"))
+      other2.hasMessages shouldBe false
       kit.run(TopicInstancesUpdated(Set(other1.ref, other2.ref)))
       other1.hasMessages shouldBe false
 
@@ -156,6 +167,25 @@ class TopicImplSpec extends AnyWordSpec with Matchers with LogCapturing {
       kit.run(StartupReplayWindowElapsed())
       kit.run(Subscribe(subscriber2.ref))
       subscriber2.hasMessages shouldBe false
+      assertNothingDropped(kit)
+    }
+
+    "not deliver kept messages again to a local subscriber that unsubscribes and subscribes again" in {
+      val kit = topic()
+      val subscriber1 = TestInbox[String]()
+      val subscriber2 = TestInbox[String]()
+
+      kit.run(Publish("cherry"))
+      kit.run(Subscribe(subscriber1.ref))
+      kit.run(Subscribe(subscriber2.ref))
+      subscriber1.receiveAll() shouldBe Seq("cherry")
+      subscriber2.receiveAll() shouldBe Seq("cherry")
+
+      kit.run(Unsubscribe(subscriber1.ref))
+      kit.run(Publish("plum"))
+      subscriber2.receiveAll() shouldBe Seq("plum")
+      kit.run(Subscribe(subscriber1.ref))
+      subscriber1.hasMessages shouldBe false
       assertNothingDropped(kit)
     }
 
@@ -193,6 +223,20 @@ class TopicImplSpec extends AnyWordSpec with Matchers with LogCapturing {
         val fruitTopic = testKit.spawn(Topic[String]("melons"))
         expectDropped(testKit, "melon") {
           fruitTopic ! Topic.Publish("melon")
+        }
+      }
+    }
+
+    "drop kept messages that reached no subscriber when the topic stops before the window closes" in {
+      withActorTestKit(config(window = "1h")) { testKit =>
+        val fruitTopic = testKit.spawn(Topic[String]("figs"))
+        expectDropped(testKit, "fig") {
+          fruitTopic ! Topic.Publish("fig")
+          // make sure the message was processed before stopping
+          val statsProbe = testKit.createTestProbe[Topic.TopicStats]()
+          fruitTopic ! Topic.GetTopicStats(statsProbe.ref)
+          statsProbe.receiveMessage()
+          testKit.stop(fruitTopic)
         }
       }
     }

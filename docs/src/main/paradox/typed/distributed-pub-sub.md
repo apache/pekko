@@ -66,7 +66,9 @@ meaning that subscribing an actor on one node will have a short delay before it 
 
 The same applies to a newly started topic actor, which only learns about the other topic instances some time after it started.
 To not lose the first messages published to it, a topic actor keeps the messages published during a short startup window, and
-also delivers them to the topic instances and local subscribers that become known during that window. This is configured with
+also delivers them to the topic instances and local subscribers that become known during that window. A topic instance that
+drops out of the listing and comes back during the window is sent the kept messages it missed while absent. Kept messages that
+reached no subscriber when the window closes, or when the topic actor stops before that, are sent to dead letters. This is configured with
 `pekko.actor.typed.pubsub.startup-replay-window` and `pekko.actor.typed.pubsub.startup-replay-buffer-size`.
 
 If you are looking for at-least-once delivery guarantee, we recommend [Pekko Connector Kafka]($pekko.doc.dns$/docs/pekko-connectors-kafka/current/).
