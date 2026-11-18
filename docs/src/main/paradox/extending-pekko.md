@@ -1,6 +1,15 @@
 ---
 project.description: How to extend Apache Pekko with Apache Pekko Extensions.
 ---
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  license agreements; and to You under the Apache License, version 2.0:
+
+    https://www.apache.org/licenses/LICENSE-2.0
+
+  This file is part of the Apache Pekko project, which was derived from Akka.
+-->
+
 # Classic Apache Pekko Extensions
 
 If you want to add features to Apache Pekko, there is a very elegant, but powerful mechanism for doing so.

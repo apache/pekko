@@ -1,3 +1,12 @@
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  license agreements; and to You under the Apache License, version 2.0:
+
+    https://www.apache.org/licenses/LICENSE-2.0
+
+  This file is part of the Apache Pekko project, which was derived from Akka.
+-->
+
 # Why modern systems need a new programming model
 
 The actor model was proposed decades ago by @extref[Carl Hewitt](wikipedia:Carl_Hewitt#Actor_model) as a way to handle parallel processing in a high performance network &#8212; an environment that was not available at the time. Today, hardware and infrastructure capabilities have caught up with and exceeded Hewitt's vision. Consequently, organizations building distributed systems with demanding requirements encounter challenges that cannot fully be solved with a traditional object-oriented programming (OOP) model, but that can benefit from the actor model.

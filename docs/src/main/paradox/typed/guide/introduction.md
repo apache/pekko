@@ -1,3 +1,12 @@
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  license agreements; and to You under the Apache License, version 2.0:
+
+    https://www.apache.org/licenses/LICENSE-2.0
+
+  This file is part of the Apache Pekko project, which was derived from Akka.
+-->
+
 # Introduction to Apache Pekko
 
 Welcome to Apache Pekko, a set of open-source libraries for designing scalable, resilient systems that span processor cores and networks. Pekko allows you to focus on meeting business needs instead of writing low-level code to provide reliable behavior, fault tolerance, and high performance.

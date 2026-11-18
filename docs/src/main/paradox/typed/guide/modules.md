@@ -1,3 +1,12 @@
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  license agreements; and to You under the Apache License, version 2.0:
+
+    https://www.apache.org/licenses/LICENSE-2.0
+
+  This file is part of the Apache Pekko project, which was derived from Akka.
+-->
+
 # Overview of Apache Pekko libraries and modules
 
 Before delving into some best practices for writing actors, it will be helpful to preview the most commonly used Pekko libraries. This will help you start thinking about the functionality you want to use in your system. All core Pekko functionality is available as Open Source Software (OSS).

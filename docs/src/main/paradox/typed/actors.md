@@ -1,6 +1,15 @@
 ---
 project.description: The Actor model, managing internal state and changing behavior in Apache Pekko Actors.
 ---
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  license agreements; and to You under the Apache License, version 2.0:
+
+    https://www.apache.org/licenses/LICENSE-2.0
+
+  This file is part of the Apache Pekko project, which was derived from Akka.
+-->
+
 # Introduction to Actors
 
 You are viewing the documentation for the new actor APIs, to view the Pekko Classic documentation, see @ref:[Classic Actors](../actors.md).
