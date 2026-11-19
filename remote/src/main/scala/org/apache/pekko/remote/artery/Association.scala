@@ -122,8 +122,11 @@ private[remote] object Association {
     }
 
     override def offer(message: OutboundEnvelope): Boolean = {
+      // Enqueue before materializing. The new stream polls the queue when it starts, but a message
+      // offered directly to the queue after the stream has polled it would not wake it up.
+      val result = queue.offer(message)
       runMaterialize()
-      queue.offer(message)
+      result
     }
 
     override def isEnabled: Boolean = true

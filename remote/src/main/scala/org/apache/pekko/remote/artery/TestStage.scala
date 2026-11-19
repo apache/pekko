@@ -34,6 +34,10 @@ object TestManagementCommands {
   /** INTERNAL API */
   @SerialVersionUID(1L)
   final case class FailInboundStreamOnce(ex: Throwable)
+
+  /** INTERNAL API */
+  @SerialVersionUID(1L)
+  final case class FailOutboundStreamMaterializationOnce(ex: Throwable)
 }
 
 /**
@@ -43,6 +47,21 @@ object TestManagementCommands {
 private[remote] class SharedTestState {
 
   private val state = new AtomicReference[TestState](TestState(Map.empty, None))
+
+  private val failOutboundMaterialization = new AtomicReference[Option[Throwable]](None)
+
+  /**
+   * Cause the next materialization of an outbound stream to throw the given exception.
+   * Can be used to test that a failed outbound stream restart is retried.
+   */
+  def failOutboundStreamMaterializationOnce(ex: Throwable): Unit =
+    failOutboundMaterialization.set(Some(ex))
+
+  /**
+   * Get the exception to fail the outbound stream materialization with and immediately reset the state to not-failed.
+   */
+  def getOutboundMaterializationFailureOnce: Option[Throwable] =
+    failOutboundMaterialization.getAndSet(None)
 
   def anyBlackholePresent(): Boolean = state.get.blackholes.nonEmpty
 
