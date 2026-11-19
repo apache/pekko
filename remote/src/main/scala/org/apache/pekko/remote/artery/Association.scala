@@ -991,6 +991,8 @@ private[remote] class Association(
 
       outboundCompressionAccess = compressionAccessValues
 
+      // needed so that idle and quarantine stops reach the ordinary lanes
+      updateStreamMatValues(OrdinaryQueueIndex, streamKillSwitch, allCompleted)
       attachOutboundStreamRestart(
         "Outbound message stream",
         OrdinaryQueueIndex,
@@ -1051,8 +1053,23 @@ private[remote] class Association(
         restart()
       }
 
-      if (!isRemovedAfterQuarantined())
-        queues(queueIndex) = LazyQueueWrapper(createQueue(queueCapacity, queueIndex), wrappedRestartFun)
+      if (!isRemovedAfterQuarantined()) {
+        if (queueIndex == OrdinaryQueueIndex && outboundLanes > 1) {
+          // All lanes share one stream, so every lane must be replaced, otherwise messages routed
+          // to lanes other than the first are offered to the stopped stream and silently lost.
+          // A message offered to any lane restarts the stream, but only once.
+          val restartOnce = new AtomicBoolean
+          val restartAllLanes: () => Unit = () => {
+            if (restartOnce.compareAndSet(false, true))
+              wrappedRestartFun()
+          }
+          (0 until outboundLanes).foreach { i =>
+            queues(OrdinaryQueueIndex + i) =
+              LazyQueueWrapper(createQueue(queueCapacity, OrdinaryQueueIndex + i), restartAllLanes)
+          }
+        } else
+          queues(queueIndex) = LazyQueueWrapper(createQueue(queueCapacity, queueIndex), wrappedRestartFun)
+      }
 
       queuesVisibility = true // volatile write for visibility of the queues array
       if (notifyPending) afterRestart()
