@@ -18,7 +18,7 @@ addSbtPlugin("com.github.sbt" % "sbt-osgi" % "0.10.0")
 addSbtPlugin("com.typesafe" % "sbt-mima-plugin" % "1.2.1")
 addSbtPlugin("com.github.sbt" % "sbt-unidoc" % "0.6.1")
 addSbtPlugin("com.thoughtworks.sbt-api-mappings" % "sbt-api-mappings" % "3.1.0")
-addSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.8")
+addSbtPlugin("com.github.sbt" % "sbt-jmh" % "0.4.9")
 addSbtPlugin("com.github.sbt" % "sbt-boilerplate" % "0.8.1")
 
 addSbtPlugin("com.github.sbt" % "sbt-header" % "5.11.0")
