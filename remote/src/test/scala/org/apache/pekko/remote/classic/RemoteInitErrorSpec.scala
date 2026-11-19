@@ -13,11 +13,10 @@
 
 package org.apache.pekko.remote.classic
 
-import scala.annotation.nowarn
-import scala.collection.mutable.Set
+import java.util.concurrent.ThreadLocalRandom
+
 import scala.concurrent.duration._
 import scala.jdk.CollectionConverters._
-import scala.util.control.NonFatal
 
 import org.apache.pekko
 import pekko.actor.ActorSystem
@@ -50,26 +49,25 @@ class RemoteInitErrorSpec extends AnyWordSpec with Matchers {
       }
     """).resolve()
 
-  @nowarn("msg=deprecated")
-  def currentThreadIds(): Set[Long] = {
+  // All threads of an ActorSystem (dispatchers, scheduler, netty event loops) are created by its
+  // thread factory and named after the system. Only look at those, so that threads of other systems
+  // still shutting down in the same test JVM do not make this test fail.
+  def remainingThreadNames(systemName: String): Set[String] = {
     val threads = Thread.getAllStackTraces().keySet()
-    threads.asScala.collect { case t: Thread if !t.isDaemon() => t.getId() }
+    threads.asScala.collect {
+      case t: Thread if !t.isDaemon() && t.getName.startsWith(systemName + "-") => t.getName
+    }.toSet
   }
 
   "Remoting" must {
     "shut down properly on RemoteActorRefProvider initialization failure" in {
-      val start = currentThreadIds()
-      try {
-        ActorSystem("duplicate", ConfigFactory.parseString("pekko.loglevel=OFF").withFallback(conf))
-        fail("initialization should fail due to invalid IP address")
-      } catch {
-        case NonFatal(_) => {
-          eventually(timeout(30.seconds), interval(800.milliseconds)) {
-            val current = currentThreadIds()
-            // no new threads should remain compared to the start state
-            (current.diff(start)) should be(empty)
-          }
-        }
+      val systemName = s"RemoteInitErrorSpec-${ThreadLocalRandom.current().nextInt(Int.MaxValue)}"
+      intercept[Exception] {
+        ActorSystem(systemName, ConfigFactory.parseString("pekko.loglevel=OFF").withFallback(conf))
+      }
+      eventually(timeout(30.seconds), interval(800.milliseconds)) {
+        // no threads of the failed system should remain
+        remainingThreadNames(systemName) should be(empty)
       }
     }
   }
