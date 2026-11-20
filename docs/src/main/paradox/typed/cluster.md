@@ -1,6 +1,15 @@
 ---
 project.description: Build distributed applications that scale across the network with Apache Pekko Cluster, a fault-tolerant decentralized peer-to-peer based cluster node membership service with no single point of failure.
 ---
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  license agreements; and to You under the Apache License, version 2.0:
+
+    https://www.apache.org/licenses/LICENSE-2.0
+
+  This file is part of the Apache Pekko project, which was derived from Akka.
+-->
+
 # Cluster Usage
   
 This document describes how to use Apache Pekko Cluster and the Cluster APIs. 

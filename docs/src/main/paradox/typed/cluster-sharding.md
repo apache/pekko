@@ -1,6 +1,15 @@
 ---
 project.description: Shard a clustered compute process across the network with locationally transparent message routing using Apache Pekko Cluster Sharding.
 ---
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  license agreements; and to You under the Apache License, version 2.0:
+
+    https://www.apache.org/licenses/LICENSE-2.0
+
+  This file is part of the Apache Pekko project, which was derived from Akka.
+-->
+
 # Cluster Sharding
 
 You are viewing the documentation for the new actor APIs, to view the Pekko Classic documentation, see @ref:[Classic Cluster Sharding](../cluster-sharding.md)

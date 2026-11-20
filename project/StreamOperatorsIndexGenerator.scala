@@ -222,7 +222,7 @@ object StreamOperatorsIndexGenerator extends AutoPlugin {
     val tables = categories
       .map { category =>
         s"## $category\n\n" ++
-        IO.read(dir.value / "categories" / (categoryId(category) + ".md")) ++ "\n\n" ++
+        stripLicenseHeader(IO.read(dir.value / "categories" / (categoryId(category) + ".md"))) ++ "\n\n" ++
         tablePerCategory(category)
       }
       .mkString("\n\n")
@@ -241,6 +241,11 @@ object StreamOperatorsIndexGenerator extends AutoPlugin {
     Seq(file)
   }
 
+  private val LicenseHeader = """(?s)\A<!--\s*Licensed to the Apache Software Foundation.*?-->\s*""".r
+
+  /** Drops a leading license header comment, and the blank lines after it. */
+  def stripLicenseHeader(contents: String): String = LicenseHeader.replaceFirstIn(contents, "")
+
   def methodToShow(method: String): String = method match {
     case "from" => "@scala[apply]@java[from]"
     case other  => other
@@ -248,7 +253,7 @@ object StreamOperatorsIndexGenerator extends AutoPlugin {
 
   def getDetails(file: File): (String, String) =
     try {
-      val contents = IO.read(file)
+      val contents = stripLicenseHeader(IO.read(file))
       val lines = contents.split("\\r?\\n")
       require(
         lines.size >= 5,
