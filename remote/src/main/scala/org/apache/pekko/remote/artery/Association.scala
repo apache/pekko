@@ -26,8 +26,10 @@ import scala.annotation.tailrec
 import scala.concurrent.Future
 import scala.concurrent.Promise
 import scala.concurrent.duration._
+import scala.util.Failure
 import scala.util.Success
 import scala.util.control.NoStackTrace
+import scala.util.control.NonFatal
 
 import org.agrona.concurrent.ManyToOneConcurrentArrayQueue
 
@@ -104,8 +106,15 @@ private[remote] object Association {
     override def isEnabled: Boolean = false
   }
 
-  final case class LazyQueueWrapper(queue: Queue[OutboundEnvelope], materialize: () => Unit) extends QueueWrapper {
+  /**
+   * The queue is only allocated when first used, so a stopped stream that is not used again
+   * does not hold a queue.
+   */
+  final class LazyQueueWrapper(newQueue: () => Queue[OutboundEnvelope], materialize: () => Unit)
+      extends QueueWrapper {
     private val onlyOnce = new AtomicBoolean
+
+    override lazy val queue: Queue[OutboundEnvelope] = newQueue()
 
     def runMaterialize(): Unit = {
       if (onlyOnce.compareAndSet(false, true))
@@ -113,8 +122,11 @@ private[remote] object Association {
     }
 
     override def offer(message: OutboundEnvelope): Boolean = {
+      // Enqueue before materializing. The new stream polls the queue when it starts, but a message
+      // offered directly to the queue after the stream has polled it would not wake it up.
+      val result = queue.offer(message)
       runMaterialize()
-      queue.offer(message)
+      result
     }
 
     override def isEnabled: Boolean = true
@@ -874,6 +886,7 @@ private[remote] class Association(
     attachOutboundStreamRestart(
       "Outbound control stream",
       ControlQueueIndex,
+      List(ControlQueueIndex),
       controlQueueSize,
       stopped,
       () => runOutboundControlStream(),
@@ -930,6 +943,7 @@ private[remote] class Association(
       attachOutboundStreamRestart(
         "Outbound message stream",
         OrdinaryQueueIndex,
+        List(OrdinaryQueueIndex),
         queueSize,
         completed,
         () => runOutboundOrdinaryMessagesStream())
@@ -955,18 +969,28 @@ private[remote] class Association(
           case ((q, c), w) => (q, c, w)
         }
 
-      val (mergeHub, transportSinkCompleted) = MergeHub
-        .source[EnvelopeBuffer]
-        .via(streamKillSwitch.flow)
-        .toMat(transport.outboundTransportSink(this))(Keep.both)
-        .run()(materializer)
+      val (transportSinkCompleted, values) =
+        try {
+          val (mergeHub, transportSinkCompleted) = MergeHub
+            .source[EnvelopeBuffer]
+            .via(streamKillSwitch.flow)
+            .toMat(transport.outboundTransportSink(this))(Keep.both)
+            .run()(materializer)
 
-      val values: Vector[(SendQueue.QueueValue[OutboundEnvelope], Encoder.OutboundCompressionAccess, Future[Done])] =
-        (0 until outboundLanes).iterator
-          .map { _ =>
-            lane.to(mergeHub).run()(materializer)
-          }
-          .to(Vector)
+          val values
+              : Vector[(SendQueue.QueueValue[OutboundEnvelope], Encoder.OutboundCompressionAccess, Future[Done])] =
+            (0 until outboundLanes).iterator
+              .map { _ =>
+                lane.to(mergeHub).run()(materializer)
+              }
+              .to(Vector)
+          (transportSinkCompleted, values)
+        } catch {
+          case NonFatal(e) =>
+            // stop the parts that were already materialized
+            streamKillSwitch.abort(e)
+            throw e
+        }
 
       val (queueValues, compressionAccessValues, laneCompletedValues) = values.unzip3
 
@@ -980,7 +1004,16 @@ private[remote] class Association(
         streamKillSwitch.shutdown()
       })
 
-      val allCompleted = Future.sequence(laneCompletedValues).flatMap(_ => transportSinkCompleted)
+      // Complete only when every lane and the transport sink have stopped, so that a restart does not
+      // overlap with the old stream. Fail with the first lane failure, otherwise with the sink's result.
+      val allCompleted: Future[Done] =
+        Future.sequence((laneCompletedValues :+ transportSinkCompleted).map(_.transform(Success(_)))).flatMap {
+          results =>
+            results.collectFirst { case Failure(cause) => cause } match {
+              case Some(cause) => Future.failed(cause)
+              case None        => Future.successful(Done)
+            }
+        }
 
       queueValues.zip(wrappers).zipWithIndex.foreach {
         case ((q, w), i) =>
@@ -991,9 +1024,12 @@ private[remote] class Association(
 
       outboundCompressionAccess = compressionAccessValues
 
+      // needed so that idle and quarantine stops reach the ordinary lanes
+      updateStreamMatValues(OrdinaryQueueIndex, streamKillSwitch, allCompleted)
       attachOutboundStreamRestart(
         "Outbound message stream",
         OrdinaryQueueIndex,
+        OrdinaryQueueIndex until OrdinaryQueueIndex + outboundLanes,
         queueSize,
         allCompleted,
         () => runOutboundOrdinaryMessagesStream())
@@ -1025,14 +1061,20 @@ private[remote] class Association(
     attachOutboundStreamRestart(
       "Outbound large message stream",
       LargeQueueIndex,
+      List(LargeQueueIndex),
       largeQueueSize,
       completed,
       () => runOutboundLargeMessagesStream())
   }
 
+  /**
+   * @param queueIndex identifies the stream, for its stop reason and whether it is the control stream
+   * @param queueIndices all queues that are consumed by the stream, they are all replaced when it is restarted
+   */
   private def attachOutboundStreamRestart(
       streamName: String,
       queueIndex: Int,
+      queueIndices: Seq[Int],
       queueCapacity: Int,
       streamCompleted: Future[Done],
       restart: () => Unit,
@@ -1046,16 +1088,41 @@ private[remote] class Association(
         materializing = new CountDownLatch(1)
         _outboundControlIngress = OptionVal.None
       }
-      // LazyQueueWrapper will invoke the `restart` function when first message is offered
-      val wrappedRestartFun: () => Unit = () => {
-        restart()
-      }
-
       if (!isRemovedAfterQuarantined())
-        queues(queueIndex) = LazyQueueWrapper(createQueue(queueCapacity, queueIndex), wrappedRestartFun)
+        installLazyQueues(queueIndices.map(i => i -> (() => createQueue(queueCapacity, i))))
 
       queuesVisibility = true // volatile write for visibility of the queues array
       if (notifyPending) afterRestart()
+    }
+
+    // Every queue of the stream must be replaced, otherwise messages offered to a queue of the stopped
+    // stream are silently lost. The first message offered to any of the queues restarts the stream once.
+    def installLazyQueues(newQueues: Seq[(Int, () => Queue[OutboundEnvelope])]): Unit = {
+      val restartOnce = new AtomicBoolean
+      val restartStream: () => Unit = () =>
+        if (restartOnce.compareAndSet(false, true)) {
+          try restart()
+          catch {
+            case NonFatal(e) =>
+              // Let the next message retry the restart. The queues are kept, so that the messages
+              // that were offered to them while restarting are not lost.
+              if (!transport.isShutdown && !isRemovedAfterQuarantined())
+                installLazyQueues(queueIndices.map(i => i -> currentQueue(i)))
+              throw e
+          }
+        }
+      newQueues.foreach { case (i, newQueue) => queues(i) = new LazyQueueWrapper(newQueue, restartStream) }
+      queuesVisibility = true // volatile write for visibility of the queues array
+    }
+
+    def currentQueue(queueIndex: Int): () => Queue[OutboundEnvelope] = {
+      @nowarn("msg=never used")
+      val unused = queuesVisibility // volatile read to see latest queues array
+      queues(queueIndex) match {
+        case w: LazyQueueWrapper => () => w.queue
+        case w: QueueWrapperImpl => () => w.queue
+        case _                   => () => createQueue(queueCapacity, queueIndex)
+      }
     }
 
     implicit val ec = materializer.executionContext
