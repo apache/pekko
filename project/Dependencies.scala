@@ -34,7 +34,7 @@ object Dependencies {
   // Use the major+minor agrona versions matching aeron at
   // https://github.com/aeron-io/aeron/blob/1.x.y/gradle/libs.versions.toml
   // (remember to also update the scala-steward pin)
-  val agronaVersion = "2.7.1"
+  val agronaVersion = "2.7.2"
   val nettyVersion = "4.2.21.Final"
   val logbackVersion = "1.6.8"
 
