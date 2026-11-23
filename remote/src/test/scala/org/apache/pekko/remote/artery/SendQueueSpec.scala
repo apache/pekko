@@ -230,6 +230,41 @@ class SendQueueSpec extends PekkoSpec("""
       }
     }
 
+    "deliver messages offered directly to the queue when woken up" in {
+      val queue = createQueue[String](128)
+      val (sendQueue, downstream) =
+        Source.fromGraph(new SendQueue[String](sendToDeadLetters)).toMat(TestSink())(Keep.both).run()
+
+      downstream.request(10)
+      sendQueue.inject(queue)
+      sendQueue.offer("a")
+      downstream.expectNext("a")
+      // let the stage find the queue empty
+      downstream.expectNoMessage(100.millis)
+
+      // not offered via the QueueValue, so the stage is not woken up
+      queue.offer("b")
+      downstream.expectNoMessage(200.millis)
+
+      sendQueue.wakeup()
+      downstream.expectNext("b")
+      downstream.cancel()
+    }
+
+    "support wakeup before the queue has been received" in {
+      val queue = createQueue[String](128)
+      val (sendQueue, downstream) =
+        Source.fromGraph(new SendQueue[String](sendToDeadLetters)).toMat(TestSink())(Keep.both).run()
+
+      downstream.request(10)
+      sendQueue.wakeup()
+      sendQueue.inject(queue)
+      sendQueue.wakeup()
+      sendQueue.offer("a")
+      downstream.expectNext("a")
+      downstream.cancel()
+    }
+
   }
 
 }
