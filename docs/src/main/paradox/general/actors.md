@@ -1,6 +1,15 @@
 ---
 project.description: What is an Actor and sending messages between independent units of computation in Apache Pekko.
 ---
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  license agreements; and to You under the Apache License, version 2.0:
+
+    https://www.apache.org/licenses/LICENSE-2.0
+
+  This file is part of the Apache Pekko project, which was derived from Akka.
+-->
+
 # What is an Actor?
 
 The previous section about @ref:[Actor Systems](actor-systems.md) explained how actors form
