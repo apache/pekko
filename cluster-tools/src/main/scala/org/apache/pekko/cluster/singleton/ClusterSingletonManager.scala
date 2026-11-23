@@ -710,8 +710,10 @@ class ClusterSingletonManager(singletonProps: Props, terminationMessage: Any, se
           releaseLease()
         case AcquiringLease =>
           stateData match {
-            case AcquiringLeaseData(true, _) => releaseLeaseIfAcquired()
-            case _                           =>
+            case AcquiringLeaseData(true, _) =>
+              logInfo("Manager stopped while acquiring lease, it will be released if acquired")
+              releaseLeaseIfAcquired()
+            case _ =>
           }
         case _ =>
       }
@@ -961,14 +963,14 @@ class ClusterSingletonManager(singletonProps: Props, terminationMessage: Any, se
     }
 
   /**
-   * Releases the lease when the acquire that was in progress when the manager stopped succeeds.
-   * The result of that acquire would otherwise go to dead letters, leaving the lease held until it expires.
+   * Releases the lease when the acquire in progress succeeds, used when the manager stops or leaves
+   * `AcquiringLease` while acquiring. The result of that acquire is no longer handled, and would otherwise
+   * leave the lease held until it expires.
    */
-  private def releaseLeaseIfAcquired(): Unit =
+  private def releaseLeaseIfAcquired(): Unit = {
     for (l <- lease; acquired <- leaseAcquireInProgress; release <- leaseReleaser()) {
       import context.dispatcher
-      logInfo("Manager stopped while acquiring lease, it will be released if acquired")
-      // registered right away, so that a replacement manager doesn't acquire before this release completed
+      // registered right away, so that a later acquire (by this manager or a replacement manager) waits for it
       PendingLeaseReleases(context.system).register(
         l,
         acquired.transformWith {
@@ -976,6 +978,8 @@ class ClusterSingletonManager(singletonProps: Props, terminationMessage: Any, se
           case _             => Future.successful(Done) // not acquired, nothing to release
         })
     }
+    leaseAcquireInProgress = None
+  }
 
   /**
    * Captures what a release needs from the actor, so the returned function can also run after the manager
@@ -1359,8 +1363,10 @@ class ClusterSingletonManager(singletonProps: Props, terminationMessage: Any, se
     case (AcquiringLease, to) if to != Oldest =>
       stateData match {
         case AcquiringLeaseData(true, _) =>
-          logInfo("Releasing lease as leaving AcquiringLease going to [{}]", to)
-          releaseLease()
+          // The acquire may still be in progress, or waiting for a pending release, so release once it completed.
+          // Releasing right away could be followed by a successful acquire that is no longer handled.
+          logInfo("Releasing lease once acquire in progress completed as leaving AcquiringLease going to [{}]", to)
+          releaseLeaseIfAcquired()
         case _ =>
       }
   }

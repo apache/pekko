@@ -30,6 +30,7 @@ import pekko.actor.Props
 import pekko.cluster.Cluster
 import pekko.cluster.ClusterEvent.MemberDowned
 import pekko.cluster.MemberStatus
+import pekko.cluster.singleton.ClusterSingletonManager.Internal.{ HandOverDone, HandOverToMe }
 import pekko.coordination.lease.TestLease
 import pekko.coordination.lease.TestLeaseExt
 import pekko.event.Logging
@@ -416,6 +417,31 @@ class ClusterSingletonLeaseSpec extends PekkoSpec(ConfigFactory.parseString("""
       releaseResult.success(true)
       testLease.probe.expectMsg(AcquireReq(leaseOwner))
       replacementLifecycleProbe.expectMsg("preStart")
+    }
+
+    "release a lease acquired after handing over while the acquire waited for a pending release" in {
+      val (manager, testLease, lifecycleProbe) = startedSingleton()
+      val releaseResult = Promise[Boolean]()
+      testLease.setNextReleaseResult(releaseResult.future)
+      // losing the lease releases it, and acquires again once the singleton has terminated
+      testLease.getCurrentCallback()(None)
+      lifecycleProbe.expectMsg("postStop")
+      testLease.probe.expectMsg(ReleaseReq(leaseOwner))
+      // the acquire waits for the release in progress
+      testLease.probe.expectNoMessage(shortDuration)
+
+      val handOverProbe = TestProbe()
+      handOverProbe.send(manager, HandOverToMe)
+      handOverProbe.expectMsg(HandOverDone)
+      // the acquire hasn't started yet, so nothing to release
+      testLease.probe.expectNoMessage(shortDuration)
+
+      releaseResult.success(true)
+      testLease.probe.expectMsg(AcquireReq(leaseOwner))
+      // the acquire succeeded after the manager left AcquiringLease, so the lease is released
+      testLease.probe.expectMsg(ReleaseReq(leaseOwner))
+      testLease.probe.expectNoMessage(shortDuration)
+      lifecycleProbe.expectNoMessage(shortDuration)
     }
 
     "not release when the acquire in progress at stop does not succeed" in {
