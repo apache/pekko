@@ -424,4 +424,45 @@ public class SinkTest extends StreamTestJupiter {
             .toCompletableFuture()
             .get(3, TimeUnit.SECONDS));
   }
+
+  @Test
+  public void mustBeAbleToUseWatchTermination() throws Exception {
+    final Pair<CompletionStage<Integer>, CompletionStage<Done>> result =
+        Source.range(1, 4).runWith(Sink.<Integer>head().watchTermination(Keep.both()), system);
+    assertEquals(1, result.first().toCompletableFuture().get(1, TimeUnit.SECONDS).intValue());
+    assertEquals(Done.done(), result.second().toCompletableFuture().get(1, TimeUnit.SECONDS));
+  }
+
+  @Test
+  public void watchTerminationMustWorkWithCompositeSinks() throws Exception {
+    final CompletionStage<Done> done =
+        Source.range(1, 4)
+            .runWith(Sink.<Integer>foreach(x -> {}).watchTermination(Keep.right()), system);
+    assertEquals(Done.done(), done.toCompletableFuture().get(1, TimeUnit.SECONDS));
+  }
+
+  @Test
+  public void watchTerminationMustReportFailure() {
+    final RuntimeException failure = new RuntimeException("sink failed");
+    final CompletionStage<Done> done =
+        Source.<Integer>failed(failure)
+            .runWith(Sink.<Integer>ignore().watchTermination(Keep.right()), system);
+    final ExecutionException result =
+        assertThrows(
+            ExecutionException.class, () -> done.toCompletableFuture().get(3, TimeUnit.SECONDS));
+    assertSame(failure, result.getCause());
+  }
+
+  @Test
+  public void watchTerminationMustSucceedWhenWrappedSinkRecovers() throws Exception {
+    final Sink<Integer, CompletionStage<List<Integer>>> sink =
+        Flow.of(Integer.class)
+            .recover(IllegalStateException.class, 42)
+            .toMat(Sink.seq(), Keep.right());
+    final Pair<CompletionStage<List<Integer>>, CompletionStage<Done>> result =
+        Source.<Integer>failed(new IllegalStateException("recovered upstream failure"))
+            .runWith(sink.watchTermination(Keep.both()), system);
+    assertEquals(List.of(42), result.first().toCompletableFuture().get(3, TimeUnit.SECONDS));
+    assertEquals(Done.done(), result.second().toCompletableFuture().get(3, TimeUnit.SECONDS));
+  }
 }
