@@ -13,14 +13,16 @@
 
 package org.apache.pekko.stream.impl.fusing
 
-import java.util.concurrent.ThreadLocalRandom
+import java.util.concurrent.{ ThreadLocalRandom, TimeUnit }
 
 import scala.concurrent.Promise
 import scala.util.control.NonFatal
 
+import com.typesafe.config.ConfigException
+
 import org.apache.pekko
 import pekko.Done
-import pekko.actor.ActorRef
+import pekko.actor.{ ActorRef, ExtendedActorSystem, Extension, ExtensionId }
 import pekko.annotation.{ InternalApi, InternalStableApi }
 import pekko.event.Logging
 import pekko.event.LoggingAdapter
@@ -35,6 +37,34 @@ import pekko.stream.stage._
  * (See the class for the documentation of the internals)
  */
 @InternalApi private[pekko] object GraphInterpreter {
+
+  private val ErrorThrottleConfigPath = "pekko.stream.materializer.stage-errors-log-throttle-period"
+
+  private final class ErrorThrottleSettings(val nanos: Long) extends Extension
+
+  private object ErrorThrottleSettings extends ExtensionId[ErrorThrottleSettings] {
+    override def createExtension(system: ExtendedActorSystem): ErrorThrottleSettings = {
+      val config = system.settings.config
+      val nanos =
+        try {
+          val value = config.getString(ErrorThrottleConfigPath)
+          if (pekko.util.Helpers.toRootLowerCase(value) == "off") 0L
+          else {
+            val duration = config.getDuration(ErrorThrottleConfigPath, TimeUnit.NANOSECONDS)
+            if (duration <= 0L)
+              throw new ConfigException.BadValue(ErrorThrottleConfigPath, "Expected a positive duration or 'off'")
+            duration
+          }
+        } catch {
+          case e: ConfigException =>
+            // A logging option must not replace the exception the stage is already reporting.
+            system.log.warning("Ignoring invalid stream error log throttle [{}]: {}", ErrorThrottleConfigPath,
+              e.getMessage)
+            0L
+        }
+      new ErrorThrottleSettings(nanos)
+    }
+  }
 
   /**
    * Compile time constant, enable it for debug logging to the console.
@@ -282,6 +312,19 @@ import pekko.stream.stage._
   private var _subFusingMaterializer: Materializer = _
   private lazy val defaultErrorReportingLogLevel = LogLevels.defaultErrorLevel(materializer.system)
 
+  // Throttle state for stage error logging
+  private[this] lazy val throttlePeriodNanos: Long = {
+    val system =
+      try materializer.system
+      catch {
+        case _: UnsupportedOperationException => null // NoMaterializer in tests
+      }
+    if (system eq null) 0L else ErrorThrottleSettings(system).nanos
+  }
+  private[this] var lastErrorLogTime: Long = 0L
+  private[this] var errorLogInitialized: Boolean = false
+  private[this] var suppressedErrorCount: Int = 0
+
   def subFusingMaterializer: Materializer = _subFusingMaterializer
 
   // An event queue implemented as a circular buffer
@@ -379,6 +422,7 @@ import pekko.stream.stage._
    * Finalizes the state of all operators by calling postStop() (if necessary).
    */
   def finish(): Unit = {
+    flushSuppressedErrors()
     var i = 0
     while (i < logics.length) {
       val logic = logics(i)
@@ -408,6 +452,27 @@ import pekko.stream.stage._
       j += 1
     }
   }
+
+  private[fusing] def flushSuppressedErrors(): Unit =
+    if (suppressedErrorCount > 0) {
+      log.warning("{} additional stage error(s) were suppressed during throttle period", suppressedErrorCount)
+      suppressedErrorCount = 0
+    }
+
+  private def shouldLogError(): Boolean =
+    if (throttlePeriodNanos == 0L) true
+    else {
+      val now = System.nanoTime()
+      if (!errorLogInitialized || now - lastErrorLogTime >= throttlePeriodNanos) {
+        flushSuppressedErrors()
+        errorLogInitialized = true
+        lastErrorLogTime = now
+        true
+      } else {
+        suppressedErrorCount += 1
+        false
+      }
+    }
 
   // Debug name for a connections input part
   private def inOwnerName(connection: Connection): String =
@@ -460,7 +525,8 @@ import pekko.stream.stage._
       }
       logAt match {
         case Logging.ErrorLevel =>
-          log.error(e, "Error in stage [{}]: {}", activeStage.toString, e.getMessage)
+          if (log.isErrorEnabled && shouldLogError())
+            log.error(e, "Error in stage [{}]: {}", activeStage.toString, e.getMessage)
         case Logging.WarningLevel =>
           log.warning(e, "Error in stage [{}]: {}", activeStage.toString, e.getMessage)
         case Logging.InfoLevel =>
