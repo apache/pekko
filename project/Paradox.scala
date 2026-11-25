@@ -76,7 +76,11 @@ object Paradox {
       "fault-tolerance-sample.html"))
 
   lazy val themeSettings = Seq(
-    pekkoParadoxGithub := Some("https://github.com/apache/pekko"))
+    pekkoParadoxGithub := Some("https://github.com/apache/pekko"),
+    pekkoParadoxCopyright :=
+      """Copyright © 2011-2023 <a href="https://www.lightbend.com/">Lightbend, Inc</a>.
+        | Apache Pekko, Pekko, Apache, the Apache logo, and the Apache Pekko project logo are either registered trademarks
+        | or trademarks of The Apache Software Foundation in the United States and other countries.""".stripMargin)
 
   // FIXME https://github.com/lightbend/paradox/issues/350
   // Exclusions from direct compilation for includes dirs/files not belonging in a TOC
