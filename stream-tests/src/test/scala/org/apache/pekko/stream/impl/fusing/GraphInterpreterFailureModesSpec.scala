@@ -13,7 +13,14 @@
 
 package org.apache.pekko.stream.impl.fusing
 
+import scala.concurrent.Future
+import scala.util.Failure
+
 import org.apache.pekko
+import pekko.Done
+import pekko.event.Logging
+import pekko.stream.{ Attributes, FlowShape, Inlet, Outlet, StreamDetachedException }
+import pekko.stream.stage.{ GraphStage, GraphStageLogic, InHandler, OutHandler }
 import pekko.stream.testkit.StreamSpec
 import pekko.stream.testkit.Utils.TE
 import pekko.testkit.EventFilter
@@ -123,6 +130,93 @@ class GraphInterpreterFailureModesSpec extends StreamSpec with GraphInterpreterS
 
     }
 
+    "detach pending callback feedback when postStop throws after normal completion" in new TestSetup {
+      val thrown = TE("postStop failed")
+      var registeredFeedback = Option.empty[Future[Done]]
+      var postStops = 0
+      var afterPostStops = 0
+      val source = new UpstreamProbe[Int]("source")
+      val sink = new DownstreamProbe[Int]("sink")
+
+      val stage: GraphStage[FlowShape[Int, Int]] = new GraphStage[FlowShape[Int, Int]] {
+        val in = Inlet[Int]("in")
+        val out = Outlet[Int]("out")
+        override val shape = FlowShape(in, out)
+
+        override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =
+          new GraphStageLogic(shape) with InHandler with OutHandler {
+            setHandlers(in, out, this)
+            override def onPush(): Unit = push(out, grab(in))
+            override def onPull(): Unit = pull(in)
+
+            private val callback = getAsyncCallback[Unit](_ => ())
+
+            override def preStart(): Unit = {
+              registeredFeedback = Some(callback.invokeWithFeedback(()))
+            }
+
+            override def postStop(): Unit = {
+              postStops += 1
+              throw thrown
+            }
+
+            override protected[stream] def afterPostStop(): Unit = {
+              afterPostStops += 1
+              super.afterPostStop()
+            }
+          }
+      }
+      builder(stage).connect(source, stage.shape.in).connect(stage.shape.out, sink).init()
+
+      // The manually stepped interpreter queues no async input, so feedback stays pending until teardown.
+      val feedback = registeredFeedback.getOrElse(fail("preStart did not register feedback"))
+      feedback.isCompleted shouldBe false
+      EventFilter.custom({
+          case error: Logging.Error =>
+            (error.cause eq thrown) && error.message.toString.startsWith("Error during postStop in [")
+        }, occurrences = 1).intercept {
+        source.onComplete()
+      }
+
+      lastEvents() shouldBe Set(OnComplete(sink))
+      postStops shouldBe 1
+      feedback.value should matchPattern { case Some(Failure(_: StreamDetachedException)) => }
+      afterPostStops shouldBe 1
+    }
+
+    "log cleanup failure separately after normal completion" in new TestSetup {
+      val thrown = TE("cleanup failed")
+      val source = new UpstreamProbe[Int]("source")
+      val sink = new DownstreamProbe[Int]("sink")
+
+      val stage: GraphStage[FlowShape[Int, Int]] = new GraphStage[FlowShape[Int, Int]] {
+        val in = Inlet[Int]("in")
+        val out = Outlet[Int]("out")
+        override val shape = FlowShape(in, out)
+
+        override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =
+          new GraphStageLogic(shape) with InHandler with OutHandler {
+            setHandlers(in, out, this)
+            override def onPush(): Unit = push(out, grab(in))
+            override def onPull(): Unit = pull(in)
+
+            override protected[stream] def afterPostStop(): Unit = {
+              super.afterPostStop()
+              throw thrown
+            }
+          }
+      }
+      builder(stage).connect(source, stage.shape.in).connect(stage.shape.out, sink).init()
+
+      EventFilter.custom({
+          case error: Logging.Error =>
+            (error.cause eq thrown) && error.message.toString.startsWith("Error during cleanup after postStop in [")
+        }, occurrences = 1).intercept {
+        source.onComplete()
+      }
+
+      lastEvents() shouldBe Set(OnComplete(sink))
+    }
   }
 
 }

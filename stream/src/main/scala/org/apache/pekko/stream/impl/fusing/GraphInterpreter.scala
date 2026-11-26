@@ -858,12 +858,17 @@ import pekko.stream.stage._
 
   @InternalStableApi
   private[stream] def finalizeStage(logic: GraphStageLogic): Unit = {
-    try {
-      logic.postStop()
-      logic.afterPostStop()
-    } catch {
+    try logic.postStop()
+    catch {
       case NonFatal(e) =>
         log.error(e, s"Error during postStop in [{}]: {}", logic.toString, e.getMessage)
+    }
+
+    // A non-fatal failure in the stage's postStop must not skip the internal cleanup.
+    try logic.afterPostStop()
+    catch {
+      case NonFatal(e) =>
+        log.error(e, "Error during cleanup after postStop in [{}]: {}", logic.toString, e.getMessage)
     }
   }
 
