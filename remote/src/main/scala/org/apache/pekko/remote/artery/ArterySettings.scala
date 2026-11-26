@@ -340,14 +340,17 @@ private[pekko] object ArterySettings {
     final val Debug = false // unlocks additional very verbose debug logging of compression events (to stdout)
   }
 
-  def getHostname(key: String, config: Config): String = config.getString(key) match {
-    case "<getHostAddress>" => InetAddress.getLocalHost.getHostAddress
-    case "<getHostName>"    => InetAddress.getLocalHost.getHostName
-    case other              =>
-      if (other.startsWith("[") && other.endsWith("]")) other
-      else if (AsyncDnsResolver.isIpv6Address(other)) {
-        "[" + other + "]"
-      } else other
+  def getHostname(key: String, config: Config): String = getHostname(key, config, InetAddress.getLocalHost)
+
+  private[artery] def getHostname(key: String, config: Config, localHost: => InetAddress): String = {
+    val hostname = config.getString(key) match {
+      case "<getHostAddress>" => localHost.getHostAddress
+      case "<getHostName>"    => localHost.getHostName
+      case other              => other
+    }
+    if (hostname.startsWith("[") && hostname.endsWith("]")) hostname
+    else if (AsyncDnsResolver.isIpv6Address(hostname)) s"[$hostname]"
+    else hostname
   }
 
   sealed trait Transport {
