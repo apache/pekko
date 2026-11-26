@@ -352,6 +352,15 @@ object ClusterSingletonManager {
     final case class LeaseLost(reason: Option[Throwable]) extends DeadLetterSuppression
 
     /**
+     * The completion of the lease acquire that was started as the given attempt. The attempt identifies the
+     * acquire, so that the result of an acquire that the manager has abandoned is not taken for the result
+     * of a later acquire.
+     *
+     * @param result `AcquireLeaseResult` or `AcquireLeaseFailure`
+     */
+    final case class AcquireLeaseCompleted(attempt: Long, result: Any) extends DeadLetterSuppression
+
+    /**
      * Notifications of member events that track oldest member are tunneled
      * via this actor (child of ClusterSingletonManager) to be able to deliver
      * one change at a time. Avoiding simultaneous changes simplifies
@@ -622,6 +631,9 @@ class ClusterSingletonManager(singletonProps: Props, terminationMessage: Any, se
 
   // the lease acquire started by the latest tryAcquireLease, if any
   private var leaseAcquireInProgress: Option[Future[Boolean]] = None
+  // Identifies the lease acquire whose completion is handled. Changed when a new acquire is started and when
+  // the acquire in progress is abandoned, so that completions of earlier acquires are ignored.
+  private var leaseAcquireAttempt = 0L
 
   // keep track of previously removed members
   var removed = Map.empty[UniqueAddress, Deadline]
@@ -948,9 +960,11 @@ class ClusterSingletonManager(singletonProps: Props, terminationMessage: Any, se
           releasesCompleted.flatMap(_ => l.acquire(reason => self ! LeaseLost(reason)))
         }
       leaseAcquireInProgress = Some(acquired)
+      leaseAcquireAttempt += 1
+      val attempt = leaseAcquireAttempt
       pipe(acquired.map[Any](AcquireLeaseResult(_)).recover {
         case NonFatal(t) => AcquireLeaseFailure(t)
-      }).to(self)
+      }.map(AcquireLeaseCompleted(attempt, _))).to(self)
     } else
       leaseAcquireInProgress = None
     goto(AcquiringLease).using(AcquiringLeaseData(leaseRequestInProgress = true, None))
@@ -965,7 +979,8 @@ class ClusterSingletonManager(singletonProps: Props, terminationMessage: Any, se
   /**
    * Releases the lease when the acquire in progress succeeds, used when the manager stops or leaves
    * `AcquiringLease` while acquiring. The result of that acquire is no longer handled, and would otherwise
-   * leave the lease held until it expires.
+   * leave the lease held until it expires. The acquire is abandoned, its completion is ignored also when the
+   * manager is in `AcquiringLease` again when it arrives.
    */
   private def releaseLeaseIfAcquired(): Unit = {
     for (l <- lease; acquired <- leaseAcquireInProgress; release <- leaseReleaser()) {
@@ -979,6 +994,7 @@ class ClusterSingletonManager(singletonProps: Props, terminationMessage: Any, se
         })
     }
     leaseAcquireInProgress = None
+    leaseAcquireAttempt += 1
   }
 
   /**
@@ -1020,7 +1036,12 @@ class ClusterSingletonManager(singletonProps: Props, terminationMessage: Any, se
   }
 
   when(AcquiringLease) {
-    case Event(AcquireLeaseResult(result), _) =>
+    case Event(AcquireLeaseCompleted(attempt, result), _) if attempt != leaseAcquireAttempt =>
+      // The lease of an abandoned acquire is released if it was acquired. Starting the singleton for it
+      // would run the singleton without the lease, before the acquire in progress has succeeded.
+      log.debug("Ignoring result [{}] of abandoned lease acquire", result)
+      stay()
+    case Event(AcquireLeaseCompleted(_, AcquireLeaseResult(result)), _) =>
       logInfo("Acquire lease result {}", result)
       if (result) {
         gotoOldest()
@@ -1034,7 +1055,7 @@ class ClusterSingletonManager(singletonProps: Props, terminationMessage: Any, se
         "Singleton actor terminated. Trying to acquire lease again before re-creating.")
       // tryAcquireLease sets the state to None for singleton actor
       tryAcquireLease()
-    case Event(AcquireLeaseFailure(t), _) =>
+    case Event(AcquireLeaseCompleted(_, AcquireLeaseFailure(t)), _) =>
       log.error(t, "failed to get lease (will be retried)")
       startSingleTimer(LeaseRetryTimer, LeaseRetry, leaseRetryInterval)
       stay().using(AcquiringLeaseData(leaseRequestInProgress = false, None))
@@ -1344,6 +1365,10 @@ class ClusterSingletonManager(singletonProps: Props, terminationMessage: Any, se
       stay()
     case Event(_: MemberEvent, _) =>
       stay() // silence
+    case Event(AcquireLeaseCompleted(_, result), _) =>
+      // the acquire was abandoned when leaving AcquiringLease, and the lease is released if it was acquired
+      log.debug("Ignoring result [{}] of abandoned lease acquire in [{}]", result, stateName)
+      stay()
   }
 
   onTransition {

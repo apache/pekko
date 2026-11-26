@@ -30,7 +30,10 @@ import pekko.actor.Props
 import pekko.cluster.Cluster
 import pekko.cluster.ClusterEvent.MemberDowned
 import pekko.cluster.MemberStatus
-import pekko.cluster.singleton.ClusterSingletonManager.Internal.{ HandOverDone, HandOverToMe }
+import pekko.cluster.Member
+import pekko.cluster.UniqueAddress
+import pekko.cluster.singleton.ClusterSingletonManager.Internal.{ DelayedMemberRemoved, HandOverDone, HandOverToMe }
+import pekko.cluster.singleton.ClusterSingletonManager.Internal.OldestChangedBuffer.OldestChanged
 import pekko.coordination.lease.TestLease
 import pekko.coordination.lease.TestLeaseExt
 import pekko.event.Logging
@@ -442,6 +445,46 @@ class ClusterSingletonLeaseSpec extends PekkoSpec(ConfigFactory.parseString("""
       testLease.probe.expectMsg(ReleaseReq(leaseOwner))
       testLease.probe.expectNoMessage(shortDuration)
       lifecycleProbe.expectNoMessage(shortDuration)
+    }
+
+    "not start the singleton for an abandoned acquire that succeeds after the manager is acquiring again" in {
+      val lifecycleProbe = TestProbe()
+      val settings = nextSettings()
+      val manager = system.actorOf(
+        ClusterSingletonManager.props(Props(new ImportantSingleton(lifecycleProbe.ref)), PoisonPill, settings),
+        settings.singletonName)
+      val testLease = awaitAssert {
+        testLeaseExt.getTestLease(leaseNameFor(settings))
+      }
+      testLease.probe.expectMsg(AcquireReq(leaseOwner))
+
+      // Leave AcquiringLease while the acquire is in progress: a removed node is seen as oldest again.
+      val otherNode = UniqueAddress(cluster.selfAddress.copy(port = Some(1)), 1L)
+      manager ! DelayedMemberRemoved(Member(otherNode, Set.empty, cluster.selfMember.appVersion))
+      manager ! OldestChanged(Some(otherNode))
+      // And acquire again before the abandoned acquire completes, this acquire waits for its release.
+      manager ! OldestChanged(Some(cluster.selfUniqueAddress))
+      testLease.probe.expectNoMessage(shortDuration)
+
+      val releaseResult = Promise[Boolean]()
+      testLease.setNextReleaseResult(releaseResult.future)
+      val secondAcquireResult = Promise[Boolean]()
+      testLease.setNextAcquireResult(secondAcquireResult.future)
+
+      // the abandoned acquire succeeds, its lease is released and its result must not start the singleton
+      testLease.initialPromise.success(true)
+      testLease.probe.expectMsg(ReleaseReq(leaseOwner))
+      testLease.probe.expectNoMessage(shortDuration)
+      lifecycleProbe.expectNoMessage(shortDuration)
+
+      releaseResult.success(true)
+      testLease.probe.expectMsg(AcquireReq(leaseOwner))
+      lifecycleProbe.expectNoMessage(shortDuration)
+
+      // only the acquire in progress starts the singleton
+      secondAcquireResult.success(true)
+      lifecycleProbe.expectMsg("preStart")
+      testLease.probe.expectNoMessage(shortDuration)
     }
 
     "not release when the acquire in progress at stop does not succeed" in {
