@@ -86,9 +86,14 @@ private[remote] object Association {
    * hold the wrapper after the materialized value has replaced it in the queues array. A message that is
    * offered directly to the queue after the stage has found it empty would not wake up the stage, so
    * such offers are handed over to the materialized value.
+   *
+   * When the restart that the wrapper was waiting for failed, the wrapper is replaced by a new wrapper
+   * of the same queue and forwards to it. A sender that still holds the replaced wrapper thereby requests
+   * the retried restart and reaches the materialized value that is handed over to the new wrapper.
    */
   sealed trait PendingQueueWrapper extends QueueWrapper {
     @volatile private var live: SendQueue.QueueValue[OutboundEnvelope] = null
+    @volatile private var successor: PendingQueueWrapper = null
 
     /** Must be called after `queueValue` has been injected with this queue. */
     def handOver(queueValue: SendQueue.QueueValue[OutboundEnvelope]): Unit = {
@@ -97,22 +102,46 @@ private[remote] object Association {
       queueValue.wakeup()
     }
 
-    protected def offerPending(message: OutboundEnvelope, beforeHandOverCheck: () => Unit): Boolean = {
+    /**
+     * Must be called when this wrapper is replaced by `next`, which wraps the same queue, without
+     * this wrapper having been handed over.
+     */
+    def forwardTo(next: PendingQueueWrapper): Unit =
+      successor = next
+
+    /** Called after a message has been offered directly to the queue, before the hand over is checked. */
+    protected def offeredToQueue(): Unit
+
+    final override def offer(message: OutboundEnvelope): Boolean = {
       val l = live
       if (l ne null) l.offer(message)
       else {
-        val result = queue.offer(message)
-        beforeHandOverCheck()
-        // If live is still null the handOver has not happened yet and its wakeup will see the message.
-        val handedOver = live
-        if (result && (handedOver ne null)) handedOver.wakeup()
-        result
+        val s = successor
+        if (s ne null) s.offer(message)
+        else {
+          val result = queue.offer(message)
+          // The message was offered directly to the queue. This wrapper may have been handed over or
+          // replaced meanwhile, so follow the wrappers that replaced it. If one has been handed over,
+          // its stage may already have found the queue empty and must be woken up. Otherwise the hand
+          // over has not happened yet and its wakeup will see the message.
+          var wrapper = this
+          while (wrapper ne null) {
+            wrapper.offeredToQueue()
+            val handedOver = wrapper.live
+            if (handedOver ne null) {
+              if (result) handedOver.wakeup()
+              wrapper = null
+            } else
+              wrapper = wrapper.successor
+          }
+          result
+        }
       }
     }
   }
 
   final case class QueueWrapperImpl(queue: Queue[OutboundEnvelope]) extends PendingQueueWrapper {
-    override def offer(message: OutboundEnvelope): Boolean = offerPending(message, () => ())
+    override protected def offeredToQueue(): Unit = ()
 
     override def isEnabled: Boolean = true
   }
@@ -152,7 +181,7 @@ private[remote] object Association {
     }
 
     // Enqueue before materializing, the new stream polls the queue when it starts.
-    override def offer(message: OutboundEnvelope): Boolean = offerPending(message, () => runMaterialize())
+    override protected def offeredToQueue(): Unit = runMaterialize()
 
     override def isEnabled: Boolean = true
   }
@@ -1147,7 +1176,7 @@ private[remote] class Association(
         _outboundControlIngress = OptionVal.None
       }
       if (!isRemovedAfterQuarantined())
-        installLazyQueues(queueIndices.map(i => i -> (() => createQueue(queueCapacity, i))))
+        installLazyQueues(retryOfFailedRestart = false)
 
       queuesVisibility = true // volatile write for visibility of the queues array
       if (notifyPending) afterRestart()
@@ -1158,20 +1187,34 @@ private[remote] class Association(
     // The restart must not start before all queues have been replaced, otherwise a queue that is replaced
     // after the restart has installed its materialized value would never be consumed. A message offered
     // before that only requests the restart, which is then started when the last queue has been replaced.
-    def installLazyQueues(newQueues: Seq[(Int, () => Queue[OutboundEnvelope])]): Unit = {
+    def installLazyQueues(retryOfFailedRestart: Boolean): Unit = {
       val gate = new RestartGate(() =>
         try restart()
         catch {
           case NonFatal(e) =>
-            // Let the next message retry the restart. The queues are kept, so that the messages
-            // that were offered to them while restarting are not lost.
+            // Let the next message retry the restart.
             if (!transport.isShutdown && !isRemovedAfterQuarantined())
-              installLazyQueues(queueIndices.map(i => i -> currentQueue(i)))
+              installLazyQueues(retryOfFailedRestart = true)
             throw e
         })
       val requestRestart: () => Unit = () => gate.request()
 
-      newQueues.foreach { case (i, newQueue) => queues(i) = new LazyQueueWrapper(newQueue, requestRestart) }
+      @nowarn("msg=never used")
+      val unused = queuesVisibility // volatile read to see latest queues array
+      queueIndices.foreach { i =>
+        queues(i) = queues(i) match {
+          case previous: PendingQueueWrapper if retryOfFailedRestart =>
+            // The queue is kept, so that the messages that were offered to it while restarting are not
+            // lost. A sender may still hold the previous wrapper, and its restart has already been used,
+            // so it is forwarded to the new wrapper. Otherwise its offers would neither request the retry
+            // nor wake up the stream that the retry starts.
+            val wrapper = new LazyQueueWrapper(() => previous.queue, requestRestart)
+            previous.forwardTo(wrapper)
+            wrapper
+          case _ =>
+            new LazyQueueWrapper(() => createQueue(queueCapacity, i), requestRestart)
+        }
+      }
       queuesVisibility = true // volatile write for visibility of the queues array
 
       // starts the restart if a message was offered while the queues were replaced
@@ -1185,16 +1228,6 @@ private[remote] class Association(
             remoteAddress,
             e.getClass.getName,
             e.getMessage)
-      }
-    }
-
-    def currentQueue(queueIndex: Int): () => Queue[OutboundEnvelope] = {
-      @nowarn("msg=never used")
-      val unused = queuesVisibility // volatile read to see latest queues array
-      queues(queueIndex) match {
-        case w: LazyQueueWrapper => () => w.queue
-        case w: QueueWrapperImpl => () => w.queue
-        case _                   => () => createQueue(queueCapacity, queueIndex)
       }
     }
 

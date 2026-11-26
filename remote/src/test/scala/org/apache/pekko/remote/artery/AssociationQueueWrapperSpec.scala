@@ -96,6 +96,73 @@ class AssociationQueueWrapperSpec extends PekkoSpec {
     }
   }
 
+  "A queue wrapper that has been replaced after a failed restart" must {
+
+    def replace(previous: PendingQueueWrapper, requestRestart: () => Unit = () => ()): LazyQueueWrapper = {
+      val next = new LazyQueueWrapper(() => previous.queue, requestRestart)
+      previous.forwardTo(next)
+      next
+    }
+
+    "wake up the retried stream for offers from senders that still hold the replaced wrapper" in {
+      newWrappers().foreach { first =>
+        withClue(first.getClass.getSimpleName) {
+          // replaced twice, as when the restart failed twice
+          val second = replace(first)
+          val third = replace(second)
+          val (queueValue, downstream) = materialize(third)
+          third.handOver(queueValue)
+
+          first.offer(envelope("a")) shouldBe true
+          downstream.expectNext("a")
+          second.offer(envelope("b")) shouldBe true
+          downstream.expectNext("b")
+          third.offer(envelope("c")) shouldBe true
+          downstream.expectNext("c")
+          downstream.cancel()
+        }
+      }
+    }
+
+    "request the retried restart for offers from senders that still hold the replaced wrapper" in {
+      newWrappers().foreach { first =>
+        withClue(first.getClass.getSimpleName) {
+          val requests = new AtomicInteger
+          val second = replace(first, () => requests.incrementAndGet())
+
+          first.offer(envelope("a")) shouldBe true
+          requests.get shouldBe 1
+          second.queue.poll().message shouldBe "a"
+        }
+      }
+    }
+
+    "wake up the retried stream when it is replaced and handed over while a sender offers to the queue" in {
+      // The sender has found the wrapper neither replaced nor handed over, and offers directly to the queue.
+      // Meanwhile the restart fails, the wrapper is replaced, and the retried stream finds the queue empty.
+      val queue = new ManyToOneConcurrentArrayQueue[OutboundEnvelope](16)
+      val requests = new AtomicInteger
+      var downstream: TestSubscriber.Probe[AnyRef] = null
+      lazy val first: LazyQueueWrapper = new LazyQueueWrapper(
+        () => queue,
+        () => {
+          // runs in the sender's offer, after the message has been enqueued
+          val pending = queue.poll() // as if the retried stream had not seen the message
+          val second = replace(first, () => requests.incrementAndGet())
+          val (queueValue, probe) = materialize(second)
+          downstream = probe
+          second.handOver(queueValue)
+          probe.expectNoMessage(100.millis)
+          queue.offer(pending)
+        })
+
+      first.offer(envelope("a")) shouldBe true
+      requests.get shouldBe 1
+      downstream.expectNext("a")
+      downstream.cancel()
+    }
+  }
+
   "A RestartGate" must {
 
     "start when requested after it has been opened" in {
