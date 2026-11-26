@@ -13,12 +13,13 @@
 
 package org.apache.pekko.stream.io
 
+import java.nio.channels.FileChannel
 import java.nio.charset.StandardCharsets.UTF_8
-import java.nio.file.{ Files, NoSuchFileException }
+import java.nio.file.{ Files, NoSuchFileException, StandardOpenOption }
 import java.util.Random
 
 import scala.annotation.nowarn
-import scala.concurrent.Future
+import scala.concurrent.{ ExecutionContext, Future }
 import scala.concurrent.duration._
 
 import com.google.common.jimfs.{ Configuration, Jimfs }
@@ -30,8 +31,9 @@ import pekko.stream.SystemMaterializer
 import pekko.stream._
 import pekko.stream.impl.StreamSupervisor.Children
 import pekko.stream.impl.{ PhasedFusingActorMaterializer, StreamSupervisor }
+import pekko.stream.impl.io.FileSource
 import pekko.stream.io.FileSourceSpec.Settings
-import pekko.stream.scaladsl.{ FileIO, Keep, Sink }
+import pekko.stream.scaladsl.{ FileIO, Keep, Sink, Source }
 import pekko.stream.testkit.Utils._
 import pekko.stream.testkit._
 import pekko.stream.testkit.scaladsl.TestSink
@@ -100,6 +102,26 @@ class FileSourceSpec extends StreamSpec(UnboundedMailboxConfig) {
     }
 
   "FileSource" must {
+    for (cancel <- List(false, true)) {
+      val outcome = if (cancel) "downstream cancellation" else "EOF"
+      s"close the channel before completing the IOResult on $outcome" in {
+        val channel = FileChannel.open(testFile, StandardOpenOption.READ)
+        try {
+          val (result, probe) = Source
+            .fromGraph(new FileSource(testFile, TestText.length + 1, 0, _ => channel))
+            .toMat(TestSink())(Keep.both)
+            .run()
+          val openOnCompletion = result.map(_ => channel.isOpen)(ExecutionContext.parasitic)
+          if (cancel) probe.cancel()
+          else {
+            probe.request(1).expectNext(ByteString(TestText)).expectComplete()
+          }
+          openOnCompletion.futureValue shouldBe false
+          result.futureValue shouldBe createSuccessful(if (cancel) 0L else TestText.length.toLong)
+        } finally channel.close()
+      }
+    }
+
     "read contents from a file" in {
       val chunkSize = 512
 
