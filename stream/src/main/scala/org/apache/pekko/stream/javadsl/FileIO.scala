@@ -107,8 +107,8 @@ object FileIO {
    * set it for a given Source by using [[pekko.stream.ActorAttributes]].
    *
    * It materializes a [[java.util.concurrent.CompletionStage]] of [[IOResult]] containing the number of bytes read from the source file upon completion,
-   * and a possible exception if IO operation was not completed successfully. Note that bytes having been read by the source does
-   * not give any guarantee that the bytes were seen by downstream stages.
+   * and a possible exception if IO operation was not completed successfully. If the source opened the file, it attempts to
+   * close it before completing the materialized result. Bytes read by the source might not have reached downstream stages.
    *
    * @param f         the file path to read from
    */
@@ -123,8 +123,8 @@ object FileIO {
    * set it for a given Source by using [[pekko.stream.ActorAttributes]].
    *
    * It materializes a [[java.util.concurrent.CompletionStage]] of [[IOResult]] containing the number of bytes read from the source file upon completion,
-   * and a possible exception if IO operation was not completed successfully. Note that bytes having been read by the source does
-   * not give any guarantee that the bytes were seen by downstream stages.
+   * and a possible exception if IO operation was not completed successfully. If the source opened the file, it attempts to
+   * close it before completing the materialized result. Bytes read by the source might not have reached downstream stages.
    *
    * @param f         the file path to read from
    * @param chunkSize the size of each read operation
@@ -141,8 +141,8 @@ object FileIO {
    * set it for a given Source by using [[pekko.stream.ActorAttributes]].
    *
    * It materializes a [[java.util.concurrent.CompletionStage]] of [[IOResult]] containing the number of bytes read from the source file upon completion,
-   * and a possible exception if IO operation was not completed successfully. Note that bytes having been read by the source does
-   * not give any guarantee that the bytes were seen by downstream stages.
+   * and a possible exception if IO operation was not completed successfully. If the source opened the file, it attempts to
+   * close it before completing the materialized result. Bytes read by the source might not have reached downstream stages.
    *
    * @param f         the file path to read from
    * @param chunkSize the size of each read operation

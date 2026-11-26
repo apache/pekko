@@ -21,7 +21,8 @@ Emits the contents of a file from the given path.
 ## Description
 
 Emits the contents of a file from the given path, as `ByteString`s, materializes into a @scala[`Future`] @java[`CompletionStage`] which will be completed with
-a `IOResult` upon reaching the end of the file or if there is a failure.
+an `IOResult` on end-of-file, cancellation, or failure. If the source opened the file, it attempts to close it before
+completing the materialized result.
 
 ## Example
 
