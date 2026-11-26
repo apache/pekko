@@ -700,6 +700,9 @@ the system might have less latency than at low message rates.
 There are lots of configuration properties that are related to remoting in Pekko. We refer to the
 @ref:[reference configuration](general/configuration-reference.md#config-pekko-remote-artery) for more information.
 
+IPv6 literals in Artery's canonical and bind hostnames use brackets in remoting addresses. Pekko adds them when
+needed, including when `<getHostAddress>` or `<getHostName>` returns an IPv6 literal.
+
 @@@ note
 
 Setting properties like the listening IP and port number programmatically is

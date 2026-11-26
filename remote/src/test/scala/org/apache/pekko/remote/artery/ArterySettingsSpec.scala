@@ -17,9 +17,11 @@
 
 package org.apache.pekko.remote.artery
 
+import java.net.{ Inet6Address, InetAddress, InetSocketAddress }
 import java.nio.charset.StandardCharsets
 
 import org.apache.pekko
+import pekko.actor.{ Address, AddressFromURIString }
 import pekko.util.ByteString
 
 import org.scalatest.matchers.should.Matchers
@@ -38,6 +40,54 @@ class ArterySettingsSpec extends AnyWordSpec with Matchers {
         .getConfig("pekko.remote.artery"))
 
   private def magic(s: String): ByteString = ByteString(s.getBytes(StandardCharsets.UTF_8))
+
+  "Artery hostname settings" must {
+    "render the resolved IPv6 literal with brackets for canonical and bind hostnames" in {
+      val loopback = InetAddress.getByName("::1")
+      val expected = s"[${loopback.getHostAddress}]"
+      val address = Address("pekko", "system", expected, 25520)
+      val defaults = ConfigFactory.load().getConfig("pekko.remote.artery")
+      val canonical = ArterySettings.getHostname("hostname", defaults.getConfig("canonical"), loopback)
+      canonical shouldBe expected
+      AddressFromURIString(Address("pekko", "system", canonical, 25520).toString) shouldBe address
+
+      val bind = ConfigFactory.parseString("""hostname = "<getHostAddress>" """)
+      val bindHost = ArterySettings.getHostname("hostname", bind, loopback)
+      bindHost shouldBe expected
+      new InetSocketAddress(bindHost, 25520).getAddress shouldBe loopback
+    }
+
+    "preserve the numeric scope of a bracketed IPv6 literal" in {
+      val bytes = Array[Byte](0xFE.toByte, 0x80.toByte, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1)
+      val linkLocal = Inet6Address.getByAddress(null, bytes, 7)
+      val config = ConfigFactory.parseString("""hostname = "<getHostAddress>" """)
+
+      val hostname = ArterySettings.getHostname("hostname", config, linkLocal)
+      val expected = s"[${linkLocal.getHostAddress}]"
+      hostname shouldBe expected
+      AddressFromURIString(Address("pekko", "system", hostname, 25520).toString).host shouldBe Some(expected)
+    }
+
+    "bracket an IPv6 literal returned by <getHostName>" in {
+      val loopback = InetAddress.getByAddress("::1", Array.fill[Byte](15)(0) :+ 1.toByte)
+      val config = ConfigFactory.parseString("""hostname = "<getHostName>" """)
+
+      ArterySettings.getHostname("hostname", config, loopback) shouldBe "[::1]"
+    }
+
+    "preserve IPv4, DNS names, and explicitly configured brackets" in {
+      val loopback = InetAddress.getByAddress("local.example", Array[Byte](127, 0, 0, 1))
+      def hostname(value: String): String =
+        ArterySettings.getHostname("hostname", ConfigFactory.parseString(s"""hostname = "$value" """), loopback)
+
+      hostname("<getHostAddress>") shouldBe "127.0.0.1"
+      hostname("<getHostName>") shouldBe "local.example"
+      hostname("::1") shouldBe "[::1]"
+      hostname("[::1]") shouldBe "[::1]"
+      hostname("127.0.0.1") shouldBe "127.0.0.1"
+      hostname("example.com") shouldBe "example.com"
+    }
+  }
 
   "ArterySettings.TcpMagicValues" must {
 
