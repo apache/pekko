@@ -850,6 +850,7 @@ import org.reactivestreams.Subscription
   private def finishBatch(remainingQuota: Int): Int = {
     flushOutputs()
     if (interpreter.isCompleted) {
+      interpreter.flushSuppressedErrors()
       // Cannot stop right away if not completely subscribed
       if (canShutDown) interpreterCompleted = true
       else {
