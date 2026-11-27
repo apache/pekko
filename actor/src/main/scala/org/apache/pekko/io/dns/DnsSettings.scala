@@ -125,18 +125,7 @@ private[dns] final class DnsSettings(system: ExtendedActorSystem, c: Config) {
     } else None
   }
 
-  val SearchDomains: List[String] = {
-    c.getValue("search-domains").valueType() match {
-      case ConfigValueType.STRING =>
-        c.getString("search-domains") match {
-          case "default" => resolvConf.map(_.search).getOrElse(Nil)
-          case single    => List(single)
-        }
-      case ConfigValueType.LIST =>
-        c.getStringList("search-domains").asScala.toList
-      case _ => throw new IllegalArgumentException("Invalid type for search-domains. Must be a string or string list.")
-    }
-  }
+  val SearchDomains: List[String] = DnsSettings.configuredSearchDomains(c, resolvConf.map(_.search).getOrElse(Nil))
 
   val NDots: Int = {
     c.getValue("ndots").valueType() match {
@@ -168,6 +157,22 @@ private[dns] final class DnsSettings(system: ExtendedActorSystem, c: Config) {
 }
 
 object DnsSettings {
+
+  private[dns] def configuredSearchDomains(config: Config, hostSearchDomains: => List[String]): List[String] = {
+    val configured = config.getValue("search-domains").valueType() match {
+      case ConfigValueType.STRING =>
+        config.getString("search-domains") match {
+          case "default" => hostSearchDomains
+          case single    => List(single)
+        }
+      case ConfigValueType.LIST =>
+        config.getStringList("search-domains").asScala.toList
+      case _ => throw new IllegalArgumentException("Invalid type for search-domains. Must be a string or string list.")
+    }
+    // Some resolv.conf providers use the root to indicate that there is no search suffix.
+    // Keep the first occurrence and preserve explicit empty suffixes and trailing dots.
+    configured.iterator.filterNot(_ == ".").map(_.stripPrefix(".")).distinct.toList
+  }
 
   private final val DnsFallbackPort = 53
   private val inetSocketAddress = """(.*?)(?::(\d+))?""".r
