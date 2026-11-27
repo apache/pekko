@@ -35,8 +35,9 @@ object FileIO {
    * Overwrites existing files by truncating their contents, if you want to append to an existing file
    * [[toPath(Path, util.Set[OpenOption])]] with [[java.nio.file.StandardOpenOption.APPEND]].
    *
-   * Materializes a [[java.util.concurrent.CompletionStage]] of [[IOResult]] that will be completed with the size of the file (in bytes) at the streams completion,
-   * and a possible exception if IO operation was not completed successfully.
+   * Materializes a [[java.util.concurrent.CompletionStage]] of [[IOResult]]. On successful completion, `getCount` is the
+   * number of bytes written by this stream, not the final size of the file. The materialized result
+   * fails if the I/O operation does not complete successfully.
    *
    * You can configure the default dispatcher for this Source by changing the `pekko.stream.materializer.blocking-io-dispatcher` or
    * set it for a given Source by using [[pekko.stream.ActorAttributes]].
@@ -55,8 +56,9 @@ object FileIO {
   /**
    * Creates a Sink that writes incoming [[pekko.util.ByteString]] elements to the given file path.
    *
-   * Materializes a [[java.util.concurrent.CompletionStage]] of [[IOResult]] that will be completed with the size of the file (in bytes) at the streams completion,
-   * and a possible exception if IO operation was not completed successfully.
+   * Materializes a [[java.util.concurrent.CompletionStage]] of [[IOResult]]. On successful completion, `getCount` is the
+   * number of bytes written by this stream, not the final size of the file. The materialized result
+   * fails if the I/O operation does not complete successfully.
    *
    * You can configure the default dispatcher for this Source by changing the `pekko.stream.materializer.blocking-io-dispatcher` or
    * set it for a given Source by using [[pekko.stream.ActorAttributes]].
@@ -76,8 +78,9 @@ object FileIO {
   /**
    * Creates a Sink that writes incoming [[pekko.util.ByteString]] elements to the given file path.
    *
-   * Materializes a [[java.util.concurrent.CompletionStage]] of [[IOResult]] that will be completed with the size of the file (in bytes) at the streams completion,
-   * and a possible exception if IO operation was not completed successfully.
+   * Materializes a [[java.util.concurrent.CompletionStage]] of [[IOResult]]. On successful completion, `getCount` is the
+   * number of bytes written by this stream, not the final size of the file. The materialized result
+   * fails if the I/O operation does not complete successfully.
    *
    * You can configure the default dispatcher for this Source by changing the `pekko.stream.materializer.blocking-io-dispatcher` or
    * set it for a given Source by using [[pekko.stream.ActorAttributes]].
@@ -90,7 +93,7 @@ object FileIO {
    *
    * @param f The file path to write to
    * @param options File open options, see [[java.nio.file.StandardOpenOption]]
-   * @param startPosition startPosition the start position to read from, defaults to 0
+   * @param startPosition The initial position to write at
    */
   def toPath[Opt <: OpenOption](
       f: Path,

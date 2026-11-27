@@ -21,7 +21,9 @@ Create a sink which will write incoming `ByteString` s to a given file path.
 ## Description
 
 Creates a Sink which writes incoming `ByteString` elements to the given file path. Overwrites existing files by truncating their contents as default. 
-Materializes a @scala[`Future`] @java[`CompletionStage`] of `IOResult` that will be completed with the size of the file (in bytes) at the streams completion, and a possible exception if IO operation was not completed successfully.
+Materializes a @scala[`Future`] @java[`CompletionStage`] of `IOResult`. On success, the count is the
+number of bytes written by this stream, not the total file size. If the channel cannot make progress
+while writing a nonempty element, the stream fails instead of returning a partial success.
 
 ## Example
 
