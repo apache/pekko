@@ -19,11 +19,13 @@ import java.net.Socket
 import java.nio.file.{ Path, Paths }
 
 import scala.collection.immutable
+import scala.concurrent.Promise
 import scala.concurrent.duration._
 import scala.jdk.CollectionConverters._
 import scala.jdk.DurationConverters._
 
 import org.apache.pekko
+import pekko.Done
 import pekko.actor._
 import pekko.annotation.{ DoNotInherit, InternalApi }
 import pekko.io.Inet._
@@ -137,6 +139,23 @@ object Tcp extends ExtensionId[TcpExt] with ExtensionIdProvider {
       timeout: Option[FiniteDuration] = None,
       pullMode: Boolean = false)
       extends Command
+
+  /** INTERNAL API. The normal connect command plus observation of the transport's cleanup. */
+  @InternalApi
+  private[pekko] final class ConnectWithTransportTermination(val connect: Connect, val termination: Promise[Done])
+      extends Command
+      with SelectionHandler.ObservedWorkerCreation
+      with NoSerializationVerificationNeeded {
+    override def failureMessage: CommandFailed = CommandFailed(connect)
+    override def workerNotStarted(): Unit = {
+      termination.trySuccess(Done)
+      ()
+    }
+    override def workerCreationUnconfirmed(cause: Throwable): Unit = {
+      termination.tryFailure(cause)
+      ()
+    }
+  }
 
   /**
    * The Bind message is send to the TCP manager actor, which is obtained via

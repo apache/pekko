@@ -63,6 +63,13 @@ private[io] trait ChannelRegistry {
    * and dispatches it back to the channelActor calling this `register`
    */
   def register(channel: SelectableChannel, initialOps: Int)(implicit channelActor: ActorRef): Unit
+
+  /**
+   * Cancel and close on the owning selector after any submitted registration for this channel, even if
+   * the connection actor never received its registration handle. Used only by observed outbound TCP.
+   */
+  def cancelAndCloseObserved(channel: SelectableChannel, andThen: () => Unit): Unit =
+    throw new UnsupportedOperationException("This channel registry does not provide a cleanup receipt.")
 }
 
 /**
@@ -89,8 +96,23 @@ private[io] object SelectionHandler {
   // As this is basic house-keeping functionality it doesn't seem useful to make the value configurable.
   val MaxSelectMillis = 10000 // wake up once in 10 seconds
 
+  // The first task runs after any submitted registration; the second crosses the selector's already queued select pass.
+  private[io] def enqueueObservedCleanup(
+      enqueue: (() => Unit) => Unit,
+      cancelAndClose: () => Unit,
+      andThen: () => Unit): Unit =
+    enqueue(() => {
+      cancelAndClose()
+      enqueue(andThen)
+    })
+
   trait HasFailureMessage {
     def failureMessage: Any
+  }
+
+  trait ObservedWorkerCreation {
+    def workerNotStarted(): Unit
+    def workerCreationUnconfirmed(cause: Throwable): Unit
   }
 
   final case class WorkerForCommand(
@@ -221,6 +243,19 @@ private[io] object SelectionHandler {
         }
       }
     }
+
+    override def cancelAndCloseObserved(channel: SelectableChannel, andThen: () => Unit): Unit =
+      enqueueObservedCleanup(
+        runThunk,
+        () => {
+          Try {
+            val key = channel.keyFor(selector)
+            if ((key ne null) && key.isValid) key.cancel()
+          }
+          if (channel.isOpen) Try(channel.close())
+          ()
+        },
+        andThen)
 
     def shutdown(): Unit =
       execute {
@@ -369,9 +404,19 @@ private[io] class SelectionHandler(settings: SelectionHandlerSettings)
     if (MaxChannelsPerSelector == -1 || childCount < MaxChannelsPerSelector) {
       val newName = sequenceNumber.toString
       sequenceNumber += 1
-      val child = context.actorOf(
-        props = cmd.childProps(registry).withDispatcher(WorkerDispatcher).withDeploy(Deploy.local),
-        name = newName)
+      val child =
+        try {
+          context.actorOf(
+            props = cmd.childProps(registry).withDispatcher(WorkerDispatcher).withDeploy(Deploy.local),
+            name = newName)
+        } catch {
+          case NonFatal(e) =>
+            cmd.apiCommand match {
+              case observed: ObservedWorkerCreation => observed.workerCreationUnconfirmed(e)
+              case _                                =>
+            }
+            throw e
+        }
       childCount += 1
       if (MaxChannelsPerSelector > 0) context.watch(child) // we don't need to watch if we aren't limited
     } else {
@@ -380,6 +425,10 @@ private[io] class SelectionHandler(settings: SelectionHandlerSettings)
         context.parent.forward(Retry(cmd, retriesLeft - 1))
       } else {
         log.warning("Rejecting [{}] with no retries left, aborting...", cmd)
+        cmd.apiCommand match {
+          case observed: ObservedWorkerCreation => observed.workerNotStarted()
+          case _                                =>
+        }
         cmd.commander ! cmd.apiCommand.failureMessage // I can't do it, Captain!
       }
     }

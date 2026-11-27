@@ -32,7 +32,7 @@ import org.apache.pekko
 import pekko.Done
 import pekko.NotUsed
 import pekko.actor._
-import pekko.annotation.InternalApi
+import pekko.annotation.{ InternalApi, InternalStableApi }
 import pekko.io.IO
 import pekko.io.Inet.SocketOption
 import pekko.io.{ Tcp => IoTcp }
@@ -84,6 +84,14 @@ object Tcp extends ExtensionId[Tcp] with ExtensionIdProvider {
    * Represents a prospective outgoing TCP connection.
    */
   final case class OutgoingConnection(remoteAddress: InetSocketAddress, localAddress: InetSocketAddress)
+
+  /**
+   * INTERNAL API. Transport termination is distinct from termination of the materialized stream.
+   */
+  @InternalStableApi
+  private[pekko] final class OutgoingConnectionWithTransportTermination private[stream] (
+      val connection: Future[OutgoingConnection],
+      val transportTerminated: Future[Done])
 
   def apply()(implicit system: ActorSystem): Tcp = super.apply(system)
 
@@ -235,6 +243,38 @@ final class Tcp(system: ExtendedActorSystem) extends pekko.actor.Extension {
       case _                 => tcpFlow
     }
 
+  }
+
+  /**
+   * INTERNAL API. Starts the ordinary TCP flow to an already resolved destination. A successful
+   * transport-termination future confirms that the dial never started, or that the socket is
+   * closed and flushed out of the selector. Stream termination and loss of the I/O manager
+   * do not confirm cleanup of a submitted dial.
+   */
+  @InternalStableApi
+  private[pekko] def outgoingConnectionWithTransportTermination(
+      remoteAddress: InetSocketAddress,
+      localAddress: Option[InetSocketAddress],
+      options: immutable.Iterable[SocketOption],
+      halfClose: Boolean,
+      connectTimeout: Duration,
+      idleTimeout: Duration): Flow[ByteString, ByteString, OutgoingConnectionWithTransportTermination] = {
+    require(!remoteAddress.isUnresolved, "The TCP destination must already be resolved.")
+    val tcpFlow = Flow
+      .fromGraph(
+        new OutgoingConnectionStage(
+          IO(IoTcp)(system),
+          remoteAddress,
+          localAddress,
+          options.toList,
+          halfClose,
+          connectTimeout).withTransportTermination)
+      .via(detacher[ByteString])
+
+    idleTimeout match {
+      case d: FiniteDuration => tcpFlow.join(TcpIdleTimeout(d, Some(remoteAddress)))
+      case _                 => tcpFlow
+    }
   }
 
   /**

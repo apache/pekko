@@ -16,10 +16,12 @@ package org.apache.pekko.io
 import java.net.{ ConnectException, InetSocketAddress }
 import java.nio.channels.{ SelectionKey, SocketChannel }
 
+import scala.concurrent.Promise
 import scala.concurrent.duration._
 import scala.util.control.{ NoStackTrace, NonFatal }
 
 import org.apache.pekko
+import pekko.Done
 import pekko.actor.Status.Failure
 import pekko.actor.{ ActorRef, ReceiveTimeout, Timers }
 import pekko.annotation.InternalApi
@@ -38,12 +40,16 @@ private[io] class TcpOutgoingConnection(
     _tcp: TcpExt,
     channelRegistry: ChannelRegistry,
     commander: ActorRef,
-    connect: Connect)
+    connect: Connect,
+    transportTermination: Option[Promise[Done]])
     extends TcpConnection(
       _tcp,
-      SocketChannel.open().configureBlocking(false).asInstanceOf[SocketChannel],
+      TcpOutgoingConnection.openChannel(transportTermination),
       connect.pullMode)
     with Timers {
+
+  def this(tcp: TcpExt, channelRegistry: ChannelRegistry, commander: ActorRef, connect: Connect) =
+    this(tcp, channelRegistry, commander, connect, None)
 
   import TcpOutgoingConnection._
   import connect._
@@ -151,10 +157,59 @@ private[io] class TcpOutgoingConnection(
     log.debug("Connect timeout expired, could not establish connection to [{}]", remoteAddress)
     stop(connectTimeoutExpired(timeout))
   }
+
+  override def postStop(): Unit =
+    transportTermination match {
+      case None              => super.postStop()
+      case Some(termination) =>
+        try super.postStop()
+        finally {
+          try {
+            // The actor can stop before its registration handle arrives. The owning selector
+            // orders this barrier after all registrations and any close submitted by postStop.
+            channelRegistry.cancelAndCloseObserved(
+              channel,
+              () => {
+                if (channel.isOpen || channel.isRegistered)
+                  termination.tryFailure(new IllegalStateException("The TCP transport was not fully cleaned up."))
+                else termination.trySuccess(Done)
+                ()
+              })
+          } catch {
+            case NonFatal(e) =>
+              termination.tryFailure(e)
+              ()
+          }
+        }
+    }
 }
 
 @InternalApi
 private[io] object TcpOutgoingConnection {
+  private def openChannel(transportTermination: Option[Promise[Done]]): SocketChannel =
+    transportTermination match {
+      case None              => SocketChannel.open().configureBlocking(false).asInstanceOf[SocketChannel]
+      case Some(termination) =>
+        val channel =
+          try SocketChannel.open()
+          catch {
+            case NonFatal(e) =>
+              termination.trySuccess(Done)
+              throw e
+          }
+        try {
+          channel.configureBlocking(false)
+          channel
+        } catch {
+          case NonFatal(e) =>
+            try channel.close()
+            catch { case NonFatal(closeError) => e.addSuppressed(closeError) }
+            if (channel.isOpen) termination.tryFailure(e)
+            else termination.trySuccess(Done)
+            throw e
+        }
+    }
+
   val FinishConnectNeverReturnedTrueException =
     new ConnectException("Could not establish connection because finishConnect never returned true") with NoStackTrace
 

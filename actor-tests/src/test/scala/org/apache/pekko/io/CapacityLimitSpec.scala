@@ -15,6 +15,8 @@ package org.apache.pekko.io
 
 import org.apache.pekko
 import Tcp._
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 import pekko.testkit.SocketUtil.temporaryServerAddresses
 import pekko.testkit.{ PekkoSpec, TestProbe }
 
@@ -49,4 +51,56 @@ class CapacityLimitSpec extends PekkoSpec("""
 
   }
 
+}
+
+// Keep this suite independent of the integration fixture and its ActorSystem and sockets.
+final class SelectorCleanupOrderingSpec extends AnyWordSpec with Matchers {
+  "An observed selector cleanup" should {
+    "wait for deregistration even if a registration has not been delivered" in {
+      val tasks = scala.collection.mutable.Queue.empty[() => Unit]
+      val notifications = scala.collection.mutable.ArrayBuffer.empty[String]
+      var registered = false
+      var open = true
+
+      tasks.enqueue(() => {
+        registered = true
+        notifications += "registered"
+        ()
+      })
+      SelectionHandler.enqueueObservedCleanup(
+        task => {
+          tasks.enqueue(task)
+          ()
+        },
+        () => {
+          registered shouldBe true
+          open = false
+          notifications += "closed"
+          ()
+        },
+        () => {
+          open shouldBe false
+          registered shouldBe false
+          notifications += "observed"
+          ()
+        })
+      // Closing alone leaves the registration present until the selector's queued pass.
+      tasks.enqueue(() => {
+        open shouldBe false
+        registered shouldBe true
+        registered = false
+        notifications += "deregistered"
+        ()
+      })
+
+      tasks.dequeue()()
+      notifications.toVector shouldBe Vector("registered")
+      tasks.dequeue()()
+      notifications.toVector shouldBe Vector("registered", "closed")
+      tasks.dequeue()()
+      notifications.toVector shouldBe Vector("registered", "closed", "deregistered")
+      tasks.dequeue()()
+      notifications.toVector shouldBe Vector("registered", "closed", "deregistered", "observed")
+    }
+  }
 }

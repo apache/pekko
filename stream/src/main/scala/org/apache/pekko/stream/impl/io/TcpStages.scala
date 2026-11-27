@@ -235,7 +235,7 @@ private[stream] object ConnectionSourceStage {
   }
   case class Outbound(
       manager: ActorRef,
-      connectCmd: Connect,
+      connectCmd: Tcp.Command,
       localAddressPromise: Promise[InetSocketAddress],
       halfClose: Boolean)
       extends TcpRole
@@ -288,6 +288,8 @@ private[stream] object ConnectionSourceStage {
     // No reading until role have been decided
     setHandler(bytesOut, GraphStageLogic.EagerTerminateOutput)
 
+    private var connectSubmitted = false
+
     override def preStart(): Unit = {
       setKeepGoing(true)
       role match {
@@ -300,6 +302,7 @@ private[stream] object ConnectionSourceStage {
           pull(bytesIn)
         case ob @ Outbound(manager, cmd, _, _) =>
           getStageActor(connecting(ob)).watch(manager)
+          connectSubmitted = true
           manager ! cmd
         case other => throw new IllegalArgumentException(s"Unsupported TCP role: $other")
       }
@@ -310,7 +313,13 @@ private[stream] object ConnectionSourceStage {
       val sender = evt._1
       val msg = evt._2
       msg match {
-        case Terminated(_)          => fail(new StreamTcpException("The IO manager actor (TCP) has terminated. Stopping now."))
+        case Terminated(_) =>
+          val failure = new StreamTcpException("The IO manager actor (TCP) has terminated. Stopping now.")
+          ob.connectCmd match {
+            case observed: ConnectWithTransportTermination => observed.workerCreationUnconfirmed(failure)
+            case _                                         =>
+          }
+          fail(failure)
         case f @ CommandFailed(cmd) =>
           fail(new StreamTcpException(s"Tcp command [$cmd] failed${f.causedByString}").initCause(f.cause.orNull))
         case c: Connected =>
@@ -514,7 +523,15 @@ private[stream] object ConnectionSourceStage {
         case _ => // do nothing...
       }
 
-    override def postStop(): Unit = reportExceptionToPromise(new StreamTcpException("Connection failed."))
+    override def postStop(): Unit = {
+      reportExceptionToPromise(new StreamTcpException("Connection failed."))
+      if (!connectSubmitted) {
+        role match {
+          case Outbound(_, observed: ConnectWithTransportTermination, _, _) => observed.workerNotStarted()
+          case _                                                            =>
+        }
+      }
+    }
 
     writeBuffer = ByteString.empty
   }
@@ -582,7 +599,34 @@ private[stream] object ConnectionSourceStage {
 
   override def createLogicAndMaterializedValue(
       inheritedAttributes: Attributes,
-      eagerMaterializer: Materializer): (GraphStageLogic, Future[StreamTcp.OutgoingConnection]) = {
+      eagerMaterializer: Materializer): (GraphStageLogic, Future[StreamTcp.OutgoingConnection]) =
+    createConnection(inheritedAttributes, eagerMaterializer, None)
+
+  def withTransportTermination
+      : GraphStageWithMaterializedValue[FlowShape[ByteString, ByteString],
+        StreamTcp.OutgoingConnectionWithTransportTermination] =
+    new GraphStageWithMaterializedValue[FlowShape[ByteString, ByteString],
+      StreamTcp.OutgoingConnectionWithTransportTermination] {
+      val shape: FlowShape[ByteString, ByteString] = OutgoingConnectionStage.this.shape
+      override def initialAttributes = OutgoingConnectionStage.this.initialAttributes
+
+      override def createLogicAndMaterializedValue(
+          inheritedAttributes: Attributes): (GraphStageLogic, StreamTcp.OutgoingConnectionWithTransportTermination) =
+        throw new UnsupportedOperationException("Not used")
+
+      override def createLogicAndMaterializedValue(
+          inheritedAttributes: Attributes,
+          eagerMaterializer: Materializer): (GraphStageLogic, StreamTcp.OutgoingConnectionWithTransportTermination) = {
+        val termination = Promise[Done]()
+        val (logic, connection) = createConnection(inheritedAttributes, eagerMaterializer, Some(termination))
+        (logic, new StreamTcp.OutgoingConnectionWithTransportTermination(connection, termination.future))
+      }
+    }
+
+  private def createConnection(
+      inheritedAttributes: Attributes,
+      eagerMaterializer: Materializer,
+      transportTermination: Option[Promise[Done]]): (GraphStageLogic, Future[StreamTcp.OutgoingConnection]) = {
     // FIXME: A method like this would make soo much sense on Duration (i.e. toOption)
     val connTimeout = connectTimeout match {
       case x: FiniteDuration => Some(x)
@@ -590,13 +634,14 @@ private[stream] object ConnectionSourceStage {
     }
 
     val localAddressPromise = Promise[InetSocketAddress]()
+    val connect = Connect(remoteAddress, localAddress, options, connTimeout, pullMode = true)
+    val command = transportTermination match {
+      case Some(termination) => new ConnectWithTransportTermination(connect, termination)
+      case None              => connect
+    }
     val logic = new TcpStreamLogic(
       shape,
-      Outbound(
-        manager,
-        Connect(remoteAddress, localAddress, options, connTimeout, pullMode = true),
-        localAddressPromise,
-        halfClose),
+      Outbound(manager, command, localAddressPromise, halfClose),
       inheritedAttributes,
       remoteAddress,
       eagerMaterializer)
