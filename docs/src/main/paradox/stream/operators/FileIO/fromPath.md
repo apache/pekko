@@ -24,6 +24,9 @@ Emits the contents of a file from the given path, as `ByteString`s, materializes
 an `IOResult` on end-of-file, cancellation, or failure. If the source opened the file, it attempts to close it before
 completing the materialized result.
 
+Emitted elements have the configured `chunkSize` in bytes, except that the final element may be smaller.
+A short read that returns some bytes does not by itself end the stream.
+
 ## Example
 
 Scala

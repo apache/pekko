@@ -117,20 +117,23 @@ private[pekko] final class FileSource(path: Path, chunkSize: Int, startPosition:
             }
 
           if (readBytes > 0) {
-            buffer.flip()
             position += readBytes
-            val newChunks = chunks :+ ByteString.fromByteBuffer(buffer)
-            buffer.clear()
-
-            if (readBytes < chunkSize) {
-              eofEncountered = true
-              newChunks
-            } else readAhead(maxChunks, newChunks)
+            if (buffer.hasRemaining) readAhead(maxChunks, chunks)
+            else readAhead(maxChunks, chunks :+ takeChunk())
           } else {
+            // Preserve the existing stop-on-no-progress behavior for zero-byte reads.
             eofEncountered = true
-            chunks
+            if (buffer.position() == 0) chunks
+            else chunks :+ takeChunk()
           }
         } else chunks
+
+      private def takeChunk(): ByteString = {
+        buffer.flip()
+        val chunk = ByteString.fromByteBuffer(buffer)
+        buffer.clear()
+        chunk
+      }
 
       override def onDownstreamFinish(cause: Throwable): Unit = {
         cause match {

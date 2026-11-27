@@ -13,14 +13,15 @@
 
 package org.apache.pekko.stream.io
 
-import java.nio.channels.FileChannel
+import java.nio.channels.{ FileChannel, FileLock, ReadableByteChannel, WritableByteChannel }
 import java.nio.charset.StandardCharsets.UTF_8
 import java.nio.file.{ Files, NoSuchFileException, StandardOpenOption }
+import java.nio.{ ByteBuffer, MappedByteBuffer }
 import java.util.Random
 
 import scala.annotation.nowarn
-import scala.concurrent.{ ExecutionContext, Future }
 import scala.concurrent.duration._
+import scala.concurrent.{ ExecutionContext, Future }
 
 import com.google.common.jimfs.{ Configuration, Jimfs }
 
@@ -30,8 +31,8 @@ import pekko.stream.IOResult._
 import pekko.stream.SystemMaterializer
 import pekko.stream._
 import pekko.stream.impl.StreamSupervisor.Children
-import pekko.stream.impl.{ PhasedFusingActorMaterializer, StreamSupervisor }
 import pekko.stream.impl.io.FileSource
+import pekko.stream.impl.{ PhasedFusingActorMaterializer, StreamSupervisor }
 import pekko.stream.io.FileSourceSpec.Settings
 import pekko.stream.scaladsl.{ FileIO, Keep, Sink, Source }
 import pekko.stream.testkit.Utils._
@@ -101,7 +102,65 @@ class FileSourceSpec extends StreamSpec(UnboundedMailboxConfig) {
       }
     }
 
+  private final class ShortReadChannel(delegate: FileChannel) extends FileChannel {
+    @volatile var reachedEof = false
+
+    override def read(dst: ByteBuffer, position: Long): Int = {
+      val limit = dst.limit()
+      dst.limit(dst.position() + math.min(dst.remaining(), 2))
+      try {
+        val read = delegate.read(dst, position)
+        if (read == -1) reachedEof = true
+        read
+      } finally dst.limit(limit)
+    }
+
+    override def position(newPosition: Long): FileChannel = {
+      delegate.position(newPosition)
+      this
+    }
+
+    override def implCloseChannel(): Unit = delegate.close()
+
+    private def unsupported(): Nothing = throw new UnsupportedOperationException
+
+    override def read(dst: ByteBuffer): Int = unsupported()
+    override def read(dsts: Array[ByteBuffer], offset: Int, length: Int): Long = unsupported()
+    override def write(src: ByteBuffer): Int = unsupported()
+    override def write(srcs: Array[ByteBuffer], offset: Int, length: Int): Long = unsupported()
+    override def write(src: ByteBuffer, position: Long): Int = unsupported()
+    override def position(): Long = unsupported()
+    override def size(): Long = unsupported()
+    override def truncate(size: Long): FileChannel = unsupported()
+    override def force(metaData: Boolean): Unit = unsupported()
+    override def transferTo(position: Long, count: Long, target: WritableByteChannel): Long = unsupported()
+    override def transferFrom(src: ReadableByteChannel, position: Long, count: Long): Long = unsupported()
+    override def map(mode: FileChannel.MapMode, position: Long, size: Long): MappedByteBuffer = unsupported()
+    override def lock(position: Long, size: Long, shared: Boolean): FileLock = unsupported()
+    override def tryLock(position: Long, size: Long, shared: Boolean): FileLock = unsupported()
+  }
+
   "FileSource" must {
+    "fill each chunk across short positive reads until reaching EOF" in {
+      val file = Files.createTempFile(fs.getPath("/"), "short-reads", ".tmp")
+      Files.write(file, "_#abcdefghij".getBytes(UTF_8))
+      val channel = new ShortReadChannel(FileChannel.open(file, StandardOpenOption.READ))
+      try {
+        val (result, probe) = Source
+          .fromGraph(new FileSource(file, 4, 2, _ => channel))
+          .withAttributes(Attributes.inputBuffer(1, 1))
+          .toMat(TestSink())(Keep.both)
+          .run()
+
+        probe.request(1).expectNext(ByteString("abcd"))
+        probe.request(1).expectNext(ByteString("efgh"))
+        probe.request(1).expectNext(ByteString("ij"))
+        probe.expectComplete()
+        result.futureValue shouldBe createSuccessful(12L)
+        channel.reachedEof shouldBe true
+      } finally channel.close()
+    }
+
     for (cancel <- List(false, true)) {
       val outcome = if (cancel) "downstream cancellation" else "EOF"
       s"close the channel before completing the IOResult on $outcome" in {
