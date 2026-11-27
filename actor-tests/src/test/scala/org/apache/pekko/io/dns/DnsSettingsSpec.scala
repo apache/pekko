@@ -19,6 +19,7 @@ import scala.concurrent.duration._
 
 import org.apache.pekko
 import pekko.actor.ExtendedActorSystem
+import pekko.io.dns.internal.ResolvConfParser
 import pekko.testkit.PekkoSpec
 
 import com.typesafe.config.ConfigFactory
@@ -95,6 +96,50 @@ class DnsSettingsSpec extends PekkoSpec {
         """).withFallback(defaultConfig))
 
       dnsSettings.SearchDomains shouldEqual List("example.com", "example.net")
+    }
+
+    "ignore a root search domain from the host configuration" in {
+      val hostConfig = ResolvConfParser.parseLines(Iterator("search example.com", "search ."))
+      val config = ConfigFactory.parseString("search-domains = \"default\"")
+
+      DnsSettings.configuredSearchDomains(config, hostConfig.search) shouldEqual Nil
+    }
+
+    "ignore a single configured root search domain without changing ndots" in {
+      val dnsSettings = new DnsSettings(
+        eas,
+        ConfigFactory.parseString("""
+          nameservers = "127.0.0.1"
+          search-domains = "."
+          ndots = 5
+        """).withFallback(defaultConfig))
+
+      dnsSettings.SearchDomains shouldEqual Nil
+      dnsSettings.NDots shouldEqual 5
+    }
+
+    "normalize search suffixes from the host configuration after parsing" in {
+      val hostConfig = ResolvConfParser.parseLines(Iterator("search .example.net example.org example.net"))
+      val config = ConfigFactory.parseString("search-domains = \"default\"")
+
+      DnsSettings.configuredSearchDomains(config, hostConfig.search) shouldEqual List("example.net", "example.org")
+    }
+
+    "normalize search suffixes in a single configured domain without removing a trailing dot" in {
+      val config = ConfigFactory.parseString("search-domains = \".example.net.\"")
+
+      DnsSettings.configuredSearchDomains(config, Nil) shouldEqual List("example.net.")
+    }
+
+    "normalize search suffixes without changing first-occurrence order" in {
+      val dnsSettings = new DnsSettings(
+        eas,
+        ConfigFactory.parseString("""
+          nameservers = "127.0.0.1"
+          search-domains = [ ".", ".example.net", "", "example.org.", "example.net", "", "." ]
+        """).withFallback(defaultConfig))
+
+      dnsSettings.SearchDomains shouldEqual List("example.net", "", "example.org.")
     }
 
     "use host ndots if set to default" in {

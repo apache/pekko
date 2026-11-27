@@ -54,6 +54,13 @@ There are currently two implementations:
 
 `inet-address` is the default implementation as it pre-dates `async-dns`, `async-dns` may become the default in a future release.
 
+For both `/etc/resolv.conf` and `pekko.io.dns.async-dns.search-domains`, `async-dns` ignores the exact
+root marker `.`. If `.` is the only entry, the resolver does not append any search suffixes. A single
+leading dot is removed from other search suffixes: `.example.org` is treated as `example.org`.
+Identical entries after normalization are used once, in first-occurrence order. An explicitly
+empty entry still adds no suffix at its position in that order. Trailing dots and `ndots`
+are unchanged.
+
 DNS lookups can be done via the `DNS` extension:
 
 Scala
