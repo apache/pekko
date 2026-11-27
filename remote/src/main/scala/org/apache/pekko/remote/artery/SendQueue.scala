@@ -41,6 +41,12 @@ private[remote] object SendQueue {
 
   trait QueueValue[T] extends ProducerApi[T] {
     def inject(queue: Queue[T]): Unit
+
+    /**
+     * Make the stage poll the queue, for messages that were offered directly to the injected queue
+     * instead of via `offer`.
+     */
+    def wakeup(): Unit
   }
 
   private trait WakeupSignal {
@@ -68,7 +74,8 @@ private[remote] final class SendQueue[T](postStopAction: Vector[T] => Unit)
       private var consumerQueue: Queue[T] = null
 
       private val wakeupCallback = getAsyncCallback[Unit] { _ =>
-        if (isAvailable(out))
+        // consumerQueue is null until the injected queue has been received, which also polls it
+        if ((consumerQueue ne null) && isAvailable(out))
           tryPush()
       }
 
@@ -144,6 +151,11 @@ private[remote] final class SendQueue[T](postStopAction: Vector[T] => Unit)
           logic.wakeup()
         }
         result
+      }
+
+      override def wakeup(): Unit = {
+        needWakeup = false
+        logic.wakeup()
       }
 
       override def isEnabled: Boolean = true

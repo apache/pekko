@@ -742,6 +742,8 @@ private[remote] abstract class ArteryTransport(_system: ExtendedActorSystem, _pr
         testState.passThrough(localAddress.address, address, direction)
       case TestManagementCommands.FailInboundStreamOnce(ex) =>
         testState.failInboundStreamOnce(ex)
+      case TestManagementCommands.FailOutboundStreamMaterializationOnce(ex) =>
+        testState.failOutboundStreamMaterializationOnce(ex)
     }
     Future.successful(true)
   }
@@ -999,8 +1001,11 @@ private[remote] abstract class ArteryTransport(_system: ExtendedActorSystem, _pr
   }
 
   def outboundTestFlow(outboundContext: OutboundContext): Flow[OutboundEnvelope, OutboundEnvelope, NotUsed] =
-    if (settings.Advanced.TestMode) Flow.fromGraph(new OutboundTestStage(outboundContext, testState))
-    else Flow[OutboundEnvelope]
+    if (settings.Advanced.TestMode) {
+      // this is called while the outbound stream is constructed, so throwing fails its materialization
+      testState.getOutboundMaterializationFailureOnce.foreach(ex => throw ex)
+      Flow.fromGraph(new OutboundTestStage(outboundContext, testState))
+    } else Flow[OutboundEnvelope]
 
   /** INTERNAL API: for testing only. */
   private[remote] def triggerCompressionAdvertisements(actorRef: Boolean, manifest: Boolean) = {
