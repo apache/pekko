@@ -13,7 +13,8 @@
 
 package org.apache.pekko.stream.impl.io
 
-import java.nio.channels.FileChannel
+import java.io.IOException
+import java.nio.channels.{ FileChannel, SeekableByteChannel }
 import java.nio.file.{ OpenOption, Path }
 
 import scala.collection.immutable
@@ -40,8 +41,11 @@ import pekko.util.ByteString
  * INTERNAL API
  */
 @InternalApi
-private[pekko] final class FileOutputStage(path: Path, startPosition: Long, openOptions: immutable.Set[OpenOption])
+private[pekko] final class FileOutputStage private[stream] (openChannel: () => SeekableByteChannel, startPosition: Long)
     extends GraphStageWithMaterializedValue[SinkShape[ByteString], Future[IOResult]] {
+
+  def this(path: Path, startPosition: Long, openOptions: immutable.Set[OpenOption]) =
+    this(() => FileChannel.open(path, openOptions.asJava), startPosition)
 
   val in: Inlet[ByteString] = Inlet("FileSink")
   override def shape: SinkShape[ByteString] = SinkShape(in)
@@ -50,12 +54,12 @@ private[pekko] final class FileOutputStage(path: Path, startPosition: Long, open
   override def createLogicAndMaterializedValue(inheritedAttributes: Attributes): (GraphStageLogic, Future[IOResult]) = {
     val mat = Promise[IOResult]()
     val logic = new GraphStageLogic(shape) with InHandler {
-      private var chan: FileChannel = _
+      private var chan: SeekableByteChannel = _
       private var bytesWritten: Long = 0
 
       override def preStart(): Unit = {
         try {
-          chan = FileChannel.open(path, openOptions.asJava)
+          chan = openChannel()
           if (startPosition > 0) {
             chan.position(startPosition)
           }
@@ -70,7 +74,13 @@ private[pekko] final class FileOutputStage(path: Path, startPosition: Long, open
       override def onPush(): Unit = {
         val next = grab(in)
         try {
-          bytesWritten += chan.write(next.asByteBuffer)
+          val buffer = next.asByteBuffer
+          while (buffer.hasRemaining) {
+            val written = chan.write(buffer)
+            if (written == 0)
+              throw new IOException("File channel made no progress while writing a nonempty buffer")
+            bytesWritten += written
+          }
           pull(in)
         } catch {
           case NonFatal(t) =>

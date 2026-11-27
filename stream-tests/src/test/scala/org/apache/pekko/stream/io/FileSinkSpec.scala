@@ -13,6 +13,9 @@
 
 package org.apache.pekko.stream.io
 
+import java.io.IOException
+import java.nio.ByteBuffer
+import java.nio.channels.{ FileChannel, SeekableByteChannel }
 import java.nio.file.StandardOpenOption.{ CREATE, WRITE }
 import java.nio.file._
 
@@ -28,8 +31,9 @@ import org.apache.pekko
 import pekko.stream.SystemMaterializer
 import pekko.stream._
 import pekko.stream.impl.StreamSupervisor.Children
+import pekko.stream.impl.io.FileOutputStage
 import pekko.stream.impl.{ PhasedFusingActorMaterializer, StreamSupervisor }
-import pekko.stream.scaladsl.{ FileIO, Keep, Source }
+import pekko.stream.scaladsl.{ FileIO, Keep, Sink, Source }
 import pekko.stream.testkit.Utils._
 import pekko.stream.testkit._
 import pekko.util.ByteString
@@ -54,6 +58,40 @@ class FileSinkSpec extends StreamSpec(UnboundedMailboxConfig) with ScalaFutures 
 
   val TestByteStrings = TestLines.map(ByteString(_))
 
+  private def shortWriteSink(path: Path, startPosition: Long, stopAfterFirstWrite: Boolean = false) =
+    Sink.fromGraph(new FileOutputStage(
+      () =>
+        new SeekableByteChannel {
+          private val delegate = FileChannel.open(path, WRITE)
+          private var writes = 0
+
+          override def write(src: ByteBuffer): Int = {
+            writes += 1
+            if (stopAfterFirstWrite && writes > 1) 0
+            else {
+              val limit = src.limit()
+              src.limit(src.position() + math.min(3, src.remaining()))
+              try delegate.write(src)
+              finally src.limit(limit)
+            }
+          }
+
+          override def read(dst: ByteBuffer): Int = delegate.read(dst)
+          override def position(): Long = delegate.position()
+          override def position(newPosition: Long): SeekableByteChannel = {
+            delegate.position(newPosition)
+            this
+          }
+          override def size(): Long = delegate.size()
+          override def truncate(size: Long): SeekableByteChannel = {
+            delegate.truncate(size)
+            this
+          }
+          override def isOpen: Boolean = delegate.isOpen
+          override def close(): Unit = delegate.close()
+        },
+      startPosition))
+
   "FileSink" must {
     "write lines to a file" in {
       targetFile { f =>
@@ -62,6 +100,28 @@ class FileSinkSpec extends StreamSpec(UnboundedMailboxConfig) with ScalaFutures 
         val result = Await.result(completion, 3.seconds)
         result.count should equal(6006)
         checkFileContents(f, TestLines.mkString(""))
+      }
+    }
+
+    "finish partial writes before moving on to the next chunk" in {
+      targetFile { f =>
+        Files.write(f, ByteString("::").toArray)
+        val completion =
+          Source(List(ByteString("hello"), ByteString.empty, ByteString(" world"))).runWith(shortWriteSink(f, 2))
+
+        Await.result(completion, 3.seconds).count shouldBe 11L
+        checkFileContents(f, "::hello world")
+      }
+    }
+
+    "fail without spinning if a nonempty write makes no progress" in {
+      targetFile { f =>
+        val completion = Source.single(ByteString("hello")).runWith(shortWriteSink(f, 0, stopAfterFirstWrite = true))
+
+        val ex = intercept[IOOperationIncompleteException] { Await.result(completion, 3.seconds) }
+        ex.count shouldBe 3L
+        ex.getCause shouldBe a[IOException]
+        checkFileContents(f, "hel")
       }
     }
 

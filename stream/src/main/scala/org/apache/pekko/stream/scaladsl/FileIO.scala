@@ -70,8 +70,9 @@ object FileIO {
    * Creates a Sink which writes incoming [[pekko.util.ByteString]] elements to the given file path. Overwrites existing files
    * by truncating their contents as default.
    *
-   * Materializes a `Future` of [[IOResult]] that will be completed with the size of the file (in bytes) at the streams completion,
-   * and a possible exception if IO operation was not completed successfully.
+   * Materializes a `Future` of [[IOResult]]. On successful completion, `count` is the
+   * number of bytes written by this stream, not the final size of the file. The materialized result
+   * fails if the I/O operation does not complete successfully.
    *
    * This source is backed by an Actor which will use the dedicated `pekko.stream.blocking-io-dispatcher`,
    * unless configured otherwise by using [[pekko.stream.ActorAttributes]].
@@ -94,8 +95,9 @@ object FileIO {
    * Creates a Sink which writes incoming [[pekko.util.ByteString]] elements to the given file path. Overwrites existing files
    * by truncating their contents as default.
    *
-   * Materializes a `Future` of [[IOResult]] that will be completed with the size of the file (in bytes) at the streams completion,
-   * and a possible exception if IO operation was not completed successfully.
+   * Materializes a `Future` of [[IOResult]]. On successful completion, `count` is the
+   * number of bytes written by this stream, not the final size of the file. The materialized result
+   * fails if the I/O operation does not complete successfully.
    *
    * This source is backed by an Actor which will use the dedicated `pekko.stream.blocking-io-dispatcher`,
    * unless configured otherwise by using [[pekko.stream.ActorAttributes]].
