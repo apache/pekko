@@ -15,10 +15,10 @@ package org.apache.pekko.remote.artery
 
 import java.nio.charset.StandardCharsets
 import java.util.concurrent.Executors
-import java.util.concurrent.atomic.AtomicLongArray
 import java.util.concurrent.locks.LockSupport
 
 import scala.concurrent.duration._
+import scala.util.control.NonFatal
 
 import org.HdrHistogram.Histogram
 
@@ -53,6 +53,10 @@ object LatencySpec extends MultiNodeConfig {
          testconductor.barrier-timeout = ${barrierTimeout.toSeconds}s
          actor {
            provider = remote
+           serializers.test-message = "org.apache.pekko.remote.artery.TestMessageSerializer"
+           serialization-bindings {
+             "org.apache.pekko.remote.artery.TestMessage" = test-message
+           }
          }
          remote.artery {
            enabled = on
@@ -99,58 +103,61 @@ object LatencySpec extends MultiNodeConfig {
       reporter: RateReporter,
       settings: TestSettings,
       totalMessages: Int,
-      sendTimes: AtomicLongArray,
-      histogram: Histogram,
+      measurements: LatencyMeasurements,
       plotsRef: ActorRef,
       BenchmarkFileReporter: BenchmarkFileReporter): Props =
-    Props(new Receiver(reporter, settings, totalMessages, sendTimes, histogram, plotsRef, BenchmarkFileReporter))
+    Props(new Receiver(reporter, settings, totalMessages, measurements, plotsRef, BenchmarkFileReporter))
       .withDispatcher(Dispatchers.InternalDispatcherId)
 
   class Receiver(
       reporter: RateReporter,
       settings: TestSettings,
       totalMessages: Int,
-      sendTimes: AtomicLongArray,
-      histogram: Histogram,
+      measurements: LatencyMeasurements,
       plotsRef: ActorRef,
       BenchmarkFileReporter: BenchmarkFileReporter)
       extends Actor {
     import settings._
 
-    var count = 0
-    var startTime = System.nanoTime()
-    var reportedArrayOOB = false
+    var startTime = 0L
 
     def receive = {
       case bytes: Array[Byte] =>
         if (bytes.length != 0) {
-          if (bytes.length != payloadSize) throw new IllegalArgumentException("Invalid message")
-          receiveMessage(bytes.length)
+          // Raw byte payloads have no sequence number; this mode relies on ordered delivery.
+          receiveMessage(measurements.receivedCount, bytes.length)
         }
-      case _: TestMessage =>
-        receiveMessage(payloadSize)
+      case message: TestMessage =>
+        receiveMessage(message.id, message.payload.length)
     }
 
-    def receiveMessage(size: Int): Unit = {
-      if (count == 0)
-        startTime = System.nanoTime()
+    def receiveMessage(id: Long, size: Int): Unit = try {
+      require(size == payloadSize, "Invalid payload size")
+      val now = System.nanoTime()
+      if (measurements.receivedCount == 0)
+        startTime = now
+      measurements.recordEcho(id, now)
       reporter.onMessage(1, size)
-      count += 1
-      val d = System.nanoTime() - sendTimes.get(count - 1)
-      try {
-        histogram.recordValue(d)
-      } catch {
-        case e: ArrayIndexOutOfBoundsException =>
-          // Report it only once instead of flooding the console
-          if (!reportedArrayOOB) {
-            e.printStackTrace()
-            reportedArrayOOB = true
-          }
-      }
-      if (count == totalMessages) {
-        printTotal(testName, histogram, System.nanoTime() - startTime, BenchmarkFileReporter)
+      if (measurements.receivedCount == totalMessages) {
+        printTotal(testName, measurements.roundTrip, now - startTime, BenchmarkFileReporter)
+        reportDistribution("Scheduled-to-echo", measurements.scheduledToEcho)
+        reportDistribution("Send lateness", measurements.sendLateness)
         context.stop(self)
       }
+    } catch {
+      case NonFatal(ex) =>
+        // Do not restart and eventually publish a partial/invalid round as successful.
+        plotsRef ! Status.Failure(ex)
+        context.stop(self)
+    }
+
+    def reportDistribution(label: String, histogram: Histogram): Unit = {
+      def percentile(p: Double): Double = histogram.getValueAtPercentile(p) / 1000.0
+      BenchmarkFileReporter.reportResults(
+        s"=== ${BenchmarkFileReporter.testName} $testName: $label " +
+        f"50%%ile: ${percentile(50.0)}%.0f µs, " +
+        f"90%%ile: ${percentile(90.0)}%.0f µs, " +
+        f"99%%ile: ${percentile(99.0)}%.0f µs")
     }
 
     def printTotal(
@@ -159,7 +166,7 @@ object LatencySpec extends MultiNodeConfig {
         totalDurationNanos: Long,
         reporter: BenchmarkFileReporter): Unit = {
       def percentile(p: Double): Double = histogram.getValueAtPercentile(p) / 1000.0
-      val throughput = 1000.0 * histogram.getTotalCount / math.max(1, totalDurationNanos.nanos.toMillis)
+      val throughput = 1e9 * (histogram.getTotalCount - 1) / math.max(1L, totalDurationNanos)
 
       reporter.reportResults(
         s"=== ${reporter.testName} $testName: RTT " +
@@ -266,83 +273,75 @@ abstract class LatencySpec extends RemotingMultiNodeSpec(LatencySpec) {
       val payload = ("0" * payloadSize).getBytes(StandardCharsets.UTF_8)
       // by default run for 2 seconds, but can be adjusted with the totalMessagesFactor
       val totalMessages = (2 * messageRate * totalMessagesFactor).toInt
-      val sendTimes = new AtomicLongArray(totalMessages)
-      val histogram = new Histogram(SECONDS.toNanos(10), 3)
-      val rep = reporter(testName)
-
+      require(totalMessages >= 2, "LatencySpec requires at least two messages per round")
       val echo = identifyEcho()
       val plotProbe = TestProbe()
+      val rep = reporter(testName)
 
-      // increase the rate somewhat to compensate for overhead, based on heuristics
-      // will also be adjusted based on measurement when using > 1 repeat
-      @volatile var adjustRateFactor =
-        if (messageRate <= 100) 1.05
-        else if (messageRate <= 1000) 1.1
-        else if (messageRate <= 10000) 1.2
-        else if (messageRate <= 20000) 1.3
-        else 1.4
+      try for (n <- 1 to repeat) {
+          echo ! Reset
+          expectMsg(Reset)
+          val measurements = new LatencyMeasurements(totalMessages)
+          val receiver = system.actorOf(
+            receiverProps(rep, testSettings, totalMessages, measurements, plotProbe.ref, BenchmarkFileReporter))
 
-      for (n <- 1 to repeat) {
-        echo ! Reset
-        expectMsg(Reset)
-        histogram.reset()
-        val receiver = system.actorOf(
-          receiverProps(rep, testSettings, totalMessages, sendTimes, histogram, plotProbe.ref, BenchmarkFileReporter))
-
-        // warmup for 3 seconds to init compression
-        val warmup = Source(1 to 30).throttle(10, 1.second, 10, ThrottleMode.Shaping).runForeach { _ =>
-          echo.tell(Array.emptyByteArray, receiver)
-        }
-
-        warmup.foreach { _ =>
-          var i = 0
-          var adjust = 0L
-          val targetDelay = (SECONDS.toNanos(1) / (messageRate * adjustRateFactor)).toLong
-          while (i < totalMessages) {
-            LockSupport.parkNanos(targetDelay - adjust)
-            val now = System.nanoTime()
-            sendTimes.set(i, now)
-            if (i >= 1) {
-              val diff = now - sendTimes.get(i - 1)
-              adjust = math.max(0L, (diff - targetDelay) / 2)
-            }
-
-            val msg =
-              if (testSettings.realMessage)
-                TestMessage(
-                  id = i,
-                  name = "abc",
-                  status = i % 2 == 0,
-                  description = "ABC",
-                  payload = payload,
-                  items = Vector(TestMessage.Item(1, "A"), TestMessage.Item(2, "B")))
-              else payload
-
-            echo.tell(msg, receiver)
-            i += 1
+          // warmup for 3 seconds to init compression
+          val warmup = Source(1 to 30).throttle(10, 1.second, 10, ThrottleMode.Shaping).runForeach { _ =>
+            echo.tell(Array.emptyByteArray, receiver)
           }
 
-          // measure rate and adjust for next repeat round
-          val d = sendTimes.get(totalMessages - 1) - sendTimes.get(0)
-          val measuredRate = totalMessages * SECONDS.toNanos(1) / math.max(1, d)
-          val previousTargetRate = messageRate * adjustRateFactor
-          adjustRateFactor = previousTargetRate / math.max(1, measuredRate)
-          println(s"Measured send rate $measuredRate msg/s (new adjustment factor: $adjustRateFactor)")
-        }
+          val sending = warmup.map { _ =>
+            val schedule = new LatencyMeasurements.SendSchedule(System.nanoTime(), messageRate)
+            var i = 0
+            while (i < totalMessages) {
+              if (Thread.currentThread().isInterrupted) throw new IllegalStateException("Latency generator interrupted")
+              val planned = schedule.deadline(i)
+              var remaining = planned - System.nanoTime()
+              // parkNanos may wake spuriously. If late, catch up without moving the schedule.
+              while (remaining > 0) {
+                if (Thread.currentThread().isInterrupted)
+                  throw new IllegalStateException("Latency generator interrupted")
+                LockSupport.parkNanos(remaining)
+                remaining = planned - System.nanoTime()
+              }
 
-        watch(receiver)
-        expectTerminated(receiver, ((totalMessages / messageRate) + 20).seconds)
-        val p = plotProbe.expectMsgType[LatencyPlots]
-        // only use the last repeat for the plots
-        if (n == repeat) {
-          plots = plots.copy(
-            plot50 = plots.plot50.addAll(p.plot50),
-            plot90 = plots.plot90.addAll(p.plot90),
-            plot99 = plots.plot99.addAll(p.plot99))
-        }
-      }
+              // Preserve the RTT start point before message construction and tell.
+              measurements.recordSend(i, planned, System.nanoTime())
+              val msg =
+                if (testSettings.realMessage)
+                  TestMessage(
+                    id = i,
+                    name = "abc",
+                    status = i % 2 == 0,
+                    description = "ABC",
+                    payload = payload,
+                    items = Vector(TestMessage.Item(1, "A"), TestMessage.Item(2, "B")))
+                else payload
 
-      rep.halt()
+              echo.tell(msg, receiver)
+              i += 1
+            }
+
+            println(f"Measured send rate ${measurements.sendRate}%,.0f msg/s (target: $messageRate msg/s)")
+          }
+
+          sending.failed.foreach { ex =>
+            plotProbe.ref ! Status.Failure(ex)
+            system.stop(receiver)
+          }
+
+          watch(receiver)
+          expectTerminated(receiver, ((totalMessages / messageRate) + 20).seconds)
+          val p = plotProbe.expectMsgType[LatencyPlots]
+          // only use the last repeat for the plots
+          if (n == repeat) {
+            plots = plots.copy(
+              plot50 = plots.plot50.addAll(p.plot50),
+              plot90 = plots.plot90.addAll(p.plot90),
+              plot99 = plots.plot99.addAll(p.plot99))
+          }
+        }
+      finally rep.halt()
     }
 
     enterBarrier("after-" + testName)
@@ -350,6 +349,29 @@ abstract class LatencySpec extends RemotingMultiNodeSpec(LatencySpec) {
 
   "Latency of Artery" must {
     val reporter = BenchmarkFileReporter("LatencySpec", system)
+
+    "fail a duplicate real-message round without publishing plots" in {
+      runOn(first) {
+        val measurements = new LatencyMeasurements(2)
+        val now = System.nanoTime()
+        measurements.recordSend(0, now, now)
+        measurements.recordSend(1, now, now)
+        val probe = TestProbe()
+        val settings = TestSettings("invalid-sequence", 100, 1, 1, realMessage = true)
+        val receiver = system.actorOf(
+          receiverProps(new TestRateReporter(settings.testName), settings, 2, measurements, probe.ref, reporter))
+        val watcher = TestProbe()
+        watcher.watch(receiver)
+        val message = TestMessage(0, "abc", true, "ABC", Array[Byte](0), Vector.empty)
+        receiver ! message
+        receiver ! message
+        probe.expectMsgType[Status.Failure].cause.getMessage should include("Expected message 1 but received 0")
+        watcher.expectTerminated(receiver)
+        probe.expectNoMessage(100.millis)
+        measurements.roundTrip.getTotalCount should ===(1L)
+      }
+      enterBarrier("after-invalid-sequence")
+    }
 
     "start echo" in {
       runOn(second) {
@@ -360,7 +382,8 @@ abstract class LatencySpec extends RemotingMultiNodeSpec(LatencySpec) {
     }
 
     for (s <- scenarios) {
-      s"be low for ${s.testName}, at ${s.messageRate} msg/s, payloadSize = ${s.payloadSize}" in test(s, reporter)
+      s"be low for ${s.testName}, at ${s.messageRate} msg/s, payloadSize = ${s.payloadSize}, realMessage = $realMessage" in
+      test(s, reporter)
     }
 
     // TODO add more tests
