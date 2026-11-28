@@ -33,7 +33,8 @@ successfully. If the `Future` is completed with a failure the stream is failed.
 
 Unlike @ref:[futureSink](futureSink.md) and @ref:[lazyFutureSink](lazyFutureSink.md), this operator materializes the inner sink as soon as the future
 completes, even if no elements have arrived yet. This means empty streams complete normally rather than failing
-with `NeverMaterializedException`. At most one element that arrives before the future completes is buffered.
+with `NeverMaterializedException`. At most one element is prefetched before the inner sink requests it.
+If upstream completes with an element buffered, that element is delivered on demand before completion.
 
 The materialized future value is completed with the materialized value of the inner sink once it has been
 materialized, or failed if the future itself fails or if materialization of the inner sink fails. Upstream
