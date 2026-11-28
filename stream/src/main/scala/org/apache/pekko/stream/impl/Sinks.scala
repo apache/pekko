@@ -709,10 +709,18 @@ import org.reactivestreams.Subscriber
           setHandler(
             in,
             new InHandler {
-              override def onPush(): Unit = subOutlet.push(grab(in))
+              override def onPush(): Unit = {
+                val elem = grab(in)
+                // The initial pull may be fulfilled before the newly materialized sink requests an element.
+                if (subOutlet.isAvailable) subOutlet.push(elem)
+                else bufferedElement = OptionVal.Some(elem)
+              }
               override def onUpstreamFinish(): Unit = {
-                subOutlet.complete()
-                completeStage()
+                upstreamClosed = true
+                if (bufferedElement.isEmpty) {
+                  subOutlet.complete()
+                  completeStage()
+                }
               }
               override def onUpstreamFailure(ex: Throwable): Unit = {
                 subOutlet.fail(ex)
@@ -734,7 +742,7 @@ import org.reactivestreams.Subscriber
                   if (upstreamClosed) {
                     subOutlet.complete()
                     completeStage()
-                  } else if (!isClosed(in)) {
+                  } else if (!isClosed(in) && !hasBeenPulled(in)) {
                     pull(in)
                   }
               }
