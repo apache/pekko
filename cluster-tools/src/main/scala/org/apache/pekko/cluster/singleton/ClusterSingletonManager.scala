@@ -13,7 +13,10 @@
 
 package org.apache.pekko.cluster.singleton
 
+import java.util.concurrent.ConcurrentHashMap
+
 import scala.collection.immutable
+import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 import scala.concurrent.Promise
 import scala.concurrent.duration._
@@ -31,9 +34,14 @@ import pekko.actor.ActorRef
 import pekko.actor.ActorSelection
 import pekko.actor.ActorSystem
 import pekko.actor.Address
+import pekko.actor.ClassicActorSystemProvider
 import pekko.actor.CoordinatedShutdown
 import pekko.actor.DeadLetterSuppression
 import pekko.actor.Deploy
+import pekko.actor.ExtendedActorSystem
+import pekko.actor.Extension
+import pekko.actor.ExtensionId
+import pekko.actor.ExtensionIdProvider
 import pekko.actor.FSM
 import pekko.actor.NoSerializationVerificationNeeded
 import pekko.actor.Props
@@ -181,6 +189,48 @@ final class ClusterSingletonManagerSettings(
  */
 @DoNotInherit sealed trait ClusterSingletonMessage extends Serializable
 
+/**
+ * INTERNAL API
+ *
+ * Lease releases that are still in progress, per lease instance. `LeaseProvider` returns the same lease instance
+ * for the same lease name and owner, so a manager that is restarted on the same actor system (or a manager that
+ * acquires the lease again after releasing it) uses the same instance as the release. Acquiring only after the
+ * pending releases have completed ensures a late release cannot release the lease acquired afterwards.
+ */
+@InternalApi
+private[singleton] object PendingLeaseReleases extends ExtensionId[PendingLeaseReleases] with ExtensionIdProvider {
+  override def get(system: ClassicActorSystemProvider): PendingLeaseReleases = super.get(system)
+  override def lookup: PendingLeaseReleases.type = PendingLeaseReleases
+  override def createExtension(system: ExtendedActorSystem): PendingLeaseReleases = new PendingLeaseReleases
+}
+
+/**
+ * INTERNAL API
+ */
+@InternalApi
+private[singleton] final class PendingLeaseReleases extends Extension {
+  private val pending = new ConcurrentHashMap[Lease, Future[Done]]()
+
+  /** Registers a release of `lease`, the future must not fail. */
+  def register(lease: Lease, release: Future[Done])(implicit ec: ExecutionContext): Unit =
+    if (!release.isCompleted) {
+      var combined: Future[Done] = release
+      pending.compute(
+        lease,
+        (_, previous) => {
+          combined = if (previous eq null) release else previous.flatMap(_ => release)
+          combined
+        })
+      combined.onComplete(_ => pending.remove(lease, combined))
+    }
+
+  /** Completes when all the releases of `lease` registered so far have completed. */
+  def completed(lease: Lease): Future[Done] = {
+    val p = pending.get(lease)
+    if (p eq null) Future.successful(Done) else p
+  }
+}
+
 object ClusterSingletonManager {
 
   /**
@@ -294,10 +344,21 @@ object ClusterSingletonManager {
     }
 
     final case class AcquireLeaseResult(holdingLease: Boolean) extends DeadLetterSuppression
+    // no longer sent, release results are logged directly; kept for binary compatibility
     final case class ReleaseLeaseResult(released: Boolean) extends DeadLetterSuppression
     final case class AcquireLeaseFailure(t: Throwable) extends DeadLetterSuppression
+    // no longer sent, release results are logged directly; kept for binary compatibility
     final case class ReleaseLeaseFailure(t: Throwable) extends DeadLetterSuppression
     final case class LeaseLost(reason: Option[Throwable]) extends DeadLetterSuppression
+
+    /**
+     * The completion of the lease acquire that was started as the given attempt. The attempt identifies the
+     * acquire, so that the result of an acquire that the manager has abandoned is not taken for the result
+     * of a later acquire.
+     *
+     * @param result `AcquireLeaseResult` or `AcquireLeaseFailure`
+     */
+    final case class AcquireLeaseCompleted(attempt: Long, result: Any) extends DeadLetterSuppression
 
     /**
      * Notifications of member events that track oldest member are tunneled
@@ -568,6 +629,12 @@ class ClusterSingletonManager(singletonProps: Props, terminationMessage: Any, se
 
   private var restarting = false
 
+  // the lease acquire started by the latest tryAcquireLease, if any
+  private var leaseAcquireInProgress: Option[Future[Boolean]] = None
+  // Identifies the lease acquire whose completion is handled. Changed when a new acquire is started and when
+  // the acquire in progress is abandoned, so that completions of earlier acquires are ignored.
+  private var leaseAcquireAttempt = 0L
+
   // keep track of previously removed members
   var removed = Map.empty[UniqueAddress, Deadline]
 
@@ -648,8 +715,21 @@ class ClusterSingletonManager(singletonProps: Props, terminationMessage: Any, se
     cluster.unsubscribe(self)
     memberExitingProgress.trySuccess(Done)
     // A final stop skips onTransition, and the singleton child has already terminated here.
-    if (!restarting && stateName == Oldest)
-      releaseLease()
+    if (!restarting) {
+      stateName match {
+        case Oldest if lease.nonEmpty =>
+          logInfo("Releasing lease as manager stopped")
+          releaseLease()
+        case AcquiringLease =>
+          stateData match {
+            case AcquiringLeaseData(true, _) =>
+              logInfo("Manager stopped while acquiring lease, it will be released if acquired")
+              releaseLeaseIfAcquired()
+            case _ =>
+          }
+        case _ =>
+      }
+    }
     super.postStop()
   }
 
@@ -870,20 +950,65 @@ class ClusterSingletonManager(singletonProps: Props, terminationMessage: Any, se
     import context.dispatcher
 
     if (!preparingForFullShutdown) {
-      pipe(lease.get.acquire(reason => self ! LeaseLost(reason)).map[Any](AcquireLeaseResult(_)).recover {
+      val l = lease.get
+      // don't acquire before a release in progress completed, it could otherwise release this acquire
+      val releasesCompleted = PendingLeaseReleases(context.system).completed(l)
+      val acquired =
+        if (releasesCompleted.isCompleted) l.acquire(reason => self ! LeaseLost(reason))
+        else {
+          logInfo("Waiting for lease release in progress to complete before acquiring lease")
+          releasesCompleted.flatMap(_ => l.acquire(reason => self ! LeaseLost(reason)))
+        }
+      leaseAcquireInProgress = Some(acquired)
+      leaseAcquireAttempt += 1
+      val attempt = leaseAcquireAttempt
+      pipe(acquired.map[Any](AcquireLeaseResult(_)).recover {
         case NonFatal(t) => AcquireLeaseFailure(t)
-      }).to(self)
-    }
+      }.map(AcquireLeaseCompleted(attempt, _))).to(self)
+    } else
+      leaseAcquireInProgress = None
     goto(AcquiringLease).using(AcquiringLeaseData(leaseRequestInProgress = true, None))
   }
 
-  private def releaseLease(): Unit = {
-    import context.dispatcher
+  private def releaseLease(): Unit =
+    for (l <- lease; release <- leaseReleaser()) {
+      import context.dispatcher
+      PendingLeaseReleases(context.system).register(l, release())
+    }
 
+  /**
+   * Releases the lease when the acquire in progress succeeds, used when the manager stops or leaves
+   * `AcquiringLease` while acquiring. The result of that acquire is no longer handled, and would otherwise
+   * leave the lease held until it expires. The acquire is abandoned, its completion is ignored also when the
+   * manager is in `AcquiringLease` again when it arrives.
+   */
+  private def releaseLeaseIfAcquired(): Unit = {
+    for (l <- lease; acquired <- leaseAcquireInProgress; release <- leaseReleaser()) {
+      import context.dispatcher
+      // registered right away, so that a later acquire (by this manager or a replacement manager) waits for it
+      PendingLeaseReleases(context.system).register(
+        l,
+        acquired.transformWith {
+          case Success(true) => release()
+          case _             => Future.successful(Done) // not acquired, nothing to release
+        })
+    }
+    leaseAcquireInProgress = None
+    leaseAcquireAttempt += 1
+  }
+
+  /**
+   * Captures what a release needs from the actor, so the returned function can also run after the manager
+   * has stopped. The future returned by the function completes when the release completed, and never fails.
+   */
+  private def leaseReleaser(): Option[() => Future[Done]] = {
+    // Evaluated now, while the actor context is still valid.
+    implicit val ec: ExecutionContext = context.dispatcher
     // This adapter is thread-safe and retains the manager's logger identity after it stops.
     val releaseLog = log
-    lease.foreach { l =>
-      Future.fromTry(Try(l.release())).flatten.onComplete {
+    lease.map { l => () =>
+      val released = Future.fromTry(Try(l.release())).flatten
+      released.onComplete {
         case Success(true) =>
           if (LogInfo) releaseLog.info("Lease released")
         case Success(false) =>
@@ -894,6 +1019,7 @@ class ClusterSingletonManager(singletonProps: Props, terminationMessage: Any, se
             t,
             "Failed to release lease. Singleton may not be able to run on another node until lease timeout occurs")
       }
+      released.transform(_ => Success(Done))
     }
   }
 
@@ -910,7 +1036,12 @@ class ClusterSingletonManager(singletonProps: Props, terminationMessage: Any, se
   }
 
   when(AcquiringLease) {
-    case Event(AcquireLeaseResult(result), _) =>
+    case Event(AcquireLeaseCompleted(attempt, result), _) if attempt != leaseAcquireAttempt =>
+      // The lease of an abandoned acquire is released if it was acquired. Starting the singleton for it
+      // would run the singleton without the lease, before the acquire in progress has succeeded.
+      log.debug("Ignoring result [{}] of abandoned lease acquire", result)
+      stay()
+    case Event(AcquireLeaseCompleted(_, AcquireLeaseResult(result)), _) =>
       logInfo("Acquire lease result {}", result)
       if (result) {
         gotoOldest()
@@ -924,7 +1055,7 @@ class ClusterSingletonManager(singletonProps: Props, terminationMessage: Any, se
         "Singleton actor terminated. Trying to acquire lease again before re-creating.")
       // tryAcquireLease sets the state to None for singleton actor
       tryAcquireLease()
-    case Event(AcquireLeaseFailure(t), _) =>
+    case Event(AcquireLeaseCompleted(_, AcquireLeaseFailure(t)), _) =>
       log.error(t, "failed to get lease (will be retried)")
       startSingleTimer(LeaseRetryTimer, LeaseRetry, leaseRetryInterval)
       stay().using(AcquiringLeaseData(leaseRequestInProgress = false, None))
@@ -1234,6 +1365,10 @@ class ClusterSingletonManager(singletonProps: Props, terminationMessage: Any, se
       stay()
     case Event(_: MemberEvent, _) =>
       stay() // silence
+    case Event(AcquireLeaseCompleted(_, result), _) =>
+      // the acquire was abandoned when leaving AcquiringLease, and the lease is released if it was acquired
+      log.debug("Ignoring result [{}] of abandoned lease acquire in [{}]", result, stateName)
+      stay()
   }
 
   onTransition {
@@ -1253,8 +1388,10 @@ class ClusterSingletonManager(singletonProps: Props, terminationMessage: Any, se
     case (AcquiringLease, to) if to != Oldest =>
       stateData match {
         case AcquiringLeaseData(true, _) =>
-          logInfo("Releasing lease as leaving AcquiringLease going to [{}]", to)
-          releaseLease()
+          // The acquire may still be in progress, or waiting for a pending release, so release once it completed.
+          // Releasing right away could be followed by a successful acquire that is no longer handled.
+          logInfo("Releasing lease once acquire in progress completed as leaving AcquiringLease going to [{}]", to)
+          releaseLeaseIfAcquired()
         case _ =>
       }
   }

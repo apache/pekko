@@ -30,6 +30,10 @@ import pekko.actor.Props
 import pekko.cluster.Cluster
 import pekko.cluster.ClusterEvent.MemberDowned
 import pekko.cluster.MemberStatus
+import pekko.cluster.Member
+import pekko.cluster.UniqueAddress
+import pekko.cluster.singleton.ClusterSingletonManager.Internal.{ DelayedMemberRemoved, HandOverDone, HandOverToMe }
+import pekko.cluster.singleton.ClusterSingletonManager.Internal.OldestChangedBuffer.OldestChanged
 import pekko.coordination.lease.TestLease
 import pekko.coordination.lease.TestLeaseExt
 import pekko.event.Logging
@@ -116,6 +120,26 @@ class ClusterSingletonLeaseSpec extends PekkoSpec(ConfigFactory.parseString("""
     testLease.probe.expectMsg(AcquireReq(leaseOwner))
     testLease.initialPromise.success(true)
     lifecycleProbe.expectMsg("preStart")
+    (manager, testLease, lifecycleProbe)
+  }
+
+  /** Downs the manager while its first lease acquire is still in progress. */
+  private def stoppedWhileAcquiring(
+      settings: ClusterSingletonManagerSettings = nextSettings()): (ActorRef, TestLease, TestProbe) = {
+    val lifecycleProbe = TestProbe()
+    val manager = system.actorOf(
+      ClusterSingletonManager.props(Props(new ImportantSingleton(lifecycleProbe.ref)), PoisonPill, settings),
+      settings.singletonName)
+    val testLease = awaitAssert {
+      testLeaseExt.getTestLease(leaseNameFor(settings))
+    }
+    testLease.probe.expectMsg(AcquireReq(leaseOwner))
+    val terminationProbe = TestProbe()
+    terminationProbe.watch(manager)
+    manager ! MemberDowned(cluster.selfMember.copy(MemberStatus.Down))
+    terminationProbe.expectTerminated(manager)
+    // nothing to release until the acquire completes
+    testLease.probe.expectNoMessage(shortDuration)
     (manager, testLease, lifecycleProbe)
   }
 
@@ -342,6 +366,132 @@ class ClusterSingletonLeaseSpec extends PekkoSpec(ConfigFactory.parseString("""
       terminationProbe.expectTerminated(manager)
       testLease.probe.expectMsg(ReleaseReq(leaseOwner))
       testLease.probe.expectNoMessage(shortDuration)
+    }
+
+    "release a lease acquired after the manager stopped while acquiring it" in {
+      val (_, testLease, lifecycleProbe) = stoppedWhileAcquiring()
+      testLease.initialPromise.success(true)
+      testLease.probe.expectMsg(ReleaseReq(leaseOwner))
+      testLease.probe.expectNoMessage(shortDuration)
+      // the singleton is never started by a stopped manager
+      lifecycleProbe.expectNoMessage(shortDuration)
+    }
+
+    "not let a replacement manager acquire the lease before the release of a stopped manager completed" in {
+      val settings = nextSettings()
+      val (_, testLease, _) = stoppedWhileAcquiring(settings)
+
+      // same name on the same actor system, so the same lease instance
+      val replacementLifecycleProbe = TestProbe()
+      system.actorOf(
+        ClusterSingletonManager.props(Props(new ImportantSingleton(replacementLifecycleProbe.ref)), PoisonPill,
+          settings),
+        settings.singletonName)
+      // the acquire of the stopped manager is still in progress, and may still need to be released
+      testLease.probe.expectNoMessage(shortDuration)
+      replacementLifecycleProbe.expectNoMessage(shortDuration)
+
+      testLease.initialPromise.success(true)
+      testLease.probe.expectMsg(ReleaseReq(leaseOwner))
+      // only acquired again after the release completed, so the release can't release the replacement's lease
+      testLease.probe.expectMsg(AcquireReq(leaseOwner))
+      replacementLifecycleProbe.expectMsg("preStart")
+      testLease.probe.expectNoMessage(shortDuration)
+    }
+
+    "not let a replacement manager acquire the lease before the release of a stopped oldest completed" in {
+      val (manager, testLease, lifecycleProbe) = startedSingleton()
+      val settings = ClusterSingletonManagerSettings(system).withSingletonName(manager.path.name)
+      val releaseResult = Promise[Boolean]()
+      testLease.setNextReleaseResult(releaseResult.future)
+      watch(manager)
+      system.stop(manager)
+      expectTerminated(manager)
+      lifecycleProbe.expectMsg("postStop")
+      testLease.probe.expectMsg(ReleaseReq(leaseOwner))
+
+      val replacementLifecycleProbe = TestProbe()
+      system.actorOf(
+        ClusterSingletonManager.props(Props(new ImportantSingleton(replacementLifecycleProbe.ref)), PoisonPill,
+          settings),
+        settings.singletonName)
+      testLease.probe.expectNoMessage(shortDuration)
+
+      releaseResult.success(true)
+      testLease.probe.expectMsg(AcquireReq(leaseOwner))
+      replacementLifecycleProbe.expectMsg("preStart")
+    }
+
+    "release a lease acquired after handing over while the acquire waited for a pending release" in {
+      val (manager, testLease, lifecycleProbe) = startedSingleton()
+      val releaseResult = Promise[Boolean]()
+      testLease.setNextReleaseResult(releaseResult.future)
+      // losing the lease releases it, and acquires again once the singleton has terminated
+      testLease.getCurrentCallback()(None)
+      lifecycleProbe.expectMsg("postStop")
+      testLease.probe.expectMsg(ReleaseReq(leaseOwner))
+      // the acquire waits for the release in progress
+      testLease.probe.expectNoMessage(shortDuration)
+
+      val handOverProbe = TestProbe()
+      handOverProbe.send(manager, HandOverToMe)
+      handOverProbe.expectMsg(HandOverDone)
+      // the acquire hasn't started yet, so nothing to release
+      testLease.probe.expectNoMessage(shortDuration)
+
+      releaseResult.success(true)
+      testLease.probe.expectMsg(AcquireReq(leaseOwner))
+      // the acquire succeeded after the manager left AcquiringLease, so the lease is released
+      testLease.probe.expectMsg(ReleaseReq(leaseOwner))
+      testLease.probe.expectNoMessage(shortDuration)
+      lifecycleProbe.expectNoMessage(shortDuration)
+    }
+
+    "not start the singleton for an abandoned acquire that succeeds after the manager is acquiring again" in {
+      val lifecycleProbe = TestProbe()
+      val settings = nextSettings()
+      val manager = system.actorOf(
+        ClusterSingletonManager.props(Props(new ImportantSingleton(lifecycleProbe.ref)), PoisonPill, settings),
+        settings.singletonName)
+      val testLease = awaitAssert {
+        testLeaseExt.getTestLease(leaseNameFor(settings))
+      }
+      testLease.probe.expectMsg(AcquireReq(leaseOwner))
+
+      // Leave AcquiringLease while the acquire is in progress: a removed node is seen as oldest again.
+      val otherNode = UniqueAddress(cluster.selfAddress.copy(port = Some(1)), 1L)
+      manager ! DelayedMemberRemoved(Member(otherNode, Set.empty, cluster.selfMember.appVersion))
+      manager ! OldestChanged(Some(otherNode))
+      // And acquire again before the abandoned acquire completes, this acquire waits for its release.
+      manager ! OldestChanged(Some(cluster.selfUniqueAddress))
+      testLease.probe.expectNoMessage(shortDuration)
+
+      val releaseResult = Promise[Boolean]()
+      testLease.setNextReleaseResult(releaseResult.future)
+      val secondAcquireResult = Promise[Boolean]()
+      testLease.setNextAcquireResult(secondAcquireResult.future)
+
+      // the abandoned acquire succeeds, its lease is released and its result must not start the singleton
+      testLease.initialPromise.success(true)
+      testLease.probe.expectMsg(ReleaseReq(leaseOwner))
+      testLease.probe.expectNoMessage(shortDuration)
+      lifecycleProbe.expectNoMessage(shortDuration)
+
+      releaseResult.success(true)
+      testLease.probe.expectMsg(AcquireReq(leaseOwner))
+      lifecycleProbe.expectNoMessage(shortDuration)
+
+      // only the acquire in progress starts the singleton
+      secondAcquireResult.success(true)
+      lifecycleProbe.expectMsg("preStart")
+      testLease.probe.expectNoMessage(shortDuration)
+    }
+
+    "not release when the acquire in progress at stop does not succeed" in {
+      val (_, testLease, lifecycleProbe) = stoppedWhileAcquiring()
+      testLease.initialPromise.success(false)
+      testLease.probe.expectNoMessage(shortDuration)
+      lifecycleProbe.expectNoMessage(shortDuration)
     }
 
     "release lease when leaving oldest" in {
