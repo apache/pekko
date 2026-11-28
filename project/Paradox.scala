@@ -23,6 +23,7 @@ import sbt._
 import sbtlicensereport.SbtLicenseReport.autoImportImpl.dumpLicenseReportAggregate
 
 import scala.concurrent.duration._
+import scala.util.matching.Regex
 
 object Paradox {
   val pekkoBaseURL = "https://pekko.apache.org"
@@ -109,6 +110,47 @@ object Paradox {
       }
     }.taskValue)
 
+  // Paradox derives heading anchors from the heading text only, so repeated headings on one page
+  // (e.g. "Bug Fixes" under each patch release in the release notes) all get the same anchor.
+  // Rename the 2nd and later duplicates to `<anchor>-1`, `<anchor>-2`, ... (like GitHub does).
+  // This rewrites the generated HTML in place, before the search index is built from it.
+  // See https://github.com/apache/pekko/issues/1124
+  lazy val uniqueAnchorsSettings = Seq(
+    Compile / paradoxMarkdownToHtml := {
+      val files = (Compile / paradoxMarkdownToHtml).value
+      files.foreach {
+        case (file, _) if file.getName.endsWith(".html") =>
+          val html = IO.read(file)
+          val fixed = UniqueAnchors.rewrite(html)
+          if (fixed ne html) IO.write(file, fixed)
+        case _ =>
+      }
+      files
+    })
+
+  private[this] object UniqueAnchors {
+    private val HeaderAnchor: Regex = """<a href="#([^"]+)" name="\1" class="anchor">""".r
+
+    /** Returns `html` itself (same instance) when there are no duplicate header anchors. */
+    def rewrite(html: String): String = {
+      val names = HeaderAnchor.findAllMatchIn(html).map(_.group(1)).toVector
+      if (names.distinct.size == names.size) html
+      else {
+        val used = scala.collection.mutable.Set(names: _*)
+        val seen = scala.collection.mutable.Set.empty[String]
+        HeaderAnchor.replaceAllIn(html,
+          m => {
+            val name = m.group(1)
+            val unique =
+              if (seen.add(name)) name
+              else Iterator.from(1).map(i => s"$name-$i").find(n => !used(n)).get
+            used += unique
+            Regex.quoteReplacement(s"""<a href="#$unique" name="$unique" class="anchor">""")
+          })
+      }
+    }
+  }
+
   lazy val settings =
     propertiesSettings ++
     rootsSettings ++
@@ -117,6 +159,7 @@ object Paradox {
     parsingSettings ++
     themeSettings ++
     sourceGeneratorSettings ++
+    uniqueAnchorsSettings ++
     Seq(
       Compile / paradox / name := "Pekko",
       ApidocPlugin.autoImport.apidocRootPackage := "org.apache.pekko",
