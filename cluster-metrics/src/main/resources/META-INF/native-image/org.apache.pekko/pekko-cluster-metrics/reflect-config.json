@@ -1,0 +1,74 @@
+[
+  {
+    "name": "org.apache.pekko.cluster.metrics.ClusterMetricsStrategy",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "com.typesafe.config.Config"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.cluster.metrics.ClusterMetricsExtension$",
+    "fields": [
+      {
+        "name": "MODULE$"
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.cluster.metrics.protobuf.MessageSerializer",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "org.apache.pekko.actor.ExtendedActorSystem"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.cluster.metrics.MixMetricsSelector"
+  },
+  {
+    "name": "org.apache.pekko.cluster.metrics.CpuMetricsSelector$"
+  },
+  {
+    "name": "org.apache.pekko.cluster.metrics.SystemLoadAverageMetricsSelector$"
+  },
+  {
+    "name": "org.apache.pekko.cluster.metrics.HeapMetricsSelector$"
+  },
+  {
+    "name": "org.apache.pekko.cluster.metrics.AdaptiveLoadBalancingPool"
+  },
+  {
+    "name": "org.apache.pekko.cluster.metrics.ClusterMetricsMessage"
+  },
+  {
+    "name": "org.apache.pekko.cluster.metrics.AdaptiveLoadBalancingGroup",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "com.typesafe.config.Config",
+          "org.apache.pekko.actor.DynamicAccess"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.cluster.metrics.AdaptiveLoadBalancingPool",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "com.typesafe.config.Config",
+          "org.apache.pekko.actor.DynamicAccess"
+        ]
+      }
+    ]
+  }
+]
