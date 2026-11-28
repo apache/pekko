@@ -206,6 +206,46 @@ class TcpSpec extends StreamSpec("""
       serverConnection.expectTerminated()
     }
 
+    "deliver a reply when downstream first requests it after the peer has closed its write side" in {
+      val binding = TestProbe()
+      val peer = TestProbe()
+      try {
+        binding.send(pekko.io.IO(pekko.io.Tcp), Bind(peer.ref, new InetSocketAddress("127.0.0.1", 0)))
+        val address = binding.expectMsgType[Bound].localAddress
+        val listener = binding.lastSender
+        try {
+          val reply = ByteString("reply")
+          val tcpWriteProbe = new TcpWriteProbe()
+          val tcpReadProbe = new TcpReadProbe()
+          Source
+            .fromPublisher(tcpWriteProbe.publisherProbe)
+            .via(Tcp().outgoingConnection(address, halfClose = true))
+            .to(Sink.fromSubscriber(tcpReadProbe.subscriberProbe))
+            .run()
+          val readSubscription = tcpReadProbe.tcpReadSubscription
+          try {
+            peer.expectMsgType[Connected]
+            val connection = peer.lastSender
+            peer.send(connection, Register(peer.ref, keepOpenOnPeerClosed = true))
+            tcpWriteProbe.close()
+            peer.expectMsg(PeerClosed)
+
+            peer.send(connection, Write(reply, TcpHelper.WriteAck))
+            peer.expectMsg(TcpHelper.WriteAck)
+            peer.send(connection, ConfirmedClose)
+            peer.expectMsg(ConfirmedClosed)
+
+            // This is the first downstream request, after the peer's write-side closure was confirmed.
+            tcpReadProbe.read(reply.size) shouldBe reply
+            tcpReadProbe.subscriberProbe.expectComplete()
+          } finally readSubscription.cancel()
+        } finally {
+          binding.send(listener, Unbind)
+          binding.expectMsg(Unbound)
+        }
+      } finally system.stop(peer.ref)
+    }
+
     "work when remote closes write, then client closes write" in {
       val testData = ByteString(1, 2, 3, 4, 5)
       val server = new Server()
