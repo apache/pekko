@@ -25,7 +25,15 @@ import pekko.io.SimpleDnsCache
 import pekko.io.dns.CachePolicy.Ttl
 import pekko.io.dns.DnsProtocol._
 import pekko.io.dns.internal.AsyncDnsResolver.ResolveFailedException
-import pekko.io.dns.internal.DnsClient.{ Answer, DropRequest, Dropped, DuplicateId, Question4, Question6, SrvQuestion }
+import pekko.io.dns.internal.DnsClient.{
+  DropRequest,
+  Dropped,
+  DuplicateId,
+  Question4,
+  Question6,
+  SrvQuestion,
+  UdpDnsAnswer
+}
 import pekko.io.dns.{ AAAARecord, ARecord, DnsSettings, IdGenerator, SRVRecord }
 import pekko.testkit.{ PekkoSpec, TestProbe, WithLogCapturing }
 
@@ -60,7 +68,7 @@ class AsyncDnsResolverSpec extends PekkoSpec("""
         case q4: Question4 if q4.name == "cats.com" =>
           q4.id
       }
-      dnsClient1.reply(Answer(id, im.Seq.empty))
+      dnsClient1.reply(UdpDnsAnswer(id, im.Seq.empty))
       dnsClient2.expectNoMessage()
       senderProbe.expectMsg(Resolved("cats.com", im.Seq.empty))
     }
@@ -77,7 +85,7 @@ class AsyncDnsResolverSpec extends PekkoSpec("""
         case q4: Question4 if q4.name == "cats.com" && q4.id != firstId =>
           q4.id
       }
-      dnsClient2.reply(Answer(secondId, im.Seq.empty))
+      dnsClient2.reply(UdpDnsAnswer(secondId, im.Seq.empty))
       senderProbe.expectMsg(Resolved("cats.com", im.Seq.empty))
     }
 
@@ -92,7 +100,7 @@ class AsyncDnsResolverSpec extends PekkoSpec("""
         case q4: Question4 if q4.name == "cats.com" && q4.id != firstId =>
           q4.id
       }
-      dnsClient2.reply(Answer(secondId, im.Seq.empty))
+      dnsClient2.reply(UdpDnsAnswer(secondId, im.Seq.empty))
       senderProbe.expectMsg(Resolved("cats.com", im.Seq.empty))
     }
 
@@ -109,7 +117,7 @@ class AsyncDnsResolverSpec extends PekkoSpec("""
         case q4: Question4 if q4.name == "cats.com" && q4.id != firstId =>
           q4.id
       }
-      dnsClient1.reply(Answer(secondId, im.Seq.empty))
+      dnsClient1.reply(UdpDnsAnswer(secondId, im.Seq.empty))
       dnsClient2.expectNoMessage()
       senderProbe.expectMsg(Resolved("cats.com", im.Seq.empty))
     }
@@ -117,19 +125,40 @@ class AsyncDnsResolverSpec extends PekkoSpec("""
     "gets both A and AAAA records if requested" in new Setup {
       r ! Resolve("cats.com", Ip(ipv4 = true, ipv6 = true))
       val firstId = dnsClient1.expectMsgPF() {
-        case q4: Question4 if q4.name == "cats.com" =>
-          q4.id
+        case q4: Question4 if q4.name == "cats.com" => q4.id
+      }
+      val firstReplyTo = dnsClient1.lastSender
+      // Both requests must be dispatched before either response is available.
+      val secondId = dnsClient1.expectMsgPF() {
+        case q6: Question6 if q6.name == "cats.com" && q6.id != firstId => q6.id
       }
       val ttl = Ttl.fromPositive(100.seconds)
       val ipv4Record = ARecord("cats.com", ttl, InetAddress.getByName("127.0.0.1"))
-      dnsClient1.reply(Answer(firstId, im.Seq(ipv4Record)))
-      val secondId = dnsClient1.expectMsgPF() {
-        case q6: Question6 if q6.name == "cats.com" && q6.id != firstId =>
-          q6.id
-      }
       val ipv6Record = AAAARecord("cats.com", ttl, InetAddress.getByName("::1").asInstanceOf[Inet6Address])
-      dnsClient1.reply(Answer(secondId, im.Seq(ipv6Record)))
+      // Completion order must not change IPv4-before-IPv6 record ordering.
+      dnsClient1.reply(UdpDnsAnswer(secondId, im.Seq(ipv6Record)))
+      dnsClient1.send(firstReplyTo, UdpDnsAnswer(firstId, im.Seq(ipv4Record)))
       senderProbe.expectMsg(Resolved("cats.com", im.Seq(ipv4Record, ipv6Record)))
+    }
+
+    "query only AAAA records for IPv6-only resolution" in new Setup {
+      r ! Resolve("cats.com", Ip(ipv4 = false, ipv6 = true))
+      val question = dnsClient1.expectMsgType[Question6]
+      question.name shouldBe "cats.com"
+      val ttl = Ttl.fromPositive(100.seconds)
+      val record = AAAARecord("cats.com", ttl, InetAddress.getByName("::1").asInstanceOf[Inet6Address])
+      val additional = ARecord("extra.cats.com", ttl, InetAddress.getByName("127.0.0.1"))
+      dnsClient1.reply(UdpDnsAnswer(question.id, im.Seq(record), im.Seq(additional)))
+      senderProbe.expectMsg(Resolved("cats.com", im.Seq(record), im.Seq(additional)))
+      dnsClient1.expectNoMessage(50.millis)
+      dnsClient2.expectNoMessage(50.millis)
+    }
+
+    "return an empty result without DNS questions when both address families are disabled" in new Setup {
+      r ! Resolve("cats.com", Ip(ipv4 = false, ipv6 = false))
+      senderProbe.expectMsg(Resolved("cats.com", im.Seq.empty))
+      dnsClient1.expectNoMessage(50.millis)
+      dnsClient2.expectNoMessage(50.millis)
     }
 
     "fails if all dns clients timeout" in new Setup {
@@ -162,7 +191,7 @@ class AsyncDnsResolverSpec extends PekkoSpec("""
         case srvQuestion: SrvQuestion if srvQuestion.name == "cats.com" =>
           srvQuestion.id
       }
-      dnsClient1.reply(Answer(firstId, im.Seq.empty))
+      dnsClient1.reply(UdpDnsAnswer(firstId, im.Seq.empty))
       dnsClient2.expectNoMessage()
       senderProbe.expectMsg(Resolved("cats.com", im.Seq.empty))
     }
@@ -199,7 +228,7 @@ class AsyncDnsResolverSpec extends PekkoSpec("""
       }
       val srvRecs = im.Seq(SRVRecord("cats.com", Ttl.fromPositive(5000.seconds), 1, 1, 1, "a.cats.com"))
       val aRecs = im.Seq(ARecord("a.cats.com", Ttl.fromPositive(1.seconds), InetAddress.getByName("127.0.0.1")))
-      dnsClient1.reply(Answer(firstId, srvRecs, aRecs))
+      dnsClient1.reply(UdpDnsAnswer(firstId, srvRecs, aRecs))
       dnsClient2.expectNoMessage(50.millis)
       senderProbe.expectMsg(Resolved("cats.com", srvRecs, aRecs))
 
@@ -217,7 +246,7 @@ class AsyncDnsResolverSpec extends PekkoSpec("""
         case q4: Question4 if q4.name == "cats.com" =>
           q4.id
       }
-      dnsClient1.reply(Answer(firstId, im.Seq.empty))
+      dnsClient1.reply(UdpDnsAnswer(firstId, im.Seq.empty))
 
       senderProbe.expectMsg(Resolved("cats.com", im.Seq()))
 
@@ -236,7 +265,7 @@ class AsyncDnsResolverSpec extends PekkoSpec("""
         case q4: Question4 if q4.name == "cats.com" =>
           q4.id
       }
-      dnsClient1.reply(Answer(firstId, im.Seq(ipv4Record)))
+      dnsClient1.reply(UdpDnsAnswer(firstId, im.Seq(ipv4Record)))
 
       senderProbe.expectMsg(Resolved("cats.com", im.Seq(ipv4Record)))
 
@@ -258,7 +287,7 @@ class AsyncDnsResolverSpec extends PekkoSpec("""
         case q4: Question4 if q4.name == "cats.com" =>
           q4.id
       }
-      dnsClient1.reply(Answer(firstId, im.Seq(ipv4Record)))
+      dnsClient1.reply(UdpDnsAnswer(firstId, im.Seq(ipv4Record)))
 
       senderProbe.expectMsg(Resolved("cats.com", im.Seq(ipv4Record)))
 
@@ -267,7 +296,7 @@ class AsyncDnsResolverSpec extends PekkoSpec("""
         case q4: Question4 if q4.name == "cats.com" =>
           q4.id
       }
-      dnsClient1.reply(Answer(secondId, im.Seq(ipv4Record)))
+      dnsClient1.reply(UdpDnsAnswer(secondId, im.Seq(ipv4Record)))
 
       senderProbe.expectMsg(Resolved("cats.com", im.Seq(ipv4Record)))
     }
@@ -284,7 +313,7 @@ class AsyncDnsResolverSpec extends PekkoSpec("""
         case q4: Question4 if q4.name == "cats.com" =>
           q4.id
       }
-      dnsClient1.reply(Answer(firstId, im.Seq(ipv4Record)))
+      dnsClient1.reply(UdpDnsAnswer(firstId, im.Seq(ipv4Record)))
       senderProbe.expectMsg(Resolved("cats.com", im.Seq(ipv4Record)))
 
       r ! Resolve("cats.com", Ip(ipv4 = true, ipv6 = false))
@@ -298,7 +327,7 @@ class AsyncDnsResolverSpec extends PekkoSpec("""
         case q4: Question4 if q4.name == "cats.com" =>
           q4.id
       }
-      dnsClient1.reply(Answer(secondId, im.Seq(ipv4Record)))
+      dnsClient1.reply(UdpDnsAnswer(secondId, im.Seq(ipv4Record)))
 
       senderProbe.expectMsg(Resolved("cats.com", im.Seq(ipv4Record)))
     }
@@ -340,7 +369,7 @@ class AsyncDnsResolverSpec extends PekkoSpec("""
       receivedQuestions.map(_._1).toSet.size shouldBe resolveCount
 
       receivedQuestions.foreach {
-        case (id, replyTo) => replyTo ! Answer(id, im.Seq.empty)
+        case (id, replyTo) => replyTo ! UdpDnsAnswer(id, im.Seq.empty)
       }
       (1 to resolveCount).foreach { _ =>
         senderProbe.expectMsgType[Resolved]
@@ -369,7 +398,7 @@ class AsyncDnsResolverSpec extends PekkoSpec("""
         case q: Question4 if q.name == "host2.cats.com" => q
       }
       reusedQuestion.id shouldBe timedOutQuestion.id
-      dnsClient1.reply(Answer(reusedQuestion.id, im.Seq.empty))
+      dnsClient1.reply(UdpDnsAnswer(reusedQuestion.id, im.Seq.empty))
 
       senderProbe.expectMsg(Resolved("host2.cats.com", im.Seq.empty))
     }
@@ -396,8 +425,8 @@ class AsyncDnsResolverSpec extends PekkoSpec("""
         case q: Question4 if q.name == "host2.cats.com" && q.id != duplicatedQuestion.id => q
       }
 
-      firstQuestionSender ! Answer(firstQuestion.id, im.Seq.empty)
-      dnsClient1.reply(Answer(retriedQuestion.id, im.Seq.empty))
+      firstQuestionSender ! UdpDnsAnswer(firstQuestion.id, im.Seq.empty)
+      dnsClient1.reply(UdpDnsAnswer(retriedQuestion.id, im.Seq.empty))
 
       asker1.expectMsg(Resolved("host1.cats.com", im.Seq.empty))
       asker2.expectMsg(Resolved("host2.cats.com", im.Seq.empty))
@@ -420,7 +449,7 @@ class AsyncDnsResolverSpec extends PekkoSpec("""
       }
 
       dnsClient1.expectNoMessage(450.millis)
-      dnsClient1.reply(Answer(retriedQuestion.id, im.Seq.empty))
+      dnsClient1.reply(UdpDnsAnswer(retriedQuestion.id, im.Seq.empty))
 
       senderProbe.expectMsg(Resolved("cats.com", im.Seq.empty))
     }
@@ -441,7 +470,7 @@ class AsyncDnsResolverSpec extends PekkoSpec("""
       r.tell(resolve, asker2.ref)
       // No second DNS question should be sent; the second resolve reuses the in-progress one
       dnsClient1.expectNoMessage(50.millis)
-      dnsClient1.reply(Answer(firstId, Nil))
+      dnsClient1.reply(UdpDnsAnswer(firstId, Nil))
 
       asker1.expectMsg(Resolved("cats.com", im.Seq.empty))
       asker2.expectMsg(Resolved("cats.com", im.Seq.empty))
@@ -483,7 +512,7 @@ class AsyncDnsResolverSpec extends PekkoSpec("""
       val secondQuestion = dnsClient1.expectMsgPF() {
         case q: Question4 if q.name == ipv4Record.name => q
       }
-      dnsClient1.reply(Answer(secondQuestion.id, im.Seq(ipv4Record)))
+      dnsClient1.reply(UdpDnsAnswer(secondQuestion.id, im.Seq(ipv4Record)))
 
       firstSender.expectMsg(Resolved(ipv4Record.name, im.Seq(ipv4Record)))
       secondSender.expectMsg(Resolved(ipv4Record.name, im.Seq(ipv4Record)))

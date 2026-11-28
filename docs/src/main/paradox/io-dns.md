@@ -78,6 +78,8 @@ The Async DNS provider has the following advantages:
 * No blocking. `InetAddress` resolving is a blocking operation.
 * Exposes `SRV`, `A` and `AAAA` records.
 
+Async DNS starts each lookup over UDP and falls back to TCP when the response is truncated.
+
 
 ## SRV Records
 

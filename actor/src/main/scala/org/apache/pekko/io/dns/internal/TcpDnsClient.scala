@@ -20,7 +20,7 @@ import pekko.PekkoException
 import pekko.actor.{ Actor, ActorLogging, ActorRef, Stash, Terminated }
 import pekko.annotation.InternalApi
 import pekko.io.Tcp
-import pekko.io.dns.internal.DnsClient.Answer
+import pekko.io.dns.internal.DnsClient.TcpDnsAnswer
 import pekko.util.ByteString
 
 /**
@@ -95,7 +95,7 @@ import pekko.util.ByteString
     }
     val (recs, additionalRecs) =
       if (msg.flags.responseCode == ResponseCode.SUCCESS) (msg.answerRecs, msg.additionalRecs) else (Nil, Nil)
-    Answer(msg.id, recs, additionalRecs)
+    TcpDnsAnswer(msg.id, recs, additionalRecs, msg.questions)
   }
 }
 private[internal] object TcpDnsClient {
